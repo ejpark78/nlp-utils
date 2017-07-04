@@ -1,0 +1,183 @@
+
+{
+    "_id" : "crawler_nate_economy_1998",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "1998-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "1998-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_1999",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "1999-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "1999-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_2000",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "2000-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "2000-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_2001",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "2001-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "2001-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_2002",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "2002-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "2002-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_2003",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "2003-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "2003-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}
+{
+    "_id" : "crawler_nate_economy_2004",
+    "state" : {
+        "state" : "running"
+    },
+    "docker" : {
+        "working_dir" : "/crawler",
+        "image" : "crawler:cluster",
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro",
+        "network" : "hadoop-net"
+    },
+    "parameter" : {
+        "min_delay" : 3,
+        "end_date" : "2004-12-31",
+        "result_db_port" : 27017,
+        "result_db_host" : "gollum01",
+        "document_id" : "{_id}",
+        "start_date" : "2004-01-01",
+        "delay" : 6,
+        "url_frame" : "http://news.nate.com/recent?cate=eco&mid=n0301&type=t&date={date}",
+        "result_db_name" : "nate_economy",
+        "parsing_info" : "nate.news"
+    },
+    "group" : "nate_crawler"
+}

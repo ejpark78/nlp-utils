@@ -1,0 +1,5 @@
+flask
+flask-CORS
+pymongo
+paho-mqtt
+docker-py

@@ -1,0 +1,16 @@
+{
+  "constraints": [
+    {
+      "constraint": "PER_BAT",
+      "value": "?"
+    },
+    {
+      "constraint": "ORG_TEAM",
+      "value": "NC"
+    },
+    {
+      "constraint": "포지션",
+      "value": "I"
+    }
+  ]
+}
