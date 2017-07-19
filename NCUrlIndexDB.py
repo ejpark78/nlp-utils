@@ -70,7 +70,7 @@ class NCUrlIndexDB:
 
         if isinstance(url, str) is True:
             return url
-        elif 'simple' in url:
+        elif 'simple' in url and url['simple'] != '':
             return url['simple']
         elif 'full' in url:
             return url['full']
@@ -102,9 +102,10 @@ class NCUrlIndexDB:
         if self.cursor is None:
             return
 
+        url = self.get_url(url)
+
         sql = 'INSERT INTO url_list (url) VALUES (?)'
         try:
-            url = self.get_url(url)
             self.cursor.execute(sql, (url, ))
         except Exception:
             print('ERROR at save_url: {} {}'.format(url, sys.exc_info()[0]), flush=True)

@@ -31,7 +31,7 @@ def create_elastic_index(elastic, index_name=None):
     return
 
 
-def save_elastic(document, host, index, type):
+def save_elastic(document, host, index, type, auth=False):
     """
     elastic search에 저장
     """
@@ -39,10 +39,26 @@ def save_elastic(document, host, index, type):
     if 'date' in document:
         document['date'] = document['date'].strftime('%Y-%m-%dT%H:%M:%S')
 
+    # 입력시간 삽입
+    from datetime import datetime
+    document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+
     try:
         from elasticsearch import Elasticsearch
 
-        elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
+        if auth is True:
+            elastic = Elasticsearch(
+                [host],
+                http_auth=('elastic', 'nlplab'),
+                use_ssl=True,
+                verify_certs=False,
+                port=9200)
+        else:
+            elastic = Elasticsearch(
+                [host],
+                use_ssl=True,
+                verify_certs=False,
+                port=9200)
 
         if elastic.indices.exists(index) is False:
             create_elastic_index(elastic, index)
@@ -64,7 +80,11 @@ def save_elastic(document, host, index, type):
             'doc_as_upsert': True
         })
 
-        elastic.bulk(index=index, body=bulk_data, refresh=True)
+        if ssl is True:
+            pass
+        else:
+            elastic.bulk(index=index, body=bulk_data, refresh=True)
+
     except Exception:
         print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
@@ -155,6 +175,7 @@ def map_function(x):
 
             save_mongodb(result.copy(), host=host, db_name=db_name, collection=collection, port=port)
             save_elastic(result.copy(), host='gollum', index=db_name, type=collection)
+            save_elastic(result.copy(), host='yoma07', index=db_name, type=collection, auth=True)
     except Exception:
         return 'ERROR at save: {}'.format(sys.exc_info()[0])
 

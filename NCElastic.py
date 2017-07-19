@@ -7,6 +7,11 @@ from __future__ import print_function
 
 import sys
 
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(UserWarning)
+
 
 class NCElastic:
     def __init__(self, es_host=None, index_name=None):
@@ -17,7 +22,7 @@ class NCElastic:
         if es_host is not None:
             self.open(self.es_host)
 
-    def open(self, es_host=None, index_name=None):
+    def open(self, es_host=None, index_name=None, auth=True):
         """
         엘라스틱 서치 생섣
         """
@@ -30,8 +35,19 @@ class NCElastic:
         from elasticsearch import Elasticsearch
 
         print('es_host:', self.es_host, flush=True)
-
-        self.elastic_search = Elasticsearch([self.es_host], use_ssl=True, verify_certs=False, port=9200)
+        if auth is True:
+            self.elastic_search = Elasticsearch(
+                [self.es_host],
+                http_auth=('elastic', 'nlplab'),
+                use_ssl=True,
+                verify_certs=False,
+                port=9200)
+        else:
+            self.elastic_search = Elasticsearch(
+                [self.es_host],
+                use_ssl=True,
+                verify_certs=False,
+                port=9200)
 
         return self.elastic_search
 
@@ -245,13 +261,13 @@ class NCElastic:
             count += 1
 
             if len(bulk_data) > 1000:
-                print(count)
-                self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True)
+                print('{:,}'.format(count), flush=True)
+                self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
                 bulk_data = []
 
         if len(bulk_data) > 0:
-            print(count)
-            self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True)
+            print('{:,}'.format(count), flush=True)
+            self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
 
     @staticmethod
     def parse_argument():

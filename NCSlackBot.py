@@ -243,41 +243,46 @@ class NCSlackBot:
         """
         형태소 분석 봇 실행
         """
-        slack_client = SlackClient(self.bot_token['kmat'])
 
-        sleep_time = 1  # 초 단위
-        if slack_client.rtm_connect() is False:
-            print('ERROR', '슬랙 연결 오류', file=sys.stderr, flush=True)
-            return
-
-        from NCNlpUtil import NCNlpUtil
-
-        util = NCNlpUtil()
-        util.open_pos_tagger(dictionary_path='dictionary/rsc')
-
-        print('형태소 분석 봇 시작: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=sys.stderr, flush=True)
         while True:
-            channel, message = self.parse_slack_message(slack_client.rtm_read())
-            if channel is None or message == '':
-                time.sleep(sleep_time)
-                continue
+            time.sleep(10000)
 
-            print('입력 채널 정보: ', channel, message, file=sys.stderr, flush=True)
 
-            # 분석
-            pos_tagged, _ = util.run_pos_tagger_sentence(message)
-            response = [{
-                'pretext': message,
-                'text': pos_tagged
-            }]
-
-            # 결과 전송
-            try:
-                slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
-            except Exception:
-                print('ERROR', 'send message', file=sys.stderr, flush=True)
-
-            time.sleep(sleep_time)
+    # slack_client = SlackClient(self.bot_token['kmat'])
+        #
+        # sleep_time = 1  # 초 단위
+        # if slack_client.rtm_connect() is False:
+        #     print('ERROR', '슬랙 연결 오류', file=sys.stderr, flush=True)
+        #     return
+        #
+        # from NCNlpUtil import NCNlpUtil
+        #
+        # util = NCNlpUtil()
+        # util.open_pos_tagger(dictionary_path='dictionary/rsc')
+        #
+        # print('형태소 분석 봇 시작: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=sys.stderr, flush=True)
+        # while True:
+        #     channel, message = self.parse_slack_message(slack_client.rtm_read())
+        #     if channel is None or message == '':
+        #         time.sleep(sleep_time)
+        #         continue
+        #
+        #     print('입력 채널 정보: ', channel, message, file=sys.stderr, flush=True)
+        #
+        #     # 분석
+        #     pos_tagged, _ = util.run_pos_tagger_sentence(message)
+        #     response = [{
+        #         'pretext': message,
+        #         'text': pos_tagged
+        #     }]
+        #
+        #     # 결과 전송
+        #     try:
+        #         slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
+        #     except Exception:
+        #         print('ERROR', 'send message', file=sys.stderr, flush=True)
+        #
+        #     time.sleep(sleep_time)
 
     def run_search_bot(self):
         """

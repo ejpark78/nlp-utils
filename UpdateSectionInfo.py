@@ -188,7 +188,7 @@ class UpdateSectionInfo:
 
         if isinstance(url, str) is True:
             return url
-        elif 'simple' in url:
+        elif 'simple' in url and url['simple'] != '':
             return url['simple']
         elif 'full' in url:
             return url['full']

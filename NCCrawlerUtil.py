@@ -22,6 +22,8 @@ from datetime import datetime
 from bs4 import BeautifulSoup, Comment
 
 from NCNlpUtil import NCNlpUtil
+import sys
+import traceback
 
 
 class NCCrawlerUtil:
@@ -106,7 +108,8 @@ class NCCrawlerUtil:
 
         return ''
 
-    def curl_html(self, curl_url, delay=6, min_delay=3, post_data=None, json=False, encoding=None, max_try=3):
+    def curl_html(self, curl_url, delay=6, min_delay=3,
+                  post_data=None, json=False, encoding=None, max_try=3, headers=None):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
         """
@@ -134,12 +137,18 @@ class NCCrawlerUtil:
         # 쉼
         sleep(sleep_time)
 
+        # 해더 생성
+        if headers is None:
+            headers = self.headers
+        else:
+            headers.update(self.headers)
+
         # 웹 크롤링
         try:
             if post_data is None:
-                page_html = requests.get(curl_url, headers=self.headers, allow_redirects=True)
+                page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60) #
             else:
-                page_html = requests.post(curl_url, data=post_data, headers=self.headers, allow_redirects=True)
+                page_html = requests.post(curl_url, data=post_data, headers=self.headers, allow_redirects=True, timeout=60)
         except Exception:
             return None
             # if max_try > 0:
@@ -262,7 +271,7 @@ class NCCrawlerUtil:
                      'm', 'b', 'api', 'hermes', 'json', 'op_key', 'sort_order', 'VIEW_ASC', 'page_count', 'page_size',
                      'v2', 'planus', 'proxy', 'sort-by', 'orderSequence$desc$int', 'ronaldo', 'gallery', 'VIEW_DESC',
                      'sports_game_related_contents', 'aspx', 'www', 'html', 'site', 'html_dir', 'data', 'asp',
-                     'related_all']
+                     'related_all', 'reuters', 'article']
 
         url = url.replace('&amp;', '&')
 
@@ -371,16 +380,30 @@ class NCCrawlerUtil:
         if '_id' not in document:
             document['_id'] = self.get_document_id(document['url'])
 
+        meta = {}
+        if 'meta' in document:
+            for k in document['meta']:
+                if k.find('.') >= 0:
+                    meta[k.replace('.', '_')] = document['meta'][k]
+                    continue
+
+                meta[k] = document['meta'][k]
+
+            document['meta'] = meta
+
         # 몽고 디비에 문서 저장
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             if upsert is True:
                 result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
             else:
+                # del document['meta']
                 result_db[collection].insert_one(document)
         except errors.DuplicateKeyError:
             print('DuplicateKeyError: {}, {}'.format(collection, document['_id']), file=sys.stderr, flush=True)
         except Exception:
+            traceback.print_exc(file=sys.stderr)
+
             NCNlpUtil().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
@@ -447,7 +470,10 @@ class NCCrawlerUtil:
         document['url'] = url_info
 
         if '_id' in parsing_url:
-            document['_id'] = parsing_url['_id'].format(**query)
+            try:
+                document['_id'] = parsing_url['_id'].format(**query)
+            except:
+                document['_id'] = self.get_document_id(url_info['full'])
         else:
             document['_id'] = self.get_document_id(url_info['full'])
 
@@ -492,13 +518,12 @@ class NCCrawlerUtil:
         from pymongo import errors
 
         section_info = {
-            '_id': '{}-{}'.format(document['_id'], document['section']),
-            'url': document['url'],
-            'date': document['date'],
-            'title': document['title'],
-            'section': document['section'],
-            'document_id': document['_id']
+            '_id': '{}-{}'.format(document['_id'], document['section'])
         }
+
+        for k in ['url', 'title', 'date', 'section', 'document_id']:
+            if k in document:
+                section_info[k] = document[k]
 
         # 몽고 디비에 문서 저장
         try:
@@ -615,12 +640,13 @@ class NCCrawlerUtil:
 
         return
 
-    @staticmethod
-    def get_query(url):
+    def get_query(self, url):
         """
         url 에서 쿼리문을 반환
         """
         from urllib.parse import urlparse, parse_qs
+
+        url = self.get_url(url)
 
         url_info = urlparse(url)
         result = parse_qs(url_info.query)

@@ -55,8 +55,12 @@ class NCCrawler:
                 del article['date']
             else:
                 article['date'] = date
-        elif response_type == 'json' and 'season' in article and isinstance(article['season'], str) is True:
-            collection = article['season']
+        elif response_type == 'json':
+            if 'season' in article and isinstance(article['season'], str) is True:
+                collection = article['season']
+
+            if 'section' in article and isinstance(article['section'], str) is True:
+                collection = article['section']
 
         if collection is None:
             collection = 'error'
@@ -85,10 +89,10 @@ class NCCrawler:
             upsert = self.parameter['replace']
 
         # 다운로드 받은 URL이 있는지 검사
+        url = self.crawler_util.get_url(article['url'])
         if upsert is False and self.url_index_db is not None \
-                and self.url_index_db.check_url(article['url']) is True:
+                and self.url_index_db.check_url(url) is True:
             self.skip_url_count += 1
-            url = self.crawler_util.get_url(article['url'])
             NCNlpUtil().print('{}\tskip url exists {:,}: {}'.format(str_now, self.skip_url_count, url))
 
             # const value 삽입
@@ -109,19 +113,27 @@ class NCCrawler:
         if 'encoding' in self.parsing_info:
             encoding = self.parsing_info['encoding']
 
+        # 헤더 명시
+        headers = None
+        if 'headers' in self.parsing_info:
+            headers = self.parsing_info['headers']
+
         # 기사 본문을 크롤링
         json_type = False
         if response_type == 'json':
             json_type = True
 
+        if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
+            json_type = True
+
         soup = self.crawler_util.curl_html(
             article['url'], encoding=encoding, json=json_type,
-            delay=self.parameter['delay'], min_delay=self.parameter['min_delay'])
+            delay=self.parameter['delay'], min_delay=self.parameter['min_delay'], headers=headers)
 
         if soup is None:
             return True
 
-        if response_type == 'json':
+        if json_type is True:
             article.update(soup)
         else:
             # 필요없는 테그 제거: 주석, 자바스크립트, 스타일 정보 등
@@ -146,7 +158,7 @@ class NCCrawler:
         # 컬랙션 이름 추출
         collection = self.get_collection_name(article, response_type)
 
-        if response_type != 'json':
+        if json_type is not True:
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
                 collection = 'error'
@@ -206,26 +218,6 @@ class NCCrawler:
             line = '{}\t{}\t{}\t{}\t{}'.format(collection, url_info['query']['oid'], url_info['query']['aid'],
                                                subject['title'], url_info['simple'])
             log.append(line)
-
-        # 파일로 저장
-        # if 'sid1' not in query:
-        #     query['sid1'] = 'unknown'
-        #
-        # if 'sid2' not in query:
-        #     query['sid2'] = 'unknown'
-        #
-        # path = 'section/{}'.format(self.parameter['result_db_name'])
-        # if 'date' in query and query['date'] != 'unknown':
-        #     date = dateutil.parser.parse(query['date'])
-        #     path = 'section/{}/{}'.format(self.parameter['result_db_name'], date.strftime('%Y-%m'))
-        #
-        # if os.path.exists(path) is False:
-        #     os.makedirs(path)
-        #
-        # filename = '{}/{}.{}.{}.txt'.format(path, query['date'], query['sid1'], query['sid2'])
-        # with open(filename, 'a', encoding='utf-8') as fp:
-        #     fp.write('\n'.join(log))
-        #     fp.flush()
 
         return
 
@@ -342,6 +334,11 @@ class NCCrawler:
             NCNlpUtil().print('error no json key mapping info')
             return
 
+        # 헤더 명시
+        headers = None
+        if 'headers' in self.parsing_info:
+            headers = self.parsing_info['headers']
+
         # 첫 기사 목록
         url = page_url
         if page_url.find('{page}') > 0:
@@ -349,7 +346,7 @@ class NCCrawler:
 
         NCNlpUtil().print('curl all pages: {}'.format(url))
         page_soup = self.crawler_util.curl_html(
-            url, delay=self.parameter['delay'], min_delay=self.parameter['min_delay'], json=True)
+            url, delay=self.parameter['delay'], min_delay=self.parameter['min_delay'], json=True, headers=headers)
         if page_soup is None:
             return
 
@@ -358,8 +355,12 @@ class NCCrawler:
         if isinstance(section_info, dict) is True:
             self.crawler_util.change_key(section_info, json_key_mapping)
 
-            if 'list' in section_info:
-                self.curl_json_article_list(page_url, section_info['list'], json_key_mapping)
+            list_key = 'list'
+            if 'list' in json_key_mapping:
+                list_key = json_key_mapping['list']
+
+            if list_key in section_info:
+                self.curl_json_article_list(page_url, section_info[list_key], json_key_mapping)
 
                 if 'total_pages' in section_info and page <= section_info['total_pages']:
                     page += 1
@@ -485,22 +486,23 @@ class NCCrawler:
 
         parsing_info = self.parsing_info['page_list']
 
-        # 페이지 목록 부분만 추출
-        page_tag = page_soup.find(
-            parsing_info['panel']['tag_name'],
-            attrs=self.crawler_util.get_value(parsing_info['panel'], 'attr'))
+        if 'panel' in parsing_info:
+            # 페이지 목록 부분만 추출
+            page_tag = page_soup.find(
+                parsing_info['panel']['tag_name'],
+                attrs=self.crawler_util.get_value(parsing_info['panel'], 'attr'))
 
-        if page_tag is None:
-            NCNlpUtil().print({'ERROR': 'page panel is empty'})
-            return
+            if page_tag is None:
+                NCNlpUtil().print({'ERROR': 'article list panel is empty'})
+                return
 
-        # 페이지 목록 추출 1~10 등
-        if 'index' in parsing_info:
-            self.trace_index_tag(page_tag, page_url, curl_type)
+            # 페이지 목록 추출 1~10 등
+            if 'index' in parsing_info:
+                self.trace_index_tag(page_tag, page_url, curl_type)
 
-        # 페이지가 넘어가는 부분이 있는 경우 재귀적으로 호출,
-        if 'next' in parsing_info:
-            self.trace_next_tag(page_tag, page_url, curl_type)
+            # 페이지가 넘어가는 부분이 있는 경우 재귀적으로 호출,
+            if 'next' in parsing_info:
+                self.trace_next_tag(page_tag, page_url, curl_type)
 
         return
 
@@ -678,25 +680,12 @@ class NCCrawler:
                 start = self.job_info['state']['start']
 
         # url 주소 생성
-        query = {'year': year, 'start': start}
-        page_url = self.parameter['url_frame']
+        NCNlpUtil().print({'year': year, 'start': start})
 
-        if isinstance(page_url, list):
-            print('ERROR at curl_by_page_id', flush=True)
-            return
-
-        page_url = page_url.format(**query)
-
-        # 시작전 상태 변경: ready => running
+        # 쿼리 매핑 정보 추출
         query_key_mapping = None
         if 'query_key_mapping' in self.parsing_info:
             query_key_mapping = self.parsing_info['query_key_mapping']
-
-        self.crawler_util.update_state_by_id(
-            state='running', url=page_url, query_key_mapping=query_key_mapping,
-            job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
-
-        NCNlpUtil().print({'year': year, 'start': start})
 
         if 'page_list' in self.parsing_info:
             # 페이지 목록이 있을 경우
@@ -713,25 +702,58 @@ class NCCrawler:
                 step = int(self.parameter['step'])
 
             for i in range(start, end, step):
-                query = {'year': year, 'start': i}
-                page_url = self.parameter['url_frame'].format(**query)
+                url_list = self.parameter['url_frame']
+                if isinstance(url_list, str) is True:
+                    url_list = [{'url': url_list}]
 
-                self.curl_all_pages(page_url, curl_type='by_id')
+                # url을 만든다.
+                for url_info in url_list:
+                    query = {'year': year, 'start': i}
 
-                self.crawler_util.update_state_by_id(
-                    state='running', url=page_url, query_key_mapping=query_key_mapping,
-                    job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
-        elif 'article_page' in self.parsing_info:
+                    page_url = url_info['url'].format(**query)
+
+                    # const_value 속성 복사
+                    if 'const_value' in url_info:
+                        self.parameter['const_value'] = url_info['const_value']
+
+                    # 본문 수집
+                    self.curl_all_pages(page_url, curl_type='by_id')
+
+                    # 상태 갱신
+                    self.crawler_util.update_state_by_id(
+                        state='running', url=page_url, query_key_mapping=query_key_mapping,
+                        job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+        # elif 'article_page' in self.parsing_info:
+        else:
             # 페이지 목록이 없을 경우 본문만 저장
+            start = int(start)
+
+            end = start + 100000
             if 'end' in self.parameter:
-                start = int(start)
                 end = int(self.parameter['end']) + 1
 
-                page_url = self.parameter['url_frame']
-                for i in range(start, end):
-                    article = {'url': page_url.format(start=i)}
-                    self.curl_article(article=article)
+            for i in range(start, end):
+                url_list = self.parameter['url_frame']
+                if isinstance(url_list, str) is True:
+                    url_list = [{'url': url_list}]
 
+                # url을 만든다.
+                for url_info in url_list:
+                    # const_value 속성 복사
+                    if 'const_value' in url_info:
+                        self.parameter['const_value'] = url_info['const_value']
+
+                    page_url = url_info['url']
+
+                    # 본문 수집
+                    article = {'url': page_url.format(start=i)}
+
+                    if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
+                        self.curl_all_pages_json(article['url'], 1)
+                    else:
+                        self.curl_article(article=article)
+
+                    # 상태 갱신
                     self.crawler_util.update_state_by_id(
                         state='running', url=article['url'], query_key_mapping=query_key_mapping,
                         job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)

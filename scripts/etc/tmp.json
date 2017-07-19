@@ -1,16 +1,55 @@
 {
-  "constraints": [
-    {
-      "constraint": "PER_BAT",
-      "value": "?"
-    },
-    {
-      "constraint": "ORG_TEAM",
-      "value": "NC"
-    },
-    {
-      "constraint": "포지션",
-      "value": "I"
-    }
-  ]
+  'html_content': '<span id="article-text">\n<span id="midArticle_start"></span>\n<div id="article-byline">\n<span class="author">By <a href="/journalists/ian-simpson">Ian Simpson</a></span>\n</div>\n<span id="midArticle_0"></span><span class="article-prime"><p><span class="articleLocatio&lt;/span&gt;n">Virginia\'s governor declined to block Thursday\'s\nscheduled execution of murderer William Morva, despite\ninternational pleas that he be spared because of mental illness\nand a report that questioned whether the execution drugs would\nwork as planned.</span></p></span><span id="midArticle_1"></span><p>Morva\'s death sentence, for killing an unarmed security\nguard and a sheriff\'s deputy in a 2006 escape from custody, has\ntriggered renewed debate about capital punishment for the\nmentally ill. Morva, 35, is scheduled to die by injection at 9\np.m. EDT (0100 GMT on Friday).</p><span id="midArticle_2"></span><p>Governor Terry McAuliffe said examinations by prison doctors\nsince Morva\'s 2008 conviction had shown no sign that he\nsuffered from severe mental illness or delusional disorder, an\nailment akin to schizophrenia, as his lawyers have argued.</p><span id="midArticle_3"></span><p>"The record before me does not contain sufficient evidence\nto warrant the extraordinary step of overturning the decision of\na lawfully impaneled jury following a properly conducted trial,"\nMcAuliffe, a Democrat, said in a statement.</p><span id="midArticle_4"></span>\n<span class="article-divide first-article-divide"></span><p>Lawyers for Morva said in a statement that McAuliffe turned\ndown an 11th-hour request for a temporary reprieve based on\nreporting about the lethal drugs by the Guardian newspaper.</p><span id="midArticle_5"></span><p>A review of the autopsy of Ricky Gray, a Virginia inmate\nexecuted in January, showed fluid in the lungs and blood on\nGray\'s lips, suggesting the drugs had not quickly stopped his\nheart as intended, the newspaper said. A McAuliffe spokesman did\nnot respond to a request for comment.</p><span id="midArticle_6"></span><p>More than 34,000 people, along with U.N. human rights\nexperts and the daughter of the slain deputy, had asked\nMcAuliffe to spare Morva\'s life.</p><span id="midArticle_7"></span>\n<span class="article-divide second-article-divide"></span><p>Morva holds dual U.S.-Hungarian citizenship, and the\nEuropean Union and the Hungarian Embassy in Washington had\ncalled on McAuliffe for clemency.</p><span id="midArticle_8"></span><p>Morva\'s deadly rampage took place after he was taken to a\nhospital while being held in the Montgomery County Jail on\nrobbery charges.</p><span id="midArticle_9"></span>\n<span class="article-divide third-article-divide"></span><p>At the hospital he stole a gun and shot the security guard.\nThe next day, Morva shot the deputy sheriff during a search for\nhim.</p><span id="midArticle_10"></span><p>The U.S. Supreme Court declined in February to hear Morva\'s\nappeal.</p><span id="midArticle_11"></span><p>Morva\'s execution will be the 13th in the United States this\nyear, and the 113th in Virginia since the Supreme Court allowed\nresumption of the death penalty in 1976, according to the Death\nPenalty Information Center.</p><span id="midArticle_12"></span><p>That number would place Virginia second among states on the\nU.S. executions list behind Texas, which has had 542.</p><span id="midArticle_13"></span></span>',
+  'article_section': 'U.S. Legal News',
+  'meta': {
+    'DCSext.rAuthor': 'Reuters Editorial',
+    'twitter:description': "Virginia's governor declined to block Thursday'sscheduled execution of murderer William Morva, despiteinternational pleas that he be spared because of mental illnessand a report that questioned whether the execution drugs wouldwork as planned.",
+    'og:article:modified_time': '2017-07-07T00:31:42+0000',
+    'og:title': "Virginia governor will not halt inmate's execution",
+    'WT.cg_s': 'Homepage',
+    'DCSext.contentversion': 'original',
+    'DCSext.DartZone': 'us.reuters/business/legal',
+    'REVISION_DATE': 'Fri Jul 07 00:31:42 UTC 2017',
+    'og:article:published_time': '2017-07-07T00:31:42+0000',
+    'DCSext.ContentChannel': 'USLegal',
+    'google-site-verification': 'SVDMcE-27ZUUuh-EcZzejAJ0YIFjxD9H_nwAX6YVTw4',
+    'og:description': "Virginia's governor declined to block Thursday'sscheduled execution of murderer William Morva, despiteinternational pleas that he be spared because of mental illnessand a report that questioned whether the execution drugs wouldwork as planned.",
+    'twitter:title': "Virginia governor will not halt inmate's execution",
+    'sailthru.author': 'Reuters Editorial',
+    'site edition': 'Reuters',
+    'DCSext.ContentHeadline': 'Virginia+governor+will+not+halt+inmate%27s+execution',
+    'msvalidate.01': '2055F771212E9574BFD5AF29D47FBA04',
+    'DCSext.PageTotal': '1',
+    'og:site_name': 'Reuters',
+    'og:article:author': 'Reuters Editorial',
+    'WT.z_inlinetype': 'false',
+    'DCSext.PageNumber': '1',
+    'og:locale': 'en_US',
+    'DCSext.rChannel': 'Homepage',
+    'news_keywords': 'United States;United States;Dawn Davison;Terry McAuliffe;William Morva;Ricky Gray;Terry McAuliffe;William Morva;VIRGINIA;EXECUTION/;Americas;United States',
+    'og:image': 'https://s4.reutersmedia.net/resources_v2/images/rcom-default.png',
+    'WT.cg_n': 'Homepage',
+    'og:type': 'article',
+    'article:publisher': 'https://www.facebook.com/Reuters',
+    'WT.z_navid': 'nav-Text-USLegal',
+    'DCSext.ChannelList': 'USLegal;Intel',
+    'Author': 'Reuters Editorial',
+    'twitter:card': 'summary',
+    'og:article:section': 'Homepage',
+    'sailthru.date': '2017-07-07T00:31:42+0000',
+    'DCSext.ContentType': 'Article',
+    'sailthru.title': "Virginia governor will not halt inmate's execution",
+    'twitter:creator': '@Reuters',
+    'robots': 'INDEX, FOLLOW',
+    'twitter:image': 'https://s4.reutersmedia.net/resources_v2/images/rcom-default.png',
+    'twitter:image:src': 'https://s4.reutersmedia.net/resources_v2/images/rcom-default.png',
+    'og:article:tag': 'United States,United States,Dawn Davison,Terry McAuliffe,William Morva,Ricky Gray,Terry McAuliffe,William Morva,VIRGINIA,EXECUTION/,Americas,United States',
+    'twitter:site': '@Reuters',
+    'keywords': 'United States,United States,Dawn Davison,Terry McAuliffe,William Morva,Ricky Gray,Terry McAuliffe,William Morva,VIRGINIA,EXECUTION/,Americas,United States',
+    'description': "Virginia's governor declined to block Thursday'sscheduled execution of murderer William Morva, despiteinternational pleas that he be spared because of mental illnessand a report that questioned whether the execution drugs wouldwork as planned.",
+    'og:url': 'http://www.reuters.com/article/virginia-execution-idUSL1N1JX1LW'
+  },
+  'section': 'business-legal',
+  '_id': 'reuters.article.virginia-execution-idUSL1N1JX1LW',
+  'title': "Virginia governor will not halt inmate's execution"
 }

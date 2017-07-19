@@ -158,9 +158,17 @@ class JisikManCrawler:
         requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
         requests.packages.urllib3.disable_warnings(UserWarning)
 
-        elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
+        try:
+            elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
+        except Exception:
+            print('error at connect elastic', flush=True)
+            return
 
-        if elastic.indices.exists(index) is False:
+        try:
+            if elastic.indices.exists(index) is False:
+                return
+        except Exception:
+            print('error at check index', flush=True)
             return
 
         bulk_data = [{
