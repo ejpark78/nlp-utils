@@ -272,9 +272,3 @@ done
 
 
 
-python3 NCPreProcess.py -clear_tag -host_name gollum -db_name summarization -collection regular_season_2014
-
-dgollum ps -a
-dgollum01 ps -a
-dgollum02 ps -a
-dgollum03 ps -a

@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import re
 import sys
+import pymongo
 
 from os import getcwd
 from time import time
@@ -129,17 +130,7 @@ class NCNlpUtil:
 
         paragraph = re.sub(r'\n+([?.!]}\)])', '\g<1>', paragraph, flags=re.MULTILINE)
 
-        # 인용구 복원
-        # paragraph = re.sub(r'"([^"]+?)\n+([^"]+?)\n+([^"]+"\s*(며|고|라고|이라는|라며|면서|라면서|이라면서))', '"\g<1>\g<2>\g<3>', paragraph, flags=re.MULTILINE)
-        # paragraph = re.sub(r'"([^"]+?)\n+([^"]+?"\s*(며|고|라고|이라는|라며|면서|라면서|이라면서))', '"\g<1>\g<2>', paragraph, flags=re.MULTILINE)
-        #
-        # paragraph = re.sub(r'((며|고|라고|이라는|라며|면서|라면서|이라면서)[^.?!]*)\n', '"\g<1>', paragraph, flags=re.MULTILINE)
-
-
-        # paragraph = re.sub(r'"([^"]+?)\n+([^"]+?)\n+([^"]+"\s*(며|고|라고|라며)[^"]*(말했다|덧붙였다|전했다|설명했다|주장했다))', '"\g<1>\g<2>\g<3>', paragraph, flags=re.MULTILINE)
-        # paragraph = re.sub(r'"([^"]+?)\n+([^"]+?"\s*(며|고|라고|라며)\s*[^"]*(말했다|덧붙였다|전했다|설명했다|주장했다))', '"\g<1>\g<2>', paragraph, flags=re.MULTILINE)
-
-        #
+        # 숫자 복원
         paragraph = re.sub(r'(/[0-9.]+/)', r'\g<1>\n', paragraph, flags=re.MULTILINE)
 
         paragraph = paragraph.strip()
@@ -573,116 +564,6 @@ class NCNlpUtil:
         return result
 
     @staticmethod
-    def clear_tag(paragraphs):
-        """
-        태깅된 정보 제거
-        """
-        local_data = []
-        for sentence_list in paragraphs:
-            para = []
-            for sentence in sentence_list:
-                para.append({'sentence': sentence['sentence']})
-
-            local_data.append(para)
-
-        return local_data
-
-    def get_search_keyword(self, paragraphs, chunks):
-        """
-        형태소 분석 결과를 입력 받아 검색 키워드 반환
-        """
-        n_gram = {}
-        for sentence_list in paragraphs:
-            for sentence in sentence_list:
-                self.get_keyword_from_sentence(sentence, n_gram)
-
-        for chunks_list in chunks:
-            for str_chunk in chunks_list:
-                self.get_keyword_from_chunk(str_chunk, n_gram)
-
-        return list(n_gram.keys())
-
-    @staticmethod
-    def get_keyword_from_chunk(chunks, result):
-        """
-        명사 청킹 정보에서 키워드 추출
-        """
-        def update_count(data, w):
-            """
-            dictionary 의 빈도를 증가
-            """
-            if w not in data:
-                data[w] = 0
-            data[w] += 1
-            return
-
-        from nltk import Tree
-
-        tree = Tree.fromstring(chunks)
-        for subtree in tree.subtrees():
-            if subtree.label() == 'NP':
-                update_count(result, ' '.join(subtree.leaves()))
-            elif subtree.label() == 'VP':
-                pass
-            else:
-                if subtree.label() in ['NNP', 'NNG']:
-                    update_count(result, ' '.join(subtree.leaves()))
-
-        return
-
-    @staticmethod
-    def get_keyword_from_sentence(sentence, result):
-        """
-        문장에서 키워드 추출
-
-        인용 단어 처리
-            이순철 출국, WBC 해외파 직접 '러브콜'
-            '조선의 4번 타자' 이대호(34·시애틀 매리너스)가 시즌 13호 홈런을 때렸다.
-
-        명사 청킹 정보 사용
-
-        """
-        if sentence.find('\'') > 0:
-            start_pos = sentence.find('\'')+1
-            end_pos = sentence.find('\'', start_pos)
-
-            word = sentence[start_pos:end_pos]
-            if word not in result:
-                result[word] = 0
-
-            result[word] += 1
-
-        return
-
-    @staticmethod
-    def get_predicate(paragraphs):
-        """
-        술어 추출
-
-        한편/NNG 이날/NNG 광주/NNP+에서/JKB 열리/VV+ㄹ/ETM 예정/NNG+이/VCP+었/EP+던/ETM
-            삼성/NNP+과/JKB KIA/SL+의/JKG 맞대결/NNG+은/JX 우천/NNG 취소/NNG+되/XSV+었/EP+다/EM+./SF
-        한편 이날 <NE L1="LOCATION" L2="CIT">광주</NE>에서 열릴 예정이었던
-            <NE L1="ORGANIZATION" L2="TEAM">삼성</NE>과 <NE L1="ORGANIZATION" L2="TEAM">KIA</NE>의 맞대결은 우천 취소됐다.
-
-            (광주/LOC, 열리/VV)
-            (삼성/ORG, 최소/NNG+되/XSV)
-
-        """
-        for sentences in paragraphs:
-            for one_sentence in sentences:
-                if 'pos_tagged' not in one_sentence:
-                    continue
-
-                if one_sentence['named_entity'].find('</NE>') < 0:
-                    continue
-
-                print(one_sentence['pos_tagged'], flush=True)
-                print(one_sentence['named_entity'], flush=True)
-                print('', flush=True)
-
-        return
-
-    @staticmethod
     def trans_form(pos_tagged):
         """
         형태소 분석 형식을 리스트 형식으로 변환
@@ -879,7 +760,11 @@ class NCNlpUtil:
             if isinstance(obj, datetime):
                 return obj.strftime("%Y-%m-%d %H:%M:%S")
 
+            if isinstance(obj, pymongo.database.Database):
+                return ''
+
             raise TypeError("Type not serializable")
+
 
         if isinstance(data, str) is True:
             print(data, flush=True)

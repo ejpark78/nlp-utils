@@ -8,10 +8,11 @@ from __future__ import print_function
 import re
 import os
 import sys
+import copy
 import json
-
 import random
 import requests
+import traceback
 
 from time import sleep
 
@@ -21,9 +22,14 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup, Comment
 
+from pymongo import errors
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 from NCNlpUtil import NCNlpUtil
-import sys
-import traceback
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(UserWarning)
 
 
 class NCCrawlerUtil:
@@ -149,7 +155,7 @@ class NCCrawlerUtil:
                 page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60) #
             else:
                 page_html = requests.post(curl_url, data=post_data, headers=self.headers, allow_redirects=True, timeout=60)
-        except Exception:
+        except Exception as err:
             return None
             # if max_try > 0:
             #     NCNlpUtil().print(
@@ -167,7 +173,7 @@ class NCCrawlerUtil:
         if json is True:
             try:
                 return page_html.json()
-            except Exception:
+            except Exception as err:
                 if page_html.content == b'':
                     return None
 
@@ -203,7 +209,7 @@ class NCCrawlerUtil:
                 return soup
 
             return BeautifulSoup(content, 'lxml')
-        except Exception:
+        except Exception as err:
             pass
 
         return None
@@ -217,7 +223,7 @@ class NCCrawlerUtil:
         for tag_info in target_tags:
             try:
                 self.get_target_value(soup, tag_info, article_list, url)
-            except Exception:
+            except Exception as err:
                 NCNlpUtil().print({'ERROR': 'get target value', 'url': url})
                 return None
 
@@ -239,7 +245,7 @@ class NCCrawlerUtil:
             try:
                 date = dateutil.parser.parse(date)
                 collection = date.strftime('%Y')
-            except Exception:
+            except Exception as err:
                 NCNlpUtil().print({'ERROR': 'convert date', 'date': date})
                 return None, collection
         elif isinstance(date, dict) is True:
@@ -254,7 +260,7 @@ class NCCrawlerUtil:
         몽고 디비 핸들 오픈
         """
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
-        db = connect[db_name]
+        db = connect.get_database(db_name)
 
         return connect, db
 
@@ -286,39 +292,36 @@ class NCCrawlerUtil:
 
         return '.'.join(document_id)
 
-    def send_kafka_message(self, document, db_name, collection, topic='crawler'):
+    def send_kafka_message(self, document, kafka_info, mongodb_info):
         """
         kafka 에 메세지 전송
         """
-        if collection == 'error':
-            return
+        if 'port' not in kafka_info:
+            kafka_info['port'] = 9092
 
         try:
             from kafka import KafkaProducer
 
-            producer = KafkaProducer(bootstrap_servers='master:9092', compression_type='gzip')
+            producer = KafkaProducer(
+                bootstrap_servers='{}:{}'.format(kafka_info['host'], kafka_info['port']), compression_type='gzip')
 
             # 크롤러 메타 정보 저장
-            document['crawler_meta'] = {
-                'db_name': db_name,
-                'collection': collection
-            }
+            document['crawler_meta'] = kafka_info
             if self.job_info is not None:
                 document['crawler_meta']['job_id'] = self.job_info['_id']
 
-                if 'domain' in self.job_info['parameter']:
-                    document['crawler_meta']['domain'] = self.job_info['parameter']['domain']
+            document['crawler_meta']['collection'] = mongodb_info['collection']
 
             message = json.dumps(document, ensure_ascii=False, default=NCNlpUtil().json_serial)
 
-            producer.send(topic, bytes(message, encoding='utf-8')).get(timeout=5)
+            producer.send(kafka_info['topic'], bytes(message, encoding='utf-8')).get(timeout=5)
             producer.flush()
-        except Exception:
-            NCNlpUtil().print('ERROR at kafka: {}, {}'.format(topic, sys.exc_info()[0]))
+        except Exception as err:
+            NCNlpUtil().print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
 
         return
 
-    def send_mqtt_message(self, document, db_name, collection):
+    def send_mqtt_message(self, document, mqtt_info):
         """
         mqtt 에 메세지 전송
         """
@@ -334,8 +337,8 @@ class NCCrawlerUtil:
         payload = {
             'host': self.hostname,
             'now': str_now,
-            'db_name': db_name,
-            'collection': collection,
+            'db_name': mqtt_info['name'],
+            'collection': mqtt_info['collection'],
             'title': document['_id'],
             'document_id': document['_id']
         }
@@ -362,23 +365,117 @@ class NCCrawlerUtil:
         # print('payload:', str_payload)
 
         try:
-            publish.single(topic='crawler', payload=str_payload, qos=2, hostname='gollum01', port=1883, client_id='')
-        except Exception:
+            if 'port' not in mqtt_info:
+                mqtt_info['port'] = 1883
+
+            publish.single(
+                topic=mqtt_info['topic'],
+                payload=str_payload, qos=2,
+                hostname=mqtt_info['host'], port=mqtt_info['port'],
+                client_id='')
+        except Exception as err:
             NCNlpUtil().print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
 
         return
 
-    def save_article(self, document, result_db, db_name, collection, upsert=False):
+    @staticmethod
+    def create_elastic_index(elastic, index_name=None):
         """
-        문서 저장
+        인덱스 생성
         """
-        from pymongo import errors
+        if elastic is None:
+            return
 
+        elastic.indices.create(
+            index=index_name,
+            body={
+                'settings': {
+                    'number_of_shards': 1,
+                    'number_of_replicas': 0
+                }
+            }
+        )
+
+        return
+
+    def insert_elastic(self, document, elastic_info, mongodb_info):
+        """
+        elastic search에 저장
+        """
+        from elasticsearch import Elasticsearch
+
+        # 타입 추출, 몽고 디비 collection 이름 우선
+        if 'type' in elastic_info and elastic_info['type'] is not None:
+            index_type = elastic_info['type']
+
+        if 'collection' in mongodb_info:
+            index_type = mongodb_info['collection']
+
+        # 날짜 변환
+        if 'date' in document and isinstance(document['date'], datetime):
+            document['date'] = document['date'].strftime('%Y-%m-%dT%H:%M:%S')
+
+        # 입력시간 삽입
+        document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+
+        try:
+            if 'auth' in elastic_info and elastic_info['auth'] is not None:
+                elastic = Elasticsearch(
+                    [elastic_info['host']],
+                    http_auth=elastic_info['auth'],
+                    use_ssl=True,
+                    verify_certs=False,
+                    port=9200)
+            else:
+                elastic = Elasticsearch(
+                    [elastic_info['host']],
+                    use_ssl=True,
+                    verify_certs=False,
+                    port=9200)
+
+            if elastic.indices.exists(elastic_info['index']) is False:
+                self.create_elastic_index(elastic, elastic_info['index'])
+
+            document['document_id'] = document['_id']
+            del document['_id']
+
+            bulk_data = []
+            bulk_data.append({
+                'update': {
+                    '_index': elastic_info['index'],
+                    '_type': index_type,
+                    '_id': document['document_id']
+                }
+            })
+
+            bulk_data.append({
+                'doc': document,
+                'doc_as_upsert': True
+            })
+
+            elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
+        except Exception as err:
+            traceback.print_exc(file=sys.stderr)
+
+            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+
+        return
+
+    def save_mongodb(self, document, mongodb_info):
+        """
+        몽고 디비에 문서 저장
+        """
         if document is None:
             return False
 
         if '_id' not in document:
             document['_id'] = self.get_document_id(document['url'])
+
+        if 'port' not in mongodb_info:
+            mongodb_info['port'] = 27017
+
+        if 'collection' not in mongodb_info:
+            mongodb_info['collection'] = None
 
         meta = {}
         if 'meta' in document:
@@ -391,48 +488,154 @@ class NCCrawlerUtil:
 
             document['meta'] = meta
 
+        # 디비 연결
+        connect, mongodb = self.open_db(
+            host=mongodb_info['host'],
+            db_name=mongodb_info['name'],
+            port=mongodb_info['port'])
+
         # 몽고 디비에 문서 저장
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
-            if upsert is True:
-                result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
+            collection = mongodb.get_collection(mongodb_info['collection'])
+
+            if mongodb_info['upsert'] is True:
+                collection.replace_one({'_id': document['_id']}, document, upsert=True)
             else:
                 # del document['meta']
-                result_db[collection].insert_one(document)
+                collection.insert_one(document)
         except errors.DuplicateKeyError:
-            print('DuplicateKeyError: {}, {}'.format(collection, document['_id']), file=sys.stderr, flush=True)
-        except Exception:
+            print('DuplicateKeyError: {}, {}'.format(
+                mongodb_info['collection'], document['_id']), file=sys.stderr, flush=True)
+        except Exception as err:
             traceback.print_exc(file=sys.stderr)
 
             NCNlpUtil().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
+                collection = mongodb.get_collection('error')
+
                 if '_id' in document:
-                    result_db['error'].replace_one({'_id': document['_id']}, document, upsert=True)
+                    collection.replace_one({'_id': document['_id']}, document, upsert=True)
                 else:
-                    result_db['error'].insert_one(document)
-            except Exception:
+                    collection.insert_one(document)
+            except Exception as err:
                 pass
 
             return False
 
-        msg = []
+        # 연결 종료
+        connect.close()
+
+        # 섹션 정보 저장
+        if 'section' in document:
+            self.save_section_info(
+                document=document, mongodb_info=mongodb_info,
+                collection_name='section_{}'.format(mongodb_info['collection']))
+
+        # 현재 상황 출력
+        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        msg = [mongodb_info['host'], mongodb_info['name'], mongodb_info['collection']]
         for key in ['_id', 'date', 'section', 'title', 'url']:
             if key in document and isinstance(document[key], str):
                 msg.append(document[key])
 
         if len(msg) > 0:
-            NCNlpUtil().print('{}\t{}\t{}'.format(str_now, collection, '\t'.join(msg)))
+            NCNlpUtil().print('{}\t{}'.format(str_now, '\t'.join(msg)))
+
+        return
+
+    def save_logs(self, document, elastic_info, mongodb_info):
+        """
+        엘라스틱서치에 로그 저장
+        """
+        from elasticsearch import Elasticsearch
+
+        # 타입 추출, 몽고 디비 collection 이름 우선
+        index_type = mongodb_info['name']
+        if 'type' in elastic_info and elastic_info['type'] is not None:
+            index_type = elastic_info['type']
+
+        # 날짜 변환
+        if 'date' in document and isinstance(document['date'], datetime):
+            document['date'] = document['date'].strftime('%Y-%m-%dT%H:%M:%S')
         else:
-            NCNlpUtil().print('{}\t{}\t{}'.format(str_now, collection, document['_id']))
+            return
 
-        self.send_mqtt_message(document, db_name, collection)
-        self.send_kafka_message(document, db_name, collection)
+        payload = {
+            'host': self.hostname,
+            'insert_date': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
+            'mongo': {
+                'host': mongodb_info['host'],
+                'name': mongodb_info['name'],
+                'collection': mongodb_info['collection']
+            },
+            'title': document['_id'],
+            'date': document['date'],
+            'document_id': document['_id']
+        }
 
-        # 섹션 정보 저장
-        if 'section' in document:
-            self.save_section_info(document=document, result_db=result_db,
-                                   collection='section_{}'.format(collection))
+        try:
+            if 'auth' in elastic_info and elastic_info['auth'] is not None:
+                elastic = Elasticsearch(
+                    [elastic_info['host']],
+                    http_auth=elastic_info['auth'],
+                    use_ssl=True,
+                    verify_certs=False,
+                    port=9200)
+            else:
+                elastic = Elasticsearch(
+                    [elastic_info['host']],
+                    use_ssl=True,
+                    verify_certs=False,
+                    port=9200)
+
+            if elastic.indices.exists(elastic_info['index']) is False:
+                self.create_elastic_index(elastic, elastic_info['index'])
+
+            bulk_data = []
+            bulk_data.append({
+                'update': {
+                    '_index': elastic_info['index'],
+                    '_type': index_type,
+                    '_id': payload['document_id']
+                }
+            })
+
+            bulk_data.append({
+                'doc': payload,
+                'doc_as_upsert': True
+            })
+
+            elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
+        except Exception as err:
+            traceback.print_exc(file=sys.stderr)
+
+            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+
+        return
+
+    def save_article(self, document, db_info):
+        """
+        문서 저장
+        """
+        if 'mongo'in db_info and 'host' in db_info['mongo']:
+            self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
+
+        if 'mqtt'in db_info and 'host' in db_info['mqtt']:
+            self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
+
+        if 'kafka'in db_info and 'host' in db_info['kafka']:
+            self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
+
+        # 엘라스틱 서치에 저장
+        if 'elastic'in db_info and 'host' in db_info['elastic']:
+            self.insert_elastic(
+                document=copy.deepcopy(document), elastic_info=db_info['elastic'], mongodb_info=db_info['mongo'])
+
+        if 'logs'in db_info and 'host' in db_info['logs']:
+            self.save_logs(
+                document=copy.deepcopy(document), elastic_info=db_info['logs'], mongodb_info=db_info['mongo'])
 
         return True
 
@@ -472,7 +675,7 @@ class NCCrawlerUtil:
         if '_id' in parsing_url:
             try:
                 document['_id'] = parsing_url['_id'].format(**query)
-            except:
+            except Exception as err:
                 document['_id'] = self.get_document_id(url_info['full'])
         else:
             document['_id'] = self.get_document_id(url_info['full'])
@@ -507,8 +710,7 @@ class NCCrawlerUtil:
 
         return result
 
-    @staticmethod
-    def save_section_info(document, result_db, collection, upsert=False):
+    def save_section_info(self, document, mongodb_info, collection_name):
         """
         문서 저장
         """
@@ -516,6 +718,12 @@ class NCCrawlerUtil:
             return False
 
         from pymongo import errors
+
+        # 디비 연결
+        connect, mongodb = self.open_db(
+            host=mongodb_info['host'],
+            db_name=mongodb_info['name'],
+            port=mongodb_info['port'])
 
         section_info = {
             '_id': '{}-{}'.format(document['_id'], document['section'])
@@ -527,43 +735,40 @@ class NCCrawlerUtil:
 
         # 몽고 디비에 문서 저장
         try:
-            if upsert is True:
-                result_db[collection].replace_one({'_id': section_info['_id']}, section_info, upsert=True)
+            collection = mongodb.get_collection(collection_name)
+            if mongodb_info['upsert'] is True:
+                collection.replace_one({'_id': section_info['_id']}, section_info, upsert=True)
             else:
-                result_db[collection].insert_one(section_info)
+                collection.insert_one(section_info)
         except errors.DuplicateKeyError:
             pass
-            # prev_id = section_info['_id']
-            #
-            # next_id = self.get_next_id(result_db[collection], 'section_id', section_info['_id'])
-            # section_info['_id'] = '{}-{}'.format(section_info['_id'], next_id)
-            #
-            # print('DuplicateKeyError use other id: {}, {}, {}'.format(collection, prev_id, section_info['_id']),
-            #       file=sys.stderr, flush=True)
-            # result_db[collection].insert_one(section_info)
-        except Exception:
+
+        except Exception as err:
             NCNlpUtil().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
+                collection = mongodb.get_collection('error_{}'.format(collection_name))
+
                 if '_id' in section_info:
-                    result_db['error_{}'.format(collection)].replace_one({'_id': section_info['_id']}, section_info, upsert=True)
+                    collection.replace_one({'_id': section_info['_id']}, section_info, upsert=True)
                 else:
-                    result_db['error_{}'.format(collection)].insert_one(section_info)
-            except Exception:
+                    collection.insert_one(section_info)
+            except Exception as err:
                 pass
 
             return False
 
-        msg = []
+        # 디비 연결 해제
+        connect.close()
+
+        msg = [collection_name]
         for key in ['date', 'section', 'title', 'url']:
             if key in document and isinstance(document[key], str):
                 msg.append(document[key])
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if len(msg) > 0:
-            NCNlpUtil().print('{}\t{}\t{}'.format(str_now, collection, '\t'.join(msg)))
-        else:
-            NCNlpUtil().print('{}\t{}\t{}'.format(str_now, collection, document['_id']))
+            NCNlpUtil().print('{}\t{}'.format(str_now, '\t'.join(msg)))
 
         return True
 
@@ -680,8 +885,8 @@ class NCCrawlerUtil:
             scheduler_db_info['scheduler_db_host'],
             scheduler_db_info['scheduler_db_port'])
 
-        collection_name = scheduler_db_info['scheduler_db_collection']
-        db[collection_name].replace_one({'_id': job_info['_id']}, job_info)
+        collection = db.get_collection(scheduler_db_info['scheduler_db_collection'])
+        collection.replace_one({'_id': job_info['_id']}, job_info)
 
         connect.close()
         return

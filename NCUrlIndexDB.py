@@ -9,6 +9,8 @@ import os
 import sys
 import sqlite3
 
+from time import time
+
 
 class NCUrlIndexDB:
     """
@@ -113,23 +115,59 @@ class NCUrlIndexDB:
         self.conn.commit()
         return
 
-    def update_url_list(self, db, collection_name):
+    def update_url_list(self, mongodb_info):
         """
         캐쉬 디비에 있는 url 목록을 버클리 디비에 저장
         """
         if self.cursor is None:
             return
 
-        # cursor = db[collection_name].find({}, {'url': 1, '_id': 0}, no_cursor_timeout=True)
-        cursor = db[collection_name].find({}, {'url': 1, '_id': 0})[:]
+        start_time = time()
 
+        from NCCrawlerUtil import NCCrawlerUtil
+
+        if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
+            print('ERROR at update_url_list: not collection in db info', flush=True)
+            return
+
+        # 숫자일 경우 문자로 변경
+        if isinstance(mongodb_info['collection'], int) is True:
+            mongodb_info['collection'] = str(mongodb_info['collection'])
+
+        if 'port' not in mongodb_info:
+            mongodb_info['port'] = 27017
+
+        # 디비 연결
+        connect, mongodb = NCCrawlerUtil().open_db(
+            host=mongodb_info['host'],
+            db_name=mongodb_info['name'],
+            port=mongodb_info['port'])
+
+        collection = mongodb.get_collection(mongodb_info['collection'])
+        cursor = collection.find({}, {'url': 1, '_id': 0})[:]
+
+        count = 0
         for document in cursor:
             if 'url' in document:
                 self.save_url(document['url'])
 
+            if count % 2000 == 0:
+                print('.', end='', flush=True)
+
+            if count % 20000 == 0:
+                print('({:,})'.format(count), end='', flush=True)
+                self.conn.commit()
+
+            count += 1
+
         self.conn.commit()
 
         cursor.close()
+
+        connect.close()
+
+        print('\ntook: {:,} {:0.4f} sec'.format(count, time() - start_time), flush=True)
+
         return
 
 # end of NCUrlIndexDB

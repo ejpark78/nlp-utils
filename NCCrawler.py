@@ -33,10 +33,11 @@ class NCCrawler:
 
         self.url_index_db = None
 
-        self.result_db = None
-        self.collection_name = None
+        self.db_info = None
+        # self.result_db = None
+        # self.collection_name = None
 
-        self.skip_url_count = 0
+        self.duplicated_url_count = 0
 
         self.page_url_cache = []
 
@@ -46,7 +47,7 @@ class NCCrawler:
         """
         컬랙션 이름
         """
-        collection = self.collection_name
+        collection = self.db_info['mongo']['collection']
 
         # date 컬럼을 날짜 형식으로 변환
         if 'date' in article and article['date'] is not None:
@@ -84,29 +85,26 @@ class NCCrawler:
         # url 을 단순한 형태로 변환 및 _id 설정
         self.crawler_util.make_simple_url(article, self.parsing_info)
 
-        upsert = False
-        if 'replace' in self.parameter:
-            upsert = self.parameter['replace']
-
         # 다운로드 받은 URL이 있는지 검사
         url = self.crawler_util.get_url(article['url'])
-        if upsert is False and self.url_index_db is not None \
-                and self.url_index_db.check_url(url) is True:
-            self.skip_url_count += 1
-            NCNlpUtil().print('{}\tskip url exists {:,}: {}'.format(str_now, self.skip_url_count, url))
+        if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
+            self.duplicated_url_count += 1
+            NCNlpUtil().print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
 
-            # const value 삽입
-            if 'const_value' in self.parameter:
-                article.update(self.parameter['const_value'])
+            if self.db_info['mongo']['upsert'] is False:
+                # const value 삽입
+                if 'const_value' in self.parameter:
+                    article.update(self.parameter['const_value'])
 
-            # 섹션 정보 저장
-            if 'section' in article:
-                collection = self.get_collection_name(article, response_type)
+                # 섹션 정보 저장
+                if 'section' in article:
+                    collection = self.get_collection_name(article, response_type)
 
-                self.crawler_util.save_section_info(
-                    document=article, result_db=self.result_db, collection='section_{}'.format(collection))
+                    self.crawler_util.save_section_info(
+                        document=article, mongodb_info=self.db_info['mongo'],
+                        collection_name='section_{}'.format(collection))
 
-            return True
+                return True
 
         # 인코딩 명시
         encoding = None
@@ -123,8 +121,8 @@ class NCCrawler:
         if response_type == 'json':
             json_type = True
 
-        if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
-            json_type = True
+        # if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
+        #     json_type = True
 
         soup = self.crawler_util.curl_html(
             article['url'], encoding=encoding, json=json_type,
@@ -170,9 +168,11 @@ class NCCrawler:
                 NCNlpUtil().print({'ERROR': 'missing column', 'article': article})
 
         # 기사 본문 저장
-        result = self.crawler_util.save_article(
-            document=article, result_db=self.result_db,
-            db_name=self.parameter['result_db_name'], collection=collection, upsert=upsert)
+        # result = self.crawler_util.save_article(
+        #     document=article, result_db=self.result_db,
+        #     db_name=self.parameter['result_db_name'],
+        #     collection=collection, upsert=upsert)
+        result = self.crawler_util.save_article(document=article, db_info=self.db_info)
 
         # 다운로드 받은 URL을 인덱스 디비에 저장
         if result is True and self.url_index_db is not None:
@@ -211,7 +211,7 @@ class NCCrawler:
 
             # 저장
             self.crawler_util.save_section_info(
-                document=subject, result_db=self.result_db, collection=collection)
+                document=subject, mongodb_info=self.db_info['mongo'], collection_name=collection)
 
             url_info = subject['url']
 
@@ -367,9 +367,10 @@ class NCCrawler:
                     self.curl_all_pages_json(page_url, page=page)
             else:
                 # 기사 본문 저장
-                self.crawler_util.save_article(
-                    document=section_info, result_db=self.result_db,
-                    db_name=self.parameter['result_db_name'], collection=self.collection_name)
+                # self.crawler_util.save_article(
+                #     document=section_info, result_db=self.result_db,
+                #     db_name=self.parameter['result_db_name'], collection=self.collection_name)
+                self.crawler_util.save_article(document=section_info, db_info=self.db_info)
 
         if isinstance(section_info, list) is True:
             self.curl_json_article_list(page_url, section_info, json_key_mapping)
@@ -550,7 +551,6 @@ class NCCrawler:
 
         return start_date, end_date, original_start_date, date_step
 
-    @property
     def curl_by_date(self):
         """
         날짜 기준으로 크롤링
@@ -562,6 +562,13 @@ class NCCrawler:
         # 기간 내의 기사 크롤링
         date = start_date
         while date <= end_date:
+            # 오늘 날짜가 아닌 경우 초기화
+            if date.strftime('%Y-%m-%d') != datetime.today().strftime('%Y-%m-%d'):
+                self.duplicated_url_count = 0
+
+            if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                break
+
             # 오늘 날짜 확인, date 가 오늘보다 크면 종료
             if date > datetime.today():
                 break
@@ -642,9 +649,9 @@ class NCCrawler:
         """
         컬렉션 이름이 변경되었을 경우, 인덱스를 업데이트 한다.
         """
-        if self.collection_name is None or self.collection_name != new_collection_name:
+        if self.db_info['mongo'] is None or self.db_info['mongo']['collection'] != new_collection_name:
             print('make new collection index', flush=True)
-            self.collection_name = new_collection_name
+            self.db_info['mongo']['collection'] = new_collection_name
 
             # 만약 collection 이 변경되었다면, 인덱스 재성성
             self.make_url_index_db()
@@ -702,6 +709,9 @@ class NCCrawler:
                 step = int(self.parameter['step'])
 
             for i in range(start, end, step):
+                if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                    break
+
                 url_list = self.parameter['url_frame']
                 if isinstance(url_list, str) is True:
                     url_list = [{'url': url_list}]
@@ -723,8 +733,8 @@ class NCCrawler:
                     self.crawler_util.update_state_by_id(
                         state='running', url=page_url, query_key_mapping=query_key_mapping,
                         job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
-        # elif 'article_page' in self.parsing_info:
         else:
+            # elif 'article_page' in self.parsing_info:
             # 페이지 목록이 없을 경우 본문만 저장
             start = int(start)
 
@@ -733,6 +743,9 @@ class NCCrawler:
                 end = int(self.parameter['end']) + 1
 
             for i in range(start, end):
+                if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                    break
+
                 url_list = self.parameter['url_frame']
                 if isinstance(url_list, str) is True:
                     url_list = [{'url': url_list}]
@@ -764,12 +777,12 @@ class NCCrawler:
         """
         크롤링 완료된 url 목록을 인덱스 디비로 생성
         """
-        NCNlpUtil().print({'update index db': self.parameter, 'collection': self.collection_name})
+        NCNlpUtil().print({'update index db': self.parameter})
 
         self.url_index_db = NCUrlIndexDB()
         self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
 
-        self.url_index_db.update_url_list(self.result_db, self.collection_name)
+        self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
 
         return
 
@@ -777,7 +790,7 @@ class NCCrawler:
         """
         변수 및 환경 설정 초기화
         """
-        self.skip_url_count = 0
+        self.duplicated_url_count = 0
 
         self.job_info = job_info
         self.scheduler_db_info = scheduler_db_info
@@ -794,19 +807,7 @@ class NCCrawler:
             self.parameter['min_delay'] = 3
 
         # 디비 연결
-        connect, self.result_db = self.crawler_util.open_db(
-            db_name=self.parameter['result_db_name'],
-            host=self.parameter['result_db_host'],
-            port=self.parameter['result_db_port'])
-
-        # 저장할 디비 컬렉션 이름이 있을 경우
-        if 'result_db_collection' in self.parameter:
-            self.collection_name = str(self.parameter['result_db_collection'])
-
-            # URL 인덱스 디비 생성
-            self.make_url_index_db()
-        else:
-            self.collection_name = None
+        self.db_info = self.parameter['db_info']
 
         # 섹션/파싱 정보 가져오기
         if self.parsing_info is None:
@@ -820,29 +821,22 @@ class NCCrawler:
             'parsing_info': self.parsing_info
         })
 
-        # 파싱 정보가 없으면 종료
-        if self.parsing_info is None:
-            connect.close()
-            return None
+        # 인덱스 디비 생성
+        self.make_url_index_db()
 
-        return connect
+        return
 
     def run(self, scheduler_db_info, job_info):
         """
         NCCrawler 실행
         """
-        connect = self._init_variable(scheduler_db_info, job_info)
-        if connect is None:
-            return
+        self._init_variable(scheduler_db_info, job_info)
 
         # 크롤링 방식에 따른 실행: 날짜 기준 크롤링 or 기사 고유 아이디 기준 크롤링
         if 'start_date' in self.parameter or 'start_month' in self.parameter:
-            self.curl_by_date
+            self.curl_by_date()
         else:
             self.curl_by_page_id()
-
-        if connect is not None:
-            connect.close()
 
         return
 
@@ -850,9 +844,7 @@ class NCCrawler:
         """
         디버깅, 하나의 URL을 입력 받아 실행
         """
-        connect = self._init_variable(scheduler_db_info, job_info)
-        if connect is None:
-            return
+        self._init_variable(scheduler_db_info, job_info)
 
         if args.article_list is True:
             self.curl_all_pages(args.url)
@@ -861,89 +853,86 @@ class NCCrawler:
             article = {'url': args.url}
             self.curl_article(article=article)
 
-        if connect is not None:
-            connect.close()
-
         return
 
     def parse_error(self, scheduler_db_info, job_info, args):
         """
         에러 테이블에 있는 raw_html 을 다시 파싱
         """
-        from bs4 import BeautifulSoup
-        from pymongo import errors
-
-        self._init_variable(scheduler_db_info, job_info)
-
-        connect, self.result_db = self.crawler_util.open_db(
-            db_name=self.parameter['result_db_name'],
-            host=self.parameter['result_db_host'],
-            port=self.parameter['result_db_port'])
-
-        if 'article_page' in self.parsing_info:
-            target_tags = self.parsing_info['article_page']
-
-        cursor = self.result_db[args.db_collection].find({})
-
-        cursor = cursor[:]
-        for document in cursor:
-            if 'raw_html' not in document:
-                print('ERROR no raw_html value', document['_id'])
-
-                if 'url' in document:
-                    self.curl_article(document)
-                    pass
-
-                continue
-
-            soup = BeautifulSoup(document['raw_html'], 'lxml')
-
-            # 저장할 테그 추출
-            article_list = []
-
-            # html에서 정보 추출
-            document = self.crawler_util.parse_html(document, soup, target_tags, article_list)
-
-            if 'html_content' not in document or 'date' not in document or 'title' not in document:
-                print('ERROR', document['_id'])
-                continue
-
-            del document['raw_html']
-
-            collection = document['date'].strftime('%Y')
-
-            try:
-                print(
-                    self.parameter['result_db_host'],
-                    self.parameter['result_db_name'],
-                    args.db_collection,
-                    '->',
-                    self.parameter['result_db_host'],
-                    self.parameter['result_db_name'],
-                    collection,
-                    ' : ',
-                    document['_id']
-                )
-
-                # self.result_db[collection].insert_one(document)
-                self.result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
-                self.result_db[args.db_collection].remove({'_id': document['_id']})
-            except errors.DuplicateKeyError:
-                print(
-                    'remove',
-                    self.parameter['result_db_host'],
-                    self.parameter['result_db_name'],
-                    args.db_collection,
-                    document['_id']
-                )
-                self.result_db[args.db_collection].remove({'_id': document['_id']})
-            except Exception:
-                print('ERROR', self.parameter['result_db_host'], self.parameter['result_db_name'])
-
-        cursor.close()
-
-        if connect is not None:
-            connect.close()
+        # from bs4 import BeautifulSoup
+        # from pymongo import errors
+        #
+        # self._init_variable(scheduler_db_info, job_info)
+        #
+        # connect, self.result_db = self.crawler_util.open_db(
+        #     db_name=self.parameter['result_db_name'],
+        #     host=self.parameter['result_db_host'],
+        #     port=self.parameter['result_db_port'])
+        #
+        # if 'article_page' in self.parsing_info:
+        #     target_tags = self.parsing_info['article_page']
+        #
+        # cursor = self.result_db[args.db_collection].find({})
+        #
+        # cursor = cursor[:]
+        # for document in cursor:
+        #     if 'raw_html' not in document:
+        #         print('ERROR no raw_html value', document['_id'])
+        #
+        #         if 'url' in document:
+        #             self.curl_article(document)
+        #             pass
+        #
+        #         continue
+        #
+        #     soup = BeautifulSoup(document['raw_html'], 'lxml')
+        #
+        #     # 저장할 테그 추출
+        #     article_list = []
+        #
+        #     # html에서 정보 추출
+        #     document = self.crawler_util.parse_html(document, soup, target_tags, article_list)
+        #
+        #     if 'html_content' not in document or 'date' not in document or 'title' not in document:
+        #         print('ERROR', document['_id'])
+        #         continue
+        #
+        #     del document['raw_html']
+        #
+        #     collection = document['date'].strftime('%Y')
+        #
+        #     try:
+        #         print(
+        #             self.parameter['result_db_host'],
+        #             self.parameter['result_db_name'],
+        #             args.db_collection,
+        #             '->',
+        #             self.parameter['result_db_host'],
+        #             self.parameter['result_db_name'],
+        #             collection,
+        #             ' : ',
+        #             document['_id']
+        #         )
+        #
+        #         # self.result_db[collection].insert_one(document)
+        #         self.result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
+        #         self.result_db[args.db_collection].remove({'_id': document['_id']})
+        #     except errors.DuplicateKeyError:
+        #         print(
+        #             'remove',
+        #             self.parameter['result_db_host'],
+        #             self.parameter['result_db_name'],
+        #             args.db_collection,
+        #             document['_id']
+        #         )
+        #         self.result_db[args.db_collection].remove({'_id': document['_id']})
+        #     except Exception:
+        #         print('ERROR', self.parameter['result_db_host'], self.parameter['result_db_name'])
+        #
+        # cursor.close()
+        #
+        # if connect is not None:
+        #     connect.close()
 
         return
 

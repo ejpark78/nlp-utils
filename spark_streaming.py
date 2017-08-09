@@ -10,6 +10,11 @@ from pyspark import SparkContext, SparkConf, storagelevel
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(UserWarning)
+
 
 def create_elastic_index(elastic, index_name=None):
     """
@@ -31,7 +36,7 @@ def create_elastic_index(elastic, index_name=None):
     return
 
 
-def save_elastic(document, host, index, type, auth=False):
+def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
     """
     elastic search에 저장
     """
@@ -80,10 +85,7 @@ def save_elastic(document, host, index, type, auth=False):
             'doc_as_upsert': True
         })
 
-        if ssl is True:
-            pass
-        else:
-            elastic.bulk(index=index, body=bulk_data, refresh=True)
+        elastic.bulk(index=index, body=bulk_data, refresh=True)
 
     except Exception:
         print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
@@ -141,7 +143,7 @@ def map_function(x):
     # 크롤러 메타 정보 제거
     if 'crawler_meta' in document:
         domain = document['crawler_meta']['domain']
-        db_name = document['crawler_meta']['db_name']
+        db_name = document['crawler_meta']['name']
         collection = document['crawler_meta']['collection']
 
         del document['crawler_meta']
@@ -174,8 +176,8 @@ def map_function(x):
                 result['date'] = dateutil.parser.parse(result['date'])
 
             save_mongodb(result.copy(), host=host, db_name=db_name, collection=collection, port=port)
-            save_elastic(result.copy(), host='gollum', index=db_name, type=collection)
-            save_elastic(result.copy(), host='yoma07', index=db_name, type=collection, auth=True)
+            save_elastic(result.copy(), host='gollum', index=db_name, type=collection, auth=None)
+            save_elastic(result.copy(), host='yoma07', index=db_name, type=collection, auth=('elastic', 'nlplab'))
     except Exception:
         return 'ERROR at save: {}'.format(sys.exc_info()[0])
 
