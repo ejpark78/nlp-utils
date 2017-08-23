@@ -109,10 +109,9 @@ class NCUrlIndexDB:
         sql = 'INSERT INTO url_list (url) VALUES (?)'
         try:
             self.cursor.execute(sql, (url, ))
-        except Exception:
+        except Exception as err:
             print('ERROR at save_url: {} {}'.format(url, sys.exc_info()[0]), flush=True)
 
-        self.conn.commit()
         return
 
     def update_url_list(self, mongodb_info):
@@ -127,7 +126,7 @@ class NCUrlIndexDB:
         from NCCrawlerUtil import NCCrawlerUtil
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
-            print('ERROR at update_url_list: not collection in db info', flush=True)
+            print('ERROR at update_url_list: no collection in db info', flush=True)
             return
 
         # 숫자일 경우 문자로 변경
@@ -139,9 +138,7 @@ class NCUrlIndexDB:
 
         # 디비 연결
         connect, mongodb = NCCrawlerUtil().open_db(
-            host=mongodb_info['host'],
-            db_name=mongodb_info['name'],
-            port=mongodb_info['port'])
+            host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
 
         collection = mongodb.get_collection(mongodb_info['collection'])
         cursor = collection.find({}, {'url': 1, '_id': 0})[:]
@@ -151,6 +148,8 @@ class NCUrlIndexDB:
             if 'url' in document:
                 self.save_url(document['url'])
 
+            count += 1
+
             if count % 2000 == 0:
                 print('.', end='', flush=True)
 
@@ -158,13 +157,10 @@ class NCUrlIndexDB:
                 print('({:,})'.format(count), end='', flush=True)
                 self.conn.commit()
 
-            count += 1
+        cursor.close()
+        connect.close()
 
         self.conn.commit()
-
-        cursor.close()
-
-        connect.close()
 
         print('\ntook: {:,} {:0.4f} sec'.format(count, time() - start_time), flush=True)
 

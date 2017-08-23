@@ -14,7 +14,7 @@ for year in {1997..2004} ; do
     input="${workdir}/${year}.json.bz2"
     output="${workdir}/${year}.simple_id.json.bz2"
     mapper="src/UpdateSectionInfo.py"
-    time ./scripts/hadoop/streaming.sh ${max_map} ${input} ${output} "${mapper}" "${reducer}"
+    time ./sbin/hadoop/streaming.sh ${max_map} ${input} ${output} "${mapper}" "${reducer}"
 done
 
 #real	129m40.321s

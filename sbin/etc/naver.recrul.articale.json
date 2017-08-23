@@ -1,0 +1,792 @@
+{
+    "_id": "crawler_naver_economy_update_article_2016_01",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-01",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-01",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_02",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-02",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-02",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_03",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-03",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-03",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_04",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-04",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-04",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_05",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-05",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-05",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_06",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-06",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-06",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_07",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-07",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-07",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_08",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-08",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-08",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_09",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-09",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-09",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_10",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-10",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-10",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_11",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-11",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-11",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2016_12",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2016",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2016-12",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2016-12",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_01",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017, "collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-01",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-01",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_02",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-02",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-02",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_03",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-03",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-03",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_04",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-04",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-04",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_05",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-05",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-05",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_06",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-06",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-06",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_07",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-07",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-07",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_08",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-08",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-08",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_09",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-09",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-09",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_10",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-10",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-10",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_11",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-11",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-11",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}
+{
+    "_id": "crawler_naver_economy_update_article_2015_12",
+    "docker": {
+        "command": "python3 NCDockerClusterScheduler.py",
+        "image": "crawler:dev",
+        "network": "gollum-net",
+        "volume": "/home/ejpark/workspace/crawler:/crawler:ro",
+        "working_dir": "/crawler"
+    },
+    "group": "naver_crawler",
+    "parameter": {
+        "curl_date": "2017-08-01",
+        "db_info": {
+            "mongo": {
+                "host": "gollum01",
+                "name": "naver_economy",
+                "port": 27017,"collection": "2015",
+                "upsert": true
+            }
+        },
+        "delay": 6,
+        "document_id": "{_id}",
+        "end_date": "2015-12",
+        "max_skip": -1,
+        "min_delay": 3,
+        "parsing_info": "naver.news",
+        "start_date": "2015-12",
+        "update_article": true
+    },
+    "state": {
+        "state": "running"
+    }
+}

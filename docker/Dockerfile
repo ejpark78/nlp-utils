@@ -9,20 +9,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 
-# 설치시 사용할 경로 설정
-WORKDIR $HOME
-
-
-# apt 저장소 변경
+# 1. apt 저장소 변경
 RUN rm -rf /var/lib/apt/lists/* \
 	&& { \
 		echo "deb http://ftp.daumkakao.com/debian stretch main contrib non-free"; \
 		echo "deb http://ftp.daumkakao.com/debian stretch-updates main contrib non-free"; \
-        echo "deb http://security.debian.org stretch/updates main contrib non-free"; \
 	} > /etc/apt/sources.list
 
 
-# 로케일 & 파이썬 설치
+# 2. 로케일 & 파이썬 설치
 RUN apt-get update -yq \
     && apt-get install -yq --no-install-recommends \
         locales \
@@ -52,6 +47,7 @@ RUN apt-get update -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
+# 3. 파이썬 라이브러리 설치
 RUN pip3 install --upgrade pip setuptools
 RUN pip3 install --upgrade \
         # 웹 크롤링
@@ -67,21 +63,17 @@ RUN pip3 install --upgrade \
         jupyter \
         # 엘라스틱 서치
         elasticsearch \
+        python-crfsuite \
     && python3 -m ipykernel.kernelspec \
     && rm -rf $HOME/.cache
 
 
-
-# 설정 파일 복사
-COPY etc/bashrc /root/
-COPY etc/tmux.conf /root/.tmux.conf
-COPY etc/vimrc /root/.vimrc
+# 4. 설정 파일 복사
+COPY etc/skel /root/
 COPY etc/supervisor/* /etc/supervisor/conf.d/
-COPY etc/hosts /root/
 
-COPY etc/ssh/* /root/.ssh/
 
-# 시스템 유틸 설치
+# 5. 시스템 유틸 설치
 ENV USER_INIT_DIR="/usr/local/init.d/user"
 ENV ROOT_INIT_DIR="/usr/local/init.d/root"
 
@@ -91,28 +83,14 @@ COPY sbin/* /usr/local/sbin/
 COPY init.d/user/* $USER_INIT_DIR/
 COPY init.d/root/* $ROOT_INIT_DIR/
 
-RUN \
-    # 패스워드 없이 로그인 설정
-    chmod 700 /root/.ssh \
-    && chmod 600 /root/.ssh/id_rsa \
-    && chmod 644 /root/.ssh/id_rsa.pub \
-    && chmod 644 /root/.ssh/authorized_keys \
-    # bashrc 적용
-    && cat /root/bashrc >> /root/.bashrc \
-    # ssh 로그인시 메세지 표시 안 하도록 설정
-    && touch /root/.hushlogin \
-    # 실행 권한 조정
-    && chmod 755 /usr/local/sbin/* /usr/local/init.d/* \
-    # ssh 설정
+RUN chmod 755 /usr/local/sbin/* /usr/local/init.d/* \
     && chmod -R 777 /usr/local/sbin/* ${USER_INIT_DIR}/*
 
 ENV NOTVISIBLE "in users profile"
     
 
-# 공유 폴더 위치 및 작업 위치 지정
-VOLUME ["/workspace"]
-
-WORKDIR /workspace
+# 6. 공유 폴더 위치 및 작업 위치 지정
+VOLUME ["/home"]
 
 EXPOSE 22
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+exit 1
+
 # 사용자 계정 생성
 if [[ "${USER}" == "" ]] ; then
     exit 1

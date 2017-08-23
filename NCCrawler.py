@@ -168,10 +168,7 @@ class NCCrawler:
                 NCNlpUtil().print({'ERROR': 'missing column', 'article': article})
 
         # 기사 본문 저장
-        # result = self.crawler_util.save_article(
-        #     document=article, result_db=self.result_db,
-        #     db_name=self.parameter['result_db_name'],
-        #     collection=collection, upsert=upsert)
+        article['curl_date'] = datetime.now()
         result = self.crawler_util.save_article(document=article, db_info=self.db_info)
 
         # 다운로드 받은 URL을 인덱스 디비에 저장
@@ -182,6 +179,7 @@ class NCCrawler:
 
     def save_section_list(self, curl_url, subject_list):
         """
+        섹션 정보 저장
         """
         # url 에서 불용어 제거
         section = self.parameter['const_value']['section']
@@ -773,11 +771,81 @@ class NCCrawler:
 
         return
 
+    def update_article_by_date(self):
+        """
+        기사 본문 재 크롤링
+        """
+        start_date, end_date, original_start_date, date_step = self.get_date_range()
+
+        curl_date = None
+        if 'curl_date' in self.parameter:
+            curl_date = NCNlpUtil().parse_date_string(self.parameter['curl_date'])
+
+        mongodb_info = self.db_info['mongo']
+
+        if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
+            print('ERROR no collection in db info', flush=True)
+            return
+
+        # 숫자일 경우 문자로 변경
+        if isinstance(mongodb_info['collection'], int) is True:
+            mongodb_info['collection'] = str(mongodb_info['collection'])
+
+        if 'port' not in mongodb_info:
+            mongodb_info['port'] = 27017
+
+        # 디비 연결
+        connect, mongodb = NCCrawlerUtil().open_db(
+            host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
+
+        collection = mongodb.get_collection(mongodb_info['collection'])
+
+        # 1차 날짜 기준 필터링
+        print('date range: {} ~ {}'.format(start_date, end_date), flush=True)
+        cursor = collection.find({
+            'date': {
+                '$gte': start_date,
+                '$lte': end_date
+            }
+        })[:]
+
+        document_list = []
+        for document in cursor:
+            date = document['date']
+            if end_date < date < start_date:
+                continue
+
+            if curl_date is not None and 'curl_date' in document and curl_date < document['curl_date']:
+                continue
+
+            document_list.append(document)
+
+        cursor.close()
+
+        connect.close()
+
+        # 크롤링 시작
+        count = 0
+        total = len(document_list)
+        print('{:,}'.format(total), flush=True)
+        for document in document_list:
+            self.curl_article(article=document)
+
+            str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            paper = ''
+            if 'paper' in document:
+                paper = document['paper']
+
+            print('{}\t{:,}/{:,}\t{}'.format(str_now, count, total, paper), flush=True)
+            count += 1
+
+        return
+
     def make_url_index_db(self):
         """
         크롤링 완료된 url 목록을 인덱스 디비로 생성
         """
-        NCNlpUtil().print({'update index db': self.parameter})
+        NCNlpUtil().print('update index db')
 
         self.url_index_db = NCUrlIndexDB()
         self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
@@ -822,7 +890,8 @@ class NCCrawler:
         })
 
         # 인덱스 디비 생성
-        self.make_url_index_db()
+        if 'update_article' not in self.parameter:
+            self.make_url_index_db()
 
         return
 
@@ -834,8 +903,12 @@ class NCCrawler:
 
         # 크롤링 방식에 따른 실행: 날짜 기준 크롤링 or 기사 고유 아이디 기준 크롤링
         if 'start_date' in self.parameter or 'start_month' in self.parameter:
-            self.curl_by_date()
+            if 'update_article' in self.parameter:
+                self.update_article_by_date()
+            else:
+                self.curl_by_date()
         else:
+            # start in self.parameter
             self.curl_by_page_id()
 
         return

@@ -1,0 +1,33 @@
+{
+    "_id" : "crawler_naver_economy_update_article_2017_01",
+    "docker" : {
+        "command" : "python3 NCDockerClusterScheduler.py",
+        "network" : "gollum-net",
+        "image" : "crawler:dev",
+        "working_dir" : "/crawler",
+        "volume" : "/home/ejpark/workspace/crawler:/crawler:ro"
+    },
+    "group" : "naver_daemon",
+    "parameter" : {
+        "update": "article",
+        "parsing_info" : "naver.news",
+        "db_info" : {
+            "mongo" : {
+                "name" : "naver_economy",
+                "host" : "gollum01",
+                "upsert" : false,
+                "port" : 27017,
+                "collection" : "2017"
+            }
+        },
+        "max_skip" : -1,
+        "min_delay" : 3,
+        "end_date" : "2017-01",
+        "start_date" : "2017-01",
+        "document_id" : "{_id}",
+        "delay" : 6
+    },
+    "state" : {
+        "state" : "running"
+    }
+}

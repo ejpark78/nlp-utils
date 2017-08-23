@@ -27,7 +27,8 @@ f_dir=$(dirname ${input_filename})
 # 확장자 제거
 f_name=${f_base%.*}
 
-home="hdfs://master:9000/user/root"
+home="hdfs://master:9000/user/"$(id -un)
+#home="hdfs://master:9000/user/root"
 
 # 최대 map task 수
 max_reduce_count=0
@@ -39,6 +40,9 @@ fi
 
 # 결과 저장 경로
 output_dir="${home}/${f_dir}/${f_name}.result"
+
+# 권한 수정
+#sudo hadoop fs -chmod -R 777 /tmp/hadoop-yarn
 
 # 파일 업로드
 echo -e "\n입력 파일 업로드: ${input_filename} to ${home}/${f_dir}/"
@@ -61,8 +65,9 @@ hdfs dfs -mkdir -p ${output_dir}
 hdfs dfs -rm -r -f -skipTrash ${output_dir}
 
 echo -e "\n하둡 스트리밍 실행: ${f_dir}/${f_base}, max_map_count: ${max_map_count}"
+
 # golum
-jar_file="$HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.8.0.jar"
+jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
 
 time yarn jar ${jar_file} \
     -archives "${home}/dictionary.jar#dictionary" \

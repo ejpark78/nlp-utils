@@ -134,11 +134,9 @@ def map_function(x):
         msg = 'ERROR at json parsing: {}'.format(line)
         return msg
 
-    host = '172.20.78.159' # 'gollum02'
     domain = manager.util.domain
     db_name = 'spark_streaming'
     collection = 'crawler'
-    port = 27017
 
     # 크롤러 메타 정보 제거
     if 'crawler_meta' in document:
@@ -175,7 +173,7 @@ def map_function(x):
                 import dateutil.parser
                 result['date'] = dateutil.parser.parse(result['date'])
 
-            save_mongodb(result.copy(), host=host, db_name=db_name, collection=collection, port=port)
+            # save_mongodb(result.copy(), host='gollum02', db_name=db_name, collection=collection, port=27017)
             save_elastic(result.copy(), host='gollum', index=db_name, type=collection, auth=None)
             save_elastic(result.copy(), host='yoma07', index=db_name, type=collection, auth=('elastic', 'nlplab'))
     except Exception:
