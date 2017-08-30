@@ -87,7 +87,7 @@ def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
 
         elastic.bulk(index=index, body=bulk_data, refresh=True)
 
-    except Exception:
+    except Exception as err:
         print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
     return

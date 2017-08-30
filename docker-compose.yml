@@ -11,10 +11,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /home:/home:rw
-      - $PWD/etc/passwd:/etc/passwd:ro
-      - $PWD/etc/shadow:/etc/shadow:ro
-      - $PWD/etc/group:/etc/group:ro
-      - $PWD/etc/gshadow:/etc/gshadow:ro
+      - $PWD/etc:/mnt/etc:ro
 
 networks:
   default:
