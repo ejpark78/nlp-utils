@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "${ROOT_INIT_DIR}" != "" ]] ; then
+if [[ -d "${ROOT_INIT_DIR}" ]] ; then
     echo "사용자 계정 생성 및 root init.d 실행"
     for init_script in $(ls ${ROOT_INIT_DIR}/*.sh) ; do
         echo "${init_script}..."

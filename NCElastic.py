@@ -243,8 +243,16 @@ class NCElastic:
             document['document_id'] = document['_id']
             del document['_id']
 
-            if 'date' in document and '$date' in document['date']:
-                document['date'] = document['date']['$date']
+            # if 'date' in document and '$date' in document['date']:
+            #     document['date'] = document['date']['$date']
+
+            # 날짜 변환, mongodb 의 경우 날짜가 $date 안에 들어가 있음.
+            for k in document:
+                try:
+                    if '$date' in document[k]:
+                        document[k] = document[k]['$date']
+                except Exception as err:
+                    print(document['document_id'], flush=True)
 
             bulk_data.append({
                 "update": {
@@ -261,7 +269,7 @@ class NCElastic:
             count += 1
 
             if len(bulk_data) > 1000:
-                print('{:,}'.format(count), flush=True)
+                print('{:,}\t{}\t{}'.format(count, index_name, type_name), flush=True)
                 self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
                 bulk_data = []
 

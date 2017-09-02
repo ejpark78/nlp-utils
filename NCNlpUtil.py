@@ -540,7 +540,7 @@ class NCNlpUtil:
         """
         try:
             return self.ne_tagger.tag_sentence(sentence, ne_info).strip()
-        except Exception:
+        except Exception as err:
             pass
 
         return ''

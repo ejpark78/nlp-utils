@@ -41,8 +41,6 @@ RUN apt-get update -yq \
         # 네트워크 유틸
         net-tools \
         bridge-utils \
-        # 몽고디비
-        mongodb-clients \
     && mkdir -p /var/run/sshd \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -87,9 +85,12 @@ RUN chmod 755 /usr/local/sbin/* /usr/local/init.d/* \
     && chmod -R 777 /usr/local/sbin/* ${USER_INIT_DIR}/*
 
 ENV NOTVISIBLE "in users profile"
-    
 
-# 6. 공유 폴더 위치 및 작업 위치 지정
+
+# 6. host 파일 추가
+COPY etc/hosts /etc/hosts.custom
+
+# 7. 공유 폴더 위치 및 작업 위치 지정
 VOLUME ["/home"]
 
 EXPOSE 22

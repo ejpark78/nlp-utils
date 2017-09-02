@@ -1,12 +1,20 @@
 #!/bin/bash
 
+# custom host 추가
+if [ -f /etc/hosts.custom ] ; then
+    echo "custom host 추가"
+    cat /etc/hosts.custom >> /etc/hosts
+fi
+
 # 사용자 계정 추가
-for fname in $(\ls /mnt/etc/*) ; do
-    fname=$(basename ${fname})
-    if [ -f /mnt/etc/${fname} ] ; then
-         cat /mnt/etc/${fname} >> /etc/${fname}
-    fi
-done
+if [ -d /mnt/etc ] ; then
+    for fname in $(\ls /mnt/etc/*) ; do
+        fname=$(basename ${fname})
+        if [ -f /mnt/etc/${fname} ] ; then
+             cat /mnt/etc/${fname} >> /etc/${fname}
+        fi
+    done
+fi
 
 # sudoer 추가
 if [ -f /mnt/etc/passwd ] ; then
@@ -27,3 +35,4 @@ if [ -d /mnt/etc/skel ] ; then
         fi
     done
 fi
+
