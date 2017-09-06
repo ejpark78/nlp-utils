@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import sys
 import pycrfsuite
 
 from CRFFeature import CRFFeature
@@ -32,59 +31,32 @@ class NCNamedEntityTagger:
         self.tagger.open(filename)
 
     @staticmethod
-    def _to_xml(raw_sentence, ne_info=None):
+    def _to_xml(raw_sentence):
         """
         CRF 태깅 결과를 텍스트 형태로 반환
 
-            {'BI_TAG': 'B', 'WORD': 루, 'NE_TAG': PERSON_PIT}
-            {'BI_TAG': 'I', 'WORD': 크, 'NE_TAG': PERSON_PIT}
-            {'BI_TAG': 'B', 'WORD': 스, 'NE_TAG': PERSON_PIT}
-            {'BI_TAG': 'I', 'WORD': 캇, 'NE_TAG': PERSON_PIT}
-            {'BI_TAG': 'I', 'WORD': 이, 'NE_TAG': O}
+        입력:
+            [{'WORD': '루크 스캇', 'TAG': 'PERSON_PIT'}, {'WORD': 이}]
 
-            {'BI_TAG': 'B', 'WORD': 루크 스캇, 'NE_TAG': PERSON_PIT}
-            {'BI_TAG': 'I', 'WORD': 이, 'NE_TAG': O}
-
+        출력:
             <NE L1="PERSON" L2="PIT">루크 스캇</NE>이
         """
-        prev = ''
-        buf = []
-        for token in raw_sentence:
-            if token['NE_TAG'] != 'O' and token['NE_TAG'] == prev:
-                if token['BI_TAG'] == 'B':
-                    buf[len(buf)-1]['WORD'] += ' ' + token['WORD']
-                else:
-                    buf[len(buf)-1]['WORD'] += token['WORD']
-
-                prev = token['NE_TAG']
-                continue
-
-            prev = token['NE_TAG']
-            buf.append(token)
-
         buf_sentence = []
-        for token in buf:
-            if token['BI_TAG'] == 'B':
-                buf_sentence.append(' ')
+        for token_list in raw_sentence:
+            for token in token_list:
+                if token['TAG'] == 'O':
+                    buf_sentence.append(token['WORD'])
+                else:
+                    l1, l2 = token['TAG'].split('_')
+                    buf_sentence.append('<NE L1="{}" L2="{}">{}</NE>'.format(l1, l2, token['WORD']))
 
-            if token['NE_TAG'] == 'O':
-                buf_sentence.append(token['WORD'])
-            else:
-                l1, l2 = token['NE_TAG'].split('_')
-                buf_sentence.append('<NE L1="{}" L2="{}">{}</NE>'.format(l1, l2, token['WORD']))
+            buf_sentence.append(' ')
 
-                if ne_info is not None:
-                    if l1 not in ne_info:
-                        ne_info[l1] = {}
+        del buf_sentence[-1]
 
-                    if token['WORD'] not in ne_info[l1]:
-                        ne_info[l1][token['WORD']] = 0
+        return ''.join(buf_sentence)
 
-                    ne_info[l1][token['WORD']] += 1
-
-        return "".join(buf_sentence)
-
-    def tag(self, sentence, ne_info=None):
+    def tag(self, sentence):
         """
         하나의 문장을 태깅
         """
@@ -102,7 +74,7 @@ class NCNamedEntityTagger:
         # 중간 결과 취합
         tagging_result = feature.merge_tagging_result(bi_tagged, crf_result)
 
-        return self._to_xml(tagging_result, ne_info)
+        return self._to_xml(tagging_result)
 
     @staticmethod
     def parse_argument():
@@ -116,7 +88,7 @@ class NCNamedEntityTagger:
         # run tagger
         arg_parser.add_argument('-stdin', help='표준 입력으로 태깅', action='store_true', default=False)
 
-        arg_parser.add_argument('-filename', type=str, help='모델 파일명', default='model/baseball-all.model')
+        arg_parser.add_argument('-model_name', type=str, help='모델 파일명', default='model/baseball-all.model')
 
         return arg_parser.parse_args()
 
@@ -126,10 +98,13 @@ if __name__ == '__main__':
     args = tagger.parse_argument()
 
     # load model
-    tagger.open(args.filename)
+    tagger.open(args.model_name)
 
-    for line in sys.stdin:
-        line = line.strip()
-        tagged = tagger.tag(line)
+    # for line in sys.stdin:
 
-        print('{}\t{}'.format(line, tagged))
+    with open('DemoInput.txt', 'r', encoding='utf-8') as fp:
+        for line in fp.readlines():
+            line = line.strip()
+            tagged = tagger.tag(line)
+
+            print('{}\t{}'.format(line, tagged))

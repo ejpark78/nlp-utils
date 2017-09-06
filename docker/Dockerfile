@@ -12,12 +12,18 @@ ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 # 1. apt 저장소 변경
 RUN rm -rf /var/lib/apt/lists/* \
 	&& { \
-		echo "deb http://ftp.daumkakao.com/debian stretch main contrib non-free"; \
-		echo "deb http://ftp.daumkakao.com/debian stretch-updates main contrib non-free"; \
-	} > /etc/apt/sources.list
+		echo "deb http://frodo/debian stretch main contrib non-free"; \
+		echo "deb http://frodo/debian stretch-updates main contrib non-free"; \
+	} > /etc/apt/sources.list \
+    && echo "172.20.51.91 frodo" >> /etc/hosts
 
 
 # 2. 로케일 & 파이썬 설치
+RUN apt-get update -yq \
+    && apt-get install -yq --no-install-recommends --no-install-suggests \
+        apt-utils \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 RUN apt-get update -yq \
     && apt-get install -yq --no-install-recommends \
         locales \
@@ -38,7 +44,6 @@ RUN apt-get update -yq \
         python3-pip \
         sqlite3 \
         supervisor \
-        # 네트워크 유틸
         net-tools \
         bridge-utils \
     && mkdir -p /var/run/sshd \
@@ -46,20 +51,25 @@ RUN apt-get update -yq \
 
 
 # 3. 파이썬 라이브러리 설치
-RUN pip3 install --upgrade pip setuptools
+RUN mkdir -p ~/.pip \
+    && { \
+		echo "[global]"; \
+		echo "timeout = 60"; \
+		echo "index-url = http://frodo:3141/root/pypi"; \
+		echo "[install]"; \
+		echo "trusted-host = frodo"; \
+	} > ~/.pip/pip.conf
+
+RUN pip3 install --upgrade pip setuptools wheel && sync
 RUN pip3 install --upgrade \
-        # 웹 크롤링
         bs4 \
         bsddb3 \
         requests \
-        # 몽고 디비
         pymongo \
-        # 메시징 서비스
         kafka-python \
         paho-mqtt \
         pyzmq \
         jupyter \
-        # 엘라스틱 서치
         elasticsearch \
         python-crfsuite \
     && python3 -m ipykernel.kernelspec \

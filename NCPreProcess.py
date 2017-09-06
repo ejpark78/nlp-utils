@@ -124,7 +124,7 @@ class NCPreProcess:
 
     def extract_text_stdin(self):
         """
-        HTML 기사를 읽어서 문장 분리, 형태소 분석, 개체명 인식, 키워드 추출 등을 실행
+        HTML 기사를 읽어서 문장 분리
         """
         if self.util is None:
             self.util = NCNlpUtil()
@@ -140,14 +140,17 @@ class NCPreProcess:
 
             try:
                 document = json.loads(line)
+
+                document = self.restore_date(document)
+
                 result = self.get_text(document)
 
                 if result is not None:
                     str_json = json.dumps(result, ensure_ascii=False, default=NCNlpUtil().json_serial)
                     print(str_json, flush=True)
                 else:
-                    print(line, flush=True)
-            except Exception:
+                    print('ERROR:', line, flush=True)
+            except Exception as err:
                 print(line, flush=True)
                 continue
 
@@ -205,7 +208,7 @@ class NCPreProcess:
 
             try:
                 document = json.loads(line)
-            except Exception:
+            except Exception as err:
                 print(line, flush=True)
                 continue
 
@@ -586,7 +589,7 @@ class NCPreProcess:
         """
         try:
             document = self.get_text(document)
-        except Exception:
+        except Exception as err:
             msg = 'get text: {}, {}'.format(document['url'], document['_id'])
             print(msg, file=sys.stderr, flush=True)
             return {'ERROR': msg}
@@ -651,6 +654,21 @@ class NCPreProcess:
 
         return document
 
+    @staticmethod
+    def restore_date(document):
+        """
+        날짜 변환, mongodb 의 경우 날짜가 $date 안에 들어가 있음.
+        """
+        for k in document:
+            try:
+                if '$date' in document[k]:
+                    document[k] = document[k]['$date']
+            except Exception as err:
+                # print(document['document_id'], flush=True)
+                pass
+
+        return document
+
     def spark_batch_stdin(self, domain='baseball'):
         """
         스파크에서 전처리 모듈 테스트
@@ -665,11 +683,14 @@ class NCPreProcess:
         for line in sys.stdin:
             try:
                 document = json.loads(line)
-            except Exception:
+            except Exception as err:
                 msg = 'ERROR at json parsing: {}'.format(line)
                 print(msg, file=sys.stderr, flush=True)
                 continue
 
+            document = self.restore_date(document)
+
+            # 전처리 시작
             result = self.spark_batch(document)
 
             if 'date' in result and 'insert_date' not in result:
@@ -677,7 +698,7 @@ class NCPreProcess:
 
             try:
                 str_result = json.dumps(result, ensure_ascii=False, default=NCNlpUtil().json_serial)
-            except Exception:
+            except Exception as err:
                 msg = 'ERROR at json dumps: {}, {}'.format(document['url'], document['_id'])
                 print(msg, file=sys.stderr, flush=True)
                 continue
@@ -685,12 +706,6 @@ class NCPreProcess:
             print(str_result, flush=True)
 
         return
-
-    # def spark_batch_missing_document(self, domain='baseball'):
-    #     """
-    #     """
-    #
-    #     return
 
     @staticmethod
     def parse_argument():

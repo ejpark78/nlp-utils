@@ -59,7 +59,7 @@ class NCNamedEntityTrainer:
         arg_parser = argparse.ArgumentParser(description='개체명 인식 학습기')
 
         # train
-        arg_parser.add_argument('-filename', type=str, help='학습셋 파일명',
+        arg_parser.add_argument('-train_set', type=str, help='학습셋 파일명',
                                 default='data/named_entity/baseball/train.json.bz2')
 
         arg_parser.add_argument('-model_name', type=str, help='모델 이름',
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     if not os.path.isfile(args.model_name):
         # read corpus
-        corpus = util.read_corpus(filename=args.filename)
+        corpus = util.read_train_set(filename=args.train_set)
 
         # 모델 학습
         trainer.train(train_set=corpus, filename=args.model_name, algorithm=args.algorithm, param=param)

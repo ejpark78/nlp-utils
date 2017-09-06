@@ -147,14 +147,13 @@ class CRFUtils:
             ]
         출력:
             [
-                {'BI_TAG': 'B', 'WORD': <QuotID=1>, 'NE_TAG':O}
+                {'BI_TAG': 'B', 'WORD': <QuotID=1>, 'TAG':O}
 
-                {'BI_TAG': 'B', 'WORD': 류, 'NE_TAG': PERSON_PIT}
-                {'BI_TAG': 'I', 'WORD': 현, 'NE_TAG': PERSON_PIT}
-                {'BI_TAG': 'I', 'WORD': 진, 'NE_TAG': PERSON_PIT}
-                {'BI_TAG': 'I', 'WORD': 이, 'NE_TAG': O}
+                {'BI_TAG': 'B', 'WORD': 류, 'TAG': PERSON_PIT}
+                {'BI_TAG': 'I', 'WORD': 현, 'TAG': PERSON_PIT}
+                {'BI_TAG': 'I', 'WORD': 진, 'TAG': PERSON_PIT}
+                {'BI_TAG': 'I', 'WORD': 이, 'TAG': O}
             ]
-
         """
 
         result = []
@@ -170,26 +169,31 @@ class CRFUtils:
 
                 # token: [{'WORD': <QuotID=1>}]
                 if word.find('QUOTID') > 0:
-                    result.append({'BI_TAG': bi_tag, 'WORD': word, 'NE_TAG': ne_tag})
+                    result.append({'BI_TAG': bi_tag, 'WORD': word, 'TAG': ne_tag})
+                elif re.search(r'^\d+(\.+\d+)*$', word) is not None:
+                    result.append({'BI_TAG': bi_tag, 'WORD': word, 'TAG': ne_tag, 'RESERVED': 'NUMBER'})
+                elif re.search(r'^\d+(,+\d+)*$', word) is not None:
+                    result.append({'BI_TAG': bi_tag, 'WORD': word, 'TAG': ne_tag, 'RESERVED': 'NUMBER'})
                 else:
                     # token: {'WORD': 류현진, 'L1': 'PERSON', 'L2': 'PIT'}
 
                     if 'L1' in token and 'L2' in token:
                         ne_tag = '{}_{}'.format(token['L1'], token['L2'])
 
+                    # char 단위로 변환
                     i = 0
                     while i < len(word):
-                        result.append({'BI_TAG': bi_tag, 'WORD': word[i], 'NE_TAG': ne_tag})
+                        result.append({'BI_TAG': bi_tag, 'WORD': word[i], 'TAG': ne_tag})
                         bi_tag = 'I'
                         i += 1
 
         return result
 
-    def read_corpus(self, filename):
+    def read_train_set(self, filename):
         """
         학습셋 말뭉치 디비에서 학습셋을 읽음.
         """
-        print('read corpus: {}'.format(filename))
+        print('read train set: {}'.format(filename))
 
         corpus = []
         with bz2.open(filename, 'r') as fp:
@@ -212,12 +216,12 @@ class CRFUtils:
                     print('.', end='', flush=True)
 
         print('\n', flush=True)
-        print('corpus size: {:,}'.format(len(corpus)), flush=True)
+        print('train set size: {:,}'.format(len(corpus)), flush=True)
 
         return corpus
 
     @staticmethod
-    def save_corpus(filename, corpus):
+    def save_train_set(filename, corpus):
         """
         학습셋 말뭉치 저장
         """
