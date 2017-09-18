@@ -8,10 +8,16 @@ output_filename="$3"
 mapper_cmd="$4"
 reducer_cmd="$5"
 
+job_name="$6"
+
 # 입력 파라메터 확인
 if [ "${mapper_cmd}" == "" ] || [ "${input_filename}" == "" ] || [ "${output_filename}" == "" ] ; then
     echo "Usage: "$(basename $0)" [max map count] [입력 파일명] [결과 파일명] [mapper] [reducer]"
     exit 1
+fi
+
+if [ "${job_name}" == "" ] ; then
+    job_name="hadoop streaming"
 fi
 
 # 경로 설정
@@ -37,7 +43,7 @@ if [[ "${reducer_cmd}" != "" ]] ; then
 fi
 
 # 결과 저장 경로
-today=$(date +%Y%m%d)
+today=$(date +%Y-%m-%d_%H.%M.%S)
 output_dir="${f_name}.${today}"
 
 # 권한 수정
@@ -59,7 +65,7 @@ time yarn jar ${jar_file} \
     -D mapred.input.compress=true \
     -D mapreduce.output.fileoutputformat.compress=true \
     -D mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec \
-    -D mapreduce.job.name="hadoop streaming" \
+    -D mapreduce.job.name="${job_name}" \
     -D mapreduce.job.maps=${max_map_count} \
     -D mapreduce.job.reduces=${max_reduce_count} \
     -D mapreduce.map.failures.maxpercent=${error_ratio} \

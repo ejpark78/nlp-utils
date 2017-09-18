@@ -1,18 +1,24 @@
 {
-    "_id" : "update_nate_baseball_regular_season_2014",
-    "docker": {
-        "host" : "yoma03",
-        "container_name" : "update_nate_baseball_regular_season_2014",
-        "image" : "crawler:dev",
-        "state" : "ready"
-    },
-    "command": {
-        "command" : "python3 /crawler/NCPreProcess.py",
-        "state" : "ready",
-        "progress" : "0.0"
-    },
-    "parameter" : {
-        "start_date" : "2014-02",
-        "end_date" : "2014-02"
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "삼성"
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "date": {
+            "lte": "2017-06-01",
+            "gte": "2017-06-01",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
     }
+  },
+  "size": 60,
+  "from": 0
 }

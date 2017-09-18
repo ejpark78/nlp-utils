@@ -243,9 +243,6 @@ class NCElastic:
             document['document_id'] = document['_id']
             del document['_id']
 
-            # if 'date' in document and '$date' in document['date']:
-            #     document['date'] = document['date']['$date']
-
             # 날짜 변환, mongodb 의 경우 날짜가 $date 안에 들어가 있음.
             for k in document:
                 try:
@@ -253,6 +250,10 @@ class NCElastic:
                         document[k] = document[k]['$date']
                 except Exception as err:
                     print(document['document_id'], flush=True)
+
+            if document['date'][-1] == 'Z':
+                document['date'] = document['date'][0:len(document['date'])-1]
+                # print(document['date'], flush=True)
 
             bulk_data.append({
                 "update": {
@@ -288,7 +289,7 @@ class NCElastic:
 
         arg_parser.add_argument('-index', help='index name', default='baseball')
         # arg_parser.add_argument('-es_host', help='elastic search host name', default='https://elastic:changeme@gollum.ncsoft.com')
-        arg_parser.add_argument('-es_host', help='elastic search host name', default='elastic')
+        arg_parser.add_argument('-es_host', help='elastic search host name', default='frodo')
         arg_parser.add_argument('-type', help='type name', default='2016')
 
         arg_parser.add_argument('-search', help='search', action='store_true', default=False)

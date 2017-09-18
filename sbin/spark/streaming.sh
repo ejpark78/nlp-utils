@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # 사전 위치 맵핑
-home="hdfs://master:9000/user/root"
+home="hdfs://master:9000/user/"$(id -un)
 archives="${home}/dictionary.jar#dictionary"
 
 # home 위치: /user/root
@@ -29,4 +29,4 @@ spark-submit \
     --num-executors 2 \
     --executor-cores 2 \
     --verbose \
-    "spark_streaming.py"
+    "SparkStreaming.py"
