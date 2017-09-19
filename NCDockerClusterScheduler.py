@@ -25,7 +25,7 @@ class NCDockerClusterScheduler:
         pass
 
     @staticmethod
-    def open_db(db_name, host='gollum', port=27017):
+    def open_db(db_name, host='gollum', port=37017):
         """
         몽고 디비 핸들 오픈
         """
@@ -114,8 +114,8 @@ class NCDockerClusterScheduler:
         arg_parser = argparse.ArgumentParser(description='crawling web news articles')
 
         # 공통 옵션: 스케줄러 디비 접속 정보
-        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum01')
-        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=27017)
+        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum')
+        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=37017)
         arg_parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
         arg_parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
 

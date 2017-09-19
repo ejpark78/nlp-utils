@@ -126,7 +126,7 @@ class NCUrlIndexDB:
         from NCCrawlerUtil import NCCrawlerUtil
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
-            print('ERROR at update_url_list: no collection in db info', flush=True)
+            print('WARN at update_url_list: no collection in db info', flush=True)
             return
 
         # 숫자일 경우 문자로 변경

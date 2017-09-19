@@ -24,38 +24,44 @@ option="
  --exclude=etc
  --exclude=notebook
  --exclude=.ipynb_checkpoints
+ --exclude=*.jar
 "
 
 host="$1"
+dst_path="/data/nlp_home/docker/crawler"
 
 script_home=$(dirname "$(readlink -f "$0")")
 echo "script_home: ${script_home}, $PWD"
 
 if [ "${host}" != "" ] ; then
     if [[ "${host_name}" != $(hostname) ]] ; then
-        rsync -avz ${option} $PWD/ ${host}:/home/docker/crawler/
+        rsync -avz ${option} $PWD/ ${host}:${dst_path}/
     fi
 else
     for host_name in $(cat ${script_home}/hosts | grep -v ^#) ; do
-        if [[ "${host_name}" != $(hostname) ]] ; then
-            printf "\n%s\n" ${host_name}
-            ssh ${host_name} "rm -rf /home/docker/crawler/.ssh"
-            ssh ${host_name} "rm -rf /home/docker/crawler/.pycharm_helpers"
-            ssh ${host_name} "rm -rf /home/docker/crawler/dictionary"
-            ssh ${host_name} "rm -rf /home/docker/crawler/dictionary.jar"
-            ssh ${host_name} "rm -rf /home/docker/crawler/resource"
-            ssh ${host_name} "rm -rf /home/docker/crawler/parser"
-            ssh ${host_name} "rm -rf /home/docker/crawler/model"
-            ssh ${host_name} "rm -rf /home/docker/crawler/etc"
-            ssh ${host_name} "rm -rf /home/docker/crawler/__pycache__"
-            ssh ${host_name} "rm -rf /home/docker/crawler/wrap"
-            ssh ${host_name} "rm -rf /home/docker/crawler/notebook"
-            ssh ${host_name} "rm -rf /home/docker/crawler/docker"
-            ssh ${host_name} "rm -rf /home/docker/crawler/data"
-            ssh ${host_name} "rm -rf /home/docker/crawler/metastore_db"
-            ssh ${host_name} "rm -rf /home/docker/crawler/src"
-            ssh ${host_name} "rm -rf /home/docker/crawler/.ipynb_checkpoints"
-            rsync -avz ${option} $PWD/ ${host_name}:/home/docker/crawler/
+        if [[ "${host_name}" == $(hostname) ]] ; then
+            continue
         fi
+
+        printf "\n%s\n" ${host_name}
+#        ssh ${host_name} "sudo mkdir -p ${dst_path}"
+#        ssh ${host_name} "sudo chown -R ejpark:ejpark ${dst_path}"
+#        ssh ${host_name} "rm -rf ${dst_path}/.ssh"
+#        ssh ${host_name} "rm -rf ${dst_path}/.pycharm_helpers"
+#        ssh ${host_name} "rm -rf ${dst_path}/dictionary"
+#        ssh ${host_name} "rm -rf ${dst_path}/dictionary.jar"
+#        ssh ${host_name} "rm -rf ${dst_path}/resource"
+#        ssh ${host_name} "rm -rf ${dst_path}/parser"
+#        ssh ${host_name} "rm -rf ${dst_path}/model"
+#        ssh ${host_name} "rm -rf ${dst_path}/etc"
+#        ssh ${host_name} "rm -rf ${dst_path}/__pycache__"
+#        ssh ${host_name} "rm -rf ${dst_path}/wrap"
+#        ssh ${host_name} "rm -rf ${dst_path}/notebook"
+#        ssh ${host_name} "rm -rf ${dst_path}/docker"
+#        ssh ${host_name} "rm -rf ${dst_path}/data"
+#        ssh ${host_name} "rm -rf ${dst_path}/metastore_db"
+#        ssh ${host_name} "rm -rf ${dst_path}/src"
+#        ssh ${host_name} "rm -rf ${dst_path}/.ipynb_checkpoints"
+        rsync -avz ${option} $PWD/ ${host_name}:${dst_path}/
     done
 fi

@@ -27,26 +27,68 @@ def map_function(line):
     """
     개별 excutor 에서 실행되는 작업
     """
+    import re
     import dateutil.parser
+    from urllib.parse import urlparse, parse_qs
 
     document = json.loads(line)
+
+    # document id 변경
+    url = get_url(document['url'])
+    if url.find('naver') > 0 and document['_id'].find('naver') > 0:
+        document_id_format = '{oid}-{aid}'
+        simple_url_format = 'oid={oid}&aid={aid}'
+
+        url_info = urlparse(url)
+        url_query = parse_qs(url_info.query)
+        for key in url_query:
+            url_query[key] = url_query[key][0]
+
+        document['_id'] = document_id_format.format(**url_query)
+        if isinstance(document['url'], str):
+            url_base = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+            document['url'] = {
+                'full': url,
+                'simple': '{}?{}'.format(url_base, simple_url_format.format(**url_query)),
+                'query': url_query
+            }
+
+    if url.find('nate') > 0 or url.find('daum') > 0:
+        url_info = urlparse(url)
+
+        document_id = url
+
+        document_id = document_id.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
+        document_id = document_id.replace('/view/', '')
+        document_id = document_id.replace('/v/', '')
+        document_id = re.sub('\?mid=.+$', '', document_id)
+
+        document['_id'] = document_id
+
+        document['url'] = {
+            'full': url
+        }
 
     # 날짜 변환
     date = None
     if 'date' in document:
+        date = None
         if '$date' in document['date']:
-            document['date'] = document['date']['$date']
+            date = document['date']['$date']
         elif 'date' in document['date']:
-            document['date'] = document['date']['date']
+            date = document['date']['date']
 
-        date = dateutil.parser.parse(document['date'])
-        line = json.dumps(document, ensure_ascii=False, sort_keys=True)
+        if date is not None:
+            date = dateutil.parser.parse(date)
 
-    return date.strftime('%Y-%m'), line
+    # 변경된 값 반영
+    line = json.dumps(document, ensure_ascii=False, sort_keys=True)
 
+    group = 'error'
+    if date is not None:
+        group = date.strftime('%Y-%m')
 
-def month_partitioner(month):
-    return hash(month)
+    return group, line
 
 
 def parse_argument():
@@ -67,31 +109,64 @@ if __name__ == "__main__":
     conf = SparkConf()
     sc = SparkContext(appName='batch', conf=conf)
 
-    args = parse_argument()
+    print('applicationId: ', sc.applicationId, flush=True)
 
-    # print('applicationId:', sc.applicationId, flush=True)
+    args = parse_argument()
 
     rdd = sc.textFile(args.filename)\
         .map(lambda x: map_function(x))
 
-    # month = rdd.filter(lambda k,v: k == '2017-02')
-    # month.saveAsTextFile('2017-02')
-
     mapping = sc.broadcast(
-        rdd.keys().  # Get keys
-            distinct().  # Find unique
-            sortBy(lambda x: x).  # Sort
-            zipWithIndex().  # Add index
-            collectAsMap())
-
-    # print('mapping: ', mapping, flush=True)
+        rdd.keys()
+            .distinct()
+            .sortBy(lambda x: x)
+            .zipWithIndex()
+            .collectAsMap()
+    )
 
     rdd.partitionBy(
-        len(mapping.value),
-        partitionFunc=lambda x: mapping.value.get(x)
-        ).values().saveAsTextFile(args.result)
+            len(mapping.value),
+            partitionFunc=lambda x: mapping.value.get(x)
+        )\
+        .values()\
+        .saveAsTextFile(
+            args.result,
+            compressionCodecClass="org.apache.hadoop.io.compress.BZip2Codec"
+        )
 
-    # .partitionBy(12, month_partitioner)
+    # print(mapping.value, flush=True)
+
+    # pip3 install hdfs, webhdfs 사용
+    from hdfs import TokenClient
+
+    client = TokenClient('http://master:50070', None, root='/user/ejpark')
+
+    for tag in mapping.value:
+        src = '{}/part-{:05d}.bz2'.format(args.result, mapping.value[tag])
+        dst = '{}/{}.bz2'.format(args.result, tag)
+
+        print(src, dst, flush=True)
+        client.rename(src, dst)
+
+
+    # import pyarrow as pa
+    #
+    # hdfs_fs = pa.hdfs.connect('master', port=9000)
+    # with hdfs_fs.open('{}/mapping.txt'.format(args.result), 'wb') as fp:
+    #     fp.write(mapping.value)
+    #     fp.flush()
+
+    # by_partition = rdd.partitionBy(
+    #         len(mapping.value),
+    #         partitionFunc=lambda x: mapping.value.get(x)
+    #     )
+    #
+    # by_partition.foreachPartition(
+    #     lambda x: print('x:', x, flush=True)
+    # )
+
+
+
     # 저장
     # from tempfile import NamedTemporaryFile
     #

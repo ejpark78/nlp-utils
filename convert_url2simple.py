@@ -25,7 +25,9 @@ def get_query(url):
     return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
 
 
-if __name__ == '__main__':
+def merge_section():
+    """
+    """
     new_id = '{oid}-{aid}'
     simple_query = 'oid={oid}&aid={aid}'
 
@@ -42,7 +44,7 @@ if __name__ == '__main__':
 
         if line.find('ISODate(') > 0:
             line = re.sub(r'ISODate\("(.+?)"\)', '"\g<1>"', line)
-            
+
         document = json.loads(line)
 
         if '$date' in document['date']:
@@ -69,3 +71,26 @@ if __name__ == '__main__':
 
         msg = json.dumps(document, sort_keys=True, ensure_ascii=False)
         print(msg, flush=True)
+
+
+if __name__ == '__main__':
+    from urllib.parse import urlparse, parse_qs
+
+    with open('data/dump/2nd/nate_economy/sample.json', 'rt') as fp:
+        for line in fp.readlines():
+            line = line.strip()
+            if line == '':
+                continue
+
+            document = json.loads(line)
+
+            url = document['url']
+
+            url_info = urlparse(url)
+            url = url.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
+            url = url.replace('/view/', '')
+
+            document['_id'] = url
+            print(document)
+
+

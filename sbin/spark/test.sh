@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
 
-#job_name="test"
-#max_map=75
-#input="corpus/2017.pos.json.bz2"
-#output="data/result/naver_economy-2017.pos.json.bz2"
-#mapper="src/SplitByDate.py -extract_date"
-#time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" "" "${job_name}"
-#
-#
-#bzcat data/result/naver_economy-2017.pos.json.bz2 | SplitByDate.py -split_by_month
 
+# https://arrow.apache.org/docs/python/filesystems.html
+#export CLASSPATH=`$HADOOP_HOME/bin/hdfs classpath --glob`
 
+#input="data/dump/2nd/naver_economy/2017.json.bz2"
+input="data/sample.json.bz2"
+output="/tmp/test"
 
-input="data/dump/2nd/naver_economy/2017.json.bz2"
-output="data/dump/2nd/naver_economy/2017.by_month"
+hadoop fs -rm -r -f ${output}
 
 spark-submit \
     --master yarn \
@@ -23,5 +18,3 @@ spark-submit \
     --executor-cores 1 \
     --verbose \
     SparkBatchSplitDate.py -filename ${input} -result ${output}
-
-

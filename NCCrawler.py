@@ -47,11 +47,13 @@ class NCCrawler:
         """
         컬랙션 이름
         """
-        collection = self.db_info['mongo']['collection']
+        collection = 'error'
+        if 'collection' in self.db_info['mongo']:
+            collection = self.db_info['mongo']['collection']
 
         # date 컬럼을 날짜 형식으로 변환
         if 'date' in article and article['date'] is not None:
-            date, collection = self.crawler_util.parse_date(article['date'])
+            date, collection = self.crawler_util.get_collection_name(article['date'])
             if date is None:
                 del article['date']
             else:
@@ -189,7 +191,7 @@ class NCCrawler:
         else:
             collection = '{L1}-{L2}'.format(**section)
 
-        query, _ = self.crawler_util.get_query(curl_url)
+        query, _, _ = self.crawler_util.get_query(curl_url)
         if 'page' not in query:
             query['page'] = 1
 
@@ -450,7 +452,7 @@ class NCCrawler:
                 # end 확인후 end 까지만 실행
                 if 'end' in self.parameter:
                     end = int(self.parameter['end'])
-                    query, _ = self.crawler_util.get_query(url)
+                    query, _, _ = self.crawler_util.get_query(url)
                     self.crawler_util.change_key(query, self.parsing_info['query_key_mapping'])
 
                     if end < int(query['start']):
@@ -647,7 +649,9 @@ class NCCrawler:
         """
         컬렉션 이름이 변경되었을 경우, 인덱스를 업데이트 한다.
         """
-        if self.db_info['mongo'] is None or self.db_info['mongo']['collection'] != new_collection_name:
+        if self.db_info['mongo'] is None \
+                or 'collection' not in self.db_info['mongo'] \
+                or self.db_info['mongo']['collection'] != new_collection_name:
             print('make new collection index', flush=True)
             self.db_info['mongo']['collection'] = new_collection_name
 
@@ -1020,8 +1024,8 @@ class NCCrawler:
 
         arg_parser.add_argument('-document_id', help='document id', default=None)
 
-        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum01')
-        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=27017)
+        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum')
+        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=37017)
         arg_parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
         arg_parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
 
@@ -1032,8 +1036,8 @@ class NCCrawler:
         # 에러 테이블에 있는 기사를 재파싱
         arg_parser.add_argument('-parse_error', help='', action='store_true', default=False)
 
-        arg_parser.add_argument('-db_host', help='db server host name', default='gollum01')
-        arg_parser.add_argument('-db_port', help='db server port', default=27017)
+        arg_parser.add_argument('-db_host', help='db server host name', default='gollum')
+        arg_parser.add_argument('-db_port', help='db server port', default=37017)
         arg_parser.add_argument('-db_name', help='job db name', default='daum_baseball')
         arg_parser.add_argument('-db_collection', help='job collection name', default='error')
 

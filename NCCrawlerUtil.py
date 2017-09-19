@@ -234,9 +234,9 @@ class NCCrawlerUtil:
         return article
 
     @staticmethod
-    def parse_date(date):
+    def get_collection_name(date):
         """
-        날짜 변환
+        날짜와 컬랙션 이름 변환
         """
         import dateutil.parser
 
@@ -244,13 +244,13 @@ class NCCrawlerUtil:
         if isinstance(date, str) is True:
             try:
                 date = dateutil.parser.parse(date)
-                collection = date.strftime('%Y')
+                collection = date.strftime('%Y-%m')
             except Exception as err:
                 NCNlpUtil().print({'ERROR': 'convert date', 'date': date})
                 return None, collection
         elif isinstance(date, dict) is True:
             if 'date' in date:
-                collection = date['year']
+                collection = '{}-{}'.format(date['year'], date['month'])
 
         return date, collection
 
@@ -404,12 +404,24 @@ class NCCrawlerUtil:
         """
         from elasticsearch import Elasticsearch
 
-        # 타입 추출, 몽고 디비 collection 이름 우선
-        if 'type' in elastic_info and elastic_info['type'] is not None:
-            index_type = elastic_info['type']
+        # 인덱스 추출, 몽고 디비 collection 이름 우선
+        if 'index' not in elastic_info:
+            elastic_info['index'] = ''
 
+        index = elastic_info['index']
+        if 'name' in mongodb_info:
+            index = mongodb_info['name']
+
+        # 타입 추출, 몽고 디비 collection 이름 우선
+        if 'type' not in elastic_info:
+            elastic_info['type'] = ''
+
+        index_type = elastic_info['type']
         if 'collection' in mongodb_info:
             index_type = mongodb_info['collection']
+
+        if index == '' or index_type == '':
+            return
 
         # 날짜 변환
         if 'date' in document and isinstance(document['date'], datetime):
@@ -433,25 +445,22 @@ class NCCrawlerUtil:
                     verify_certs=False,
                     port=9200)
 
-            if elastic.indices.exists(elastic_info['index']) is False:
-                self.create_elastic_index(elastic, elastic_info['index'])
+            if elastic.indices.exists(index) is False:
+                self.create_elastic_index(elastic, index)
 
             document['document_id'] = document['_id']
             del document['_id']
 
-            bulk_data = []
-            bulk_data.append({
+            bulk_data = [{
                 'update': {
-                    '_index': elastic_info['index'],
+                    '_index': index,
                     '_type': index_type,
                     '_id': document['document_id']
                 }
-            })
-
-            bulk_data.append({
+            },{
                 'doc': document,
                 'doc_as_upsert': True
-            })
+            }]
 
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
         except Exception as err:
@@ -593,19 +602,16 @@ class NCCrawlerUtil:
             if elastic.indices.exists(elastic_info['index']) is False:
                 self.create_elastic_index(elastic, elastic_info['index'])
 
-            bulk_data = []
-            bulk_data.append({
+            bulk_data = [{
                 'update': {
                     '_index': elastic_info['index'],
                     '_type': index_type,
                     '_id': payload['document_id']
                 }
-            })
-
-            bulk_data.append({
+            }, {
                 'doc': payload,
                 'doc_as_upsert': True
-            })
+            }]
 
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
         except Exception as err:
@@ -650,11 +656,7 @@ class NCCrawlerUtil:
         if parsing_url is None:
             return
 
-        # if 'replace' in parsing_url:
-        #     for pattern in parsing_url['replace']:
-        #         document['url'] = re.sub(pattern['from'], pattern['to'], document['url'])
-
-        query, url = self.get_query(document['url'])
+        query, base_url, parsed_url = self.get_query(document['url'])
 
         url_info = {
             'full': document['url'],
@@ -668,17 +670,26 @@ class NCCrawlerUtil:
 
         if 'simple_query' in parsing_url:
             str_query = parsing_url['simple_query'].format(**query)
-            url_info['simple'] = '{}?{}'.format(url, str_query)
+            url_info['simple'] = '{}?{}'.format(base_url, str_query)
 
         document['url'] = url_info
 
-        if '_id' in parsing_url:
-            try:
+        # 문서 아이디 추출
+        document_id = url_info['full']
+        document_id = document_id.replace('{}://{}'.format(parsed_url.scheme, parsed_url.hostname), '')
+
+        try:
+            if '_id' in parsing_url:
                 document['_id'] = parsing_url['_id'].format(**query)
-            except Exception as err:
-                document['_id'] = self.get_document_id(url_info['full'])
-        else:
-            document['_id'] = self.get_document_id(url_info['full'])
+            elif 'replace' in parsing_url:
+                for pattern in parsing_url['replace']:
+                    document_id = re.sub(pattern['from'], pattern['to'], document_id)
+
+                document['_id'] = document_id
+            else:
+                document['_id'] = self.get_document_id(document_id)
+        except Exception as err:
+            document['_id'] = self.get_document_id(document_id)
 
         return
 
@@ -858,7 +869,7 @@ class NCCrawlerUtil:
         for key in result:
             result[key] = result[key][0]
 
-        return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+        return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path), url_info
 
     def update_state_by_id(self, state, job_info, scheduler_db_info, url, query_key_mapping=None):
         """
@@ -866,7 +877,7 @@ class NCCrawlerUtil:
             # state: 상태, running, ready, stoped
             # status: 경과 시간
         """
-        query, _ = self.get_query(url)
+        query, _, _ = self.get_query(url)
         self.change_key(query, query_key_mapping)
 
         if 'year' in query:
