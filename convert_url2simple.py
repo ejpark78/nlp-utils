@@ -76,7 +76,7 @@ def merge_section():
 if __name__ == '__main__':
     from urllib.parse import urlparse, parse_qs
 
-    with open('data/dump/2nd/nate_economy/sample.json', 'rt') as fp:
+    with open('data/sample.json', 'rt') as fp:
         for line in fp.readlines():
             line = line.strip()
             if line == '':
@@ -84,13 +84,22 @@ if __name__ == '__main__':
 
             document = json.loads(line)
 
-            url = document['url']
+            url = document['url']['full']
 
-            url_info = urlparse(url)
-            url = url.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
-            url = url.replace('/view/', '')
+            if url.find('lineagem') >= 0 or url.find('lineagem') >= 0:
+                url_info = urlparse(url)
 
-            document['_id'] = url
+                document_id = url
+
+                document_id = document_id.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
+                document_id = document_id.replace('/board/free/article/', '')
+                document_id = document_id.replace('.json', '')
+
+                document['_id'] = document_id
+
+                print(document_id)
+
+            # document['_id'] = url
             print(document)
 
 

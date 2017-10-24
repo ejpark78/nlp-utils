@@ -2,18 +2,34 @@
 
 # 실행
 
-home="data/dump/2nd"
+home="data/nate/baseball"
 
-for dir_name in $(ls -d ${home}/nate_*) ; do
-    db_name=$(basename ${dir_name})
+host_name="frodo"
+port="27017"
+db_name="nate_baseball"
 
-    for fname in $(ls ${home}/${db_name}/*.by_month/2017-09.bz2) ; do
-        collection=$(basename ${fname})
-        collection="${collection/.bz2/}"
+dry=""
 
-        echo ${fname}, ${db_name}, ${collection}
+for fname in $(\ls -r ${home}/????.by_month/????-??.parsed.bz2) ; do
+    collection=$(basename ${fname})
+    collection="${collection/.pos/}"
+    collection="${collection/.parsed/}"
+    collection="${collection/.json/}"
+    collection="${collection/.bz2/}"
 
-        bzcat ${fname} | mongoimport --host gollum --port 37017 --db ${db_name} --collection ${collection} --upsert --numInsertionWorkers 7
-    done
+    echo ${fname}, ${db_name}, ${collection}
+
+    if [ "${dry}" == "" ] ; then
+        bzcat ${fname} \
+            | mongoimport \
+                --host ${host_name} \
+                --port ${port} \
+                --db ${db_name} \
+                --collection ${collection} \
+                --mode=insert \
+                --verbose=2 \
+                --numInsertionWorkers $(nproc) \
+                --writeConcern '{w: 1, wtimeout: 50000, j: false}'
+    fi
 done
 

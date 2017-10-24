@@ -49,6 +49,11 @@ output_dir="${f_name}.${today}"
 # 권한 수정
 #sudo hadoop fs -chmod -R 777 /tmp/hadoop-yarn
 
+# 입력 파일 업로드
+hadoop fs -mkdir -p ${f_dir}
+hadoop fs -rm -f -skipTrash ${input_filename}
+hadoop fs -put ${input_filename} ${f_dir}
+
 # 결과 폴더 삭제
 echo -e "\n결과 폴더 삭제 및 생성: ${output_dir}"
 hdfs dfs -mkdir -p ${output_dir}

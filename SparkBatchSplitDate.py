@@ -34,40 +34,84 @@ def map_function(line):
     document = json.loads(line)
 
     # document id 변경
-    url = get_url(document['url'])
-    if url.find('naver') > 0 and document['_id'].find('naver') > 0:
-        document_id_format = '{oid}-{aid}'
-        simple_url_format = 'oid={oid}&aid={aid}'
+    if 'url' in document:
+        url = get_url(document['url'])
 
-        url_info = urlparse(url)
-        url_query = parse_qs(url_info.query)
-        for key in url_query:
-            url_query[key] = url_query[key][0]
+        # 네이버 _id 변경
+        if url.find('naver') >= 0 and document['_id'].find('naver') >= 0:
+            document_id_format = '{oid}-{aid}'
+            simple_url_format = 'oid={oid}&aid={aid}'
 
-        document['_id'] = document_id_format.format(**url_query)
-        if isinstance(document['url'], str):
-            url_base = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+            url_info = urlparse(url)
+            url_query = parse_qs(url_info.query)
+            for key in url_query:
+                url_query[key] = url_query[key][0]
+
+            document['_id'] = document_id_format.format(**url_query)
+            if isinstance(document['url'], str):
+                url_base = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+                document['url'] = {
+                    'full': url,
+                    'simple': '{}?{}'.format(url_base, simple_url_format.format(**url_query)),
+                    'query': url_query
+                }
+
+        # mlbpark _id 변경
+        elif url.find('mlbpark') >= 0 and document['_id'].find('mlbpark') >= 0:
+            document_id_format = '{id}'
+
+            url_info = urlparse(url)
+            url_query = parse_qs(url_info.query)
+            for key in url_query:
+                url_query[key] = url_query[key][0]
+
+            document['_id'] = document_id_format.format(**url_query)
+            if isinstance(document['url'], str):
+                document['url'] = {
+                    'full': url,
+                    'query': url_query
+                }
+
+        # 네이트/다음 _id 변경
+        elif url.find('nate') >= 0 or url.find('daum') >= 0:
+            url_info = urlparse(url)
+
+            document_id = url
+
+            if url_info.query != '':
+                url_query = parse_qs(url_info.query)
+                for key in url_query:
+                    url_query[key] = url_query[key][0]
+
+                document_id_format = '{newsId}'
+                if 'newsId' in url_query:
+                    document_id = document_id_format.format(**url_query)
+
+            document_id = document_id.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
+            document_id = document_id.replace('/view/', '')
+            document_id = document_id.replace('/v/', '')
+            document_id = re.sub('\?mid=.+$', '', document_id)
+
+            document['_id'] = document_id
+
             document['url'] = {
-                'full': url,
-                'simple': '{}?{}'.format(url_base, simple_url_format.format(**url_query)),
-                'query': url_query
+                'full': url
             }
 
-    if url.find('nate') > 0 or url.find('daum') > 0:
-        url_info = urlparse(url)
+        # 리니지 M _id 변경
+        elif url.find('lineagem') >= 0 or url.find('lineagem') >= 0:
+            url_info = urlparse(url)
 
-        document_id = url
+            document_id = url
 
-        document_id = document_id.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
-        document_id = document_id.replace('/view/', '')
-        document_id = document_id.replace('/v/', '')
-        document_id = re.sub('\?mid=.+$', '', document_id)
+            document_id = document_id.replace('{}://{}'.format(url_info.scheme, url_info.hostname), '')
+            document_id = document_id.replace('/board/free/article/', '')
+            document_id = document_id.replace('.json', '')
+            document_id = document_id.replace('/comment?fields=vote&size=100&page=1', '-comment')
 
-        document['_id'] = document_id
+            document['_id'] = document_id
 
-        document['url'] = {
-            'full': url
-        }
+            document['date'] = document['postDate']
 
     # 날짜 변환
     date = None
@@ -78,8 +122,16 @@ def map_function(line):
         elif 'date' in document['date']:
             date = document['date']['date']
 
+        # 지식맨
+        if isinstance(document['date'], str):
+            date = document['date']
+
         if date is not None:
-            date = dateutil.parser.parse(date)
+            try:
+                date = dateutil.parser.parse(date)
+            except Exception as err:
+                print('ERROR: ', date, err, document, flush=True)
+                date = None
 
     # 변경된 값 반영
     line = json.dumps(document, ensure_ascii=False, sort_keys=True)
@@ -107,6 +159,12 @@ def parse_argument():
 
 if __name__ == "__main__":
     conf = SparkConf()
+
+    conf.set("spark.executor.memory", "16g")
+    conf.set("spark.driver.memory", "16g")
+    conf.set("spark.core.connection.ack.wait.timeout", "3600")
+    conf.set("spark.driver.maxResultSize", "32g")
+
     sc = SparkContext(appName='batch', conf=conf)
 
     print('applicationId: ', sc.applicationId, flush=True)

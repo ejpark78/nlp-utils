@@ -679,15 +679,19 @@ class NCCrawlerUtil:
         document_id = document_id.replace('{}://{}'.format(parsed_url.scheme, parsed_url.hostname), '')
 
         try:
-            if '_id' in parsing_url:
-                document['_id'] = parsing_url['_id'].format(**query)
-            elif 'replace' in parsing_url:
+            if 'replace' in parsing_url:
                 for pattern in parsing_url['replace']:
                     document_id = re.sub(pattern['from'], pattern['to'], document_id)
 
                 document['_id'] = document_id
             else:
                 document['_id'] = self.get_document_id(document_id)
+        except Exception as err:
+            document['_id'] = self.get_document_id(document_id)
+
+        try:
+            if '_id' in parsing_url and len(query) > 0:
+                document['_id'] = parsing_url['_id'].format(**query)
         except Exception as err:
             document['_id'] = self.get_document_id(document_id)
 

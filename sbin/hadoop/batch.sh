@@ -1,44 +1,40 @@
 #!/usr/bin/env bash
 
-domain="economy"
-source="naver"
-workdir="data/${domain}/${source}"
-reducer=""
+max_map=60
 
-max_map=90
+home="data/naver/kbaseball"
+domain="kbaseball"
 
-corpus_path="/corpus/news/${domain}/${source}"
+dry=""
 
-#for year in {2004..2017} ; do
-#for year in {2005..2017} ; do
-for year in 2017 ; do
-    echo "year: ${year}"
+for fname in $(ls -r ${home}/*.by_month/????-??.bz2) ; do
+    type_name=$(basename ${fname})
+    type_name="${type_name/.bz2/}"
+
+    echo
+    echo ${fname}, ${type_name}
+
+    input_path=$(dirname ${fname})
 
     # 형태소 분석, 개체명 인식, 키워드 추출
-    input="${corpus_path}/${year}.json.bz2"
-    output="${year}.pos.json.bz2"
-    mapper="src/NCPreProcess.py -spark_batch -domain ${domain}"
-    time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" "${reducer}"
+    input="${fname}"
+    output="${input_path}/${type_name}.pos.bz2"
+
+    echo "Morph: " ${input}, ${output}
+
+    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
+        mapper="src/NCPreProcess.py -spark_batch -domain ${domain}"
+        time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
+    fi
 
     # 의존 파서
-    input="${corpus_path}/${year}.pos.json.bz2"
-    output="${year}.parsed.json.bz2"
-    mapper="java -Xms1g -Xmx1g -jar src/parser.jar dictionary/model/"
-#    time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" "${reducer}"
+    input="${output}"
+    output="${input_path}/${type_name}.parsed.bz2"
 
-    # 디비 입력
-#    input="${output}"
-#    time bzcat ${input} | mongoimport --host gollum02 --db "${source}_${domain}" --collection ${year} --upsert
+    echo "Parser: " ${input}, ${output}
 
-#    input="${output}"
-    input="${workdir}/${year}.parsed.json.bz2"
-    input="${workdir}/${year}.pos.json.bz2"
-#    time bzcat ${input} | python3 NCElastic.py -insert_documents -es_host frodo -index "${source}_${domain}" -type ${year}
-
-    # 문장 추출
-#    input="${workdir}/${year}.json.result.bz2"
-#    output="${workdir}/${year}.json.sentence.bz2"
-
-#    mapper="src/NCPreProcess.py -extract_sentence -format text"
-#    time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" "${reducer}"
+    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
+        mapper="java -Xms1g -Xmx1g -jar parser/parser.jar dictionary/model/"
+        time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
+    fi
 done

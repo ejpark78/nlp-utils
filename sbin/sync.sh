@@ -44,8 +44,8 @@ else
         fi
 
         printf "\n%s\n" ${host_name}
-#        ssh ${host_name} "sudo mkdir -p ${dst_path}"
-#        ssh ${host_name} "sudo chown -R ejpark:ejpark ${dst_path}"
+        ssh ${host_name} "sudo mkdir -p ${dst_path}"
+        ssh ${host_name} "sudo chown -R ejpark:ejpark ${dst_path}"
 #        ssh ${host_name} "rm -rf ${dst_path}/.ssh"
 #        ssh ${host_name} "rm -rf ${dst_path}/.pycharm_helpers"
 #        ssh ${host_name} "rm -rf ${dst_path}/dictionary"

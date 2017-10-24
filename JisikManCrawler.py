@@ -37,7 +37,7 @@ class JisikManCrawler:
         self.from_start = False
 
     @staticmethod
-    def open_db(db_name='jisikman_app', host='gollum01', port=27017):
+    def open_db(db_name='jisikman_app', host='frodo01', port=27018):
         """
         몽고 디비 핸들 오픈
         """
@@ -73,7 +73,7 @@ class JisikManCrawler:
 
         try:
             return page_html.json()
-        except Exception:
+        except Exception as err:
             print(curl_url, post_data, page_html.content, flush=True)
 
         return None
@@ -137,12 +137,12 @@ class JisikManCrawler:
                     })
 
             date = dateutil.parser.parse(simple['date'])
-        except Exception:
+        except Exception as err:
             print('ERROR at to simple: {}'.format(sys.exc_info()[0]))
 
         return simple, date
 
-    def save_elastic(self, document, host='gollum.ncsoft.com', index='jisikman'):
+    def save_elastic(self, document, host='frodo.ncsoft.com', index='jisikman'):
         """
         elastic search에 저장
         """
@@ -160,14 +160,14 @@ class JisikManCrawler:
 
         try:
             elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
-        except Exception:
+        except Exception as err:
             print('error at connect elastic', flush=True)
             return
 
         try:
             if elastic.indices.exists(index) is False:
                 return
-        except Exception:
+        except Exception as err:
             print('error at check index', flush=True)
             return
 
@@ -185,7 +185,7 @@ class JisikManCrawler:
         if self.from_start is True:
             try:
                 elastic.delete(index=index, doc_type=date.year, id=simple['document_id'], refresh=True)
-            except Exception:
+            except Exception as err:
                 print('ERROR at delete elastic: {}'.format(sys.exc_info()[0]))
 
         try:
@@ -195,7 +195,7 @@ class JisikManCrawler:
 
             if ret['errors'] is True:
                 print('error elastic bulk data:', ret, bulk_data, flush=True)
-        except Exception:
+        except Exception as err:
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
         return
@@ -207,6 +207,9 @@ class JisikManCrawler:
         if self.result_db is None:
             self.connect, self.result_db = self.open_db()
 
+        if isinstance(document['_id'], str) and document['_id'].isdigit() is True:
+            document['_id'] = int(document['_id'])
+
         answer_date = ''
         if collection is None:
             collection = 'etc'
@@ -214,8 +217,8 @@ class JisikManCrawler:
             if 'date' in document and document['date'] != '':
                 try:
                     date = dateutil.parser.parse(document['date'])
-                    collection = '{}'.format(date.year)
-                except Exception:
+                    collection = date.strftime('%Y-%m')
+                except Exception as err:
                     print('date parsing error: ', document['date'], flush=True)
 
             if 'detail_answers' in document and isinstance(document['detail_answers'], list) is True:
@@ -223,8 +226,8 @@ class JisikManCrawler:
                     try:
                         answer_date = document['detail_answers'][0]['date']
                         date = dateutil.parser.parse(answer_date)
-                        collection = '{}'.format(date.year)
-                    except Exception:
+                        collection = date.strftime('%Y-%m')
+                    except Exception as err:
                         print('date parsing error: ', answer_date, flush=True)
 
         simple_log = True
@@ -247,12 +250,12 @@ class JisikManCrawler:
 
         try:
             if upsert is True:
-                self.result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
+                self.result_db.get_collection(collection).replace_one({'_id': document['_id']}, document, upsert=True)
             else:
-                self.result_db[collection].insert_one(document)
-        except Exception:
+                self.result_db.get_collection(collection).insert_one(document)
+        except Exception as err:
             del document['_id']
-            self.result_db['error'].insert_one(document)
+            self.result_db.get_collection('error').insert_one(document)
             print('ERROR at save_result: {}: {}'.format(sys.exc_info()[0], document), flush=True)
 
             return False
@@ -392,6 +395,9 @@ class JisikManCrawler:
                     question['date'] = answer['reg_date']
 
         question['_id'] = question['content_id']
+        if question['_id'].isdigit() is True:
+            question['_id'] = int(question['_id'])
+
         question['detail_answers'] = detail['items']
 
         # 만약 빠진 정보가 있다면 채워 넣음
@@ -413,7 +419,7 @@ class JisikManCrawler:
 
         # 질문/답변 저장
         save_flag = self.save_result(question, collection=None)
-        self.save_elastic(question)
+        # self.save_elastic(question)
 
         return save_flag
 
@@ -427,16 +433,25 @@ class JisikManCrawler:
         result = []
         collection_list = self.result_db.collection_names()
 
-        query = {'_id': {'$gte': str(start), '$lte': str(end)}}
-        for collection in collection_list:
-            cursor = self.result_db[collection].find(query, {'_id': 1})[:]
+        # query = {'_id': {'$gte': str(start), '$lte': str(end)}}
+        query = {'_id': {'$gte': start, '$lte': end}}
 
-            print(collection, query, cursor.count(), flush=True)
+        for collection in collection_list:
+            cursor = self.result_db.get_collection(collection).find(query, {'_id': 1})[:]
+
+            count = 0
             for document in cursor:
-                if document['_id'].isdigit() is True:
-                    result.append(int(document['_id']))
+                if isinstance(document['_id'], str) and document['_id'].isdigit() is not True:
+                    continue
+
+                document_id = int(document['_id'])
+                if start <= document_id <= end:
+                    result.append(document_id)
+                    count += 1
 
             cursor.close()
+
+            print(collection, query, count, flush=True)
 
         return sorted(result, reverse=True)
 
@@ -504,8 +519,8 @@ class JisikManCrawler:
         arg_parser.add_argument('-get_missing_question', help='', action='store_true', default=False)
 
         arg_parser.add_argument('-query_by_id', help='', action='store_true', default=False)
-        arg_parser.add_argument('-start', help='start', default=22177478)
-        arg_parser.add_argument('-end', help='start', default=22177478) # 22,177,478
+        arg_parser.add_argument('-start', help='start', default="1")
+        arg_parser.add_argument('-end', help='start', default="50,000") # 22,177,478
 
         return arg_parser.parse_args()
 

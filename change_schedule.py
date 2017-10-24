@@ -27,7 +27,7 @@ def parse_argument():
     return arg_parser.parse_args()
 
 
-def open_db(db_name, host='gollum', port=37017):
+def open_db(db_name, host='frodo', port=27018):
     """
     몽고 디비 핸들 오픈
     """
@@ -46,53 +46,59 @@ def change_db_info():
     # cursor = collection.find({'group': 'naver_crawler'})[:]
     # cursor = collection.find({'_id': {'$regex': 'image'}})[:]
     # cursor = collection.find({'_id': 'crawler_nate_economy_2017'})[:]
-    cursor = collection.find({'group': {'$regex': 'nate_'}})[:]
+    # cursor = collection.find({'group': {'$regex': 'jisikman'}})[:]
+    # cursor = collection.find({'group': {'$regex': 'mlbpark_'}})[:]
+    # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
+    # cursor = collection.find({'_id': 'crawler_lineagem_free_latest'})[:]
+    cursor = collection.find({'docker.network': 'hadoop-net'})[:]
 
     for document in cursor:
-        db_info = document['parameter']['db_info']
+        # upsert = False
+        # if 'replace' in document['parameter']:
+        #     upsert = document['parameter']['replace']
+        #     del document['parameter']['replace']
 
-        upsert = False
-        if 'replace' in document['parameter']:
-            upsert = document['parameter']['replace']
-            del document['parameter']['replace']
+        print(document['_id'], flush=True)
+        # db_info = document['parameter']['db_info']
+        #
+        # document['parameter']['max_skip'] = 5000
+        # document['parameter']['db_info'] = {
+        #     'mongo': {
+        #         'host': 'frodo01',
+        #         'port': 27018,
+        #         'name': db_info['mongo']['name'],
+        #         'upsert': upsert
+        #     },
+        #     'mqtt': {
+        #         '#host': 'gollum',
+        #         '#topic': 'crawler'
+        #     },
+        #     'kafka': {
+        #         '#host': 'master',
+        #         '#domain': 'economy',
+        #         '#topic': 'crawler',
+        #         '#name': ''
+        #     },
+        #     'elastic': {
+        #         'host': 'frodo',
+        #         'upsert': True,
+        #         'index': db_info['mongo']['name'],
+        #         'auth': [
+        #             'elastic',
+        #             'nlplab'
+        #         ]
+        #     }
+        # }
 
-        document['parameter']['max_skip'] = 5000
-
-        document['parameter']['db_info'] = {
-            'mongo': {
-                'host': 'gollum',
-                'port': 37017,
-                'name': db_info['mongo']['name'],
-                'upsert': upsert
-            },
-            'mqtt': {
-                '#host': 'gollum',
-                '#topic': 'crawler'
-            },
-            'kafka': {
-                '#host': 'master',
-                '#domain': 'economy',
-                '#topic': 'crawler',
-                '#name': ''
-            },
-            'elastic': {
-                'host': 'gollum',
-                'upsert': True,
-                'index': db_info['mongo']['name'],
-                'auth': [
-                    'elastic',
-                    'nlplab'
-                ]
-            }
-        }
+        if 'network' in document['docker']:
+            del document['docker']['network']
 
         document['docker']['volume'] = '/data/nlp_home/docker/crawler:/crawler:ro'
-        document['docker']['network'] = 'hadoop-net'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
 
-        collection.replace_one({'_id': document['_id']}, document, upsert=True)
+        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
 
     cursor.close()
 
@@ -110,8 +116,32 @@ def change_volume():
     cursor = collection.find({'docker.volume': '/home/ejpark/workspace/crawler:/crawler:ro'})[:]
 
     for document in cursor:
-
         document['docker']['volume'] = '/home/docker/crawler:/crawler:ro'
+
+        str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
+        print(str_document, flush=True)
+
+        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
+
+    cursor.close()
+
+    connect.close()
+
+    return
+
+
+def change_network():
+    """
+    """
+    connect, db = open_db('crawler')
+
+    collection = db.get_collection('schedule')
+    cursor = collection.find({'docker.network': {'$exists': 1}})[:]
+
+    for document in cursor:
+        del document['docker']['network']
+
+        document['docker']['volume'] = '/data/nlp_home/docker/crawler:/crawler:ro'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
@@ -128,3 +158,4 @@ def change_volume():
 if __name__ == '__main__':
     # change_volume()
     change_db_info()
+    # change_network()
