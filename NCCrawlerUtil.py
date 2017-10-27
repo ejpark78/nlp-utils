@@ -171,8 +171,9 @@ class NCCrawlerUtil:
 
         # json 일 경우
         if json is True:
+            result = ''
             try:
-                return page_html.json()
+                result = page_html.json()
             except Exception as err:
                 if page_html.content == b'':
                     return None
@@ -188,6 +189,8 @@ class NCCrawlerUtil:
                 else:
                     print('Unexpected error:', sys.exc_info()[0])
                     raise
+
+            return result
 
         # post로 요청했을 때 바로 반환
         if post_data is not None:
@@ -649,13 +652,6 @@ class NCCrawlerUtil:
         """
         url 단축
         """
-        parsing_url = None
-        if 'url' in parsing_info:
-            parsing_url = parsing_info['url']
-
-        if parsing_url is None:
-            return
-
         query, base_url, parsed_url = self.get_query(document['url'])
 
         url_info = {
@@ -664,36 +660,53 @@ class NCCrawlerUtil:
             'query': query
         }
 
-        if 'source_url' in document:
-            url_info['source'] = document['source_url']
-            del document['source_url']
+        if 'url' in parsing_info:
+            parsing_url = parsing_info['url']
 
-        if 'simple_query' in parsing_url:
-            str_query = parsing_url['simple_query'].format(**query)
-            url_info['simple'] = '{}?{}'.format(base_url, str_query)
+            if 'source_url' in document:
+                url_info['source'] = document['source_url']
+                del document['source_url']
+
+            if 'simple_query' in parsing_url:
+                str_query = parsing_url['simple_query'].format(**query)
+                url_info['simple'] = '{}?{}'.format(base_url, str_query)
+
+            simple_url = url_info['full']
+
+            try:
+                if 'replace' in parsing_url:
+                    for pattern in parsing_url['replace']:
+                        simple_url = re.sub(pattern['from'], pattern['to'], simple_url)
+
+                    url_info['simple'] = simple_url
+            except Exception as err:
+                pass
 
         document['url'] = url_info
 
         # 문서 아이디 추출
-        document_id = url_info['full']
-        document_id = document_id.replace('{}://{}'.format(parsed_url.scheme, parsed_url.hostname), '')
+        if 'id' in parsing_info:
+            parsing_id = parsing_info['id']
 
-        try:
-            if 'replace' in parsing_url:
-                for pattern in parsing_url['replace']:
-                    document_id = re.sub(pattern['from'], pattern['to'], document_id)
+            document_id = url_info['full']
+            document_id = document_id.replace('{}://{}'.format(parsed_url.scheme, parsed_url.hostname), '')
 
-                document['_id'] = document_id
-            else:
+            try:
+                if 'replace' in parsing_id:
+                    for pattern in parsing_id['replace']:
+                        document_id = re.sub(pattern['from'], pattern['to'], document_id)
+
+                    document['_id'] = document_id
+                else:
+                    document['_id'] = self.get_document_id(document_id)
+            except Exception as err:
                 document['_id'] = self.get_document_id(document_id)
-        except Exception as err:
-            document['_id'] = self.get_document_id(document_id)
 
-        try:
-            if '_id' in parsing_url and len(query) > 0:
-                document['_id'] = parsing_url['_id'].format(**query)
-        except Exception as err:
-            document['_id'] = self.get_document_id(document_id)
+            try:
+                if '_id' in parsing_id and len(query) > 0:
+                    document['_id'] = parsing_id['_id'].format(**query)
+            except Exception as err:
+                document['_id'] = self.get_document_id(document_id)
 
         return
 

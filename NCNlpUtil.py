@@ -29,17 +29,38 @@ class NCNlpUtil:
 
         self.domain = None
 
-    def open_sp_project_ner(self, config='sp_config.ini', domain='baseball'):
+        self.multi_domain_ner = {}
+
+    def open_multi_domain_ner(self, config='sp_config.ini'):
         """
         개체명 인식기 핸들 오픈
+        
+        # domain( "B"=야구 "E"=경제 "T"=야구 용어 )
         """
         from NCSPProject import NCSPProject
 
-        if self.sp_project_ne_tagger is None or self.domain != domain:
-            self.domain = domain
+        domain_list = {
+            'B': 'baseball',
+            'E': 'economy',
+            'T': 'baseball terms'
+        }
 
-            self.sp_project_ne_tagger = NCSPProject()
-            self.sp_project_ne_tagger.open(config, domain)
+        for d in domain_list:
+            self.multi_domain_ner[domain_list[d]] = NCSPProject()
+            self.multi_domain_ner[domain_list[d]].open(config, d)
+
+        return
+
+    def open_sp_project_ner(self, config='sp_config.ini', domain='B'):
+        """
+        개체명 인식기 핸들 오픈
+
+        # domain( "B"=야구 "E"=경제 "T"=야구 용어 )
+        """
+        from NCSPProject import NCSPProject
+
+        self.sp_project_ne_tagger = NCSPProject()
+        self.sp_project_ne_tagger.open(config, domain)
 
         return
 
@@ -499,6 +520,24 @@ class NCNlpUtil:
             tree += '({} {})'.format(token_sent[i], leaf_node)
 
         return '(S {})'.format(tree)
+
+    def run_multi_domain_ner_sentence(
+            self, sentence, pos_tagged, domain_list=['baseball terms', 'baseball', 'economy']):
+        """
+        사전기반 개체명 인식기 실행
+        """
+        result = {}
+        try:
+            for domain in domain_list:
+                if domain not in self.multi_domain_ner:
+                    continue
+
+                ne_tagged = self.multi_domain_ner[domain].translate(sentence, pos_tagged).strip()
+                result[domain] = ne_tagged
+        except Exception as err:
+            result = ''
+
+        return result
 
     def run_sp_project_named_entity_sentence(self, sentence, pos_tagged):
         """
@@ -966,7 +1005,8 @@ if __name__ == "__main__":
         util.open_pos_tagger(dictionary_path='dictionary/rsc')
 
         if args.ner is True:
-            util.open_sp_project_ner(config='sp_config.ini', domain='baseball')
+            # util.open_sp_project_ner(config='sp_config.ini', domain='B')
+            util.open_multi_domain_ner(config='sp_config.ini')
 
     for sentence in sys.stdin:
         sentence = sentence.strip()
@@ -981,5 +1021,6 @@ if __name__ == "__main__":
 
         if args.ner is True:
             pos_tagged, _ = util.run_pos_tagger_sentence(sentence)
-            named_entity = util.run_sp_project_named_entity_sentence(sentence, pos_tagged)
+
+            named_entity = util.run_multi_domain_ner_sentence(sentence, pos_tagged)
             print(named_entity, flush=True)

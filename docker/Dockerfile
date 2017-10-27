@@ -1,12 +1,14 @@
 FROM debian:stretch
 
-MAINTAINER ejpark@ncsoft.co.kr
+LABEL maintainer="ejpark@ncsoft.co.kr"
+
 
 # 사용자를 root로 설정
 USER root
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV NOTVISIBLE "in users profile"
 
 
 # 1. apt 저장소 변경
@@ -15,16 +17,12 @@ RUN rm -rf /var/lib/apt/lists/* \
 		echo "deb http://frodo/debian stretch main contrib non-free"; \
 		echo "deb http://frodo/debian stretch-updates main contrib non-free"; \
 	} > /etc/apt/sources.list \
-    && echo "172.20.51.91 frodo" >> /etc/hosts
-
-
-# 2. 로케일 & 파이썬 설치
-RUN apt-get update -yq \
-    && apt-get install -yq --no-install-recommends --no-install-suggests \
-        apt-utils \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN apt-get update -yq \
+    && echo "172.20.51.91 frodo" >> /etc/hosts \
+    \
+    && apt-get update -yq \
+    \
+    && echo && echo "# 2. 로케일 & 파이썬 설치" \
+    \
     && apt-get install -yq --no-install-recommends \
         locales \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
@@ -32,10 +30,12 @@ RUN apt-get update -yq \
     && echo "ko_KR.EUC-KR EUC-KR" >> /etc/locale.gen \
     && locale-gen \
     && apt-get install -yq --no-install-recommends \
+        bridge-utils \
         build-essential \
+        cron \
         ipython \
-        jupyter-notebook \
         libdb-dev \
+        net-tools \
         openssh-server \
         python3 \
         python3-dateutil \
@@ -44,24 +44,51 @@ RUN apt-get update -yq \
         python3-pip \
         sqlite3 \
         supervisor \
-        net-tools \
-        bridge-utils \
+        sudo \
+    \
+    && echo && echo "# pycharm 의존 라이브러리 " \
+    && apt-get install -yq --no-install-recommends \
+        git \
+        fonts-nanum \
+        fonts-nanum-coding \
+        fonts-unfonts-core \
+        hunspell-ko \
+        iceweasel \
+        xauth \
+        xfonts-100dpi \
+        xfonts-75dpi \
+        xfonts-cyrillic \
+        xz-utils \
+        libxrender1 \
+        libxtst6 \
+        libfreetype6 \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    \
+    && echo && echo "# ssh 설정" \
     && mkdir -p /var/run/sshd \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-
-# 3. 파이썬 라이브러리 설치
-RUN mkdir -p ~/.pip \
+    && sed -i 's/^mesg/# mesg/' /root/.profile \
+    && echo "export VISIBLE=now" >> /etc/profile \
+    && touch /root/.Xauthority \
+    && sed -i 's/^#X11UseLocalhost yes/X11UseLocalhost no/' /etc/ssh/sshd_config \
+    && echo "Ciphers arcfour,blowfish-cbc" >> /etc/ssh/sshd_config \
+    \
+    && echo && echo "# 3. 파이썬 라이브러리 설치" \
+    && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
 		echo "index-url = http://frodo:3141/root/pypi"; \
 		echo "[install]"; \
 		echo "trusted-host = frodo"; \
-	} > ~/.pip/pip.conf
-
-RUN pip3 install --upgrade pip setuptools wheel && sync
-RUN pip3 install --upgrade \
+	} > ~/.pip/pip.conf \
+    \
+    && pip3 install --upgrade \
+        pip \
+        setuptools \
+        wheel \
+    && sync \
+    \
+    && pip3 install --upgrade \
         bs4 \
         bsddb3 \
         requests \
@@ -72,33 +99,30 @@ RUN pip3 install --upgrade \
         jupyter \
         elasticsearch \
         python-crfsuite \
+        cython \
     && python3 -m ipykernel.kernelspec \
-    && rm -rf $HOME/.cache
+    && rm -rf $HOME/.cache \
+    \
+    && mkdir -p /root/users
 
 
 # 4. 설정 파일 복사
+ENV ROOT_INIT_DIR="/usr/local/init.d/root"
+
+RUN mkdir -p $ROOT_INIT_DIR
+
 COPY etc/skel /root/
 COPY etc/supervisor/* /etc/supervisor/conf.d/
 
-
-# 5. 시스템 유틸 설치
-ENV USER_INIT_DIR="/usr/local/init.d/user"
-ENV ROOT_INIT_DIR="/usr/local/init.d/root"
-
-RUN mkdir -p $USER_INIT_DIR $ROOT_INIT_DIR
-
 COPY sbin/* /usr/local/sbin/
-COPY init.d/user/* $USER_INIT_DIR/
+
 COPY init.d/root/* $ROOT_INIT_DIR/
 
+COPY etc/*.extra /etc/
+
 RUN chmod 755 /usr/local/sbin/* /usr/local/init.d/* \
-    && chmod -R 777 /usr/local/sbin/* ${USER_INIT_DIR}/*
+    && chmod -R 777 /usr/local/sbin/* $ROOT_INIT_DIR/*
 
-ENV NOTVISIBLE "in users profile"
-
-
-# 6. host 파일 추가
-COPY etc/hosts /etc/hosts.custom
 
 # 7. 공유 폴더 위치 및 작업 위치 지정
 VOLUME ["/home"]

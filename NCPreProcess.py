@@ -599,12 +599,19 @@ class NCPreProcess:
         if 'title' in document and document['title'] != '':
             sentence = document['title']
 
-            document['title_pos_tagged'], _ = self.util.run_pos_tagger_sentence(sentence, max_sentence)
-            if document['title_pos_tagged'] != '':
-                document['title_named_entity'] = self.util.run_sp_project_named_entity_sentence(
-                    sentence, document['title_pos_tagged'])
+            pos_tagged, _ = self.util.run_pos_tagger_sentence(sentence, max_sentence)
+            named_entity = {}
 
-                pos_tagged_buffer.append([document['title_pos_tagged']])
+            if pos_tagged != '':
+                named_entity = self.util.run_multi_domain_ner_sentence(sentence, pos_tagged)
+                pos_tagged_buffer.append([pos_tagged])
+
+            document['title'] = {
+                'sentence': sentence,
+                'pos_tagged': pos_tagged,
+                'named_entity': named_entity
+            }
+
 
         if 'image_list' in document:
             buf = []
@@ -612,12 +619,18 @@ class NCPreProcess:
                 if 'caption' in item and item['caption'] != '':
                     sentence = item['caption']
 
-                    item['caption_pos_tagged'], _ = self.util.run_pos_tagger_sentence(sentence, max_sentence)
-                    if item['caption_pos_tagged'] != '':
-                        item['caption_named_entity'] = self.util.run_sp_project_named_entity_sentence(
-                            sentence, item['caption_pos_tagged'])
+                    pos_tagged, _ = self.util.run_pos_tagger_sentence(sentence, max_sentence)
+                    named_entity = {}
 
-                        buf.append(item['caption_pos_tagged'])
+                    if pos_tagged != '':
+                        named_entity = self.util.run_multi_domain_ner_sentence(sentence, pos_tagged)
+                        buf.append(pos_tagged)
+
+                    document['caption'] = {
+                        'sentence': sentence,
+                        'pos_tagged': pos_tagged,
+                        'named_entity': named_entity
+                    }
 
             if len(buf) > 0:
                 pos_tagged_buffer.append(buf)
@@ -634,11 +647,11 @@ class NCPreProcess:
                     if sentence == '':
                         continue
 
-                    named_entity = ''
+                    named_entity = {}
                     pos_tagged, _ = self.util.run_pos_tagger_sentence(sentence, max_sentence)
 
                     if pos_tagged != '':
-                        named_entity = self.util.run_sp_project_named_entity_sentence(sentence, pos_tagged)
+                        named_entity = self.util.run_multi_domain_ner_sentence(sentence, pos_tagged)
 
                     pos_tagged_buf.append(pos_tagged)
                     named_entity_buf.append(named_entity)
@@ -677,6 +690,7 @@ class NCPreProcess:
         self.util = NCNlpUtil()
         self.util.open_pos_tagger(dictionary_path='dictionary/rsc')
         self.util.open_sp_project_ner(config='src/sp_config.ini', domain=domain)
+        self.util.open_multi_domain_ner(config='src/sp_config.ini')
 
         self.keywords_extractor = NCNewsKeywords(entity_file_name='dictionary/keywords/nc_entity.txt')
 

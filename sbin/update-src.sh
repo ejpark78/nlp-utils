@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-for filename in $(ls ../*.py) ; do
+for filename in $(ls ../*.py ../*.ini ../*.so) ; do
     fname=$(basename ${filename})
 
     if [ -f ${fname} ] ; then
@@ -10,3 +10,4 @@ for filename in $(ls ../*.py) ; do
     echo ${filename} ${fname}
     ln -s ${filename} ${fname}
 done
+

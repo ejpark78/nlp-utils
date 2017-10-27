@@ -1,10 +1,15 @@
 #!/bin/bash
 
-# custom host 추가
-if [ -f /etc/hosts.custom ] ; then
-    echo "custom host 추가"
-    cat /etc/hosts.custom >> /etc/hosts
-fi
+# extra 추가
+for extra in hosts group gshadow passwd shadow ; do
+    if [ -f /etc/${extra}.extra ] ; then
+        echo "${extra}.extra 추가"
+
+        echo >> /etc/${extra}
+        echo "# extra" >> /etc/${extra}
+        cat /etc/${extra}.extra >> /etc/${extra}
+    fi
+done
 
 # 사용자 계정 추가
 if [ -d /mnt/etc ] ; then
@@ -17,14 +22,16 @@ if [ -d /mnt/etc ] ; then
 fi
 
 # sudoer 추가
-if [ -f /mnt/etc/passwd ] ; then
-    for user_name in $(cat /mnt/etc/passwd | grep -v ^# | cut -f1 -d':') ; do
-        adduser ${user_name} sudo
-    done
+for passwd in /mnt/etc/passwd /etc/passwd.extra ; do
+    if [ -f ${passwd} ]; then
+        for user_name in $(cat ${passwd} | grep -v ^# | cut -f1 -d':') ; do
+            adduser ${user_name} sudo
+        done
+    fi
+done
 
-    echo "sudoer 사용자 권한 추가"
-    echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-fi
+echo "sudoer 사용자 권한 추가"
+echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # skel 복사
 if [ -d /mnt/etc/skel ] ; then

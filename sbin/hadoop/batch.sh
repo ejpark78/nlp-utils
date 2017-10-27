@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-max_map=60
+max_map=90
 
-home="data/naver/kbaseball"
-domain="kbaseball"
+home="data/nate_baseball"
+domain="baseball"
 
 dry=""
 
-for fname in $(ls -r ${home}/*.by_month/????-??.bz2) ; do
+for fname in $(ls -r ${home}/????.bz2) ; do
     type_name=$(basename ${fname})
     type_name="${type_name/.bz2/}"
 
@@ -35,6 +35,6 @@ for fname in $(ls -r ${home}/*.by_month/????-??.bz2) ; do
 
     if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
         mapper="java -Xms1g -Xmx1g -jar parser/parser.jar dictionary/model/"
-        time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
+        #time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
     fi
 done
