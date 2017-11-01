@@ -2,7 +2,7 @@
 
 max_map=90
 
-home="data/nate"
+home="data/nate_baseball"
 
 dry=""
 
@@ -11,7 +11,7 @@ for section in $(\ls -d ${home}/*/) ; do
 
     echo ${section}
 
-    for fname in $(\ls -r ${home}/${section}/*.by_month/????-??.bz2) ; do
+    for fname in $(\ls -r ${home}/${section}/*.by_month/????.bz2) ; do
         type_name=$(basename ${fname})
         type_name="${type_name/.bz2/}"
 
@@ -25,25 +25,20 @@ for section in $(\ls -d ${home}/*/) ; do
         output="${input_path}/${type_name}.pos.bz2"
 
         if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
-            domain="economy"
-            if [ "${section}" == "kbaseball" ] || [ "${section}" == "wbaseball" ] ; then
-                domain="baseball"
-            fi
+            echo "Morph: " ${input}, ${output}
 
-            echo "Morph: " ${input}, ${output}, ${domain}
-
-            mapper="src/NCPreProcess.py -spark_batch -domain ${domain}"
+            mapper="src/NCPreProcess.py -spark_batch"
             time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
         fi
 
         # 의존 파서
-        input="${output}"
-        output="${input_path}/${type_name}.parsed.bz2"
-
-        if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
-            echo "Parser: " ${input}, ${output}
-            mapper="java -Xms1g -Xmx1g -jar parser/parser.jar dictionary/model/"
+#        input="${output}"
+#        output="${input_path}/${type_name}.parsed.bz2"
+#
+#        if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
+#            echo "Parser: " ${input}, ${output}
+#            mapper="java -Xms1g -Xmx1g -jar parser/parser.jar dictionary/model/"
 #            time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
-        fi
+#        fi
     done
 done

@@ -70,7 +70,7 @@ RUN rm -rf /var/lib/apt/lists/* \
     && echo "export VISIBLE=now" >> /etc/profile \
     && touch /root/.Xauthority \
     && sed -i 's/^#X11UseLocalhost yes/X11UseLocalhost no/' /etc/ssh/sshd_config \
-    && echo "Ciphers arcfour,blowfish-cbc" >> /etc/ssh/sshd_config \
+    && echo "Ciphers arcfour,blowfish-cbc,3des-cbc,cast128-cbc,arcfour128,arcfour256,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com" >> /etc/ssh/sshd_config \
     \
     && echo && echo "# 3. 파이썬 라이브러리 설치" \
     && mkdir -p ~/.pip \

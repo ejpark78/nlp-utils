@@ -32,7 +32,7 @@ f_dir=$(dirname ${input_filename})
 f_name=${f_base%.*}
 
 # home 경로
-home="hdfs://master:9000/user/"$(id -un)
+home="hdfs://gollum:9000/user/"$(id -un)
 
 # 최대 map task 수
 max_reduce_count=0

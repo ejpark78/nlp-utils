@@ -299,6 +299,9 @@ class NCCrawlerUtil:
         """
         kafka 에 메세지 전송
         """
+        # import logging
+        # logging.basicConfig(level=logging.DEBUG)
+
         if 'port' not in kafka_info:
             kafka_info['port'] = 9092
 
@@ -306,14 +309,20 @@ class NCCrawlerUtil:
             from kafka import KafkaProducer
 
             producer = KafkaProducer(
-                bootstrap_servers='{}:{}'.format(kafka_info['host'], kafka_info['port']), compression_type='gzip')
+                bootstrap_servers='{}:{}'.format(kafka_info['host'], kafka_info['port']),
+                compression_type='gzip'
+            )
 
             # 크롤러 메타 정보 저장
             document['crawler_meta'] = kafka_info
             if self.job_info is not None:
                 document['crawler_meta']['job_id'] = self.job_info['_id']
 
-            document['crawler_meta']['collection'] = mongodb_info['collection']
+                if 'result' in document['crawler_meta']:
+                    result_info = document['crawler_meta']['result']
+
+                    if 'elastic' in result_info:
+                        result_info['elastic']['type'] = mongodb_info['collection']
 
             message = json.dumps(document, ensure_ascii=False, default=NCNlpUtil().json_serial)
 
@@ -321,6 +330,10 @@ class NCCrawlerUtil:
             producer.flush()
         except Exception as err:
             NCNlpUtil().print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
+
+        # debug:
+        #   kafka-topics.sh --list --zookeeper gollum:2181
+        #   kafka-console-consumer.sh --bootstrap-server gollum:9092 --topic crawler --from-beginning
 
         return
 

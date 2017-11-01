@@ -36,7 +36,7 @@ def create_elastic_index(elastic, index_name=None):
     return
 
 
-def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
+def save_elastic(document, result_info):
     """
     elastic search에 저장
     """
@@ -48,25 +48,22 @@ def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
     from datetime import datetime
     document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
+    # defaults
+    if 'port' not in result_info:
+        result_info['port'] = 9200
+
     try:
         from elasticsearch import Elasticsearch
 
-        if auth is True:
-            elastic = Elasticsearch(
-                [host],
-                http_auth=('elastic', 'nlplab'),
-                use_ssl=True,
-                verify_certs=False,
-                port=9200)
-        else:
-            elastic = Elasticsearch(
-                [host],
-                use_ssl=True,
-                verify_certs=False,
-                port=9200)
+        elastic = Elasticsearch(
+            [result_info['host']],
+            http_auth=('elastic', 'nlplab'),
+            use_ssl=True,
+            verify_certs=False,
+            port=result_info['port'])
 
-        if elastic.indices.exists(index) is False:
-            create_elastic_index(elastic, index)
+        if elastic.indices.exists(result_info['index']) is False:
+            create_elastic_index(elastic, result_info['index'])
 
         document['document_id'] = document['_id']
         del document['_id']
@@ -74,8 +71,8 @@ def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
         bulk_data = []
         bulk_data.append({
             'update': {
-                '_index': index,
-                '_type': type,
+                '_index': result_info['index'],
+                '_type': result_info['type'],
                 '_id': document['document_id']
             }
         })
@@ -85,7 +82,7 @@ def save_elastic(document, host, index, type, auth=('elastic', 'nlplab')):
             'doc_as_upsert': True
         })
 
-        elastic.bulk(index=index, body=bulk_data, refresh=True)
+        elastic.bulk(index=result_info['index'], body=bulk_data, refresh=True)
 
     except Exception as err:
         print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
@@ -134,22 +131,18 @@ def map_function(x):
         msg = 'ERROR at json parsing: {}'.format(line)
         return msg
 
-    domain = manager.util.domain
-    db_name = 'spark_streaming'
-    collection = 'crawler'
-
     # 크롤러 메타 정보 제거
+    result_info = {}
     if 'crawler_meta' in document:
-        domain = document['crawler_meta']['domain']
-        db_name = document['crawler_meta']['name']
-        collection = document['crawler_meta']['collection']
+        if 'result' in document['crawler_meta']:
+            result_info = document['crawler_meta']['result'].copy()
 
         del document['crawler_meta']
 
     # 사전 오픈
     try:
         manager.util.open_pos_tagger()
-        manager.util.open_sp_project_ner(domain=domain)
+        manager.util.open_multi_domain_ner()
     except Exception:
         return 'ERROR at open pos tagger: {}'.format(sys.exc_info()[0])
 
@@ -173,18 +166,25 @@ def map_function(x):
                 import dateutil.parser
                 result['date'] = dateutil.parser.parse(result['date'])
 
-            # save_mongodb(result.copy(), host='gollum02', db_name=db_name, collection=collection, port=27017)
-            save_elastic(result.copy(), host='gollum', index=db_name, type=collection, auth=None)
-            save_elastic(result.copy(), host='yoma07', index=db_name, type=collection, auth=('elastic', 'nlplab'))
+            # if 'mongo' in result_info:
+            #     save_mongodb(result.copy(), result_info=result_info['mongo'])
+
+            if 'elastic' in result_info:
+                save_elastic(result.copy(), result_info=result_info['elastic'])
     except Exception:
         return 'ERROR at save: {}'.format(sys.exc_info()[0])
 
     msg = 'OK'
     try:
-        buf = [db_name, collection]
-        for k in ['date', '_id', 'title']:
+        buf = [result_info['elastic']['index'], result_info['elastic']['type']]
+        for k in ['date', '_id']:
             if k in result:
                 buf.append('{}'.format(result[k]))
+
+        if isinstance(result['title'], str) is not True:
+            buf.append('{}'.format(result['title']['sentence']))
+        else:
+            buf.append('{}'.format(result['title']))
 
         msg = '\t'.join(buf)
     except Exception:
@@ -193,20 +193,15 @@ def map_function(x):
     return msg
 
 
-def update_library(sc):
+def update_library(sc, user_name='ejpark'):
     """
     """
-    sc.addFile('hdfs:///user/root/src/_NCKmat.so')
-    sc.addFile('hdfs:///user/root/src/_NCSPProject.so')
-    sc.addFile('hdfs:///user/root/src/sp_config.ini')
+    for f_name in ('_NCKmat.so', '_NCSPProject.so', 'sp_config.ini'):
+        sc.addFile('hdfs:///user/{}/src/{}'.format(user_name, f_name))
 
-    sc.addPyFile('hdfs:///user/root/src/NCKmat.py')
-    sc.addPyFile('hdfs:///user/root/src/NCSPProject.py')
-    sc.addPyFile('hdfs:///user/root/src/NCPreProcess.py')
-    sc.addPyFile('hdfs:///user/root/src/NCCrawlerUtil.py')
-    sc.addPyFile('hdfs:///user/root/src/NCNlpUtil.py')
-    sc.addPyFile('hdfs:///user/root/src/NCHtmlParser.py')
-    sc.addPyFile('hdfs:///user/root/src/NCNewsKeywords.py')
+    for f_name in ('NCKmat.py', 'NCSPProject.py', 'NCPreProcess.py', 'NCCrawlerUtil.py', 'NCNlpUtil.py',
+                   'NCHtmlParser.py', 'NCNewsKeywords.py'):
+        sc.addPyFile('hdfs:///user/{}/src/{}'.format(user_name, f_name))
 
     return
 
@@ -227,6 +222,8 @@ def parse_argument():
 
     arg_parser.add_argument('-topic', help='kafka topic', default='crawler')
 
+    arg_parser.add_argument('-user_name', help='user name', default='ejpark')
+
     arg_parser.add_argument('-debug', help='debug', action='store_true', default=False)
 
     return arg_parser.parse_args()
@@ -236,9 +233,9 @@ if __name__ == "__main__":
     conf = SparkConf()
     sc = SparkContext(appName='crawler', conf=conf)
 
-    update_library(sc)
-
     args = parse_argument()
+
+    update_library(sc, user_name=args.user_name)
 
     # 사전 초기화
     from NCNlpUtil import NCNlpUtil
@@ -250,18 +247,13 @@ if __name__ == "__main__":
     manager.util = NCNlpUtil()
     manager.parser = NCHtmlParser()
 
-    # manager.util.open_pos_tagger()
-    # manager.util.open_sp_project_ner(domain=domain)
-
-    manager.util.domain = args.domain
-
     manager.keywords_extractor = NCNewsKeywords(entity_file_name='dictionary/keywords/nc_entity.txt')
 
     global_manager = sc.broadcast(manager)
 
     ssc = StreamingContext(sc, 3)
 
-    ds = KafkaUtils.createDirectStream(ssc, [args.topic], {'metadata.broker.list': 'master:9092'})
+    ds = KafkaUtils.createDirectStream(ssc, [args.topic], {'metadata.broker.list': 'gollum:9092'})
 
     result = ds.map(map_function)
     result.pprint()

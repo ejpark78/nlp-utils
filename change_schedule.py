@@ -46,59 +46,43 @@ def change_db_info():
     # cursor = collection.find({'group': 'naver_crawler'})[:]
     # cursor = collection.find({'_id': {'$regex': 'image'}})[:]
     # cursor = collection.find({'_id': 'crawler_nate_economy_2017'})[:]
-    # cursor = collection.find({'group': {'$regex': 'jisikman'}})[:]
-    # cursor = collection.find({'group': {'$regex': 'mlbpark_'}})[:]
     # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
-    # cursor = collection.find({'_id': 'crawler_lineagem_free_latest'})[:]
-    cursor = collection.find({'docker.network': 'hadoop-net'})[:]
+    # cursor = collection.find({'docker.network': 'hadoop-net'})[:]
+
+    cursor = collection.find({'_id': {'$regex': 'naver_'}})[:]
 
     for document in cursor:
-        # upsert = False
-        # if 'replace' in document['parameter']:
-        #     upsert = document['parameter']['replace']
-        #     del document['parameter']['replace']
-
         print(document['_id'], flush=True)
-        # db_info = document['parameter']['db_info']
-        #
-        # document['parameter']['max_skip'] = 5000
-        # document['parameter']['db_info'] = {
-        #     'mongo': {
-        #         'host': 'frodo01',
-        #         'port': 27018,
-        #         'name': db_info['mongo']['name'],
-        #         'upsert': upsert
-        #     },
-        #     'mqtt': {
-        #         '#host': 'gollum',
-        #         '#topic': 'crawler'
-        #     },
-        #     'kafka': {
-        #         '#host': 'master',
-        #         '#domain': 'economy',
-        #         '#topic': 'crawler',
-        #         '#name': ''
-        #     },
-        #     'elastic': {
-        #         'host': 'frodo',
-        #         'upsert': True,
-        #         'index': db_info['mongo']['name'],
-        #         'auth': [
-        #             'elastic',
-        #             'nlplab'
-        #         ]
-        #     }
-        # }
+        db_info = document['parameter']['db_info']
+
+        document['parameter']['db_info'] = {
+            'mongo': {
+                'host': 'frodo01',
+                'port': 27018,
+                'name': db_info['mongo']['name'],
+                'upsert': db_info['mongo']['upsert']
+            },
+            'kafka': {
+                'host': 'gollum',
+                'port': 9092,
+                'topic': 'crawler',
+                'result': {
+                    'elastic': {
+                        'host': 'frodo',
+                        'upsert': True,
+                        'index': db_info['mongo']['name']
+                    }
+                }
+            }
+        }
 
         if 'network' in document['docker']:
             del document['docker']['network']
 
-        document['docker']['volume'] = '/data/nlp_home/docker/crawler:/crawler:ro'
-
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
 
-        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
+        collection.replace_one({'_id': document['_id']}, document, upsert=True)
 
     cursor.close()
 

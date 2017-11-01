@@ -68,9 +68,9 @@ class NCNlpUtil:
         """
         개체명 인식기 핸들 오픈
         """
-        from NCNamedEntity import NCNamedEntity
+        from NCNamedEntityTagger import NCNamedEntityTagger
 
-        self.ne_tagger = NCNamedEntity()
+        self.ne_tagger = NCNamedEntityTagger()
         self.ne_tagger.open(model_file)
 
         return
@@ -573,16 +573,11 @@ class NCNlpUtil:
 
         return result
 
-    def run_named_entity_sentence(self, sentence, ne_info=None):
+    def run_named_entity_sentence(self, sentence):
         """
         학습 기반 개체명 인식기 실행
         """
-        try:
-            return self.ne_tagger.tag_sentence(sentence, ne_info).strip()
-        except Exception as err:
-            pass
-
-        return ''
+        return self.ne_tagger.tag(sentence).strip()
 
     def run_named_entity(self, paragraphs, ne_info=None):
         """

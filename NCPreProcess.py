@@ -612,7 +612,6 @@ class NCPreProcess:
                 'named_entity': named_entity
             }
 
-
         if 'image_list' in document:
             buf = []
             for item in document['image_list']:
@@ -637,11 +636,27 @@ class NCPreProcess:
 
         if 'paragraph' in document:
             document['pos_tagged'] = []
-            document['named_entity'] = []
+            document['named_entity'] = {}
+
+            """
+            named_entity {
+                economy [
+                    [
+                    ],
+                ],
+                baseball [
+                
+                ],
+                baseball terms [
+                
+                ]
+            }
+            """
 
             for paragraph in document['paragraph']:
                 pos_tagged_buf = []
-                named_entity_buf = []
+
+                named_entity_buf = {}
 
                 for sentence in paragraph:
                     if sentence == '':
@@ -654,10 +669,20 @@ class NCPreProcess:
                         named_entity = self.util.run_multi_domain_ner_sentence(sentence, pos_tagged)
 
                     pos_tagged_buf.append(pos_tagged)
-                    named_entity_buf.append(named_entity)
+
+                    for domain in named_entity:
+                        if domain not in named_entity_buf:
+                            named_entity_buf[domain] = []
+
+                        named_entity_buf[domain].append(named_entity[domain])
 
                 document['pos_tagged'].append(pos_tagged_buf)
-                document['named_entity'].append(named_entity_buf)
+
+                for domain in named_entity_buf:
+                    if domain not in document['named_entity']:
+                        document['named_entity'][domain] = []
+
+                    document['named_entity'][domain].append(named_entity_buf[domain])
 
                 pos_tagged_buffer.append(pos_tagged_buf)
 
@@ -718,6 +743,22 @@ class NCPreProcess:
                 continue
 
             print(str_result, flush=True)
+
+        return
+
+    def ner_stdin(self):
+        """
+        """
+        self.util = NCNlpUtil()
+        self.util.open_ner()
+
+        with open('data/baseball_kangwon_test.sent', 'r') as fp:
+            for sentence in fp.readlines():
+                sentence = sentence.strip()
+
+                named_entity = self.util.run_named_entity_sentence(sentence)
+
+                print(named_entity)
 
         return
 
@@ -783,6 +824,8 @@ class NCPreProcess:
 
         arg_parser.add_argument('-spark_batch', help='스파크 테스트', action='store_true', default=False)
 
+        arg_parser.add_argument('-ner', help='개체명 인식기 실행', action='store_true', default=False)
+
         arg_parser.add_argument('-format', help='출력 형식', default='json')
 
         return arg_parser.parse_args()
@@ -823,3 +866,6 @@ if __name__ == "__main__":
     # 하둡 관련
     if args.spark_batch is True:
         manager.spark_batch_stdin(args.domain)
+
+    if args.ner is True:
+        manager.ner_stdin()
