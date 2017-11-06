@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -6,45 +6,61 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
+import json
+import dateutil.parser
 
+from datetime import datetime
+from elasticsearch import Elasticsearch
+
+# SSL 워닝 제거
+import urllib3
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+urllib3.disable_warnings()
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 requests.packages.urllib3.disable_warnings(UserWarning)
 
 
-class NCElastic:
-    def __init__(self, es_host=None, index_name=None):
-        self.es_host = es_host
+class NCElasticSearch:
+    """
+    엘라스틱 서치
+    """
+    def __init__(self, host=None, index_name=None):
+        """
+        엘라스틱 서치 생성자
+        :param host: 엘라스틱 서치 서버명
+        :param index_name: 인덱스
+        """
+        self.host = host
         self.index_name = index_name
 
         self.elastic_search = None
-        if es_host is not None:
-            self.open(self.es_host)
+        if host is not None:
+            self.open(self.host)
 
-    def open(self, es_host=None, index_name=None, auth=True):
+    def open(self, host=None, index_name=None, auth=True):
         """
         엘라스틱 서치 생섣
         """
-        if es_host is not None:
-            self.es_host = es_host
+        if host is not None:
+            self.host = host
 
         if index_name is not None:
             self.index_name = index_name
 
-        from elasticsearch import Elasticsearch
-
-        print('es_host:', self.es_host, flush=True)
+        print('host:', self.host, flush=True)
         if auth is True:
             self.elastic_search = Elasticsearch(
-                [self.es_host],
+                [self.host],
                 http_auth=('elastic', 'nlplab'),
                 use_ssl=True,
                 verify_certs=False,
                 port=9200)
         else:
             self.elastic_search = Elasticsearch(
-                [self.es_host],
+                [self.host],
                 use_ssl=True,
                 verify_certs=False,
                 port=9200)
@@ -77,9 +93,6 @@ class NCElastic:
         """
         문장 버퍼링을 위해 값을 복사
         """
-        import dateutil.parser
-        from datetime import datetime
-
         for k in source:
             if k == 'date':
                 if isinstance(source[k], datetime.date) is True:
@@ -216,17 +229,10 @@ class NCElastic:
 
         return
 
-    def insert_documents(self, es_host, index_name, type_name):
+    def insert_documents(self, index_name, type_name=None):
         """
         인덱스 생성
         """
-        import json
-
-        import urllib3
-        urllib3.disable_warnings()
-
-        self.open(es_host=es_host, index_name=index_name)
-
         # if self.elastic_search.indices.exists(index_name) is False:
         #     self.create_index(index_name)
 
@@ -249,16 +255,31 @@ class NCElastic:
                     if '$date' in document[k]:
                         document[k] = document[k]['$date']
                 except Exception as err:
-                    print(document['document_id'], flush=True)
+                    print(document['document_id'], document[k], flush=True)
 
+            # 인덱스의 타입을 지정하지 않았을 경우 날짜로 저장함
+            index_type = type_name
+            if type_name is None:
+                if 'date' in document:
+                    if isinstance(document['date'], datetime) is True:
+                        dt = document['date']
+                    else:
+                        dt = dateutil.parser.parse(document['date'])
+
+                    index_type = dt.strftime('%Y-%m')
+
+            if index_type is None:
+                print('ERROR (type extraction): ', document['date'], document['document_id'], flush=True)
+                continue
+
+            # elasticsearch 에서 날짜 인식 형식인 2017-10-10T12:00:00 으로 변환
             if document['date'][-1] == 'Z':
                 document['date'] = document['date'][0:len(document['date'])-1]
-                # print(document['date'], flush=True)
 
             bulk_data.append({
                 "update": {
                     "_index": index_name,
-                    "_type": type_name,
+                    "_type": index_type,
                     "_id": document['document_id']
                 }
             })
@@ -270,7 +291,7 @@ class NCElastic:
             count += 1
 
             if len(bulk_data) > 1000:
-                print('{:,}\t{}\t{}'.format(count, index_name, type_name), flush=True)
+                print('{:,}\t{}\t{}'.format(count, index_name, index_type), flush=True)
                 self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
                 bulk_data = []
 
@@ -287,39 +308,41 @@ class NCElastic:
 
         arg_parser = argparse.ArgumentParser(description='')
 
-        arg_parser.add_argument('-index', help='index name', default='baseball')
-        # arg_parser.add_argument('-es_host', help='elastic search host name', default='https://elastic:changeme@gollum.ncsoft.com')
-        arg_parser.add_argument('-es_host', help='elastic search host name', default='frodo')
-        arg_parser.add_argument('-type', help='type name', default='2016')
+        arg_parser.add_argument('-host', help='서버 이름', default='frodo')
 
-        arg_parser.add_argument('-search', help='search', action='store_true', default=False)
-        arg_parser.add_argument('-keyword', help='keyword', default=None)
+        arg_parser.add_argument('-index', help='인덱스', default='baseball')
+        arg_parser.add_argument('-type', help='타입', default=None)
 
-        arg_parser.add_argument('-limit', help='limit', type=int, default=-1)
+        arg_parser.add_argument('-insert', help='문서 입력', action='store_true', default=False)
 
-        arg_parser.add_argument('-create_index', help='create index', action='store_true', default=False)
-        arg_parser.add_argument('-delete_index', help='delete index', action='store_true', default=False)
-        arg_parser.add_argument('-delete_type', help='delete type', action='store_true', default=False)
-        arg_parser.add_argument('-insert_documents', help='insert documents', action='store_true', default=False)
+        # arg_parser.add_argument('-search', help='search', action='store_true', default=False)
+        # arg_parser.add_argument('-keyword', help='keyword', default=None)
+        #
+        # arg_parser.add_argument('-limit', help='limit', type=int, default=-1)
+        #
+        # arg_parser.add_argument('-create_index', help='create index', action='store_true', default=False)
+        # arg_parser.add_argument('-delete_index', help='delete index', action='store_true', default=False)
+        # arg_parser.add_argument('-delete_type', help='delete type', action='store_true', default=False)
 
         return arg_parser.parse_args()
 
 
 if __name__ == "__main__":
-    self = NCElastic()
+    self = NCElasticSearch()
 
     args = self.parse_argument()
-    self.open(args.es_host, args.index)
+    self.open(args.host, args.index)
 
-    if args.search is True:
-        self.search(args.keyword, index_name=args.index_name)
-    elif args.create_index is True:
-        self.create_index(args.index_name)
-    elif args.delete_index is True:
-        self.delete_index(args.index_name)
-    elif args.delete_type is True:
-        self.delete_type(args.index_name, args.type_name)
-    elif args.insert_documents is True:
-        self.insert_documents(es_host=args.es_host, index_name=args.index, type_name=args.type)
-    else:
-        self.find_one(args.index_name, args.type_name)
+    if args.insert is True:
+        self.insert_documents(index_name=args.index, type_name=args.type)
+
+    # if args.search is True:
+    #     self.search(args.keyword, index_name=args.index_name)
+    # elif args.create_index is True:
+    #     self.create_index(args.index_name)
+    # elif args.delete_index is True:
+    #     self.delete_index(args.index_name)
+    # elif args.delete_type is True:
+    #     self.delete_type(args.index_name, args.type_name)
+    # else:
+    #     self.find_one(args.index_name, args.type_name)

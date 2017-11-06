@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -12,8 +12,6 @@ from NCCrawlerUtil import NCCrawlerUtil
 from NCHtmlParser import NCHtmlParser
 from NCNlpUtil import NCNlpUtil
 from NCNewsKeywords import NCNewsKeywords
-
-from pymongo import MongoClient
 
 
 class NCPreProcess:
@@ -32,6 +30,8 @@ class NCPreProcess:
         """
         몽고 디비 핸들 오픈
         """
+        from pymongo import MongoClient
+
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
         db = connect[db_name]
 
@@ -518,6 +518,8 @@ class NCPreProcess:
         """
         collection = '2016'
 
+        from pymongo import MongoClient
+
         connect = MongoClient('mongodb://{}:{}'.format('gollum01', 27017))
 
         # 네이트 TV 문서 아이디를 가져옴
@@ -746,19 +748,23 @@ class NCPreProcess:
 
         return
 
-    def ner_stdin(self):
+    def eval_ner(self):
         """
         """
+        import re
+
         self.util = NCNlpUtil()
         self.util.open_ner()
 
-        with open('data/baseball_kangwon_test.sent', 'r') as fp:
-            for sentence in fp.readlines():
-                sentence = sentence.strip()
+        data_path = 'data/ner_eval'
+        for fname in ['baseball_kangwon_test.sent', 'baseball_ncsoft_test.sent', 'general_test.sent']:
+            with open('{}/{}'.format(data_path, fname), 'r') as fp:
+                for sentence in fp.readlines():
+                    sentence = sentence.strip()
 
-                named_entity = self.util.run_named_entity_sentence(sentence)
-
-                print(named_entity)
+                    # train
+                    named_entity = self.util.run_named_entity_sentence(sentence)
+                    print(named_entity)
 
         return
 
@@ -824,7 +830,7 @@ class NCPreProcess:
 
         arg_parser.add_argument('-spark_batch', help='스파크 테스트', action='store_true', default=False)
 
-        arg_parser.add_argument('-ner', help='개체명 인식기 실행', action='store_true', default=False)
+        arg_parser.add_argument('-eval_ner', help='개체명 인식기 실행', action='store_true', default=False)
 
         arg_parser.add_argument('-format', help='출력 형식', default='json')
 
@@ -867,5 +873,5 @@ if __name__ == "__main__":
     if args.spark_batch is True:
         manager.spark_batch_stdin(args.domain)
 
-    if args.ner is True:
-        manager.ner_stdin()
+    if args.eval_ner is True:
+        manager.eval_ner()

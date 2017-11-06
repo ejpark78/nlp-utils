@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 # from __future__ import absolute_import
@@ -64,9 +64,9 @@ class NCNlpUtil:
 
         return
 
-    def open_ner(self, model_file='model/ner.josa.model'):
+    def open_ner(self, model_file='dictionary/ner.josa.model'):
         """
-        개체명 인식기 핸들 오픈
+        학습 기반 개체명 인식기 핸들 오픈
         """
         from NCNamedEntityTagger import NCNamedEntityTagger
 
@@ -994,7 +994,7 @@ if __name__ == "__main__":
     args = util.parse_argument()
 
     if args.crf_ner is True:
-        util.open_ner(model_file='model/ner.josa.model')
+        util.open_ner(model_file='dictionary/ner.josa.model')
 
     if args.ner is True or args.pos_tagger is True:
         util.open_pos_tagger(dictionary_path='dictionary/rsc')

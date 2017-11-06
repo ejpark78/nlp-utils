@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-home="data/nate/baseball"
+home="data/nate_baseball"
 
 db_name="nate_baseball"
 
 dry=""
 
-for fname in $(ls -r ${home}/*.by_month/????-??.parsed.bz2) ; do
+for fname in $(ls -r ${home}/????.pos.bz2) ; do
     type_name=$(basename ${fname})
     type_name="${type_name/.parsed.bz2/}"
 

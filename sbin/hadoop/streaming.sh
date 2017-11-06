@@ -10,6 +10,18 @@ reducer_cmd="$5"
 
 job_name="$6"
 
+# meru 설정
+master="meru00"
+hadoop_port=8020
+export HADOOP_USER="ejpark"
+export HADOOP_HOME="/opt/cloudera/parcels/CDH"
+export HADOOP_ROOT_LOGGER="WARN,console"
+
+jar_file="${HADOOP_HOME}/lib/hadoop-mapreduce/hadoop-streaming.jar"
+
+# gollum 설정
+#jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
+
 # 입력 파라메터 확인
 if [ "${mapper_cmd}" == "" ] || [ "${input_filename}" == "" ] || [ "${output_filename}" == "" ] ; then
     echo "Usage: "$(basename $0)" [max map count] [입력 파일명] [결과 파일명] [mapper] [reducer]"
@@ -21,7 +33,7 @@ if [ "${job_name}" == "" ] ; then
 fi
 
 # 경로 설정
-export PATH=${HADOOP_HOME}/bin:${SPARK_HOME}/bin:.:$PATH
+export PATH=${HADOOP_HOME}/bin:.:$PATH
 env
 
 # 파일 경로 및 파일명 분리
@@ -32,7 +44,7 @@ f_dir=$(dirname ${input_filename})
 f_name=${f_base%.*}
 
 # home 경로
-home="hdfs://gollum:9000/user/"$(id -un)
+home="hdfs://${master}:${hadoop_port}/user/"$(id -un)
 
 # 최대 map task 수
 max_reduce_count=0
@@ -62,10 +74,8 @@ hdfs dfs -rm -r -f -skipTrash ${output_dir}
 # 하둡 스트리밍 실행
 echo -e "\n하둡 스트리밍 실행: ${f_dir}/${f_base}, max_map_count: ${max_map_count}"
 
-jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
-
 time yarn jar ${jar_file} \
-    -archives "${home}/dictionary.jar#dictionary" \
+    -archives "${home}/dictionary.jar#dictionary,${home}/venv.jar#venv" \
     -files src,parser \
     -D mapred.input.compress=true \
     -D mapreduce.output.fileoutputformat.compress=true \

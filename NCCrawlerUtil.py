@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -17,12 +17,9 @@ import traceback
 from time import sleep
 
 from urllib.parse import urljoin
-from pymongo import MongoClient
 from datetime import datetime
 
 from bs4 import BeautifulSoup, Comment
-
-from pymongo import errors
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -262,6 +259,8 @@ class NCCrawlerUtil:
         """
         몽고 디비 핸들 오픈
         """
+        from pymongo import MongoClient
+
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
         db = connect.get_database(db_name)
 
@@ -490,6 +489,8 @@ class NCCrawlerUtil:
         """
         몽고 디비에 문서 저장
         """
+        from pymongo import errors
+
         if document is None:
             return False
 

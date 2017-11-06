@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-max_map=70
+max_map=200
 
-home="data/nate_baseball"
+home="data/naver_economy"
 
 dry=""
 
@@ -21,10 +21,12 @@ for fname in $(ls -r ${home}/????.bz2) ; do
 
     echo "Morph: " ${input}, ${output}
 
-    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
+#    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
         mapper="src/NCPreProcess.py -spark_batch"
         time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
-    fi
+#    fi
+
+    break
 
     # 의존 파서
 #    input="${output}"
