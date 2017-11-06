@@ -8,10 +8,12 @@ from __future__ import print_function
 import sys
 import json
 
+
 from NCCrawlerUtil import NCCrawlerUtil
 from NCHtmlParser import NCHtmlParser
-from NCNlpUtil import NCNlpUtil
 from NCNewsKeywords import NCNewsKeywords
+
+from language_lab_utils.language_lab_utils import LanguageLabUtils
 
 
 class NCPreProcess:
@@ -67,7 +69,7 @@ class NCPreProcess:
         html 문서에서 텍스트를 추출하고 문장 분리 및 이미지 추출 결과 반환
         """
         if self.util is None:
-            self.util = NCNlpUtil()
+            self.util = LanguageLabUtils()
 
         if self.parser is None:
             self.parser = NCHtmlParser()
@@ -92,7 +94,7 @@ class NCPreProcess:
         import dateutil.parser
 
         file_list = {}
-        util = NCNlpUtil()
+        util = LanguageLabUtils()
 
         count = 0
         for line in sys.stdin:
@@ -127,7 +129,7 @@ class NCPreProcess:
         HTML 기사를 읽어서 문장 분리
         """
         if self.util is None:
-            self.util = NCNlpUtil()
+            self.util = LanguageLabUtils()
 
         if self.parser is None:
             self.parser = NCHtmlParser()
@@ -166,7 +168,7 @@ class NCPreProcess:
             sentence = document['title']
             if format == 'json':
                 sentence = json.dumps({'sentence': sentence},
-                                      ensure_ascii=False, default=NCNlpUtil().json_serial)
+                                      ensure_ascii=False, default=LanguageLabUtils().json_serial)
 
             result.append(sentence)
 
@@ -176,7 +178,7 @@ class NCPreProcess:
                     sentence = item['caption']
                     if format == 'json':
                         sentence = json.dumps({'sentence': sentence},
-                                              ensure_ascii=False, default=NCNlpUtil().json_serial)
+                                              ensure_ascii=False, default=LanguageLabUtils().json_serial)
 
                     result.append(sentence)
 
@@ -188,7 +190,7 @@ class NCPreProcess:
 
                     if format == 'json':
                         sentence = json.dumps({'sentence': sentence},
-                                              ensure_ascii=False, default=NCNlpUtil().json_serial)
+                                              ensure_ascii=False, default=LanguageLabUtils().json_serial)
 
                     result.append(sentence)
 
@@ -231,7 +233,7 @@ class NCPreProcess:
     def preprocess(domain='baseball', max_sentence=2048):
         """
         """
-        util = NCNlpUtil()
+        util = LanguageLabUtils()
 
         util.open_pos_tagger()
         #util.open_ner()
@@ -259,7 +261,7 @@ class NCPreProcess:
                 'sentence': sentence,
                 'pos_tagged': pos_tagged,
                 'named_entity': named_entity
-            }, ensure_ascii=False, default=NCNlpUtil().json_serial)
+            }, ensure_ascii=False, default=LanguageLabUtils().json_serial)
 
             print(result, flush=True)
 
@@ -418,7 +420,7 @@ class NCPreProcess:
         """
         import sqlite3
 
-        util = NCNlpUtil()
+        util = LanguageLabUtils()
 
         conn = sqlite3.connect(index_file_name)
 
@@ -467,7 +469,7 @@ class NCPreProcess:
         import os
         import sqlite3
 
-        util = NCNlpUtil()
+        util = LanguageLabUtils()
 
         connect = None
         cursor = None
@@ -553,7 +555,7 @@ class NCPreProcess:
         """
         형태소 분석
         """
-        util = NCNlpUtil()
+        util = LanguageLabUtils()
 
         util.open_pos_tagger()
 
@@ -714,7 +716,7 @@ class NCPreProcess:
         스파크에서 전처리 모듈 테스트
         하둡 스트리밍에서 사용
         """
-        self.util = NCNlpUtil()
+        self.util = LanguageLabUtils()
         self.util.open_pos_tagger(dictionary_path='dictionary/rsc')
         self.util.open_sp_project_ner(config='src/sp_config.ini', domain=domain)
         self.util.open_multi_domain_ner(config='src/sp_config.ini')
@@ -753,7 +755,7 @@ class NCPreProcess:
         """
         import re
 
-        self.util = NCNlpUtil()
+        self.util = LanguageLabUtils()
         self.util.open_ner()
 
         data_path = 'data/ner_eval'
