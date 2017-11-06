@@ -21,12 +21,10 @@ for fname in $(ls -r ${home}/????.bz2) ; do
 
     echo "Morph: " ${input}, ${output}
 
-#    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
+    if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
         mapper="src/NCPreProcess.py -spark_batch"
         time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
-#    fi
-
-    break
+    fi
 
     # 의존 파서
 #    input="${output}"
