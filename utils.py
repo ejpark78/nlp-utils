@@ -5,8 +5,142 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
 import json
-from pymongo import MongoClient
+import logging
+
+
+class EtcUtils:
+    """
+    """
+
+    def __init__(self):
+        pass
+
+    def make_sentence_index(self, file_name):
+        """
+        분석 결과를 문장으로 찾을 수 있는 사전 형태로 가공
+
+        :param file_name:
+        :return:
+        """
+        import sqlite3
+
+        conn = sqlite3.connect(file_name)
+
+        cursor = conn.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS [sentence_index] '
+                       '([key] TEXT PRIMARY KEY NOT NULL, [value] TEXT NOT NULL)')
+
+        self.set_pragam(cursor, readonly=False)
+
+        count = 0
+        for line in sys.stdin:
+            document = json.loads(line)
+
+            sql = 'INSERT INTO [sentence_index] (key, value) VALUES (?, ?)'
+            try:
+                cursor.execute(sql, (document['sentence'], line))
+            except Exception as e:
+                logging.error('', exc_info=e)
+                print('error: ', document['sentence'], file=sys.stderr)
+
+            count += 1
+            if count % 10000 == 0:
+                print('.', end='', flush=True)
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return
+
+    @staticmethod
+    def sentence_exists(cursor, sentence):
+        """
+        디비에서 문장을 가져온다.
+
+        :param cursor:
+        :param sentence:
+        :return:
+        """
+        cursor.execute('SELECT 1 FROM [sentence_index] WHERE [key]=?', (sentence,))
+        row = cursor.fetchone()
+
+        if row is None or len(row) == 0:
+            return False
+
+        return True
+
+    @staticmethod
+    def set_pragam(cursor, readonly=True):
+        """
+        sqlite의 속도 개선을 위한 설정
+
+        :param cursor:
+        :param readonly:
+        :return:
+        """
+        # cursor.execute('PRAGMA threads       = 8;')
+
+        # 700,000 = 1.05G, 2,100,000 = 3G
+        cursor.execute('PRAGMA cache_size    = 2100000;')
+        cursor.execute('PRAGMA count_changes = OFF;')
+        cursor.execute('PRAGMA foreign_keys  = OFF;')
+        cursor.execute('PRAGMA journal_mode  = OFF;')
+        cursor.execute('PRAGMA legacy_file_format = 1;')
+        cursor.execute('PRAGMA locking_mode  = EXCLUSIVE;')
+        cursor.execute('PRAGMA page_size     = 4096;')
+        cursor.execute('PRAGMA synchronous   = OFF;')
+        cursor.execute('PRAGMA temp_store    = MEMORY;')
+
+        if readonly is True:
+            cursor.execute('PRAGMA query_only    = 1;')
+
+        return
+
+    @staticmethod
+    def get_value(cursor, sentence, key_list, value_list=None):
+        """
+        디비에서 문장을 가져온다.
+
+        :param cursor:
+        :param sentence:
+        :param key_list:
+        :param value_list:
+        :return:
+        """
+        if sentence is None or sentence == '':
+            return None
+
+        cursor.execute('SELECT [value] FROM [sentence_index] WHERE [key]=?', (sentence,))
+        row = cursor.fetchone()
+
+        value = {}
+        if row is not None and len(row) > 0:
+            value = json.loads(row[0])
+
+        # 분석이 안된 문장 처리
+        if len(key_list) > 0:
+            for key in key_list:
+                if key not in value:
+                    value[key] = ''
+
+        if value_list is not None:
+            for key in value:
+                if key == 'sentence':
+                    continue
+
+                if key not in key_list:
+                    key_list.append(key)
+
+                if key not in value_list:
+                    value_list[key] = []
+
+                value_list[key].append(value[key])
+
+        return value
+
 
 
 class NCDumpSummarizationCorpus:
@@ -191,12 +325,6 @@ class NCDumpSummarizationCorpus:
         return arg_parser.parse_args()
 
 
-if __name__ == "__main__":
-    corpus = NCDumpSummarizationCorpus()
-
-    args = corpus.parse_argument()
-    corpus.dump(args.collection, '{}.xlsx'.format(args.collection))
-
 
 # ./DumpSummarizationCorpus.py -collection 300_on_base_2016_10_03
 # ./DumpSummarizationCorpus.py -collection thames_drunk_driving_2016
@@ -355,3 +483,20 @@ if __name__ == "__main__":
 #                 host_name=args.host_name, port=args.port)
 #
 #     corpus.dump(args.format)
+
+
+def main():
+    """
+    :return:
+    """
+
+    corpus = NCDumpSummarizationCorpus()
+
+    args = corpus.parse_argument()
+    corpus.dump(args.collection, '{}.xlsx'.format(args.collection))
+
+    return
+
+
+if __name__ == "__main__":
+    main()

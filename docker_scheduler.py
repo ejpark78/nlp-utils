@@ -12,9 +12,9 @@ from time import time, sleep
 from pymongo import MongoClient
 from datetime import datetime
 
-from NCNlpUtil import NCNlpUtil
+from language_utils.language_utils import LanguageUtils
 
-from NCCrawler import NCCrawler
+from crawler import NCCrawler
 
 
 class NCDockerClusterScheduler:
@@ -28,6 +28,11 @@ class NCDockerClusterScheduler:
     def open_db(db_name, host='gollum', port=37017):
         """
         몽고 디비 핸들 오픈
+
+        :param db_name:
+        :param host:
+        :param port:
+        :return:
         """
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
         db = connect[db_name]
@@ -37,6 +42,9 @@ class NCDockerClusterScheduler:
     def get_job_info(self, scheduler_db_info):
         """
         디비에서 작업을 찾아 반환
+
+        :param scheduler_db_info:
+        :return:
         """
         connect, db = self.open_db(
             scheduler_db_info['scheduler_db_name'],
@@ -51,7 +59,7 @@ class NCDockerClusterScheduler:
             return None
 
         cursor = cursor[:]
-        NCNlpUtil().print([scheduler_db_info, cursor.count()])
+        LanguageUtils().print([scheduler_db_info, cursor.count()])
 
         job_info = None
         for document in cursor:
@@ -68,7 +76,11 @@ class NCDockerClusterScheduler:
     def run(self, scheduler_db_info):
         """
         작업 목록에서 컨테이너 이름이 같은 것을 가져와서 실행
+
+        :param scheduler_db_info:
+        :return:
         """
+
         start_time = time()
 
         job_info = self.get_job_info(scheduler_db_info)
@@ -97,17 +109,19 @@ class NCDockerClusterScheduler:
             else:
                 break
 
-        util = NCNlpUtil()
+        util = LanguageUtils()
         run_time = util.get_runtime(start_time=start_time)
         str_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print('DONE at {}, runtime: {}'.format(str_now, util.sec2time(run_time)), flush=True)
+        print('DONE at {}, runtime: {}'.format(str_now, run_time), flush=True)
 
         return
 
     @staticmethod
     def parse_argument():
-        """"
+        """
         옵션 설정
+
+        :return:
         """
         import argparse
 
@@ -123,10 +137,12 @@ class NCDockerClusterScheduler:
 
         return arg_parser.parse_args()
 
-# end of NCDockerClusterScheduler
 
+def main():
+    """
 
-if __name__ == '__main__':
+    :return:
+    """
     nc_curl = NCDockerClusterScheduler()
     args = nc_curl.parse_argument()
 
@@ -142,7 +158,11 @@ if __name__ == '__main__':
         'scheduler_db_collection': args.scheduler_db_collection
     }
 
-    NCNlpUtil().print({'scheduler_db_info': scheduler_db_info})
+    LanguageUtils().print({'scheduler_db_info': scheduler_db_info})
     nc_curl.run(scheduler_db_info)
 
-# end of __main__
+    return
+
+
+if __name__ == '__main__':
+    main()

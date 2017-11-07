@@ -8,6 +8,7 @@ from __future__ import print_function
 import sys
 import json
 import time
+import logging
 
 from datetime import datetime
 
@@ -42,10 +43,12 @@ class NCSlackBot:
             'summarization': 'xoxb-174771318582-iENlD1DYrsfGjcfEBxQhwlZr'
         }
 
-
     def get_channel_list(self, bot_name):
         """
         채널 목록 표시
+
+        :param bot_name:
+        :return:
         """
         slack_client = SlackClient(self.bot_token[bot_name])
 
@@ -64,6 +67,9 @@ class NCSlackBot:
     def get_bot_id(self, bot_name):
         """
         token 과 봇 이름으로 아이디 반환
+
+        :param bot_name:
+        :return:
         """
         slack_client = SlackClient(self.bot_token[bot_name])
 
@@ -84,6 +90,9 @@ class NCSlackBot:
     def monitoring_channel(token):
         """
         대화 모니터핑
+
+        :param token:
+        :return:
         """
         slack_client = SlackClient(token)
 
@@ -100,6 +109,9 @@ class NCSlackBot:
     def parse_team_info(self, team_code):
         """
         팀명 반환
+
+        :param team_code:
+        :return:
         """
         teams_token = team_code.split(r',')
 
@@ -115,6 +127,9 @@ class NCSlackBot:
     def get_summary_text(str_summary):
         """
         요약 결과 반환
+
+        :param str_summary:
+        :return:
         """
         summary = json.loads(str_summary)
 
@@ -132,13 +147,16 @@ class NCSlackBot:
     def get_summary(db_info):
         """
         가장 최근 요약문 반환
+
+        :param db_info:
+        :return:
         """
         url = 'mysql+pymysql://{user}:{passwd}@{host}:{port}/{db_name}?charset=utf8mb4'.format(**db_info)
         print('url: ', url)
 
-        engine = create_engine(url)
+        mysql_db = create_engine(url)
 
-        with engine.connect() as connection:
+        with mysql_db.connect() as connection:
             # 가장 최근 한 경기 선택
             query = "SELECT * FROM `ap_event_slack` WHERE pushed=0 ORDER BY token DESC LIMIT 1"
             query_result = connection.execute(text(query))
@@ -159,6 +177,9 @@ class NCSlackBot:
     def parse_slack_message(slack_rtm_message):
         """
         봇에서 호출 받았을 때, 메세지 분리
+
+        :param slack_rtm_message:
+        :return:
         """
         if slack_rtm_message and len(slack_rtm_message) > 0:
             for output in slack_rtm_message:
@@ -171,6 +192,9 @@ class NCSlackBot:
     def search_elastic(keyword_list):
         """
         입력된 키워드로 검색 결과 반환
+
+        :param keyword_list:
+        :return:
         """
         from elasticsearch import Elasticsearch
 
@@ -213,6 +237,9 @@ class NCSlackBot:
     def get_search_response(self, message):
         """
         사용자 메세지로 검색
+
+        :param message:
+        :return:
         """
         # 키워드 분리
         keyword_list = []
@@ -239,54 +266,11 @@ class NCSlackBot:
 
         return response
 
-    def run_kmat_bot(self):
-        """
-        형태소 분석 봇 실행
-        """
-
-        while True:
-            time.sleep(10000)
-
-
-    # slack_client = SlackClient(self.bot_token['kmat'])
-        #
-        # sleep_time = 1  # 초 단위
-        # if slack_client.rtm_connect() is False:
-        #     print('ERROR', '슬랙 연결 오류', file=sys.stderr, flush=True)
-        #     return
-        #
-        # from NCNlpUtil import NCNlpUtil
-        #
-        # util = NCNlpUtil()
-        # util.open_pos_tagger(dictionary_path='dictionary/rsc')
-        #
-        # print('형태소 분석 봇 시작: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=sys.stderr, flush=True)
-        # while True:
-        #     channel, message = self.parse_slack_message(slack_client.rtm_read())
-        #     if channel is None or message == '':
-        #         time.sleep(sleep_time)
-        #         continue
-        #
-        #     print('입력 채널 정보: ', channel, message, file=sys.stderr, flush=True)
-        #
-        #     # 분석
-        #     pos_tagged, _ = util.run_pos_tagger_sentence(message)
-        #     response = [{
-        #         'pretext': message,
-        #         'text': pos_tagged
-        #     }]
-        #
-        #     # 결과 전송
-        #     try:
-        #         slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
-        #     except Exception:
-        #         print('ERROR', 'send message', file=sys.stderr, flush=True)
-        #
-        #     time.sleep(sleep_time)
-
     def run_search_bot(self):
         """
         검색 봇 실행
+
+        :return:
         """
         slack_client = SlackClient(self.bot_token['search'])
 
@@ -310,14 +294,17 @@ class NCSlackBot:
             # 결과 전송
             try:
                 slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
-            except Exception:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 print('ERROR', 'send message', file=sys.stderr, flush=True)
 
             time.sleep(sleep_time)
 
     def run_summarization_bot(self):
         """
-         야구 기사 요약 푸시 봇 실행
+        야구 기사 요약 푸시 봇 실행
+
+        :return:
         """
         from dateutil.relativedelta import relativedelta
 
@@ -354,6 +341,11 @@ class NCSlackBot:
 
     def send_new_summary(self, slack_client, channel_list, db_info):
         """
+
+        :param slack_client:
+        :param channel_list:
+        :param db_info:
+        :return:
         """
         row = self.get_summary(db_info)
         if row is None or 'token' not in row:
@@ -378,9 +370,8 @@ class NCSlackBot:
             '[{}] '.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
             ' vs. '.join(teams),
             row['rep_doc_title'],
-            '({})'.format(row['token'].replace('T', ' ').replace('Z', ''))
-            , file=sys.stderr
-            , flush=True)
+            '({})'.format(row['token'].replace('T', ' ').replace('Z', '')),
+            file=sys.stderr, flush=True)
 
         try:
             slack_client.api_call(
@@ -389,7 +380,9 @@ class NCSlackBot:
                 attachments=response,
                 as_user=True
             )
-        except Exception:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             print('ERROR', 'send message', file=sys.stderr, flush=True)
 
         for team_name in teams:
@@ -404,21 +397,23 @@ class NCSlackBot:
                     attachments=response,
                     as_user=True
                 )
-            except Exception:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 print('ERROR', 'send message', file=sys.stderr, flush=True)
 
         return
 
     @staticmethod
     def parse_argument():
-        """"
+        """
         옵션 설정
+
+        :return:
         """
         import argparse
 
         arg_parser = argparse.ArgumentParser(description='slack bot option')
 
-        arg_parser.add_argument('-kmat', help='', action='store_true', default=False)
         arg_parser.add_argument('-search', help='', action='store_true', default=False)
         arg_parser.add_argument('-summarization', help='', action='store_true', default=False)
 
@@ -427,10 +422,11 @@ class NCSlackBot:
         return arg_parser.parse_args()
 
 
-# end of NCSlackBot
+def main():
+    """
 
-
-if __name__ == '__main__':
+    :return:
+    """
     bot = NCSlackBot()
     args = bot.parse_argument()
 
@@ -438,9 +434,11 @@ if __name__ == '__main__':
         bot.run_summarization_bot()
     elif args.search is True:
         bot.run_search_bot()
-    elif args.kmat is True:
-        bot.run_kmat_bot()
     elif args.get_channel_list is True:
         bot.get_channel_list('summarization')
 
-# end of __main__
+    return
+
+
+if __name__ == '__main__':
+    main()

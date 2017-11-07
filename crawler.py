@@ -5,25 +5,20 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import re
-import os
-import sys
-
-import dateutil.parser
-from urllib.parse import urljoin
-
 from datetime import datetime
+from urllib.parse import urljoin
 from dateutil.relativedelta import relativedelta
 
-from NCNlpUtil import NCNlpUtil
-from NCUrlIndexDB import NCUrlIndexDB
-from NCCrawlerUtil import NCCrawlerUtil
+from url_index_db import NCUrlIndexDB
+from crawler_utils import NCCrawlerUtil
+from language_utils.language_utils import LanguageUtils
 
 
 class NCCrawler:
     """
-    뉴스를 크롤링
+    크롤러
     """
+
     def __init__(self):
         self.parameter = None
         self.job_info = None
@@ -45,7 +40,16 @@ class NCCrawler:
 
     def get_collection_name(self, article, response_type='html'):
         """
-        컬랙션 이름
+        컬랙션 이름 반환
+
+        :param article:
+            기사 본문
+
+        :param response_type:
+            입력된 기사의 타입: html, json
+
+        :return:
+            컬랙션 이름
         """
         collection = 'error'
         if 'collection' in self.db_info['mongo']:
@@ -77,6 +81,15 @@ class NCCrawler:
     def curl_article(self, article, response_type='html'):
         """
         기사 본문을 웹에서 가져와서 디비에 저장하는 함수
+
+        :param article:
+            기사 본문
+
+        :param response_type:
+            기사 본문 형식
+
+        :return:
+            크롤링된 기사 본문
         """
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -91,7 +104,7 @@ class NCCrawler:
         url = self.crawler_util.get_url(article['url'])
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
-            NCNlpUtil().print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
+            LanguageUtils().print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
 
             if self.db_info['mongo']['upsert'] is False:
                 # const value 삽입
@@ -126,9 +139,9 @@ class NCCrawler:
         # if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
         #     json_type = True
 
-        soup = self.crawler_util.curl_html(
-            article['url'], encoding=encoding, json=json_type,
-            delay=self.parameter['delay'], min_delay=self.parameter['min_delay'], headers=headers)
+        soup = self.crawler_util.curl_html(article['url'], encoding=encoding, json_type=json_type,
+                                           delay=self.parameter['delay'], min_delay=self.parameter['min_delay'],
+                                           headers=headers)
 
         if soup is None:
             return True
@@ -156,18 +169,16 @@ class NCCrawler:
             article.update(self.parameter['const_value'])
 
         # 컬랙션 이름 추출
-        collection = self.get_collection_name(article, response_type)
+        self.get_collection_name(article, response_type)
 
         if json_type is not True:
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
-                collection = 'error'
                 article['raw_html'] = str(soup)
-                NCNlpUtil().print({'INFO': 'missing html_content use entire html'})
+                LanguageUtils().print({'INFO': 'missing html_content use entire html'})
 
             if 'title' not in article or 'date' not in article or article['date'] is None:
-                collection = 'error'
-                NCNlpUtil().print({'ERROR': 'missing column', 'article': article})
+                LanguageUtils().print({'ERROR': 'missing column', 'article': article})
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
@@ -182,6 +193,13 @@ class NCCrawler:
     def save_section_list(self, curl_url, subject_list):
         """
         섹션 정보 저장
+
+        :param curl_url:
+            크롤링 웹 주소
+
+        :param subject_list:
+
+        :return:
         """
         # url 에서 불용어 제거
         section = self.parameter['const_value']['section']
@@ -224,18 +242,23 @@ class NCCrawler:
     def curl_article_list(self, curl_url):
         """
         패이지 목록에서 기사 목록을 가져옴
+
+        :param curl_url:
+            웹 주소
+
+        :return:
         """
         if curl_url.find('javascript') > 0:
             return
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        NCNlpUtil().print('{}\tcurl article list: {}'.format(str_now, curl_url))
+        LanguageUtils().print('{}\tcurl article list: {}'.format(str_now, curl_url))
 
         # page 주소 중복 체크: 오류가 있음. 마지막 페이지인 경우 중복으로 크롤링
         # if curl_url not in self.page_url_cache:
         #     self.page_url_cache.append(curl_url)
         # else:
-        #     NCNlpUtil().print({'INFO': 'already curled page: {}'.format(curl_url)})
+        #     LanguageUtils().print({'INFO': 'already curled page: {}'.format(curl_url)})
         #     return None
 
         # 인코딩 명시
@@ -245,7 +268,7 @@ class NCCrawler:
 
         # 1. get subject list
         soup = self.crawler_util.curl_html(curl_url, delay=self.parameter['delay'],
-            min_delay=self.parameter['min_delay'], encoding=encoding)
+                                           min_delay=self.parameter['min_delay'], encoding=encoding)
 
         if soup is None:
             return None
@@ -291,8 +314,13 @@ class NCCrawler:
     def curl_json_article_list(self, domain_url, article_list, json_key_mapping):
         """
         개별 패이지 목록에서 기사를 가져옴
+
+        :param domain_url:
+        :param article_list:
+        :param json_key_mapping:
+        :return:
         """
-        NCNlpUtil().print('curl json article list')
+        LanguageUtils().print('curl json article list')
 
         # 개별 기사 URL
         for article in article_list:
@@ -324,6 +352,10 @@ class NCCrawler:
     def curl_all_pages_json(self, page_url, page=1):
         """
         json 형태의 페이지 목록과 기사 본문을 수집
+
+        :param page_url:
+        :param page:
+        :return:
         """
         # json의 키값 매핑 정보를 가져온다.
         json_key_mapping = None
@@ -331,7 +363,7 @@ class NCCrawler:
             json_key_mapping = self.parsing_info['json_key_mapping']
 
         if json_key_mapping is None:
-            NCNlpUtil().print('error no json key mapping info')
+            LanguageUtils().print('error no json key mapping info')
             return
 
         # 헤더 명시
@@ -344,9 +376,9 @@ class NCCrawler:
         if page_url.find('{page}') > 0:
             url = page_url.format(page=page)
 
-        NCNlpUtil().print('curl all pages: {}'.format(url))
-        page_soup = self.crawler_util.curl_html(
-            url, delay=self.parameter['delay'], min_delay=self.parameter['min_delay'], json=True, headers=headers)
+        LanguageUtils().print('curl all pages: {}'.format(url))
+        page_soup = self.crawler_util.curl_html(url, delay=self.parameter['delay'],
+                                                min_delay=self.parameter['min_delay'], json_type=True, headers=headers)
         if page_soup is None:
             return
 
@@ -387,7 +419,7 @@ class NCCrawler:
                 parsing_info['index']['tag_name'],
                 attrs=self.crawler_util.get_value(parsing_info['index'], 'attr')):
             if a_tag.has_attr('href') is False:
-                NCNlpUtil().print({'ERROR': 'missing href', 'tag': str(a_tag)})
+                LanguageUtils().print({'ERROR': 'missing href', 'tag': str(a_tag)})
                 continue
 
             url = urljoin(page_url, a_tag['href'])
@@ -411,6 +443,11 @@ class NCCrawler:
     def trace_next_tag(self, page_tag, page_url, curl_type):
         """
         페이지가 넘어가는 부분이 있는 경우 재귀적으로 호출
+
+        :param page_tag:
+        :param page_url:
+        :param curl_type:
+        :return:
         """
         from bs4 import Tag
 
@@ -470,19 +507,23 @@ class NCCrawler:
     def curl_all_pages(self, page_url, curl_type='by_date'):
         """
         페이지 목록과 기사 본문을 수집
+
+        :param page_url:
+        :param curl_type:
+        :return:
         """
         if page_url.find('javascript') > 0:
             return
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        NCNlpUtil().print('{}\tcurl all pages: {}'.format(str_now, page_url))
+        LanguageUtils().print('{}\tcurl all pages: {}'.format(str_now, page_url))
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
             return
 
         if 'page_list' not in self.parsing_info:
-            NCNlpUtil().print({'ERROR': 'no page list in parsing_info'})
+            LanguageUtils().print({'ERROR': 'no page list in parsing_info'})
             return
 
         parsing_info = self.parsing_info['page_list']
@@ -494,7 +535,7 @@ class NCCrawler:
                 attrs=self.crawler_util.get_value(parsing_info['panel'], 'attr'))
 
             if page_tag is None:
-                NCNlpUtil().print({'ERROR': 'article list panel is empty'})
+                LanguageUtils().print({'ERROR': 'article list panel is empty'})
                 return
 
             # 페이지 목록 추출 1~10 등
@@ -510,18 +551,22 @@ class NCCrawler:
     def get_date_range(self):
         """
         크롤링 날자 범위 반환
+
+        :return:
         """
         date_step = 'day'
         if 'start_month' in self.parameter and 'end_month' in self.parameter:
             date_step = 'month'
 
+        util = LanguageUtils()
+
         # 시작 날짜와 마지막 날짜 가져오기
         if date_step == 'day':
-            start_date = NCNlpUtil().parse_date_string(self.parameter['start_date'])
-            end_date = NCNlpUtil().parse_date_string(self.parameter['end_date'], is_end_date=True)
+            start_date = util.parse_date_string(self.parameter['start_date'])
+            end_date = util.parse_date_string(self.parameter['end_date'], is_end_date=True)
         else:
-            start_date = NCNlpUtil().parse_date_string(self.parameter['start_month'])
-            end_date = NCNlpUtil().parse_date_string(self.parameter['end_month'], is_end_date=True)
+            start_date = util.parse_date_string(self.parameter['start_month'])
+            end_date = util.parse_date_string(self.parameter['end_month'], is_end_date=True)
 
         original_start_date = start_date
 
@@ -538,7 +583,7 @@ class NCCrawler:
             # status, date/progress 정보를 확인하여 마지막 날짜부터 이어서 크롤링 시작
             # 하루 전 기사부터 다시 시작
             if 'running' in self.job_info['state'] and self.job_info['state']['running'] != '':
-                date = NCNlpUtil().parse_date_string(self.job_info['state']['running'])
+                date = util.parse_date_string(self.job_info['state']['running'])
 
                 if self.job_info['group'].find('daemon') < 0:
                     if date_step == 'day':
@@ -554,6 +599,8 @@ class NCCrawler:
     def curl_by_date(self):
         """
         날짜 기준으로 크롤링
+
+        :return:
         """
 
         # 시작 날짜와 끝날짜 쿼리
@@ -578,7 +625,7 @@ class NCCrawler:
                 state='running', current_date=date, start_date=original_start_date, end_date=end_date,
                 job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
-            NCNlpUtil().print({'crawling date': date})
+            LanguageUtils().print({'crawling date': date})
 
             # 특정 날자의 기사를 수집
             url_list = self.parameter['url_frame']
@@ -648,6 +695,9 @@ class NCCrawler:
     def set_new_collection(self, new_collection_name):
         """
         컬렉션 이름이 변경되었을 경우, 인덱스를 업데이트 한다.
+
+        :param new_collection_name:
+        :return:
         """
         if self.db_info['mongo'] is None \
                 or 'collection' not in self.db_info['mongo'] \
@@ -663,6 +713,8 @@ class NCCrawler:
     def curl_by_page_id(self):
         """
         아이디 기준으로 크롤링
+
+        :return:
         """
         print('curl by page id', flush=True)
 
@@ -689,7 +741,7 @@ class NCCrawler:
                 start = self.job_info['state']['start']
 
         # url 주소 생성
-        NCNlpUtil().print({'year': year, 'start': start})
+        LanguageUtils().print({'year': year, 'start': start})
 
         # 쿼리 매핑 정보 추출
         query_key_mapping = None
@@ -778,12 +830,14 @@ class NCCrawler:
     def update_article_by_date(self):
         """
         기사 본문 재 크롤링
+
+        :return:
         """
         start_date, end_date, original_start_date, date_step = self.get_date_range()
 
         curl_date = None
         if 'curl_date' in self.parameter:
-            curl_date = NCNlpUtil().parse_date_string(self.parameter['curl_date'])
+            curl_date = LanguageUtils().parse_date_string(self.parameter['curl_date'])
 
         mongodb_info = self.db_info['mongo']
 
@@ -848,8 +902,10 @@ class NCCrawler:
     def make_url_index_db(self):
         """
         크롤링 완료된 url 목록을 인덱스 디비로 생성
+
+        :return:
         """
-        NCNlpUtil().print('update index db')
+        LanguageUtils().print('update index db')
 
         self.url_index_db = NCUrlIndexDB()
         self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
@@ -861,6 +917,10 @@ class NCCrawler:
     def _init_variable(self, scheduler_db_info, job_info):
         """
         변수 및 환경 설정 초기화
+
+        :param scheduler_db_info:
+        :param job_info:
+        :return:
         """
         self.duplicated_url_count = 0
 
@@ -869,7 +929,7 @@ class NCCrawler:
 
         self.crawler_util.job_info = self.job_info
 
-        NCNlpUtil().print({'job_info': self.job_info})
+        LanguageUtils().print({'job_info': self.job_info})
 
         self.parameter = job_info['parameter']
         if 'delay' not in self.parameter:
@@ -888,7 +948,7 @@ class NCCrawler:
             if 'parsing_info' in self.parameter:
                 self.parsing_info = parsing_info[self.parameter['parsing_info']]
 
-        NCNlpUtil().print({
+        LanguageUtils().print({
             'parameter': self.parameter,
             'parsing_info': self.parsing_info
         })
@@ -901,7 +961,11 @@ class NCCrawler:
 
     def run(self, scheduler_db_info, job_info):
         """
-        NCCrawler 실행
+        크롤링 시작
+
+        :param scheduler_db_info:
+        :param job_info:
+        :return:
         """
         self._init_variable(scheduler_db_info, job_info)
 
@@ -920,6 +984,11 @@ class NCCrawler:
     def debug(self, scheduler_db_info, job_info, args):
         """
         디버깅, 하나의 URL을 입력 받아 실행
+
+        :param scheduler_db_info:
+        :param job_info:
+        :param args:
+        :return:
         """
         self._init_variable(scheduler_db_info, job_info)
 
@@ -935,7 +1004,13 @@ class NCCrawler:
     def parse_error(self, scheduler_db_info, job_info, args):
         """
         에러 테이블에 있는 raw_html 을 다시 파싱
+
+        :param scheduler_db_info:
+        :param job_info:
+        :param args:
+        :return:
         """
+
         # from bs4 import BeautifulSoup
         # from pymongo import errors
         #
@@ -1003,7 +1078,9 @@ class NCCrawler:
         #             document['_id']
         #         )
         #         self.result_db[args.db_collection].remove({'_id': document['_id']})
-        #     except Exception:
+        #     except Exception as e:
+        #         logging.error('', exc_info=e)
+        #         logging.error('', exc_info=e)
         #         print('ERROR', self.parameter['result_db_host'], self.parameter['result_db_name'])
         #
         # cursor.close()
@@ -1015,9 +1092,12 @@ class NCCrawler:
 
     @staticmethod
     def parse_argument():
-        """"
-        옵션 설정
         """
+        옵션 설정
+
+        :return:
+        """
+
         import argparse
 
         arg_parser = argparse.ArgumentParser(description='crawling web news articles')
@@ -1043,14 +1123,15 @@ class NCCrawler:
 
         return arg_parser.parse_args()
 
-# end of NCCrawler
 
-
-if __name__ == '__main__':
+def main():
+    """
+    :return:
+    """
     crawler = NCCrawler()
     args = crawler.parse_argument()
 
-    from NCDockerClusterScheduler import NCDockerClusterScheduler
+    from docker_scheduler import NCDockerClusterScheduler
 
     nc_curl = NCDockerClusterScheduler()
     scheduler_db_info = {
@@ -1068,4 +1149,8 @@ if __name__ == '__main__':
     else:
         crawler.debug(scheduler_db_info, job_info, args)
 
-# end of __main__
+    return
+
+
+if __name__ == '__main__':
+    pass

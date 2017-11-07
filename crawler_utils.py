@@ -12,21 +12,22 @@ import copy
 import json
 import random
 import requests
+import logging
 import traceback
 
 from time import sleep
 
-from urllib.parse import urljoin
 from datetime import datetime
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup, Comment
 
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from language_utils.language_utils import LanguageUtils
 
-from NCNlpUtil import NCNlpUtil
+import urllib3
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-requests.packages.urllib3.disable_warnings(UserWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class NCCrawlerUtil:
@@ -44,16 +45,22 @@ class NCCrawlerUtil:
         self.request_count = 0
 
     @staticmethod
-    def replace_tag(html_tag, tag_list, replacement='', attrs=None):
+    def replace_tag(html_tag, tag_list, replacement='', attribute=None):
         """
         html 태그 중 특정 태그를 삭제
         ex) script, caption will be removed
+
+        :param html_tag:
+        :param tag_list:
+        :param replacement:
+        :param attribute:
+        :return:
         """
         if html_tag is None:
             return
 
         for tag_name in tag_list:
-            for tag in html_tag.find_all(tag_name, attrs=attrs):
+            for tag in html_tag.find_all(tag_name, attrs=attribute):
                 if replacement == '':
                     tag.extract()
                 else:
@@ -65,6 +72,9 @@ class NCCrawlerUtil:
     def remove_comment(html_tag):
         """
         html 태그 중에서 주석 태그를 모두 제거
+
+        :param html_tag:
+        :return:
         """
         for element in html_tag(text=lambda text: isinstance(text, Comment)):
             element.extract()
@@ -75,6 +85,9 @@ class NCCrawlerUtil:
     def get_encoding_type(html_body):
         """
         메타 정보에서 인코딩 정보 반환
+
+        :param html_body:
+        :return:
         """
         soup = BeautifulSoup(html_body, 'lxml')
 
@@ -100,6 +113,9 @@ class NCCrawlerUtil:
     def get_url(url):
         """
         url 문자열을 찾아서 반환
+
+        :param url:
+        :return:
         """
 
         if isinstance(url, str) is True:
@@ -111,10 +127,20 @@ class NCCrawlerUtil:
 
         return ''
 
-    def curl_html(self, curl_url, delay=6, min_delay=3,
-                  post_data=None, json=False, encoding=None, max_try=3, headers=None):
+    def curl_html(self, curl_url, delay=6, min_delay=3, post_data=None, json_type=False,
+                  encoding=None, max_try=3, headers=None):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
+
+        :param curl_url:
+        :param delay:
+        :param min_delay:
+        :param post_data:
+        :param json_type:
+        :param encoding:
+        :param max_try:
+        :param headers:
+        :return:
         """
         curl_url = self.get_url(curl_url)
         curl_url = curl_url.strip()
@@ -135,7 +161,7 @@ class NCCrawlerUtil:
 
         # 상태 출력
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # NCNlpUtil().print('{}\t{} sec\t{:,}\t{}'.format(str_now, sleep_time, self.request_count, curl_url))
+        # LanguageUtils().print('{}\t{} sec\t{:,}\t{}'.format(str_now, sleep_time, self.request_count, curl_url))
 
         # 쉼
         sleep(sleep_time)
@@ -149,47 +175,39 @@ class NCCrawlerUtil:
         # 웹 크롤링
         try:
             if post_data is None:
-                page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60) #
+                page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60)
             else:
-                page_html = requests.post(curl_url, data=post_data, headers=self.headers, allow_redirects=True, timeout=60)
-        except Exception as err:
+                page_html = requests.post(curl_url, data=post_data, headers=self.headers,
+                                          allow_redirects=True, timeout=60)
+        except Exception as e:
+            logging.error('', exc_info=e)
             return None
-            # if max_try > 0:
-            #     NCNlpUtil().print(
-            #         '{}\t{}\terror at requests\t{}\tsleep: {} sec\tmax try: {}'.format(
-            #             str_now, curl_url, sys.exc_info()[0], sleep_time * 10, max_try))
-            #     sleep(sleep_time * 10)
-            #     return self.curl_html(
-            #         curl_url=curl_url, delay=delay, min_delay=min_delay, post_data=post_data,
-            #         json=json, encoding=encoding, max_try=max_try - 1)
-            # else:
-            #     print("Unexpected error:", sys.exc_info()[0], flush=True)
-            #     raise
 
-        # json 일 경우
-        if json is True:
-            result = ''
+        # json_type 일 경우
+        if json_type is True:
             try:
                 result = page_html.json()
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
+
                 if page_html.content == b'':
                     return None
 
                 if max_try > 0:
-                    NCNlpUtil().print(
+                    LanguageUtils().print(
                         '{}\t{}\terror at json\t{}\tsleep: {} sec'.format(
                             str_now, curl_url, sys.exc_info()[0], sleep_time * 10))
                     sleep(sleep_time * 10)
                     return self.curl_html(
                         curl_url=curl_url, delay=delay, min_delay=min_delay, post_data=post_data,
-                        json=json, encoding=encoding, max_try=max_try - 1)
+                        json_type=json_type, encoding=encoding, max_try=max_try - 1)
                 else:
                     print('Unexpected error:', sys.exc_info()[0])
                     raise
 
             return result
 
-        # post로 요청했을 때 바로 반환
+        # post 로 요청했을 때 바로 반환
         if post_data is not None:
             return page_html
 
@@ -209,22 +227,30 @@ class NCCrawlerUtil:
                 return soup
 
             return BeautifulSoup(content, 'lxml')
-        except Exception as err:
-            pass
+        except Exception as e:
+            logging.error('', exc_info=e)
 
         return None
 
     def parse_html(self, article, soup, target_tags, article_list):
         """
         html 파싱, 지정된 태그에서 정보 추출
+
+        :param article:
+        :param soup:
+        :param target_tags:
+        :param article_list:
+        :return:
         """
         url = self.get_url(article['url'])
 
         for tag_info in target_tags:
             try:
                 self.get_target_value(soup, tag_info, article_list, url)
-            except Exception as err:
-                NCNlpUtil().print({'ERROR': 'get target value', 'url': url})
+            except Exception as e:
+                logging.error('', exc_info=e)
+
+                LanguageUtils().print({'ERROR': 'get target value', 'url': url})
                 return None
 
         for item in article_list:
@@ -237,6 +263,9 @@ class NCCrawlerUtil:
     def get_collection_name(date):
         """
         날짜와 컬랙션 이름 변환
+
+        :param date:
+        :return:
         """
         import dateutil.parser
 
@@ -245,8 +274,10 @@ class NCCrawlerUtil:
             try:
                 date = dateutil.parser.parse(date)
                 collection = date.strftime('%Y-%m')
-            except Exception as err:
-                NCNlpUtil().print({'ERROR': 'convert date', 'date': date})
+            except Exception as e:
+                logging.error('', exc_info=e)
+
+                LanguageUtils().print({'ERROR': 'convert date', 'date': date})
                 return None, collection
         elif isinstance(date, dict) is True:
             if 'date' in date:
@@ -258,6 +289,11 @@ class NCCrawlerUtil:
     def open_db(db_name, host='gollum', port=27017):
         """
         몽고 디비 핸들 오픈
+
+        :param db_name:
+        :param host:
+        :param port:
+        :return:
         """
         from pymongo import MongoClient
 
@@ -270,6 +306,9 @@ class NCCrawlerUtil:
     def get_document_id(url):
         """
         url 주소를 문서 아이디로 반환
+
+        :param url:
+        :return:
         """
         document_id = []
 
@@ -297,6 +336,11 @@ class NCCrawlerUtil:
     def send_kafka_message(self, document, kafka_info, mongodb_info):
         """
         kafka 에 메세지 전송
+
+        :param document:
+        :param kafka_info:
+        :param mongodb_info:
+        :return:
         """
         # import logging
         # logging.basicConfig(level=logging.DEBUG)
@@ -323,12 +367,14 @@ class NCCrawlerUtil:
                     if 'elastic' in result_info:
                         result_info['elastic']['type'] = mongodb_info['collection']
 
-            message = json.dumps(document, ensure_ascii=False, default=NCNlpUtil().json_serial)
+            message = json.dumps(document, ensure_ascii=False, default=LanguageUtils().json_serial)
 
             producer.send(kafka_info['topic'], bytes(message, encoding='utf-8')).get(timeout=5)
             producer.flush()
-        except Exception as err:
-            NCNlpUtil().print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
+        except Exception as e:
+            logging.error('', exc_info=e)
+
+            LanguageUtils().print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
 
         # debug:
         #   kafka-topics.sh --list --zookeeper gollum:2181
@@ -339,6 +385,10 @@ class NCCrawlerUtil:
     def send_mqtt_message(self, document, mqtt_info):
         """
         mqtt 에 메세지 전송
+
+        :param document:
+        :param mqtt_info:
+        :return:
         """
         import paho.mqtt.publish as publish
 
@@ -388,8 +438,10 @@ class NCCrawlerUtil:
                 payload=str_payload, qos=2,
                 hostname=mqtt_info['host'], port=mqtt_info['port'],
                 client_id='')
-        except Exception as err:
-            NCNlpUtil().print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
+        except Exception as e:
+            logging.error('', exc_info=e)
+
+            LanguageUtils().print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
 
         return
 
@@ -397,6 +449,10 @@ class NCCrawlerUtil:
     def create_elastic_index(elastic, index_name=None):
         """
         인덱스 생성
+
+        :param elastic:
+        :param index_name:
+        :return:
         """
         if elastic is None:
             return
@@ -416,6 +472,11 @@ class NCCrawlerUtil:
     def insert_elastic(self, document, elastic_info, mongodb_info):
         """
         elastic search에 저장
+
+        :param document:
+        :param elastic_info:
+        :param mongodb_info:
+        :return:
         """
         from elasticsearch import Elasticsearch
 
@@ -472,13 +533,14 @@ class NCCrawlerUtil:
                     '_type': index_type,
                     '_id': document['document_id']
                 }
-            },{
+            }, {
                 'doc': document,
                 'doc_as_upsert': True
             }]
 
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
             traceback.print_exc(file=sys.stderr)
 
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
@@ -488,6 +550,10 @@ class NCCrawlerUtil:
     def save_mongodb(self, document, mongodb_info):
         """
         몽고 디비에 문서 저장
+
+        :param document:
+        :param mongodb_info:
+        :return:
         """
         from pymongo import errors
 
@@ -532,10 +598,12 @@ class NCCrawlerUtil:
         except errors.DuplicateKeyError:
             print('DuplicateKeyError: {}, {}'.format(
                 mongodb_info['collection'], document['_id']), file=sys.stderr, flush=True)
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             traceback.print_exc(file=sys.stderr)
 
-            NCNlpUtil().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
+            LanguageUtils().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
                 collection = mongodb.get_collection('error')
@@ -544,7 +612,8 @@ class NCCrawlerUtil:
                     collection.replace_one({'_id': document['_id']}, document, upsert=True)
                 else:
                     collection.insert_one(document)
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 pass
 
             return False
@@ -567,13 +636,18 @@ class NCCrawlerUtil:
                 msg.append(document[key])
 
         if len(msg) > 0:
-            NCNlpUtil().print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            LanguageUtils().print('{}\t{}'.format(str_now, '\t'.join(msg)))
 
         return
 
     def save_logs(self, document, elastic_info, mongodb_info):
         """
         엘라스틱서치에 로그 저장
+
+        :param document:
+        :param elastic_info:
+        :param mongodb_info:
+        :return:
         """
         from elasticsearch import Elasticsearch
 
@@ -631,7 +705,8 @@ class NCCrawlerUtil:
             }]
 
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
             traceback.print_exc(file=sys.stderr)
 
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
@@ -641,6 +716,10 @@ class NCCrawlerUtil:
     def save_article(self, document, db_info):
         """
         문서 저장
+
+        :param document:
+        :param db_info:
+        :return:
         """
         if 'mongo'in db_info and 'host' in db_info['mongo']:
             self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
@@ -665,6 +744,10 @@ class NCCrawlerUtil:
     def make_simple_url(self, document, parsing_info):
         """
         url 단축
+
+        :param document:
+        :param parsing_info:
+        :return:
         """
         query, base_url, parsed_url = self.get_query(document['url'])
 
@@ -693,7 +776,8 @@ class NCCrawlerUtil:
                         simple_url = re.sub(pattern['from'], pattern['to'], simple_url)
 
                     url_info['simple'] = simple_url
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 pass
 
         document['url'] = url_info
@@ -713,13 +797,15 @@ class NCCrawlerUtil:
                     document['_id'] = document_id
                 else:
                     document['_id'] = self.get_document_id(document_id)
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 document['_id'] = self.get_document_id(document_id)
 
             try:
                 if '_id' in parsing_id and len(query) > 0:
                     document['_id'] = parsing_id['_id'].format(**query)
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
                 document['_id'] = self.get_document_id(document_id)
 
         return
@@ -728,6 +814,11 @@ class NCCrawlerUtil:
     def get_next_id(collection, document_name='section_id', value='section'):
         """
         auto-increment 기능 구현
+
+        :param collection:
+        :param document_name:
+        :param value:
+        :return:
         """
         cursor = collection.find_and_modify(query={'_id': document_name}, update={'$inc': {value: 1}}, new=True)
 
@@ -754,7 +845,12 @@ class NCCrawlerUtil:
 
     def save_section_info(self, document, mongodb_info, collection_name):
         """
-        문서 저장
+        문서의 섹션 정보 저장
+
+        :param document:
+        :param mongodb_info:
+        :param collection_name:
+        :return:
         """
         if document is None:
             return False
@@ -784,9 +880,10 @@ class NCCrawlerUtil:
                 collection.insert_one(section_info)
         except errors.DuplicateKeyError:
             pass
+        except Exception as e:
+            logging.error('', exc_info=e)
 
-        except Exception as err:
-            NCNlpUtil().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
+            LanguageUtils().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
                 collection = mongodb.get_collection('error_{}'.format(collection_name))
@@ -795,7 +892,9 @@ class NCCrawlerUtil:
                     collection.replace_one({'_id': section_info['_id']}, section_info, upsert=True)
                 else:
                     collection.insert_one(section_info)
-            except Exception as err:
+
+            except Exception as e:
+                logging.error('', exc_info=e)
                 pass
 
             return False
@@ -810,12 +909,19 @@ class NCCrawlerUtil:
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if len(msg) > 0:
-            NCNlpUtil().print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            LanguageUtils().print('{}\t{}'.format(str_now, '\t'.join(msg)))
 
         return True
 
     @staticmethod
     def get_value(data, key):
+        """
+        해쉬 값 반환
+
+        :param data:
+        :param key:
+        :return:
+        """
         if key in data:
             return data[key]
 
@@ -825,6 +931,10 @@ class NCCrawlerUtil:
     def get_documents(db, collection_name):
         """
         디비에서 설정 정보를 모두 읽어옴
+
+        :param db:
+        :param collection_name:
+        :return:
         """
         result = {}
 
@@ -841,8 +951,17 @@ class NCCrawlerUtil:
     def update_state(self, state, current_date, job_info, scheduler_db_info, start_date, end_date):
         """
         현재 작업 상태 변경
-            # state: 상태, running, ready, stoped
-            # status: 경과 시간
+
+        :param state:
+            상태, running, ready, stoped
+            경과 시간
+
+        :param current_date:
+        :param job_info:
+        :param scheduler_db_info:
+        :param start_date:
+        :param end_date:
+        :return:
         """
         job_info['state']['state'] = state
         if current_date is not None:
@@ -869,6 +988,10 @@ class NCCrawlerUtil:
     def change_key(json_data, key_mapping):
         """
         json 키를 변경
+
+        :param json_data:
+        :param key_mapping:
+        :return:
         """
         if key_mapping is None:
             return
@@ -890,6 +1013,9 @@ class NCCrawlerUtil:
     def get_query(self, url):
         """
         url 에서 쿼리문을 반환
+
+        :param url:
+        :return:
         """
         from urllib.parse import urlparse, parse_qs
 
@@ -905,8 +1031,16 @@ class NCCrawlerUtil:
     def update_state_by_id(self, state, job_info, scheduler_db_info, url, query_key_mapping=None):
         """
         현재 작업 상태 변경
-            # state: 상태, running, ready, stoped
-            # status: 경과 시간
+
+        :param state:
+            상태, running, ready, stoped
+            경과 시간
+
+        :param job_info:
+        :param scheduler_db_info:
+        :param url:
+        :param query_key_mapping:
+        :return:
         """
         query, _, _ = self.get_query(url)
         self.change_key(query, query_key_mapping)
@@ -936,6 +1070,9 @@ class NCCrawlerUtil:
     def get_parsing_information(self, scheduler_db_info):
         """
         디비에서 작업을 찾아 반환
+
+        :param scheduler_db_info:
+        :return:
         """
         connect, db = self.open_db(
             scheduler_db_info['scheduler_db_name'],
@@ -953,6 +1090,10 @@ class NCCrawlerUtil:
     def get_meta_value(soup, result_list):
         """
         메타 테그 추출
+
+        :param soup:
+        :param result_list:
+        :return:
         """
         result = {}
         for meta in soup.findAll('meta'):
@@ -982,12 +1123,18 @@ class NCCrawlerUtil:
     def get_target_value(self, soup, target_tag_info, result_list, base_url):
         """
         계층적으로 표현된 태그 정보를 따라가면서 값을 찾아냄.
+
+        :param soup:
+        :param target_tag_info:
+        :param result_list:
+        :param base_url:
+        :return:
         """
 
         for sub_soup in soup.findAll(target_tag_info['tag_name'], attrs=self.get_value(target_tag_info, 'attr')):
             if 'remove' in target_tag_info:
                 self.replace_tag(sub_soup, [target_tag_info['remove']['tag_name']], '',
-                                 attrs=self.get_value(target_tag_info['remove'], 'attr'))
+                                 attribute=self.get_value(target_tag_info['remove'], 'attr'))
 
             if 'next_tag' in target_tag_info:
                 self.get_target_value(sub_soup, target_tag_info['next_tag'], result_list, base_url)
@@ -1004,7 +1151,7 @@ class NCCrawlerUtil:
 
                     if 'remove' in data_tag_info:
                         self.replace_tag(data_tag, [data_tag_info['remove']['tag_name']], '',
-                                         attrs=self.get_value(data_tag_info['remove'], 'attr'))
+                                         attribute=self.get_value(data_tag_info['remove'], 'attr'))
 
                     if data_tag is not None:
                         value_type = data_tag_info['value']
@@ -1040,10 +1187,6 @@ class NCCrawlerUtil:
 
         return
 
-# end of NCCrawlerUtil
-
 
 if __name__ == '__main__':
     pass
-
-# end of __main__

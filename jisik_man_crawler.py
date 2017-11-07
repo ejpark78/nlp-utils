@@ -9,6 +9,7 @@ import re
 import os
 import sys
 import json
+import logging
 
 import random
 import requests
@@ -19,6 +20,11 @@ from pymongo import MongoClient
 from datetime import datetime
 from elasticsearch import Elasticsearch
 from dateutil.relativedelta import relativedelta
+
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class JisikManCrawler:
@@ -40,6 +46,11 @@ class JisikManCrawler:
     def open_db(db_name='jisikman_app', host='frodo01', port=27018):
         """
         몽고 디비 핸들 오픈
+
+        :param db_name:
+        :param host:
+        :param port:
+        :return:
         """
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
         db = connect[db_name]
@@ -49,6 +60,12 @@ class JisikManCrawler:
     def curl(self, curl_url, delay=10, min_delay=6, post_data=None):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
+
+        :param curl_url:
+        :param delay:
+        :param min_delay:
+        :param post_data:
+        :return:
         """
         curl_url = curl_url.strip()
 
@@ -73,7 +90,9 @@ class JisikManCrawler:
 
         try:
             return page_html.json()
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             print(curl_url, post_data, page_html.content, flush=True)
 
         return None
@@ -82,6 +101,10 @@ class JisikManCrawler:
     def parse_time_gap(time_gap, date=None):
         """
         타임 갭을 실제 시간 문자열로 변환해서 반환
+
+        :param time_gap:
+        :param date:
+        :return:
         """
         if date is None:
             date = datetime.now()
@@ -112,6 +135,9 @@ class JisikManCrawler:
     @staticmethod
     def to_simple(document):
         """
+
+        :param document:
+        :return:
         """
         simple = None
         date = None
@@ -137,14 +163,21 @@ class JisikManCrawler:
                     })
 
             date = dateutil.parser.parse(simple['date'])
-        except Exception as err:
+
+        except Exception as e:
+            logging.error('', exc_info=e)
             print('ERROR at to simple: {}'.format(sys.exc_info()[0]))
 
         return simple, date
 
     def save_elastic(self, document, host='frodo.ncsoft.com', index='jisikman'):
         """
-        elastic search에 저장
+        크롤링 결과 문서를 elasticsearch 에 저장
+
+        :param document:
+        :param host:
+        :param index:
+        :return:
         """
         simple, date = self.to_simple(document)
         if simple is None:
@@ -154,20 +187,20 @@ class JisikManCrawler:
             print('SKIP insert elastic: ', simple['question'], flush=True)
             return
 
-        from requests.packages.urllib3.exceptions import InsecureRequestWarning
-        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-        requests.packages.urllib3.disable_warnings(UserWarning)
-
         try:
             elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             print('error at connect elastic', flush=True)
             return
 
         try:
             if elastic.indices.exists(index) is False:
                 return
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             print('error at check index', flush=True)
             return
 
@@ -185,7 +218,9 @@ class JisikManCrawler:
         if self.from_start is True:
             try:
                 elastic.delete(index=index, doc_type=date.year, id=simple['document_id'], refresh=True)
-            except Exception as err:
+            except Exception as e:
+                logging.error('', exc_info=e)
+
                 print('ERROR at delete elastic: {}'.format(sys.exc_info()[0]))
 
         try:
@@ -195,14 +230,21 @@ class JisikManCrawler:
 
             if ret['errors'] is True:
                 print('error elastic bulk data:', ret, bulk_data, flush=True)
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
         return
 
     def save_result(self, document, collection, upsert=False):
         """
-        크롤링 결과 저장
+        크롤링 결과를 몽고 디비에 저장
+
+        :param document:
+        :param collection:
+        :param upsert:
+        :return:
         """
         if self.result_db is None:
             self.connect, self.result_db = self.open_db()
@@ -218,7 +260,9 @@ class JisikManCrawler:
                 try:
                     date = dateutil.parser.parse(document['date'])
                     collection = date.strftime('%Y-%m')
-                except Exception as err:
+                except Exception as e:
+                    logging.error('', exc_info=e)
+
                     print('date parsing error: ', document['date'], flush=True)
 
             if 'detail_answers' in document and isinstance(document['detail_answers'], list) is True:
@@ -227,7 +271,8 @@ class JisikManCrawler:
                         answer_date = document['detail_answers'][0]['date']
                         date = dateutil.parser.parse(answer_date)
                         collection = date.strftime('%Y-%m')
-                    except Exception as err:
+                    except Exception as e:
+                        logging.error('', exc_info=e)
                         print('date parsing error: ', answer_date, flush=True)
 
         simple_log = True
@@ -253,7 +298,10 @@ class JisikManCrawler:
                 self.result_db.get_collection(collection).replace_one({'_id': document['_id']}, document, upsert=True)
             else:
                 self.result_db.get_collection(collection).insert_one(document)
-        except Exception as err:
+
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             del document['_id']
             self.result_db.get_collection('error').insert_one(document)
             print('ERROR at save_result: {}: {}'.format(sys.exc_info()[0], document), flush=True)
@@ -265,6 +313,8 @@ class JisikManCrawler:
     def get_last_page(self):
         """
         크롤링 상태 정보 읽기
+
+        :return:
         """
         if self.result_db is None:
             self.connect, self.result_db = self.open_db()
@@ -283,6 +333,9 @@ class JisikManCrawler:
     def query_question_list(self, from_start=False):
         """
         전체 질문 목록 크롤링
+
+        :param from_start:
+        :return:
         """
         self.from_start = from_start
 
@@ -316,6 +369,11 @@ class JisikManCrawler:
     def query_question(self, page=0, limit=10, point=0):
         """
         하나의 질문 페이지 크롤링
+
+        :param page:
+        :param limit:
+        :param point:
+        :return:
         """
         q_list_url = 'http://s46.jisiklog.com/mobileapp/front/jisiktalk/GetJisiklogQuestionList_BySortOrder'
 
@@ -351,7 +409,11 @@ class JisikManCrawler:
 
     def query_detail_answer(self, question, date=None):
         """
-        상세 답변 크롤링 
+        상세 답변 크롤링
+
+        :param question:
+        :param date:
+        :return:
         """
         # 디폴트 date 입력
         if date is None:
@@ -426,6 +488,10 @@ class JisikManCrawler:
     def get_question_id_list(self, start, end):
         """
         질문 아이디 목록 반환
+
+        :param start:
+        :param end:
+        :return:
         """
         if self.result_db is None:
             self.connect, self.result_db = self.open_db()
@@ -457,7 +523,11 @@ class JisikManCrawler:
 
     def query_missing_question(self, start, end):
         """
-        빠진 질문 아이디 수집
+        빠진 질문 아이디 분리
+
+        :param start:
+        :param end:
+        :return:
         """
         start = int(start.replace(',', ''))
         end = int(end.replace(',', ''))
@@ -484,7 +554,11 @@ class JisikManCrawler:
 
     def query_question_by_range(self, start, end):
         """
-        content 아디로 질문 수집
+        content 아디로 질문 분리
+
+        :param start:
+        :param end:
+        :return:
         """
         start = int(start.replace(',', ''))
         end = int(end.replace(',', ''))
@@ -508,8 +582,10 @@ class JisikManCrawler:
 
     @staticmethod
     def parse_argument():
-        """"
+        """
         옵션 설정
+
+        :return:
         """
         import argparse
 
@@ -520,15 +596,34 @@ class JisikManCrawler:
 
         arg_parser.add_argument('-query_by_id', help='', action='store_true', default=False)
         arg_parser.add_argument('-start', help='start', default="1")
-        arg_parser.add_argument('-end', help='start', default="50,000") # 22,177,478
+        arg_parser.add_argument('-end', help='start', default="50,000")
 
         return arg_parser.parse_args()
 
 
-# end of JisikManCrawler
+def main():
+    """
+    JisikManCrawler.py -from_start
+    JisikManCrawler.py -get_missing_question
 
+    range: 19,672,495 ~ 22,543,847
+    range: 22,543,727 ~ 22,543,756
 
-if __name__ == '__main__':
+    ~ 22,543,853
+
+    22,175,000 ~ 22,180,000
+    JisikManCrawler.py -query_by_id -start 22,175,000 -end 22,543,853
+    JisikManCrawler.py -query_by_id -start 22,170,000 -end 22,175,000
+    JisikManCrawler.py -query_by_id -start 22,160,000 -end 22,170,000
+    JisikManCrawler.py -query_by_id -start 22,150,000 -end 22,160,000
+    JisikManCrawler.py -query_by_id -start 22,140,000 -end 22,150,000
+    JisikManCrawler.py -query_by_id -start 22,130,000 -end 22,140,000
+    JisikManCrawler.py -query_by_id -start 22,120,000 -end 22,130,000
+    JisikManCrawler.py -query_by_id -start 22,110,000 -end 22,120,000
+    JisikManCrawler.py -query_by_id -start 22,100,000 -end 22,110,000
+
+    :return:
+    """
     crawler = JisikManCrawler()
     args = crawler.parse_argument()
 
@@ -539,24 +634,8 @@ if __name__ == '__main__':
     else:
         crawler.query_question_list(args.from_start)
 
+    return
 
-# end of __main__
 
-# JisikManCrawler.py -from_start
-# JisikManCrawler.py -get_missing_question
-
-# range: 19,672,495 ~ 22,543,847
-# range: 22,543,727 ~ 22,543,756
-
-# ~ 22,543,853
-
-# 22,175,000 ~ 22,180,000
-# JisikManCrawler.py -query_by_id -start 22,175,000 -end 22,543,853
-# JisikManCrawler.py -query_by_id -start 22,170,000 -end 22,175,000
-# JisikManCrawler.py -query_by_id -start 22,160,000 -end 22,170,000
-# JisikManCrawler.py -query_by_id -start 22,150,000 -end 22,160,000
-# JisikManCrawler.py -query_by_id -start 22,140,000 -end 22,150,000
-# JisikManCrawler.py -query_by_id -start 22,130,000 -end 22,140,000
-# JisikManCrawler.py -query_by_id -start 22,120,000 -end 22,130,000
-# JisikManCrawler.py -query_by_id -start 22,110,000 -end 22,120,000
-# JisikManCrawler.py -query_by_id -start 22,100,000 -end 22,110,000
+if __name__ == '__main__':
+    main()

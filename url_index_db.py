@@ -123,7 +123,7 @@ class NCUrlIndexDB:
 
         start_time = time()
 
-        from NCCrawlerUtil import NCCrawlerUtil
+        from crawler_utils import NCCrawlerUtil
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
             print('WARN at update_url_list: no collection in db info', flush=True)

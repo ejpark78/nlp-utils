@@ -22,3 +22,6 @@ setuptools
 sklearn
 wheel
 xlsxwriter
+sqlalchemy
+slackclient
+pyspark

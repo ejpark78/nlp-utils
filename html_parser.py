@@ -5,13 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import re
 import sys
+import logging
 
 from bs4 import BeautifulSoup
 
-from NCNlpUtil import NCNlpUtil
-from NCCrawlerUtil import NCCrawlerUtil
+from crawler_utils import NCCrawlerUtil
+from language_utils.language_utils import LanguageUtils
 
 
 class NCHtmlParser:
@@ -19,10 +19,7 @@ class NCHtmlParser:
     html 파서, 네이트 야구 뉴스를 파싱해서 기사 본문 추출
     """
     def __init__(self):
-        """
-        생성자
-        """
-        self.util = NCNlpUtil()
+        self.util = LanguageUtils()
         
         self.args = None
 
@@ -166,6 +163,9 @@ class NCHtmlParser:
     def remove_article_tail(self, content_text):
         """
         관련 기사 제거
+
+        :param content_text:
+        :return:
         """
         content = content_text.strip()
 
@@ -181,13 +181,11 @@ class NCHtmlParser:
     def parse_content(self, content_text):
         """
         기사 본문에서 머릿말과 꼬리말 제거후 본문만 추출
+
+        :param content_text:
+        :return:
         """
         content_text = self.remove_article_tail(content_text)
-        
-        # regex의 multiline에 버그가 있음. 개별 문장으로 분리후 헤더와 테일 제거
-        #content_text, header = self.util.remove_header(content_text)
-        #content_text, tail = self.util.remove_tail(content_text)
-
         content_text = content_text.strip()
 
         # 인코딩 변환시 깨지는 문자 치환
@@ -204,6 +202,9 @@ class NCHtmlParser:
 
         에러) http://sports.news.nate.com/view/20100404n06086
         본문에 링크가 있는 경우가 있음.
+
+        :param soup:
+        :return:
         """
         for tag in soup.find_all('a'):
             tag_text = tag.get_text()
@@ -226,6 +227,11 @@ class NCHtmlParser:
 
     @staticmethod
     def get_tag_text(tag):
+        """
+        텍스트 반환
+        :param tag:
+        :return:
+        """
         import bs4
 
         if tag is None:
@@ -239,6 +245,10 @@ class NCHtmlParser:
     def extract_image(self, soup, delete_caption=False):
         """
         기사 본문에서 이미지와 캡션 추출
+
+        :param soup:
+        :param delete_caption:
+        :return:
         """
 
         result = []
@@ -270,8 +280,9 @@ class NCHtmlParser:
                     else:
                         next_element = None
                         result.append({'image': tag['src'], 'caption': ''})
+                except Exception as e:
+                    logging.error('', exc_info=e)
 
-                except Exception:
                     print(
                         'error at extract_image',
                         sys.exc_info()[0], tag, next_element, str_next_element,
@@ -286,7 +297,9 @@ class NCHtmlParser:
                         next_element.replace_with('')
 
                     tag.replace_with('')
-                except Exception:
+                except Exception as e:
+                    logging.error('', exc_info=e)
+
                     print('error at extract_image: remove tag', sys.exc_info()[0], tag, file=sys.stderr)
 
         return result
@@ -295,6 +308,9 @@ class NCHtmlParser:
         """
         html 본문에서 텍스트만 추출 해서 반환
         관련 기사 목록 제거
+
+        :param html_content:
+        :return:
         """
         html_content = html_content.replace('</tr>', '</tr>\n')
         html_content = html_content.replace('</TR>', '</TR>\n')
@@ -320,28 +336,6 @@ class NCHtmlParser:
             content_text = content_text[0:content_text.find('[[_RELATED_ARTICLE_]]')]
 
         return content_text, image_list
-
-    def parse_argument(self):
-        """"
-        실행 옵션 설정
-        """
-        import argparse
-
-        arg_parser = argparse.ArgumentParser(description='parse news article')
-
-        arg_parser.add_argument('-source_db', help='source database file name', default='2005-03.db')
-        arg_parser.add_argument('-source_table_name', help='database table name', default='text')
-
-        arg_parser.add_argument('-where', help='debug', default='')
-
-        arg_parser.add_argument('-db_name', help='mongo db name', default='news')
-        arg_parser.add_argument('-collection_name_header', help='collection name header', default='nate_baseball')
-
-        arg_parser.add_argument('-debug', help='debug', action='store_true', default=False)
-
-        self.args = arg_parser.parse_args()
-
-        return self.args
 
 
 if __name__ == '__main__':

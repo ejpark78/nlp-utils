@@ -8,12 +8,11 @@ from __future__ import print_function
 import re
 import sys
 import json
+import logging
 import os.path
 
-# from NCNlpUtil import NCNlpUtil
 
-
-class NCNewsKeywords:
+class NCKeywordExtractor:
     """
     뉴스 코퍼스에서 키워드 추출
     """
@@ -28,7 +27,9 @@ class NCNewsKeywords:
 
     def load_dictionary(self):
         """
-        사전 로딩
+        키워드 사전 로딩
+
+        :return:
         """
         file_name = self.entity_file_name
         if os.path.exists(file_name) is not True:
@@ -59,6 +60,9 @@ class NCNewsKeywords:
     def merge_entity(self, word_list):
         """
         입력된 단어 리스트에서 사전에 있는 것은 최대 길이로 매칭이 되면 합쳐서 반환
+
+        :param word_list:
+        :return:
         """
         if len(word_list) < 2 or word_list[-1] is None:
             return word_list
@@ -95,7 +99,10 @@ class NCNewsKeywords:
 
     def attach_single_morph(self, morph_list):
         """
-        개발 형태소 중 시간을 테깅
+        개별 형태소 중 시간을 테깅
+
+        :param morph_list:
+        :return:
         """
         dictionary = {
             'DATE': ['오후', '어제', '오늘', '오전']
@@ -112,6 +119,9 @@ class NCNewsKeywords:
     def merge_morph(self, morph_list):
         """
         의존 형태소 병합
+
+        :param morph_list:
+        :return:
         """
         digit_dictionary = {
             'PRICE': ['억', '원', '천', '만'],
@@ -154,6 +164,9 @@ class NCNewsKeywords:
     def merge_namaed_entity(self, words):
         """
         NE 가 연속되면 합침
+
+        :param words:
+        :return:
         """
         result = []
         for i, w in enumerate(words):
@@ -180,6 +193,9 @@ class NCNewsKeywords:
     def attach_entity(self, morph_list):
         """
         단일 워드의 개체명이 사전에 있는지 검사
+
+        :param morph_list:
+        :return:
         """
         result = []
         for morph in morph_list:
@@ -195,6 +211,9 @@ class NCNewsKeywords:
     def merge_word(self, word_list):
         """
         복함 명사 형태의 개체명 합침
+
+        :param word_list:
+        :return:
         """
         buf = []
         for i in range(1, len(word_list)):
@@ -213,6 +232,9 @@ class NCNewsKeywords:
     def split_sentence(self, sentence):
         """
         문장 분리
+
+        :param sentence:
+        :return:
         """
         word_list = []
         for word in sentence.split(' '):
@@ -246,6 +268,10 @@ class NCNewsKeywords:
     def filter_collocations(self, collocation_list, ngram_type):
         """
         형태소 및 개체명에 따른 필터링
+
+        :param collocation_list:
+        :param ngram_type:
+        :return:
         """
         result = []
         for word, _ in collocation_list:
@@ -296,6 +322,12 @@ class NCNewsKeywords:
     def get_collocations(self, words, ngram_type, window_size, min_freq):
         """
         단어 리스트에서 연어 정보 추출
+
+        :param words:
+        :param ngram_type:
+        :param window_size:
+        :param min_freq:
+        :return:
         """
         from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder, BigramAssocMeasures
 
@@ -316,6 +348,9 @@ class NCNewsKeywords:
     def get_keywords(self, word_list):
         """
         명사 키워드 추출
+
+        :param word_list:
+        :return:
         """
         result = []
         for word in word_list:
@@ -330,6 +365,11 @@ class NCNewsKeywords:
     def get_collocations_from_document(self, pos_tagged, collocation_unit, ngram_list=list()):
         """
         문서를 입력 받아 키워드와 연어 정보를 반환
+
+        :param pos_tagged:
+        :param collocation_unit:
+        :param ngram_list:
+        :return:
         """
         sentence_count = 0
         document_words_buffer = []
@@ -373,6 +413,9 @@ class NCNewsKeywords:
 
     def simplify_collocations(self, collocations):
         """
+
+        :param collocations:
+        :return:
         """
         simple_form = []
         collocation_index = {}
@@ -412,6 +455,11 @@ class NCNewsKeywords:
     def extract_keywords(self, pos_tagged, collocation_unit='by_sentence', ngram_list=list()):
         """
         문서를 입력 받아 연어 정보 추가
+
+        :param pos_tagged:
+        :param collocation_unit:
+        :param ngram_list:
+        :return:
         """
         if self.entity_dictionary is None:
             if self.load_dictionary() is None:
@@ -426,7 +474,9 @@ class NCNewsKeywords:
             simple_form, collocations_index = self.simplify_collocations(collocations)
 
             return list(set(keyword_list)), simple_form, collocations_index
-        except Exception:
+        except Exception as e:
+            logging.error('', exc_info=e)
+
             msg = 'ERROR at get_collocations_from_document'
             print(msg, file=sys.stderr, flush=True)
 
@@ -434,13 +484,18 @@ class NCNewsKeywords:
 
     def extract_keywords_stdin(self, collocation_unit='by_sentence'):
         """
+
+        :param collocation_unit:
+        :return:
         """
         for line in sys.stdin:
             line = line.strip()
 
             try:
                 document = json.loads(line)
-            except Exception:
+            except Exception as e:
+                logging.error('', exc_info=e)
+
                 print(line, flush=True)
                 continue
 
@@ -456,6 +511,8 @@ class NCNewsKeywords:
     def parse_argument():
         """
         파라메터 옵션 정의
+
+        :return:
         """
         import argparse
 
@@ -469,6 +526,17 @@ class NCNewsKeywords:
         return arg_parser.parse_args()
 
 
-if __name__ == "__main__":
-    keyword_extractor = NCNewsKeywords()
+def main():
+    """
+
+    :return:
+    """
+
+    keyword_extractor = NCKeywordExtractor()
     keyword_extractor.extract_keywords_stdin()
+
+    return
+
+
+if __name__ == "__main__":
+    main()

@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import sys
 import json
+import logging
 import dateutil.parser
 
 from datetime import datetime
@@ -14,13 +15,10 @@ from elasticsearch import Elasticsearch
 
 # SSL 워닝 제거
 import urllib3
-import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 urllib3.disable_warnings()
-
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-requests.packages.urllib3.disable_warnings(UserWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class NCElasticSearch:
@@ -30,6 +28,7 @@ class NCElasticSearch:
     def __init__(self, host=None, index_name=None):
         """
         엘라스틱 서치 생성자
+
         :param host: 엘라스틱 서치 서버명
         :param index_name: 인덱스
         """
@@ -42,7 +41,12 @@ class NCElasticSearch:
 
     def open(self, host=None, index_name=None, auth=True):
         """
-        엘라스틱 서치 생섣
+        엘라스틱 서치 오픈
+
+        :param host:
+        :param index_name:
+        :param auth:
+        :return:
         """
         if host is not None:
             self.host = host
@@ -70,6 +74,9 @@ class NCElasticSearch:
     def create_index(self, index_name=None):
         """
         인덱스 생성
+
+        :param index_name:
+        :return:
         """
         if index_name is not None:
             self.index_name = index_name
@@ -92,6 +99,10 @@ class NCElasticSearch:
     def copy_value(source, target):
         """
         문장 버퍼링을 위해 값을 복사
+
+        :param source:
+        :param target:
+        :return:
         """
         for k in source:
             if k == 'date':
@@ -109,6 +120,9 @@ class NCElasticSearch:
     def delete_index(self, index_name=None):
         """
         인덱스 삭제
+
+        :param index_name:
+        :return:
         """
         if self.elastic_search is None:
             return
@@ -125,6 +139,10 @@ class NCElasticSearch:
     def delete_type(self, index_name=None, type_name=None):
         """
         타입 삭제
+
+        :param index_name:
+        :param type_name:
+        :return:
         """
         if self.elastic_search is None:
             return
@@ -171,7 +189,11 @@ class NCElasticSearch:
 
     def find_one(self, index_name=None, type_name=None):
         """
-        타입 삭제
+        검색
+
+        :param index_name:
+        :param type_name:
+        :return:
         """
         if self.elastic_search is None:
             return
@@ -204,6 +226,13 @@ class NCElasticSearch:
         return
 
     def search(self, keyword, index_name=None):
+        """
+        검색
+
+        :param keyword:
+        :param index_name:
+        :return:
+        """
         if index_name is not None:
             self.index_name = index_name
 
@@ -231,7 +260,11 @@ class NCElasticSearch:
 
     def insert_documents(self, index_name, type_name=None):
         """
-        인덱스 생성
+        문서 입력
+
+        :param index_name:
+        :param type_name:
+        :return:
         """
         # if self.elastic_search.indices.exists(index_name) is False:
         #     self.create_index(index_name)
@@ -254,7 +287,9 @@ class NCElasticSearch:
                 try:
                     if '$date' in document[k]:
                         document[k] = document[k]['$date']
-                except Exception as err:
+                except Exception as e:
+                    logging.error('', exc_info=e)
+
                     print(document['document_id'], document[k], flush=True)
 
             # 인덱스의 타입을 지정하지 않았을 경우 날짜로 저장함
@@ -303,6 +338,8 @@ class NCElasticSearch:
     def parse_argument():
         """
         파라메터 옵션 정의
+
+        :return:
         """
         import argparse
 
@@ -315,15 +352,6 @@ class NCElasticSearch:
 
         arg_parser.add_argument('-insert', help='문서 입력', action='store_true', default=False)
 
-        # arg_parser.add_argument('-search', help='search', action='store_true', default=False)
-        # arg_parser.add_argument('-keyword', help='keyword', default=None)
-        #
-        # arg_parser.add_argument('-limit', help='limit', type=int, default=-1)
-        #
-        # arg_parser.add_argument('-create_index', help='create index', action='store_true', default=False)
-        # arg_parser.add_argument('-delete_index', help='delete index', action='store_true', default=False)
-        # arg_parser.add_argument('-delete_type', help='delete type', action='store_true', default=False)
-
         return arg_parser.parse_args()
 
 
@@ -335,14 +363,3 @@ if __name__ == "__main__":
 
     if args.insert is True:
         self.insert_documents(index_name=args.index, type_name=args.type)
-
-    # if args.search is True:
-    #     self.search(args.keyword, index_name=args.index_name)
-    # elif args.create_index is True:
-    #     self.create_index(args.index_name)
-    # elif args.delete_index is True:
-    #     self.delete_index(args.index_name)
-    # elif args.delete_type is True:
-    #     self.delete_type(args.index_name, args.type_name)
-    # else:
-    #     self.find_one(args.index_name, args.type_name)
