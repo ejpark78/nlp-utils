@@ -2,7 +2,7 @@
 
 # 사전 위치 맵핑
 home="hdfs://gollum:9000/user/"$(id -un)
-archives="${home}/dictionary.jar#dictionary"
+archives="${home}/dictionary.jar#language_utils/dictionary,${home}/venv.jar#.venv"
 
 # home 위치: /user/root
 
@@ -11,22 +11,21 @@ archives="${home}/dictionary.jar#dictionary"
 export PATH=${HADOOP_HOME}/bin:${SPARK_HOME}/bin:.:$PATH
 env
 
-# src 파일 삭제
-hdfs dfs -rm -skipTrash src/*
+echo "libs 폴더 삭제"
+hdfs dfs -rm -r -f -skipTrash libs
 
-# import 되는 파일을 hdfs 에 업로드
-hdfs dfs -mkdir -p "${home}/src"
-hdfs dfs -put *.py  "${home}/src/"
-hdfs dfs -put *.ini "${home}/src/"
-hdfs dfs -put *.so  "${home}/src/"
+echo "import 되는 파일 업로드"
+hdfs dfs -mkdir -p "${home}/libs"
+hdfs dfs -put libs "${home}/"
 
 # 실행
 spark-submit \
     --packages "org.apache.spark:spark-streaming-kafka-0-8-assembly_2.11:2.0.2" \
+    --conf "spark.yarn.dist.files=crawler/html_parser.py,crawler/utils.py,language_utils/keyword_extractor.py,language_utils/language_utils.py,language_utils/sp_utils/NCKmat.py,language_utils/sp_utils/NCSPProject.py" \
     --master yarn \
     --deploy-mode client \
     --archives "${archives}" \
     --num-executors 5 \
     --executor-cores 2 \
     --verbose \
-    "SparkStreaming.py"
+    "spark_streaming.py"

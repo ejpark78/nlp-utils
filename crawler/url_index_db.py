@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -8,11 +8,12 @@ from __future__ import print_function
 import os
 import sys
 import sqlite3
+import logging
 
 from time import time
 
 
-class NCUrlIndexDB:
+class UrlIndexDB:
     """
     크롤링 완료된 URL 목록을 저장하고 비교하는 클래스
     """
@@ -23,9 +24,9 @@ class NCUrlIndexDB:
         self.cursor = None
 
     @staticmethod
-    def set_pragam(cursor, readonly=True):
+    def set_pragma(cursor, readonly=True):
         """
-        sqlite의 속도 개선을 위한 설정
+        sqlite 의 속도 개선을 위한 설정
         """
         # cursor.execute('PRAGMA threads       = 8;')
 
@@ -60,7 +61,7 @@ class NCUrlIndexDB:
         self.cursor = self.conn.cursor()
         self.cursor.execute('CREATE TABLE IF NOT EXISTS url_list (url TEXT PRIMARY KEY NOT NULL)')
 
-        self.set_pragam(self.cursor, readonly=False)
+        self.set_pragma(self.cursor, readonly=False)
 
         return
 
@@ -109,7 +110,8 @@ class NCUrlIndexDB:
         sql = 'INSERT INTO url_list (url) VALUES (?)'
         try:
             self.cursor.execute(sql, (url, ))
-        except Exception as err:
+        except Exception as e:
+            logging.error('', exc_info=e)
             print('ERROR at save_url: {} {}'.format(url, sys.exc_info()[0]), flush=True)
 
         return
@@ -123,7 +125,7 @@ class NCUrlIndexDB:
 
         start_time = time()
 
-        from crawler_utils import NCCrawlerUtil
+        from crawler.utils import Utils as CrawlerUtils
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
             print('WARN at update_url_list: no collection in db info', flush=True)
@@ -137,7 +139,7 @@ class NCUrlIndexDB:
             mongodb_info['port'] = 27017
 
         # 디비 연결
-        connect, mongodb = NCCrawlerUtil().open_db(
+        connect, mongodb = CrawlerUtils().open_db(
             host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
 
         collection = mongodb.get_collection(mongodb_info['collection'])
@@ -166,10 +168,6 @@ class NCUrlIndexDB:
 
         return
 
-# end of NCUrlIndexDB
-
 
 if __name__ == '__main__':
     pass
-
-# end of __main__

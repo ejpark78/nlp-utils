@@ -1,23 +1,22 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
 
 import sys
 import json
+import urllib3
 import logging
 
 from pyspark import SparkContext, SparkConf
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
-import urllib3
-
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NCSparkStreaming:
+class SparkStreaming:
     """
     """
 
@@ -222,96 +221,48 @@ class NCSparkStreaming:
     @staticmethod
     def update_library(sc, user_name='ejpark'):
         """
-
         :param sc:
         :param user_name:
         :return:
         """
-        for f_name in ('_NCKmat.so', '_NCSPProject.so', 'sp_config.ini'):
-            sc.addFile('hdfs:///user/{}/src/{}'.format(user_name, f_name))
+        # for f_name in ('crawler/html_parser.py', 'crawler/utils.py',
+        #                'language_utils/keyword_extractor.py', 'language_utils/language_utils.py',
+        #                'language_utils/sp_utils/NCKmat.py', 'language_utils/sp_utils/NCSPProject.py'):
+        #     sc.addPyFile('hdfs:///user/{}/libs/{}'.format(user_name, f_name))
 
-        for f_name in ('NCKmat.py', 'NCSPProject.py', 'corpus_process.py', 'crawler_util.py', 'language_utils.py',
-                       'html_parser.py', 'keyword_extractor.py'):
-            sc.addPyFile('hdfs:///user/{}/src/{}'.format(user_name, f_name))
+        # for f_name in ('crawler.jar', 'language_utils.jar'):
+        #     sc.addPyFile('hdfs:///user/{}/libs/{}'.format(user_name, f_name))
 
-        return
-
-    @staticmethod
-    def parse_argument():
-        """
-        옵션 입력
-
-        :return:
-        """
-        import argparse
-
-        arg_parser = argparse.ArgumentParser(description='')
-
-        arg_parser.add_argument('-host', help='mongodb host name', default='172.20.78.159')
-        arg_parser.add_argument('-port', help='mongodb host port', default=27017)
-        arg_parser.add_argument('-db_name', help='mongodb name', default='spark_streaming')
-
-        arg_parser.add_argument('-domain', help='domain', default='economy')
-
-        arg_parser.add_argument('-topic', help='kafka topic', default='crawler')
-
-        arg_parser.add_argument('-user_name', help='user name', default='ejpark')
-
-        arg_parser.add_argument('-debug', help='debug', action='store_true', default=False)
-
-        return arg_parser.parse_args()
-
-    def run(self):
-        """
-
-        :return:
-        """
-        conf = SparkConf()
-        sc = SparkContext(appName='crawler', conf=conf)
-
-        args = self.parse_argument()
-
-        self.update_library(sc, user_name=args.user_name)
-
-        # 사전 초기화
-        from html_parser import NCHtmlParser
-        from corpus_processor import NCCorpusProcessor
-        from keyword_extractor import NCKeywordExtractor
-
-        from language_utils.language_utils import LanguageUtils
-
-        manager = NCCorpusProcessor()
-        manager.util = LanguageUtils()
-        manager.parser = NCHtmlParser()
-
-        manager.keywords_extractor = NCKeywordExtractor(entity_file_name='dictionary/keywords/nc_entity.txt')
-
-        self.global_manager = sc.broadcast(manager)
-
-        ssc = StreamingContext(sc, 3)
-
-        ds = KafkaUtils.createDirectStream(ssc, [args.topic], {'metadata.broker.list': 'gollum:9092'})
-
-        result = ds.map(self.map_function)
-        result.pprint()
-
-        # db_info = {
-        #     'host': args.host,
-        #     'port': args.port,
-        #     'db_name': args.db_name,
-        #     'collection': args.topic
-        # }
-        #
-        # # 결과 저장
-        # result.foreachRDD(lambda rdd: rdd.foreach(lambda x: save_result(x, db_info)))
-
-        ssc.start()
-        ssc.awaitTermination()
-
-        self.global_manager.unpersist()
-        self.global_manager.destroy()
+        for f_name in ('sp_config.ini',
+                       'language_utils/sp_utils/_NCKmat.so', 'language_utils/sp_utils/_NCSPProject.so'):
+            sc.addFile('hdfs:///user/{}/streaming/{}'.format(user_name, f_name))
 
         return
+
+
+def init_arguments():
+    """
+    옵션 입력
+
+    :return:
+    """
+    import argparse
+
+    parser = argparse.ArgumentParser(description='')
+
+    parser.add_argument('-host', help='mongodb host name', default='172.20.78.159')
+    parser.add_argument('-port', help='mongodb host port', default=27017)
+    parser.add_argument('-db_name', help='mongodb name', default='spark_streaming')
+
+    parser.add_argument('-domain', help='domain', default='economy')
+
+    parser.add_argument('-topic', help='kafka topic', default='crawler')
+
+    parser.add_argument('-user_name', help='user name', default='ejpark')
+
+    parser.add_argument('-debug', help='debug', action='store_true', default=False)
+
+    return parser.parse_args()
 
 
 def main():
@@ -320,8 +271,45 @@ def main():
     :return:
     """
 
-    manager = NCSparkStreaming()
-    manager.run()
+    manager = SparkStreaming()
+
+    conf = SparkConf()
+    sc = SparkContext(appName='crawler', conf=conf)
+
+    args = init_arguments()
+
+    manager.update_library(sc, user_name=args.user_name)
+
+    # 사전 초기화
+    from language_utils.language_utils import LanguageUtils
+
+    language_utils = LanguageUtils()
+    # keywords_extractor = KeywordExtractor(entity_file_name='dictionary/keywords/nc_entity.txt')
+
+    manager.global_manager = sc.broadcast(language_utils)
+
+    ssc = StreamingContext(sc, 3)
+
+    ds = KafkaUtils.createDirectStream(ssc, [args.topic], {'metadata.broker.list': 'gollum:9092'})
+
+    result = ds.map(manager.map_function)
+    result.pprint()
+
+    # db_info = {
+    #     'host': args.host,
+    #     'port': args.port,
+    #     'db_name': args.db_name,
+    #     'collection': args.topic
+    # }
+    #
+    # # 결과 저장
+    # result.foreachRDD(lambda rdd: rdd.foreach(lambda x: save_result(x, db_info)))
+
+    ssc.start()
+    ssc.awaitTermination()
+
+    manager.global_manager.unpersist()
+    manager.global_manager.destroy()
 
     return
 

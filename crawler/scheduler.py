@@ -1,25 +1,30 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import sys
 
 from time import time, sleep
-
 from pymongo import MongoClient
 from datetime import datetime
 
 from language_utils.language_utils import LanguageUtils
 
-from crawler import NCCrawler
+try:
+    from crawler.crawler import Crawler
+except ImportError:
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+    from .crawler import Crawler
 
 
-class NCDockerClusterScheduler:
+class Scheduler:
     """
-    도커 클러스터 스케줄러
+    크롤러 스케줄러
     """
     def __init__(self):
         pass
@@ -99,7 +104,7 @@ class NCDockerClusterScheduler:
             # job info 갱신
             job_info = self.get_job_info(scheduler_db_info)
 
-            crawler = NCCrawler()
+            crawler = Crawler()
             crawler.run(scheduler_db_info=scheduler_db_info, job_info=job_info)
 
             if sleep_time > 0:
@@ -116,35 +121,36 @@ class NCDockerClusterScheduler:
 
         return
 
-    @staticmethod
-    def parse_argument():
-        """
-        옵션 설정
 
-        :return:
-        """
-        import argparse
+def init_arguments():
+    """
+    옵션 설정
+    :return:
+    """
+    example_of_use = """
+    
+    """
+    import argparse
 
-        arg_parser = argparse.ArgumentParser(description='crawling web news articles')
+    parser = argparse.ArgumentParser(description='crawling web news articles', epilog=example_of_use)
 
-        # 공통 옵션: 스케줄러 디비 접속 정보
-        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo01')
-        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=27018)
-        arg_parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
-        arg_parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
+    # 공통 옵션: 스케줄러 디비 접속 정보
+    parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo01')
+    parser.add_argument('-scheduler_db_port', help='db server port', default=27018)
+    parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
+    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
 
-        arg_parser.add_argument('-document_id', help='document id', default=None)
+    parser.add_argument('-document_id', help='document id', default=None)
 
-        return arg_parser.parse_args()
+    return parser.parse_args()
 
 
 def main():
     """
-
     :return:
     """
-    nc_curl = NCDockerClusterScheduler()
-    args = nc_curl.parse_argument()
+    nc_curl = Scheduler()
+    args = init_arguments()
 
     if args.document_id is None:
         print('error: document_id required!')

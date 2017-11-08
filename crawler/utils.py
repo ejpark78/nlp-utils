@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -13,24 +13,22 @@ import json
 import random
 import requests
 import logging
+import urllib3
 import traceback
 
+from bs4 import BeautifulSoup, Comment
 from time import sleep
-
 from datetime import datetime
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup, Comment
-
 from language_utils.language_utils import LanguageUtils
 
-import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NCCrawlerUtil:
+class Utils:
     """
     """
     def __init__(self):

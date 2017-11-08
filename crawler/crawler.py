@@ -1,20 +1,32 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
+import sys
+
 from datetime import datetime
 from urllib.parse import urljoin
+
 from dateutil.relativedelta import relativedelta
 
-from url_index_db import NCUrlIndexDB
-from crawler_utils import NCCrawlerUtil
+try:
+    from crawler.utils import Utils as CrawlerUtils
+    from crawler.url_index_db import UrlIndexDB
+except ImportError:
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+    from .utils import Utils as CrawlerUtils
+    from .url_index_db import UrlIndexDB
+
+
 from language_utils.language_utils import LanguageUtils
 
 
-class NCCrawler:
+class Crawler:
     """
     크롤러
     """
@@ -29,14 +41,12 @@ class NCCrawler:
         self.url_index_db = None
 
         self.db_info = None
-        # self.result_db = None
-        # self.collection_name = None
 
         self.duplicated_url_count = 0
 
         self.page_url_cache = []
 
-        self.crawler_util = NCCrawlerUtil()
+        self.crawler_util = CrawlerUtils()
 
     def get_collection_name(self, article, response_type='html'):
         """
@@ -853,7 +863,7 @@ class NCCrawler:
             mongodb_info['port'] = 27017
 
         # 디비 연결
-        connect, mongodb = NCCrawlerUtil().open_db(
+        connect, mongodb = CrawlerUtils().open_db(
             host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
 
         collection = mongodb.get_collection(mongodb_info['collection'])
@@ -907,7 +917,7 @@ class NCCrawler:
         """
         LanguageUtils().print('update index db')
 
-        self.url_index_db = NCUrlIndexDB()
+        self.url_index_db = UrlIndexDB()
         self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
 
         self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
@@ -1090,50 +1100,50 @@ class NCCrawler:
 
         return
 
-    @staticmethod
-    def parse_argument():
-        """
-        옵션 설정
 
-        :return:
-        """
+def init_arguments():
+    """
+    옵션 설정
 
-        import argparse
+    :return:
+    """
 
-        arg_parser = argparse.ArgumentParser(description='crawling web news articles')
+    import argparse
 
-        arg_parser.add_argument('-document_id', help='document id', default=None)
+    parser = argparse.ArgumentParser(description='crawling web news articles')
 
-        arg_parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum')
-        arg_parser.add_argument('-scheduler_db_port', help='db server port', default=37017)
-        arg_parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
-        arg_parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
+    parser.add_argument('-document_id', help='document id', default=None)
 
-        arg_parser.add_argument('-url', help='url', default=None)
-        arg_parser.add_argument('-article_list', help='', action='store_true', default=False)
-        arg_parser.add_argument('-article', help='', action='store_true', default=False)
+    parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum')
+    parser.add_argument('-scheduler_db_port', help='db server port', default=37017)
+    parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
+    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
 
-        # 에러 테이블에 있는 기사를 재파싱
-        arg_parser.add_argument('-parse_error', help='', action='store_true', default=False)
+    parser.add_argument('-url', help='url', default=None)
+    parser.add_argument('-article_list', help='', action='store_true', default=False)
+    parser.add_argument('-article', help='', action='store_true', default=False)
 
-        arg_parser.add_argument('-db_host', help='db server host name', default='gollum')
-        arg_parser.add_argument('-db_port', help='db server port', default=37017)
-        arg_parser.add_argument('-db_name', help='job db name', default='daum_baseball')
-        arg_parser.add_argument('-db_collection', help='job collection name', default='error')
+    # 에러 테이블에 있는 기사를 재파싱
+    parser.add_argument('-parse_error', help='', action='store_true', default=False)
 
-        return arg_parser.parse_args()
+    parser.add_argument('-db_host', help='db server host name', default='gollum')
+    parser.add_argument('-db_port', help='db server port', default=37017)
+    parser.add_argument('-db_name', help='job db name', default='daum_baseball')
+    parser.add_argument('-db_collection', help='job collection name', default='error')
+
+    return parser.parse_args()
 
 
 def main():
     """
     :return:
     """
-    crawler = NCCrawler()
-    args = crawler.parse_argument()
+    crawler = Crawler()
+    args = init_arguments()
 
-    from docker_scheduler import NCDockerClusterScheduler
+    from crawler.scheduler import Scheduler as CrawlerScheduler
 
-    nc_curl = NCDockerClusterScheduler()
+    nc_curl = CrawlerScheduler()
     scheduler_db_info = {
         'document_id': args.document_id,
         'scheduler_db_host': args.scheduler_db_host,

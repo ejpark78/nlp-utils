@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-for filename in $(ls ../*.py ../*.ini ../*.so) ; do
+home=$PWD
+
+for filename in $(ls ../*.py ../*.ini) ; do
     fname=$(basename ${filename})
 
     if [ -f ${fname} ] ; then
@@ -8,6 +10,42 @@ for filename in $(ls ../*.py ../*.ini ../*.so) ; do
     fi
 
     echo ${filename} ${fname}
-    ln -s ${filename} ${fname}
+    cp ${filename} ${fname}
 done
 
+for sub_dir in crawler language_utils ; do
+    mkdir ${sub_dir}
+    cd ${sub_dir}
+    for filename in $(ls ../../${sub_dir}/*.py) ; do
+        fname=$(basename ${filename})
+
+        if [ -f ${fname} ] ; then
+            continue
+        fi
+
+        echo ${filename} ${fname}
+        cp ${filename} ${fname}
+    done
+
+    cd ${home}
+done
+
+cd language_utils
+home=$PWD
+
+for sub_dir in crf sp_utils ; do
+    mkdir ${sub_dir}
+    cd ${sub_dir}
+    for filename in $(ls ../../../language_utils/${sub_dir}/*.py ../../../language_utils/${sub_dir}/*.so) ; do
+        fname=$(basename ${filename})
+
+        if [ -f ${fname} ] ; then
+            continue
+        fi
+
+        echo ${filename} ${fname}
+        cp ${filename} ${fname}
+    done
+
+    cd ${home}
+done

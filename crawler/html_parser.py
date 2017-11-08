@@ -1,20 +1,28 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import sys
 import logging
 
 from bs4 import BeautifulSoup
 
-from crawler_utils import NCCrawlerUtil
+try:
+    from crawler.utils import Utils as CrawlerUtils
+except ImportError:
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+    from .utils import Utils as CrawlerUtils
+
+
 from language_utils.language_utils import LanguageUtils
 
 
-class NCHtmlParser:
+class HtmlParser:
     """
     html 파서, 네이트 야구 뉴스를 파싱해서 기사 본문 추출
     """
@@ -323,8 +331,8 @@ class NCHtmlParser:
 
         article_contents = BeautifulSoup(html_content, 'lxml')
 
-        NCCrawlerUtil().replace_tag(article_contents, ['caption'])
-        NCCrawlerUtil().replace_tag(article_contents, ['br', 'dl', 'BR', 'DL'], '\n')
+        CrawlerUtils().replace_tag(article_contents, ['caption'])
+        CrawlerUtils().replace_tag(article_contents, ['br', 'dl', 'BR', 'DL'], '\n')
         
         self.remove_link_tag(article_contents)
 

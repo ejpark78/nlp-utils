@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import re
-import os
 import sys
 import json
 import logging
@@ -27,7 +26,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class JisikManCrawler:
+class JisikMan:
     """
     """
     def __init__(self):
@@ -381,7 +380,7 @@ class JisikManCrawler:
             'content_shotage_flag': False,
             'sort_order': 'recent',
             'limit': limit,
-            'point': 0,
+            'point': point,
             'page': page
         }
 
@@ -580,31 +579,31 @@ class JisikManCrawler:
 
         return
 
-    @staticmethod
-    def parse_argument():
-        """
-        옵션 설정
 
-        :return:
-        """
-        import argparse
+def init_arguments():
+    """
+    옵션 설정
 
-        arg_parser = argparse.ArgumentParser(description='crawling web news articles')
+    :return:
+    """
+    import argparse
 
-        arg_parser.add_argument('-from_start', help='', action='store_true', default=False)
-        arg_parser.add_argument('-get_missing_question', help='', action='store_true', default=False)
+    parser = argparse.ArgumentParser(description='crawling web news articles')
 
-        arg_parser.add_argument('-query_by_id', help='', action='store_true', default=False)
-        arg_parser.add_argument('-start', help='start', default="1")
-        arg_parser.add_argument('-end', help='start', default="50,000")
+    parser.add_argument('-from_start', help='', action='store_true', default=False)
+    parser.add_argument('-get_missing_question', help='', action='store_true', default=False)
 
-        return arg_parser.parse_args()
+    parser.add_argument('-query_by_id', help='', action='store_true', default=False)
+    parser.add_argument('-start', help='start', default="1")
+    parser.add_argument('-end', help='start', default="50,000")
+
+    return parser.parse_args()
 
 
 def main():
     """
-    JisikManCrawler.py -from_start
-    JisikManCrawler.py -get_missing_question
+    JisikMan.py -from_start
+    JisikMan.py -get_missing_question
 
     range: 19,672,495 ~ 22,543,847
     range: 22,543,727 ~ 22,543,756
@@ -612,20 +611,20 @@ def main():
     ~ 22,543,853
 
     22,175,000 ~ 22,180,000
-    JisikManCrawler.py -query_by_id -start 22,175,000 -end 22,543,853
-    JisikManCrawler.py -query_by_id -start 22,170,000 -end 22,175,000
-    JisikManCrawler.py -query_by_id -start 22,160,000 -end 22,170,000
-    JisikManCrawler.py -query_by_id -start 22,150,000 -end 22,160,000
-    JisikManCrawler.py -query_by_id -start 22,140,000 -end 22,150,000
-    JisikManCrawler.py -query_by_id -start 22,130,000 -end 22,140,000
-    JisikManCrawler.py -query_by_id -start 22,120,000 -end 22,130,000
-    JisikManCrawler.py -query_by_id -start 22,110,000 -end 22,120,000
-    JisikManCrawler.py -query_by_id -start 22,100,000 -end 22,110,000
+    JisikMan.py -query_by_id -start 22,175,000 -end 22,543,853
+    JisikMan.py -query_by_id -start 22,170,000 -end 22,175,000
+    JisikMan.py -query_by_id -start 22,160,000 -end 22,170,000
+    JisikMan.py -query_by_id -start 22,150,000 -end 22,160,000
+    JisikMan.py -query_by_id -start 22,140,000 -end 22,150,000
+    JisikMan.py -query_by_id -start 22,130,000 -end 22,140,000
+    JisikMan.py -query_by_id -start 22,120,000 -end 22,130,000
+    JisikMan.py -query_by_id -start 22,110,000 -end 22,120,000
+    JisikMan.py -query_by_id -start 22,100,000 -end 22,110,000
 
     :return:
     """
-    crawler = JisikManCrawler()
-    args = crawler.parse_argument()
+    crawler = JisikMan()
+    args = init_arguments()
 
     if args.get_missing_question is True:
         crawler.query_missing_question(args.start, args.end)

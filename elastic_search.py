@@ -8,15 +8,13 @@ from __future__ import print_function
 import sys
 import json
 import logging
+import urllib3
 import dateutil.parser
 
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
 # SSL 워닝 제거
-import urllib3
-
-urllib3.disable_warnings()
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
