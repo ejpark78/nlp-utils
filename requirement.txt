@@ -25,3 +25,4 @@ xlsxwriter
 sqlalchemy
 slackclient
 pyspark
+gensim

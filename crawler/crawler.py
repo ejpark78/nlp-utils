@@ -215,9 +215,9 @@ class Crawler:
         section = self.parameter['const_value']['section']
 
         if 'L2' not in section:
-            collection = '{L1}'.format(**section)
+            collection = '{l1}'.format(**section)
         else:
-            collection = '{L1}-{L2}'.format(**section)
+            collection = '{l1}-{l2}'.format(**section)
 
         query, _, _ = self.crawler_util.get_query(curl_url)
         if 'page' not in query:
