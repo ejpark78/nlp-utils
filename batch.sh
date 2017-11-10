@@ -10,14 +10,14 @@
 #
 #for fname in $(\ls language_utils/data/UCorpus-HG/training.??.bz2 | perl -ple 's/.bz2//') ; do
 #    echo ${fname}
-#    bzcat ${fname}.bz2 | batch.py | bzip2 - > ${fname}.json.bz2 &
+#    bzcat ${fname}.bz2 | batch.py -convert_corpus | bzip2 - > ${fname}.json.bz2 &
 #done
 #wait
-
-
+#
+#
 #fname="language_utils/data/UCorpus-HG/test"
 #echo ${fname}
-#bzcat ${fname}.bz2 | batch.py | bzip2 - > ${fname}.json.bz2
+#bzcat ${fname}.bz2 | batch.py -convert_corpus | bzip2 - > ${fname}.json.bz2
 
 
 

@@ -19,63 +19,46 @@ def init_arguments():
 
     parser = argparse.ArgumentParser(description='batch test')
 
+    parser.add_argument('-train', help='', action='store_true', default=True)
+
+    parser.add_argument('-tagging', help='', action='store_true', default=False)
+
     parser.add_argument('-test_language_utils', help='', action='store_true', default=False)
+    parser.add_argument('-convert_corpus', help='', action='store_true', default=False)
+    parser.add_argument('-convert_format', help='', action='store_true', default=False)
 
     return parser.parse_args()
-
-
-def convert_corpus():
-    from language_utils.crf.pos_tagger_utils import PosTaggerUtils
-
-    util = PosTaggerUtils()
-
-    util.morph_to_syllable()
-
-
-def train():
-    from language_utils.crf.trainer import main
-    main()
-
-    # from language_utils.crf.trainer import main
-    # main()
-
-
-def tagging():
-    from language_utils.crf.named_entity_tagger import main
-    main()
-
-    # from language_utils.crf.pos_tagger import main
-    # main()
-
-
-def convert_format():
-    from language_utils.crf.named_entity_utils import NamedEntityUtils
-    util = NamedEntityUtils()
-
-    # util.test_convert_format_sentence()
-    util.convert_format()
-
-
-def test_language_utils():
-    try:
-        from language_utils.language_utils import main
-    except ImportError:
-        sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-        from .language_utils import main
-
-    main()
 
 
 def main():
     args = init_arguments()
 
     if args.test_language_utils:
-        test_language_utils()
+        from language_utils.language_utils import main
+        main()
 
-    # convert_format()
-    train()
-    # tagging()
+    if args.train:
+        from language_utils.crf.trainer import main
+        main()
+
+    if args.tagging:
+        from language_utils.crf.named_entity_tagger import main
+        main()
+
+        # from language_utils.crf.pos_tagger import main
+        # main()
+
+    if args.convert_corpus:
+        from language_utils.crf.pos_tagger_utils import PosTaggerUtils
+
+        util = PosTaggerUtils()
+        util.morph_to_syllable()
+
+    # 개체명 형식 변환
+    if args.convert_format:
+        from language_utils.crf.named_entity_utils import NamedEntityUtils
+        util = NamedEntityUtils()
+        util.convert_format()
 
 
 if __name__ == "__main__":

@@ -41,7 +41,6 @@ class CorpusProcessor:
                     document[k] = document[k]['$date']
             except Exception as e:
                 logging.error('', exc_info=e)
-                pass
 
         return document
 

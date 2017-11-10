@@ -10,7 +10,7 @@ pyvenv --copies $PWD/venv
 
 cp ~/.pip/pip.conf $PWD/venv/
 
-. /data/nlp_home/ejpark/workspace/crawler/venv/bin/activate
+source /data/nlp_home/ejpark/workspace/crawler/venv/bin/activate
 
 pip3 install -r requirement.txt
 
