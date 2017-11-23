@@ -110,9 +110,11 @@ class UrlIndexDB:
         sql = 'INSERT INTO url_list (url) VALUES (?)'
         try:
             self.cursor.execute(sql, (url, ))
+        except sqlite3.IntegrityError:
+            pass
         except Exception as e:
             logging.error('', exc_info=e)
-            print('ERROR at save_url: {} {}'.format(url, sys.exc_info()[0]), flush=True)
+            print('ERROR at save_url: ', url, e, flush=True)
 
         return
 

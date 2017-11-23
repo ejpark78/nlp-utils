@@ -405,7 +405,7 @@ class NCDumpSummarizationCorpus:
 #         for i, document in enumerate(document_list):
 #             if 'date' in document:
 #                 # date 형식일 경우 문자열로 변환
-#                 document['date'] = document['date'].strftime("%Y-%m-%d %H:%M:%S")
+#                 document['date'] = document['date'].strftime('%Y-%m-%d %H:%M:%S')
 #
 #             if print_type == 'tab':
 #                 doc2 = self.serialize(document)

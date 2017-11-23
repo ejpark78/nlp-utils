@@ -17,49 +17,77 @@ def init_arguments():
     """
     import argparse
 
-    parser = argparse.ArgumentParser(description='batch test')
+    parser = argparse.ArgumentParser(description='batch')
 
-    parser.add_argument('-train', help='', action='store_true', default=True)
-
-    parser.add_argument('-tagging', help='', action='store_true', default=False)
-
-    parser.add_argument('-test_language_utils', help='', action='store_true', default=False)
-    parser.add_argument('-convert_corpus', help='', action='store_true', default=False)
-    parser.add_argument('-convert_format', help='', action='store_true', default=False)
+    parser.add_argument('-batch', help='', action='store_true', default=True)
 
     return parser.parse_args()
 
 
 def main():
-    args = init_arguments()
+    import re
+    from language_utils.language_utils import LanguageUtils
 
-    if args.test_language_utils:
-        from language_utils.language_utils import main
-        main()
+    # 사전 경로 지정
+    dictionary_path = 'language_utils/dictionary'
 
-    if args.train:
-        from language_utils.crf.trainer import main
-        main()
+    util = LanguageUtils()
 
-    if args.tagging:
-        from language_utils.crf.named_entity_tagger import main
-        main()
+    # 사전 오픈
+    util.open(engine='sp_utils/pos_tagger', path='{}/rsc'.format(dictionary_path))
 
-        # from language_utils.crf.pos_tagger import main
-        # main()
+    # "B"=야구 "E"=경제 "T"=야구 용어
+    util.open(engine='sp_utils/ne_tagger', config='sp_config.ini', domain='B')
+    util.open(engine='sp_utils/ne_tagger', config='sp_config.ini', domain='T')
 
-    if args.convert_corpus:
-        from language_utils.crf.pos_tagger_utils import PosTaggerUtils
+    # fp = open('data/speech_requests/4. 나무 위키/test', 'r')
+    # for line in fp.readlines():
 
-        util = PosTaggerUtils()
-        util.morph_to_syllable()
+    for line in sys.stdin:
+        line = line.strip()
+        if line == '':
+            continue
 
-    # 개체명 형식 변환
-    if args.convert_format:
-        from language_utils.crf.named_entity_utils import NamedEntityUtils
-        util = NamedEntityUtils()
-        util.convert_format()
+        if 'http' in line:
+            continue
+
+        line = re.sub(r"'''(.*?)'''", '\g<1>', line)
+
+        count = 0
+        try:
+            # 문장 분리
+            sentence_list = util.run_sentence(engine='split_sentence', paragraph=line)
+
+            for sentence in sentence_list:
+                clean_sentence = re.sub(r'\[\[.+?\]\]', '', sentence)
+
+                # 형태소 분석 실행
+                pos_tagged = util.run_sentence(engine='sp_utils/pos_tagger', sentence=clean_sentence)[0]
+
+                # 사전 기반 개체명 인식 실행
+                sp_named_entity = util.run_sentence(engine='sp_utils/ne_tagger',
+                                                    sentence=clean_sentence, pos_tagged=pos_tagged)
+
+                word_list = re.findall(r'\[\[(.+?)\]\]', sentence)
+
+                print('{}\t{}\t{}\t{}\t{}\t{}'.format(
+                    clean_sentence, sentence, pos_tagged,
+                    sp_named_entity['B'], sp_named_entity['T'], '|'.join(word_list)))
+        except Exception as e:
+            pass
+
+        count += 1
+        if count % 100 == 0:
+            print('({:,})'.format(count), file=sys.stderr, flush=True, end='')
+
+    return
+
+
+def run_convert_mlbpark():
+    from crawler.html_parser import HtmlParser
+
+    HtmlParser().convert_mlbpark()
 
 
 if __name__ == "__main__":
-    main()
+    run_convert_mlbpark()

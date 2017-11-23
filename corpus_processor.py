@@ -57,13 +57,13 @@ class CorpusProcessor:
         self.util = LanguageUtils()
 
         # self.util.open(engine='reviser', config='{}/reviser.ini'.format(config_path))
-        self.util.open(engine='pos_tagger', path='{}/rsc'.format(dictionary_path))
+        self.util.open(engine='sp_utils/pos_tagger', path='{}/rsc'.format(dictionary_path))
         # self.util.open(engine='parser', path='{}'.format(parser_path))
 
         # "B"=야구 "E"=경제 "T"=야구 용어
-        self.util.open(engine='sp_ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='E')
-        self.util.open(engine='sp_ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='B')
-        self.util.open(engine='sp_ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='T')
+        # self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='E')
+        self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='B')
+        self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='T')
 
         # 학습 기반 개체명 인식기 오픈
         # self.util.open(engine='crf_ne_tagger', model='{}/model/ner.josa.model'.format(dictionary_path))

@@ -78,7 +78,7 @@ class JisikMan:
         if sleep_time > min_delay:
             sleep_time = random.randrange(min_delay, delay, 1)
 
-        # str_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # print('{}\t{} sec\t{:,}\t{}'.format(str_now, sleep_time, self.request_count, curl_url), flush=True)
 
         # 쉼
@@ -127,9 +127,9 @@ class JisikMan:
             else:
                 time = date
 
-            return time.strftime("%Y-%m-%d %H:%M:%S")
+            return time.strftime('%Y-%m-%d %H:%M:%S')
 
-        return date.strftime("%Y-%m-%d %H:%M:%S")
+        return date.strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
     def to_simple(document):
@@ -280,7 +280,7 @@ class JisikMan:
                 document['date'] = ''
 
             if 'question_content' in document:
-                str_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                 msg = '{} {:,} [{}] ({}) {}'.format(
                     str_now, int(document['_id']), answer_date, collection, document['question_content'])
@@ -355,7 +355,7 @@ class JisikMan:
             if from_start is False:
                 state = {
                     '_id': 'state',
-                    'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'page': page,
                     'point': point
                 }

@@ -345,6 +345,142 @@ class HtmlParser:
 
         return content_text, image_list
 
+    @staticmethod
+    def convert_mlbpark():
+        """
+        mlbpark 데이터 변환
+
+        :return:
+            True/False
+        """
+        import re
+        import json
+        import dateutil.parser
+
+        from bs4 import BeautifulSoup
+
+        fp_csv = {}
+
+        count = 0
+        # fp = open('data/mlbpark/kbo/sample.json', 'r')
+        # for line in fp.readlines():
+        for line in sys.stdin:
+            document = json.loads(line)
+
+            # 헤더가 없는 경우 추출
+            if 'title_header' not in document:
+                document['title_header'] = ''
+
+            if document['title_header'] == '' and document['title_header'].find('[') > 0:
+                document['title_header'] = re.sub(r'^\[(.+?)\].+$', '\g<1>', document['title']).strip()
+
+            document['title'] = re.sub(r'^\[(.+?)\]', '', document['title']).strip()
+
+            simple_id = document['_id']
+            for t in simple_id.split('.'):
+                if t.isdigit():
+                    simple_id = int(t)
+                    break
+
+            result = {
+                '_id': simple_id,
+                'title_header': document['title_header'],
+                'title': document['title'],
+                'nick': document['nick'],
+                'date': '',
+                'view_count': 0,
+                'contents': '',
+                'reply_list': []
+            }
+
+            csv_filename = ''
+            if 'date' in document:
+                # mongoepoxrt 데이터일 경우 날짜 변환
+                if '$date' in document['date']:
+                    document['date'] = document['date']['$date']
+
+                dt = dateutil.parser.parse(document['date'])
+                result['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
+
+                # fp csv open
+                csv_filename = dt.strftime('%Y-%m')
+                if csv_filename not in fp_csv:
+                    fp_csv[csv_filename] = open('data/mlbpark/{}.csv'.format(csv_filename), 'w')
+
+            if 'view_count' in document:
+                view_count = document['view_count'].replace(',', '')
+                result['view_count'] = int(view_count)
+
+            if 'html_content' not in document:
+                continue
+
+            # body
+            soup = BeautifulSoup(document['html_content'], 'lxml')
+            result['contents'] = soup.get_text()
+
+            # replay
+            soup = BeautifulSoup(document['reply_list'], 'lxml')
+            for tag in soup.find_all('div', attrs={'class': 'txt_box'}):
+                nick = tag.find('span', attrs={'class': 'name'}).get_text().strip()
+                date = tag.find('span', attrs={'class': 'date'}).get_text().strip()
+
+                reply_to = ''
+                re_txt = []
+                for txt in tag.find_all('span', attrs={'class': 're_txt'}):
+                    str_txt = txt.get_text()
+                    str_txt = re.sub(r'[/]+', '//', str_txt)
+
+                    token = str_txt.split('//', maxsplit=1)
+
+                    if len(token) == 1:
+                        str_txt = token[0].strip()
+                    else:
+                        reply_to = token[0].strip()
+                        str_txt = token[1].strip()
+
+                    re_txt.append(str_txt.strip())
+
+                # simple
+                dt = dateutil.parser.parse(date)
+                item = {
+                    'nick': nick,
+                    'date': dt.strftime('%Y-%m-%d %H:%M:%S'),
+                    'reply_to': reply_to,
+                    're_txt': ' '.join(re_txt)
+                }
+
+                result['reply_list'].append(item)
+
+            result['reply_count'] = len(result['reply_list'])
+
+            if csv_filename in fp_csv:
+                csv_line = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
+                    result['_id'],
+                    result['date'],
+                    result['view_count'],
+                    result['reply_count'],
+                    result['nick'],
+                    result['title_header'],
+                    result['title'],
+                    '<br>'.join(result['contents'].split('\n'))
+                )
+
+                fp_csv[csv_filename].write(csv_line)
+                fp_csv[csv_filename].flush()
+
+            msg = json.dumps(result, ensure_ascii=False, sort_keys=True)
+            print(msg, flush=True)
+
+            count += 1
+            if count % 1000 == 0:
+                print('.', end='', flush=True, file=sys.stderr)
+
+        for fname in fp_csv:
+            fp_csv[fname].flush()
+            fp_csv[fname].close()
+
+        return True
+
 
 if __name__ == '__main__':
     pass

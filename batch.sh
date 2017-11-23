@@ -2,6 +2,17 @@
 
 
 
+for (( i=0 ; i<12 ; i++ )) ; do
+    n=$i
+    if (( n < 10 )); then
+        n=0$i
+    fi
+    echo $n
+    cat data/speech_requests/4.\ 나무\ 위키/baseball.text.$n | ./batch.py > data/speech_requests/4.\ 나무\ 위키/baseball.sentence.$n &
+done
+
+wait
+
 
 
 

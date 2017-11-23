@@ -49,13 +49,18 @@ class Utils:
         ex) script, caption will be removed
 
         :param html_tag:
+
         :param tag_list:
+
         :param replacement:
+
         :param attribute:
+
         :return:
+            True/False
         """
         if html_tag is None:
-            return
+            return False
 
         for tag_name in tag_list:
             for tag in html_tag.find_all(tag_name, attrs=attribute):
@@ -64,7 +69,7 @@ class Utils:
                 else:
                     tag.replace_with(replacement)
 
-        return
+        return True
 
     @staticmethod
     def remove_comment(html_tag):
@@ -72,12 +77,15 @@ class Utils:
         html 태그 중에서 주석 태그를 모두 제거
 
         :param html_tag:
+            웹페이지 본문
+
         :return:
+            True/False
         """
         for element in html_tag(text=lambda text: isinstance(text, Comment)):
             element.extract()
 
-        return
+        return True
 
     @staticmethod
     def get_encoding_type(html_body):
@@ -85,7 +93,10 @@ class Utils:
         메타 정보에서 인코딩 정보 반환
 
         :param html_body:
+            html 본문
+
         :return:
+            BeautifulSoup 반환
         """
         soup = BeautifulSoup(html_body, 'lxml')
 
@@ -108,13 +119,22 @@ class Utils:
         return soup, encoding
 
     @staticmethod
-    def get_url(url):
+    def get_url(url, url_type=None):
         """
         url 문자열을 찾아서 반환
 
         :param url:
+            url 구조체
+
+        :param url_type:
+            url 타입 명시
+
         :return:
+            url
         """
+
+        if url_type is not None and url_type in url:
+            return url[url_type]
 
         if isinstance(url, str) is True:
             return url
@@ -125,14 +145,13 @@ class Utils:
 
         return ''
 
-    def curl_html(self, curl_url, delay=6, min_delay=3, post_data=None, json_type=False,
+    def curl_html(self, curl_url, delay='6~9', post_data=None, json_type=False,
                   encoding=None, max_try=3, headers=None):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
 
         :param curl_url:
         :param delay:
-        :param min_delay:
         :param post_data:
         :param json_type:
         :param encoding:
@@ -140,26 +159,38 @@ class Utils:
         :param headers:
         :return:
         """
-        curl_url = self.get_url(curl_url)
+        min_delay = 6
+        max_delay = 9
+
+        if '~' in delay:
+            min_delay, max_delay = delay.split('~', maxsplit=1)
+
+            min_delay = int(min_delay)
+            max_delay = int(max_delay)
+
+        curl_url = self.get_url(curl_url, url_type='full')
         curl_url = curl_url.strip()
 
         if curl_url == '' or curl_url.find('http') != 0:
             print('error empty url {}'.format(curl_url))
             return
 
-        # 10번에 한번씩 10초간 쉬어줌
-        self.request_count += 1
-        if self.request_count % 10 == 0:
-            delay = 10
-
         # 2초 이상일 경우 랜덤하게 쉬어줌
-        sleep_time = delay
-        if sleep_time > min_delay:
-            sleep_time = random.randrange(min_delay, delay, 1)
+        sleep_time = min_delay
+        if sleep_time > max_delay:
+            try:
+                sleep_time = random.randrange(min_delay, max_delay, 1)
+            except Exception as e:
+                logging.error('', exc_info=e)
+
+        # 10번에 한번씩 60초간 쉬어줌
+        self.request_count += 1
+        if self.request_count % 60 == 0:
+            min_delay = 60
+            max_delay = min_delay + 1
 
         # 상태 출력
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # LanguageUtils().print('{}\t{} sec\t{:,}\t{}'.format(str_now, sleep_time, self.request_count, curl_url))
 
         # 쉼
         sleep(sleep_time)
@@ -192,13 +223,12 @@ class Utils:
                     return None
 
                 if max_try > 0:
-                    LanguageUtils().print(
+                    print(
                         '{}\t{}\terror at json\t{}\tsleep: {} sec'.format(
                             str_now, curl_url, sys.exc_info()[0], sleep_time * 10))
                     sleep(sleep_time * 10)
-                    return self.curl_html(
-                        curl_url=curl_url, delay=delay, min_delay=min_delay, post_data=post_data,
-                        json_type=json_type, encoding=encoding, max_try=max_try - 1)
+                    return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
+                                          json_type=json_type, encoding=encoding, max_try=max_try - 1)
                 else:
                     print('Unexpected error:', sys.exc_info()[0])
                     raise
@@ -247,8 +277,7 @@ class Utils:
                 self.get_target_value(soup, tag_info, article_list, url)
             except Exception as e:
                 logging.error('', exc_info=e)
-
-                LanguageUtils().print({'ERROR': 'get target value', 'url': url})
+                print({'ERROR': 'get target value', 'url': url}, flush=True)
                 return None
 
         for item in article_list:
@@ -274,8 +303,7 @@ class Utils:
                 collection = date.strftime('%Y-%m')
             except Exception as e:
                 logging.error('', exc_info=e)
-
-                LanguageUtils().print({'ERROR': 'convert date', 'date': date})
+                print({'ERROR': 'convert date', 'date': date}, flush=True)
                 return None, collection
         elif isinstance(date, dict) is True:
             if 'date' in date:
@@ -372,7 +400,7 @@ class Utils:
         except Exception as e:
             logging.error('', exc_info=e)
 
-            LanguageUtils().print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
+            print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
 
         # debug:
         #   kafka-topics.sh --list --zookeeper gollum:2181
@@ -439,7 +467,7 @@ class Utils:
         except Exception as e:
             logging.error('', exc_info=e)
 
-            LanguageUtils().print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
+            print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
 
         return
 
@@ -601,7 +629,7 @@ class Utils:
 
             traceback.print_exc(file=sys.stderr)
 
-            LanguageUtils().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
+            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
                 collection = mongodb.get_collection('error')
@@ -634,9 +662,9 @@ class Utils:
                 msg.append(document[key])
 
         if len(msg) > 0:
-            LanguageUtils().print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            print('{}\t{}'.format(str_now, '\t'.join(msg)))
 
-        return
+        return True
 
     def save_logs(self, document, elastic_info, mongodb_info):
         """
@@ -716,8 +744,13 @@ class Utils:
         문서 저장
 
         :param document:
+            저장할 문서
+
         :param db_info:
+            디비 접속 정보
+
         :return:
+            True/False
         """
         if 'mongo'in db_info and 'host' in db_info['mongo']:
             self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
@@ -746,6 +779,7 @@ class Utils:
         :param document:
         :param parsing_info:
         :return:
+            True/False
         """
         query, base_url, parsed_url = self.get_query(document['url'])
 
@@ -800,13 +834,19 @@ class Utils:
                 document['_id'] = self.get_document_id(document_id)
 
             try:
-                if '_id' in parsing_id and len(query) > 0:
+                key_exists = True
+                for k in re.findall(r'{([^}]+)}', parsing_id['_id']):
+                    if k not in query:
+                        key_exists = False
+                        break
+
+                if key_exists is True and '_id' in parsing_id and len(query) > 0:
                     document['_id'] = parsing_id['_id'].format(**query)
             except Exception as e:
                 logging.error('', exc_info=e)
                 document['_id'] = self.get_document_id(document_id)
 
-        return
+        return True
 
     @staticmethod
     def get_next_id(collection, document_name='section_id', value='section'):
@@ -880,8 +920,7 @@ class Utils:
             pass
         except Exception as e:
             logging.error('', exc_info=e)
-
-            LanguageUtils().print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
+            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
 
             try:
                 collection = mongodb.get_collection('error_{}'.format(collection_name))
@@ -907,7 +946,7 @@ class Utils:
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if len(msg) > 0:
-            LanguageUtils().print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            print('{}\t{}'.format(str_now, '\t'.join(msg)))
 
         return True
 

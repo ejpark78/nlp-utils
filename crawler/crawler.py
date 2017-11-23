@@ -99,7 +99,7 @@ class Crawler:
             기사 본문 형식
 
         :return:
-            크롤링된 기사 본문
+            True/False
         """
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -114,7 +114,7 @@ class Crawler:
         url = self.crawler_util.get_url(article['url'])
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
-            LanguageUtils().print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
+            print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
 
             if self.db_info['mongo']['upsert'] is False:
                 # const value 삽입
@@ -150,8 +150,7 @@ class Crawler:
         #     json_type = True
 
         soup = self.crawler_util.curl_html(article['url'], encoding=encoding, json_type=json_type,
-                                           delay=self.parameter['delay'], min_delay=self.parameter['min_delay'],
-                                           headers=headers)
+                                           delay=self.parameter['delay'], headers=headers)
 
         if soup is None:
             return True
@@ -185,10 +184,10 @@ class Crawler:
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
                 article['raw_html'] = str(soup)
-                LanguageUtils().print({'INFO': 'missing html_content use entire html'})
+                print({'INFO': 'missing html_content use entire html'})
 
             if 'title' not in article or 'date' not in article or article['date'] is None:
-                LanguageUtils().print({'ERROR': 'missing column', 'article': article})
+                print({'ERROR': 'missing column', 'article': article})
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
@@ -210,6 +209,7 @@ class Crawler:
         :param subject_list:
 
         :return:
+            True/False
         """
         # url 에서 불용어 제거
         section = self.parameter['const_value']['section']
@@ -247,7 +247,7 @@ class Crawler:
                                                subject['title'], url_info['simple'])
             log.append(line)
 
-        return
+        return True
 
     def curl_article_list(self, curl_url):
         """
@@ -262,13 +262,13 @@ class Crawler:
             return
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        LanguageUtils().print('{}\tcurl article list: {}'.format(str_now, curl_url))
+        print('{}\tcurl article list: {}'.format(str_now, curl_url))
 
         # page 주소 중복 체크: 오류가 있음. 마지막 페이지인 경우 중복으로 크롤링
         # if curl_url not in self.page_url_cache:
         #     self.page_url_cache.append(curl_url)
         # else:
-        #     LanguageUtils().print({'INFO': 'already curled page: {}'.format(curl_url)})
+        #     print({'INFO': 'already curled page: {}'.format(curl_url)})
         #     return None
 
         # 인코딩 명시
@@ -277,8 +277,7 @@ class Crawler:
             encoding = self.parsing_info['encoding']
 
         # 1. get subject list
-        soup = self.crawler_util.curl_html(curl_url, delay=self.parameter['delay'],
-                                           min_delay=self.parameter['min_delay'], encoding=encoding)
+        soup = self.crawler_util.curl_html(curl_url, delay=self.parameter['delay'], encoding=encoding)
 
         if soup is None:
             return None
@@ -330,7 +329,7 @@ class Crawler:
         :param json_key_mapping:
         :return:
         """
-        LanguageUtils().print('curl json article list')
+        print('curl json article list')
 
         # 개별 기사 URL
         for article in article_list:
@@ -373,7 +372,7 @@ class Crawler:
             json_key_mapping = self.parsing_info['json_key_mapping']
 
         if json_key_mapping is None:
-            LanguageUtils().print('error no json key mapping info')
+            print('error no json key mapping info')
             return
 
         # 헤더 명시
@@ -386,9 +385,8 @@ class Crawler:
         if page_url.find('{page}') > 0:
             url = page_url.format(page=page)
 
-        LanguageUtils().print('curl all pages: {}'.format(url))
-        page_soup = self.crawler_util.curl_html(url, delay=self.parameter['delay'],
-                                                min_delay=self.parameter['min_delay'], json_type=True, headers=headers)
+        print('curl all pages: {}'.format(url))
+        page_soup = self.crawler_util.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
         if page_soup is None:
             return
 
@@ -429,7 +427,7 @@ class Crawler:
                 parsing_info['index']['tag_name'],
                 attrs=self.crawler_util.get_value(parsing_info['index'], 'attr')):
             if a_tag.has_attr('href') is False:
-                LanguageUtils().print({'ERROR': 'missing href', 'tag': str(a_tag)})
+                print({'ERROR': 'missing href', 'tag': str(a_tag)})
                 continue
 
             url = urljoin(page_url, a_tag['href'])
@@ -526,14 +524,14 @@ class Crawler:
             return
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        LanguageUtils().print('{}\tcurl all pages: {}'.format(str_now, page_url))
+        print('{}\tcurl all pages: {}'.format(str_now, page_url))
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
             return
 
         if 'page_list' not in self.parsing_info:
-            LanguageUtils().print({'ERROR': 'no page list in parsing_info'})
+            print({'ERROR': 'no page list in parsing_info'})
             return
 
         parsing_info = self.parsing_info['page_list']
@@ -545,7 +543,7 @@ class Crawler:
                 attrs=self.crawler_util.get_value(parsing_info['panel'], 'attr'))
 
             if page_tag is None:
-                LanguageUtils().print({'ERROR': 'article list panel is empty'})
+                print({'ERROR': 'article list panel is empty'})
                 return
 
             # 페이지 목록 추출 1~10 등
@@ -635,7 +633,7 @@ class Crawler:
                 state='running', current_date=date, start_date=original_start_date, end_date=end_date,
                 job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
-            LanguageUtils().print({'crawling date': date})
+            print({'crawling date': date})
 
             # 특정 날자의 기사를 수집
             url_list = self.parameter['url_frame']
@@ -751,7 +749,7 @@ class Crawler:
                 start = self.job_info['state']['start']
 
         # url 주소 생성
-        LanguageUtils().print({'year': year, 'start': start})
+        print({'year': year, 'start': start})
 
         # 쿼리 매핑 정보 추출
         query_key_mapping = None
@@ -915,7 +913,7 @@ class Crawler:
 
         :return:
         """
-        LanguageUtils().print('update index db')
+        print('update index db')
 
         self.url_index_db = UrlIndexDB()
         self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
@@ -939,14 +937,11 @@ class Crawler:
 
         self.crawler_util.job_info = self.job_info
 
-        LanguageUtils().print({'job_info': self.job_info})
+        print({'job_info': self.job_info})
 
         self.parameter = job_info['parameter']
         if 'delay' not in self.parameter:
-            self.parameter['delay'] = 6
-
-        if 'min_delay' not in self.parameter:
-            self.parameter['min_delay'] = 3
+            self.parameter['delay'] = '6~9'
 
         # 디비 연결
         self.db_info = self.parameter['db_info']
@@ -958,7 +953,7 @@ class Crawler:
             if 'parsing_info' in self.parameter:
                 self.parsing_info = parsing_info[self.parameter['parsing_info']]
 
-        LanguageUtils().print({
+        print({
             'parameter': self.parameter,
             'parsing_info': self.parsing_info
         })

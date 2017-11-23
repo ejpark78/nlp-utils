@@ -15,9 +15,10 @@ from pymongo import MongoClient
 
 
 def parse_argument():
-    ''''
+    """
     옵션 설정
-    '''
+    :return:
+    """
     import argparse
 
     arg_parser = argparse.ArgumentParser(description='')
@@ -39,6 +40,8 @@ def open_db(db_name, host='frodo', port=27018):
 
 def change_db_info():
     """
+
+    :return:
     """
     connect, db = open_db('crawler')
 
@@ -49,83 +52,27 @@ def change_db_info():
     # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
     # cursor = collection.find({'docker.network': 'hadoop-net'})[:]
 
-    cursor = collection.find({'_id': {'$regex': 'naver_'}})[:]
+    cursor = collection.find({'_id': {'$regex': 'lineagem'}})[:]
 
     for document in cursor:
         print(document['_id'], flush=True)
-        db_info = document['parameter']['db_info']
 
-        document['parameter']['db_info'] = {
-            'mongo': {
-                'host': 'frodo01',
-                'port': 27018,
-                'name': db_info['mongo']['name'],
-                'upsert': db_info['mongo']['upsert']
-            },
-            'kafka': {
-                'host': 'gollum',
-                'port': 9092,
-                'topic': 'crawler',
-                'result': {
-                    'elastic': {
-                        'host': 'frodo',
-                        'upsert': True,
-                        'index': db_info['mongo']['name']
-                    }
-                }
-            }
+        if 'delay' in document:
+            del document['delay']
+
+        if 'min_delay' in document['parameter']:
+            del document['parameter']['min_delay']
+
+        document['parameter']['delay'] = '10~15'
+
+        document['docker'] = {
+            'image': 'crawler:dev',
+            'command': '.venv/bin/python3 scheduler.py',
+            'volume': '/data/nlp_home/docker/crawler:/data/nlp_home/docker/crawler:ro',
+            'working_dir': '/data/nlp_home/docker/crawler'
         }
 
-        if 'network' in document['docker']:
-            del document['docker']['network']
-
-        str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
-        print(str_document, flush=True)
-
-        collection.replace_one({'_id': document['_id']}, document, upsert=True)
-
-    cursor.close()
-
-    connect.close()
-
-    return
-
-
-def change_volume():
-    """
-    """
-    connect, db = open_db('crawler')
-
-    collection = db.get_collection('schedule')
-    cursor = collection.find({'docker.volume': '/home/ejpark/workspace/crawler:/crawler:ro'})[:]
-
-    for document in cursor:
-        document['docker']['volume'] = '/home/docker/crawler:/crawler:ro'
-
-        str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
-        print(str_document, flush=True)
-
-        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
-
-    cursor.close()
-
-    connect.close()
-
-    return
-
-
-def change_network():
-    """
-    """
-    connect, db = open_db('crawler')
-
-    collection = db.get_collection('schedule')
-    cursor = collection.find({'docker.network': {'$exists': 1}})[:]
-
-    for document in cursor:
-        del document['docker']['network']
-
-        document['docker']['volume'] = '/data/nlp_home/docker/crawler:/crawler:ro'
+        document['sleep_range'] = '01,02,03,04,05,06'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
@@ -140,6 +87,4 @@ def change_network():
 
 
 if __name__ == '__main__':
-    # change_volume()
     change_db_info()
-    # change_network()

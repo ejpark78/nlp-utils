@@ -279,7 +279,7 @@ class NCSlackBot:
             print('ERROR', '슬랙 연결 오류', file=sys.stderr, flush=True)
             return
 
-        print('검색 봇 시작: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=sys.stderr, flush=True)
+        print('검색 봇 시작: ', datetime.now().strftime('%Y-%m-%d %H:%M:%S'), file=sys.stderr, flush=True)
         while True:
             channel, message = self.parse_slack_message(slack_client.rtm_read())
             if channel is None or message == '':
@@ -323,7 +323,7 @@ class NCSlackBot:
             print('ERROR', '슬랙 연결 오류', file=sys.stderr, flush=True)
             return
 
-        print('야구 기사 요약 봇 시작: ', datetime.now().strftime("%Y-%m-%d %H:%M:%S"), file=sys.stderr, flush=True)
+        print('야구 기사 요약 봇 시작: ', datetime.now().strftime('%Y-%m-%d %H:%M:%S'), file=sys.stderr, flush=True)
         next_date = datetime.now() + relativedelta(minutes=-6)
 
         while True:
@@ -331,8 +331,8 @@ class NCSlackBot:
                 next_date = datetime.now() + relativedelta(minutes=5)
 
                 print('요약 디비 조회: {}, 다음 디비 조회: {}'.format(
-                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    next_date.strftime("%Y-%m-%d %H:%M:%S")),
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    next_date.strftime('%Y-%m-%d %H:%M:%S')),
                     file=sys.stderr, flush=True)
 
                 self.send_new_summary(slack_client, channel_list, db_info)
@@ -367,7 +367,7 @@ class NCSlackBot:
         }]
 
         print(
-            '[{}] '.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+            '[{}] '.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
             ' vs. '.join(teams),
             row['rep_doc_title'],
             '({})'.format(row['token'].replace('T', ' ').replace('Z', '')),
