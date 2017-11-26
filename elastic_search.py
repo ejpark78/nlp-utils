@@ -9,9 +9,9 @@ import sys
 import json
 import logging
 import urllib3
-import dateutil.parser
 
 from datetime import datetime
+from dateutil.parser import parse as parse_date
 from elasticsearch import Elasticsearch
 
 # SSL 워닝 제거
@@ -107,7 +107,7 @@ class NCElasticSearch:
                 if isinstance(source[k], datetime.date) is True:
                     dt = source[k]
                 else:
-                    dt = dateutil.parser.parse(source[k])
+                    dt = parse_date(source[k])
 
                 target[k] = dt.strftime('%Y-%m-%dT%H:%M:%S')
             else:
@@ -297,7 +297,7 @@ class NCElasticSearch:
                     if isinstance(document['date'], datetime) is True:
                         dt = document['date']
                     else:
-                        dt = dateutil.parser.parse(document['date'])
+                        dt = parse_date(document['date'])
 
                     index_type = dt.strftime('%Y-%m')
 

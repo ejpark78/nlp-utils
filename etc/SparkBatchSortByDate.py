@@ -12,7 +12,7 @@ def map_function(line):
     """
     개별 excutor 에서 실행되는 작업
     """
-    import dateutil.parser
+    from dateutil.parser import parse as parse_date
 
     document = json.loads(line)
 
@@ -24,7 +24,7 @@ def map_function(line):
         elif 'date' in document['date']:
             document['date'] = document['date']['date']
 
-        date = dateutil.parser.parse(document['date'])
+        date = parse_date(document['date'])
         line = json.dumps(document, ensure_ascii=False, sort_keys=True)
 
     return date.strftime('%Y-%m-%d %H:%M:%S'), line

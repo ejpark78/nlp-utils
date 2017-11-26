@@ -10,8 +10,6 @@ import sys
 import json
 import sqlite3
 
-import dateutil.parser
-
 
 class UpdateSectionInfo:
     """

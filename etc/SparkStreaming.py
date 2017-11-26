@@ -163,8 +163,8 @@ def map_function(x):
                 if '$date' in result['date']:
                     result['date'] = result['date']['$date']
 
-                import dateutil.parser
-                result['date'] = dateutil.parser.parse(result['date'])
+                from dateutil.parser import parse as parse_date
+                result['date'] = parse_date(result['date'])
 
             # if 'mongo' in result_info:
             #     save_mongodb(result.copy(), result_info=result_info['mongo'])

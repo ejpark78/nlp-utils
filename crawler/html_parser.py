@@ -355,9 +355,9 @@ class HtmlParser:
         """
         import re
         import json
-        import dateutil.parser
 
         from bs4 import BeautifulSoup
+        from dateutil.parser import parse as parse_date
 
         fp_csv = {}
 
@@ -399,7 +399,7 @@ class HtmlParser:
                 if '$date' in document['date']:
                     document['date'] = document['date']['$date']
 
-                dt = dateutil.parser.parse(document['date'])
+                dt = parse_date(document['date'])
                 result['date'] = dt.strftime('%Y-%m-%d %H:%M:%S')
 
                 # fp csv open
@@ -441,7 +441,7 @@ class HtmlParser:
                     re_txt.append(str_txt.strip())
 
                 # simple
-                dt = dateutil.parser.parse(date)
+                dt = parse_date(date)
                 item = {
                     'nick': nick,
                     'date': dt.strftime('%Y-%m-%d %H:%M:%S'),

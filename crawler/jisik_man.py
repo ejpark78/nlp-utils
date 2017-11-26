@@ -12,12 +12,12 @@ import logging
 
 import random
 import requests
-import dateutil.parser
 
 from time import sleep
 from pymongo import MongoClient
 from datetime import datetime
 from elasticsearch import Elasticsearch
+from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
 import urllib3
@@ -142,7 +142,7 @@ class JisikMan:
         date = None
 
         try:
-            dt = dateutil.parser.parse(document['date'])
+            dt = parse_date(document['date'])
             simple = {
                 'document_id': document['_id'],
                 'date': dt.strftime('%Y-%m-%dT%H:%M:%S'),
@@ -155,13 +155,13 @@ class JisikMan:
                     if 'date' not in answer or answer['date'] == '':
                         answer['date'] = answer['reg_date']
 
-                    dt = dateutil.parser.parse(answer['date'])
+                    dt = parse_date(answer['date'])
                     simple['answer_list'].append({
                         'content': answer['answer_content'],
                         'date': dt.strftime('%Y-%m-%dT%H:%M:%S')
                     })
 
-            date = dateutil.parser.parse(simple['date'])
+            date = parse_date(simple['date'])
 
         except Exception as e:
             logging.error('', exc_info=e)
@@ -257,7 +257,7 @@ class JisikMan:
 
             if 'date' in document and document['date'] != '':
                 try:
-                    date = dateutil.parser.parse(document['date'])
+                    date = parse_date(document['date'])
                     collection = date.strftime('%Y-%m')
                 except Exception as e:
                     logging.error('', exc_info=e)
@@ -268,7 +268,7 @@ class JisikMan:
                 if 'date' in document['detail_answers'][0]:
                     try:
                         answer_date = document['detail_answers'][0]['date']
-                        date = dateutil.parser.parse(answer_date)
+                        date = parse_date(answer_date)
                         collection = date.strftime('%Y-%m')
                     except Exception as e:
                         logging.error('', exc_info=e)

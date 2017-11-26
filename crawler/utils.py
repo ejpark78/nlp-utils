@@ -294,12 +294,12 @@ class Utils:
         :param date:
         :return:
         """
-        import dateutil.parser
+        from dateutil.parser import parse as parse_date
 
         collection = 'error'
         if isinstance(date, str) is True:
             try:
-                date = dateutil.parser.parse(date)
+                date = parse_date(date)
                 collection = date.strftime('%Y-%m')
             except Exception as e:
                 logging.error('', exc_info=e)
@@ -1223,6 +1223,139 @@ class Utils:
                     result_list.append(data)
 
         return
+
+    @staticmethod
+    def _split_news_header(sentence):
+        """
+        뉴스 문장에서 헤더 추출
+
+        [포토]한화 한용덕 감독, 임기내 우승권 팀 만들어야
+        [사진]김태균,'한용덕 감독님! 우승 한번 시켜주십시오'
+
+        :return:
+            헤더 정보
+        """
+
+        header = ''
+        try:
+            for str_p in [r'^\s*\[([^]]+)\]\s*', r'^\s*\(([^)]+)\)\s*']:
+                p = re.compile(str_p)
+                m = re.findall(p, sentence)
+                if len(m) > 0:
+                    header = m[0].split('=', maxsplit=1)[0]
+                    sentence = re.sub(p, '', sentence)
+        except Exception as e:
+            logging.error('', exc_info=e)
+
+        return header, sentence
+
+    def news2csv(self):
+        """
+        몽고디비의 뉴스를 csv 형태로 추출
+
+        :return:
+            True/False
+        """
+        from language_utils.language_utils import LanguageUtils
+
+        util = LanguageUtils()
+
+        fp_csv = {}
+
+        # fp = open('data/nate_baseball/sample.json', 'r')
+        # for line in fp.readlines():
+        for line in sys.stdin:
+            document = json.loads(line)
+            document = util._get_text(document)
+
+            if 'paragraph' not in document or len(document['paragraph']) == 0:
+                continue
+
+            if 'date' not in document:
+                continue
+
+            paragraph = document['paragraph']
+
+            document['url'] = document['url']['full']
+            document['date'] = document['date']['$date'].replace('T', ' ').replace('Z', '').replace('.000', '')
+
+            # 제목 헤더 추출
+            header, document['title'] = self._split_news_header(sentence=document['title'])
+            if 'title_header' not in document or document['title_header'] == '':
+                document['title_header'] = header
+
+            # 분문 헤더 추출
+            header, paragraph[0][0] = self._split_news_header(sentence=paragraph[0][0])
+            if 'source' not in document or document['source'] == '':
+                document['source'] = header
+
+            buf = []
+            count = 0
+            sentence_token = 0
+            for i in range(len(paragraph)):
+                for j in range(len(paragraph[i])):
+                    sentence = paragraph[i][j].strip()
+
+                    if sentence == '':
+                        continue
+
+                    email = re.findall(r'([a-zA-Z.-]+@[a-zA-Z-]+\.[a-zA-Z-]+)', sentence)
+                    if len(email) > 0:
+                        continue
+
+                    col = []
+                    for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+                        if k in document:
+                            col.append(document[k])
+                        else:
+                            col.append('')
+
+                    col.append(str(i+1))
+                    col.append(str(j+1))
+                    col.append(sentence)
+
+                    count += 1
+                    sentence_token += sentence.count(' ') + 1
+
+                    buf.append('\t'.join(col))
+
+            if count == 0:
+                continue
+
+            f_tag = 'sentence_count({:02d})/average_token({:02d})/[{}].[{}].[{}]'.format(
+                count,
+                int(sentence_token / count),
+                document['section'],
+                document['source'],
+                document['title_header']
+            )
+
+            if f_tag not in fp_csv:
+                if len(fp_csv) > 500:
+                    for f_tag in fp_csv:
+                        fp_csv[f_tag].flush()
+                        fp_csv[f_tag].close()
+
+                    fp_csv = {}
+
+                fname = 'data/nate_baseball/csv/{}.csv'.format(f_tag)
+                fpath = os.path.dirname(fname)
+                if os.path.exists(fpath) is not True:
+                    os.makedirs(fpath)
+
+                fp_csv[f_tag] = open(fname, 'a')
+
+            fp_csv[f_tag].write('\n'.join(buf) + '\n\n')
+            fp_csv[f_tag].flush()
+            print(f_tag)
+
+        for f_tag in fp_csv:
+            fp_csv[f_tag].close()
+
+        # if fp is not None:
+        #     fp.close()
+
+        return True
 
 
 if __name__ == '__main__':

@@ -8,10 +8,8 @@ from __future__ import print_function
 import re
 import sys
 import json
-import dateutil.parser
 
 from xlsxwriter.workbook import Workbook
-from pymongo import MongoClient
 from bs4 import BeautifulSoup
 
 

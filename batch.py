@@ -89,5 +89,18 @@ def run_convert_mlbpark():
     HtmlParser().convert_mlbpark()
 
 
+def run_news2csv():
+    """
+
+    :return:
+    """
+    from crawler.utils import Utils
+
+    util = Utils()
+    util.news2csv()
+
+    return True
+
+
 if __name__ == "__main__":
-    run_convert_mlbpark()
+    run_news2csv()
