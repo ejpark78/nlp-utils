@@ -1224,31 +1224,6 @@ class Utils:
 
         return
 
-    @staticmethod
-    def _split_news_header(sentence):
-        """
-        뉴스 문장에서 헤더 추출
-
-        [포토]한화 한용덕 감독, 임기내 우승권 팀 만들어야
-        [사진]김태균,'한용덕 감독님! 우승 한번 시켜주십시오'
-
-        :return:
-            헤더 정보
-        """
-
-        header = ''
-        try:
-            for str_p in [r'^\s*\[([^]]+)\]\s*', r'^\s*\(([^)]+)\)\s*']:
-                p = re.compile(str_p)
-                m = re.findall(p, sentence)
-                if len(m) > 0:
-                    header = m[0].split('=', maxsplit=1)[0]
-                    sentence = re.sub(p, '', sentence)
-        except Exception as e:
-            logging.error('', exc_info=e)
-
-        return header, sentence
-
     def news2csv(self):
         """
         몽고디비의 뉴스를 csv 형태로 추출
@@ -1261,6 +1236,12 @@ class Utils:
         util = LanguageUtils()
 
         fp_csv = {}
+
+        total_count = {
+            'document': 0,
+            'sentence': 0,
+            'token': 0
+        }
 
         # fp = open('data/nate_baseball/sample.json', 'r')
         # for line in fp.readlines():
@@ -1294,37 +1275,60 @@ class Utils:
             sentence_token = 0
             for i in range(len(paragraph)):
                 for j in range(len(paragraph[i])):
-                    sentence = paragraph[i][j].strip()
+                    one_line = paragraph[i][j].strip()
 
-                    if sentence == '':
+                    if one_line == '':
                         continue
 
-                    email = re.findall(r'([a-zA-Z.-]+@[a-zA-Z-]+\.[a-zA-Z-]+)', sentence)
-                    if len(email) > 0:
-                        continue
+                    sentence_list = [one_line]
+                    if one_line.find('"') >= 0:
+                        sentence_list = []
+                        for qoute in re.findall(r'"([^"]{10,1024})"', one_line):
+                            sentence_list += util.split_sentence(qoute)
 
-                    col = []
-                    for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
-                        if k in document:
-                            col.append(document[k])
-                        else:
-                            col.append('')
+                    for sentence in sentence_list:
+                        if sentence == '':
+                            continue
 
-                    col.append(str(i+1))
-                    col.append(str(j+1))
-                    col.append(sentence)
+                        email = re.findall(r'([a-zA-Z.-]+@[a-zA-Z-]+\.[a-zA-Z-]+)', sentence)
+                        if len(email) > 0:
+                            continue
 
-                    count += 1
-                    sentence_token += sentence.count(' ') + 1
+                        col = []
+                        for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+                            if k in document:
+                                col.append(document[k])
+                            else:
+                                col.append('')
 
-                    buf.append('\t'.join(col))
+                        col.append(str(i+1))
+                        col.append(str(j+1))
+                        col.append(sentence)
+
+                        count += 1
+                        sentence_token += sentence.count(' ') + 1
+
+                        buf.append('\t'.join(col))
 
             if count == 0:
                 continue
 
-            f_tag = 'sentence_count({:02d})/average_token({:02d})/[{}].[{}].[{}]'.format(
+            total_count['document'] += 1
+            total_count['sentence'] += count
+            total_count['token'] += sentence_token
+
+            # 문장수 10 ~ 15 문장만 저장
+            if count < 10 or count > 15:
+                continue
+
+            # 평균 어절수 5 ~ 20 문장만 저장
+            avg_token = int(sentence_token / count)
+            if avg_token < 5 or avg_token > 20:
+                continue
+
+            f_tag = 'count({:02d})/token({:02d})/[{}].[{}].[{}]'.format(
                 count,
-                int(sentence_token / count),
+                avg_token,
                 document['section'],
                 document['source'],
                 document['title_header']
@@ -1355,7 +1359,202 @@ class Utils:
         # if fp is not None:
         #     fp.close()
 
+        print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
+              '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
+                total_count['document'],
+                total_count['sentence'],
+                total_count['token'],
+                total_count['sentence']/total_count['document'],
+                total_count['token'] / total_count['document'],
+                total_count['token'] / total_count['sentence']
+        ))
+
         return True
+
+    @staticmethod
+    def _split_news_header(sentence):
+        """
+        뉴스 문장에서 헤더 추출
+
+        [포토]한화 한용덕 감독, 임기내 우승권 팀 만들어야
+        [사진]김태균,'한용덕 감독님! 우승 한번 시켜주십시오'
+
+        :return:
+            헤더 정보
+        """
+
+        header = ''
+        try:
+            for str_p in [r'^\s*\[([^]]+)\]\s*', r'^\s*\(([^)]+)\)\s*']:
+                p = re.compile(str_p)
+                m = re.findall(p, sentence)
+                if len(m) > 0:
+                    header = m[0].split('=', maxsplit=1)[0]
+                    sentence = re.sub(p, '', sentence)
+        except Exception as e:
+            logging.error('', exc_info=e)
+
+        return header, sentence
+
+    @staticmethod
+    def csv2ellipsis():
+        """
+
+        :return:
+        """
+
+        # 20170425n44151
+        # http://sports.news.nate.com/view/20170425n44151
+        # 해외야구
+        # 2017-04-25 22:02:00
+        # 서울
+        # 프로야구
+        # 넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점
+        # 9
+        # 2
+        # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
+
+        """
+
+
+find . -name "*화보*" -exec rm {} \;
+find . -name "*포토*" -exec rm {} \;
+find . -name "*[KS]*" -exec rm {} \;
+find . -name "*[PO]*" -exec rm {} \;
+find . -name "*S-girl*" -exec rm {} \;
+
+
+
+time bzcat data/nate_baseball/2017-04.json.bz2 \
+    data/nate_baseball/2017-05.json.bz2 \
+    data/nate_baseball/2017-06.json.bz2 \
+    data/nate_baseball/2017-07.json.bz2 \
+    data/nate_baseball/2017-08.json.bz2 \
+    data/nate_baseball/2017-09.json.bz2 \
+    data/nate_baseball/2017-10.json.bz2 \
+    | ./batch.py
+
+        
+        
+{
+    "session": "1",
+    "memo": "",
+    "meta": {
+        "id": "20170425n44151",
+        "url": "http://sports.news.nate.com/view/20170425n44151",
+        "date": "2017-04-25 22:02:00",
+        "title": "넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점",
+        "section": "",
+    },
+    "sentence_list": [
+        {
+            "sentence": "허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.",
+            "id": "1",
+            "user": "A"
+        },
+        (...)
+    ]
+}        
+
+
+        col = []
+        for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+            if k in document:
+                col.append(document[k])
+            else:
+                col.append('')
+
+        col.append(str(i+1))
+        col.append(str(j+1))
+        col.append(sentence)
+
+        """
+
+        total_count = {
+            'document': 0,
+            'sentence': 0,
+            'token': 0
+        }
+
+        count = 0
+        session = 1
+
+        buf = {
+            'sentence_list': []
+        }
+
+        prev_id = ''
+        for line in sys.stdin:
+            line = line.strip()
+            if line == '':
+                continue
+
+            token = line.split('\t')
+
+            if prev_id != '' and token[0] != prev_id:
+                fname = 'data/nate_baseball/work/C{:03d}/{:05d}.json'.format(int(session / 100), session)
+
+                fpath = os.path.dirname(fname)
+                if os.path.exists(fpath) is not True:
+                    os.makedirs(fpath)
+
+                with open(fname, 'w') as fp:
+                    result = json.dumps(buf, ensure_ascii=False, indent=4, sort_keys=True)
+                    fp.write(result + '\n')
+                    fp.flush()
+
+                    total_count['document'] += 1
+
+                with open('{}/file-state.json'.format(fpath), 'a') as fp:
+                    result = json.dumps({
+                        'filename': '{:05d}.json'.format(session),
+                        'state': {}
+                    })
+
+                    fp.write(result + '\n')
+                    fp.flush()
+
+                session += 1
+                buf = {
+                    'sentence_list': []
+                }
+
+            buf['session'] = session
+            buf['memo'] = ''
+            buf['meta'] = {
+                'id': token[0],
+                'url': token[1],
+                'section': token[2],
+                'date': token[3],
+                'title': token[6]
+            }
+
+            item = {
+                'sentence': token[9],
+                'id': count,
+                'user': '{:03d}'.format(len(buf['sentence_list']) + 1)
+            }
+
+            buf['sentence_list'].append(item)
+
+            total_count['token'] += token[9].count(' ') + 1
+
+            count += 1
+            prev_id = token[0]
+
+        total_count['sentence'] = count
+
+        print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
+              '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
+                total_count['document'],
+                total_count['sentence'],
+                total_count['token'],
+                total_count['sentence']/total_count['document'],
+                total_count['token'] / total_count['document'],
+                total_count['token'] / total_count['sentence']
+        ))
+
+        return
 
 
 if __name__ == '__main__':

@@ -97,7 +97,8 @@ def run_news2csv():
     from crawler.utils import Utils
 
     util = Utils()
-    util.news2csv()
+    # util.news2csv()
+    util.csv2ellipsis()
 
     return True
 
