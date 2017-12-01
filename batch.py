@@ -98,7 +98,8 @@ def run_news2csv():
 
     util = Utils()
     # util.news2csv()
-    util.csv2ellipsis()
+    # util.csv2ellipsis()
+    util.news2text()
 
     return True
 

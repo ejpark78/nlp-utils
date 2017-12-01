@@ -1243,8 +1243,6 @@ class Utils:
             'token': 0
         }
 
-        # fp = open('data/nate_baseball/sample.json', 'r')
-        # for line in fp.readlines():
         for line in sys.stdin:
             document = json.loads(line)
             document = util._get_text(document)
@@ -1552,9 +1550,73 @@ time bzcat data/nate_baseball/2017-04.json.bz2 \
                 total_count['sentence']/total_count['document'],
                 total_count['token'] / total_count['document'],
                 total_count['token'] / total_count['sentence']
-        ))
+                ))
 
         return
+
+    @staticmethod
+    def news2text():
+        """
+        문장 분리 적용 후 기사별 저장
+
+        :return:
+            True/False
+
+        :sample extraction:
+            $ bzcat 2017-10.json.bz2 | shuf | shuf | head -n100 | bzip2 - > 2017-10.sample.json.bz2
+        """
+        import bz2
+        from crawler.html_parser import HtmlParser
+
+        html_parser = HtmlParser()
+
+        fp = bz2.open('data/nate_baseball/raw/2017-10.sample.json.bz2', 'r')
+
+        count = 0
+        for line in fp.readlines():
+            line = str(line, encoding='utf-8')
+
+            document = json.loads(line)
+            if 'html_content' not in document:
+                continue
+
+            content, _ = html_parser.get_article_body(document['html_content'])
+
+            content = content.strip()
+            content = re.sub(r'\n+', '\n', content)
+            content = content.replace('.', './/')
+            content = content.replace(']', ']//')
+            content = content.replace('= ', '= //')
+
+            # 2017.//10.//13
+            # jhno@sportschosun.//com, kphoto@mydaily.//co.//kr
+
+            count += content.count('\n') + 1
+
+            f_tag = '{}'.format(document['_id'])
+
+            fname = 'data/nate_baseball/text/{}.json'.format(f_tag)
+            fpath = os.path.dirname(fname)
+            if os.path.exists(fpath) is not True:
+                os.makedirs(fpath)
+
+            with open(fname, 'w') as fp_out:
+                result = {
+                    'id': document['_id'],
+                    'url': document['url']['full'],
+                    'content': content
+                }
+                msg = json.dumps(result, ensure_ascii=False, indent=4, sort_keys=True)
+
+                fp_out.write('{}\n'.format(msg))
+                fp_out.flush()
+
+        if fp is not None:
+            fp.close()
+
+        print('{:,}'.format(count))
+
+        return True
 
 
 if __name__ == '__main__':
