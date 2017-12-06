@@ -2,7 +2,7 @@
 
 max_map=90
 
-home="data/nate_baseball"
+home="data/daum_sports"
 
 dry=""
 

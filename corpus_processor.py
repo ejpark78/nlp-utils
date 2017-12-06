@@ -5,9 +5,31 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import sys
 import json
 import logging
+
+# pwd = os.path.dirname(os.path.realpath(__file__))
+# # sys.path.append('{}/language_utils'.format(pwd))
+#
+# print(pwd, file=sys.stderr)
+# print(sys.path, file=sys.stderr)
+#
+# p = '{}'.format(pwd)
+# print(p, file=sys.stderr)
+# for f in os.walk(p):
+#     print(f, file=sys.stderr)
+#
+# p = '{}/crawler'.format(pwd)
+# print(p, file=sys.stderr)
+# for f in os.walk(p):
+#     print(f, file=sys.stderr)
+#
+# p = '{}/language_utils'.format(pwd)
+# print(p, file=sys.stderr)
+# for f in os.walk(p):
+#     print(f, file=sys.stderr)
 
 from language_utils.language_utils import LanguageUtils
 from language_utils.keyword_extractor import KeywordExtractor
@@ -36,11 +58,8 @@ class CorpusProcessor:
             $date 가 제거된 기사
         """
         for k in document:
-            try:
-                if '$date' in document[k]:
-                    document[k] = document[k]['$date']
-            except Exception as e:
-                logging.error('', exc_info=e)
+            if isinstance(document[k], dict) and '$date' in document[k]:
+                document[k] = document[k]['$date']
 
         return document
 
@@ -50,9 +69,11 @@ class CorpusProcessor:
 
         :return:
         """
-        config_path = '.'
-        # parser_path = 'language_utils/parser'
-        dictionary_path = 'language_utils/dictionary'
+        pwd = os.path.dirname(os.path.realpath(__file__))
+
+        # parser_path = 'parser'
+        dictionary_path = 'dictionary'
+        sp_config = '{}/sp_config.ini'.format(pwd)
 
         self.util = LanguageUtils()
 
@@ -61,9 +82,9 @@ class CorpusProcessor:
         # self.util.open(engine='parser', path='{}'.format(parser_path))
 
         # "B"=야구 "E"=경제 "T"=야구 용어
-        # self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='E')
-        self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='B')
-        self.util.open(engine='sp_utils/ne_tagger', config='{}/sp_config.ini'.format(config_path), domain='T')
+        self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='E')
+        # self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='B')
+        # self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='T')
 
         # 학습 기반 개체명 인식기 오픈
         # self.util.open(engine='crf_ne_tagger', model='{}/model/ner.josa.model'.format(dictionary_path))

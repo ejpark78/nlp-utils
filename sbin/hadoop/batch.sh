@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-max_map=200
+max_map=80
 
-home="data/naver_economy"
-
+home="data/daum_news/raw"
 dry=""
 
-for fname in $(ls -r ${home}/????.bz2) ; do
+for fname in $(ls -r ${home}/*.2017-??.json.bz2) ; do
     type_name=$(basename ${fname})
-    type_name="${type_name/.bz2/}"
+    type_name="${type_name/.json.bz2/}"
 
     echo
     echo ${fname}, ${type_name}
@@ -22,7 +21,7 @@ for fname in $(ls -r ${home}/????.bz2) ; do
     echo "Morph: " ${input}, ${output}
 
     if [ "${dry}" == "" ] && [ ! -f ${output} ] ; then
-        mapper="src/NCPreProcess.py -spark_batch"
+        mapper="batch/corpus_processor.py"
         time ./sbin/hadoop/streaming.sh ${max_map} "${input}" "${output}" "${mapper}" ""
     fi
 

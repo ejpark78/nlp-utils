@@ -11,16 +11,18 @@ reducer_cmd="$5"
 job_name="$6"
 
 # meru 설정
-master="meru00"
-hadoop_port=8020
-export HADOOP_USER="ejpark"
-export HADOOP_HOME="/opt/cloudera/parcels/CDH"
-export HADOOP_ROOT_LOGGER="WARN,console"
-
-jar_file="${HADOOP_HOME}/lib/hadoop-mapreduce/hadoop-streaming.jar"
+#master="meru00"
+#hadoop_port=8020
+#export HADOOP_USER="ejpark"
+#export HADOOP_HOME="/opt/cloudera/parcels/CDH"
+#export HADOOP_ROOT_LOGGER="WARN,console"
+#
+#jar_file="${HADOOP_HOME}/lib/hadoop-mapreduce/hadoop-streaming.jar"
 
 # gollum 설정
-#jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
+master="gollum"
+hadoop_port=9000
+jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
 
 # 입력 파라메터 확인
 if [ "${mapper_cmd}" == "" ] || [ "${input_filename}" == "" ] || [ "${output_filename}" == "" ] ; then
@@ -61,6 +63,19 @@ output_dir="${f_name}.${today}"
 # 권한 수정
 #sudo hadoop fs -chmod -R 777 /tmp/hadoop-yarn
 
+#echo -e "\nlibs 압축: crawler.jar"
+#jar cvf crawler.jar -C crawler/ .
+#jar cvf language_utils.jar -C language_utils/ .
+
+#echo -e "\nvenv 압축: venv.jar"
+#jar cvf venv.jar -C venv/ .
+
+#hadoop fs -mkdir -p batch
+#hadoop fs -put crawler.jar batch/
+#hadoop fs -put language_utils.jar batch/
+#hadoop fs -put venv.jar batch/
+#hadoop fs -put corpus_processor.py batch/
+
 # 입력 파일 업로드
 hadoop fs -mkdir -p ${f_dir}
 hadoop fs -rm -f -skipTrash ${input_filename}
@@ -74,9 +89,11 @@ hdfs dfs -rm -r -f -skipTrash ${output_dir}
 # 하둡 스트리밍 실행
 echo -e "\n하둡 스트리밍 실행: ${f_dir}/${f_base}, max_map_count: ${max_map_count}"
 
+#    -archives "${home}/batch/venv.jar#venv,${home}/batch/language_utils.jar#language_utils,${home}/batch/crawler.jar#crawler,${home}/batch/batch.jar#main" \
+#    -archives "${home}/batch.jar#batch" \
 time yarn jar ${jar_file} \
-    -archives "${home}/dictionary.jar#dictionary,${home}/venv.jar#venv" \
-    -files src,parser \
+    -files batch \
+    -archives "${home}/batch/venv.jar#venv,${home}/batch/dictionary.jar#dictionary" \
     -D mapred.input.compress=true \
     -D mapreduce.output.fileoutputformat.compress=true \
     -D mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec \

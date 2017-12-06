@@ -47,27 +47,13 @@ def change_db_info():
     # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
     # cursor = collection.find({'docker.network': 'hadoop-net'})[:]
 
-    cursor = collection.find({'_id': {'$regex': 'lineagem'}})[:]
+    cursor = collection.find({'_id': {'$regex': 'nate_'}})[:]
 
     for document in cursor:
         print(document['_id'], flush=True)
 
-        if 'delay' in document:
-            del document['delay']
-
-        if 'min_delay' in document['parameter']:
-            del document['parameter']['min_delay']
-
-        document['parameter']['delay'] = '10~15'
-
-        document['docker'] = {
-            'image': 'crawler:dev',
-            'command': '.venv/bin/python3 scheduler.py',
-            'volume': '/data/nlp_home/docker/crawler:/data/nlp_home/docker/crawler:ro',
-            'working_dir': '/data/nlp_home/docker/crawler'
-        }
-
-        document['sleep_range'] = '01,02,03,04,05,06'
+        document['parameter']['delay'] = '15~20'
+        document['sleep_range'] = '02,03,04,05'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)

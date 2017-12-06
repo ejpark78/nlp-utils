@@ -1,4 +1,4 @@
-#!.venv/bin/python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -14,26 +14,24 @@ from urllib.parse import urljoin
 from dateutil.relativedelta import relativedelta
 
 try:
-    from crawler.utils import Utils as CrawlerUtils
+    from crawler.utils import Utils
     from crawler.url_index_db import UrlIndexDB
 except ImportError:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-    from .utils import Utils as CrawlerUtils
+    from .utils import Utils
     from .url_index_db import UrlIndexDB
 
 
-from language_utils.language_utils import LanguageUtils
-
-
-class Crawler:
+class Crawler(Utils):
     """
     크롤러
     """
 
     def __init__(self):
+        super().__init__()
+
         self.parameter = None
-        self.job_info = None
         self.scheduler_db_info = None
 
         self.parsing_info = None
@@ -46,9 +44,7 @@ class Crawler:
 
         self.page_url_cache = []
 
-        self.crawler_util = CrawlerUtils()
-
-    def get_collection_name(self, article, response_type='html'):
+    def get_collection_name(self, article, response_type):
         """
         컬랙션 이름 반환
 
@@ -67,7 +63,7 @@ class Crawler:
 
         # date 컬럼을 날짜 형식으로 변환
         if 'date' in article and article['date'] is not None:
-            date, collection = self.crawler_util.get_collection_name(article['date'])
+            date, collection = self.get_date_collection_name(article['date'])
             if date is None:
                 del article['date']
             else:
@@ -108,10 +104,10 @@ class Crawler:
             target_tags = self.parsing_info['article_page']
 
         # url 을 단순한 형태로 변환 및 _id 설정
-        self.crawler_util.make_simple_url(article, self.parsing_info)
+        self.make_simple_url(article, self.parsing_info)
 
         # 다운로드 받은 URL이 있는지 검사
-        url = self.crawler_util.get_url(article['url'])
+        url = self.get_url(article['url'])
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
             print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
@@ -125,7 +121,7 @@ class Crawler:
                 if 'section' in article:
                     collection = self.get_collection_name(article, response_type)
 
-                    self.crawler_util.save_section_info(
+                    self.save_section_info(
                         document=article, mongodb_info=self.db_info['mongo'],
                         collection_name='section_{}'.format(collection))
 
@@ -149,8 +145,8 @@ class Crawler:
         # if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
         #     json_type = True
 
-        soup = self.crawler_util.curl_html(article['url'], encoding=encoding, json_type=json_type,
-                                           delay=self.parameter['delay'], headers=headers)
+        soup = self.curl_html(article['url'], encoding=encoding,
+                              json_type=json_type, delay=self.parameter['delay'], headers=headers)
 
         if soup is None:
             return True
@@ -159,17 +155,17 @@ class Crawler:
             article.update(soup)
         else:
             # 필요없는 테그 제거: 주석, 자바스크립트, 스타일 정보 등
-            self.crawler_util.remove_comment(soup)
-            self.crawler_util.replace_tag(soup, ['script', 'javascript', 'style'])
+            self.remove_comment(soup)
+            self.replace_tag(soup, ['script', 'javascript', 'style'])
 
             # 저장할 테그 추출
             article_list = []
 
             # 메타 테그 저장
-            self.crawler_util.get_meta_value(soup, article_list)
+            self.get_meta_value(soup, article_list)
 
             # html에서 정보 추출
-            article = self.crawler_util.parse_html(article, soup, target_tags, article_list)
+            article = self.parse_html(article, soup, target_tags, article_list)
             if article is None:
                 return False
 
@@ -191,7 +187,7 @@ class Crawler:
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
-        result = self.crawler_util.save_article(document=article, db_info=self.db_info)
+        result = self.save_article(document=article, db_info=self.db_info)
 
         # 다운로드 받은 URL을 인덱스 디비에 저장
         if result is True and self.url_index_db is not None:
@@ -219,7 +215,7 @@ class Crawler:
         else:
             collection = '{l1}-{l2}'.format(**section)
 
-        query, _, _ = self.crawler_util.get_query(curl_url)
+        query, _, _ = self.get_query(curl_url)
         if 'page' not in query:
             query['page'] = 1
 
@@ -235,10 +231,10 @@ class Crawler:
                 subject.update(self.parameter['const_value'])
 
             # url 을 단순한 형태로 변환 및 _id 설정
-            self.crawler_util.make_simple_url(subject, self.parsing_info)
+            self.make_simple_url(subject, self.parsing_info)
 
             # 저장
-            self.crawler_util.save_section_info(
+            self.save_section_info(
                 document=subject, mongodb_info=self.db_info['mongo'], collection_name=collection)
 
             url_info = subject['url']
@@ -277,14 +273,14 @@ class Crawler:
             encoding = self.parsing_info['encoding']
 
         # 1. get subject list
-        soup = self.crawler_util.curl_html(curl_url, delay=self.parameter['delay'], encoding=encoding)
+        soup = self.curl_html(curl_url, delay=self.parameter['delay'], encoding=encoding)
 
         if soup is None:
             return None
 
         subject_list = []
         target_tags = self.parsing_info['subject_page']
-        self.crawler_util.get_target_value(soup, target_tags, subject_list, curl_url)
+        self.get_target_value(soup, target_tags, subject_list, curl_url)
 
         # 2. get article
         if 'article_page' in self.parsing_info:
@@ -333,7 +329,7 @@ class Crawler:
 
         # 개별 기사 URL
         for article in article_list:
-            self.crawler_util.change_key(article, json_key_mapping)
+            self.change_key(article, json_key_mapping)
 
             if isinstance(json_key_mapping['_article_base_url'], str) is True:
                 url = json_key_mapping['_article_base_url'].format(**article)
@@ -386,14 +382,14 @@ class Crawler:
             url = page_url.format(page=page)
 
         print('curl all pages: {}'.format(url))
-        page_soup = self.crawler_util.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
+        page_soup = self.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
         if page_soup is None:
             return
 
         section_info = page_soup
 
         if isinstance(section_info, dict) is True:
-            self.crawler_util.change_key(section_info, json_key_mapping)
+            self.change_key(section_info, json_key_mapping)
 
             list_key = 'list'
             if 'list' in json_key_mapping:
@@ -407,10 +403,10 @@ class Crawler:
                     self.curl_all_pages_json(page_url, page=page)
             else:
                 # 기사 본문 저장
-                # self.crawler_util.save_article(
+                # self.save_article(
                 #     document=section_info, result_db=self.result_db,
                 #     db_name=self.parameter['result_db_name'], collection=self.collection_name)
-                self.crawler_util.save_article(document=section_info, db_info=self.db_info)
+                self.save_article(document=section_info, db_info=self.db_info)
 
         if isinstance(section_info, list) is True:
             self.curl_json_article_list(page_url, section_info, json_key_mapping)
@@ -425,7 +421,7 @@ class Crawler:
 
         for a_tag in page_tag.findAll(
                 parsing_info['index']['tag_name'],
-                attrs=self.crawler_util.get_value(parsing_info['index'], 'attr')):
+                attrs=self.get_value(parsing_info['index'], 'attr')):
             if a_tag.has_attr('href') is False:
                 print({'ERROR': 'missing href', 'tag': str(a_tag)})
                 continue
@@ -442,7 +438,7 @@ class Crawler:
 
             # 상태 갱신
             if curl_type == 'by_id':
-                self.crawler_util.update_state_by_id(
+                self.update_state_by_id(
                     state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
@@ -466,7 +462,7 @@ class Crawler:
 
         for next_page in page_tag.findAll(
                 parsing_info['next']['tag_name'],
-                attrs=self.crawler_util.get_value(parsing_info['next'], 'attr')):
+                attrs=self.get_value(parsing_info['next'], 'attr')):
 
             print('next_page: ', next_page)
 
@@ -479,7 +475,7 @@ class Crawler:
             if 'next_tag' in parsing_info['next']:
                 next_tag_info = parsing_info['next']['next_tag']
                 next_tag = next_page.find(
-                    next_tag_info['tag_name'], attrs=self.crawler_util.get_value(next_tag_info, 'attr'))
+                    next_tag_info['tag_name'], attrs=self.get_value(next_tag_info, 'attr'))
 
                 if next_tag is not None:
                     next_page = next_tag
@@ -497,13 +493,13 @@ class Crawler:
                 # end 확인후 end 까지만 실행
                 if 'end' in self.parameter:
                     end = int(self.parameter['end'])
-                    query, _, _ = self.crawler_util.get_query(url)
-                    self.crawler_util.change_key(query, self.parsing_info['query_key_mapping'])
+                    query, _, _ = self.get_query(url)
+                    self.change_key(query, self.parsing_info['query_key_mapping'])
 
                     if end < int(query['start']):
                         continue
 
-                self.crawler_util.update_state_by_id(
+                self.update_state_by_id(
                     state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
@@ -540,7 +536,7 @@ class Crawler:
             # 페이지 목록 부분만 추출
             page_tag = page_soup.find(
                 parsing_info['panel']['tag_name'],
-                attrs=self.crawler_util.get_value(parsing_info['panel'], 'attr'))
+                attrs=self.get_value(parsing_info['panel'], 'attr'))
 
             if page_tag is None:
                 print({'ERROR': 'article list panel is empty'})
@@ -566,15 +562,13 @@ class Crawler:
         if 'start_month' in self.parameter and 'end_month' in self.parameter:
             date_step = 'month'
 
-        util = LanguageUtils()
-
         # 시작 날짜와 마지막 날짜 가져오기
         if date_step == 'day':
-            start_date = util.parse_date_string(self.parameter['start_date'])
-            end_date = util.parse_date_string(self.parameter['end_date'], is_end_date=True)
+            start_date = self.parse_date_string(self.parameter['start_date'])
+            end_date = self.parse_date_string(self.parameter['end_date'], is_end_date=True)
         else:
-            start_date = util.parse_date_string(self.parameter['start_month'])
-            end_date = util.parse_date_string(self.parameter['end_month'], is_end_date=True)
+            start_date = self.parse_date_string(self.parameter['start_month'])
+            end_date = self.parse_date_string(self.parameter['end_month'], is_end_date=True)
 
         original_start_date = start_date
 
@@ -591,7 +585,7 @@ class Crawler:
             # status, date/progress 정보를 확인하여 마지막 날짜부터 이어서 크롤링 시작
             # 하루 전 기사부터 다시 시작
             if 'running' in self.job_info['state'] and self.job_info['state']['running'] != '':
-                date = util.parse_date_string(self.job_info['state']['running'])
+                date = self.parse_date_string(self.job_info['state']['running'])
 
                 if self.job_info['group'].find('daemon') < 0:
                     if date_step == 'day':
@@ -629,7 +623,7 @@ class Crawler:
                 break
 
             # 시작전 상태 변경: ready => working
-            self.crawler_util.update_state(
+            self.update_state(
                 state='running', current_date=date, start_date=original_start_date, end_date=end_date,
                 job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
@@ -690,11 +684,11 @@ class Crawler:
                 date += relativedelta(months=-1)
 
             if self.job_info['group'].find('daemon') < 0:
-                self.crawler_util.update_state(
+                self.update_state(
                     state='ready', current_date=date, start_date=original_start_date, end_date=end_date,
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
         else:
-            self.crawler_util.update_state(
+            self.update_state(
                 state='done', current_date=None, start_date=None, end_date=None,
                 job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
@@ -792,7 +786,7 @@ class Crawler:
                     self.curl_all_pages(page_url, curl_type='by_id')
 
                     # 상태 갱신
-                    self.crawler_util.update_state_by_id(
+                    self.update_state_by_id(
                         state='running', url=page_url, query_key_mapping=query_key_mapping,
                         job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
         else:
@@ -829,7 +823,7 @@ class Crawler:
                         self.curl_article(article=article)
 
                     # 상태 갱신
-                    self.crawler_util.update_state_by_id(
+                    self.update_state_by_id(
                         state='running', url=article['url'], query_key_mapping=query_key_mapping,
                         job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
@@ -845,7 +839,7 @@ class Crawler:
 
         curl_date = None
         if 'curl_date' in self.parameter:
-            curl_date = LanguageUtils().parse_date_string(self.parameter['curl_date'])
+            curl_date = self.parse_date_string(self.parameter['curl_date'])
 
         mongodb_info = self.db_info['mongo']
 
@@ -861,7 +855,7 @@ class Crawler:
             mongodb_info['port'] = 27017
 
         # 디비 연결
-        connect, mongodb = CrawlerUtils().open_db(
+        connect, mongodb = self.open_db(
             host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
 
         collection = mongodb.get_collection(mongodb_info['collection'])
@@ -935,8 +929,6 @@ class Crawler:
         self.job_info = job_info
         self.scheduler_db_info = scheduler_db_info
 
-        self.crawler_util.job_info = self.job_info
-
         print({'job_info': self.job_info})
 
         self.parameter = job_info['parameter']
@@ -948,7 +940,7 @@ class Crawler:
 
         # 섹션/파싱 정보 가져오기
         if self.parsing_info is None:
-            section_info, parsing_info = self.crawler_util.get_parsing_information(scheduler_db_info)
+            section_info, parsing_info = self.get_parsing_information(scheduler_db_info)
 
             if 'parsing_info' in self.parameter:
                 self.parsing_info = parsing_info[self.parameter['parsing_info']]
@@ -1021,7 +1013,7 @@ class Crawler:
         #
         # self._init_variable(scheduler_db_info, job_info)
         #
-        # connect, self.result_db = self.crawler_util.open_db(
+        # connect, self.result_db = self.open_db(
         #     db_name=self.parameter['result_db_name'],
         #     host=self.parameter['result_db_host'],
         #     port=self.parameter['result_db_port'])
@@ -1048,7 +1040,7 @@ class Crawler:
         #     article_list = []
         #
         #     # html에서 정보 추출
-        #     document = self.crawler_util.parse_html(document, soup, target_tags, article_list)
+        #     document = self.parse_html(document, soup, target_tags, article_list)
         #
         #     if 'html_content' not in document or 'date' not in document or 'title' not in document:
         #         print('ERROR', document['_id'])

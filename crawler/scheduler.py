@@ -1,4 +1,4 @@
-#!.venv/bin/python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -128,7 +128,7 @@ class Scheduler:
                     "image" : "crawler:dev",
                     "volume" : "/data/nlp_home/docker/crawler:/data/nlp_home/docker/crawler:ro",
                     "working_dir" : "/data/nlp_home/docker/crawler",
-                    "command" : ".venv/bin/python3 scheduler.py"
+                    "command" : "./venv/bin/python3 scheduler.py"
                 }
             }
 

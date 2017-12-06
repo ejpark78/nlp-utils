@@ -1,4 +1,4 @@
-#!.venv/bin/python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -13,11 +13,13 @@ import logging
 from time import time
 
 
-class UrlIndexDB:
+class UrlIndexDB(object):
     """
     크롤링 완료된 URL 목록을 저장하고 비교하는 클래스
     """
     def __init__(self):
+        super().__init__()
+
         self.filename = None
 
         self.conn = None

@@ -1,4 +1,4 @@
-#!.venv/bin/python3
+#!./venv/bin/python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -21,17 +21,18 @@ from time import sleep
 from datetime import datetime
 from urllib.parse import urljoin
 
-from language_utils.language_utils import LanguageUtils
 
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-urllib3.disable_warnings(UserWarning)
-
-
-class Utils:
+class Utils(object):
     """
+    크롤러 유틸
     """
+
     def __init__(self):
+        super().__init__()
+
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        urllib3.disable_warnings(UserWarning)
+
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -49,12 +50,16 @@ class Utils:
         ex) script, caption will be removed
 
         :param html_tag:
+            html 본문
 
         :param tag_list:
+            제거할 태그 목록
 
         :param replacement:
+            치환할 문자
 
         :param attribute:
+            특정 속성값 포함 여부
 
         :return:
             True/False
@@ -74,7 +79,7 @@ class Utils:
     @staticmethod
     def remove_comment(html_tag):
         """
-        html 태그 중에서 주석 태그를 모두 제거
+        html 태그 중에서 주석 태그를 제거
 
         :param html_tag:
             웹페이지 본문
@@ -151,16 +156,32 @@ class Utils:
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
 
         :param curl_url:
+            받아올 URL 주소
+
         :param delay:
+            delay 범위: 10~15, 10초에서 15초 사이
+
         :param post_data:
+            post 방식으로 보낼때 data
+
         :param json_type:
+            json 결과 형식 명시
+
         :param encoding:
+            인코딩 명시
+
         :param max_try:
+            최대 시도 횟수 명시
+
         :param headers:
+            헤더 명시
+
         :return:
+            크롤링 결과 반환, html or json 형식으로 반환
         """
-        min_delay = 6
-        max_delay = 9
+        # 디폴트 범위
+        min_delay = 10
+        max_delay = 15
 
         if '~' in delay:
             min_delay, max_delay = delay.split('~', maxsplit=1)
@@ -287,12 +308,15 @@ class Utils:
         return article
 
     @staticmethod
-    def get_collection_name(date):
+    def get_date_collection_name(date):
         """
         날짜와 컬랙션 이름 변환
 
         :param date:
+            날짜 문자열
+
         :return:
+            날짜와 컬랙션 이름
         """
         from dateutil.parser import parse as parse_date
 
@@ -317,9 +341,16 @@ class Utils:
         몽고 디비 핸들 오픈
 
         :param db_name:
+            데이터베이스명
+
         :param host:
+            서버 주소
+
         :param port:
+            서버 포트
+
         :return:
+            접속 정보와 데이터베이스 핸들
         """
         from pymongo import MongoClient
 
@@ -359,18 +390,47 @@ class Utils:
 
         return '.'.join(document_id)
 
+    @staticmethod
+    def _json_serial(obj):
+        """
+        json.dumps의 콜백 함수로 넘겨주는 함수
+        날자 형식을 문자로 반환
+
+        :param obj:
+            dictionary
+
+        :return:
+
+        """
+        # import pymongo
+        from datetime import datetime
+
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+
+        raise TypeError("Type not serializable")
+
     def send_kafka_message(self, document, kafka_info, mongodb_info):
         """
         kafka 에 메세지 전송
 
         :param document:
-        :param kafka_info:
-        :param mongodb_info:
-        :return:
-        """
-        # import logging
-        # logging.basicConfig(level=logging.DEBUG)
+            기사 본문
 
+        :param kafka_info:
+            카프카 접속 정보
+
+        :param mongodb_info:
+            몽고 디비 정보: collection명 동기화
+
+        :return:
+            True/False
+
+        콘솔에서 디버깅 방법
+            $ kafka-topics.sh --list --zookeeper gollum:2181
+            $ kafka-console-consumer.sh --bootstrap-server gollum:9092 --topic crawler --from-beginning
+
+        """
         if 'port' not in kafka_info:
             kafka_info['port'] = 9092
 
@@ -393,7 +453,7 @@ class Utils:
                     if 'elastic' in result_info:
                         result_info['elastic']['type'] = mongodb_info['collection']
 
-            message = json.dumps(document, ensure_ascii=False, default=LanguageUtils().json_serial)
+            message = json.dumps(document, ensure_ascii=False, default=self._json_serial)
 
             producer.send(kafka_info['topic'], bytes(message, encoding='utf-8')).get(timeout=5)
             producer.flush()
@@ -402,19 +462,20 @@ class Utils:
 
             print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
 
-        # debug:
-        #   kafka-topics.sh --list --zookeeper gollum:2181
-        #   kafka-console-consumer.sh --bootstrap-server gollum:9092 --topic crawler --from-beginning
-
-        return
+        return True
 
     def send_mqtt_message(self, document, mqtt_info):
         """
-        mqtt 에 메세지 전송
+        mqtt로 메세지 전송
 
         :param document:
+            기사 본문
+
         :param mqtt_info:
+            mqtt 서버 접속 정보
+
         :return:
+            True/False
         """
         import paho.mqtt.publish as publish
 
@@ -466,22 +527,26 @@ class Utils:
                 client_id='')
         except Exception as e:
             logging.error('', exc_info=e)
-
             print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
 
-        return
+        return True
 
     @staticmethod
     def create_elastic_index(elastic, index_name=None):
         """
-        인덱스 생성
+        elasticsearch 인덱스 생성
 
         :param elastic:
+            elastic 서버 접속 정보
+
         :param index_name:
+            생성할 인덱스 이름
+
         :return:
+            True/False
         """
         if elastic is None:
-            return
+            return False
 
         elastic.indices.create(
             index=index_name,
@@ -493,16 +558,23 @@ class Utils:
             }
         )
 
-        return
+        return True
 
     def insert_elastic(self, document, elastic_info, mongodb_info):
         """
-        elastic search에 저장
+        elastic search 에 문서 저장
 
         :param document:
+            문서
+
         :param elastic_info:
+            elastic 접속 정보
+
         :param mongodb_info:
+            몽고디비 접속 정보, collection 이름 동기화
+
         :return:
+            True/False
         """
         from elasticsearch import Elasticsearch
 
@@ -523,7 +595,7 @@ class Utils:
             index_type = mongodb_info['collection']
 
         if index == '' or index_type == '':
-            return
+            return False
 
         # 날짜 변환
         if 'date' in document and isinstance(document['date'], datetime):
@@ -571,15 +643,20 @@ class Utils:
 
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
-        return
+        return True
 
     def save_mongodb(self, document, mongodb_info):
         """
         몽고 디비에 문서 저장
 
         :param document:
+            저장할 문서
+
         :param mongodb_info:
+            몽고 디비 접속 정보
+
         :return:
+            True/False
         """
         from pymongo import errors
 
@@ -607,30 +684,27 @@ class Utils:
             document['meta'] = meta
 
         # 디비 연결
-        connect, mongodb = self.open_db(
-            host=mongodb_info['host'],
-            db_name=mongodb_info['name'],
-            port=mongodb_info['port'])
+        connect, mongodb = self.open_db(host=mongodb_info['host'], db_name=mongodb_info['name'],
+                                        port=mongodb_info['port'])
 
         # 몽고 디비에 문서 저장
         try:
             collection = mongodb.get_collection(mongodb_info['collection'])
 
+            # upsert 모드인 경우 문서를 새로 저장
             if mongodb_info['upsert'] is True:
                 collection.replace_one({'_id': document['_id']}, document, upsert=True)
             else:
-                # del document['meta']
                 collection.insert_one(document)
         except errors.DuplicateKeyError:
-            print('DuplicateKeyError: {}, {}'.format(
-                mongodb_info['collection'], document['_id']), file=sys.stderr, flush=True)
+            print('DuplicateKeyError: {}, {}'.format(mongodb_info['collection'], document['_id']),
+                  file=sys.stderr, flush=True)
         except Exception as e:
             logging.error('', exc_info=e)
-
             traceback.print_exc(file=sys.stderr)
+            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document), file=sys.stderr, flush=True)
 
-            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
-
+            # 저장에 실패할 경우 error 컬랙션에 저장
             try:
                 collection = mongodb.get_collection('error')
 
@@ -640,7 +714,6 @@ class Utils:
                     collection.insert_one(document)
             except Exception as e:
                 logging.error('', exc_info=e)
-                pass
 
             return False
 
@@ -671,9 +744,16 @@ class Utils:
         엘라스틱서치에 로그 저장
 
         :param document:
+            크롤링 결과 문서
+
         :param elastic_info:
+            elastic 접속 정보
+
         :param mongodb_info:
+            몽고 디비 접속 정보: collection 이름 사용
+
         :return:
+            True/False
         """
         from elasticsearch import Elasticsearch
 
@@ -686,7 +766,7 @@ class Utils:
         if 'date' in document and isinstance(document['date'], datetime):
             document['date'] = document['date'].strftime('%Y-%m-%dT%H:%M:%S')
         else:
-            return
+            return False
 
         payload = {
             'host': self.hostname,
@@ -737,7 +817,7 @@ class Utils:
 
             print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
 
-        return
+        return True
 
     def save_article(self, document, db_info):
         """
@@ -777,7 +857,11 @@ class Utils:
         url 단축
 
         :param document:
+            크롤링 문서
+
         :param parsing_info:
+            문서 파싱 정보: 단축 url 패턴 사용
+
         :return:
             True/False
         """
@@ -810,7 +894,6 @@ class Utils:
                     url_info['simple'] = simple_url
             except Exception as e:
                 logging.error('', exc_info=e)
-                pass
 
         document['url'] = url_info
 
@@ -821,30 +904,33 @@ class Utils:
             document_id = url_info['full']
             document_id = document_id.replace('{}://{}'.format(parsed_url.scheme, parsed_url.hostname), '')
 
-            try:
-                if 'replace' in parsing_id:
+            # url 에서 불용어 제거
+            if 'replace' in parsing_id:
+                try:
                     for pattern in parsing_id['replace']:
                         document_id = re.sub(pattern['from'], pattern['to'], document_id)
 
                     document['_id'] = document_id
-                else:
+                except Exception as e:
+                    logging.error('', exc_info=e)
                     document['_id'] = self.get_document_id(document_id)
-            except Exception as e:
-                logging.error('', exc_info=e)
+            else:
                 document['_id'] = self.get_document_id(document_id)
 
-            try:
-                key_exists = True
-                for k in re.findall(r'{([^}]+)}', parsing_id['_id']):
-                    if k not in query:
-                        key_exists = False
-                        break
+            # id 패턴이 있다면 치환
+            if '_id' in parsing_id:
+                try:
+                    key_exists = True
+                    for k in re.findall(r'{([^}]+)}', parsing_id['_id']):
+                        if k not in query:
+                            key_exists = False
+                            break
 
-                if key_exists is True and '_id' in parsing_id and len(query) > 0:
-                    document['_id'] = parsing_id['_id'].format(**query)
-            except Exception as e:
-                logging.error('', exc_info=e)
-                document['_id'] = self.get_document_id(document_id)
+                    if key_exists is True and len(query) > 0:
+                        document['_id'] = parsing_id['_id'].format(**query)
+                except Exception as e:
+                    logging.error('', exc_info=e)
+                    document['_id'] = self.get_document_id(document_id)
 
         return True
 
@@ -852,11 +938,18 @@ class Utils:
     def get_next_id(collection, document_name='section_id', value='section'):
         """
         auto-increment 기능 구현
+        몽고 디비에 primary id 기능 구현
 
         :param collection:
+            컬랙션 이름
+
         :param document_name:
+            문서 아이디
+
         :param value:
+
         :return:
+            마지막 값
         """
         cursor = collection.find_and_modify(query={'_id': document_name}, update={'$inc': {value: 1}}, new=True)
 
@@ -877,18 +970,23 @@ class Utils:
 
                 max_id = 0
 
-        result = '{:06d}'.format(max_id)
-
-        return result
+        return '{:06d}'.format(max_id)
 
     def save_section_info(self, document, mongodb_info, collection_name):
         """
         문서의 섹션 정보 저장
 
         :param document:
+            크롤링된 문서
+
         :param mongodb_info:
+            몽고 디비 접속 정보
+
         :param collection_name:
+            컬랙션 이름
+
         :return:
+            True/False
         """
         if document is None:
             return False
@@ -932,7 +1030,6 @@ class Utils:
 
             except Exception as e:
                 logging.error('', exc_info=e)
-                pass
 
             return False
 
@@ -953,11 +1050,16 @@ class Utils:
     @staticmethod
     def get_value(data, key):
         """
-        해쉬 값 반환
+        해쉬에서 해당 키의 값을 반환
 
         :param data:
+            해쉬
+
         :param key:
+            찾을 키
+
         :return:
+            값
         """
         if key in data:
             return data[key]
@@ -970,12 +1072,17 @@ class Utils:
         디비에서 설정 정보를 모두 읽어옴
 
         :param db:
+            몽고 디비 데이터 베이스 핸들
+
         :param collection_name:
+            컬랙션 이름
+
         :return:
+            결과 문서
         """
         result = {}
 
-        cursor = db[collection_name].find()
+        cursor = db.get_collection(collection_name).find({})
         cursor = cursor[:]
         for doc in cursor:
             doc_id = doc['_id']
@@ -990,15 +1097,26 @@ class Utils:
         현재 작업 상태 변경
 
         :param state:
-            상태, running, ready, stoped
+            상태, running, ready, stop
             경과 시간
 
         :param current_date:
+            현재 날짜
+
         :param job_info:
+            작업 정보
+
         :param scheduler_db_info:
+            scheduler 디비 접속 정보
+
         :param start_date:
+            시작 일자
+
         :param end_date:
+            종료 일자
+
         :return:
+            True/False
         """
         job_info['state']['state'] = state
         if current_date is not None:
@@ -1019,7 +1137,8 @@ class Utils:
         db[collection_name].replace_one({'_id': job_info['_id']}, job_info)
 
         connect.close()
-        return
+
+        return True
 
     @staticmethod
     def change_key(json_data, key_mapping):
@@ -1027,11 +1146,16 @@ class Utils:
         json 키를 변경
 
         :param json_data:
+            json 데이터
+
         :param key_mapping:
+            키 매핑 정보
+
         :return:
+            True/False
         """
         if key_mapping is None:
-            return
+            return False
 
         for original in key_mapping:
             # 내부 설정용 값은 제외함
@@ -1045,14 +1169,17 @@ class Utils:
             if new_key != '' and original in json_data:
                 json_data[new_key] = json_data[original]
 
-        return
+        return True
 
     def get_query(self, url):
         """
         url 에서 쿼리문을 반환
 
         :param url:
+            url 주소
+
         :return:
+            url 쿼리 파싱 결과 반환
         """
         from urllib.parse import urlparse, parse_qs
 
@@ -1074,10 +1201,19 @@ class Utils:
             경과 시간
 
         :param job_info:
+            작업 정보
+
         :param scheduler_db_info:
+            scheduler 디비 접속 정보
+
         :param url:
+            url 주소
+
         :param query_key_mapping:
+            url 쿼리
+
         :return:
+            True/False
         """
         query, _, _ = self.get_query(url)
         self.change_key(query, query_key_mapping)
@@ -1102,14 +1238,18 @@ class Utils:
         collection.replace_one({'_id': job_info['_id']}, job_info)
 
         connect.close()
-        return
+
+        return True
 
     def get_parsing_information(self, scheduler_db_info):
         """
         디비에서 작업을 찾아 반환
 
         :param scheduler_db_info:
+            scheduler 디비 접속 정보
+
         :return:
+            섹션과 파싱 정보
         """
         connect, db = self.open_db(
             scheduler_db_info['scheduler_db_name'],
@@ -1129,8 +1269,13 @@ class Utils:
         메타 테그 추출
 
         :param soup:
+            html soup
+
         :param result_list:
+            메타 태그 결과
+
         :return:
+            True/False
         """
         result = {}
         for meta in soup.findAll('meta'):
@@ -1155,7 +1300,7 @@ class Utils:
                 result[key] = content
 
         result_list.append({'meta': result})
-        return
+        return True
 
     def get_target_value(self, soup, target_tag_info, result_list, base_url):
         """
@@ -1166,6 +1311,7 @@ class Utils:
         :param result_list:
         :param base_url:
         :return:
+            True/False
         """
 
         for sub_soup in soup.findAll(target_tag_info['tag_name'], attrs=self.get_value(target_tag_info, 'attr')):
@@ -1222,7 +1368,7 @@ class Utils:
                 if len(data) > 0:
                     result_list.append(data)
 
-        return
+        return True
 
     def news2csv(self):
         """
@@ -1413,7 +1559,6 @@ class Utils:
         # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
 
         """
-
 
 find . -name "*화보*" -exec rm {} \;
 find . -name "*포토*" -exec rm {} \;
@@ -1617,6 +1762,42 @@ time bzcat data/nate_baseball/2017-04.json.bz2 \
         print('{:,}'.format(count))
 
         return True
+
+    @staticmethod
+    def parse_date_string(date_string, is_end_date=False):
+        """
+        문자열 날짜 형식을 date 형으로 반환
+
+        :param date_string:
+            2016-01, 2016-01-01
+
+        :param is_end_date:
+            마지막 일자 플래그, 마지막 날짜의 경우
+
+        :return:
+            변환된 datetime
+        """
+        from datetime import datetime
+        from dateutil.relativedelta import relativedelta
+
+        token = date_string.split('-')
+
+        result = datetime.today()
+        if len(token) == 2:
+            result = datetime.strptime(date_string, '%Y-%m')
+
+            if is_end_date is True:
+                result += relativedelta(months=+1)
+        elif len(token) == 3:
+            result = datetime.strptime(date_string, '%Y-%m-%d')
+
+            if is_end_date is True:
+                result += relativedelta(days=+1)
+
+        if is_end_date is True:
+            result += relativedelta(microseconds=-1)
+
+        return result
 
 
 if __name__ == '__main__':
