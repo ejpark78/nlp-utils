@@ -2,7 +2,7 @@
 
 # 사전 위치 맵핑
 home="hdfs://gollum:9000/user/"$(id -un)
-archives="${home}/dictionary.jar#language_utils/dictionary,${home}/venv.jar#.venv"
+archives="${home}/dictionary.jar#language_utils/dictionary,${home}/venv.jar#venv"
 
 # home 위치: /user/root
 

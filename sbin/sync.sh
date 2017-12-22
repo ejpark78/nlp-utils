@@ -38,7 +38,7 @@ else
             continue
         fi
 
-        printf "\n%s\n" ${host_name}
+        printf "\n%s\n%s\n" ${host_name} ${dst_path}
         ssh ${host_name} "sudo mkdir -p ${dst_path}"
         ssh ${host_name} "sudo chown -R ejpark:ejpark ${dst_path}"
 

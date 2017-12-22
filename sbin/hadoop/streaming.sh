@@ -22,7 +22,8 @@ job_name="$6"
 # gollum 설정
 master="gollum"
 hadoop_port=9000
-jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
+#jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-${HADOOP_VERSION}.jar"
+jar_file="${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-streaming-*.jar"
 
 # 입력 파라메터 확인
 if [ "${mapper_cmd}" == "" ] || [ "${input_filename}" == "" ] || [ "${output_filename}" == "" ] ; then
@@ -89,8 +90,6 @@ hdfs dfs -rm -r -f -skipTrash ${output_dir}
 # 하둡 스트리밍 실행
 echo -e "\n하둡 스트리밍 실행: ${f_dir}/${f_base}, max_map_count: ${max_map_count}"
 
-#    -archives "${home}/batch/venv.jar#venv,${home}/batch/language_utils.jar#language_utils,${home}/batch/crawler.jar#crawler,${home}/batch/batch.jar#main" \
-#    -archives "${home}/batch.jar#batch" \
 time yarn jar ${jar_file} \
     -files batch \
     -archives "${home}/batch/venv.jar#venv,${home}/batch/dictionary.jar#dictionary" \

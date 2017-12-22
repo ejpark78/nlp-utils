@@ -105,4 +105,4 @@ def run_news2csv():
 
 
 if __name__ == "__main__":
-    run_news2csv()
+    run_convert_mlbpark()

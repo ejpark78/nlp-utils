@@ -34,10 +34,11 @@ class Utils(object):
         urllib3.disable_warnings(UserWarning)
 
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/39.0.2171.95 Safari/537.36'
+                          'Chrome/62.0.3202.75 Safari/537.36'
         }
+
         self.job_info = None
 
         self.hostname = None
@@ -225,9 +226,9 @@ class Utils(object):
         # 웹 크롤링
         try:
             if post_data is None:
-                page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60)
+                page_html = requests.get(url=curl_url, headers=headers, allow_redirects=True, timeout=60)
             else:
-                page_html = requests.post(curl_url, data=post_data, headers=self.headers,
+                page_html = requests.post(url=curl_url, data=post_data, headers=self.headers,
                                           allow_redirects=True, timeout=60)
         except Exception as e:
             logging.error('', exc_info=e)
@@ -1798,6 +1799,49 @@ time bzcat data/nate_baseball/2017-04.json.bz2 \
             result += relativedelta(microseconds=-1)
 
         return result
+
+    @staticmethod
+    def print_summary(start_time, total=0, count=0, tag=''):
+        """
+        크롤링 진행 상황을 출력한다.
+        :param total:
+            전체 수량
+
+        :param count:
+            현재 진행 수량
+
+        :param start_time:
+            시작 시간
+
+        :param tag:
+
+        :return:
+            True
+        """
+        from time import time
+        from datetime import timedelta
+
+        processing_time = round(time() - start_time)
+        if total > 0:
+            left_count = total - count
+
+            processing_rate = count / total * 100
+
+            speed = processing_time / count
+            estimate = round(speed * left_count)
+
+            if speed == 0:
+                return False
+
+            msg = '완료/남은수/전체/진행율/속도 = ({:,}/{:,}/{:,}/{:0.2f}%/{:0.2f}), ' \
+                  '실행 시간 = {}, 남은 시간 = {}'.format(count, left_count, total, processing_rate, 1/speed,
+                                                  timedelta(seconds=processing_time), timedelta(seconds=estimate))
+        else:
+            msg = '실행 시간 = {}'.format(timedelta(seconds=processing_time))
+
+        print('{} {}\n'.format(tag, msg), file=sys.stderr, flush=True)
+
+        return True
 
 
 if __name__ == '__main__':

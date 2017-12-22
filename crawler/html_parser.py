@@ -359,6 +359,11 @@ class HtmlParser:
         from bs4 import BeautifulSoup
         from dateutil.parser import parse as parse_date
 
+        csv_path = 'data/mlbpark/kbo/csv'
+
+        title_list = ['_id', 'date', 'view_count', 'reply_count', 'nick', 'title_header', 'title', 'contents']
+        reply_title_list = ['nick', 're_txt']
+
         fp_csv = {}
 
         count = 0
@@ -405,7 +410,8 @@ class HtmlParser:
                 # fp csv open
                 csv_filename = dt.strftime('%Y-%m')
                 if csv_filename not in fp_csv:
-                    fp_csv[csv_filename] = open('data/mlbpark/{}.csv'.format(csv_filename), 'w')
+                    fp_csv[csv_filename] = open('{}/{}.csv'.format(csv_path, csv_filename), 'w')
+                    fp_csv[csv_filename].write('\t'.join(title_list + reply_title_list) + '\n')
 
             if 'view_count' in document:
                 view_count = document['view_count'].replace(',', '')
@@ -454,30 +460,33 @@ class HtmlParser:
             result['reply_count'] = len(result['reply_list'])
 
             if csv_filename in fp_csv:
-                csv_line = '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
-                    result['_id'],
-                    result['date'],
-                    result['view_count'],
-                    result['reply_count'],
-                    result['nick'],
-                    result['title_header'],
-                    result['title'],
-                    '<br>'.join(result['contents'].split('\n'))
-                )
+                result['contents'] = re.sub(r'\r?\n+', '<br>', result['contents'])
 
-                fp_csv[csv_filename].write(csv_line)
+                head_buf = []
+                for k in title_list:
+                    head_buf.append('{}'.format(result[k]))
+
+                buf = []
+                for reply in result['reply_list']:
+                    for k in reply_title_list:
+                        reply[k] = re.sub(r'\r?\n+', '<br>', reply[k])
+
+                        buf.append('{}'.format(reply[k]))
+
+                    fp_csv[csv_filename].write('\t'.join(head_buf + buf) + '\n')
+
                 fp_csv[csv_filename].flush()
 
-            msg = json.dumps(result, ensure_ascii=False, sort_keys=True)
-            print(msg, flush=True)
+            # msg = json.dumps(result, ensure_ascii=False, sort_keys=True)
+            # print(msg, flush=True)
 
             count += 1
             if count % 1000 == 0:
                 print('.', end='', flush=True, file=sys.stderr)
 
-        for fname in fp_csv:
-            fp_csv[fname].flush()
-            fp_csv[fname].close()
+        for f_name in fp_csv:
+            fp_csv[f_name].flush()
+            fp_csv[f_name].close()
 
         return True
 
