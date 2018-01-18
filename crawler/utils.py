@@ -881,9 +881,12 @@ class Utils(object):
                 url_info['source'] = document['source_url']
                 del document['source_url']
 
-            if 'simple_query' in parsing_url:
-                str_query = parsing_url['simple_query'].format(**query)
-                url_info['simple'] = '{}?{}'.format(base_url, str_query)
+            try:
+                if 'simple_query' in parsing_url:
+                    str_query = parsing_url['simple_query'].format(**query)
+                    url_info['simple'] = '{}?{}'.format(base_url, str_query)
+            except Exception as e:
+                logging.error('', exc_info=e)
 
             simple_url = url_info['full']
 

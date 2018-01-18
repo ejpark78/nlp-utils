@@ -46,13 +46,13 @@ def change_db_info():
     # cursor = collection.find({'_id': 'crawler_nate_economy_2017'})[:]
     # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
     # cursor = collection.find({'docker.network': 'hadoop-net'})[:]
-
-    cursor = collection.find({'docker.command': {'$regex': '.venv'}})[:]
+    # cursor = collection.find({'docker.command': {'$regex': '.venv'}})[:]
+    cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
 
     for document in cursor:
         print(document['_id'], flush=True)
 
-        document['docker']['command'] = document['docker']['command'].replace(r'.venv', 'venv')
+        document['parameter']['db_info']['mongo']['host'] = 'frodo'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)

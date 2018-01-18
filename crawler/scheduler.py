@@ -190,7 +190,7 @@ def init_arguments():
     parser = argparse.ArgumentParser(description='crawling web news articles')
 
     # 공통 옵션: 스케줄러 디비 접속 정보
-    parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo01')
+    parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo')
     parser.add_argument('-scheduler_db_port', help='db server port', default=27018)
     parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
     parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')

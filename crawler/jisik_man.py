@@ -42,7 +42,7 @@ class JisikMan:
         self.from_start = False
 
     @staticmethod
-    def open_db(db_name='jisikman_app', host='frodo01', port=27018):
+    def open_db(db_name='jisikman_app', host='frodo', port=27018):
         """
         몽고 디비 핸들 오픈
 
