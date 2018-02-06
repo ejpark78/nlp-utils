@@ -215,6 +215,7 @@ class Utils(object):
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # 쉼
+        print('{} curl_html sleep: {} secs'.format(str_now, sleep_time), flush=True)
         sleep(sleep_time)
 
         # 해더 생성
@@ -665,7 +666,8 @@ class Utils(object):
             return False
 
         if '_id' not in document:
-            document['_id'] = self.get_document_id(document['url'])
+            url = self.get_url(document['url'])
+            document['_id'] = self.get_document_id(url)
 
         if 'port' not in mongodb_info:
             mongodb_info['port'] = 27017
@@ -839,8 +841,8 @@ class Utils(object):
         if 'mqtt'in db_info and 'host' in db_info['mqtt']:
             self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
 
-        if 'kafka'in db_info and 'host' in db_info['kafka']:
-            self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
+        # if 'kafka'in db_info and 'host' in db_info['kafka']:
+        #     self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
 
         # 엘라스틱 서치에 저장
         if 'elastic'in db_info and 'host' in db_info['elastic']:
@@ -1219,6 +1221,9 @@ class Utils(object):
         :return:
             True/False
         """
+        if query_key_mapping is None:
+            return False
+
         query, _, _ = self.get_query(url)
         self.change_key(query, query_key_mapping)
 

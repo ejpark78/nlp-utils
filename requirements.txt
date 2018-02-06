@@ -21,6 +21,6 @@ wheel
 xlsxwriter
 sqlalchemy
 slackclient
-pyspark
 gensim
 selenium
+pexpect

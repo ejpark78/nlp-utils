@@ -12,8 +12,6 @@ from time import time, sleep
 from pymongo import MongoClient
 from datetime import datetime
 
-from language_utils.language_utils import LanguageUtils
-
 try:
     from crawler.crawler import Crawler
 except ImportError:
@@ -147,7 +145,7 @@ class Scheduler:
 
             sleep_time = -1
             if job_info['group'].find('daemon') > 0:
-                sleep_time = 15
+                sleep_time = 60
                 if 'sleep' in job_info:
                     sleep_time = int(job_info['sleep'])
 
@@ -172,10 +170,8 @@ class Scheduler:
             else:
                 break
 
-        util = LanguageUtils()
-        run_time = util.get_runtime(start_time=start_time)
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('DONE at {}, runtime: {}'.format(str_now, run_time), flush=True)
+        print('DONE at {}'.format(str_now), flush=True)
 
         return
 

@@ -1,9 +1,0 @@
-{
-  "NotebookApp": {
-    "nbserver_extensions": {
-      "ipyparallel.nbextension": true,
-      "jupyter_spark": true,
-      "jupyterlab": true
-    }
-  }
-}

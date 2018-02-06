@@ -437,7 +437,7 @@ class Crawler(Utils):
                 self.curl_article_list(url)
 
             # 상태 갱신
-            if curl_type == 'by_id':
+            if curl_type == 'by_id' and 'query_key_mapping' in self.parsing_info:
                 self.update_state_by_id(
                     state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
@@ -494,14 +494,17 @@ class Crawler(Utils):
                 if 'end' in self.parameter:
                     end = int(self.parameter['end'])
                     query, _, _ = self.get_query(url)
-                    self.change_key(query, self.parsing_info['query_key_mapping'])
+
+                    if 'query_key_mapping' in self.parsing_info:
+                        self.change_key(query, self.parsing_info['query_key_mapping'])
 
                     if end < int(query['start']):
                         continue
 
-                self.update_state_by_id(
-                    state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
-                    job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+                if 'query_key_mapping' in self.parsing_info:
+                    self.update_state_by_id(state='running', url=url, job_info=self.job_info,
+                                            scheduler_db_info=self.scheduler_db_info,
+                                            query_key_mapping=self.parsing_info['query_key_mapping'])
 
             # 다음 페이지 크롤링
             self.curl_all_pages(url, curl_type)
@@ -753,12 +756,12 @@ class Crawler(Utils):
         if 'page_list' in self.parsing_info:
             # 페이지 목록이 있을 경우
 
-            # end까지 반복 실행
+            # end 까지 반복 실행
             start = int(start)
             end = start + 1
 
             if 'end' in self.parameter:
-                end = int(self.parameter['end'])
+                end = int(self.parameter['end']) + 1
 
             step = 1
             if 'step' in self.parameter:
@@ -786,9 +789,10 @@ class Crawler(Utils):
                     self.curl_all_pages(page_url, curl_type='by_id')
 
                     # 상태 갱신
-                    self.update_state_by_id(
-                        state='running', url=page_url, query_key_mapping=query_key_mapping,
-                        job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+                    if query_key_mapping is not None:
+                        self.update_state_by_id(state='running', url=page_url, job_info=self.job_info,
+                                                scheduler_db_info=self.scheduler_db_info,
+                                                query_key_mapping=query_key_mapping)
         else:
             # elif 'article_page' in self.parsing_info:
             # 페이지 목록이 없을 경우 본문만 저장
@@ -806,7 +810,7 @@ class Crawler(Utils):
                 if isinstance(url_list, str) is True:
                     url_list = [{'url': url_list}]
 
-                # url을 만든다.
+                # url 을 만든다.
                 for url_info in url_list:
                     # const_value 속성 복사
                     if 'const_value' in url_info:
@@ -823,9 +827,10 @@ class Crawler(Utils):
                         self.curl_article(article=article)
 
                     # 상태 갱신
-                    self.update_state_by_id(
-                        state='running', url=article['url'], query_key_mapping=query_key_mapping,
-                        job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+                    if query_key_mapping is not None:
+                        self.update_state_by_id(state='running', url=article['url'], job_info=self.job_info,
+                                                scheduler_db_info=self.scheduler_db_info,
+                                                query_key_mapping=query_key_mapping)
 
         return
 

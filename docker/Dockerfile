@@ -10,123 +10,68 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV NOTVISIBLE "in users profile"
 
+# frodo
+ENV APT_MIRROR=172.20.51.91
+ENV APP_HOME=/usr/local/app
 
-# 1. apt 저장소 변경
-RUN rm -rf /var/lib/apt/lists/* \
+
+# 1. 설치시 사용할 경로 설정
+WORKDIR $HOME
+
+
+# 2. apt 저장소 변경 / 로케일 및 유틸 설치 / sshd 설정 변경: X11 forwarding 설정
+        # echo "deb http://${APT_MIRROR}/debian stretch-updates main contrib non-free"; \
+        # echo "deb http://${APT_MIRROR}/debian stretch-backports main contrib non-free"; \
+RUN echo && echo "# apt 저장소 변경" \
+    && rm -rf /var/lib/apt/lists/* \
 	&& { \
-		echo "deb http://frodo/debian stretch main contrib non-free"; \
-		echo "deb http://frodo/debian stretch-updates main contrib non-free"; \
+		echo "deb http://${APT_MIRROR}/debian stretch main contrib non-free"; \
+        echo "deb http://${APT_MIRROR}/debian-security stretch/updates main contrib"; \
 	} > /etc/apt/sources.list \
-    && echo "172.20.51.91 frodo" >> /etc/hosts \
-    \
     && apt-get update -yq \
     \
-    && echo && echo "# 2. 로케일 & 파이썬 설치" \
-    \
-    && apt-get install -yq --no-install-recommends \
+    && echo && echo "# 로케일 설치" \
+    && apt-get install -yq --no-install-recommends --no-install-suggests \
         locales \
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && echo "ko_KR.UTF-8 UTF-8" >> /etc/locale.gen \
     && echo "ko_KR.EUC-KR EUC-KR" >> /etc/locale.gen \
     && locale-gen \
+    \
     && apt-get install -yq --no-install-recommends \
         bridge-utils \
         build-essential \
-        cron \
-        ipython \
         libdb-dev \
-        net-tools \
-        openssh-server \
         python3 \
         python3-dateutil \
         python3-dev \
         python3-lxml \
         python3-pip \
-        sqlite3 \
-        supervisor \
-        sudo \
     \
-    && echo && echo "# pycharm 의존 라이브러리 " \
-    && apt-get install -yq --no-install-recommends \
-        git \
-        fonts-nanum \
-        fonts-nanum-coding \
-        fonts-unfonts-core \
-        hunspell-ko \
-        iceweasel \
-        xauth \
-        xfonts-100dpi \
-        xfonts-75dpi \
-        xfonts-cyrillic \
-        xz-utils \
-        libxrender1 \
-        libxtst6 \
-        libfreetype6 \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    \
-    && echo && echo "# ssh 설정" \
-    && mkdir -p /var/run/sshd \
-    && sed -i 's/^mesg/# mesg/' /root/.profile \
-    && echo "export VISIBLE=now" >> /etc/profile \
-    && touch /root/.Xauthority \
-    && sed -i 's/^#X11UseLocalhost yes/X11UseLocalhost no/' /etc/ssh/sshd_config \
-    && echo "Ciphers arcfour,blowfish-cbc,3des-cbc,cast128-cbc,arcfour128,arcfour256,aes128-cbc,aes192-cbc,aes256-cbc,rijndael-cbc@lysator.liu.se,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com" >> /etc/ssh/sshd_config \
-    \
-    && echo && echo "# 3. 파이썬 라이브러리 설치" \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
-		echo "index-url = http://frodo:3141/root/pypi"; \
+		echo "index-url = http://${APT_MIRROR}:3141/root/pypi"; \
 		echo "[install]"; \
-		echo "trusted-host = frodo"; \
+		echo "trusted-host = ${APT_MIRROR}"; \
 	} > ~/.pip/pip.conf \
     \
-    && pip3 install --upgrade \
+    && echo && echo "# 기본 유틸 설치" \
+    && pip3 install --upgrade --no-cache-dir \
         pip \
         setuptools \
-        wheel \
-    && sync \
-    \
-    && pip3 install --upgrade \
-        bs4 \
-        bsddb3 \
-        requests \
-        pymongo \
-        kafka-python \
-        paho-mqtt \
-        pyzmq \
-        jupyter \
-        elasticsearch \
-        python-crfsuite \
-        cython \
-    && python3 -m ipykernel.kernelspec \
-    && rm -rf $HOME/.cache \
-    \
-    && mkdir -p /root/users
+        wheel
 
+RUN mkdir -p ${APP_HOME} 
+ADD app.tar.gz ${APP_HOME}
 
-# 4. 설정 파일 복사
-ENV ROOT_INIT_DIR="/usr/local/init.d/root"
+RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
-RUN mkdir -p $ROOT_INIT_DIR
+COPY Dockerfile ${APP_HOME}
 
-COPY etc/skel /root/
-COPY etc/supervisor/* /etc/supervisor/conf.d/
-
-COPY sbin/* /usr/local/sbin/
-
-COPY init.d/root/* $ROOT_INIT_DIR/
-
-COPY etc/*.extra /etc/
-
-RUN chmod 755 /usr/local/sbin/* /usr/local/init.d/* \
-    && chmod -R 777 /usr/local/sbin/* $ROOT_INIT_DIR/*
-
-
-# 7. 공유 폴더 위치 및 작업 위치 지정
-VOLUME ["/home"]
-
-EXPOSE 22
-
-ENTRYPOINT ["/usr/local/sbin/entrypoint.sh"]
+WORKDIR ${APP_HOME}
+#CMD ["python3", "app.py"]

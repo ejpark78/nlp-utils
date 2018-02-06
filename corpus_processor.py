@@ -31,8 +31,9 @@ import logging
 # for f in os.walk(p):
 #     print(f, file=sys.stderr)
 
+# from language_utils.rest_api.time import Time
 from language_utils.language_utils import LanguageUtils
-from language_utils.keyword_extractor import KeywordExtractor
+from language_utils.nc_utils.keyword_extractor import KeywordExtractor
 
 
 class CorpusProcessor:
@@ -82,12 +83,15 @@ class CorpusProcessor:
         # self.util.open(engine='parser', path='{}'.format(parser_path))
 
         # "B"=야구 "E"=경제 "T"=야구 용어
-        self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='E')
-        # self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='B')
+        # self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='E')
+        self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='B')
         # self.util.open(engine='sp_utils/ne_tagger', config=sp_config, domain='T')
 
         # 학습 기반 개체명 인식기 오픈
         # self.util.open(engine='crf_ne_tagger', model='{}/model/ner.josa.model'.format(dictionary_path))
+
+        # 타임 테거
+        # self.util.time_tagger = Time()
 
         self.keywords_extractor = KeywordExtractor(
             entity_file_name='{}/keywords/nc_entity.txt'.format(dictionary_path))

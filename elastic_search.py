@@ -19,7 +19,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NCElasticSearch:
+class ElasticSearch:
     """
     엘라스틱 서치
     """
@@ -53,19 +53,20 @@ class NCElasticSearch:
             self.index_name = index_name
 
         print('host:', self.host, flush=True)
-        if auth is True:
-            self.elastic_search = Elasticsearch(
-                [self.host],
-                http_auth=('elastic', 'nlplab'),
-                use_ssl=True,
-                verify_certs=False,
-                port=9200)
-        else:
-            self.elastic_search = Elasticsearch(
-                [self.host],
-                use_ssl=True,
-                verify_certs=False,
-                port=9200)
+        # if auth is True:
+        #     self.elastic_search = Elasticsearch(
+        #         self.host,
+        #         http_auth=('elastic', 'nlplab'),
+        #         use_ssl=True,
+        #         verify_certs=False,
+        #         port=9200)
+        # else:
+            # self.elastic_search = Elasticsearch(
+            #     self.host,
+            #     use_ssl=True,
+            #     verify_certs=False,
+            #     port=9200)
+        self.elastic_search = Elasticsearch(hosts=[self.host], timeout=10000)
 
         return self.elastic_search
 
@@ -83,8 +84,8 @@ class NCElasticSearch:
             return
 
         entry_settings = {
-            "number_of_shards": 1,
-            "number_of_replicas": 0
+            "number_of_shards": 3,
+            "number_of_replicas": 2
         }
 
         print("creating '%s' index..." % index_name, flush=True)
@@ -264,8 +265,8 @@ class NCElasticSearch:
         :param type_name:
         :return:
         """
-        # if self.elastic_search.indices.exists(index_name) is False:
-        #     self.create_index(index_name)
+        if self.elastic_search.indices.exists(index_name) is False:
+            self.create_index(index_name)
 
         count = 0
         bulk_data = []
@@ -283,12 +284,12 @@ class NCElasticSearch:
             # 날짜 변환, mongodb 의 경우 날짜가 $date 안에 들어가 있음.
             for k in document:
                 try:
-                    if '$date' in document[k]:
+                    if k == 'date' and '$date' in document[k]:
                         document[k] = document[k]['$date']
                 except Exception as e:
                     logging.error('', exc_info=e)
 
-                    print(document['document_id'], document[k], flush=True)
+                    print(document['document_id'], k, document[k], flush=True)
 
             # 인덱스의 타입을 지정하지 않았을 경우 날짜로 저장함
             index_type = type_name
@@ -302,12 +303,18 @@ class NCElasticSearch:
                     index_type = dt.strftime('%Y-%m')
 
             if index_type is None:
-                print('ERROR (type extraction): ', document['date'], document['document_id'], flush=True)
+                try:
+                    print('ERROR (type extraction): ', document['date'], document['document_id'], flush=True)
+                except Exception as e:
+                    print(e, document, flush=True)
+
                 continue
 
             # elasticsearch 에서 날짜 인식 형식인 2017-10-10T12:00:00 으로 변환
             if document['date'][-1] == 'Z':
                 document['date'] = document['date'][0:len(document['date'])-1]
+
+            # line = json.dumps(document, ensure_ascii=False)
 
             bulk_data.append({
                 "update": {
@@ -324,13 +331,16 @@ class NCElasticSearch:
             count += 1
 
             if len(bulk_data) > 1000:
+                ret = self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=12000)
+                # print('{:,}\t{}\t{}'.format(count, index_name, index_type), ret, flush=True)
                 print('{:,}\t{}\t{}'.format(count, index_name, index_type), flush=True)
-                self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
                 bulk_data = []
 
         if len(bulk_data) > 0:
             print('{:,}'.format(count), flush=True)
-            self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=120)
+            ret = self.elastic_search.bulk(index=index_name, body=bulk_data, refresh=True, request_timeout=12000)
+
+            print(ret, flush=True)
 
     @staticmethod
     def parse_argument():
@@ -343,7 +353,7 @@ class NCElasticSearch:
 
         arg_parser = argparse.ArgumentParser(description='')
 
-        arg_parser.add_argument('-host', help='서버 이름', default='frodo')
+        arg_parser.add_argument('-host', help='서버 이름', default='http://nlpapi.ncsoft.com:9200')
 
         arg_parser.add_argument('-index', help='인덱스', default='baseball')
         arg_parser.add_argument('-type', help='타입', default=None)
@@ -354,7 +364,7 @@ class NCElasticSearch:
 
 
 if __name__ == "__main__":
-    self = NCElasticSearch()
+    self = ElasticSearch()
 
     args = self.parse_argument()
     self.open(args.host, args.index)
