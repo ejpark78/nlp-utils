@@ -9,6 +9,8 @@ IMAGES ?= docker/images
 
 default: crawler
 
+.PHONY: crawler save load 
+
 # crawler
 .ONESHELL:
 crawler: 

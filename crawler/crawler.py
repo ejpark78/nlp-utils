@@ -107,6 +107,10 @@ class Crawler(Utils):
         self.make_simple_url(article, self.parsing_info)
 
         # 다운로드 받은 URL이 있는지 검사
+        if 'url' not in article:
+            print('ERROR: 다운 받을 url 주소가 없음.', article, flush=True)
+            return
+
         url = self.get_url(article['url'])
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1

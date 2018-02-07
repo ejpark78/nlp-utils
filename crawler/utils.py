@@ -321,11 +321,23 @@ class Utils(object):
             날짜와 컬랙션 이름
         """
         from dateutil.parser import parse as parse_date
+        from dateutil.relativedelta import relativedelta
 
         collection = 'error'
         if isinstance(date, str) is True:
             try:
-                date = parse_date(date)
+                # 상대 시간 계산
+                if '일전' in date:
+                    offset = int(date.replace('일전', ''))
+                    date = datetime.now()
+                    date += relativedelta(days=-offset)
+                elif '분전' in date:
+                    offset = int(date.replace('분전', ''))
+                    date = datetime.now()
+                    date += relativedelta(minutes=-offset)
+                else:
+                    date = parse_date(date)
+
                 collection = date.strftime('%Y-%m')
             except Exception as e:
                 logging.error('', exc_info=e)
@@ -868,7 +880,11 @@ class Utils(object):
         :return:
             True/False
         """
-        query, base_url, parsed_url = self.get_query(document['url'])
+        try:
+            query, base_url, parsed_url = self.get_query(document['url'])
+        except Exception as e:
+            print(e, document, flush=True)
+            return False
 
         url_info = {
             'full': document['url'],
@@ -994,7 +1010,7 @@ class Utils(object):
         :return:
             True/False
         """
-        if document is None:
+        if document is None or '_id' not in document or 'section' not in document:
             return False
 
         from pymongo import errors
