@@ -434,6 +434,21 @@ class Utils(object):
         :param kafka_info:
             카프카 접속 정보
 
+            "kafka": {
+              "host": "gollum",
+              "result": {
+                "elastic": {
+                  "type": "2017-11",
+                  "host": "frodo",
+                  "index": "naver_society",
+                  "upsert": true
+                }
+              },
+              "job_id": "crawler_naver_society_2017",
+              "port": 9092,
+              "topic": "crawler"
+            }
+
         :param mongodb_info:
             몽고 디비 정보: collection명 동기화
 
@@ -566,8 +581,8 @@ class Utils(object):
             index=index_name,
             body={
                 'settings': {
-                    'number_of_shards': 1,
-                    'number_of_replicas': 0
+                    'number_of_shards': 3,
+                    'number_of_replicas': 2
                 }
             }
         )
@@ -583,6 +598,13 @@ class Utils(object):
 
         :param elastic_info:
             elastic 접속 정보
+
+            "elastic": {
+              "upsert": true,
+              "index": "daum_economy",
+              "type": "",
+              "host": "http://nlpapi.ncsoft.com:9200"
+            }
 
         :param mongodb_info:
             몽고디비 접속 정보, collection 이름 동기화
@@ -619,19 +641,21 @@ class Utils(object):
         document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
         try:
-            if 'auth' in elastic_info and elastic_info['auth'] is not None:
-                elastic = Elasticsearch(
-                    [elastic_info['host']],
-                    http_auth=elastic_info['auth'],
-                    use_ssl=True,
-                    verify_certs=False,
-                    port=9200)
-            else:
-                elastic = Elasticsearch(
-                    [elastic_info['host']],
-                    use_ssl=True,
-                    verify_certs=False,
-                    port=9200)
+            # if 'auth' in elastic_info and elastic_info['auth'] is not None:
+            #     elastic = Elasticsearch(
+            #         [elastic_info['host']],
+            #         http_auth=elastic_info['auth'],
+            #         use_ssl=True,
+            #         verify_certs=False,
+            #         port=9200)
+            # else:
+            #     elastic = Elasticsearch(
+            #         [elastic_info['host']],
+            #         use_ssl=True,
+            #         verify_certs=False,
+            #         port=9200)
+
+            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
 
             if elastic.indices.exists(index) is False:
                 self.create_elastic_index(elastic, index)
@@ -668,6 +692,14 @@ class Utils(object):
 
         :param mongodb_info:
             몽고 디비 접속 정보
+
+        "mongo": {
+            "collection": "2017-07",
+            "port": 27018,
+            "upsert": false,
+            "host": "frodo",
+            "name": "daum_economy"
+        }
 
         :return:
             True/False
@@ -1339,10 +1371,17 @@ class Utils(object):
             True/False
         """
 
-        for sub_soup in soup.findAll(target_tag_info['tag_name'], attrs=self.get_value(target_tag_info, 'attr')):
+        attribute = self.get_value(target_tag_info, 'attr')
+
+        if attribute is None:
+            tag_list = soup.findAll(target_tag_info['tag_name'])
+        else:
+            tag_list = soup.findAll(target_tag_info['tag_name'], attrs=attribute)
+
+        for sub_soup in tag_list:
             if 'remove' in target_tag_info:
-                self.replace_tag(sub_soup, [target_tag_info['remove']['tag_name']], '',
-                                 attribute=self.get_value(target_tag_info['remove'], 'attr'))
+                attribute = self.get_value(target_tag_info['remove'], 'attr')
+                self.replace_tag(sub_soup, [target_tag_info['remove']['tag_name']], '', attribute=attribute)
 
             if 'next_tag' in target_tag_info:
                 self.get_target_value(sub_soup, target_tag_info['next_tag'], result_list, base_url)
@@ -1354,8 +1393,12 @@ class Utils(object):
 
                     data_tag_info = target_tag_info['data'][key]
 
-                    data_tag = sub_soup.find(
-                        data_tag_info['tag_name'], attrs=self.get_value(data_tag_info, 'attr'))
+                    attribute = self.get_value(data_tag_info, 'attr')
+
+                    if attribute is None:
+                        data_tag = sub_soup.find(data_tag_info['tag_name'])
+                    else:
+                        data_tag = sub_soup.find(data_tag_info['tag_name'], attrs=attribute)
 
                     if 'remove' in data_tag_info:
                         self.replace_tag(data_tag, [data_tag_info['remove']['tag_name']], '',

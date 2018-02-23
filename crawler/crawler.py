@@ -348,6 +348,10 @@ class Crawler(Utils):
                 for url_frame in json_key_mapping['_article_base_url']:
                     url = url_frame['url'].format(**article)
 
+                    # 주석 제외
+                    if url[0] == '#':
+                        continue
+
                     document = dict(article)
                     document['url'] = urljoin(domain_url, url)
 
@@ -646,6 +650,10 @@ class Crawler(Utils):
             for url_info in url_list:
                 page_url = url_info['url']
 
+                # 주석 제외
+                if page_url[0] == '#':
+                    continue
+
                 # const_value 속성 복사
                 if 'const_value' in url_info:
                     self.parameter['const_value'] = url_info['const_value']
@@ -719,6 +727,29 @@ class Crawler(Utils):
 
         return
 
+    @staticmethod
+    def _get_page_range(params, start):
+        """
+        파라메터에서 start, end, step 정보 반환
+
+        :param params:
+
+        :param start:
+            default start
+
+        :return:
+        """
+
+        end = start + 1
+        if 'end' in params:
+            end = int(params['end']) + 1
+
+        step = 1
+        if 'step' in params:
+            step = int(params['step'])
+
+        return start, end, step
+
     def curl_by_page_id(self):
         """
         아이디 기준으로 크롤링
@@ -750,6 +781,7 @@ class Crawler(Utils):
                 start = self.job_info['state']['start']
 
         # url 주소 생성
+        start = int(start)
         print({'year': year, 'start': start})
 
         # 쿼리 매핑 정보 추출
@@ -761,29 +793,28 @@ class Crawler(Utils):
             # 페이지 목록이 있을 경우
 
             # end 까지 반복 실행
-            start = int(start)
-            end = start + 1
+            start, end, step = self._get_page_range(self.parameter, start=start)
 
-            if 'end' in self.parameter:
-                end = int(self.parameter['end']) + 1
+            url_list = self.parameter['url_frame']
+            if isinstance(url_list, str) is True:
+                url_list = [{'url': url_list}]
 
-            step = 1
-            if 'step' in self.parameter:
-                step = int(self.parameter['step'])
+            # url 을 만든다.
+            for url_info in url_list:
+                # 주석 제외
+                if url_info['url'][0] == '#':
+                    continue
 
-            for i in range(start, end, step):
-                if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
-                    break
+                # end 까지 반복 실행
+                start, end, step = self._get_page_range(url_info, start=start)
 
-                url_list = self.parameter['url_frame']
-                if isinstance(url_list, str) is True:
-                    url_list = [{'url': url_list}]
-
-                # url을 만든다.
-                for url_info in url_list:
+                for i in range(start, end, step):
                     query = {'year': year, 'start': i}
 
                     page_url = url_info['url'].format(**query)
+
+                    if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                        break
 
                     # const_value 속성 복사
                     if 'const_value' in url_info:
@@ -798,10 +829,7 @@ class Crawler(Utils):
                                                 scheduler_db_info=self.scheduler_db_info,
                                                 query_key_mapping=query_key_mapping)
         else:
-            # elif 'article_page' in self.parsing_info:
             # 페이지 목록이 없을 경우 본문만 저장
-            start = int(start)
-
             end = start + 100000
             if 'end' in self.parameter:
                 end = int(self.parameter['end']) + 1
@@ -821,6 +849,10 @@ class Crawler(Utils):
                         self.parameter['const_value'] = url_info['const_value']
 
                     page_url = url_info['url']
+
+                    # 주석 제외
+                    if page_url[0] == '#':
+                        continue
 
                     # 본문 수집
                     article = {'url': page_url.format(start=i)}
