@@ -10,6 +10,7 @@ import os
 import sys
 import copy
 import json
+import queue
 import random
 import requests
 import logging
@@ -43,6 +44,10 @@ class Utils(object):
 
         self.hostname = None
         self.request_count = 0
+
+        # 저장 큐
+        self.mutex = False
+        self.job_queue = queue.Queue()
 
     @staticmethod
     def replace_tag(html_tag, tag_list, replacement='', attribute=None):
@@ -441,7 +446,7 @@ class Utils(object):
                   "type": "2017-11",
                   "host": "frodo",
                   "index": "naver_society",
-                  "upsert": true
+                  "update": true
                 }
               },
               "job_id": "crawler_naver_society_2017",
@@ -600,7 +605,7 @@ class Utils(object):
             elastic 접속 정보
 
             "elastic": {
-              "upsert": true,
+              "update": true,
               "index": "daum_economy",
               "type": "",
               "host": "http://nlpapi.ncsoft.com:9200"
@@ -615,23 +620,17 @@ class Utils(object):
         from elasticsearch import Elasticsearch
 
         # 인덱스 추출, 몽고 디비 collection 이름 우선
-        if 'index' not in elastic_info:
-            elastic_info['index'] = ''
+        index = mongodb_info['name']
+        if 'index' in elastic_info and elastic_info['index'] != '' and elastic_info['index'] != '{mongo.name}':
+            index = elastic_info['index']
 
-        index = elastic_info['index']
-        if 'name' in mongodb_info:
-            index = mongodb_info['name']
+        doc_type = mongodb_info['collection']
+        if 'type' in elastic_info and elastic_info['type'] != '' and elastic_info['type'] != '{mongo.collection}':
+            doc_type = elastic_info['type']
 
-        # 타입 추출, 몽고 디비 collection 이름 우선
-        if 'type' not in elastic_info:
-            elastic_info['type'] = ''
-
-        index_type = elastic_info['type']
-        if 'collection' in mongodb_info:
-            index_type = mongodb_info['collection']
-
-        if index == '' or index_type == '':
-            return False
+        update = False
+        if 'update' in elastic_info:
+            update = elastic_info['update']
 
         # 날짜 변환
         if 'date' in document and isinstance(document['date'], datetime):
@@ -641,20 +640,6 @@ class Utils(object):
         document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
         try:
-            # if 'auth' in elastic_info and elastic_info['auth'] is not None:
-            #     elastic = Elasticsearch(
-            #         [elastic_info['host']],
-            #         http_auth=elastic_info['auth'],
-            #         use_ssl=True,
-            #         verify_certs=False,
-            #         port=9200)
-            # else:
-            #     elastic = Elasticsearch(
-            #         [elastic_info['host']],
-            #         use_ssl=True,
-            #         verify_certs=False,
-            #         port=9200)
-
             elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
 
             if elastic.indices.exists(index) is False:
@@ -666,15 +651,15 @@ class Utils(object):
             bulk_data = [{
                 'update': {
                     '_index': index,
-                    '_type': index_type,
+                    '_type': doc_type,
                     '_id': document['document_id']
                 }
             }, {
                 'doc': document,
-                'doc_as_upsert': True
+                'doc_as_upsert': update
             }]
 
-            elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
+            elastic.bulk(index=index, body=bulk_data, refresh=True)
         except Exception as e:
             logging.error('', exc_info=e)
             traceback.print_exc(file=sys.stderr)
@@ -696,7 +681,7 @@ class Utils(object):
         "mongo": {
             "collection": "2017-07",
             "port": 27018,
-            "upsert": false,
+            "update": false,
             "host": "frodo",
             "name": "daum_economy"
         }
@@ -719,6 +704,9 @@ class Utils(object):
         if 'collection' not in mongodb_info:
             mongodb_info['collection'] = None
 
+        if 'update' not in mongodb_info:
+            mongodb_info['update'] = False
+
         meta = {}
         if 'meta' in document:
             for k in document['meta']:
@@ -738,8 +726,8 @@ class Utils(object):
         try:
             collection = mongodb.get_collection(mongodb_info['collection'])
 
-            # upsert 모드인 경우 문서를 새로 저장
-            if mongodb_info['upsert'] is True:
+            # update 모드인 경우 문서를 새로 저장
+            if mongodb_info['update'] is True:
                 collection.replace_one({'_id': document['_id']}, document, upsert=True)
             else:
                 collection.insert_one(document)
@@ -829,19 +817,7 @@ class Utils(object):
         }
 
         try:
-            if 'auth' in elastic_info and elastic_info['auth'] is not None:
-                elastic = Elasticsearch(
-                    [elastic_info['host']],
-                    http_auth=elastic_info['auth'],
-                    use_ssl=True,
-                    verify_certs=False,
-                    port=9200)
-            else:
-                elastic = Elasticsearch(
-                    [elastic_info['host']],
-                    use_ssl=True,
-                    verify_certs=False,
-                    port=9200)
+            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
 
             if elastic.indices.exists(elastic_info['index']) is False:
                 self.create_elastic_index(elastic, elastic_info['index'])
@@ -866,6 +842,54 @@ class Utils(object):
 
         return True
 
+    @staticmethod
+    def send_corpus_process(document_id, api_info, mongodb_info):
+        """
+        코퍼스 저처리 분석 데몬에 문서 아이디 전달
+
+        :param document_id:
+            전달할 문서 아이디
+
+        :param api_info:
+            전처리 API 서버 정보
+
+        :param mongodb_info:
+            디비 정보
+
+        :return:
+            True/False
+        """
+        # 필수 항목: url
+        # 선택: index, type
+
+        index = mongodb_info['name']
+        if 'index' in api_info and api_info['index'] != '' and api_info['index'] != '{mongo.name}':
+            index = api_info['index']
+
+        doc_type = mongodb_info['collection']
+        if 'type' in api_info and api_info['type'] != '' and api_info['type'] != '{mongo.collection}':
+            doc_type = api_info['type']
+
+        update = False
+        if 'update' in api_info:
+            update = api_info['update']
+
+        body = {
+            'index': index,
+            'doc_type': doc_type,
+            'document_id': document_id,
+            'update': update
+        }
+
+        headers = {'Content-Type': 'application/json'}
+        try:
+            _ = requests.put(url=api_info['url'], json=body, headers=headers,
+                             allow_redirects=True, timeout=30, verify=False)
+        except Exception as e:
+            print(e, flush=True)
+
+        return True
+
     def save_article(self, document, db_info):
         """
         문서 저장
@@ -879,23 +903,80 @@ class Utils(object):
         :return:
             True/False
         """
-        if 'mongo'in db_info and 'host' in db_info['mongo']:
-            self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
+        import threading
 
-        if 'mqtt'in db_info and 'host' in db_info['mqtt']:
-            self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
+        # 스래드로 작업 시작
+        job = {
+            'db_info': db_info,
+            'document': document
+        }
 
-        # if 'kafka'in db_info and 'host' in db_info['kafka']:
-        #     self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
+        # queue 목록에 작업 저장
+        if self.job_queue.empty() is True:
+            self.job_queue.put(job)
 
-        # 엘라스틱 서치에 저장
-        if 'elastic'in db_info and 'host' in db_info['elastic']:
-            self.insert_elastic(
-                document=copy.deepcopy(document), elastic_info=db_info['elastic'], mongodb_info=db_info['mongo'])
+            # 스래드 시작
+            thread = threading.Thread(target=self._save_article)
+            thread.start()
+        else:
+            print('add job queue: {}'.format(self.job_queue.qsize()), flush=True)
+            self.job_queue.put(job)
 
-        if 'logs'in db_info and 'host' in db_info['logs']:
-            self.save_logs(
-                document=copy.deepcopy(document), elastic_info=db_info['logs'], mongodb_info=db_info['mongo'])
+        return True
+
+    def _save_article(self):
+        """
+        스래드 안에서 문서 저장
+
+        :return:
+            True/False
+        """
+        if self.job_queue.empty() is True:
+            return True
+
+        print('job queue size: {}'.format(self.job_queue.qsize()), flush=True)
+
+        # 뮤텍스 구간
+        if self.mutex is True:
+            return False
+
+        self.mutex = True
+
+        while self.job_queue.empty() is False:
+            #  작업 큐에서 작업을 하나 가져온다.
+            job = self.job_queue.get()
+
+            db_info = job['db_info']
+            document = job['document']
+
+            # 문서 저장
+            if 'mongo'in db_info and 'host' in db_info['mongo']:
+                self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
+
+            if 'mqtt'in db_info and 'host' in db_info['mqtt']:
+                self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
+
+            if 'kafka'in db_info and 'host' in db_info['kafka']:
+                self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
+
+            # 엘라스틱 서치에 저장
+            if 'elastic'in db_info and 'host' in db_info['elastic']:
+                self.insert_elastic(document=copy.deepcopy(document),
+                                    elastic_info=db_info['elastic'], mongodb_info=db_info['mongo'])
+
+            if 'logs'in db_info and 'host' in db_info['logs']:
+                self.save_logs(document=copy.deepcopy(document),
+                               elastic_info=db_info['logs'], mongodb_info=db_info['mongo'])
+
+            # 코퍼스 전처리 시작
+            if 'corpus-process' in db_info and 'url' in db_info['corpus-process']:
+                self.send_corpus_process(document_id=document['_id'],
+                                         api_info=db_info['corpus-process'], mongodb_info=db_info['mongo'])
+
+        self.mutex = False
+
+        # 작업 큐가 빌때까지 반복
+        self._save_article()
 
         return True
 
@@ -1064,7 +1145,7 @@ class Utils(object):
         # 몽고 디비에 문서 저장
         try:
             collection = mongodb.get_collection(collection_name)
-            if mongodb_info['upsert'] is True:
+            if 'update' in mongodb_info and mongodb_info['update'] is True:
                 collection.replace_one({'_id': section_info['_id']}, section_info, upsert=True)
             else:
                 collection.insert_one(section_info)

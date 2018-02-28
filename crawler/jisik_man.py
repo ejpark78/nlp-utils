@@ -236,13 +236,13 @@ class JisikMan:
 
         return
 
-    def save_result(self, document, collection, upsert=False):
+    def save_result(self, document, collection, update=False):
         """
         크롤링 결과를 몽고 디비에 저장
 
         :param document:
         :param collection:
-        :param upsert:
+        :param update:
         :return:
         """
         if self.result_db is None:
@@ -290,10 +290,10 @@ class JisikMan:
             print('save_result document:', collection, str_document, flush=True)
 
         if self.from_start is True:
-            upsert = True
+            update = True
 
         try:
-            if upsert is True:
+            if update is True:
                 self.result_db.get_collection(collection).replace_one({'_id': document['_id']}, document, upsert=True)
             else:
                 self.result_db.get_collection(collection).insert_one(document)
@@ -359,7 +359,7 @@ class JisikMan:
                     'page': page,
                     'point': point
                 }
-                self.save_result(document=state, collection='state', upsert=True)
+                self.save_result(document=state, collection='state', update=True)
             elif save_flag is False:
                 break
 

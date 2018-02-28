@@ -84,39 +84,18 @@ class Crawler(Utils):
 
         return collection
 
-    def curl_article(self, article, response_type='html'):
+    def is_url_exists(self, url, article, response_type):
         """
-        기사 본문을 웹에서 가져와서 디비에 저장하는 함수
-
-        :param article:
-            기사 본문
-
-        :param response_type:
-            기사 본문 형식
-
+        url 중복 체크, 섹션 정보 저장
         :return:
-            True/False
         """
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        target_tags = None
-        if 'article_page' in self.parsing_info:
-            target_tags = self.parsing_info['article_page']
-
-        # url 을 단순한 형태로 변환 및 _id 설정
-        self.make_simple_url(article, self.parsing_info)
-
-        # 다운로드 받은 URL이 있는지 검사
-        if 'url' not in article:
-            print('ERROR: 다운 받을 url 주소가 없음.', article, flush=True)
-            return
-
-        url = self.get_url(article['url'])
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
-            print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url))
+            print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url), flush=True)
 
-            if self.db_info['mongo']['upsert'] is False:
+            if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
                 # const value 삽입
                 if 'const_value' in self.parameter:
                     article.update(self.parameter['const_value'])
@@ -130,6 +109,38 @@ class Crawler(Utils):
                         collection_name='section_{}'.format(collection))
 
                 return True
+
+        return False
+
+    def curl_article(self, article, response_type='html'):
+        """
+        기사 본문을 웹에서 가져와서 디비에 저장하는 함수
+
+        :param article:
+            기사 본문
+
+        :param response_type:
+            기사 본문 형식
+
+        :return:
+            True/False
+        """
+        target_tags = None
+        if 'article_page' in self.parsing_info:
+            target_tags = self.parsing_info['article_page']
+
+        # url 을 단순한 형태로 변환 및 _id 설정
+        self.make_simple_url(article, self.parsing_info)
+
+        # 다운로드 받은 URL이 있는지 검사
+        if 'url' not in article:
+            print('ERROR: 다운 받을 url 주소가 없음.', article, flush=True)
+            return
+
+        # url 중복 체크, 섹션 정보 저장
+        url = self.get_url(article['url'])
+        if self.is_url_exists(url, article, response_type):
+            return
 
         # 인코딩 명시
         encoding = None
@@ -589,16 +600,17 @@ class Crawler(Utils):
             self.parameter['end_date'] = end_date.strftime('%Y-%m-%d')
 
         # state 확인
-        if 'state' in self.job_info['state']:
-            if self.job_info['state']['state'] == 'done':
+        state = self.job_info['state']
+        if 'state' in state:
+            if state['state'] == 'done':
                 return
 
             # status, date/progress 정보를 확인하여 마지막 날짜부터 이어서 크롤링 시작
             # 하루 전 기사부터 다시 시작
-            if 'running' in self.job_info['state'] and self.job_info['state']['running'] != '':
-                date = self.parse_date_string(self.job_info['state']['running'])
+            if 'running' in state and state['running'] != '':
+                date = self.parse_date_string(state['running'])
 
-                if self.job_info['group'].find('daemon') < 0:
+                if self.job_info['schedule']['mode'] != 'daemon':
                     if date_step == 'day':
                         date += relativedelta(days=-1)
                     else:
@@ -698,7 +710,7 @@ class Crawler(Utils):
             else:
                 date += relativedelta(months=-1)
 
-            if self.job_info['group'].find('daemon') < 0:
+            if self.job_info['schedule']['group'].find('daemon') < 0:
                 self.update_state(
                     state='ready', current_date=date, start_date=original_start_date, end_date=end_date,
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
@@ -767,18 +779,20 @@ class Crawler(Utils):
         if 'start' in self.parameter:
             start = self.parameter['start']
 
-        # 데몬 모드일 경우 항상 start에서 시작
-        if self.job_info['group'].find('daemon') < 0:
+        # 데몬 모드일 경우 항상 start 에서 시작
+        if self.job_info['schedule']['group'].find('daemon') < 0:
+            state = self.job_info['state']
+
             # 만약 진행 상태에 년도 정보가 있으면 가져와서 그 년도 부터 다시 크롤링 시작
-            if 'year' in self.job_info['state'] and self.job_info['state']['year'] != '':
-                year = self.job_info['state']['year']
+            if 'year' in state and state['year'] != '':
+                year = state['year']
 
                 # 신문 고유 번호 기반 크롤링시 저장 디비의 컬렉션을 맞게 변경
                 self.set_new_collection(year)
 
             # 진행 상태에서 start 가 있으면 그 번호부터 다시 크롤링
-            if 'start' in self.job_info['state'] and self.job_info['state']['start'] != '':
-                start = self.job_info['state']['start']
+            if 'start' in state and state['start'] != '':
+                start = state['start']
 
         # url 주소 생성
         start = int(start)

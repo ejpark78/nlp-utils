@@ -8,7 +8,7 @@ from __future__ import print_function
 import os
 import sys
 
-from time import time, sleep
+from time import sleep
 from pymongo import MongoClient
 from datetime import datetime
 
@@ -81,60 +81,58 @@ class Scheduler:
         작업 목록에서 컨테이너 이름이 같은 것을 가져와서 실행
 
         :param scheduler_db_info:
+            spotv_baseball_2017
             {
-                "_id" : "crawler_daum_economy_2017",
-                "sleep_range": "01,02,03,04,05,06",
-                "parameter" : {
-                    "start_date" : "2017-01-01",
-                    "end_date" : "2017-12-31",
-                    "delay" : "6~9",
-                    "max_skip" : 5000,
-                    "document_id" : "{_id}",
-                    "parsing_info" : "daum.news",
-                    "url_frame" : [
-                        {
-                            "const_value" : {
-                                "section" : "경제-부동산"
-                            },
-                            "url" : "http://media.daum.net/breakingnews/economic/estate?regDate={date}"
+                "_id": "spotv_baseball_2017",
+                "schedule": {
+                    "group": "spotv",
+                    "mode": "crawler",
+                    "sleep_range": "01,02,03,04,05,06,07,08,19,20,21,22,23,24"
+                },
+                "docker": {
+                    "command": "python3 scheduler.py",
+                    "image": "crawler:1.0",
+                    "working_dir": "/usr/local/app"
+                },
+                "parameter": {
+                    "const_value": {
+                        "section": "스포츠-야구"
+                    },
+                    "db_info": {
+                        "corpus-process": {
+                            "url": "https://gollum02:5004/v1.0/api/batch"
                         },
-                        (...)
+                        "elastic": {
+                            "host": "http://nlpapi.ncsoft.com:9200"
+                        },
+                        "mongo": {
+                            "collection": "2017-04",
+                            "host": "frodo",
+                            "name": "spotv_baseball",
+                            "port": 27018,
+                            "update": false
+                        }
+                    },
+                    "delay": "15~20",
+                    "document_id": "{_id}",
+                    "end": "1934",
+                    "max_skip": 5000,
+                    "parsing_info": "spotv.sports",
+                    "start": "1",
+                    "url_frame": [
                         {
-                            "const_value" : {
-                                "section" : "경제"
+                            "const_value": {
+                                "section": "스포츠-야구"
                             },
-                            "url" : "http://media.daum.net/breakingnews/economic?regDate={date}"
+                            "url": "http://www.spotvnews.co.kr/?page={start}&mod=news&act=articleList&total=38674&sc_code=1384128643&view_type=S"
                         }
-                    ],
-                    "db_info" : {
-                        (...)
-                        "mongo" : {
-                            "name" : "daum_economy",
-                            "port" : 27018,
-                            "host" : "frodo01",
-                            "upsert" : false
-                        }
-                    }
-                },
-                "state" : {
-                    "running" : "2017-02-01",
-                    "state" : "running",
-                    "progress" : "8.5"
-                },
-                "group" : "daum_daemon",
-                "docker" : {
-                    "image" : "crawler:dev",
-                    "volume" : "/data/nlp_home/docker/crawler:/data/nlp_home/docker/crawler:ro",
-                    "working_dir" : "/data/nlp_home/docker/crawler",
-                    "command" : "./venv/bin/python3 scheduler.py"
+                    ]
                 }
             }
 
         :return:
             True/False
         """
-
-        start_time = time()
 
         while True:
             # job info 갱신
@@ -143,17 +141,19 @@ class Scheduler:
             if job_info is None:
                 return
 
+            schedule = job_info['schedule']
+
             sleep_time = -1
-            if job_info['group'].find('daemon') > 0:
+            if 'mode' in schedule and schedule['mode'] == 'daemon':
                 sleep_time = 60
-                if 'sleep' in job_info:
-                    sleep_time = int(job_info['sleep'])
+                if 'sleep' in schedule:
+                    sleep_time = int(schedule['sleep'])
 
                 # sleep_range: 01,02,03,04,05,06
-                if 'sleep_range' in job_info:
+                if 'sleep_range' in schedule:
                     dt = datetime.now()
 
-                    sleep_range = job_info['sleep_range'].split(',')
+                    sleep_range = schedule['sleep_range'].split(',')
                     if dt.strftime('%H') in sleep_range:
                         wait = 60 - dt.minute
                         print('{}, sleep {} minutes'.format(dt.strftime('%Y-%m-%d %H:%M:%S'), wait), flush=True)

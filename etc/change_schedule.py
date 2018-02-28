@@ -38,26 +38,35 @@ def change_db_info():
 
     :return:
     """
+    from datetime import datetime
+
     connect, db = open_db('crawler')
 
     collection = db.get_collection('schedule')
-    # cursor = collection.find({'group': 'naver_crawler'})[:]
-    # cursor = collection.find({'_id': {'$regex': 'image'}})[:]
-    # cursor = collection.find({'_id': 'crawler_nate_economy_2017'})[:]
-    # cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
-    # cursor = collection.find({'docker.network': 'hadoop-net'})[:]
-    # cursor = collection.find({'docker.command': {'$regex': '.venv'}})[:]
-    cursor = collection.find({'parameter.db_info.mongo.host': 'frodo01'})[:]
+
+    cursor = collection.find({'sleep': {'$exists': 1}})[:]
+
+    date = datetime.now().strftime('%Y-%m-%d_%H.%M.%S')
+    fp = open('backup-{}.json'.format(date), 'a')
 
     for document in cursor:
-        print(document['_id'], flush=True)
+        # 백업
+        str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
+        fp.write(str_document + '\n\n')
 
-        document['parameter']['db_info']['mongo']['host'] = 'frodo'
+        document_id = document['_id']
+        print(document_id, flush=True)
+
+        document['schedule']['sleep'] = document['sleep']
+        del document['sleep']
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
 
-        collection.replace_one({'_id': document['_id']}, document, upsert=True)
+        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
+
+    fp.flush()
+    fp.close()
 
     cursor.close()
 

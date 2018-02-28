@@ -61,6 +61,7 @@ def map_function(line):
 
     return ''
 
+
 def parse_argument():
     """"
     옵션 입력
