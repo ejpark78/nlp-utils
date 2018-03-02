@@ -217,10 +217,7 @@ class Utils(object):
             max_delay = min_delay + 1
 
         # 상태 출력
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # 쉼
-        print('{} curl_html sleep: {} secs'.format(str_now, sleep_time), flush=True)
+        print('curl_html sleep: {} secs'.format(sleep_time), flush=True)
         sleep(sleep_time)
 
         # 해더 생성
@@ -251,9 +248,9 @@ class Utils(object):
                     return None
 
                 if max_try > 0:
-                    print(
-                        '{}\t{}\terror at json\t{}\tsleep: {} sec'.format(
-                            str_now, curl_url, sys.exc_info()[0], sleep_time * 10))
+                    print('{}\terror at json\t{}\tsleep: {} sec'.format(
+                        curl_url, sys.exc_info()[0], sleep_time * 10))
+
                     sleep(sleep_time * 10)
                     return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
                                           json_type=json_type, encoding=encoding, max_try=max_try - 1)
@@ -762,15 +759,13 @@ class Utils(object):
                 collection_name='section_{}'.format(mongodb_info['collection']))
 
         # 현재 상황 출력
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
         msg = [mongodb_info['host'], mongodb_info['name'], mongodb_info['collection']]
         for key in ['_id', 'date', 'section', 'title', 'url']:
             if key in document and isinstance(document[key], str):
                 msg.append(document[key])
 
         if len(msg) > 0:
-            print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            print('\t'.join(msg), flush=True)
 
         return True
 
@@ -1176,9 +1171,8 @@ class Utils(object):
             if key in document and isinstance(document[key], str):
                 msg.append(document[key])
 
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if len(msg) > 0:
-            print('{}\t{}'.format(str_now, '\t'.join(msg)))
+            print('\t'.join(msg), flush=True)
 
         return True
 
@@ -1227,11 +1221,28 @@ class Utils(object):
 
         return result
 
-    def update_state(self, state, current_date, job_info, scheduler_db_info, start_date, end_date):
+    @staticmethod
+    def get_container_host_name(state):
+        """
+        컨테이너가 실행중인 서버 이름 반환
+
+        :param state:
+            상태 정보
+
+        :return:
+            컨테이너가 실행중인 서버 이름
+        """
+        host_name = os.getenv('CONTAINER_HOST_NAME', '')
+        if host_name != '':
+            state['host'] = host_name
+
+        return host_name
+
+    def update_state(self, str_state, current_date, job_info, scheduler_db_info, start_date, end_date):
         """
         현재 작업 상태 변경
 
-        :param state:
+        :param str_state:
             상태, running, ready, stop
             경과 시간
 
@@ -1253,23 +1264,36 @@ class Utils(object):
         :return:
             True/False
         """
-        job_info['state']['state'] = state
+        state = job_info['state']
+
+        # 컨테이너가 실행중인 서버 이름 등록
+        self.get_container_host_name(state=state)
+
+        # 상태 정보 갱신
+        state['state'] = str_state
         if current_date is not None:
             total = end_date - start_date
             delta = current_date - start_date
 
-            job_info['state']['running'] = current_date.strftime('%Y-%m-%d')
-            job_info['state']['progress'] = '{:0.1f}'.format(delta.days / total.days * 100)
-        elif state == 'done':
-            job_info['state']['progress'] = '100.0'
+            state['running'] = current_date.strftime('%Y-%m-%d')
+            state['progress'] = '{:0.1f}'.format(delta.days / total.days * 100)
+        elif str_state == 'done':
+            state['progress'] = '100.0'
+        else:
+            state['running'] = ''
 
+        job_info['state'] = state
+
+        # 저장
         connect, db = self.open_db(
             scheduler_db_info['scheduler_db_name'],
             scheduler_db_info['scheduler_db_host'],
             scheduler_db_info['scheduler_db_port'])
 
         collection_name = scheduler_db_info['scheduler_db_collection']
-        db[collection_name].replace_one({'_id': job_info['_id']}, job_info)
+        collection = db.get_collection(collection_name)
+
+        collection.replace_one({'_id': job_info['_id']}, job_info)
 
         connect.close()
 
@@ -1327,11 +1351,11 @@ class Utils(object):
 
         return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path), url_info
 
-    def update_state_by_id(self, state, job_info, scheduler_db_info, url, query_key_mapping=None):
+    def update_state_by_id(self, str_state, job_info, scheduler_db_info, url, query_key_mapping=None):
         """
         현재 작업 상태 변경
 
-        :param state:
+        :param str_state:
             상태, running, ready, stoped
             경과 시간
 
@@ -1350,23 +1374,31 @@ class Utils(object):
         :return:
             True/False
         """
-        if query_key_mapping is None:
-            return False
+        # query 정보 추출
+        query = {}
+        if query_key_mapping is not None and url != '':
+            query, _, _ = self.get_query(url)
+            self.change_key(query, query_key_mapping)
 
-        query, _, _ = self.get_query(url)
-        self.change_key(query, query_key_mapping)
+        state = job_info['state']
+
+        # 컨테이너가 실행중인 서버 이름 등록
+        self.get_container_host_name(state=state)
 
         if 'year' in query:
-            job_info['state']['year'] = query['year']
+            state['year'] = query['year']
 
         if 'start' in query:
-            job_info['state']['start'] = query['start']
+            state['start'] = query['start']
 
-        job_info['state']['state'] = state
+        state['state'] = str_state
 
-        if state == 'done':
-            job_info['state']['progress'] = '100.0'
+        if str_state == 'done':
+            state['progress'] = '100.0'
 
+        job_info['state'] = state
+
+        # 저장
         connect, db = self.open_db(
             scheduler_db_info['scheduler_db_name'],
             scheduler_db_info['scheduler_db_host'],

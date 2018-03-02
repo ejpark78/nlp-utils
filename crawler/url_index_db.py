@@ -29,6 +29,10 @@ class UrlIndexDB(object):
     def set_pragma(cursor, readonly=True):
         """
         sqlite 의 속도 개선을 위한 설정
+
+        :param cursor:
+        :param readonly:
+        :return:
         """
         # cursor.execute('PRAGMA threads       = 8;')
 
@@ -49,6 +53,12 @@ class UrlIndexDB(object):
         return
 
     def open_db(self, filename=None, delete=False):
+        """
+        url 을 저장하는 캐쉬 디비(sqlite) 오픈
+        :param filename:
+        :param delete:
+        :return:
+        """
         if filename is not None:
             self.filename = filename
 
@@ -71,6 +81,9 @@ class UrlIndexDB(object):
     def get_url(url):
         """
         url 문자열을 찾아서 반환
+
+        :param url:
+        :return:
         """
 
         if isinstance(url, str) is True:
@@ -86,6 +99,9 @@ class UrlIndexDB(object):
         """
         다운 받을 url 이 디비에 있는지 검사
         url 목록을 저장하는 버클리 디비에서 점검
+
+        :param url:
+        :return:
         """
         if self.cursor is None:
             return False
@@ -103,6 +119,9 @@ class UrlIndexDB(object):
     def save_url(self, url):
         """
         입력 받은 URL 저장
+
+        :param url:
+        :return:
         """
         if self.cursor is None:
             return
@@ -123,6 +142,9 @@ class UrlIndexDB(object):
     def update_url_list(self, mongodb_info):
         """
         캐쉬 디비에 있는 url 목록을 버클리 디비에 저장
+
+        :param mongodb_info:
+        :return:
         """
         if self.cursor is None:
             return

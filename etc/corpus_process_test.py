@@ -45,8 +45,8 @@ def change_db_info():
     host = 'frodo'
     port = 27018
 
-    url = 'http://localhost:5004/v1.0/api/batch'
-    # url = 'https://gollum02:5004/v1.0/api/batch'
+    # url = 'http://localhost:5004/v1.0/api/batch'
+    url = 'https://gollum02:5004/v1.0/api/batch'
 
     connect = MongoClient('mongodb://{}:{}'.format(host, port))
 
@@ -69,15 +69,16 @@ def change_db_info():
     # 'sportskhan_baseball', 'spotv_baseball', 'starnews_sports', 'yonhapnews_sports', 'yonhapnewstv_sports'
 
     db_list = [
-        'daum_sports',
-        'nate_sports',
-        'naver_sports'
+        'daum_economy',
+        # 'nate_economy',
+        # 'naver_economy'
     ]
 
+    count = 0
     for db_name in db_list:
         db = connect.get_database(db_name)
 
-        for i in range(1, 12):
+        for i in range(1, 13):
             doc_type = '2017-{:02d}'.format(i)
 
             collection = db.get_collection(doc_type)
@@ -85,6 +86,7 @@ def change_db_info():
 
             document_list = []
             for document in cursor:
+                count += 1
                 document_id = document['_id']
                 print(db_name, doc_type, document_id, flush=True)
 
@@ -100,6 +102,8 @@ def change_db_info():
             cursor.close()
 
     connect.close()
+
+    print('count: {:,}'.format(count), flush=True)
 
     return
 

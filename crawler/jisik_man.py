@@ -78,9 +78,6 @@ class JisikMan:
         if sleep_time > min_delay:
             sleep_time = random.randrange(min_delay, delay, 1)
 
-        # str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # print('{}\t{} sec\t{:,}\t{}'.format(str_now, sleep_time, self.request_count, curl_url), flush=True)
-
         # 쉼
         sleep(sleep_time)
 
@@ -280,10 +277,8 @@ class JisikMan:
                 document['date'] = ''
 
             if 'question_content' in document:
-                str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-                msg = '{} {:,} [{}] ({}) {}'.format(
-                    str_now, int(document['_id']), answer_date, collection, document['question_content'])
+                msg = '{:,} [{}] ({}) {}'.format(int(document['_id']),
+                                                 answer_date, collection, document['question_content'])
                 print(msg, flush=True)
         else:
             str_document = json.dumps(document, indent=3, ensure_ascii=False, sort_keys=True)
@@ -299,11 +294,9 @@ class JisikMan:
                 self.result_db.get_collection(collection).insert_one(document)
 
         except Exception as e:
-            logging.error('', exc_info=e)
-
             del document['_id']
             self.result_db.get_collection('error').insert_one(document)
-            print('ERROR at save_result: {}: {}'.format(sys.exc_info()[0], document), flush=True)
+            print('ERROR at save_result: ', e, document, flush=True)
 
             return False
 

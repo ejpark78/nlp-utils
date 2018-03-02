@@ -19,7 +19,7 @@ crawler:
 	docker build -t $(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
 # 이미지 배포
-restart: save load 
+push: save load
 
 # 도커 이미지 저장
 save:

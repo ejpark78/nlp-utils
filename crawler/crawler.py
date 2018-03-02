@@ -89,11 +89,9 @@ class Crawler(Utils):
         url 중복 체크, 섹션 정보 저장
         :return:
         """
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
-            print('{}\turl exists {:,}: {}'.format(str_now, self.duplicated_url_count, url), flush=True)
+            print('url exists {:,}: {}'.format(self.duplicated_url_count, url), flush=True)
 
             if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
                 # const value 삽입
@@ -272,8 +270,7 @@ class Crawler(Utils):
         if curl_url.find('javascript') > 0:
             return
 
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('{}\tcurl article list: {}'.format(str_now, curl_url))
+        print('curl article list: {}'.format(curl_url))
 
         # page 주소 중복 체크: 오류가 있음. 마지막 페이지인 경우 중복으로 크롤링
         # if curl_url not in self.page_url_cache:
@@ -458,7 +455,7 @@ class Crawler(Utils):
             # 상태 갱신
             if curl_type == 'by_id' and 'query_key_mapping' in self.parsing_info:
                 self.update_state_by_id(
-                    state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
+                    str_state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
         return
@@ -521,7 +518,7 @@ class Crawler(Utils):
                         continue
 
                 if 'query_key_mapping' in self.parsing_info:
-                    self.update_state_by_id(state='running', url=url, job_info=self.job_info,
+                    self.update_state_by_id(str_state='running', url=url, job_info=self.job_info,
                                             scheduler_db_info=self.scheduler_db_info,
                                             query_key_mapping=self.parsing_info['query_key_mapping'])
 
@@ -541,8 +538,7 @@ class Crawler(Utils):
         if page_url.find('javascript') > 0:
             return
 
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('{}\tcurl all pages: {}'.format(str_now, page_url))
+        print('curl all pages: {}'.format(page_url))
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
@@ -646,9 +642,8 @@ class Crawler(Utils):
                 break
 
             # 시작전 상태 변경: ready => working
-            self.update_state(
-                state='running', current_date=date, start_date=original_start_date, end_date=end_date,
-                job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+            self.update_state(str_state='running', current_date=date, start_date=original_start_date,
+                              end_date=end_date, job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
             print({'crawling date': date})
 
@@ -712,11 +707,11 @@ class Crawler(Utils):
 
             if self.job_info['schedule']['group'].find('daemon') < 0:
                 self.update_state(
-                    state='ready', current_date=date, start_date=original_start_date, end_date=end_date,
+                    str_state='ready', current_date=date, start_date=original_start_date, end_date=end_date,
                     job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
         else:
             self.update_state(
-                state='done', current_date=None, start_date=None, end_date=None,
+                str_state='done', current_date=None, start_date=None, end_date=None,
                 job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
         return
@@ -796,12 +791,17 @@ class Crawler(Utils):
 
         # url 주소 생성
         start = int(start)
-        print({'year': year, 'start': start})
+        print({'year': year, 'start': start}, flush=True)
 
         # 쿼리 매핑 정보 추출
         query_key_mapping = None
         if 'query_key_mapping' in self.parsing_info:
             query_key_mapping = self.parsing_info['query_key_mapping']
+
+        # 시작전 상태 변경: ready => working
+        self.update_state_by_id(str_state='running', url='', job_info=self.job_info,
+                                scheduler_db_info=self.scheduler_db_info,
+                                query_key_mapping=query_key_mapping)
 
         if 'page_list' in self.parsing_info:
             # 페이지 목록이 있을 경우
@@ -838,10 +838,9 @@ class Crawler(Utils):
                     self.curl_all_pages(page_url, curl_type='by_id')
 
                     # 상태 갱신
-                    if query_key_mapping is not None:
-                        self.update_state_by_id(state='running', url=page_url, job_info=self.job_info,
-                                                scheduler_db_info=self.scheduler_db_info,
-                                                query_key_mapping=query_key_mapping)
+                    self.update_state_by_id(str_state='running', url=page_url, job_info=self.job_info,
+                                            scheduler_db_info=self.scheduler_db_info,
+                                            query_key_mapping=query_key_mapping)
         else:
             # 페이지 목록이 없을 경우 본문만 저장
             end = start + 100000
@@ -877,10 +876,9 @@ class Crawler(Utils):
                         self.curl_article(article=article)
 
                     # 상태 갱신
-                    if query_key_mapping is not None:
-                        self.update_state_by_id(state='running', url=article['url'], job_info=self.job_info,
-                                                scheduler_db_info=self.scheduler_db_info,
-                                                query_key_mapping=query_key_mapping)
+                    self.update_state_by_id(str_state='running', url=article['url'], job_info=self.job_info,
+                                            scheduler_db_info=self.scheduler_db_info,
+                                            query_key_mapping=query_key_mapping)
 
         return
 
@@ -910,8 +908,8 @@ class Crawler(Utils):
             mongodb_info['port'] = 27017
 
         # 디비 연결
-        connect, mongodb = self.open_db(
-            host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
+        connect, mongodb = self.open_db(host=mongodb_info['host'],
+                                        db_name=mongodb_info['name'], port=mongodb_info['port'])
 
         collection = mongodb.get_collection(mongodb_info['collection'])
 
@@ -946,12 +944,11 @@ class Crawler(Utils):
         for document in document_list:
             self.curl_article(article=document)
 
-            str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             paper = ''
             if 'paper' in document:
                 paper = document['paper']
 
-            print('{}\t{:,}/{:,}\t{}'.format(str_now, count, total, paper), flush=True)
+            print('{:,}/{:,}\t{}'.format(count, total, paper), flush=True)
             count += 1
 
         return
@@ -1003,7 +1000,7 @@ class Crawler(Utils):
         print({
             'parameter': self.parameter,
             'parsing_info': self.parsing_info
-        })
+        }, flush=True)
 
         # 인덱스 디비 생성
         if 'update_article' not in self.parameter:

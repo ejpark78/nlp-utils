@@ -156,7 +156,7 @@ class Scheduler:
                     sleep_range = schedule['sleep_range'].split(',')
                     if dt.strftime('%H') in sleep_range:
                         wait = 60 - dt.minute
-                        print('{}, sleep {} minutes'.format(dt.strftime('%Y-%m-%d %H:%M:%S'), wait), flush=True)
+                        print('sleep {} minutes'.format(wait), flush=True)
                         sleep(wait * 60)
                         continue
 
@@ -164,14 +164,12 @@ class Scheduler:
             crawler.run(scheduler_db_info=scheduler_db_info, job_info=job_info)
 
             if sleep_time > 0:
-                str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print('{}, sleep {} minutes'.format(str_now, sleep_time), flush=True)
+                print('sleep {} minutes'.format(sleep_time), flush=True)
                 sleep(sleep_time * 60)
             else:
                 break
 
-        str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print('DONE at {}'.format(str_now), flush=True)
+        print('DONE', flush=True)
 
         return
 
@@ -189,7 +187,7 @@ def init_arguments():
     parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo')
     parser.add_argument('-scheduler_db_port', help='db server port', default=27018)
     parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
-    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
+    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule_list')
 
     parser.add_argument('-document_id', help='document id', default=None)
 
