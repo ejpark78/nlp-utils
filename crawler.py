@@ -93,7 +93,7 @@ class Crawler(Utils):
 
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
-            print('url exists {:,}: {}'.format(self.duplicated_url_count, url), flush=True)
+            print('url exists: ', '{:,}'.format(self.duplicated_url_count), url, flush=True)
 
             if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
                 # const value 삽입
@@ -195,10 +195,10 @@ class Crawler(Utils):
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
                 article['raw_html'] = str(soup)
-                print({'INFO': 'missing html_content use entire html'}, flush=True)
+                print('INFO: missing html_content use entire html', flush=True)
 
             if 'title' not in article or 'date' not in article or article['date'] is None:
-                print({'ERROR': 'missing column', 'article': article}, flush=True)
+                print('ERROR missing column', article, flush=True)
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
@@ -249,8 +249,8 @@ class Crawler(Utils):
             self.make_simple_url(subject, self.parsing_info)
 
             # 저장
-            self.save_section_info(
-                document=subject, mongodb_info=self.db_info['mongo'], collection_name=collection)
+            self.save_section_info(document=subject, mongodb_info=self.db_info['mongo'],
+                                   collection_name=collection)
 
             url_info = subject['url']
 
@@ -272,7 +272,7 @@ class Crawler(Utils):
         if curl_url.find('javascript') > 0:
             return
 
-        print('curl article list: {}'.format(curl_url))
+        print('curl article list: ', curl_url, flush=True)
 
         # page 주소 중복 체크: 오류가 있음. 마지막 페이지인 경우 중복으로 크롤링
         # if curl_url not in self.page_url_cache:
@@ -339,7 +339,7 @@ class Crawler(Utils):
         :param json_key_mapping:
         :return:
         """
-        print('curl json article list')
+        print('curl json article list', flush=True)
 
         # 개별 기사 URL
         for article in article_list:
@@ -386,7 +386,7 @@ class Crawler(Utils):
             json_key_mapping = self.parsing_info['json_key_mapping']
 
         if json_key_mapping is None:
-            print('error no json key mapping info')
+            print('error no json key mapping info', flush=True)
             return
 
         # 헤더 명시
@@ -399,7 +399,7 @@ class Crawler(Utils):
         if page_url.find('{page}') > 0:
             url = page_url.format(page=page)
 
-        print('curl all pages: {}'.format(url))
+        print('curl all pages: ', url, flush=True)
         page_soup = self.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
         if page_soup is None:
             return
@@ -437,11 +437,10 @@ class Crawler(Utils):
         """
         parsing_info = self.parsing_info['page_list']
 
-        for a_tag in page_tag.findAll(
-                parsing_info['index']['tag_name'],
-                attrs=self.get_value(parsing_info['index'], 'attr')):
+        for a_tag in page_tag.findAll(parsing_info['index']['tag_name'],
+                                      attrs=self.get_value(parsing_info['index'], 'attr')):
             if a_tag.has_attr('href') is False:
-                print({'ERROR': 'missing href', 'tag': str(a_tag)})
+                print('ERROR: missing href', str(a_tag), flush=True)
                 continue
 
             url = urljoin(page_url, a_tag['href'])
@@ -456,9 +455,9 @@ class Crawler(Utils):
 
             # 상태 갱신
             if curl_type == 'by_id' and 'query_key_mapping' in self.parsing_info:
-                self.update_state_by_id(
-                    str_state='running', url=url, query_key_mapping=self.parsing_info['query_key_mapping'],
-                    job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
+                self.update_state_by_id(str_state='running', url=url,
+                                        query_key_mapping=self.parsing_info['query_key_mapping'],
+                                        job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
         return
 
@@ -478,11 +477,10 @@ class Crawler(Utils):
         if page_tag is None:
             return
 
-        for next_page in page_tag.findAll(
-                parsing_info['next']['tag_name'],
-                attrs=self.get_value(parsing_info['next'], 'attr')):
+        for next_page in page_tag.findAll(parsing_info['next']['tag_name'],
+                                          attrs=self.get_value(parsing_info['next'], 'attr')):
 
-            print('next_page: ', next_page)
+            print('next_page: ', next_page, flush=True)
 
             if next_page is None:
                 continue
@@ -492,8 +490,8 @@ class Crawler(Utils):
 
             if 'next_tag' in parsing_info['next']:
                 next_tag_info = parsing_info['next']['next_tag']
-                next_tag = next_page.find(
-                    next_tag_info['tag_name'], attrs=self.get_value(next_tag_info, 'attr'))
+                next_tag = next_page.find(next_tag_info['tag_name'],
+                                          attrs=self.get_value(next_tag_info, 'attr'))
 
                 if next_tag is not None:
                     next_page = next_tag
@@ -540,14 +538,14 @@ class Crawler(Utils):
         if page_url.find('javascript') > 0:
             return
 
-        print('curl all pages: {}'.format(page_url))
+        print('curl all pages: ', page_url, flush=True)
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
             return
 
         if 'page_list' not in self.parsing_info:
-            print({'ERROR': 'no page list in parsing_info'})
+            print('ERROR no page list in parsing_info', flush=True)
             return
 
         parsing_info = self.parsing_info['page_list']
@@ -559,7 +557,7 @@ class Crawler(Utils):
                 attrs=self.get_value(parsing_info['panel'], 'attr'))
 
             if page_tag is None:
-                print({'ERROR': 'article list panel is empty'})
+                print('ERROR article list panel is empty', flush=True)
                 return
 
             # 페이지 목록 추출 1~10 등
@@ -647,14 +645,14 @@ class Crawler(Utils):
             self.update_state(str_state='running', current_date=date, start_date=original_start_date,
                               end_date=end_date, job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
-            print({'crawling date': date})
+            print('crawling date: ', date, flush=True)
 
             # 특정 날자의 기사를 수집
             url_list = self.parameter['url_frame']
             if isinstance(url_list, str) is True:
                 url_list = [{'url': url_list}]
 
-            # url을 만든다.
+            # url 을 만든다.
             year_flag = False
             for url_info in url_list:
                 page_url = url_info['url']
@@ -942,6 +940,7 @@ class Crawler(Utils):
         # 크롤링 시작
         count = 0
         total = len(document_list)
+
         print('{:,}'.format(total), flush=True)
         for document in document_list:
             self.curl_article(article=document)
@@ -981,7 +980,11 @@ class Crawler(Utils):
         변수 및 환경 설정 초기화
 
         :param scheduler_db_info:
+            스케쥴러 디비 정보
+
         :param job_info:
+            스케쥴 정보
+
         :return:
             None
         """
@@ -991,10 +994,10 @@ class Crawler(Utils):
         self.scheduler_db_info = scheduler_db_info
 
         debug = os.getenv('DEBUG', 'False')
-        if debug == 'true' or debug == 'True':
+        if debug == 'true' or debug == 'True' or debug == '1':
             self.debug_mode = True
 
-        print({'job_info': self.job_info})
+        print('job_info: ', self.job_info, flush=True)
 
         self.parameter = job_info['parameter']
         if 'delay' not in self.parameter:
@@ -1003,17 +1006,11 @@ class Crawler(Utils):
         # 디비 연결
         self.db_info = self.parameter['db_info']
 
-        # 섹션/파싱 정보 가져오기
-        if self.parsing_info is None:
-            section_info, parsing_info = self.get_parsing_information(scheduler_db_info)
+        # 파싱 정보 가져오기
+        if self.parsing_info is None and 'parsing_info' in self.parameter:
+            self.parsing_info = self.get_parsing_information(scheduler_db_info, self.parameter['parsing_info'])
 
-            if 'parsing_info' in self.parameter:
-                self.parsing_info = parsing_info[self.parameter['parsing_info']]
-
-        print({
-            'parameter': self.parameter,
-            'parsing_info': self.parsing_info
-        }, flush=True)
+        print('parameter: ', self.parameter, 'parsing_info: ', self.parsing_info, flush=True)
 
         # 인덱스 디비 생성
         if 'update_article' not in self.parameter:
@@ -1026,8 +1023,13 @@ class Crawler(Utils):
         크롤링 시작
 
         :param scheduler_db_info:
+            스케쥴러 디비 정보
+
         :param job_info:
+            스케쥴 정보
+
         :return:
+            None
         """
         self._init_variable(scheduler_db_info, job_info)
 
@@ -1048,9 +1050,15 @@ class Crawler(Utils):
         디버깅, 하나의 URL을 입력 받아 실행
 
         :param scheduler_db_info:
+            스케쥴러 디비 정보
+
         :param job_info:
+            스케쥴 정보
+
         :param args:
+
         :return:
+            None
         """
         self._init_variable(scheduler_db_info, job_info)
 
@@ -1062,156 +1070,6 @@ class Crawler(Utils):
             self.curl_article(article=article)
 
         return
-
-    def parse_error(self, scheduler_db_info, job_info, args):
-        """
-        에러 테이블에 있는 raw_html 을 다시 파싱
-
-        :param scheduler_db_info:
-        :param job_info:
-        :param args:
-        :return:
-        """
-
-        # from bs4 import BeautifulSoup
-        # from pymongo import errors
-        #
-        # self._init_variable(scheduler_db_info, job_info)
-        #
-        # connect, self.result_db = self.open_db(
-        #     db_name=self.parameter['result_db_name'],
-        #     host=self.parameter['result_db_host'],
-        #     port=self.parameter['result_db_port'])
-        #
-        # if 'article_page' in self.parsing_info:
-        #     target_tags = self.parsing_info['article_page']
-        #
-        # cursor = self.result_db[args.db_collection].find({})
-        #
-        # cursor = cursor[:]
-        # for document in cursor:
-        #     if 'raw_html' not in document:
-        #         print('ERROR no raw_html value', document['_id'])
-        #
-        #         if 'url' in document:
-        #             self.curl_article(document)
-        #             pass
-        #
-        #         continue
-        #
-        #     soup = BeautifulSoup(document['raw_html'], 'lxml')
-        #
-        #     # 저장할 테그 추출
-        #     article_list = []
-        #
-        #     # html에서 정보 추출
-        #     document = self.parse_html(document, soup, target_tags, article_list)
-        #
-        #     if 'html_content' not in document or 'date' not in document or 'title' not in document:
-        #         print('ERROR', document['_id'])
-        #         continue
-        #
-        #     del document['raw_html']
-        #
-        #     collection = document['date'].strftime('%Y')
-        #
-        #     try:
-        #         print(
-        #             self.parameter['result_db_host'],
-        #             self.parameter['result_db_name'],
-        #             args.db_collection,
-        #             '->',
-        #             self.parameter['result_db_host'],
-        #             self.parameter['result_db_name'],
-        #             collection,
-        #             ' : ',
-        #             document['_id']
-        #         )
-        #
-        #         # self.result_db[collection].insert_one(document)
-        #         self.result_db[collection].replace_one({'_id': document['_id']}, document, upsert=True)
-        #         self.result_db[args.db_collection].remove({'_id': document['_id']})
-        #     except errors.DuplicateKeyError:
-        #         print(
-        #             'remove',
-        #             self.parameter['result_db_host'],
-        #             self.parameter['result_db_name'],
-        #             args.db_collection,
-        #             document['_id']
-        #         )
-        #         self.result_db[args.db_collection].remove({'_id': document['_id']})
-        #     except Exception as e:
-        #         logging.error('', exc_info=e)
-        #         logging.error('', exc_info=e)
-        #         print('ERROR', self.parameter['result_db_host'], self.parameter['result_db_name'])
-        #
-        # cursor.close()
-        #
-        # if connect is not None:
-        #     connect.close()
-
-        return
-
-
-def init_arguments():
-    """
-    옵션 설정
-
-    :return:
-    """
-
-    import argparse
-
-    parser = argparse.ArgumentParser(description='crawling web news articles')
-
-    parser.add_argument('-document_id', help='document id', default=None)
-
-    parser.add_argument('-scheduler_db_host', help='db server host name', default='gollum')
-    parser.add_argument('-scheduler_db_port', help='db server port', default=37017)
-    parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
-    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule')
-
-    parser.add_argument('-url', help='url', default=None)
-    parser.add_argument('-article_list', help='', action='store_true', default=False)
-    parser.add_argument('-article', help='', action='store_true', default=False)
-
-    # 에러 테이블에 있는 기사를 재파싱
-    parser.add_argument('-parse_error', help='', action='store_true', default=False)
-
-    parser.add_argument('-db_host', help='db server host name', default='gollum')
-    parser.add_argument('-db_port', help='db server port', default=37017)
-    parser.add_argument('-db_name', help='job db name', default='daum_baseball')
-    parser.add_argument('-db_collection', help='job collection name', default='error')
-
-    return parser.parse_args()
-
-
-def main():
-    """
-    :return:
-    """
-    crawler = Crawler()
-    args = init_arguments()
-
-    from scheduler import Scheduler as CrawlerScheduler
-
-    nc_curl = CrawlerScheduler()
-    scheduler_db_info = {
-        'document_id': args.document_id,
-        'scheduler_db_host': args.scheduler_db_host,
-        'scheduler_db_port': args.scheduler_db_port,
-        'scheduler_db_name': args.scheduler_db_name,
-        'scheduler_db_collection': args.scheduler_db_collection
-    }
-
-    job_info = nc_curl.get_job_info(scheduler_db_info)
-
-    if args.parse_error is True:
-        crawler.parse_error(scheduler_db_info, job_info, args)
-    else:
-        crawler.debug(scheduler_db_info, job_info, args)
-
-    return
 
 
 if __name__ == '__main__':

@@ -40,22 +40,32 @@ class Scheduler:
         디비에서 작업을 찾아 반환
 
         :param scheduler_db_info:
+            스케쥴 디비 정보
+
         :return:
+            스케쥴
         """
-        connect, db = self.open_db(
-            scheduler_db_info['scheduler_db_name'],
-            scheduler_db_info['scheduler_db_host'],
-            scheduler_db_info['scheduler_db_port'])
+        if scheduler_db_info['use_scheduler_db'] is True:
+            connect, db = self.open_db(scheduler_db_info['name'],
+                                       scheduler_db_info['host'],
+                                       scheduler_db_info['port'])
 
-        if 'document_id' in scheduler_db_info:
-            collection = db.get_collection(scheduler_db_info['scheduler_db_collection'])
-            job_info = collection.find_one({
-                '_id': scheduler_db_info['document_id']
-            })
+            if 'document_id' in scheduler_db_info:
+                collection = db.get_collection(scheduler_db_info['collection'])
+                job_info = collection.find_one({
+                    '_id': scheduler_db_info['document_id']
+                })
+            else:
+                return None
+
+            connect.close()
         else:
-            return None
+            import json
 
-        connect.close()
+            file_name = 'schedule/{}.json'.format(scheduler_db_info['document_id'])
+            with open(file_name, 'r') as fp:
+                body = ''.join(fp.readlines())
+                job_info = json.loads(body)
 
         print(scheduler_db_info, job_info, flush=True)
 
@@ -118,12 +128,20 @@ class Scheduler:
         :return:
             True/False
         """
+        import os
+        from datetime import datetime
+
+        debug_mode = False
+        debug = os.getenv('DEBUG', 'False')
+        if debug == 'true' or debug == 'True' or debug == '1':
+            debug_mode = True
 
         while True:
             # job info 갱신
             job_info = self.get_job_info(scheduler_db_info)
 
             if job_info is None:
+                print('error: 스케쥴 정보가 없습니다.', scheduler_db_info, flush=True)
                 return
 
             schedule = job_info['schedule']
@@ -135,15 +153,15 @@ class Scheduler:
                     sleep_time = int(schedule['sleep'])
 
                 # sleep_range: 01,02,03,04,05,06
-                # if 'sleep_range' in schedule:
-                #     dt = datetime.now()
-                #
-                #     sleep_range = schedule['sleep_range'].split(',')
-                #     if dt.strftime('%H') in sleep_range:
-                #         wait = 60 - dt.minute
-                #         print('in sleep range {} minutes'.format(wait), flush=True)
-                #         sleep(wait * 60)
-                #         continue
+                if debug_mode is False and 'sleep_range' in schedule:
+                    dt = datetime.now()
+
+                    sleep_range = schedule['sleep_range'].split(',')
+                    if dt.strftime('%H') in sleep_range:
+                        wait = 60 - dt.minute
+                        print('in sleep range {} minutes'.format(wait), flush=True)
+                        sleep(wait * 60)
+                        continue
 
             crawler = Crawler()
             crawler.run(scheduler_db_info=scheduler_db_info, job_info=job_info)
@@ -168,13 +186,16 @@ def init_arguments():
 
     parser = argparse.ArgumentParser(description='crawling web news articles')
 
-    # 공통 옵션: 스케줄러 디비 접속 정보
-    parser.add_argument('-scheduler_db_host', help='db server host name', default='frodo')
-    parser.add_argument('-scheduler_db_port', help='db server port', default=27018)
-    parser.add_argument('-scheduler_db_name', help='job db name', default='crawler')
-    parser.add_argument('-scheduler_db_collection', help='job collection name', default='schedule_list')
+    parser.add_argument('-use_scheduler_db', help='', action='store_true', default=True)
 
+    # 스케쥴러 아이디
     parser.add_argument('-document_id', help='document id', default=None)
+
+    # 스케줄러 디비 사용시: 디비 접속 정보
+    parser.add_argument('-host', help='db server host name', default='frodo')
+    parser.add_argument('-port', help='db server port', default=27018)
+    parser.add_argument('-name', help='job db name', default='crawler')
+    parser.add_argument('-collection', help='job collection name', default='schedule_list')
 
     return parser.parse_args()
 
@@ -191,14 +212,15 @@ def main():
         sys.exit(1)
 
     scheduler_db_info = {
+        'use_scheduler_db': args.use_scheduler_db,
         'document_id': args.document_id,
-        'scheduler_db_host': args.scheduler_db_host,
-        'scheduler_db_port': args.scheduler_db_port,
-        'scheduler_db_name': args.scheduler_db_name,
-        'scheduler_db_collection': args.scheduler_db_collection
+        'host': args.host,
+        'port': args.port,
+        'name': args.name,
+        'collection': args.collection
     }
 
-    print({'scheduler_db_info': scheduler_db_info}, flush=True)
+    print('scheduler_db_info: ', scheduler_db_info, flush=True)
     nc_curl.run(scheduler_db_info)
 
     return

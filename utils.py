@@ -836,12 +836,14 @@ class Utils(object):
 
         headers = {'Content-Type': 'application/json'}
         try:
+            url = api_info['url']
             if self.debug_mode is True:
-                _ = requests.post(url='http://localhost:5004/v1.0/api/batch', json=body, headers=headers,
-                                  allow_redirects=True, timeout=30, verify=False)
-            else:
-                _ = requests.post(url=api_info['url'], json=body, headers=headers,
-                                  allow_redirects=True, timeout=30, verify=False)
+                url = 'http://localhost:5004/v1.0/api/batch'
+
+            _ = requests.post(url=url, json=body, headers=headers,
+                              allow_redirects=True, timeout=30, verify=False)
+
+            print('send corpus process: ', url, document['_id'], document['title'], flush=True)
         except Exception as e:
             print(e, flush=True)
 
@@ -1170,22 +1172,23 @@ class Utils(object):
         :return:
             마지막 값
         """
-        cursor = collection.find_and_modify(query={'_id': document_name}, update={'$inc': {value: 1}}, new=True)
+        query = {'_id': document_name}
+        update = {'$inc': {value: 1}}
 
+        cursor = collection.find_and_modify(query=query, update=update, new=True)
+
+        default = {'_id': document_name, value: 0}
         if cursor is None:
-            collection.insert_one({'_id': document_name, value: 0})
-            cursor = collection.find_and_modify(query={'_id': document_name}, update={'$inc': {value: 1}}, new=True)
+            collection.insert_one(default)
+            cursor = collection.find_and_modify(query=query, update=update, new=True)
 
         max_id = 0
         if cursor is None:
-            collection.insert_one({'_id': document_name, value: 0})
+            collection.insert_one(default)
         else:
             max_id = cursor.get(value)
             if max_id > 1000000:
-                collection.replace_one(
-                    {'_id': document_name},
-                    {'_id': document_name, value: 0},
-                    upsert=True)
+                collection.replace_one(query, default, upsert=True)
 
                 max_id = 0
 
@@ -1213,10 +1216,8 @@ class Utils(object):
         from pymongo import errors
 
         # 디비 연결
-        connect, mongodb = self.open_db(
-            host=mongodb_info['host'],
-            db_name=mongodb_info['name'],
-            port=mongodb_info['port'])
+        connect, mongodb = self.open_db(host=mongodb_info['host'], db_name=mongodb_info['name'],
+                                        port=mongodb_info['port'])
 
         section_info = {
             '_id': '{}-{}'.format(document['_id'], document['section'])
@@ -1236,8 +1237,7 @@ class Utils(object):
         except errors.DuplicateKeyError:
             pass
         except Exception as e:
-            logging.error('', exc_info=e)
-            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document))
+            print('ERROR at save: ', e, document, flush=True)
 
             try:
                 collection = mongodb.get_collection('error_{}'.format(collection_name))
@@ -1283,32 +1283,6 @@ class Utils(object):
             return data[key]
 
         return None
-
-    @staticmethod
-    def get_documents(db, collection_name):
-        """
-        디비에서 설정 정보를 모두 읽어옴
-
-        :param db:
-            몽고 디비 데이터 베이스 핸들
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            결과 문서
-        """
-        result = {}
-
-        cursor = db.get_collection(collection_name).find({})
-        cursor = cursor[:]
-        for doc in cursor:
-            doc_id = doc['_id']
-            del doc['_id']
-
-            result[doc_id] = doc
-
-        return result
 
     @staticmethod
     def get_container_host_name(state):
@@ -1494,37 +1468,50 @@ class Utils(object):
         :return:
             None
         """
-        connect, db = self.open_db(db_info['scheduler_db_name'],
-                                   db_info['scheduler_db_host'],
-                                   db_info['scheduler_db_port'])
+        if db_info['use_scheduler_db'] is False:
+            return
 
-        collection = db.get_collection(db_info['scheduler_db_collection'])
+        connect, db = self.open_db(db_info['name'],
+                                   db_info['host'],
+                                   db_info['port'])
+
+        collection = db.get_collection(db_info['collection'])
         collection.replace_one({'_id': document['_id']}, document)
 
         connect.close()
 
         return
 
-    def get_parsing_information(self, db_info):
+    def get_parsing_information(self, db_info, parsing_id):
         """
         디비에서 작업을 찾아 반환
 
         :param db_info:
             scheduler 디비 접속 정보
 
+        :param parsing_id:
+            파싱 아이디
+
         :return:
             섹션과 파싱 정보
         """
-        connect, db = self.open_db(db_info['scheduler_db_name'],
-                                   db_info['scheduler_db_host'],
-                                   db_info['scheduler_db_port'])
+        if db_info['use_scheduler_db'] is True:
+            connect, db = self.open_db(db_info['name'],
+                                       db_info['host'],
+                                       db_info['port'])
 
-        section_info = self.get_documents(db, 'section_information')
-        parsing_info = self.get_documents(db, 'parsing_information')
+            parsing_info = db.get_collection('parsing_information').find_one({'_id': parsing_id})
 
-        connect.close()
+            connect.close()
+        else:
+            import json
 
-        return section_info, parsing_info
+            file_name = 'schedule/{}.json'.format(parsing_id)
+            with open(file_name, 'r') as fp:
+                body = ''.join(fp.readlines())
+                parsing_info = json.loads(body)
+
+        return parsing_info
 
     @staticmethod
     def get_meta_value(soup, result_list):
@@ -1644,398 +1631,398 @@ class Utils(object):
 
         return True
 
-    def news2csv(self):
-        """
-        몽고디비의 뉴스를 csv 형태로 추출
-
-        :return:
-            True/False
-        """
-        from language_utils.language_utils import LanguageUtils
-
-        util = LanguageUtils()
-
-        fp_csv = {}
-
-        total_count = {
-            'document': 0,
-            'sentence': 0,
-            'token': 0
-        }
-
-        for line in sys.stdin:
-            document = json.loads(line)
-            document = util._get_text(document)
-
-            if 'paragraph' not in document or len(document['paragraph']) == 0:
-                continue
-
-            if 'date' not in document:
-                continue
-
-            paragraph = document['paragraph']
-
-            document['url'] = document['url']['full']
-            document['date'] = document['date']['$date'].replace('T', ' ').replace('Z', '').replace('.000', '')
-
-            # 제목 헤더 추출
-            header, document['title'] = self._split_news_header(sentence=document['title'])
-            if 'title_header' not in document or document['title_header'] == '':
-                document['title_header'] = header
-
-            # 분문 헤더 추출
-            header, paragraph[0][0] = self._split_news_header(sentence=paragraph[0][0])
-            if 'source' not in document or document['source'] == '':
-                document['source'] = header
-
-            buf = []
-            count = 0
-            sentence_token = 0
-            for i in range(len(paragraph)):
-                for j in range(len(paragraph[i])):
-                    one_line = paragraph[i][j].strip()
-
-                    if one_line == '':
-                        continue
-
-                    sentence_list = [one_line]
-                    if one_line.find('"') >= 0:
-                        sentence_list = []
-                        for qoute in re.findall(r'"([^"]{10,1024})"', one_line):
-                            sentence_list += util.split_sentence(qoute)
-
-                    for sentence in sentence_list:
-                        if sentence == '':
-                            continue
-
-                        email = re.findall(r'([a-zA-Z.-]+@[a-zA-Z-]+\.[a-zA-Z-]+)', sentence)
-                        if len(email) > 0:
-                            continue
-
-                        col = []
-                        for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
-                            if k in document:
-                                col.append(document[k])
-                            else:
-                                col.append('')
-
-                        col.append(str(i+1))
-                        col.append(str(j+1))
-                        col.append(sentence)
-
-                        count += 1
-                        sentence_token += sentence.count(' ') + 1
-
-                        buf.append('\t'.join(col))
-
-            if count == 0:
-                continue
-
-            total_count['document'] += 1
-            total_count['sentence'] += count
-            total_count['token'] += sentence_token
-
-            # 문장수 10 ~ 15 문장만 저장
-            if count < 10 or count > 15:
-                continue
-
-            # 평균 어절수 5 ~ 20 문장만 저장
-            avg_token = int(sentence_token / count)
-            if avg_token < 5 or avg_token > 20:
-                continue
-
-            f_tag = 'count({:02d})/token({:02d})/[{}].[{}].[{}]'.format(
-                count,
-                avg_token,
-                document['section'],
-                document['source'],
-                document['title_header']
-            )
-
-            if f_tag not in fp_csv:
-                if len(fp_csv) > 500:
-                    for f_tag in fp_csv:
-                        fp_csv[f_tag].flush()
-                        fp_csv[f_tag].close()
-
-                    fp_csv = {}
-
-                fname = 'data/nate_baseball/csv/{}.csv'.format(f_tag)
-                fpath = os.path.dirname(fname)
-                if os.path.exists(fpath) is not True:
-                    os.makedirs(fpath)
-
-                fp_csv[f_tag] = open(fname, 'a')
-
-            fp_csv[f_tag].write('\n'.join(buf) + '\n\n')
-            fp_csv[f_tag].flush()
-            print(f_tag)
-
-        for f_tag in fp_csv:
-            fp_csv[f_tag].close()
-
-        # if fp is not None:
-        #     fp.close()
-
-        print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
-              '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
-                total_count['document'],
-                total_count['sentence'],
-                total_count['token'],
-                total_count['sentence']/total_count['document'],
-                total_count['token'] / total_count['document'],
-                total_count['token'] / total_count['sentence']
-        ))
-
-        return True
-
-    @staticmethod
-    def _split_news_header(sentence):
-        """
-        뉴스 문장에서 헤더 추출
-
-        [포토]한화 한용덕 감독, 임기내 우승권 팀 만들어야
-        [사진]김태균,'한용덕 감독님! 우승 한번 시켜주십시오'
-
-        :return:
-            헤더 정보
-        """
-
-        header = ''
-        try:
-            for str_p in [r'^\s*\[([^]]+)\]\s*', r'^\s*\(([^)]+)\)\s*']:
-                p = re.compile(str_p)
-                m = re.findall(p, sentence)
-                if len(m) > 0:
-                    header = m[0].split('=', maxsplit=1)[0]
-                    sentence = re.sub(p, '', sentence)
-        except Exception as e:
-            logging.error('', exc_info=e)
-
-        return header, sentence
-
-    @staticmethod
-    def csv2ellipsis():
-        """
-
-        :return:
-        """
-
-        # 20170425n44151
-        # http://sports.news.nate.com/view/20170425n44151
-        # 해외야구
-        # 2017-04-25 22:02:00
-        # 서울
-        # 프로야구
-        # 넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점
-        # 9
-        # 2
-        # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
-
-        """
-
-find . -name "*화보*" -exec rm {} \;
-find . -name "*포토*" -exec rm {} \;
-find . -name "*[KS]*" -exec rm {} \;
-find . -name "*[PO]*" -exec rm {} \;
-find . -name "*S-girl*" -exec rm {} \;
-
-
-
-time bzcat data/nate_baseball/2017-04.json.bz2 \
-    data/nate_baseball/2017-05.json.bz2 \
-    data/nate_baseball/2017-06.json.bz2 \
-    data/nate_baseball/2017-07.json.bz2 \
-    data/nate_baseball/2017-08.json.bz2 \
-    data/nate_baseball/2017-09.json.bz2 \
-    data/nate_baseball/2017-10.json.bz2 \
-    | ./batch.py
-
-        
-        
-{
-    "session": "1",
-    "memo": "",
-    "meta": {
-        "id": "20170425n44151",
-        "url": "http://sports.news.nate.com/view/20170425n44151",
-        "date": "2017-04-25 22:02:00",
-        "title": "넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점",
-        "section": "",
-    },
-    "sentence_list": [
-        {
-            "sentence": "허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.",
-            "id": "1",
-            "user": "A"
-        },
-        (...)
-    ]
-}        
-
-
-        col = []
-        for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
-            if k in document:
-                col.append(document[k])
-            else:
-                col.append('')
-
-        col.append(str(i+1))
-        col.append(str(j+1))
-        col.append(sentence)
-
-        """
-
-        total_count = {
-            'document': 0,
-            'sentence': 0,
-            'token': 0
-        }
-
-        count = 0
-        session = 1
-
-        buf = {
-            'sentence_list': []
-        }
-
-        prev_id = ''
-        for line in sys.stdin:
-            line = line.strip()
-            if line == '':
-                continue
-
-            token = line.split('\t')
-
-            if prev_id != '' and token[0] != prev_id:
-                fname = 'data/nate_baseball/work/C{:03d}/{:05d}.json'.format(int(session / 100), session)
-
-                fpath = os.path.dirname(fname)
-                if os.path.exists(fpath) is not True:
-                    os.makedirs(fpath)
-
-                with open(fname, 'w') as fp:
-                    result = json.dumps(buf, ensure_ascii=False, indent=4, sort_keys=True)
-                    fp.write(result + '\n')
-                    fp.flush()
-
-                    total_count['document'] += 1
-
-                with open('{}/file-state.json'.format(fpath), 'a') as fp:
-                    result = json.dumps({
-                        'filename': '{:05d}.json'.format(session),
-                        'state': {}
-                    })
-
-                    fp.write(result + '\n')
-                    fp.flush()
-
-                session += 1
-                buf = {
-                    'sentence_list': []
-                }
-
-            buf['session'] = session
-            buf['memo'] = ''
-            buf['meta'] = {
-                'id': token[0],
-                'url': token[1],
-                'section': token[2],
-                'date': token[3],
-                'title': token[6]
-            }
-
-            item = {
-                'sentence': token[9],
-                'id': count,
-                'user': '{:03d}'.format(len(buf['sentence_list']) + 1)
-            }
-
-            buf['sentence_list'].append(item)
-
-            total_count['token'] += token[9].count(' ') + 1
-
-            count += 1
-            prev_id = token[0]
-
-        total_count['sentence'] = count
-
-        print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
-              '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
-                total_count['document'],
-                total_count['sentence'],
-                total_count['token'],
-                total_count['sentence']/total_count['document'],
-                total_count['token'] / total_count['document'],
-                total_count['token'] / total_count['sentence']
-                ))
-
-        return
-
-    @staticmethod
-    def news2text():
-        """
-        문장 분리 적용 후 기사별 저장
-
-        :return:
-            True/False
-
-        :sample extraction:
-            $ bzcat 2017-10.json.bz2 | shuf | shuf | head -n100 | bzip2 - > 2017-10.sample.json.bz2
-        """
-        import bz2
-        from html_parser import HtmlParser
-
-        html_parser = HtmlParser()
-
-        fp = bz2.open('data/nate_baseball/raw/2017-10.sample.json.bz2', 'r')
-
-        count = 0
-        for line in fp.readlines():
-            line = str(line, encoding='utf-8')
-
-            document = json.loads(line)
-            if 'html_content' not in document:
-                continue
-
-            content, _ = html_parser.get_article_body(document['html_content'])
-
-            content = content.strip()
-            content = re.sub(r'\n+', '\n', content)
-            content = content.replace('.', './/')
-            content = content.replace(']', ']//')
-            content = content.replace('= ', '= //')
-
-            # 2017.//10.//13
-            # jhno@sportschosun.//com, kphoto@mydaily.//co.//kr
-
-            count += content.count('\n') + 1
-
-            f_tag = '{}'.format(document['_id'])
-
-            fname = 'data/nate_baseball/text/{}.json'.format(f_tag)
-            fpath = os.path.dirname(fname)
-            if os.path.exists(fpath) is not True:
-                os.makedirs(fpath)
-
-            with open(fname, 'w') as fp_out:
-                result = {
-                    'id': document['_id'],
-                    'url': document['url']['full'],
-                    'content': content
-                }
-                msg = json.dumps(result, ensure_ascii=False, indent=4, sort_keys=True)
-
-                fp_out.write('{}\n'.format(msg))
-                fp_out.flush()
-
-        if fp is not None:
-            fp.close()
-
-        print('{:,}'.format(count))
-
-        return True
+    # def news2csv(self):
+    #     """
+    #     몽고디비의 뉴스를 csv 형태로 추출
+    #
+    #     :return:
+    #         True/False
+    #     """
+    #     from language_utils.language_utils import LanguageUtils
+    #
+    #     util = LanguageUtils()
+    #
+    #     fp_csv = {}
+    #
+    #     total_count = {
+    #         'document': 0,
+    #         'sentence': 0,
+    #         'token': 0
+    #     }
+    #
+    #     for line in sys.stdin:
+    #         document = json.loads(line)
+    #         document = util._get_text(document)
+    #
+    #         if 'paragraph' not in document or len(document['paragraph']) == 0:
+    #             continue
+    #
+    #         if 'date' not in document:
+    #             continue
+    #
+    #         paragraph = document['paragraph']
+    #
+    #         document['url'] = document['url']['full']
+    #         document['date'] = document['date']['$date'].replace('T', ' ').replace('Z', '').replace('.000', '')
+    #
+    #         # 제목 헤더 추출
+    #         header, document['title'] = self._split_news_header(sentence=document['title'])
+    #         if 'title_header' not in document or document['title_header'] == '':
+    #             document['title_header'] = header
+    #
+    #         # 분문 헤더 추출
+    #         header, paragraph[0][0] = self._split_news_header(sentence=paragraph[0][0])
+    #         if 'source' not in document or document['source'] == '':
+    #             document['source'] = header
+    #
+    #         buf = []
+    #         count = 0
+    #         sentence_token = 0
+    #         for i in range(len(paragraph)):
+    #             for j in range(len(paragraph[i])):
+    #                 one_line = paragraph[i][j].strip()
+    #
+    #                 if one_line == '':
+    #                     continue
+    #
+    #                 sentence_list = [one_line]
+    #                 if one_line.find('"') >= 0:
+    #                     sentence_list = []
+    #                     for qoute in re.findall(r'"([^"]{10,1024})"', one_line):
+    #                         sentence_list += util.split_sentence(qoute)
+    #
+    #                 for sentence in sentence_list:
+    #                     if sentence == '':
+    #                         continue
+    #
+    #                     email = re.findall(r'([a-zA-Z.-]+@[a-zA-Z-]+\.[a-zA-Z-]+)', sentence)
+    #                     if len(email) > 0:
+    #                         continue
+    #
+    #                     col = []
+    #                     for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+    #                         if k in document:
+    #                             col.append(document[k])
+    #                         else:
+    #                             col.append('')
+    #
+    #                     col.append(str(i+1))
+    #                     col.append(str(j+1))
+    #                     col.append(sentence)
+    #
+    #                     count += 1
+    #                     sentence_token += sentence.count(' ') + 1
+    #
+    #                     buf.append('\t'.join(col))
+    #
+    #         if count == 0:
+    #             continue
+    #
+    #         total_count['document'] += 1
+    #         total_count['sentence'] += count
+    #         total_count['token'] += sentence_token
+    #
+    #         # 문장수 10 ~ 15 문장만 저장
+    #         if count < 10 or count > 15:
+    #             continue
+    #
+    #         # 평균 어절수 5 ~ 20 문장만 저장
+    #         avg_token = int(sentence_token / count)
+    #         if avg_token < 5 or avg_token > 20:
+    #             continue
+    #
+    #         f_tag = 'count({:02d})/token({:02d})/[{}].[{}].[{}]'.format(
+    #             count,
+    #             avg_token,
+    #             document['section'],
+    #             document['source'],
+    #             document['title_header']
+    #         )
+    #
+    #         if f_tag not in fp_csv:
+    #             if len(fp_csv) > 500:
+    #                 for f_tag in fp_csv:
+    #                     fp_csv[f_tag].flush()
+    #                     fp_csv[f_tag].close()
+    #
+    #                 fp_csv = {}
+    #
+    #             fname = 'data/nate_baseball/csv/{}.csv'.format(f_tag)
+    #             fpath = os.path.dirname(fname)
+    #             if os.path.exists(fpath) is not True:
+    #                 os.makedirs(fpath)
+    #
+    #             fp_csv[f_tag] = open(fname, 'a')
+    #
+    #         fp_csv[f_tag].write('\n'.join(buf) + '\n\n')
+    #         fp_csv[f_tag].flush()
+    #         print(f_tag)
+    #
+    #     for f_tag in fp_csv:
+    #         fp_csv[f_tag].close()
+    #
+    #     # if fp is not None:
+    #     #     fp.close()
+    #
+    #     print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
+    #           '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
+    #             total_count['document'],
+    #             total_count['sentence'],
+    #             total_count['token'],
+    #             total_count['sentence']/total_count['document'],
+    #             total_count['token'] / total_count['document'],
+    #             total_count['token'] / total_count['sentence']
+    #     ))
+    #
+    #     return True
+    #
+    # @staticmethod
+    # def _split_news_header(sentence):
+    #     """
+    #     뉴스 문장에서 헤더 추출
+    #
+    #     [포토]한화 한용덕 감독, 임기내 우승권 팀 만들어야
+    #     [사진]김태균,'한용덕 감독님! 우승 한번 시켜주십시오'
+    #
+    #     :return:
+    #         헤더 정보
+    #     """
+    #
+    #     header = ''
+    #     try:
+    #         for str_p in [r'^\s*\[([^]]+)\]\s*', r'^\s*\(([^)]+)\)\s*']:
+    #             p = re.compile(str_p)
+    #             m = re.findall(p, sentence)
+    #             if len(m) > 0:
+    #                 header = m[0].split('=', maxsplit=1)[0]
+    #                 sentence = re.sub(p, '', sentence)
+    #     except Exception as e:
+    #         logging.error('', exc_info=e)
+    #
+    #     return header, sentence
+
+#     @staticmethod
+#     def csv2ellipsis():
+#         """
+#
+#         :return:
+#         """
+#
+#         # 20170425n44151
+#         # http://sports.news.nate.com/view/20170425n44151
+#         # 해외야구
+#         # 2017-04-25 22:02:00
+#         # 서울
+#         # 프로야구
+#         # 넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점
+#         # 9
+#         # 2
+#         # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
+#
+#         """
+#
+# find . -name "*화보*" -exec rm {} \;
+# find . -name "*포토*" -exec rm {} \;
+# find . -name "*[KS]*" -exec rm {} \;
+# find . -name "*[PO]*" -exec rm {} \;
+# find . -name "*S-girl*" -exec rm {} \;
+#
+#
+#
+# time bzcat data/nate_baseball/2017-04.json.bz2 \
+#     data/nate_baseball/2017-05.json.bz2 \
+#     data/nate_baseball/2017-06.json.bz2 \
+#     data/nate_baseball/2017-07.json.bz2 \
+#     data/nate_baseball/2017-08.json.bz2 \
+#     data/nate_baseball/2017-09.json.bz2 \
+#     data/nate_baseball/2017-10.json.bz2 \
+#     | ./batch.py
+#
+#
+#
+# {
+#     "session": "1",
+#     "memo": "",
+#     "meta": {
+#         "id": "20170425n44151",
+#         "url": "http://sports.news.nate.com/view/20170425n44151",
+#         "date": "2017-04-25 22:02:00",
+#         "title": "넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점",
+#         "section": "",
+#     },
+#     "sentence_list": [
+#         {
+#             "sentence": "허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.",
+#             "id": "1",
+#             "user": "A"
+#         },
+#         (...)
+#     ]
+# }
+#
+#
+#         col = []
+#         for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+#             if k in document:
+#                 col.append(document[k])
+#             else:
+#                 col.append('')
+#
+#         col.append(str(i+1))
+#         col.append(str(j+1))
+#         col.append(sentence)
+#
+#         """
+#
+#         total_count = {
+#             'document': 0,
+#             'sentence': 0,
+#             'token': 0
+#         }
+#
+#         count = 0
+#         session = 1
+#
+#         buf = {
+#             'sentence_list': []
+#         }
+#
+#         prev_id = ''
+#         for line in sys.stdin:
+#             line = line.strip()
+#             if line == '':
+#                 continue
+#
+#             token = line.split('\t')
+#
+#             if prev_id != '' and token[0] != prev_id:
+#                 fname = 'data/nate_baseball/work/C{:03d}/{:05d}.json'.format(int(session / 100), session)
+#
+#                 fpath = os.path.dirname(fname)
+#                 if os.path.exists(fpath) is not True:
+#                     os.makedirs(fpath)
+#
+#                 with open(fname, 'w') as fp:
+#                     result = json.dumps(buf, ensure_ascii=False, indent=4, sort_keys=True)
+#                     fp.write(result + '\n')
+#                     fp.flush()
+#
+#                     total_count['document'] += 1
+#
+#                 with open('{}/file-state.json'.format(fpath), 'a') as fp:
+#                     result = json.dumps({
+#                         'filename': '{:05d}.json'.format(session),
+#                         'state': {}
+#                     })
+#
+#                     fp.write(result + '\n')
+#                     fp.flush()
+#
+#                 session += 1
+#                 buf = {
+#                     'sentence_list': []
+#                 }
+#
+#             buf['session'] = session
+#             buf['memo'] = ''
+#             buf['meta'] = {
+#                 'id': token[0],
+#                 'url': token[1],
+#                 'section': token[2],
+#                 'date': token[3],
+#                 'title': token[6]
+#             }
+#
+#             item = {
+#                 'sentence': token[9],
+#                 'id': count,
+#                 'user': '{:03d}'.format(len(buf['sentence_list']) + 1)
+#             }
+#
+#             buf['sentence_list'].append(item)
+#
+#             total_count['token'] += token[9].count(' ') + 1
+#
+#             count += 1
+#             prev_id = token[0]
+#
+#         total_count['sentence'] = count
+#
+#         print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
+#               '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
+#                 total_count['document'],
+#                 total_count['sentence'],
+#                 total_count['token'],
+#                 total_count['sentence']/total_count['document'],
+#                 total_count['token'] / total_count['document'],
+#                 total_count['token'] / total_count['sentence']
+#                 ))
+#
+#         return
+
+    # @staticmethod
+    # def news2text():
+    #     """
+    #     문장 분리 적용 후 기사별 저장
+    #
+    #     :return:
+    #         True/False
+    #
+    #     :sample extraction:
+    #         $ bzcat 2017-10.json.bz2 | shuf | shuf | head -n100 | bzip2 - > 2017-10.sample.json.bz2
+    #     """
+    #     import bz2
+    #     from html_parser import HtmlParser
+    #
+    #     html_parser = HtmlParser()
+    #
+    #     fp = bz2.open('data/nate_baseball/raw/2017-10.sample.json.bz2', 'r')
+    #
+    #     count = 0
+    #     for line in fp.readlines():
+    #         line = str(line, encoding='utf-8')
+    #
+    #         document = json.loads(line)
+    #         if 'html_content' not in document:
+    #             continue
+    #
+    #         content, _ = html_parser.get_article_body(document['html_content'])
+    #
+    #         content = content.strip()
+    #         content = re.sub(r'\n+', '\n', content)
+    #         content = content.replace('.', './/')
+    #         content = content.replace(']', ']//')
+    #         content = content.replace('= ', '= //')
+    #
+    #         # 2017.//10.//13
+    #         # jhno@sportschosun.//com, kphoto@mydaily.//co.//kr
+    #
+    #         count += content.count('\n') + 1
+    #
+    #         f_tag = '{}'.format(document['_id'])
+    #
+    #         fname = 'data/nate_baseball/text/{}.json'.format(f_tag)
+    #         fpath = os.path.dirname(fname)
+    #         if os.path.exists(fpath) is not True:
+    #             os.makedirs(fpath)
+    #
+    #         with open(fname, 'w') as fp_out:
+    #             result = {
+    #                 'id': document['_id'],
+    #                 'url': document['url']['full'],
+    #                 'content': content
+    #             }
+    #             msg = json.dumps(result, ensure_ascii=False, indent=4, sort_keys=True)
+    #
+    #             fp_out.write('{}\n'.format(msg))
+    #             fp_out.flush()
+    #
+    #     if fp is not None:
+    #         fp.close()
+    #
+    #     print('{:,}'.format(count))
+    #
+    #     return True
 
     @staticmethod
     def parse_date_string(date_string, is_end_date=False):
