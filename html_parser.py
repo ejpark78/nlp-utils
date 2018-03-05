@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -12,11 +12,11 @@ import logging
 from bs4 import BeautifulSoup
 
 try:
-    from crawler.utils import Utils as CrawlerUtils
+    from utils import Utils as CrawlerUtils
 except ImportError:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-    from .utils import Utils as CrawlerUtils
+    from utils import Utils as CrawlerUtils
 
 
 from language_utils.language_utils import LanguageUtils

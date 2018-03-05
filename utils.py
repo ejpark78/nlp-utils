@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -14,7 +14,6 @@ import queue
 import random
 import requests
 import logging
-import urllib3
 import traceback
 
 from bs4 import BeautifulSoup, Comment
@@ -29,6 +28,11 @@ class Utils(object):
     """
 
     def __init__(self):
+        """
+        생성자
+        """
+        import urllib3
+
         super().__init__()
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -48,6 +52,8 @@ class Utils(object):
         # 저장 큐
         self.mutex = False
         self.job_queue = queue.Queue()
+
+        self.debug_mode = False
 
     @staticmethod
     def replace_tag(html_tag, tag_list, replacement='', attribute=None):
@@ -199,26 +205,23 @@ class Utils(object):
         curl_url = curl_url.strip()
 
         if curl_url == '' or curl_url.find('http') != 0:
-            print('error empty url {}'.format(curl_url))
+            print('error empty url: ', curl_url, flush=True)
             return
 
         # 2초 이상일 경우 랜덤하게 쉬어줌
         sleep_time = min_delay
         if sleep_time > max_delay:
-            try:
-                sleep_time = random.randrange(min_delay, max_delay, 1)
-            except Exception as e:
-                logging.error('', exc_info=e)
+            sleep_time = random.randrange(min_delay, max_delay, 1)
 
         # 10번에 한번씩 60초간 쉬어줌
         self.request_count += 1
         if self.request_count % 60 == 0:
-            min_delay = 60
-            max_delay = min_delay + 1
+            sleep_time = 60 + max_delay
 
         # 상태 출력
-        print('curl_html sleep: {} secs'.format(sleep_time), flush=True)
-        sleep(sleep_time)
+        if self.debug_mode is False:
+            print('curl_html sleep: {} secs'.format(sleep_time), flush=True)
+            sleep(sleep_time)
 
         # 해더 생성
         if headers is None:
@@ -248,14 +251,14 @@ class Utils(object):
                     return None
 
                 if max_try > 0:
-                    print('{}\terror at json\t{}\tsleep: {} sec'.format(
-                        curl_url, sys.exc_info()[0], sleep_time * 10))
+                    if self.debug_mode is False:
+                        print('error max try sleep: ', curl_url, e, sleep_time * 10, flush=True)
+                        sleep(sleep_time * 10)
 
-                    sleep(sleep_time * 10)
                     return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
                                           json_type=json_type, encoding=encoding, max_try=max_try - 1)
                 else:
-                    print('Unexpected error:', sys.exc_info()[0])
+                    print('Unexpected error:', e, flush=True)
                     raise
 
             return result
@@ -337,6 +340,10 @@ class Utils(object):
                     offset = int(date.replace('분전', ''))
                     date = datetime.now()
                     date += relativedelta(minutes=-offset)
+                elif '시간전' in date:
+                    offset = int(date.replace('시간전', ''))
+                    date = datetime.now()
+                    date += relativedelta(hours=-offset)
                 else:
                     date = parse_date(date)
 
@@ -565,7 +572,7 @@ class Utils(object):
     @staticmethod
     def create_elastic_index(elastic, index_name=None):
         """
-        elasticsearch 인덱스 생성
+        elastic search 인덱스 생성
 
         :param elastic:
             elastic 서버 접속 정보
@@ -591,79 +598,25 @@ class Utils(object):
 
         return True
 
-    def insert_elastic(self, document, elastic_info, mongodb_info):
+    @staticmethod
+    def convert_datetime(document):
         """
-        elastic search 에 문서 저장
+        datetime 객체 문자열로 변환
 
         :param document:
             문서
 
-        :param elastic_info:
-            elastic 접속 정보
-
-            "elastic": {
-              "update": true,
-              "index": "daum_economy",
-              "type": "",
-              "host": "http://nlpapi.ncsoft.com:9200"
-            }
-
-        :param mongodb_info:
-            몽고디비 접속 정보, collection 이름 동기화
-
         :return:
-            True/False
+            변환된 문서
         """
-        from elasticsearch import Elasticsearch
 
-        # 인덱스 추출, 몽고 디비 collection 이름 우선
-        index = mongodb_info['name']
-        if 'index' in elastic_info and elastic_info['index'] != '' and elastic_info['index'] != '{mongo.name}':
-            index = elastic_info['index']
+        for k in document:
+            item = document[k]
 
-        doc_type = mongodb_info['collection']
-        if 'type' in elastic_info and elastic_info['type'] != '' and elastic_info['type'] != '{mongo.collection}':
-            doc_type = elastic_info['type']
+            if isinstance(item, datetime):
+                document[k] = item.strftime('%Y-%m-%dT%H:%M:%S')
 
-        update = False
-        if 'update' in elastic_info:
-            update = elastic_info['update']
-
-        # 날짜 변환
-        if 'date' in document and isinstance(document['date'], datetime):
-            document['date'] = document['date'].strftime('%Y-%m-%dT%H:%M:%S')
-
-        # 입력시간 삽입
-        document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-
-        try:
-            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
-
-            if elastic.indices.exists(index) is False:
-                self.create_elastic_index(elastic, index)
-
-            document['document_id'] = document['_id']
-            del document['_id']
-
-            bulk_data = [{
-                'update': {
-                    '_index': index,
-                    '_type': doc_type,
-                    '_id': document['document_id']
-                }
-            }, {
-                'doc': document,
-                'doc_as_upsert': update
-            }]
-
-            elastic.bulk(index=index, body=bulk_data, refresh=True)
-        except Exception as e:
-            logging.error('', exc_info=e)
-            traceback.print_exc(file=sys.stderr)
-
-            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
-
-        return True
+        return document
 
     def save_mongodb(self, document, mongodb_info):
         """
@@ -754,9 +707,8 @@ class Utils(object):
 
         # 섹션 정보 저장
         if 'section' in document:
-            self.save_section_info(
-                document=document, mongodb_info=mongodb_info,
-                collection_name='section_{}'.format(mongodb_info['collection']))
+            self.save_section_info(document=document, mongodb_info=mongodb_info,
+                                   collection_name='section_{}'.format(mongodb_info['collection']))
 
         # 현재 상황 출력
         msg = [mongodb_info['host'], mongodb_info['name'], mongodb_info['collection']]
@@ -837,13 +789,15 @@ class Utils(object):
 
         return True
 
-    @staticmethod
-    def send_corpus_process(document_id, api_info, mongodb_info):
+    def send_corpus_process(self, document_id, document, api_info, mongodb_info):
         """
         코퍼스 저처리 분석 데몬에 문서 아이디 전달
 
         :param document_id:
             전달할 문서 아이디
+
+        :param document:
+            전달할 문서
 
         :param api_info:
             전처리 API 서버 정보
@@ -856,14 +810,14 @@ class Utils(object):
         """
         # 필수 항목: url
         # 선택: index, type
+        index, doc_type = self.get_elastic_index_info(mongodb_info=mongodb_info, elastic_info=api_info,
+                                                      article_date=document['date'])
 
-        index = mongodb_info['name']
-        if 'index' in api_info and api_info['index'] != '' and api_info['index'] != '{mongo.name}':
-            index = api_info['index']
+        if index is None or doc_type is None:
+            return
 
-        doc_type = mongodb_info['collection']
-        if 'type' in api_info and api_info['type'] != '' and api_info['type'] != '{mongo.collection}':
-            doc_type = api_info['type']
+        # 날짜 변환
+        document = self.convert_datetime(document=document)
 
         update = False
         if 'update' in api_info:
@@ -871,19 +825,127 @@ class Utils(object):
 
         body = {
             'index': index,
-            'doc_type': doc_type,
-            'document_id': document_id,
-            'update': update
+            'update': update,
+            'doc_type': doc_type
         }
+
+        if mongodb_info is None:
+            body['document'] = document
+        else:
+            body['document_id'] = document_id
 
         headers = {'Content-Type': 'application/json'}
         try:
-            _ = requests.put(url=api_info['url'], json=body, headers=headers,
-                             allow_redirects=True, timeout=30, verify=False)
+            if self.debug_mode is True:
+                _ = requests.post(url='http://localhost:5004/v1.0/api/batch', json=body, headers=headers,
+                                  allow_redirects=True, timeout=30, verify=False)
+            else:
+                _ = requests.post(url=api_info['url'], json=body, headers=headers,
+                                  allow_redirects=True, timeout=30, verify=False)
         except Exception as e:
             print(e, flush=True)
 
         return True
+
+    def insert_elastic(self, document, elastic_info, mongodb_info):
+        """
+        elastic search 에 문서 저장
+
+        :param document:
+            문서
+
+        :param elastic_info:
+            elastic 접속 정보
+
+            "elastic": {
+              "update": true,
+              "index": "daum_economy",
+              "doc_type": "",
+              "host": "http://nlpapi.ncsoft.com:9200"
+            }
+
+        :param mongodb_info:
+            몽고디비 접속 정보, collection 이름 동기화
+
+        :return:
+            True/False
+        """
+        from elasticsearch import Elasticsearch
+
+        # 인덱스 추출, 몽고 디비 collection 이름 우선
+        index, doc_type = self.get_elastic_index_info(mongodb_info=mongodb_info, elastic_info=elastic_info,
+                                                      article_date=document['date'])
+
+        if index is None or doc_type is None:
+            return
+
+        update = False
+        if 'update' in elastic_info:
+            update = elastic_info['update']
+
+        # 날짜 변환
+        document = self.convert_datetime(document=document)
+
+        # 입력시간 삽입
+        document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+
+        try:
+            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
+
+            if elastic.indices.exists(index) is False:
+                self.create_elastic_index(elastic, index)
+
+            document['document_id'] = document['_id']
+            del document['_id']
+
+            bulk_data = [{
+                'update': {
+                    '_index': index,
+                    '_type': doc_type,
+                    '_id': document['document_id']
+                }
+            }, {
+                'doc': document,
+                'doc_as_upsert': update
+            }]
+
+            elastic.bulk(index=index, body=bulk_data, refresh=True)
+        except Exception as e:
+            logging.error('', exc_info=e)
+            traceback.print_exc(file=sys.stderr)
+
+            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+
+        return True
+
+    def get_elastic_index_info(self, mongodb_info, elastic_info, article_date):
+        """
+        elastic search 의 저장 정보
+        :param mongodb_info:
+        :param elastic_info:
+        :param article_date:
+        :return:
+        """
+        # 인덱스 추출, 몽고 디비 collection 이름 우선
+
+        index = None
+        doc_type = None
+
+        if mongodb_info is not None:
+            index = mongodb_info['name']
+            doc_type = mongodb_info['collection']
+
+        if 'index' in elastic_info and elastic_info['index'] != '' and elastic_info['index'] != '{mongo.name}':
+            index = elastic_info['index']
+
+        if 'type' in elastic_info and elastic_info['type'] != '' and elastic_info['type'] != '{mongo.collection}':
+            doc_type = elastic_info['type']
+
+        # date 에서 추출
+        if doc_type is None:
+            _, doc_type = self.get_date_collection_name(article_date)
+
+        return index, doc_type
 
     def save_article(self, document, db_info):
         """
@@ -906,16 +968,22 @@ class Utils(object):
             'document': document
         }
 
-        # queue 목록에 작업 저장
-        if self.job_queue.empty() is True:
+        if self.debug_mode is True:
             self.job_queue.put(job)
-
-            # 스래드 시작
-            thread = threading.Thread(target=self._save_article)
-            thread.start()
+            self._save_article()
         else:
-            print('add job queue: {}'.format(self.job_queue.qsize()), flush=True)
-            self.job_queue.put(job)
+            # queue 목록에 작업 저장
+            start_thread = False
+            if self.job_queue.empty() is True:
+                start_thread = True
+
+                print('add job queue: {}'.format(self.job_queue.qsize()), flush=True)
+                self.job_queue.put(job)
+
+            if start_thread is True:
+                # 스래드 시작
+                thread = threading.Thread(target=self._save_article)
+                thread.start()
 
         return True
 
@@ -944,29 +1012,50 @@ class Utils(object):
             db_info = job['db_info']
             document = job['document']
 
+            mongo_info = None
+            if 'mongo' in db_info:
+                mongo_info = db_info['mongo']
+
             # 문서 저장
-            if 'mongo'in db_info and 'host' in db_info['mongo']:
-                self.save_mongodb(document=document, mongodb_info=db_info['mongo'])
+            if 'mongo'in db_info and 'host' in mongo_info:
+                self.save_mongodb(document=document, mongodb_info=mongo_info)
 
             if 'mqtt'in db_info and 'host' in db_info['mqtt']:
                 self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
 
             if 'kafka'in db_info and 'host' in db_info['kafka']:
-                self.send_kafka_message(document=document, kafka_info=db_info['kafka'], mongodb_info=db_info['mongo'])
-
-            # 엘라스틱 서치에 저장
-            if 'elastic'in db_info and 'host' in db_info['elastic']:
-                self.insert_elastic(document=copy.deepcopy(document),
-                                    elastic_info=db_info['elastic'], mongodb_info=db_info['mongo'])
+                self.send_kafka_message(document=document, kafka_info=db_info['kafka'],
+                                        mongodb_info=mongo_info)
 
             if 'logs'in db_info and 'host' in db_info['logs']:
                 self.save_logs(document=copy.deepcopy(document),
-                               elastic_info=db_info['logs'], mongodb_info=db_info['mongo'])
+                               elastic_info=db_info['logs'], mongodb_info=mongo_info)
+
+            # 엘라스틱 서치에 저장
+            if 'elastic'in db_info:
+                batch_list = [db_info['elastic']]
+                if isinstance(db_info['elastic'], list):
+                    batch_list = db_info['elastic']
+
+                for elastic_info in batch_list:
+                    if 'host' not in elastic_info:
+                        continue
+
+                    self.insert_elastic(document=copy.deepcopy(document), elastic_info=elastic_info,
+                                        mongodb_info=mongo_info)
 
             # 코퍼스 전처리 시작
-            if 'corpus-process' in db_info and 'url' in db_info['corpus-process']:
-                self.send_corpus_process(document_id=document['_id'],
-                                         api_info=db_info['corpus-process'], mongodb_info=db_info['mongo'])
+            if 'corpus-process' in db_info:
+                batch_list = [db_info['corpus-process']]
+                if isinstance(db_info['corpus-process'], list):
+                    batch_list = db_info['corpus-process']
+
+                for api_info in batch_list:
+                    if 'url' not in api_info:
+                        continue
+
+                    self.send_corpus_process(document_id=document['_id'], document=copy.deepcopy(document),
+                                             api_info=api_info, mongodb_info=mongo_info)
 
         self.mutex = False
 
@@ -1285,17 +1374,7 @@ class Utils(object):
         job_info['state'] = state
 
         # 저장
-        connect, db = self.open_db(
-            scheduler_db_info['scheduler_db_name'],
-            scheduler_db_info['scheduler_db_host'],
-            scheduler_db_info['scheduler_db_port'])
-
-        collection_name = scheduler_db_info['scheduler_db_collection']
-        collection = db.get_collection(collection_name)
-
-        collection.replace_one({'_id': job_info['_id']}, job_info)
-
-        connect.close()
+        self.update_document(job_info, scheduler_db_info)
 
         return True
 
@@ -1399,32 +1478,46 @@ class Utils(object):
         job_info['state'] = state
 
         # 저장
-        connect, db = self.open_db(
-            scheduler_db_info['scheduler_db_name'],
-            scheduler_db_info['scheduler_db_host'],
-            scheduler_db_info['scheduler_db_port'])
-
-        collection = db.get_collection(scheduler_db_info['scheduler_db_collection'])
-        collection.replace_one({'_id': job_info['_id']}, job_info)
-
-        connect.close()
+        self.update_document(job_info, scheduler_db_info)
 
         return True
 
-    def get_parsing_information(self, scheduler_db_info):
+    def update_document(self, document, db_info):
+        """
+
+        :param document:
+            저장할 문서
+
+        :param db_info:
+            디비 접속 정보
+
+        :return:
+            None
+        """
+        connect, db = self.open_db(db_info['scheduler_db_name'],
+                                   db_info['scheduler_db_host'],
+                                   db_info['scheduler_db_port'])
+
+        collection = db.get_collection(db_info['scheduler_db_collection'])
+        collection.replace_one({'_id': document['_id']}, document)
+
+        connect.close()
+
+        return
+
+    def get_parsing_information(self, db_info):
         """
         디비에서 작업을 찾아 반환
 
-        :param scheduler_db_info:
+        :param db_info:
             scheduler 디비 접속 정보
 
         :return:
             섹션과 파싱 정보
         """
-        connect, db = self.open_db(
-            scheduler_db_info['scheduler_db_name'],
-            scheduler_db_info['scheduler_db_host'],
-            scheduler_db_info['scheduler_db_port'])
+        connect, db = self.open_db(db_info['scheduler_db_name'],
+                                   db_info['scheduler_db_host'],
+                                   db_info['scheduler_db_port'])
 
         section_info = self.get_documents(db, 'section_information')
         parsing_info = self.get_documents(db, 'parsing_information')
@@ -1892,7 +1985,7 @@ time bzcat data/nate_baseball/2017-04.json.bz2 \
             $ bzcat 2017-10.json.bz2 | shuf | shuf | head -n100 | bzip2 - > 2017-10.sample.json.bz2
         """
         import bz2
-        from crawler.html_parser import HtmlParser
+        from html_parser import HtmlParser
 
         html_parser = HtmlParser()
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-bzcat data/nate_baseball/pos/2017.pos.bz2 | ./elastic_search.py -insert -index nate_baseball
+bzcat data/nate_baseball/pos/2017.pos.bz2 | elastic_search.py -insert -index nate_baseball
 
 
 #

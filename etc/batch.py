@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
 import sys
 
 
@@ -84,7 +83,7 @@ def main():
 
 
 def run_convert_mlbpark():
-    from crawler.html_parser import HtmlParser
+    from html_parser import HtmlParser
 
     HtmlParser().convert_mlbpark()
 
@@ -94,7 +93,7 @@ def run_news2csv():
 
     :return:
     """
-    from crawler.utils import Utils
+    from utils import Utils
 
     util = Utils()
     # util.news2csv()

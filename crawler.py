@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -6,21 +6,14 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import sys
 
 from datetime import datetime
 from urllib.parse import urljoin
 
 from dateutil.relativedelta import relativedelta
 
-try:
-    from crawler.utils import Utils
-    from crawler.url_index_db import UrlIndexDB
-except ImportError:
-    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-    from .utils import Utils
-    from .url_index_db import UrlIndexDB
+from utils import Utils
+from url_index_db import UrlIndexDB
 
 
 class Crawler(Utils):
@@ -29,6 +22,9 @@ class Crawler(Utils):
     """
 
     def __init__(self):
+        """
+        생성자
+        """
         super().__init__()
 
         self.parameter = None
@@ -58,6 +54,9 @@ class Crawler(Utils):
             컬랙션 이름
         """
         collection = 'error'
+        if 'mongo' not in self.db_info:
+            return 'unknown'
+
         if 'collection' in self.db_info['mongo']:
             collection = self.db_info['mongo']['collection']
 
@@ -89,6 +88,9 @@ class Crawler(Utils):
         url 중복 체크, 섹션 정보 저장
         :return:
         """
+        if 'mongo' not in self.db_info:
+            return False
+
         if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
             self.duplicated_url_count += 1
             print('url exists {:,}: {}'.format(self.duplicated_url_count, url), flush=True)
@@ -137,7 +139,7 @@ class Crawler(Utils):
 
         # url 중복 체크, 섹션 정보 저장
         url = self.get_url(article['url'])
-        if self.is_url_exists(url, article, response_type):
+        if self.debug_mode is False and self.is_url_exists(url, article, response_type):
             return
 
         # 인코딩 명시
@@ -177,7 +179,7 @@ class Crawler(Utils):
             # 메타 테그 저장
             self.get_meta_value(soup, article_list)
 
-            # html에서 정보 추출
+            # html 에서 정보 추출
             article = self.parse_html(article, soup, target_tags, article_list)
             if article is None:
                 return False
@@ -193,16 +195,16 @@ class Crawler(Utils):
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
                 article['raw_html'] = str(soup)
-                print({'INFO': 'missing html_content use entire html'})
+                print({'INFO': 'missing html_content use entire html'}, flush=True)
 
             if 'title' not in article or 'date' not in article or article['date'] is None:
-                print({'ERROR': 'missing column', 'article': article})
+                print({'ERROR': 'missing column', 'article': article}, flush=True)
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
         result = self.save_article(document=article, db_info=self.db_info)
 
-        # 다운로드 받은 URL을 인덱스 디비에 저장
+        # 다운로드 받은 URL 을 인덱스 디비에 저장
         if result is True and self.url_index_db is not None:
             self.url_index_db.save_url(article['url'])
 
@@ -958,11 +960,17 @@ class Crawler(Utils):
         크롤링 완료된 url 목록을 인덱스 디비로 생성
 
         :return:
+            None
         """
-        print('update index db')
+        if 'mongo' not in self.db_info:
+            return
+
+        print('update index db', flush=True)
 
         self.url_index_db = UrlIndexDB()
-        self.url_index_db.open_db('/tmp/{}.sqlite3'.format(self.job_info['_id']), delete=True)
+
+        file_name = '/tmp/{}.sqlite3'.format(self.job_info['_id'])
+        self.url_index_db.open_db(file_name, delete=True)
 
         self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
 
@@ -975,11 +983,16 @@ class Crawler(Utils):
         :param scheduler_db_info:
         :param job_info:
         :return:
+            None
         """
         self.duplicated_url_count = 0
 
         self.job_info = job_info
         self.scheduler_db_info = scheduler_db_info
+
+        debug = os.getenv('DEBUG', 'False')
+        if debug == 'true' or debug == 'True':
+            self.debug_mode = True
 
         print({'job_info': self.job_info})
 
@@ -1180,7 +1193,7 @@ def main():
     crawler = Crawler()
     args = init_arguments()
 
-    from crawler.scheduler import Scheduler as CrawlerScheduler
+    from scheduler import Scheduler as CrawlerScheduler
 
     nc_curl = CrawlerScheduler()
     scheduler_db_info = {

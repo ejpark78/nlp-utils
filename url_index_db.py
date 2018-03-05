@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import sys
 import sqlite3
 import logging
 
@@ -151,7 +150,7 @@ class UrlIndexDB(object):
 
         start_time = time()
 
-        from crawler.utils import Utils as CrawlerUtils
+        from utils import Utils as CrawlerUtils
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
             print('WARN at update_url_list: no collection in db info', flush=True)
