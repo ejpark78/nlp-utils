@@ -1468,7 +1468,7 @@ class Utils(object):
         :return:
             None
         """
-        if db_info['use_scheduler_db'] is False:
+        if db_info['file_db'] is True:
             return
 
         connect, db = self.open_db(db_info['name'],
@@ -1495,7 +1495,14 @@ class Utils(object):
         :return:
             섹션과 파싱 정보
         """
-        if db_info['use_scheduler_db'] is True:
+        if db_info['file_db'] is True:
+            import json
+
+            file_name = 'schedule/{}.json'.format(parsing_id)
+            with open(file_name, 'r') as fp:
+                body = ''.join(fp.readlines())
+                parsing_info = json.loads(body)
+        else:
             connect, db = self.open_db(db_info['name'],
                                        db_info['host'],
                                        db_info['port'])
@@ -1503,13 +1510,6 @@ class Utils(object):
             parsing_info = db.get_collection('parsing_information').find_one({'_id': parsing_id})
 
             connect.close()
-        else:
-            import json
-
-            file_name = 'schedule/{}.json'.format(parsing_id)
-            with open(file_name, 'r') as fp:
-                body = ''.join(fp.readlines())
-                parsing_info = json.loads(body)
 
         return parsing_info
 

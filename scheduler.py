@@ -45,7 +45,14 @@ class Scheduler:
         :return:
             스케쥴
         """
-        if scheduler_db_info['use_scheduler_db'] is True:
+        if scheduler_db_info['file_db'] is True:
+            import json
+
+            file_name = 'schedule/{}.json'.format(scheduler_db_info['document_id'])
+            with open(file_name, 'r') as fp:
+                body = ''.join(fp.readlines())
+                job_info = json.loads(body)
+        else:
             connect, db = self.open_db(scheduler_db_info['name'],
                                        scheduler_db_info['host'],
                                        scheduler_db_info['port'])
@@ -59,13 +66,6 @@ class Scheduler:
                 return None
 
             connect.close()
-        else:
-            import json
-
-            file_name = 'schedule/{}.json'.format(scheduler_db_info['document_id'])
-            with open(file_name, 'r') as fp:
-                body = ''.join(fp.readlines())
-                job_info = json.loads(body)
 
         print(scheduler_db_info, job_info, flush=True)
 
@@ -159,7 +159,7 @@ class Scheduler:
                     sleep_range = schedule['sleep_range'].split(',')
                     if dt.strftime('%H') in sleep_range:
                         wait = 60 - dt.minute
-                        print('in sleep range {} minutes'.format(wait), flush=True)
+                        print('sleep range {} minutes'.format(wait), flush=True)
                         sleep(wait * 60)
                         continue
 
@@ -186,7 +186,7 @@ def init_arguments():
 
     parser = argparse.ArgumentParser(description='crawling web news articles')
 
-    parser.add_argument('-use_scheduler_db', help='', action='store_true', default=True)
+    parser.add_argument('-file_db', help='', action='store_true', default=False)
 
     # 스케쥴러 아이디
     parser.add_argument('-document_id', help='document id', default=None)
@@ -212,7 +212,7 @@ def main():
         sys.exit(1)
 
     scheduler_db_info = {
-        'use_scheduler_db': args.use_scheduler_db,
+        'file_db': args.file_db,
         'document_id': args.document_id,
         'host': args.host,
         'port': args.port,

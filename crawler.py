@@ -86,29 +86,35 @@ class Crawler(Utils):
     def is_url_exists(self, url, article, response_type):
         """
         url 중복 체크, 섹션 정보 저장
+
         :return:
+            True/False
         """
+        if self.url_index_db is None:
+            return False
+
+        if self.url_index_db.check_url(url) is False:
+            return False
+
+        self.duplicated_url_count += 1
+        print('url exists: ', '{:,}'.format(self.duplicated_url_count), url, flush=True)
+
         if 'mongo' not in self.db_info:
             return False
 
-        if self.url_index_db is not None and self.url_index_db.check_url(url) is True:
-            self.duplicated_url_count += 1
-            print('url exists: ', '{:,}'.format(self.duplicated_url_count), url, flush=True)
+        if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
+            # const value 삽입
+            if 'const_value' in self.parameter:
+                article.update(self.parameter['const_value'])
 
-            if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
-                # const value 삽입
-                if 'const_value' in self.parameter:
-                    article.update(self.parameter['const_value'])
+            # 섹션 정보 저장
+            if 'section' in article:
+                collection = self.get_collection_name(article, response_type)
 
-                # 섹션 정보 저장
-                if 'section' in article:
-                    collection = self.get_collection_name(article, response_type)
+                self.save_section_info(document=article, mongodb_info=self.db_info['mongo'],
+                                       collection_name='section_{}'.format(collection))
 
-                    self.save_section_info(
-                        document=article, mongodb_info=self.db_info['mongo'],
-                        collection_name='section_{}'.format(collection))
-
-                return True
+            return True
 
         return False
 
@@ -961,9 +967,6 @@ class Crawler(Utils):
         :return:
             None
         """
-        if 'mongo' not in self.db_info:
-            return
-
         print('update index db', flush=True)
 
         self.url_index_db = UrlIndexDB()
@@ -971,7 +974,8 @@ class Crawler(Utils):
         file_name = '/tmp/{}.sqlite3'.format(self.job_info['_id'])
         self.url_index_db.open_db(file_name, delete=True)
 
-        self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
+        if 'mongo' in self.db_info:
+            self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
 
         return
 

@@ -189,7 +189,7 @@ class UrlIndexDB(object):
 
         self.conn.commit()
 
-        print('\ntook: {:,} {:0.4f} sec'.format(count, time() - start_time), flush=True)
+        print('took: {:,} {:0.4f} sec'.format(count, time() - start_time), flush=True)
 
         return
 
