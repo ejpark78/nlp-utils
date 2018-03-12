@@ -12,6 +12,10 @@ import logging
 from bs4 import BeautifulSoup
 from xlsxwriter.workbook import Workbook
 
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=logging.INFO)
+
 
 class LineageMConverter:
 
@@ -105,7 +109,7 @@ class LineageMConverter:
                 soup = BeautifulSoup(result['contents'], 'lxml')
                 result['contents'] = soup.get_text()
         except Exception as e:
-            logging.error('', exc_info=e)
+            logging.error(msg='simplify 오류: {}'.format(e))
             return None
 
         return result
@@ -168,10 +172,9 @@ class LineageMConverter:
 
                 conn.commit()
             except Exception as e:
-                logging.error('', exc_info=e)
-                pass
+                logging.error(msg='인덱스 저장 오류: {}'.format(e))
 
-            print('\r{:,}'.format(count), flush=True, end='')
+            logging.info(msg='{:,}'.format(count))
             count += 1
 
         conn.close()
@@ -216,7 +219,8 @@ class LineageMConverter:
             fp.write(str_result + '\n')
             fp.flush()
 
-            print('{:,}'.format(row_id), document['articleId'], document['title'], flush=True)
+            msg = '{:,} {} {}'.format(row_id, document['articleId'], document['title'])
+            logging.info(msg=msg)
             row_id += 1
 
         fp.close()
@@ -281,7 +285,8 @@ class LineageMConverter:
 
             row_id += 1
 
-            print('{:,}'.format(row_id), document['articleId'], document['title'], flush=True)
+            msg = '{:,} {} {}'.format(row_id, document['articleId'], document['title'])
+            logging.info(msg=msg)
 
             # 댓글 저장
             if 'commentList' in document and len(document['commentList']) > 0:
@@ -299,7 +304,7 @@ class LineageMConverter:
 
                     reply_row_id += 1
 
-                    print('>> {:,}'.format(reply_row_id), reply['contents'], flush=True)
+                    logging.info(msg='>> {:,} {}'.format(reply_row_id, reply['contents']))
 
         workbook.close()
 

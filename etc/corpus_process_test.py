@@ -5,17 +5,24 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import urllib3
 import requests
+
 from pymongo import MongoClient
 
 
-def send_document_list(url, db_name, doc_type, document_list):
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
+
+
+def send_document_list(url, db_name, doc_type, document_list, update):
     """
 
     :param url:
     :param db_name:
     :param doc_type:
     :param document_list:
+    :param update:
     :return:
     """
 
@@ -26,12 +33,12 @@ def send_document_list(url, db_name, doc_type, document_list):
         'index': db_name,
         'doc_type': doc_type,
         'document_id': document_list,
-        'update': False
+        'update': update
     }
 
     headers = {'Content-Type': 'application/json'}
-    result = requests.put(url=url, json=body, headers=headers,
-                          allow_redirects=True, timeout=5, verify=False)
+    result = requests.post(url=url, json=body, headers=headers,
+                           allow_redirects=True, timeout=5, verify=False)
 
     print('result: ', result, flush=True)
 
@@ -45,8 +52,8 @@ def change_db_info():
     host = 'frodo'
     port = 27018
 
-    # url = 'http://localhost:5004/v1.0/api/batch'
-    url = 'https://gollum02:5004/v1.0/api/batch'
+    url = 'http://localhost:5004/v1.0/api/batch'
+    # url = 'https://gollum02:5004/v1.0/api/batch'
 
     connect = MongoClient('mongodb://{}:{}'.format(host, port))
 
@@ -69,17 +76,17 @@ def change_db_info():
     # 'sportskhan_baseball', 'spotv_baseball', 'starnews_sports', 'yonhapnews_sports', 'yonhapnewstv_sports'
 
     db_list = [
-        'daum_economy',
-        # 'nate_economy',
-        # 'naver_economy'
+        'donga_baseball'
     ]
+
+    update = True
 
     count = 0
     for db_name in db_list:
         db = connect.get_database(db_name)
 
-        for i in range(1, 13):
-            doc_type = '2017-{:02d}'.format(i)
+        for i in range(1, 4):
+            doc_type = '2018-{:02d}'.format(i)
 
             collection = db.get_collection(doc_type)
             cursor = collection.find({}, {'_id': 1})[:]
@@ -93,11 +100,13 @@ def change_db_info():
                 document_list.append(document_id)
 
                 if len(document_list) > 100:
-                    send_document_list(url=url, db_name=db_name, doc_type=doc_type, document_list=document_list)
+                    send_document_list(url=url, db_name=db_name, doc_type=doc_type,
+                                       document_list=document_list, update=update)
                     document_list = []
 
             if len(document_list) > 0:
-                send_document_list(url=url, db_name=db_name, doc_type=doc_type, document_list=document_list)
+                send_document_list(url=url, db_name=db_name, doc_type=doc_type,
+                                   document_list=document_list, update=update)
 
             cursor.close()
 

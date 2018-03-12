@@ -5,18 +5,25 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import logging
 import sys
-
 from time import sleep
+
 from pymongo import MongoClient
 
 from crawler import Crawler
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=logging.INFO)
 
 
 class Scheduler:
     """
     크롤러 스케줄러
     """
+
     def __init__(self):
         pass
 
@@ -25,9 +32,9 @@ class Scheduler:
         """
         몽고 디비 핸들 오픈
 
-        :param db_name:
-        :param host:
-        :param port:
+        :param db_name: 디비명
+        :param host: 디비 서버 주소
+        :param port: 접속 포트
         :return:
         """
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
@@ -39,16 +46,11 @@ class Scheduler:
         """
         디비에서 작업을 찾아 반환
 
-        :param scheduler_db_info:
-            스케쥴 디비 정보
-
-        :return:
-            스케쥴
+        :param scheduler_db_info: 스케쥴 디비 정보
+        :return: 스케쥴
         """
         if scheduler_db_info['file_db'] is True:
-            import json
-
-            file_name = 'schedule/{}.json'.format(scheduler_db_info['document_id'])
+            file_name = 'schedule/list/{}.json'.format(scheduler_db_info['document_id'])
             with open(file_name, 'r') as fp:
                 body = ''.join(fp.readlines())
                 job_info = json.loads(body)
@@ -67,7 +69,7 @@ class Scheduler:
 
             connect.close()
 
-        print(scheduler_db_info, job_info, flush=True)
+        logging.info(msg=json.dumps(job_info, ensure_ascii=False))
 
         return job_info
 
@@ -119,7 +121,8 @@ class Scheduler:
                             "const_value": {
                                 "section": "스포츠-야구"
                             },
-                            "url": "http://www.spotvnews.co.kr/?page={start}&mod=news&act=articleList&total=38674&sc_code=1384128643&view_type=S"
+                            "url": "http://www.spotvnews.co.kr/?page={start}&mod=news
+                            &act=articleList&total=38674&sc_code=1384128643&view_type=S"
                         }
                     ]
                 }
@@ -141,7 +144,8 @@ class Scheduler:
             job_info = self.get_job_info(scheduler_db_info)
 
             if job_info is None:
-                print('error: 스케쥴 정보가 없습니다.', scheduler_db_info, flush=True)
+                logging.error(msg='error: 스케쥴 정보가 없습니다.')
+                logging.error(msg=json.dumps(scheduler_db_info, ensure_ascii=False))
                 return
 
             schedule = job_info['schedule']
@@ -159,7 +163,8 @@ class Scheduler:
                     sleep_range = schedule['sleep_range'].split(',')
                     if dt.strftime('%H') in sleep_range:
                         wait = 60 - dt.minute
-                        print('sleep range {} minutes'.format(wait), flush=True)
+
+                        logging.info(msg='sleep range {} minutes'.format(wait))
                         sleep(wait * 60)
                         continue
 
@@ -167,12 +172,12 @@ class Scheduler:
             crawler.run(scheduler_db_info=scheduler_db_info, job_info=job_info)
 
             if sleep_time > 0:
-                print('sleep {} minutes'.format(sleep_time), flush=True)
+                logging.error(msg='sleep {} minutes'.format(sleep_time))
                 sleep(sleep_time * 60)
             else:
                 break
 
-        print('DONE', flush=True)
+        logging.info(msg='DONE')
 
         return
 
@@ -208,7 +213,7 @@ def main():
     args = init_arguments()
 
     if args.document_id is None:
-        print('error: document_id required!', flush=True)
+        logging.error(msg='error: document_id required!')
         sys.exit(1)
 
     scheduler_db_info = {
@@ -220,7 +225,6 @@ def main():
         'collection': args.collection
     }
 
-    print('scheduler_db_info: ', scheduler_db_info, flush=True)
     nc_curl.run(scheduler_db_info)
 
     return

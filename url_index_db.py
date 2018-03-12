@@ -133,16 +133,16 @@ class UrlIndexDB(object):
         except sqlite3.IntegrityError:
             pass
         except Exception as e:
-            logging.error('', exc_info=e)
-            print('ERROR at save_url: ', url, e, flush=True)
+            logging.error('인덱스 디비 저장 오류', exc_info=e)
 
         return
 
-    def update_url_list(self, mongodb_info):
+    def update_url_list(self, mongodb_info, db_name):
         """
         캐쉬 디비에 있는 url 목록을 버클리 디비에 저장
 
-        :param mongodb_info:
+        :param mongodb_info: 몽고 디비 접속이름
+        :param db_name: 디비 이름
         :return:
         """
         if self.cursor is None:
@@ -153,7 +153,7 @@ class UrlIndexDB(object):
         from utils import Utils as CrawlerUtils
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
-            print('WARN at update_url_list: no collection in db info', flush=True)
+            logging.warning(msg='컬랙션 정보 없음')
             return
 
         # 숫자일 경우 문자로 변경
@@ -163,9 +163,13 @@ class UrlIndexDB(object):
         if 'port' not in mongodb_info:
             mongodb_info['port'] = 27017
 
+        if 'name' in mongodb_info:
+            db_name = mongodb_info['db_name']
+
         # 디비 연결
-        connect, mongodb = CrawlerUtils().open_db(
-            host=mongodb_info['host'], db_name=mongodb_info['name'], port=mongodb_info['port'])
+        connect, mongodb = CrawlerUtils().open_db(host=mongodb_info['host'],
+                                                  port=mongodb_info['port'],
+                                                  db_name=db_name)
 
         collection = mongodb.get_collection(mongodb_info['collection'])
         cursor = collection.find({}, {'url': 1, '_id': 0})[:]
@@ -177,11 +181,11 @@ class UrlIndexDB(object):
 
             count += 1
 
-            if count % 2000 == 0:
-                print('.', end='', flush=True)
+            # if count % 2000 == 0:
+            #     print('.', end='', flush=True)
 
             if count % 20000 == 0:
-                print('({:,})'.format(count), end='', flush=True)
+                # print('({:,})'.format(count), end='', flush=True)
                 self.conn.commit()
 
         cursor.close()
@@ -189,7 +193,7 @@ class UrlIndexDB(object):
 
         self.conn.commit()
 
-        print('took: {:,} {:0.4f} sec'.format(count, time() - start_time), flush=True)
+        logging.info(msg='url 캐쉬 디비 생성 완료: {:,} {:0.4f} sec'.format(count, time() - start_time))
 
         return
 

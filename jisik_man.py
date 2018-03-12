@@ -5,30 +5,32 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import re
-import sys
 import json
 import logging
-
 import random
-import requests
-
-from time import sleep
-from pymongo import MongoClient
+import re
 from datetime import datetime
-from elasticsearch import Elasticsearch
+from time import sleep
+
+import requests
+import urllib3
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
-
-import urllib3
+from elasticsearch import Elasticsearch
+from pymongo import MongoClient
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=logging.INFO)
 
 
 class JisikMan:
     """
     """
+
     def __init__(self):
         self.headers = {
             'User-Agent': 'Dalvik/1.6.0 (Linux; U; Android 4.4.2; SAMSUNG-SM-N900A Build/KOT49H)'
@@ -46,9 +48,9 @@ class JisikMan:
         """
         몽고 디비 핸들 오픈
 
-        :param db_name:
-        :param host:
-        :param port:
+        :param db_name: 디비명
+        :param host: 서버 주소
+        :param port: 서버 포트
         :return:
         """
         connect = MongoClient('mongodb://{}:{}'.format(host, port))
@@ -87,9 +89,7 @@ class JisikMan:
         try:
             return page_html.json()
         except Exception as e:
-            logging.error('', exc_info=e)
-
-            print(curl_url, post_data, page_html.content, flush=True)
+            logging.error(msg='크롤링 에러 {} {}'.format(curl_url, e))
 
         return None
 
@@ -161,14 +161,37 @@ class JisikMan:
             date = parse_date(simple['date'])
 
         except Exception as e:
-            logging.error('', exc_info=e)
-            print('ERROR at to simple: {}'.format(sys.exc_info()[0]))
+            logging.error(msg='to_simple {}'.format(e))
 
         return simple, date
 
+    @staticmethod
+    def create_elastic_index(elastic, index_name=None):
+        """
+        elastic search 인덱스 생성
+
+        :param elastic: elastic 서버 접속 정보
+        :param index_name: 생성할 인덱스 이름
+        :return: True/False
+        """
+        if elastic is None:
+            return False
+
+        elastic.indices.create(
+            index=index_name,
+            body={
+                'settings': {
+                    'number_of_shards': 3,
+                    'number_of_replicas': 2
+                }
+            }
+        )
+
+        return True
+
     def save_elastic(self, document, host='frodo.ncsoft.com', index='jisikman'):
         """
-        크롤링 결과 문서를 elasticsearch 에 저장
+        크롤링 결과 문서를 elastic-search 에 저장
 
         :param document:
         :param host:
@@ -180,25 +203,17 @@ class JisikMan:
             return
 
         if simple['question'][0:2] == '[꿀':
-            print('SKIP insert elastic: ', simple['question'], flush=True)
+            logging.info(msg='저장 스킵: {}'.format(simple['question']))
             return
 
         try:
             elastic = Elasticsearch([host], use_ssl=True, verify_certs=False, port=9200)
         except Exception as e:
-            logging.error('', exc_info=e)
-
-            print('error at connect elastic', flush=True)
+            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
             return
 
-        try:
-            if elastic.indices.exists(index) is False:
-                return
-        except Exception as e:
-            logging.error('', exc_info=e)
-
-            print('error at check index', flush=True)
-            return
+        if elastic.indices.exists(index) is False:
+            self.create_elastic_index(elastic, index)
 
         bulk_data = [{
             'update': {
@@ -215,21 +230,15 @@ class JisikMan:
             try:
                 elastic.delete(index=index, doc_type=date.year, id=simple['document_id'], refresh=True)
             except Exception as e:
-                logging.error('', exc_info=e)
-
-                print('ERROR at delete elastic: {}'.format(sys.exc_info()[0]))
+                logging.error(msg='elastic-search 삭제 에러: {}'.format(e))
 
         try:
             ret = elastic.bulk(index=index, body=bulk_data, refresh=True)
 
-            # print('elastic bulk data:', ret['errors'], flush=True)
-
             if ret['errors'] is True:
-                print('error elastic bulk data:', ret, bulk_data, flush=True)
+                logging.error(msg='elastic-search 저장 에러: '.format(ret))
         except Exception as e:
-            logging.error('', exc_info=e)
-
-            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+            logging.error(msg='elastic-search 저장 에러: '.format(e))
 
         return
 
@@ -248,7 +257,6 @@ class JisikMan:
         if isinstance(document['_id'], str) and document['_id'].isdigit() is True:
             document['_id'] = int(document['_id'])
 
-        answer_date = ''
         if collection is None:
             collection = 'etc'
 
@@ -257,9 +265,7 @@ class JisikMan:
                     date = parse_date(document['date'])
                     collection = date.strftime('%Y-%m')
                 except Exception as e:
-                    logging.error('', exc_info=e)
-
-                    print('date parsing error: ', document['date'], flush=True)
+                    logging.error(msg='날짜 파싱 에러: {} {}'.format(document['date'], e))
 
             if 'detail_answers' in document and isinstance(document['detail_answers'], list) is True:
                 if 'date' in document['detail_answers'][0]:
@@ -268,8 +274,8 @@ class JisikMan:
                         date = parse_date(answer_date)
                         collection = date.strftime('%Y-%m')
                     except Exception as e:
-                        logging.error('', exc_info=e)
-                        print('date parsing error: ', answer_date, flush=True)
+                        msg = '날짜 파싱 에러: {} {}'.format(document['detail_answers'][0]['date'], e)
+                        logging.error(msg=msg)
 
         simple_log = True
         if simple_log is True:
@@ -277,26 +283,27 @@ class JisikMan:
                 document['date'] = ''
 
             if 'question_content' in document:
-                msg = '{:,} [{}] ({}) {}'.format(int(document['_id']),
-                                                 answer_date, collection, document['question_content'])
-                print(msg, flush=True)
+                msg = '{:,} ({}) {}'.format(int(document['_id']), collection,
+                                            document['question_content'])
+                logging.info(msg=msg)
         else:
             str_document = json.dumps(document, indent=3, ensure_ascii=False, sort_keys=True)
-            print('save_result document:', collection, str_document, flush=True)
+            logging.info(msg='문서 저장 {} {}'.format(collection, str_document))
 
         if self.from_start is True:
             update = True
 
         try:
+            coll = self.result_db.get_collection(collection)
             if update is True:
-                self.result_db.get_collection(collection).replace_one({'_id': document['_id']}, document, upsert=True)
+                coll.replace_one({'_id': document['_id']}, document, upsert=True)
             else:
-                self.result_db.get_collection(collection).insert_one(document)
-
+                coll.insert_one(document)
         except Exception as e:
             del document['_id']
             self.result_db.get_collection('error').insert_one(document)
-            print('ERROR at save_result: ', e, document, flush=True)
+
+            logging.error(msg='문서 저장 에러: {}'.format(e))
 
             return False
 
@@ -337,7 +344,7 @@ class JisikMan:
             start_page = self.get_last_page()
             end_page = 100000
 
-        print('start page: ', start_page, flush=True)
+        logging.info(msg='start page: {}'.format(start_page))
 
         point = 0
         for page in range(start_page, end_page):
@@ -382,7 +389,7 @@ class JisikMan:
             return None, None
 
         str_q_list = json.dumps(q_list, indent=3, ensure_ascii=False, sort_keys=True)
-        print('question list: ', str_q_list, flush=True)
+        logging.info(msg='question list: {}'.format(str_q_list))
 
         # 질문 목록 저장
         q_list['_id'] = '{min_point}-{point}'.format(**q_list['paging'])
@@ -416,7 +423,7 @@ class JisikMan:
             'content_id': question['content_id']
         }
 
-        # timegap을 날짜로 변환
+        # timegap 을 날짜로 변환
         if 'timegap' in question:
             question['date'] = self.parse_time_gap(question['timegap'], date)
             del question['timegap']
@@ -425,7 +432,7 @@ class JisikMan:
         detail = self.curl(q_detail_url, post_data=a_post_data)
         if detail is None or 'items' not in detail or detail['items'] is None:
             # 에러: 질문만 저장
-            print('ERROR no items: ', detail, flush=True)
+            logging.error(msg='에러: 질문만 저장')
             return False
 
         for i, answer in enumerate(detail['items']):
@@ -468,9 +475,6 @@ class JisikMan:
         if 'question_content' not in question:
             question['question_content'] = first_item['question_content']
 
-        # str_q_detail = json.dumps(question, indent=3, ensure_ascii=False, sort_keys=True)
-        # print('detail answer: ', str_q_detail, flush=True)
-
         # 질문/답변 저장
         save_flag = self.save_result(question, collection=None)
         # self.save_elastic(question)
@@ -491,8 +495,12 @@ class JisikMan:
         result = []
         collection_list = self.result_db.collection_names()
 
-        # query = {'_id': {'$gte': str(start), '$lte': str(end)}}
-        query = {'_id': {'$gte': start, '$lte': end}}
+        query = {
+            '_id': {
+                '$gte': start,
+                '$lte': end
+            }
+        }
 
         for collection in collection_list:
             cursor = self.result_db.get_collection(collection).find(query, {'_id': 1})[:]
@@ -509,7 +517,7 @@ class JisikMan:
 
             cursor.close()
 
-            print(collection, query, count, flush=True)
+            logging.info(msg='{} {} {}'.format(collection, query, count))
 
         return sorted(result, reverse=True)
 
@@ -525,18 +533,17 @@ class JisikMan:
         end = int(end.replace(',', ''))
 
         id_list = self.get_question_id_list(start, end)
+        logging.info(msg='range: {:,} ~ {:,}'.format(id_list[-1], id_list[0]))
 
-        print('total range: {} ~ {}'.format(id_list[-1], id_list[0]), flush=True)
-        for i in range(0, len(id_list)-1):
-            a = id_list[i+1]
+        for i in range(0, len(id_list) - 1):
+            a = id_list[i + 1]
             b = id_list[i]
 
             if a + 1 == b:
                 continue
 
-            print('range: {:,} ~ {:,}'.format(a, b), flush=True)
-            for content_id in range(a+1, b):
-                # print('content_id:', content_id, flush=True)
+            logging.info(msg='range: {:,} ~ {:,}'.format(a, b))
+            for content_id in range(a + 1, b):
                 question = {
                     'content_id': str(content_id)
                 }
@@ -557,10 +564,10 @@ class JisikMan:
 
         id_list = self.get_question_id_list(start, end)
 
-        print('range: {:,} ~ {:,}'.format(start, end), flush=True)
-        print('id_list size: {:,}'.format(len(id_list)), flush=True)
+        logging.info(msg='range: {:,} ~ {:,}'.format(start, end))
+        logging.info(msg='id_list size: {:,}'.format(len(id_list)))
 
-        for content_id in range(start, end+1):
+        for content_id in range(start, end + 1):
             if content_id in id_list:
                 continue
 

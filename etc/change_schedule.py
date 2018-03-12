@@ -26,6 +26,10 @@ def parse_argument():
 def open_db(db_name, host='frodo', port=27018):
     """
     몽고 디비 핸들 오픈
+    :param db_name: 디비명
+    :param host: 서버 주소
+    :param port: 서버 포트
+    :return:
     """
     connect = MongoClient('mongodb://{}:{}'.format(host, port))
     db = connect.get_database(db_name)
@@ -42,9 +46,9 @@ def change_db_info():
 
     connect, db = open_db('crawler')
 
-    collection = db.get_collection('schedule')
+    collection = db.get_collection('schedule_list')
 
-    cursor = collection.find({'sleep': {'$exists': 1}})[:]
+    cursor = collection.find({})[:]
 
     date = datetime.now().strftime('%Y-%m-%d_%H.%M.%S')
     fp = open('backup-{}.json'.format(date), 'a')
@@ -57,13 +61,33 @@ def change_db_info():
         document_id = document['_id']
         print(document_id, flush=True)
 
-        document['schedule']['sleep'] = document['sleep']
-        del document['sleep']
+        if 'parameter' not in document:
+            continue
+
+        parameter = document['parameter']
+
+        if 'db_info' not in parameter:
+            continue
+
+        db_info = parameter['db_info']
+
+        if 'mongo' not in db_info:
+            continue
+
+        mongo = db_info['mongo']
+
+        if 'update' not in mongo:
+            continue
+
+        if mongo['update'] is True:
+            db_info['update'] = True
+
+        del mongo['update']
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
 
-        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
+        collection.replace_one({'_id': document['_id']}, document, upsert=True)
 
     fp.flush()
     fp.close()

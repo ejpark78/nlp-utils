@@ -5,21 +5,19 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import re
-import os
-import sys
 import copy
 import json
+import logging
+import os
 import queue
 import random
-import requests
-import logging
-import traceback
-
-from bs4 import BeautifulSoup, Comment
-from time import sleep
+import re
 from datetime import datetime
+from time import sleep
 from urllib.parse import urljoin
+
+import requests
+from bs4 import BeautifulSoup, Comment
 
 
 class Utils(object):
@@ -31,9 +29,9 @@ class Utils(object):
         """
         생성자
         """
-        import urllib3
-
         super().__init__()
+
+        import urllib3
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         urllib3.disable_warnings(UserWarning)
@@ -61,20 +59,11 @@ class Utils(object):
         html 태그 중 특정 태그를 삭제
         ex) script, caption will be removed
 
-        :param html_tag:
-            html 본문
-
-        :param tag_list:
-            제거할 태그 목록
-
-        :param replacement:
-            치환할 문자
-
-        :param attribute:
-            특정 속성값 포함 여부
-
-        :return:
-            True/False
+        :param html_tag: html 본문
+        :param tag_list: 제거할 태그 목록
+        :param replacement: 치환할 문자
+        :param attribute: 특정 속성값 포함 여부
+        :return: True/False
         """
         if html_tag is None:
             return False
@@ -93,11 +82,8 @@ class Utils(object):
         """
         html 태그 중에서 주석 태그를 제거
 
-        :param html_tag:
-            웹페이지 본문
-
-        :return:
-            True/False
+        :param html_tag: 웹페이지 본문
+        :return: True/False
         """
         for element in html_tag(text=lambda text: isinstance(text, Comment)):
             element.extract()
@@ -109,11 +95,8 @@ class Utils(object):
         """
         메타 정보에서 인코딩 정보 반환
 
-        :param html_body:
-            html 본문
-
-        :return:
-            BeautifulSoup 반환
+        :param html_body: html 본문
+        :return: BeautifulSoup 반환
         """
         soup = BeautifulSoup(html_body, 'lxml')
 
@@ -140,14 +123,9 @@ class Utils(object):
         """
         url 문자열을 찾아서 반환
 
-        :param url:
-            url 구조체
-
-        :param url_type:
-            url 타입 명시
-
-        :return:
-            url
+        :param url: url 구조체
+        :param url_type: url 타입 명시
+        :return: url
         """
 
         if url_type is not None and url_type in url:
@@ -167,29 +145,14 @@ class Utils(object):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
 
-        :param curl_url:
-            받아올 URL 주소
-
-        :param delay:
-            delay 범위: 10~15, 10초에서 15초 사이
-
-        :param post_data:
-            post 방식으로 보낼때 data
-
-        :param json_type:
-            json 결과 형식 명시
-
-        :param encoding:
-            인코딩 명시
-
-        :param max_try:
-            최대 시도 횟수 명시
-
-        :param headers:
-            헤더 명시
-
-        :return:
-            크롤링 결과 반환, html or json 형식으로 반환
+        :param curl_url: 받아올 URL 주소
+        :param delay: delay 범위: 10~15, 10초에서 15초 사이
+        :param post_data: post 방식으로 보낼때 data
+        :param json_type: json 결과 형식 명시
+        :param encoding: 인코딩 명시
+        :param max_try: 최대 시도 횟수 명시
+        :param headers: 헤더 명시
+        :return: 크롤링 결과 반환, html or json 형식으로 반환
         """
         # 디폴트 범위
         min_delay = 10
@@ -205,7 +168,7 @@ class Utils(object):
         curl_url = curl_url.strip()
 
         if curl_url == '' or curl_url.find('http') != 0:
-            print('error empty url: ', curl_url, flush=True)
+            logging.warning(msg='다운 받을 url 이 없음: {}'.format(curl_url))
             return
 
         # 2초 이상일 경우 랜덤하게 쉬어줌
@@ -219,9 +182,11 @@ class Utils(object):
             sleep_time = 60 + max_delay
 
         # 상태 출력
-        if self.debug_mode is False:
-            print('curl_html sleep: {} secs'.format(sleep_time), flush=True)
-            sleep(sleep_time)
+        if self.debug_mode is True:
+            sleep_time = 1
+
+        logging.info(msg='크롤러 sleep: {} secs'.format(sleep_time))
+        sleep(sleep_time)
 
         # 해더 생성
         if headers is None:
@@ -232,12 +197,13 @@ class Utils(object):
         # 웹 크롤링
         try:
             if post_data is None:
-                page_html = requests.get(url=curl_url, headers=headers, allow_redirects=True, timeout=60)
+                page_html = requests.get(url=curl_url, headers=headers,
+                                         allow_redirects=True, timeout=60)
             else:
                 page_html = requests.post(url=curl_url, data=post_data, headers=self.headers,
                                           allow_redirects=True, timeout=60)
         except Exception as e:
-            logging.error('', exc_info=e)
+            logging.error(msg='requests 에러: {} {}'.format(curl_url, e))
             return None
 
         # json_type 일 경우
@@ -245,20 +211,20 @@ class Utils(object):
             try:
                 result = page_html.json()
             except Exception as e:
-                logging.error('', exc_info=e)
+                logging.error(msg='json 추출 에러: {}'.format(e))
 
                 if page_html.content == b'':
                     return None
 
                 if max_try > 0:
                     if self.debug_mode is False:
-                        print('error max try sleep: ', curl_url, e, sleep_time * 10, flush=True)
+                        logging.error(msg='최대 크롤링 시도 횟수 초과: {}'.format(curl_url))
                         sleep(sleep_time * 10)
 
                     return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
                                           json_type=json_type, encoding=encoding, max_try=max_try - 1)
                 else:
-                    print('Unexpected error:', e, flush=True)
+                    logging.error(msg='크롤링 에러')
                     raise
 
             return result
@@ -284,7 +250,7 @@ class Utils(object):
 
             return BeautifulSoup(content, 'lxml')
         except Exception as e:
-            logging.error('', exc_info=e)
+            logging.error(msg='html 파싱 에러: {}'.format(e))
 
         return None
 
@@ -304,8 +270,7 @@ class Utils(object):
             try:
                 self.get_target_value(soup, tag_info, article_list, url)
             except Exception as e:
-                logging.error('', exc_info=e)
-                print({'ERROR': 'get target value', 'url': url}, flush=True)
+                logging.error(msg='크롤링 결과 피싱 에러: {} {}'.format(url, e))
                 return None
 
         for item in article_list:
@@ -319,11 +284,8 @@ class Utils(object):
         """
         날짜와 컬랙션 이름 변환
 
-        :param date:
-            날짜 문자열
-
-        :return:
-            날짜와 컬랙션 이름
+        :param date: 날짜 문자열
+        :return: 날짜와 컬랙션 이름
         """
         from dateutil.parser import parse as parse_date
         from dateutil.relativedelta import relativedelta
@@ -349,12 +311,13 @@ class Utils(object):
 
                 collection = date.strftime('%Y-%m')
             except Exception as e:
-                logging.error('', exc_info=e)
-                print({'ERROR': 'convert date', 'date': date}, flush=True)
+                logging.error(msg='날짜 파싱 에러: {} {}'.format(date, e))
                 return None, collection
         elif isinstance(date, dict) is True:
             if 'date' in date:
                 collection = '{}-{}'.format(date['year'], date['month'])
+        elif isinstance(date, datetime) is True:
+            collection = date.strftime('%Y-%m')
 
         return date, collection
 
@@ -363,17 +326,10 @@ class Utils(object):
         """
         몽고 디비 핸들 오픈
 
-        :param db_name:
-            데이터베이스명
-
-        :param host:
-            서버 주소
-
-        :param port:
-            서버 포트
-
-        :return:
-            접속 정보와 데이터베이스 핸들
+        :param db_name: 데이터베이스명
+        :param host: 서버 주소
+        :param port: 서버 포트
+        :return: 접속 정보와 데이터베이스 핸들
         """
         from pymongo import MongoClient
 
@@ -437,12 +393,8 @@ class Utils(object):
         """
         kafka 에 메세지 전송
 
-        :param document:
-            기사 본문
-
-        :param kafka_info:
-            카프카 접속 정보
-
+        :param document: 기사 본문
+        :param kafka_info: 카프카 접속 정보
             "kafka": {
               "host": "gollum",
               "result": {
@@ -458,11 +410,8 @@ class Utils(object):
               "topic": "crawler"
             }
 
-        :param mongodb_info:
-            몽고 디비 정보: collection명 동기화
-
-        :return:
-            True/False
+        :param mongodb_info: 몽고 디비 정보: collection 명과 일치
+        :return: True/False
 
         콘솔에서 디버깅 방법
             $ kafka-topics.sh --list --zookeeper gollum:2181
@@ -496,9 +445,7 @@ class Utils(object):
             producer.send(kafka_info['topic'], bytes(message, encoding='utf-8')).get(timeout=5)
             producer.flush()
         except Exception as e:
-            logging.error('', exc_info=e)
-
-            print('ERROR at kafka: {}, {}'.format(kafka_info['topic'], sys.exc_info()[0]))
+            logging.error(msg='카프카 에러: {} {}'.format(kafka_info['topic'], e))
 
         return True
 
@@ -506,14 +453,9 @@ class Utils(object):
         """
         mqtt로 메세지 전송
 
-        :param document:
-            기사 본문
-
-        :param mqtt_info:
-            mqtt 서버 접속 정보
-
-        :return:
-            True/False
+        :param document: 기사 본문
+        :param mqtt_info: mqtt 서버 접속 정보
+        :return: True/False
         """
         import paho.mqtt.publish as publish
 
@@ -552,7 +494,6 @@ class Utils(object):
             payload['date'] = document['date'].strftime('%Y-%m-%d')
 
         str_payload = json.dumps(payload, ensure_ascii=False, indent=4)
-        # print('payload:', str_payload)
 
         try:
             if 'port' not in mqtt_info:
@@ -564,8 +505,7 @@ class Utils(object):
                 hostname=mqtt_info['host'], port=mqtt_info['port'],
                 client_id='')
         except Exception as e:
-            logging.error('', exc_info=e)
-            print('ERROR at mqtt: {}'.format(sys.exc_info()[0]))
+            logging.error(msg='mqtt 에러: {}'.format(e))
 
         return True
 
@@ -574,14 +514,9 @@ class Utils(object):
         """
         elastic search 인덱스 생성
 
-        :param elastic:
-            elastic 서버 접속 정보
-
-        :param index_name:
-            생성할 인덱스 이름
-
-        :return:
-            True/False
+        :param elastic: elastic 서버 접속 정보
+        :param index_name: 생성할 인덱스 이름
+        :return: True/False
         """
         if elastic is None:
             return False
@@ -603,11 +538,8 @@ class Utils(object):
         """
         datetime 객체 문자열로 변환
 
-        :param document:
-            문서
-
-        :return:
-            변환된 문서
+        :param document: 문서
+        :return: 변환된 문서
         """
 
         for k in document:
@@ -618,26 +550,22 @@ class Utils(object):
 
         return document
 
-    def save_mongodb(self, document, mongodb_info):
+    def save_mongodb(self, document, mongodb_info, db_name, update):
         """
         몽고 디비에 문서 저장
 
-        :param document:
-            저장할 문서
-
-        :param mongodb_info:
-            몽고 디비 접속 정보
-
-        "mongo": {
-            "collection": "2017-07",
-            "port": 27018,
-            "update": false,
-            "host": "frodo",
-            "name": "daum_economy"
-        }
-
-        :return:
-            True/False
+        :param document: 저장할 문서
+        :param mongodb_info: 몽고 디비 접속 정보
+        :param db_name: 저장할 디비 이름
+            "mongo": {
+                "collection": "2017-07",
+                "port": 27018,
+                "update": false,
+                "host": "frodo",
+                "name": "daum_economy"
+            }
+        :param update: 내용 갱신 여부 (True/False)
+        :return: True/False
         """
         from pymongo import errors
 
@@ -648,14 +576,19 @@ class Utils(object):
             url = self.get_url(document['url'])
             document['_id'] = self.get_document_id(url)
 
-        if 'port' not in mongodb_info:
-            mongodb_info['port'] = 27017
+        port = 27017
+        if 'port' in mongodb_info:
+            port = mongodb_info['port']
 
-        if 'collection' not in mongodb_info:
-            mongodb_info['collection'] = None
+        collection_name = None
+        if 'collection' in mongodb_info:
+            collection_name = mongodb_info['collection']
 
-        if 'update' not in mongodb_info:
-            mongodb_info['update'] = False
+        if 'update' in mongodb_info:
+            update = mongodb_info['update']
+
+        if 'name' in mongodb_info:
+            db_name = mongodb_info['name']
 
         meta = {}
         if 'meta' in document:
@@ -669,36 +602,36 @@ class Utils(object):
             document['meta'] = meta
 
         # 디비 연결
-        connect, mongodb = self.open_db(host=mongodb_info['host'], db_name=mongodb_info['name'],
-                                        port=mongodb_info['port'])
+        connect, mongodb = self.open_db(host=mongodb_info['host'],
+                                        db_name=db_name, port=port)
 
         # 몽고 디비에 문서 저장
+        query = {'_id': document['_id']}
         try:
-            collection = mongodb.get_collection(mongodb_info['collection'])
+            collection = mongodb.get_collection(collection_name)
 
             # update 모드인 경우 문서를 새로 저장
-            if mongodb_info['update'] is True:
-                collection.replace_one({'_id': document['_id']}, document, upsert=True)
+            if update is True:
+                collection.replace_one(query, document, upsert=True)
             else:
                 collection.insert_one(document)
         except errors.DuplicateKeyError:
-            print('DuplicateKeyError: {}, {}'.format(mongodb_info['collection'], document['_id']),
-                  file=sys.stderr, flush=True)
+            msg = '몽고디비 키 중복 에러: {} {}'.format(collection_name, document['_id'])
+            logging.error(msg=msg)
         except Exception as e:
-            logging.error('', exc_info=e)
-            traceback.print_exc(file=sys.stderr)
-            print('ERROR at save: {}: {}'.format(sys.exc_info()[0], document), file=sys.stderr, flush=True)
+            msg = '몽고디비 저장 에러: {} {} {}'.format(collection_name, document['_id'], e)
+            logging.error(msg=msg)
 
             # 저장에 실패할 경우 error 컬랙션에 저장
             try:
                 collection = mongodb.get_collection('error')
 
                 if '_id' in document:
-                    collection.replace_one({'_id': document['_id']}, document, upsert=True)
+                    collection.replace_one(query, document, upsert=True)
                 else:
                     collection.insert_one(document)
             except Exception as e:
-                logging.error('', exc_info=e)
+                logging.error(msg='error 컬랙션에 저장 에러: {}'.format(e))
 
             return False
 
@@ -707,17 +640,17 @@ class Utils(object):
 
         # 섹션 정보 저장
         if 'section' in document:
-            self.save_section_info(document=document, mongodb_info=mongodb_info,
-                                   collection_name='section_{}'.format(mongodb_info['collection']))
+            self.save_section_info(document=document, mongodb_info=mongodb_info, db_name=db_name,
+                                   collection_name='section_{}'.format(collection_name))
 
         # 현재 상황 출력
-        msg = [mongodb_info['host'], mongodb_info['name'], mongodb_info['collection']]
+        msg = [mongodb_info['host'], db_name, collection_name]
         for key in ['_id', 'date', 'section', 'title', 'url']:
             if key in document and isinstance(document[key], str):
                 msg.append(document[key])
 
         if len(msg) > 0:
-            print('\t'.join(msg), flush=True)
+            logging.info(msg='몽고디비 저장 정보: {}'.format('\t'.join(msg)))
 
         return True
 
@@ -725,17 +658,10 @@ class Utils(object):
         """
         엘라스틱서치에 로그 저장
 
-        :param document:
-            크롤링 결과 문서
-
-        :param elastic_info:
-            elastic 접속 정보
-
-        :param mongodb_info:
-            몽고 디비 접속 정보: collection 이름 사용
-
-        :return:
-            True/False
+        :param document: 크롤링 결과 문서
+        :param elastic_info: elastic 접속 정보
+        :param mongodb_info: 몽고 디비 접속 정보: collection 이름 사용
+        :return: True/False
         """
         from elasticsearch import Elasticsearch
 
@@ -782,35 +708,25 @@ class Utils(object):
 
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
         except Exception as e:
-            logging.error('', exc_info=e)
-            traceback.print_exc(file=sys.stderr)
-
-            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+            logging.error(msg='elastic-search 저장 에러: {}'.format(e))
 
         return True
 
-    def send_corpus_process(self, document_id, document, api_info, mongodb_info):
+    def send_corpus_process(self, document_id, document, api_info, db_name, mongodb_info, update):
         """
         코퍼스 저처리 분석 데몬에 문서 아이디 전달
 
-        :param document_id:
-            전달할 문서 아이디
-
-        :param document:
-            전달할 문서
-
-        :param api_info:
-            전처리 API 서버 정보
-
-        :param mongodb_info:
-            디비 정보
-
-        :return:
-            True/False
+        :param document_id: 전달할 문서 아이디
+        :param document: 전달할 문서
+        :param api_info: 전처리 API 서버 정보
+        :param db_name: 디비명
+        :param mongodb_info: 몽고 디비 정보
+        :param update: 디비 갱신 여부 (True/False)
+        :return: True/False
         """
         # 필수 항목: url
         # 선택: index, type
-        index, doc_type = self.get_elastic_index_info(mongodb_info=mongodb_info, elastic_info=api_info,
+        index, doc_type = self.get_elastic_index_info(db_name=db_name, elastic_info=api_info,
                                                       article_date=document['date'])
 
         if index is None or doc_type is None:
@@ -819,7 +735,6 @@ class Utils(object):
         # 날짜 변환
         document = self.convert_datetime(document=document)
 
-        update = False
         if 'update' in api_info:
             update = api_info['update']
 
@@ -829,6 +744,7 @@ class Utils(object):
             'doc_type': doc_type
         }
 
+        # 문서 vs. 문서 아이디
         if mongodb_info is None:
             body['document'] = document
         else:
@@ -836,52 +752,43 @@ class Utils(object):
 
         headers = {'Content-Type': 'application/json'}
         try:
-            url = api_info['url']
+            url = api_info['host']
             if self.debug_mode is True:
                 url = 'http://localhost:5004/v1.0/api/batch'
 
             _ = requests.post(url=url, json=body, headers=headers,
                               allow_redirects=True, timeout=30, verify=False)
 
-            print('send corpus process: ', url, document['_id'], document['title'], flush=True)
+            logging.info(msg='코퍼스 전처리: {} {} {}'.format(url, document['_id'], document['title']))
         except Exception as e:
-            print(e, flush=True)
+            logging.error(msg='코퍼스 전처리 에러: {} {}'.format(document['_id'], e))
 
         return True
 
-    def insert_elastic(self, document, elastic_info, mongodb_info):
+    def insert_elastic(self, document, elastic_info, db_name, update):
         """
         elastic search 에 문서 저장
 
-        :param document:
-            문서
-
-        :param elastic_info:
-            elastic 접속 정보
-
+        :param document: 문서
+        :param elastic_info: elastic 접속 정보
             "elastic": {
               "update": true,
-              "index": "daum_economy",
-              "doc_type": "",
               "host": "http://nlpapi.ncsoft.com:9200"
             }
 
-        :param mongodb_info:
-            몽고디비 접속 정보, collection 이름 동기화
-
-        :return:
-            True/False
+        :param db_name: 디비 이름
+        :param update: 디비 갱신 여부 (True/False)
+        :return: True/False
         """
         from elasticsearch import Elasticsearch
 
         # 인덱스 추출, 몽고 디비 collection 이름 우선
-        index, doc_type = self.get_elastic_index_info(mongodb_info=mongodb_info, elastic_info=elastic_info,
+        index, doc_type = self.get_elastic_index_info(db_name=db_name, elastic_info=elastic_info,
                                                       article_date=document['date'])
 
         if index is None or doc_type is None:
             return
 
-        update = False
         if 'update' in elastic_info:
             update = elastic_info['update']
 
@@ -911,31 +818,166 @@ class Utils(object):
                 'doc_as_upsert': update
             }]
 
-            elastic.bulk(index=index, body=bulk_data, refresh=True)
+            response = elastic.bulk(index=index, body=bulk_data, refresh=True)
+            logging.info(msg='elastic-search 저장 결과: {}'.format(response))
         except Exception as e:
-            logging.error('', exc_info=e)
-            traceback.print_exc(file=sys.stderr)
-
-            print('ERROR at save elastic: {}'.format(sys.exc_info()[0]))
+            logging.error(msg='elastic-search 저장 에러: {}'.format(e))
 
         return True
 
-    def get_elastic_index_info(self, mongodb_info, elastic_info, article_date):
+    @staticmethod
+    def get_tag_text(tag):
+        """
+        텍스트 반환
+        :param tag:
+        :return:
+        """
+        import bs4
+
+        if tag is None:
+            return ''
+
+        if isinstance(tag, bs4.element.NavigableString) is True:
+            return str(tag).strip()
+
+        return tag.get_text().strip()
+
+    def extract_image(self, soup, delete_caption=False):
+        """
+        기사 본문에서 이미지와 캡션 추출
+
+        :param soup:
+        :param delete_caption:
+        :return:
+        """
+
+        result = []
+        for tag in soup.find_all('img'):
+            next_element = tag.next_element
+
+            # 광고일 경우 iframe 으로 text 가 널이다.
+            limit = 10
+            if next_element is not None:
+                str_next_element = self.get_tag_text(next_element)
+
+                try:
+                    while str_next_element == '':
+                        limit -= 1
+                        if limit < 0:
+                            break
+
+                        if next_element.next_element is None:
+                            break
+
+                        next_element = next_element.next_element
+                        str_next_element = self.get_tag_text(next_element)
+
+                    if len(str_next_element) < 200 and str_next_element.find('\n') < 0:
+                        caption = str_next_element
+                        result.append({'image': tag['src'], 'caption': caption})
+                    else:
+                        next_element = None
+                        result.append({'image': tag['src'], 'caption': ''})
+                except Exception as e:
+                    logging.error(msg='이미지 추출 에러: {}'.format(e))
+            else:
+                result.append({'image': tag['src'], 'caption': ''})
+
+            # 캡션을 본문에서 삭제
+            if delete_caption is True:
+                try:
+                    if next_element is not None:
+                        next_element.replace_with('')
+
+                    tag.replace_with('')
+                except Exception as e:
+                    logging.error(msg='이미지 캡션 추출 에러: {}'.format(e))
+
+        return result
+
+    def save_s3(self, document, s3_info, db_name):
+        """
+        S3에 기사 이미지 저장
+
+        :param document: 저장할 문서
+        :param s3_info:
+            {
+                bucket: 'bucket name',
+                url: 'http://paige-cdn.plaync.com'
+            }
+        :param db_name: 디비명
+        :return: document
+        """
+        # 이미지 목록 추출
+        image_list = None
+        if 'image_list' in document:
+            image_list = document['image_list']
+        else:
+            if 'html_content' in document:
+                soup = BeautifulSoup(document['html_content'], 'lxml')
+                image_list = self.extract_image(soup=soup)
+
+        # 추출된 이미지 목록이 없을 경우
+        if image_list is None:
+            return
+
+        import boto3
+        import pathlib
+
+        # http://boto3.readthedocs.io/en/latest/reference/services/s3.html
+        bucket_name = s3_info['bucket']
+        aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
+        aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
+
+        s3 = boto3.resource('s3',
+                            aws_access_key_id=aws_access_key_id,
+                            aws_secret_access_key=aws_secret_access_key)
+
+        bucket = s3.Bucket(bucket_name)
+
+        # 이미지 목록
+        count = 0
+        prefix = document['_id']
+        for image in image_list:
+            url = image['image']
+
+            # 이미지 확장자 추출
+            suffix = pathlib.Path(url).suffix
+
+            # 1. 이미지 파일 다운로드
+            r = requests.get(url)
+
+            upload_file = '{}/{}-{:02d}{}'.format(db_name, prefix, count, suffix)
+            count += 1
+
+            # 2. s3에 업로드
+            try:
+                response = bucket.put_object(Key=upload_file, Body=r.content, ACL='public-read',
+                                             ContentType=r.headers['content-type'])
+                logging.info(msg='save S3: {}'.format(response))
+
+                # cdn 이미지 주소 추가
+                image['cdn_image'] = '{}/{}'.format(s3_info['url_prefix'], upload_file)
+            except Exception as e:
+                logging.error(msg='s3 저장 오류: {}'.format(e))
+
+        # 이미지 목록 업데이트
+        document['image_list'] = image_list
+
+        return document
+
+    def get_elastic_index_info(self, db_name, elastic_info, article_date):
         """
         elastic search 의 저장 정보
-        :param mongodb_info:
-        :param elastic_info:
-        :param article_date:
+        :param db_name: 디비명
+        :param elastic_info: elastic 접속 정보
+        :param article_date: 날짜
         :return:
         """
         # 인덱스 추출, 몽고 디비 collection 이름 우선
 
-        index = None
+        index = db_name
         doc_type = None
-
-        if mongodb_info is not None:
-            index = mongodb_info['name']
-            doc_type = mongodb_info['collection']
 
         if 'index' in elastic_info and elastic_info['index'] != '' and elastic_info['index'] != '{mongo.name}':
             index = elastic_info['index']
@@ -953,14 +995,9 @@ class Utils(object):
         """
         문서 저장
 
-        :param document:
-            저장할 문서
-
-        :param db_info:
-            디비 접속 정보
-
-        :return:
-            True/False
+        :param document: 저장할 문서
+        :param db_info: 디비 접속 정보
+        :return: True/False
         """
         import threading
 
@@ -979,7 +1016,7 @@ class Utils(object):
             if self.job_queue.empty() is True:
                 start_thread = True
 
-                print('add job queue: {}'.format(self.job_queue.qsize()), flush=True)
+                logging.info(msg='저장 큐에 저장: {:,}'.format(self.job_queue.qsize()))
                 self.job_queue.put(job)
 
             if start_thread is True:
@@ -993,13 +1030,12 @@ class Utils(object):
         """
         스래드 안에서 문서 저장
 
-        :return:
-            True/False
+        :return: True/False
         """
         if self.job_queue.empty() is True:
             return True
 
-        print('job queue size: {}'.format(self.job_queue.qsize()), flush=True)
+        logging.info(msg='크롤링 결과 저장: {:,}'.format(self.job_queue.qsize()))
 
         # 뮤텍스 구간
         if self.mutex is True:
@@ -1008,33 +1044,47 @@ class Utils(object):
         self.mutex = True
 
         while self.job_queue.empty() is False:
-            #  작업 큐에서 작업을 하나 가져온다.
+            # 작업 큐에서 작업을 가져온다.
             job = self.job_queue.get()
 
             db_info = job['db_info']
             document = job['document']
+
+            # 디비명
+            db_name = None
+            if 'db_name' in db_info:
+                db_name = db_info['db_name']
+
+            update = False
+            if 'update' in db_info:
+                update = db_info['update']
 
             mongo_info = None
             if 'mongo' in db_info:
                 mongo_info = db_info['mongo']
 
             # 문서 저장
-            if 'mongo'in db_info and 'host' in mongo_info:
-                self.save_mongodb(document=document, mongodb_info=mongo_info)
+            if 's3' in db_info and 'bucket' in db_info['s3']:
+                document = self.save_s3(document=document, s3_info=db_info['s3'],
+                                        db_name=db_name)
 
-            if 'mqtt'in db_info and 'host' in db_info['mqtt']:
-                self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
+            if 'mongo' in db_info and 'host' in mongo_info:
+                self.save_mongodb(document=document, mongodb_info=mongo_info,
+                                  db_name=db_name, update=update)
 
-            if 'kafka'in db_info and 'host' in db_info['kafka']:
-                self.send_kafka_message(document=document, kafka_info=db_info['kafka'],
-                                        mongodb_info=mongo_info)
-
-            if 'logs'in db_info and 'host' in db_info['logs']:
-                self.save_logs(document=copy.deepcopy(document),
-                               elastic_info=db_info['logs'], mongodb_info=mongo_info)
+            # if 'mqtt'in db_info and 'host' in db_info['mqtt']:
+            #     self.send_mqtt_message(document=document, mqtt_info=db_info['kafka'])
+            #
+            # if 'kafka'in db_info and 'host' in db_info['kafka']:
+            #     self.send_kafka_message(document=document, kafka_info=db_info['kafka'],
+            #                             mongodb_info=mongo_info)
+            #
+            # if 'logs'in db_info and 'host' in db_info['logs']:
+            #     self.save_logs(document=copy.deepcopy(document),
+            #                    elastic_info=db_info['logs'], mongodb_info=mongo_info)
 
             # 엘라스틱 서치에 저장
-            if 'elastic'in db_info:
+            if 'elastic' in db_info:
                 batch_list = [db_info['elastic']]
                 if isinstance(db_info['elastic'], list):
                     batch_list = db_info['elastic']
@@ -1044,7 +1094,7 @@ class Utils(object):
                         continue
 
                     self.insert_elastic(document=copy.deepcopy(document), elastic_info=elastic_info,
-                                        mongodb_info=mongo_info)
+                                        db_name=db_name, update=update)
 
             # 코퍼스 전처리 시작
             if 'corpus-process' in db_info:
@@ -1053,11 +1103,12 @@ class Utils(object):
                     batch_list = db_info['corpus-process']
 
                 for api_info in batch_list:
-                    if 'url' not in api_info:
+                    if 'host' not in api_info:
                         continue
 
                     self.send_corpus_process(document_id=document['_id'], document=copy.deepcopy(document),
-                                             api_info=api_info, mongodb_info=mongo_info)
+                                             api_info=api_info, db_name=db_name, update=update,
+                                             mongodb_info=mongo_info)
 
         self.mutex = False
 
@@ -1070,19 +1121,14 @@ class Utils(object):
         """
         url 단축
 
-        :param document:
-            크롤링 문서
-
-        :param parsing_info:
-            문서 파싱 정보: 단축 url 패턴 사용
-
-        :return:
-            True/False
+        :param document: 크롤링 문서
+        :param parsing_info: 문서 파싱 정보: 단축 url 패턴 사용
+        :return: True/False
         """
         try:
             query, base_url, parsed_url = self.get_query(document['url'])
         except Exception as e:
-            print(e, document, flush=True)
+            logging.error(msg='make_simple_url: get_query 오류 {}'.format(e))
             return False
 
         url_info = {
@@ -1103,7 +1149,7 @@ class Utils(object):
                     str_query = parsing_url['simple_query'].format(**query)
                     url_info['simple'] = '{}?{}'.format(base_url, str_query)
             except Exception as e:
-                logging.error('', exc_info=e)
+                logging.error(msg='simple_query 오류: {}'.format(e))
 
             simple_url = url_info['full']
 
@@ -1114,7 +1160,7 @@ class Utils(object):
 
                     url_info['simple'] = simple_url
             except Exception as e:
-                logging.error('', exc_info=e)
+                logging.error(msg='simple_query replace 오류: {}'.format(e))
 
         document['url'] = url_info
 
@@ -1133,7 +1179,8 @@ class Utils(object):
 
                     document['_id'] = document_id
                 except Exception as e:
-                    logging.error('', exc_info=e)
+                    logging.error(msg='문서 아이디 추출 오류: {}'.format(e))
+
                     document['_id'] = self.get_document_id(document_id)
             else:
                 document['_id'] = self.get_document_id(document_id)
@@ -1150,7 +1197,8 @@ class Utils(object):
                     if key_exists is True and len(query) > 0:
                         document['_id'] = parsing_id['_id'].format(**query)
                 except Exception as e:
-                    logging.error('', exc_info=e)
+                    logging.error(msg='문서 아이디 추출 오류: {}'.format(e))
+
                     document['_id'] = self.get_document_id(document_id)
 
         return True
@@ -1161,16 +1209,10 @@ class Utils(object):
         auto-increment 기능 구현
         몽고 디비에 primary id 기능 구현
 
-        :param collection:
-            컬랙션 이름
-
-        :param document_name:
-            문서 아이디
-
+        :param collection: 컬랙션 이름
+        :param document_name: 문서 아이디
         :param value:
-
-        :return:
-            마지막 값
+        :return: 마지막 값
         """
         query = {'_id': document_name}
         update = {'$inc': {value: 1}}
@@ -1194,30 +1236,31 @@ class Utils(object):
 
         return '{:06d}'.format(max_id)
 
-    def save_section_info(self, document, mongodb_info, collection_name):
+    def save_section_info(self, document, mongodb_info, db_name, collection_name):
         """
         문서의 섹션 정보 저장
 
-        :param document:
-            크롤링된 문서
-
-        :param mongodb_info:
-            몽고 디비 접속 정보
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            True/False
+        :param document: 크롤링된 문서
+        :param db_name: 디비명
+        :param mongodb_info: 몽고 디비 접속 정보
+        :param collection_name: 컬랙션 이름
+        :return: True/False
         """
         if document is None or '_id' not in document or 'section' not in document:
             return False
 
         from pymongo import errors
 
+        if 'name' in mongodb_info:
+            db_name = mongodb_info['name']
+
+        if db_name is None:
+            return False
+
         # 디비 연결
-        connect, mongodb = self.open_db(host=mongodb_info['host'], db_name=mongodb_info['name'],
-                                        port=mongodb_info['port'])
+        connect, mongodb = self.open_db(host=mongodb_info['host'],
+                                        port=mongodb_info['port'],
+                                        db_name=db_name)
 
         section_info = {
             '_id': '{}-{}'.format(document['_id'], document['section'])
@@ -1235,9 +1278,9 @@ class Utils(object):
             else:
                 collection.insert_one(section_info)
         except errors.DuplicateKeyError:
-            pass
+            logging.error(msg='섹션 정보 저장 오류: 중복키')
         except Exception as e:
-            print('ERROR at save: ', e, document, flush=True)
+            logging.error(msg='섹션 정보 저장 오류: {}'.format(e))
 
             try:
                 collection = mongodb.get_collection('error_{}'.format(collection_name))
@@ -1246,9 +1289,8 @@ class Utils(object):
                     collection.replace_one({'_id': section_info['_id']}, section_info, upsert=True)
                 else:
                     collection.insert_one(section_info)
-
             except Exception as e:
-                logging.error('', exc_info=e)
+                logging.error(msg='섹션 정보 저장 오류: {}'.format(e))
 
             return False
 
@@ -1261,7 +1303,7 @@ class Utils(object):
                 msg.append(document[key])
 
         if len(msg) > 0:
-            print('\t'.join(msg), flush=True)
+            logging.info(msg='섹션 정보 저장:'.format('\t'.join(msg)))
 
         return True
 
@@ -1270,14 +1312,9 @@ class Utils(object):
         """
         해쉬에서 해당 키의 값을 반환
 
-        :param data:
-            해쉬
-
-        :param key:
-            찾을 키
-
-        :return:
-            값
+        :param data: 해쉬
+        :param key: 찾을 키
+        :return: 값
         """
         if key in data:
             return data[key]
@@ -1289,11 +1326,8 @@ class Utils(object):
         """
         컨테이너가 실행중인 서버 이름 반환
 
-        :param state:
-            상태 정보
-
-        :return:
-            컨테이너가 실행중인 서버 이름
+        :param state: 상태 정보
+        :return: 컨테이너가 실행중인 서버 이름
         """
         host_name = os.getenv('CONTAINER_HOST_NAME', '')
         if host_name != '':
@@ -1308,24 +1342,12 @@ class Utils(object):
         :param str_state:
             상태, running, ready, stop
             경과 시간
-
-        :param current_date:
-            현재 날짜
-
-        :param job_info:
-            작업 정보
-
-        :param scheduler_db_info:
-            scheduler 디비 접속 정보
-
-        :param start_date:
-            시작 일자
-
-        :param end_date:
-            종료 일자
-
-        :return:
-            True/False
+        :param current_date: 현재 날짜
+        :param job_info: 작업 정보
+        :param scheduler_db_info: scheduler 디비 접속 정보
+        :param start_date: 시작 일자
+        :param end_date: 종료 일자
+        :return: True/False
         """
         state = job_info['state']
 
@@ -1357,14 +1379,9 @@ class Utils(object):
         """
         json 키를 변경
 
-        :param json_data:
-            json 데이터
-
-        :param key_mapping:
-            키 매핑 정보
-
-        :return:
-            True/False
+        :param json_data: json 데이터
+        :param key_mapping: 키 매핑 정보
+        :return: True/False
         """
         if key_mapping is None:
             return False
@@ -1387,11 +1404,8 @@ class Utils(object):
         """
         url 에서 쿼리문을 반환
 
-        :param url:
-            url 주소
-
-        :return:
-            url 쿼리 파싱 결과 반환
+        :param url: url 주소
+        :return: url 쿼리 파싱 결과 반환
         """
         from urllib.parse import urlparse, parse_qs
 
@@ -1408,24 +1422,12 @@ class Utils(object):
         """
         현재 작업 상태 변경
 
-        :param str_state:
-            상태, running, ready, stoped
-            경과 시간
-
-        :param job_info:
-            작업 정보
-
-        :param scheduler_db_info:
-            scheduler 디비 접속 정보
-
-        :param url:
-            url 주소
-
-        :param query_key_mapping:
-            url 쿼리
-
-        :return:
-            True/False
+        :param str_state: 경과 시간 (상태, running, ready, stoped)
+        :param job_info: 작업 정보
+        :param scheduler_db_info: scheduler 디비 접속 정보
+        :param url: url 주소
+        :param query_key_mapping: url 쿼리
+        :return: True/False
         """
         # query 정보 추출
         query = {}
@@ -1458,15 +1460,11 @@ class Utils(object):
 
     def update_document(self, document, db_info):
         """
+        문서 저장
 
-        :param document:
-            저장할 문서
-
-        :param db_info:
-            디비 접속 정보
-
-        :return:
-            None
+        :param document: 저장할 문서
+        :param db_info: 디비 접속 정보
+        :return: None
         """
         if db_info['file_db'] is True:
             return
@@ -1486,19 +1484,14 @@ class Utils(object):
         """
         디비에서 작업을 찾아 반환
 
-        :param db_info:
-            scheduler 디비 접속 정보
-
-        :param parsing_id:
-            파싱 아이디
-
-        :return:
-            섹션과 파싱 정보
+        :param db_info: scheduler 디비 접속 정보
+        :param parsing_id: 파싱 아이디
+        :return: 섹션과 파싱 정보
         """
         if db_info['file_db'] is True:
             import json
 
-            file_name = 'schedule/{}.json'.format(parsing_id)
+            file_name = 'schedule/parsing/{}.json'.format(parsing_id)
             with open(file_name, 'r') as fp:
                 body = ''.join(fp.readlines())
                 parsing_info = json.loads(body)
@@ -1518,14 +1511,9 @@ class Utils(object):
         """
         메타 테그 추출
 
-        :param soup:
-            html soup
-
-        :param result_list:
-            메타 태그 결과
-
-        :return:
-            True/False
+        :param soup: html soup
+        :param result_list: 메타 태그 결과
+        :return: True/False
         """
         result = {}
         for meta in soup.findAll('meta'):
@@ -1622,7 +1610,6 @@ class Utils(object):
                         # replace
                         if 'replace' in data_tag_info:
                             for pattern in data_tag_info['replace']:
-                                # data[key] = re.sub(pattern['from'], pattern['to'], data[key], re.DOTALL)
                                 data[key] = re.sub('\r?\n', ' ', data[key], flags=re.MULTILINE)
                                 data[key] = re.sub(pattern['from'], pattern['to'], data[key], flags=re.DOTALL)
 
@@ -1797,168 +1784,168 @@ class Utils(object):
     #                 header = m[0].split('=', maxsplit=1)[0]
     #                 sentence = re.sub(p, '', sentence)
     #     except Exception as e:
-    #         logging.error('', exc_info=e)
+    #         logging.error('')
     #
     #     return header, sentence
 
-#     @staticmethod
-#     def csv2ellipsis():
-#         """
-#
-#         :return:
-#         """
-#
-#         # 20170425n44151
-#         # http://sports.news.nate.com/view/20170425n44151
-#         # 해외야구
-#         # 2017-04-25 22:02:00
-#         # 서울
-#         # 프로야구
-#         # 넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점
-#         # 9
-#         # 2
-#         # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
-#
-#         """
-#
-# find . -name "*화보*" -exec rm {} \;
-# find . -name "*포토*" -exec rm {} \;
-# find . -name "*[KS]*" -exec rm {} \;
-# find . -name "*[PO]*" -exec rm {} \;
-# find . -name "*S-girl*" -exec rm {} \;
-#
-#
-#
-# time bzcat data/nate_baseball/2017-04.json.bz2 \
-#     data/nate_baseball/2017-05.json.bz2 \
-#     data/nate_baseball/2017-06.json.bz2 \
-#     data/nate_baseball/2017-07.json.bz2 \
-#     data/nate_baseball/2017-08.json.bz2 \
-#     data/nate_baseball/2017-09.json.bz2 \
-#     data/nate_baseball/2017-10.json.bz2 \
-#     | ./batch.py
-#
-#
-#
-# {
-#     "session": "1",
-#     "memo": "",
-#     "meta": {
-#         "id": "20170425n44151",
-#         "url": "http://sports.news.nate.com/view/20170425n44151",
-#         "date": "2017-04-25 22:02:00",
-#         "title": "넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점",
-#         "section": "",
-#     },
-#     "sentence_list": [
-#         {
-#             "sentence": "허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.",
-#             "id": "1",
-#             "user": "A"
-#         },
-#         (...)
-#     ]
-# }
-#
-#
-#         col = []
-#         for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
-#             if k in document:
-#                 col.append(document[k])
-#             else:
-#                 col.append('')
-#
-#         col.append(str(i+1))
-#         col.append(str(j+1))
-#         col.append(sentence)
-#
-#         """
-#
-#         total_count = {
-#             'document': 0,
-#             'sentence': 0,
-#             'token': 0
-#         }
-#
-#         count = 0
-#         session = 1
-#
-#         buf = {
-#             'sentence_list': []
-#         }
-#
-#         prev_id = ''
-#         for line in sys.stdin:
-#             line = line.strip()
-#             if line == '':
-#                 continue
-#
-#             token = line.split('\t')
-#
-#             if prev_id != '' and token[0] != prev_id:
-#                 fname = 'data/nate_baseball/work/C{:03d}/{:05d}.json'.format(int(session / 100), session)
-#
-#                 fpath = os.path.dirname(fname)
-#                 if os.path.exists(fpath) is not True:
-#                     os.makedirs(fpath)
-#
-#                 with open(fname, 'w') as fp:
-#                     result = json.dumps(buf, ensure_ascii=False, indent=4, sort_keys=True)
-#                     fp.write(result + '\n')
-#                     fp.flush()
-#
-#                     total_count['document'] += 1
-#
-#                 with open('{}/file-state.json'.format(fpath), 'a') as fp:
-#                     result = json.dumps({
-#                         'filename': '{:05d}.json'.format(session),
-#                         'state': {}
-#                     })
-#
-#                     fp.write(result + '\n')
-#                     fp.flush()
-#
-#                 session += 1
-#                 buf = {
-#                     'sentence_list': []
-#                 }
-#
-#             buf['session'] = session
-#             buf['memo'] = ''
-#             buf['meta'] = {
-#                 'id': token[0],
-#                 'url': token[1],
-#                 'section': token[2],
-#                 'date': token[3],
-#                 'title': token[6]
-#             }
-#
-#             item = {
-#                 'sentence': token[9],
-#                 'id': count,
-#                 'user': '{:03d}'.format(len(buf['sentence_list']) + 1)
-#             }
-#
-#             buf['sentence_list'].append(item)
-#
-#             total_count['token'] += token[9].count(' ') + 1
-#
-#             count += 1
-#             prev_id = token[0]
-#
-#         total_count['sentence'] = count
-#
-#         print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
-#               '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
-#                 total_count['document'],
-#                 total_count['sentence'],
-#                 total_count['token'],
-#                 total_count['sentence']/total_count['document'],
-#                 total_count['token'] / total_count['document'],
-#                 total_count['token'] / total_count['sentence']
-#                 ))
-#
-#         return
+    #     @staticmethod
+    #     def csv2ellipsis():
+    #         """
+    #
+    #         :return:
+    #         """
+    #
+    #         # 20170425n44151
+    #         # http://sports.news.nate.com/view/20170425n44151
+    #         # 해외야구
+    #         # 2017-04-25 22:02:00
+    #         # 서울
+    #         # 프로야구
+    #         # 넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점
+    #         # 9
+    #         # 2
+    #         # 허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.
+    #
+    #         """
+    #
+    # find . -name "*화보*" -exec rm {} \;
+    # find . -name "*포토*" -exec rm {} \;
+    # find . -name "*[KS]*" -exec rm {} \;
+    # find . -name "*[PO]*" -exec rm {} \;
+    # find . -name "*S-girl*" -exec rm {} \;
+    #
+    #
+    #
+    # time bzcat data/nate_baseball/2017-04.json.bz2 \
+    #     data/nate_baseball/2017-05.json.bz2 \
+    #     data/nate_baseball/2017-06.json.bz2 \
+    #     data/nate_baseball/2017-07.json.bz2 \
+    #     data/nate_baseball/2017-08.json.bz2 \
+    #     data/nate_baseball/2017-09.json.bz2 \
+    #     data/nate_baseball/2017-10.json.bz2 \
+    #     | ./batch.py
+    #
+    #
+    #
+    # {
+    #     "session": "1",
+    #     "memo": "",
+    #     "meta": {
+    #         "id": "20170425n44151",
+    #         "url": "http://sports.news.nate.com/view/20170425n44151",
+    #         "date": "2017-04-25 22:02:00",
+    #         "title": "넥센의 무서운 화력, 두산 상대로 선발 전원 안타·득점",
+    #         "section": "",
+    #     },
+    #     "sentence_list": [
+    #         {
+    #             "sentence": "허정엽 역시 장타 능력을 과시하며 4타수 1안타 4타점을 기록했다.",
+    #             "id": "1",
+    #             "user": "A"
+    #         },
+    #         (...)
+    #     ]
+    # }
+    #
+    #
+    #         col = []
+    #         for k in ['_id', 'url', 'section', 'date', 'source', 'title_header', 'title']:
+    #             if k in document:
+    #                 col.append(document[k])
+    #             else:
+    #                 col.append('')
+    #
+    #         col.append(str(i+1))
+    #         col.append(str(j+1))
+    #         col.append(sentence)
+    #
+    #         """
+    #
+    #         total_count = {
+    #             'document': 0,
+    #             'sentence': 0,
+    #             'token': 0
+    #         }
+    #
+    #         count = 0
+    #         session = 1
+    #
+    #         buf = {
+    #             'sentence_list': []
+    #         }
+    #
+    #         prev_id = ''
+    #         for line in sys.stdin:
+    #             line = line.strip()
+    #             if line == '':
+    #                 continue
+    #
+    #             token = line.split('\t')
+    #
+    #             if prev_id != '' and token[0] != prev_id:
+    #                 fname = 'data/nate_baseball/work/C{:03d}/{:05d}.json'.format(int(session / 100), session)
+    #
+    #                 fpath = os.path.dirname(fname)
+    #                 if os.path.exists(fpath) is not True:
+    #                     os.makedirs(fpath)
+    #
+    #                 with open(fname, 'w') as fp:
+    #                     result = json.dumps(buf, ensure_ascii=False, indent=4, sort_keys=True)
+    #                     fp.write(result + '\n')
+    #                     fp.flush()
+    #
+    #                     total_count['document'] += 1
+    #
+    #                 with open('{}/file-state.json'.format(fpath), 'a') as fp:
+    #                     result = json.dumps({
+    #                         'filename': '{:05d}.json'.format(session),
+    #                         'state': {}
+    #                     })
+    #
+    #                     fp.write(result + '\n')
+    #                     fp.flush()
+    #
+    #                 session += 1
+    #                 buf = {
+    #                     'sentence_list': []
+    #                 }
+    #
+    #             buf['session'] = session
+    #             buf['memo'] = ''
+    #             buf['meta'] = {
+    #                 'id': token[0],
+    #                 'url': token[1],
+    #                 'section': token[2],
+    #                 'date': token[3],
+    #                 'title': token[6]
+    #             }
+    #
+    #             item = {
+    #                 'sentence': token[9],
+    #                 'id': count,
+    #                 'user': '{:03d}'.format(len(buf['sentence_list']) + 1)
+    #             }
+    #
+    #             buf['sentence_list'].append(item)
+    #
+    #             total_count['token'] += token[9].count(' ') + 1
+    #
+    #             count += 1
+    #             prev_id = token[0]
+    #
+    #         total_count['sentence'] = count
+    #
+    #         print('\n문서수: {:,}\n문장수: {:,}\n어절수: {:,}\n'
+    #               '문서별 평균 문장수: {:0.2f}\n문서별 평균 어절 수: {:0.2f}\n문장별 평균 어절 수: {:0.2f}'.format(
+    #                 total_count['document'],
+    #                 total_count['sentence'],
+    #                 total_count['token'],
+    #                 total_count['sentence']/total_count['document'],
+    #                 total_count['token'] / total_count['document'],
+    #                 total_count['token'] / total_count['sentence']
+    #                 ))
+    #
+    #         return
 
     # @staticmethod
     # def news2text():
@@ -2029,14 +2016,9 @@ class Utils(object):
         """
         문자열 날짜 형식을 date 형으로 반환
 
-        :param date_string:
-            2016-01, 2016-01-01
-
-        :param is_end_date:
-            마지막 일자 플래그, 마지막 날짜의 경우
-
-        :return:
-            변환된 datetime
+        :param date_string: 2016-01, 2016-01-01
+        :param is_end_date: 마지막 일자 플래그, 마지막 날짜의 경우
+        :return: 변환된 datetime
         """
         from datetime import datetime
         from dateutil.relativedelta import relativedelta
@@ -2064,19 +2046,11 @@ class Utils(object):
     def print_summary(start_time, total=0, count=0, tag=''):
         """
         크롤링 진행 상황을 출력한다.
-        :param total:
-            전체 수량
-
-        :param count:
-            현재 진행 수량
-
-        :param start_time:
-            시작 시간
-
+        :param total: 전체 수량
+        :param count: 현재 진행 수량
+        :param start_time: 시작 시간
         :param tag:
-
-        :return:
-            True
+        :return: True
         """
         from time import time
         from datetime import timedelta
@@ -2094,12 +2068,12 @@ class Utils(object):
                 return False
 
             msg = '완료/남은수/전체/진행율/속도 = ({:,}/{:,}/{:,}/{:0.2f}%/{:0.2f}), ' \
-                  '실행 시간 = {}, 남은 시간 = {}'.format(count, left_count, total, processing_rate, 1/speed,
+                  '실행 시간 = {}, 남은 시간 = {}'.format(count, left_count, total, processing_rate, 1 / speed,
                                                   timedelta(seconds=processing_time), timedelta(seconds=estimate))
         else:
             msg = '실행 시간 = {}'.format(timedelta(seconds=processing_time))
 
-        print('{} {}\n'.format(tag, msg), file=sys.stderr, flush=True)
+        logging.info(msg='{} {}\n'.format(tag, msg))
 
         return True
 

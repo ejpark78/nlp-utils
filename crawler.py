@@ -15,6 +15,12 @@ from dateutil.relativedelta import relativedelta
 from utils import Utils
 from url_index_db import UrlIndexDB
 
+import logging
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=logging.INFO)
+
 
 class Crawler(Utils):
     """
@@ -44,14 +50,9 @@ class Crawler(Utils):
         """
         컬랙션 이름 반환
 
-        :param article:
-            기사 본문
-
-        :param response_type:
-            입력된 기사의 타입: html, json
-
-        :return:
-            컬랙션 이름
+        :param article: 기사 본문
+        :param response_type: 입력된 기사의 타입: html, json
+        :return: 컬랙션 이름
         """
         collection = 'error'
         if 'mongo' not in self.db_info:
@@ -87,49 +88,45 @@ class Crawler(Utils):
         """
         url 중복 체크, 섹션 정보 저장
 
-        :return:
-            True/False
+        :param url: url 주소
+        :param article: 크롤링 결과
+        :param response_type: 결과 타입
+        :return: True/False
         """
+        # 인덱스 디비가 없을 경우
         if self.url_index_db is None:
             return False
 
+        # 인덱스 디비에 없는 경우
         if self.url_index_db.check_url(url) is False:
             return False
 
+        # 이미 받은 url 목록에 있는 경우
         self.duplicated_url_count += 1
-        print('url exists: ', '{:,}'.format(self.duplicated_url_count), url, flush=True)
+        logging.info(msg='url exists: {:,} url: {}'.format(self.duplicated_url_count, url))
 
-        if 'mongo' not in self.db_info:
+        # 섹션 정보 저장
+        if 'section' in article:
+            collection = self.get_collection_name(article, response_type)
+
+            self.save_section_info(document=article, mongodb_info=self.db_info['mongo'],
+                                   db_name=self.db_info['db_name'],
+                                   collection_name='section_{}'.format(collection))
+
+        if 'update' not in self.db_info:
+            return True
+        elif self.db_info['update'] is True:
             return False
 
-        if 'update' in self.db_info['mongo'] and self.db_info['mongo']['update'] is False:
-            # const value 삽입
-            if 'const_value' in self.parameter:
-                article.update(self.parameter['const_value'])
-
-            # 섹션 정보 저장
-            if 'section' in article:
-                collection = self.get_collection_name(article, response_type)
-
-                self.save_section_info(document=article, mongodb_info=self.db_info['mongo'],
-                                       collection_name='section_{}'.format(collection))
-
-            return True
-
-        return False
+        return True
 
     def curl_article(self, article, response_type='html'):
         """
         기사 본문을 웹에서 가져와서 디비에 저장하는 함수
 
-        :param article:
-            기사 본문
-
-        :param response_type:
-            기사 본문 형식
-
-        :return:
-            True/False
+        :param article: 기사 본문
+        :param response_type: 기사 본문 형식
+        :return: True/False
         """
         target_tags = None
         if 'article_page' in self.parsing_info:
@@ -140,13 +137,17 @@ class Crawler(Utils):
 
         # 다운로드 받은 URL이 있는지 검사
         if 'url' not in article:
-            print('ERROR: 다운 받을 url 주소가 없음.', article, flush=True)
+            logging.error(msg='다운 받을 url 주소가 없음.')
             return
 
         # url 중복 체크, 섹션 정보 저장
         url = self.get_url(article['url'])
         if self.debug_mode is False and self.is_url_exists(url, article, response_type):
             return
+
+        # const value 삽입
+        if 'const_value' in self.parameter:
+            article.update(self.parameter['const_value'])
 
         # 인코딩 명시
         encoding = None
@@ -162,9 +163,6 @@ class Crawler(Utils):
         json_type = False
         if response_type == 'json':
             json_type = True
-
-        # if 'parsing_type' in self.parsing_info and self.parsing_info['parsing_type'] == 'json':
-        #     json_type = True
 
         soup = self.curl_html(article['url'], encoding=encoding,
                               json_type=json_type, delay=self.parameter['delay'], headers=headers)
@@ -201,10 +199,10 @@ class Crawler(Utils):
             # html 내용이 없을 필드가 있는 경우
             if 'html_content' not in article:
                 article['raw_html'] = str(soup)
-                print('INFO: missing html_content use entire html', flush=True)
+                logging.error(msg='html_content 필드가 없음. 전체 html 저장')
 
             if 'title' not in article or 'date' not in article or article['date'] is None:
-                print('ERROR missing column', article, flush=True)
+                logging.error(msg='title 혹은 date 필드가 없음')
 
         # 기사 본문 저장
         article['curl_date'] = datetime.now()
@@ -220,13 +218,9 @@ class Crawler(Utils):
         """
         섹션 정보 저장
 
-        :param curl_url:
-            크롤링 웹 주소
-
+        :param curl_url: 크롤링 웹 주소
         :param subject_list:
-
-        :return:
-            True/False
+        :return: True/False
         """
         # url 에서 불용어 제거
         section = self.parameter['const_value']['section']
@@ -256,6 +250,7 @@ class Crawler(Utils):
 
             # 저장
             self.save_section_info(document=subject, mongodb_info=self.db_info['mongo'],
+                                   db_name=self.db_info['db_name'],
                                    collection_name=collection)
 
             url_info = subject['url']
@@ -270,22 +265,13 @@ class Crawler(Utils):
         """
         패이지 목록에서 기사 목록을 가져옴
 
-        :param curl_url:
-            웹 주소
-
+        :param curl_url: 웹 주소
         :return:
         """
         if curl_url.find('javascript') > 0:
             return
 
-        print('curl article list: ', curl_url, flush=True)
-
-        # page 주소 중복 체크: 오류가 있음. 마지막 페이지인 경우 중복으로 크롤링
-        # if curl_url not in self.page_url_cache:
-        #     self.page_url_cache.append(curl_url)
-        # else:
-        #     print({'INFO': 'already curled page: {}'.format(curl_url)})
-        #     return None
+        logging.info(msg='기사 목록 크롤링: {}'.format(curl_url))
 
         # 인코딩 명시
         encoding = None
@@ -345,7 +331,7 @@ class Crawler(Utils):
         :param json_key_mapping:
         :return:
         """
-        print('curl json article list', flush=True)
+        logging.info(msg='json 형식의 데이터 목록 크롤링: {}'.format(domain_url))
 
         # 개별 기사 URL
         for article in article_list:
@@ -386,13 +372,13 @@ class Crawler(Utils):
         :param page:
         :return:
         """
-        # json의 키값 매핑 정보를 가져온다.
+        # json 키값 매핑 정보를 가져온다.
         json_key_mapping = None
         if 'json_key_mapping' in self.parsing_info:
             json_key_mapping = self.parsing_info['json_key_mapping']
 
         if json_key_mapping is None:
-            print('error no json key mapping info', flush=True)
+            logging.error(msg='크롤링 query 키 맵핑 정보가 없음: {}'.format(page_url))
             return
 
         # 헤더 명시
@@ -405,7 +391,7 @@ class Crawler(Utils):
         if page_url.find('{page}') > 0:
             url = page_url.format(page=page)
 
-        print('curl all pages: ', url, flush=True)
+        logging.info(msg='전체 json 데이터 크롤링')
         page_soup = self.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
         if page_soup is None:
             return
@@ -427,9 +413,6 @@ class Crawler(Utils):
                     self.curl_all_pages_json(page_url, page=page)
             else:
                 # 기사 본문 저장
-                # self.save_article(
-                #     document=section_info, result_db=self.result_db,
-                #     db_name=self.parameter['result_db_name'], collection=self.collection_name)
                 self.save_article(document=section_info, db_info=self.db_info)
 
         if isinstance(section_info, list) is True:
@@ -440,13 +423,18 @@ class Crawler(Utils):
     def trace_index_tag(self, page_tag, page_url, curl_type):
         """
         페이지 목록 크롤링: 1~10 등
+
+        :param page_tag:
+        :param page_url:
+        :param curl_type:
+        :return:
         """
         parsing_info = self.parsing_info['page_list']
 
         for a_tag in page_tag.findAll(parsing_info['index']['tag_name'],
                                       attrs=self.get_value(parsing_info['index'], 'attr')):
             if a_tag.has_attr('href') is False:
-                print('ERROR: missing href', str(a_tag), flush=True)
+                logging.error(msg='링크 정보에서 href 속성이 없음')
                 continue
 
             url = urljoin(page_url, a_tag['href'])
@@ -485,8 +473,7 @@ class Crawler(Utils):
 
         for next_page in page_tag.findAll(parsing_info['next']['tag_name'],
                                           attrs=self.get_value(parsing_info['next'], 'attr')):
-
-            print('next_page: ', next_page, flush=True)
+            # logging.info(msg='다음 페이지 정보: {}'.format(next_page))
 
             if next_page is None:
                 continue
@@ -544,14 +531,14 @@ class Crawler(Utils):
         if page_url.find('javascript') > 0:
             return
 
-        print('curl all pages: ', page_url, flush=True)
+        logging.info(msg='페이지 목록과 기사 본문을 수집: {}'.format(page_url))
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
             return
 
         if 'page_list' not in self.parsing_info:
-            print('ERROR no page list in parsing_info', flush=True)
+            logging.error(msg='parsing_info 에 page_list 정보가 없음.')
             return
 
         parsing_info = self.parsing_info['page_list']
@@ -563,7 +550,7 @@ class Crawler(Utils):
                 attrs=self.get_value(parsing_info['panel'], 'attr'))
 
             if page_tag is None:
-                print('ERROR article list panel is empty', flush=True)
+                logging.error(msg='parsing_info 에 panel 정보가 없음.')
                 return
 
             # 페이지 목록 추출 1~10 등
@@ -651,7 +638,7 @@ class Crawler(Utils):
             self.update_state(str_state='running', current_date=date, start_date=original_start_date,
                               end_date=end_date, job_info=self.job_info, scheduler_db_info=self.scheduler_db_info)
 
-            print('crawling date: ', date, flush=True)
+            logging.info(msg='크롤링 시간: {}'.format(date))
 
             # 특정 날자의 기사를 수집
             url_list = self.parameter['url_frame']
@@ -726,13 +713,14 @@ class Crawler(Utils):
         """
         컬렉션 이름이 변경되었을 경우, 인덱스를 업데이트 한다.
 
-        :param new_collection_name:
+        :param new_collection_name: 새로운 컬랙션명
         :return:
         """
         if self.db_info['mongo'] is None \
                 or 'collection' not in self.db_info['mongo'] \
                 or self.db_info['mongo']['collection'] != new_collection_name:
-            print('make new collection index', flush=True)
+            logging.info(msg='컬랙션 이름 변경: {}'.format(new_collection_name))
+
             self.db_info['mongo']['collection'] = new_collection_name
 
             # 만약 collection 이 변경되었다면, 인덱스 재성성
@@ -741,19 +729,15 @@ class Crawler(Utils):
         return
 
     @staticmethod
-    def _get_page_range(params, start):
+    def _get_page_range(params, start, end):
         """
         파라메터에서 start, end, step 정보 반환
 
         :param params:
-
-        :param start:
-            default start
-
+        :param start: default start
         :return:
         """
 
-        end = start + 1
         if 'end' in params:
             end = int(params['end']) + 1
 
@@ -769,8 +753,6 @@ class Crawler(Utils):
 
         :return:
         """
-        print('curl by page id', flush=True)
-
         year = None
         start = None
 
@@ -797,7 +779,7 @@ class Crawler(Utils):
 
         # url 주소 생성
         start = int(start)
-        print({'year': year, 'start': start}, flush=True)
+        logging.info(msg='page id 기준으로 크롤링: year = {}, start = {}'.format(year, start))
 
         # 쿼리 매핑 정보 추출
         query_key_mapping = None
@@ -809,11 +791,15 @@ class Crawler(Utils):
                                 scheduler_db_info=self.scheduler_db_info,
                                 query_key_mapping=query_key_mapping)
 
+        max_skip = -1
+        if 'max_skip' in self.parameter and self.parameter['max_skip'] > 0:
+            max_skip = self.parameter['max_skip']
+
         if 'page_list' in self.parsing_info:
             # 페이지 목록이 있을 경우
 
             # end 까지 반복 실행
-            start, end, step = self._get_page_range(self.parameter, start=start)
+            start, end, step = self._get_page_range(self.parameter, start=start, end=start+1)
 
             url_list = self.parameter['url_frame']
             if isinstance(url_list, str) is True:
@@ -826,14 +812,14 @@ class Crawler(Utils):
                     continue
 
                 # end 까지 반복 실행
-                start, end, step = self._get_page_range(url_info, start=start)
+                start, end, step = self._get_page_range(url_info, start=start, end=end)
 
                 for i in range(start, end, step):
                     query = {'year': year, 'start': i}
 
                     page_url = url_info['url'].format(**query)
 
-                    if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                    if 0 < max_skip < self.duplicated_url_count:
                         break
 
                     # const_value 속성 복사
@@ -854,7 +840,7 @@ class Crawler(Utils):
                 end = int(self.parameter['end']) + 1
 
             for i in range(start, end):
-                if 'max_skip' in self.parameter and 0 < self.parameter['max_skip'] < self.duplicated_url_count:
+                if 0 < max_skip < self.duplicated_url_count:
                     break
 
                 url_list = self.parameter['url_frame']
@@ -903,7 +889,7 @@ class Crawler(Utils):
         mongodb_info = self.db_info['mongo']
 
         if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
-            print('ERROR no collection in db info', flush=True)
+            logging.error(msg='no collection in db info')
             return
 
         # 숫자일 경우 문자로 변경
@@ -920,7 +906,8 @@ class Crawler(Utils):
         collection = mongodb.get_collection(mongodb_info['collection'])
 
         # 1차 날짜 기준 필터링
-        print('date range: {} ~ {}'.format(start_date, end_date), flush=True)
+        logging.info(msg='date range: {} ~ {}'.format(start_date, end_date))
+
         cursor = collection.find({
             'date': {
                 '$gte': start_date,
@@ -947,7 +934,7 @@ class Crawler(Utils):
         count = 0
         total = len(document_list)
 
-        print('{:,}'.format(total), flush=True)
+        logging.info(msg='total: {:,}'.format(total))
         for document in document_list:
             self.curl_article(article=document)
 
@@ -955,7 +942,7 @@ class Crawler(Utils):
             if 'paper' in document:
                 paper = document['paper']
 
-            print('{:,}/{:,}\t{}'.format(count, total, paper), flush=True)
+            logging.info(msg='{:,}/{:,}\t{}'.format(count, total, paper))
             count += 1
 
         return
@@ -967,15 +954,15 @@ class Crawler(Utils):
         :return:
             None
         """
-        print('update index db', flush=True)
-
         self.url_index_db = UrlIndexDB()
 
         file_name = '/tmp/{}.sqlite3'.format(self.job_info['_id'])
+        logging.info(msg='url 인덱스 디비 업데이트: {}'.format(file_name))
+
         self.url_index_db.open_db(file_name, delete=True)
 
         if 'mongo' in self.db_info:
-            self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'])
+            self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'], db_name=self.db_info['db_name'])
 
         return
 
@@ -1001,7 +988,8 @@ class Crawler(Utils):
         if debug == 'true' or debug == 'True' or debug == '1':
             self.debug_mode = True
 
-        print('job_info: ', self.job_info, flush=True)
+        import json
+        logging.info(msg='변수 초기화: job info = {}'.format(json.dumps(self.job_info, ensure_ascii=False)))
 
         self.parameter = job_info['parameter']
         if 'delay' not in self.parameter:
@@ -1014,7 +1002,8 @@ class Crawler(Utils):
         if self.parsing_info is None and 'parsing_info' in self.parameter:
             self.parsing_info = self.get_parsing_information(scheduler_db_info, self.parameter['parsing_info'])
 
-        print('parameter: ', self.parameter, 'parsing_info: ', self.parsing_info, flush=True)
+        logging.info(msg='변수 초기화: job parameter = {}'.format(json.dumps(self.parameter, ensure_ascii=False)))
+        logging.info(msg='변수 초기화: job parsing_info = {}'.format(json.dumps(self.parsing_info, ensure_ascii=False)))
 
         # 인덱스 디비 생성
         if 'update_article' not in self.parameter:
@@ -1026,14 +1015,9 @@ class Crawler(Utils):
         """
         크롤링 시작
 
-        :param scheduler_db_info:
-            스케쥴러 디비 정보
-
-        :param job_info:
-            스케쥴 정보
-
-        :return:
-            None
+        :param scheduler_db_info: 스케쥴러 디비 정보
+        :param job_info: 스케쥴 정보
+        :return: None
         """
         self._init_variable(scheduler_db_info, job_info)
 
@@ -1044,7 +1028,6 @@ class Crawler(Utils):
             else:
                 self.curl_by_date()
         else:
-            # start in self.parameter
             self.curl_by_page_id()
 
         return
@@ -1053,16 +1036,10 @@ class Crawler(Utils):
         """
         디버깅, 하나의 URL을 입력 받아 실행
 
-        :param scheduler_db_info:
-            스케쥴러 디비 정보
-
-        :param job_info:
-            스케쥴 정보
-
+        :param scheduler_db_info: 스케쥴러 디비 정보
+        :param job_info: 스케쥴 정보
         :param args:
-
-        :return:
-            None
+        :return: None
         """
         self._init_variable(scheduler_db_info, job_info)
 
