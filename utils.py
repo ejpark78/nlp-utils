@@ -372,7 +372,7 @@ class Utils(object):
     @staticmethod
     def _json_serial(obj):
         """
-        json.dumps의 콜백 함수로 넘겨주는 함수
+        json.dumps 의 콜백 함수로 넘겨주는 함수
         날자 형식을 문자로 반환
 
         :param obj:
@@ -381,7 +381,6 @@ class Utils(object):
         :return:
 
         """
-        # import pymongo
         from datetime import datetime
 
         if isinstance(obj, datetime):
