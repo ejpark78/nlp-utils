@@ -8,6 +8,9 @@ from __future__ import print_function
 import requests
 import urllib3
 from pymongo import MongoClient
+from time import sleep
+import logging
+from elasticsearch import Elasticsearch
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -36,37 +39,38 @@ def send_document_list(url, db_name, doc_type, document_list, update):
 
     headers = {'Content-Type': 'application/json'}
     result = requests.post(url=url, json=body, headers=headers,
-                           allow_redirects=True, timeout=5, verify=False)
+                           allow_redirects=True, timeout=30, verify=False)
 
     print('result: ', result, flush=True)
+    sleep(10)
 
     return
 
 
-def change_db_info():
+def corpus_process():
     """
     :return:
     """
     host = 'frodo'
     port = 27018
 
-    url = 'http://localhost:5004/v1.0/api/batch'
-    # url = 'https://gollum02:5004/v1.0/api/batch'
+    # url = 'http://localhost:5004/v1.0/api/batch'
+    url = 'https://gollum02:5004/v1.0/api/batch'
 
     connect = MongoClient('mongodb://{}:{}'.format(host, port))
 
     # db_list = connect.list_database_names()
 
-    # 'daum_3min_baseball', 'daum_baseball_game_info', 'daum_culture', 'daum_economy', 'daum_editorial',
+    # 'jisikman_app',
+    # 'lineagem_free', 'mlbpark_kbo',
+
+    # 'daum_culture', 'daum_economy', 'daum_editorial',
     # 'daum_international', 'daum_it', 'daum_politics', 'daum_society', 'daum_sports',
 
     # 'nate_economy', 'nate_entertainment', 'nate_international', 'nate_it', 'nate_opinion', 'nate_photo',
     # 'nate_politics', 'nate_radio', 'nate_society', 'nate_sports', 'nate_tv',
 
-    # 'jisikman_app',
-    # 'lineagem_free', 'mlbpark_kbo',
-
-    # 'naver_economy', 'naver_international', 'naver_it', 'naver_kin_baseball', 'naver_living',
+    # 'naver_economy', 'naver_international', 'naver_it', 'naver_living',
     # 'naver_opinion', 'naver_politics', 'naver_society', 'naver_sports', 'naver_tv',
 
     # 'chosun_sports', 'donga_baseball', 'einfomax_finance', 'joins_baseball', 'joins_live_baseball',
@@ -74,14 +78,34 @@ def change_db_info():
     # 'sportskhan_baseball', 'spotv_baseball', 'starnews_sports', 'yonhapnews_sports', 'yonhapnewstv_sports'
 
     db_list = [
-        'chosun_sports'
+        'daum_culture', 'daum_economy', 'daum_editorial',
+        'daum_international', 'daum_it', 'daum_politics', 'daum_society', 'daum_sports',
+
+        'nate_economy', 'nate_entertainment', 'nate_international', 'nate_it', 'nate_opinion', 'nate_photo',
+        'nate_politics', 'nate_radio', 'nate_society', 'nate_sports', 'nate_tv',
+
+        'naver_economy', 'naver_international', 'naver_it', 'naver_living',
+        'naver_opinion', 'naver_politics', 'naver_society', 'naver_sports', 'naver_tv',
     ]
 
     update = True
 
+    host = 'http://nlpapi.ncsoft.com:9200'
+    elastic = None
+    elastic = Elasticsearch(host, timeout=30)
+
     count = 0
     for db_name in db_list:
         db = connect.get_database(db_name)
+
+        print('db_name: ', db_name, flush=True)
+
+        # 인덱스 삭제
+        if elastic is not None:
+            try:
+                elastic.indices.delete(index=db_name)
+            except Exception as e:
+                print(e, flush=True)
 
         for i in range(1, 4):
             doc_type = '2018-{:02d}'.format(i)
@@ -143,6 +167,8 @@ def save_s3(document, s3_info, db_name):
 
     import boto3
     import pathlib
+    import boto3.session
+    from botocore.exceptions import ClientError
 
     # http://boto3.readthedocs.io/en/latest/reference/services/s3.html
     bucket_name = s3_info['bucket']
@@ -169,6 +195,19 @@ def save_s3(document, s3_info, db_name):
 
         upload_file = '{}/{}-{:02d}{}'.format(db_name, prefix, count, suffix)
         count += 1
+
+        # 파일 확인
+        file_exists = False
+        try:
+            s3.Object(bucket_name, upload_file).get()
+            file_exists = True
+        except ClientError as e:
+            logging.info('{}'.format(e))
+
+        if file_exists is True:
+            # cdn 이미지 주소 추가
+            image['cdn_image'] = '{}/{}'.format(s3_info['url_prefix'], upload_file)
+            continue
 
         # 2. s3에 업로드
         try:
@@ -221,10 +260,6 @@ def save_elastic(document, index, doc_type, host):
     :param host: 문서
     :return: None
     """
-    import logging
-
-    from elasticsearch import Elasticsearch
-
     document = convert_date(document=document)
 
     try:
@@ -264,6 +299,7 @@ def download_image():
 
     index_name = 'yonhapnews_sports'
     host = 'http://nlpapi.ncsoft.com:9200'
+    # host = 'http://10.255.62.138:9200'
 
     s3_info = {
         'bucket': 'paige-cdn-origin',
@@ -305,11 +341,6 @@ def download_image():
                 save_flag = True
                 document['insert_date'] = document['date']
 
-            if document['date'] != document['insert_date']:
-                document['insert_date'] = document['date']
-
-            # print(document['date'], document['insert_date'], flush=True)
-
             image_list = document['image_list']
             if len(image_list) > 0:
                 for image in image_list:
@@ -318,6 +349,8 @@ def download_image():
 
                         # 이미지 다운로드
                         document = save_s3(document, s3_info, index_name)
+                    # else:
+                    #     document = save_s3(document, s3_info, index_name)
 
             if save_flag is True:
                 # 저장
@@ -328,5 +361,5 @@ def download_image():
 
 
 if __name__ == '__main__':
-    # change_db_info()
-    download_image()
+    corpus_process()
+    # download_image()

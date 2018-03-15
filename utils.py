@@ -525,7 +525,8 @@ class Utils(object):
             body={
                 'settings': {
                     'number_of_shards': 3,
-                    'number_of_replicas': 2
+                    'number_of_replicas': 2,
+                    'index.mapper.dynamic': True
                 }
             }
         )
@@ -755,8 +756,8 @@ class Utils(object):
             if self.debug_mode is True:
                 url = 'http://localhost:5004/v1.0/api/batch'
 
-            _ = requests.post(url=url, json=body, headers=headers,
-                              allow_redirects=True, timeout=30, verify=False)
+            requests.post(url=url, json=body, headers=headers,
+                          allow_redirects=True, timeout=30, verify=False)
 
             logging.info(msg='코퍼스 전처리: {} {} {}'.format(url, document['_id'], document['title']))
         except Exception as e:
@@ -764,7 +765,7 @@ class Utils(object):
 
         return True
 
-    def insert_elastic(self, document, elastic_info, db_name, update):
+    def save_elastic(self, document, elastic_info, db_name, update):
         """
         elastic search 에 문서 저장
 
@@ -791,11 +792,11 @@ class Utils(object):
         if 'update' in elastic_info:
             update = elastic_info['update']
 
+        # 입력시간 삽입
+        document['insert_date'] = datetime.now()
+
         # 날짜 변환
         document = self.convert_datetime(document=document)
-
-        # 입력시간 삽입
-        document['insert_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
         try:
             elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
@@ -818,7 +819,7 @@ class Utils(object):
             }]
 
             response = elastic.bulk(index=index, body=bulk_data, refresh=True)
-            logging.info(msg='elastic-search 저장 결과: {}'.format(response))
+            logging.info(msg='elastic-search 저장 결과: errors = {}'.format(response['errors']))
         except Exception as e:
             logging.error(msg='elastic-search 저장 에러: {}'.format(e))
 
@@ -922,8 +923,9 @@ class Utils(object):
 
         import boto3
         import pathlib
+        from botocore.exceptions import ClientError
 
-        # http://boto3.readthedocs.io/en/latest/reference/services/s3.html
+        # api 메뉴얼: http://boto3.readthedocs.io/en/latest/reference/services/s3.html
         bucket_name = s3_info['bucket']
         aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
         aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
@@ -948,6 +950,19 @@ class Utils(object):
 
             upload_file = '{}/{}-{:02d}{}'.format(db_name, prefix, count, suffix)
             count += 1
+
+            # 파일 확인
+            file_exists = False
+            try:
+                s3.Object(bucket_name, upload_file).get()
+                file_exists = True
+            except ClientError as e:
+                logging.info('{}'.format(e))
+
+            if file_exists is True:
+                # cdn 이미지 주소 추가
+                image['cdn_image'] = '{}/{}'.format(s3_info['url_prefix'], upload_file)
+                continue
 
             # 2. s3에 업로드
             try:
@@ -1092,8 +1107,8 @@ class Utils(object):
                     if 'host' not in elastic_info:
                         continue
 
-                    self.insert_elastic(document=copy.deepcopy(document), elastic_info=elastic_info,
-                                        db_name=db_name, update=update)
+                    self.save_elastic(document=copy.deepcopy(document), elastic_info=elastic_info,
+                                      db_name=db_name, update=update)
 
             # 코퍼스 전처리 시작
             if 'corpus-process' in db_info:
