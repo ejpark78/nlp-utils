@@ -258,10 +258,10 @@ class Utils(object):
         """
         html 파싱, 지정된 태그에서 정보 추출
 
-        :param article:
-        :param soup:
-        :param target_tags:
-        :param article_list:
+        :param article: 신문 기사 문서
+        :param soup: soup 개체
+        :param target_tags: 찾는 태그 정보
+        :param article_list: 기사 목록
         :return:
         """
         url = self.get_url(article['url'])
@@ -343,8 +343,8 @@ class Utils(object):
         """
         url 주소를 문서 아이디로 반환
 
-        :param url:
-        :return:
+        :param url: url 주소
+        :return: 문서 아이디
         """
         document_id = []
 
@@ -375,11 +375,8 @@ class Utils(object):
         json.dumps 의 콜백 함수로 넘겨주는 함수
         날자 형식을 문자로 반환
 
-        :param obj:
-            dictionary
-
+        :param obj: 기사 문서 아이템
         :return:
-
         """
         from datetime import datetime
 
@@ -824,8 +821,8 @@ class Utils(object):
     def get_tag_text(tag):
         """
         텍스트 반환
-        :param tag:
-        :return:
+        :param tag: HTML 테그 정보
+        :return: 추출된 텍스트
         """
         import bs4
 
@@ -841,9 +838,9 @@ class Utils(object):
         """
         기사 본문에서 이미지와 캡션 추출
 
-        :param soup:
-        :param delete_caption:
-        :return:
+        :param soup: HTML 파싱 개체
+        :param delete_caption: 캡션 삭제 여부
+        :return: 이미지 목록
         """
 
         result = []
@@ -981,7 +978,7 @@ class Utils(object):
         :param db_name: 디비명
         :param elastic_info: elastic 접속 정보
         :param article_date: 날짜
-        :return:
+        :return: 인덱스, doc_type (날짜형: 2018-03)
         """
         # 인덱스 추출, 몽고 디비 collection 이름 우선
 
@@ -1220,7 +1217,7 @@ class Utils(object):
 
         :param collection: 컬랙션 이름
         :param document_name: 문서 아이디
-        :param value:
+        :param value: 헤더값
         :return: 마지막 값
         """
         query = {'_id': document_name}
@@ -1553,12 +1550,11 @@ class Utils(object):
         """
         계층적으로 표현된 태그 정보를 따라가면서 값을 찾아냄.
 
-        :param soup:
-        :param target_tag_info:
-        :param result_list:
-        :param base_url:
-        :return:
-            True/False
+        :param soup: HTML 파싱 개체
+        :param target_tag_info: 찾을 테그 정보
+        :param result_list: 찾은 값을 반환 결과
+        :param base_url: 호출한 웹 주소
+        :return: True/False
         """
 
         attribute = self.get_value(target_tag_info, 'attr')
