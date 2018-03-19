@@ -219,7 +219,7 @@ class Crawler(Utils):
         섹션 정보 저장
 
         :param curl_url: 크롤링 웹 주소
-        :param subject_list:
+        :param subject_list: 제목 목록
         :return: True/False
         """
         # url 에서 불용어 제거
@@ -265,8 +265,8 @@ class Crawler(Utils):
         """
         패이지 목록에서 기사 목록을 가져옴
 
-        :param curl_url: 웹 주소
-        :return:
+        :param curl_url: 크롤링 웹 주소
+        :return: BeautifulSoup 개체
         """
         if curl_url.find('javascript') > 0:
             return
@@ -326,10 +326,10 @@ class Crawler(Utils):
         """
         개별 패이지 목록에서 기사를 가져옴
 
-        :param domain_url:
-        :param article_list:
-        :param json_key_mapping:
-        :return:
+        :param domain_url: 도메인 주소
+        :param article_list: 기사 목록
+        :param json_key_mapping: 값 매핑 정보
+        :return: None
         """
         logging.info(msg='json 형식의 데이터 목록 크롤링: {}'.format(domain_url))
 
@@ -368,9 +368,9 @@ class Crawler(Utils):
         """
         json 형태의 페이지 목록과 기사 본문을 수집
 
-        :param page_url:
-        :param page:
-        :return:
+        :param page_url: 페이지 주소
+        :param page: 현재 페이지 번호
+        :return: None
         """
         # json 키값 매핑 정보를 가져온다.
         json_key_mapping = None
@@ -424,10 +424,10 @@ class Crawler(Utils):
         """
         페이지 목록 크롤링: 1~10 등
 
-        :param page_tag:
-        :param page_url:
-        :param curl_type:
-        :return:
+        :param page_tag: 페이저 태그 정보
+        :param page_url: 페이지 목록 주소
+        :param curl_type: 크롤링 타입 'by_id', 'by_date'
+        :return: None
         """
         parsing_info = self.parsing_info['page_list']
 
@@ -459,10 +459,10 @@ class Crawler(Utils):
         """
         페이지가 넘어가는 부분이 있는 경우 재귀적으로 호출
 
-        :param page_tag:
-        :param page_url:
-        :param curl_type:
-        :return:
+        :param page_tag: 페이지 테그
+        :param page_url: 호출한 웹 주소
+        :param curl_type: 크롤링 타입 by_date, by_id 등
+        :return: None
         """
         from bs4 import Tag
 
@@ -524,9 +524,9 @@ class Crawler(Utils):
         """
         페이지 목록과 기사 본문을 수집
 
-        :param page_url:
-        :param curl_type:
-        :return:
+        :param page_url: 페이지 목록 주소
+        :param curl_type: 크롤링 타입 'by_date', 'by_id'
+        :return: None
         """
         if page_url.find('javascript') > 0:
             return
@@ -733,9 +733,9 @@ class Crawler(Utils):
         """
         파라메터에서 start, end, step 정보 반환
 
-        :param params:
+        :param params: 파라메터 정보
         :param start: default start
-        :return:
+        :return: start = 시작 번호, end = 마지막 번호, step = 증가 갭 1, -1 등
         """
 
         if 'end' in params:
@@ -951,8 +951,7 @@ class Crawler(Utils):
         """
         크롤링 완료된 url 목록을 인덱스 디비로 생성
 
-        :return:
-            None
+        :return: None
         """
         self.url_index_db = UrlIndexDB()
 
@@ -970,14 +969,9 @@ class Crawler(Utils):
         """
         변수 및 환경 설정 초기화
 
-        :param scheduler_db_info:
-            스케쥴러 디비 정보
-
-        :param job_info:
-            스케쥴 정보
-
-        :return:
-            None
+        :param scheduler_db_info: 스케쥴러 디비 정보
+        :param job_info: 스케쥴 정보
+        :return: None
         """
         self.duplicated_url_count = 0
 

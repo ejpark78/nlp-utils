@@ -741,14 +741,9 @@ class Utils(object):
         body = {
             'index': index,
             'update': update,
-            'doc_type': doc_type
+            'doc_type': doc_type,
+            'document': document
         }
-
-        # 문서 vs. 문서 아이디
-        if mongodb_info is None:
-            body['document'] = document
-        else:
-            body['document_id'] = document_id
 
         headers = {'Content-Type': 'application/json'}
         try:

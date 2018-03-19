@@ -87,7 +87,7 @@ def change_db_info():
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)
 
-        collection.replace_one({'_id': document['_id']}, document, upsert=True)
+        # collection.replace_one({'_id': document['_id']}, document, upsert=True)
 
     fp.flush()
     fp.close()
