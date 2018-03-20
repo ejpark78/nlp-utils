@@ -1,0 +1,96 @@
+{
+  "_id": "monoytoday.sports",
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "id": "article"
+      },
+      "data": {
+        "title": {
+          "tag_name": "h1",
+          "value": "text"
+        }
+      }
+    },
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "infobox1"
+      },
+      "data": {
+        "source": {
+          "tag_name": "a",
+          "value": "text",
+          "replace": [
+            {
+              "from": "[ ]*제공[ ]*",
+              "to": ""
+            }
+          ]
+        },
+        "date": {
+          "tag_name": "span",
+          "attr": {
+            "class": "num"
+          },
+          "value": "text",
+          "replace": [
+            {
+              "from": "[:]+[ ]+",
+              "to": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tag_name": "body",
+      "data": {
+        "html_content": {
+          "tag_name": "div",
+          "attr": {
+            "id": "textBody"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ],
+  "comment": "머니투데이 스포츠",
+  "id": {
+    "replace": [
+      {
+        "from": "^.+no=(.+?)[&].+$",
+        "to": "\\g<1>"
+      }
+    ]
+  },
+  "page_list": {},
+  "parsing_type": "",
+  "query_key_mapping": {
+    "page": "start"
+  },
+  "subject_page": {
+    "attr": {
+      "class": "conlist_p1 mgt30"
+    },
+    "next_tag": {
+      "attr": {
+        "class": "bundle"
+      },
+      "data": {
+        "title": {
+          "tag_name": "a",
+          "value": "text"
+        },
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        }
+      },
+      "tag_name": "li"
+    },
+    "tag_name": "ul"
+  }
+}

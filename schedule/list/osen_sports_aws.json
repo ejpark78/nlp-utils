@@ -1,0 +1,102 @@
+{
+    "_id": "osen_sports",
+    "docker": {
+        "command": "python3 scheduler.py",
+        "image": "crawler:1.0",
+        "working_dir": "/usr/local/app"
+    },
+    "parameter": {
+        "const_value": {
+            "section": "스포츠-넥센"
+        },
+        "db_info": {
+            "corpus-process": [
+                {
+                    "host": "http://elastic01:5004/v1.0/api/batch"
+                },
+                {
+                    "host": "http://elastic02:5004/v1.0/api/batch"
+                }
+            ],
+            "db_name": "osen_sports"
+        },
+        "delay": "20~30",
+        "document_id": "{_id}",
+        "end": "2",
+        "max_skip": 5000,
+        "parsing_info": "osen.sports",
+        "start": "1",
+        "url_frame": [
+            {
+                "const_value": {
+                    "section": "스포츠-삼성"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/lions/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-넥센"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/heroes/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-NC"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/dinos/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-LG"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/twins/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-SK"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/wyverns/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-두산"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/bears/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-롯데"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/giants/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-KIA"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/tigers/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-한화"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/eagles/{start}"
+            },
+            {
+                "const_value": {
+                    "section": "스포츠-KT"
+                },
+                "url": "http://osen.mt.co.kr/probaseball/wiz/{start}"
+            }
+        ]
+    },
+    "schedule": {
+        "group": "aws",
+        "mode": "daemon",
+        "sleep": "20",
+        "sleep_range": "03,04"
+    },
+    "state": {
+        "host": "gollum01",
+        "state": "running"
+    }
+}
