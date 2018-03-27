@@ -5,17 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
 import os
-
 from datetime import datetime
 from urllib.parse import urljoin
 
 from dateutil.relativedelta import relativedelta
 
-from utils import Utils
 from url_index_db import UrlIndexDB
-
-import logging
+from utils import Utils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -97,8 +95,12 @@ class Crawler(Utils):
         if self.url_index_db is None:
             return False
 
-        # 인덱스 디비에 없는 경우
-        if self.url_index_db.check_url(url) is False:
+        # 인덱스 디비에 url 이 없는 경우
+        if self.url_index_db.check_url(url=url) is False:
+            return False
+
+        # 인덱스 디비에 문서 아이디가 없는 경우
+        if self.url_index_db.check_id(id=article['_id']) is False:
             return False
 
         # 이미 받은 url 목록에 있는 경우
@@ -142,7 +144,8 @@ class Crawler(Utils):
 
         # url 중복 체크, 섹션 정보 저장
         url = self.get_url(article['url'])
-        if self.debug_mode is False and self.is_url_exists(url, article, response_type):
+        # if self.debug_mode is False and self.is_url_exists(url, article, response_type):
+        if self.is_url_exists(url, article, response_type):
             return
 
         # const value 삽입
@@ -159,12 +162,16 @@ class Crawler(Utils):
         if 'headers' in self.parsing_info:
             headers = self.parsing_info['headers']
 
+        html_parser = None
+        if 'html_parser' in self.parsing_info:
+            html_parser = self.parsing_info['html_parser']
+
         # 기사 본문을 크롤링
         json_type = False
         if response_type == 'json':
             json_type = True
 
-        soup = self.curl_html(article['url'], encoding=encoding,
+        soup = self.curl_html(article['url'], encoding=encoding, html_parser=html_parser,
                               json_type=json_type, delay=self.parameter['delay'], headers=headers)
 
         if soup is None:
@@ -210,7 +217,7 @@ class Crawler(Utils):
 
         # 다운로드 받은 URL 을 인덱스 디비에 저장
         if result is True and self.url_index_db is not None:
-            self.url_index_db.save_url(article['url'])
+            self.url_index_db.save_url(url=article['url'], id=article['_id'])
 
         return True
 
@@ -278,8 +285,12 @@ class Crawler(Utils):
         if 'encoding' in self.parsing_info:
             encoding = self.parsing_info['encoding']
 
+        html_parser = None
+        if 'html_parser' in self.parsing_info:
+            html_parser = self.parsing_info['html_parser']
+
         # 1. get subject list
-        soup = self.curl_html(curl_url, delay=self.parameter['delay'], encoding=encoding)
+        soup = self.curl_html(curl_url, delay=self.parameter['delay'], encoding=encoding, html_parser=html_parser)
 
         if soup is None:
             return None
@@ -289,36 +300,37 @@ class Crawler(Utils):
         self.get_target_value(soup, target_tags, subject_list, curl_url)
 
         # 2. get article
-        if 'article_page' in self.parsing_info:
-            # 기사 본문 크롤링
-            for article in subject_list:
-                self.curl_article(article=article)
+        if 'article_page' not in self.parsing_info:
+            self.save_section_list(curl_url, subject_list)
+            return soup
 
-                if 'related_url' not in self.parameter:
+        # 기사 본문 크롤링
+        for article in subject_list:
+            self.curl_article(article=article)
+
+            if 'related_url' not in self.parameter:
+                continue
+
+            for related_url in self.parameter['related_url']:
+                if related_url not in article:
                     continue
 
-                for related_url in self.parameter['related_url']:
-                    if related_url not in article:
-                        continue
+                url_list = []
+                if isinstance(article[related_url], str):
+                    url_list.append(article[related_url])
 
-                    url_list = []
-                    if isinstance(article[related_url], str):
-                        url_list.append(article[related_url])
+                if isinstance(article[related_url], list):
+                    url_list = article[related_url]
 
-                    if isinstance(article[related_url], list):
-                        url_list = article[related_url]
+                for extra_crawling_url in url_list:
+                    for key in ['title', 'html_content']:
+                        if key not in article:
+                            continue
 
-                    for extra_crawling_url in url_list:
-                        for key in ['title', 'html_content']:
-                            if key not in article:
-                                continue
+                        del article[key]
 
-                            del article[key]
-
-                        article['url'] = extra_crawling_url
-                        self.curl_article(article=article)
-        else:
-            self.save_section_list(curl_url, subject_list)
+                    article['url'] = extra_crawling_url
+                    self.curl_article(article=article)
 
         return soup
 
@@ -386,13 +398,18 @@ class Crawler(Utils):
         if 'headers' in self.parsing_info:
             headers = self.parsing_info['headers']
 
+        html_parser = None
+        if 'html_parser' in self.parsing_info:
+            html_parser = self.parsing_info['html_parser']
+
         # 첫 기사 목록
         url = page_url
         if page_url.find('{page}') > 0:
             url = page_url.format(page=page)
 
         logging.info(msg='전체 json 데이터 크롤링')
-        page_soup = self.curl_html(url, delay=self.parameter['delay'], json_type=True, headers=headers)
+        page_soup = self.curl_html(url, delay=self.parameter['delay'],
+                                   json_type=True, headers=headers, html_parser=html_parser)
         if page_soup is None:
             return
 
@@ -535,30 +552,30 @@ class Crawler(Utils):
 
         page_soup = self.curl_article_list(page_url)
         if page_soup is None:
+            logging.error(msg='기사 목록이 없음.')
             return
 
         if 'page_list' not in self.parsing_info:
             logging.error(msg='parsing_info 에 page_list 정보가 없음.')
             return
 
-        parsing_info = self.parsing_info['page_list']
+        page_list = self.parsing_info['page_list']
 
-        if 'panel' in parsing_info:
+        if 'panel' in page_list:
             # 페이지 목록 부분만 추출
-            page_tag = page_soup.find(
-                parsing_info['panel']['tag_name'],
-                attrs=self.get_value(parsing_info['panel'], 'attr'))
+            page_tag = page_soup.find(page_list['panel']['tag_name'],
+                                      attrs=self.get_value(page_list['panel'], 'attr'))
 
             if page_tag is None:
                 logging.error(msg='parsing_info 에 panel 정보가 없음.')
                 return
 
             # 페이지 목록 추출 1~10 등
-            if 'index' in parsing_info:
+            if 'index' in page_list:
                 self.trace_index_tag(page_tag, page_url, curl_type)
 
             # 페이지가 넘어가는 부분이 있는 경우 재귀적으로 호출,
-            if 'next' in parsing_info:
+            if 'next' in page_list:
                 self.trace_next_tag(page_tag, page_url, curl_type)
 
         return
@@ -724,7 +741,7 @@ class Crawler(Utils):
             self.db_info['mongo']['collection'] = new_collection_name
 
             # 만약 collection 이 변경되었다면, 인덱스 재성성
-            self.make_url_index_db()
+            self.make_url_index_db(collection_name=new_collection_name)
 
         return
 
@@ -799,7 +816,7 @@ class Crawler(Utils):
             # 페이지 목록이 있을 경우
 
             # end 까지 반복 실행
-            start, end, step = self._get_page_range(self.parameter, start=start, end=start+1)
+            start, end, step = self._get_page_range(self.parameter, start=start, end=start + 1)
 
             url_list = self.parameter['url_frame']
             if isinstance(url_list, str) is True:
@@ -947,21 +964,31 @@ class Crawler(Utils):
 
         return
 
-    def make_url_index_db(self):
+    def make_url_index_db(self, collection_name=None):
         """
         크롤링 완료된 url 목록을 인덱스 디비로 생성
 
-        :return: None
+        :param collection_name: 컬랙션명
+        :return: void
         """
         self.url_index_db = UrlIndexDB()
 
+        # 인덱스 디비 생성
         file_name = '/tmp/{}.sqlite3'.format(self.job_info['_id'])
         logging.info(msg='url 인덱스 디비 업데이트: {}'.format(file_name))
 
-        self.url_index_db.open_db(file_name, delete=True)
+        self.url_index_db.open_db(file_name, delete=False)
 
+        # 기존 url 목록 저장
         if 'mongo' in self.db_info:
-            self.url_index_db.update_url_list(mongodb_info=self.db_info['mongo'], db_name=self.db_info['db_name'])
+            self.url_index_db.update_mongodb_url_list(db_name=self.db_info['db_name'],
+                                                      collection_name=collection_name,
+                                                      mongodb_info=self.db_info['mongo'])
+
+        if 'elastic' in self.db_info:
+            self.url_index_db.update_elastic_url_list(index=self.db_info['db_name'],
+                                                      doc_type=collection_name,
+                                                      elastic_info=self.db_info['elastic'])
 
         return
 
@@ -983,7 +1010,9 @@ class Crawler(Utils):
             self.debug_mode = True
 
         import json
-        logging.info(msg='변수 초기화: job info = {}'.format(json.dumps(self.job_info, ensure_ascii=False)))
+
+        msg = '변수 초기화: job info = {}'.format(json.dumps(self.job_info, ensure_ascii=False))
+        logging.info(msg=msg)
 
         self.parameter = job_info['parameter']
         if 'delay' not in self.parameter:
@@ -994,10 +1023,14 @@ class Crawler(Utils):
 
         # 파싱 정보 가져오기
         if self.parsing_info is None and 'parsing_info' in self.parameter:
-            self.parsing_info = self.get_parsing_information(scheduler_db_info, self.parameter['parsing_info'])
+            self.parsing_info = self.get_parsing_information(scheduler_db_info,
+                                                             self.parameter['parsing_info'])
 
-        logging.info(msg='변수 초기화: job parameter = {}'.format(json.dumps(self.parameter, ensure_ascii=False)))
-        logging.info(msg='변수 초기화: job parsing_info = {}'.format(json.dumps(self.parsing_info, ensure_ascii=False)))
+        msg = '변수 초기화: job parameter = {}'.format(json.dumps(self.parameter, ensure_ascii=False))
+        logging.info(msg=msg)
+
+        msg = '변수 초기화: job parsing_info = {}'.format(json.dumps(self.parsing_info, ensure_ascii=False))
+        logging.info(msg=msg)
 
         # 인덱스 디비 생성
         if 'update_article' not in self.parameter:
@@ -1028,7 +1061,7 @@ class Crawler(Utils):
 
     def debug(self, scheduler_db_info, job_info, args):
         """
-        디버깅, 하나의 URL을 입력 받아 실행
+        디버깅, 하나의 URL 을 입력 받아 실행
 
         :param scheduler_db_info: 스케쥴러 디비 정보
         :param job_info: 스케쥴 정보

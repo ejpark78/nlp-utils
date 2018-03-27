@@ -5,10 +5,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
 import os
 import sqlite3
-import logging
-
 from time import time
 
 
@@ -16,6 +15,7 @@ class UrlIndexDB(object):
     """
     크롤링 완료된 URL 목록을 저장하고 비교하는 클래스
     """
+
     def __init__(self):
         super().__init__()
 
@@ -67,12 +67,19 @@ class UrlIndexDB(object):
         if os.path.exists(self.filename) and delete is True:
             os.remove(self.filename)
 
+        # 디비 연결
         self.conn = sqlite3.connect(self.filename)
 
         self.cursor = self.conn.cursor()
+
+        # 테이블 생성
         self.cursor.execute('CREATE TABLE IF NOT EXISTS url_list (url TEXT PRIMARY KEY NOT NULL)')
+        self.cursor.execute('CREATE TABLE IF NOT EXISTS id_list (id TEXT PRIMARY KEY NOT NULL)')
 
         self.set_pragma(self.cursor, readonly=False)
+
+        # sql 명령 실행
+        self.conn.commit()
 
         return
 
@@ -97,16 +104,17 @@ class UrlIndexDB(object):
     def check_url(self, url):
         """
         다운 받을 url 이 디비에 있는지 검사
-        url 목록을 저장하는 버클리 디비에서 점검
 
-        :param url:
-        :return:
+        :param url: url 주소
+        :return: 있으면 True, 없으면 False
         """
         if self.cursor is None:
             return False
 
-        sql = 'SELECT 1 FROM url_list WHERE url=?'
         url = self.get_url(url)
+
+        # url 주소 조회
+        sql = 'SELECT 1 FROM url_list WHERE url=?'
         self.cursor.execute(sql, (url,))
 
         row = self.cursor.fetchone()
@@ -115,11 +123,32 @@ class UrlIndexDB(object):
 
         return False
 
-    def save_url(self, url):
+    def check_id(self, id):
+        """
+        다운 받을 문서 아이디가 인덱스 디비에 있는지 검사
+
+        :param id: 문서 아이디
+        :return: 있으면 True, 없으면 False
+        """
+        if self.cursor is None:
+            return False
+
+        # url 주소 조회
+        sql = 'SELECT 1 FROM id_list WHERE id=?'
+        self.cursor.execute(sql, (id,))
+
+        row = self.cursor.fetchone()
+        if row is not None and len(row) == 1:
+            return True
+
+        return False
+
+    def save_url(self, url, id):
         """
         입력 받은 URL 저장
 
-        :param url:
+        :param url: url 주소
+        :param id: 문서 아이디
         :return:
         """
         if self.cursor is None:
@@ -127,23 +156,80 @@ class UrlIndexDB(object):
 
         url = self.get_url(url)
 
-        sql = 'INSERT INTO url_list (url) VALUES (?)'
+        url_sql = 'INSERT INTO url_list (url) VALUES (?)'
+        id_sql = 'INSERT INTO id_list (id) VALUES (?)'
         try:
-            self.cursor.execute(sql, (url, ))
-        except sqlite3.IntegrityError:
+            self.cursor.execute(url_sql, (url,))
+            self.cursor.execute(id_sql, (id,))
+
+            self.conn.commit()
+        except sqlite3.IntegrityError as e:
             pass
         except Exception as e:
             logging.error('인덱스 디비 저장 오류', exc_info=e)
 
         return
 
-    def update_url_list(self, mongodb_info, db_name):
+    def update_elastic_url_list(self, index, elastic_info, doc_type=None):
         """
-        캐쉬 디비에 있는 url 목록을 버클리 디비에 저장
+        디비에 있는 url 목록을 인덱스 디비에 저장
 
-        :param mongodb_info: 몽고 디비 접속이름
+        :param index: 인덱스명
+        :param doc_type: 문서 타입
+        :param elastic_info: elastic search 접속 정보
+        :return: void
+        """
+        if self.cursor is None:
+            return
+
+        start_time = time()
+
+        if 'host' not in elastic_info or elastic_info['host'] is None:
+            logging.warning(msg='서버 접속 정보 없음')
+            return
+
+        from elasticsearch import Elasticsearch, helpers
+
+        # 디비 연결
+        elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
+
+        query = {
+            '_source': ['url'],
+            'query': {
+                'match_all': {}
+            }
+        }
+
+        if doc_type is None:
+            hits = helpers.scan(client=elastic, scroll='5m', query=query,
+                                index=index)
+        else:
+            hits = helpers.scan(client=elastic, scroll='5m', query=query,
+                                index=index, doc_type=doc_type)
+
+        count = 0
+        for hit in hits:
+            document = hit['_source']
+
+            self.save_url(url=document['url'], id=hit['_id'])
+
+            count += 1
+            if count % 20000 == 0:
+                self.conn.commit()
+
+        msg = 'url 캐쉬 디비 생성 완료: {:,} {:0.4f} sec'.format(count, time() - start_time)
+        logging.info(msg=msg)
+
+        return
+
+    def update_mongodb_url_list(self, db_name, mongodb_info, collection_name=None):
+        """
+        디비에 있는 url 목록을 인덱스 디비에 저장
+
         :param db_name: 디비 이름
-        :return:
+        :param collection_name: 컬랙션명
+        :param mongodb_info: 몽고 디비 접속 정보
+        :return: void
         """
         if self.cursor is None:
             return
@@ -152,13 +238,17 @@ class UrlIndexDB(object):
 
         from utils import Utils as CrawlerUtils
 
-        if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
+        if collection_name is None:
+            if 'collection' in mongodb_info and mongodb_info['collection'] is not None:
+                collection_name = mongodb_info['collection']
+
+        if collection_name is None:
             logging.warning(msg='컬랙션 정보 없음')
             return
 
         # 숫자일 경우 문자로 변경
-        if isinstance(mongodb_info['collection'], int) is True:
-            mongodb_info['collection'] = str(mongodb_info['collection'])
+        if isinstance(collection_name, int) is True:
+            collection_name = str(collection_name)
 
         if 'port' not in mongodb_info:
             mongodb_info['port'] = 27017
@@ -171,21 +261,16 @@ class UrlIndexDB(object):
                                                   port=mongodb_info['port'],
                                                   db_name=db_name)
 
-        collection = mongodb.get_collection(mongodb_info['collection'])
-        cursor = collection.find({}, {'url': 1, '_id': 0})[:]
+        collection = mongodb.get_collection(collection_name)
+        cursor = collection.find({}, {'url': 1, '_id': 1})[:]
 
         count = 0
         for document in cursor:
             if 'url' in document:
-                self.save_url(document['url'])
+                self.save_url(url=document['url'], id=document['_id'])
 
             count += 1
-
-            # if count % 2000 == 0:
-            #     print('.', end='', flush=True)
-
             if count % 20000 == 0:
-                # print('({:,})'.format(count), end='', flush=True)
                 self.conn.commit()
 
         cursor.close()
@@ -193,7 +278,8 @@ class UrlIndexDB(object):
 
         self.conn.commit()
 
-        logging.info(msg='url 캐쉬 디비 생성 완료: {:,} {:0.4f} sec'.format(count, time() - start_time))
+        msg = 'url 캐쉬 디비 생성 완료: {:,} {:0.4f} sec'.format(count, time() - start_time)
+        logging.info(msg=msg)
 
         return
 

@@ -141,7 +141,7 @@ class Utils(object):
         return ''
 
     def curl_html(self, curl_url, delay='6~9', post_data=None, json_type=False,
-                  encoding=None, max_try=3, headers=None):
+                  encoding=None, max_try=3, headers=None, html_parser=None):
         """
         랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
 
@@ -152,6 +152,7 @@ class Utils(object):
         :param encoding: 인코딩 명시
         :param max_try: 최대 시도 횟수 명시
         :param headers: 헤더 명시
+        :param html_parser: html 파서 명시
         :return: 크롤링 결과 반환, html or json 형식으로 반환
         """
         # 디폴트 범위
@@ -222,7 +223,8 @@ class Utils(object):
                         sleep(sleep_time * 10)
 
                     return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
-                                          json_type=json_type, encoding=encoding, max_try=max_try - 1)
+                                          html_parser=html_parser, json_type=json_type, encoding=encoding,
+                                          max_try=max_try - 1)
                 else:
                     logging.error(msg='크롤링 에러')
                     raise
@@ -248,7 +250,13 @@ class Utils(object):
             if soup is not None and encoding is None:
                 return soup
 
-            return BeautifulSoup(content, 'lxml')
+            # lxml is the faster parser and can handle broken HTML quite well,
+            # html5lib comes closest to how your browser would parse broken HTML but is a lot slower.
+
+            if html_parser is None:
+                return BeautifulSoup(content, 'lxml')
+            else:
+                return BeautifulSoup(content, html_parser)
         except Exception as e:
             logging.error(msg='html 파싱 에러: {}'.format(e))
 
@@ -643,8 +651,15 @@ class Utils(object):
         # 현재 상황 출력
         msg = [mongodb_info['host'], db_name, collection_name]
         for key in ['_id', 'date', 'section', 'title', 'url']:
-            if key in document and isinstance(document[key], str):
+            if key not in document:
+                continue
+
+            if isinstance(document[key], str):
                 msg.append(document[key])
+                continue
+
+            if isinstance(document[key], datetime):
+                msg.append(document[key].strftime('%Y-%m-%d %H:%M:%S'))
 
         if len(msg) > 0:
             logging.info(msg='몽고디비 저장 정보: {}'.format('\t'.join(msg)))
@@ -686,41 +701,51 @@ class Utils(object):
             'document_id': document['_id']
         }
 
+        bulk_data = [{
+            'update': {
+                '_index': elastic_info['index'],
+                '_type': index_type,
+                '_id': payload['document_id']
+            }
+        }, {
+            'doc': payload,
+            'doc_as_upsert': True
+        }]
+
+        # 서버 접속
+        elastic = None
         try:
             elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
 
             if elastic.indices.exists(elastic_info['index']) is False:
                 self.create_elastic_index(elastic, elastic_info['index'])
+        except Exception as e:
+            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
 
-            bulk_data = [{
-                'update': {
-                    '_index': elastic_info['index'],
-                    '_type': index_type,
-                    '_id': payload['document_id']
-                }
-            }, {
-                'doc': payload,
-                'doc_as_upsert': True
-            }]
+        if elastic is None:
+            return False
 
+        # 문서 저장
+        try:
             elastic.bulk(index=elastic_info['index'], body=bulk_data, refresh=True)
         except Exception as e:
             logging.error(msg='elastic-search 저장 에러: {}'.format(e))
 
         return True
 
-    def send_corpus_process(self, document_id, document, api_info, db_name, mongodb_info, update):
+    def send_corpus_process(self, document, api_info, db_name, update):
         """
         코퍼스 저처리 분석 데몬에 문서 아이디 전달
 
-        :param document_id: 전달할 문서 아이디
         :param document: 전달할 문서
         :param api_info: 전처리 API 서버 정보
         :param db_name: 디비명
-        :param mongodb_info: 몽고 디비 정보
         :param update: 디비 갱신 여부 (True/False)
         :return: True/False
         """
+        if document is None:
+            return False
+
         # 필수 항목: url
         # 선택: index, type
         index, doc_type = self.get_elastic_index_info(db_name=db_name, elastic_info=api_info,
@@ -751,13 +776,15 @@ class Utils(object):
             requests.post(url=url, json=body, headers=headers,
                           allow_redirects=True, timeout=30, verify=False)
 
-            logging.info(msg='코퍼스 전처리: {} {} {}'.format(url, document['_id'], document['title']))
+            msg = '코퍼스 전처리: {} {} {}'.format(url, document['_id'], document['title'])
+            logging.info(msg=msg)
         except Exception as e:
-            logging.error(msg='코퍼스 전처리 에러: {} {}'.format(document['_id'], e))
+            msg = '코퍼스 전처리 에러: {} {}'.format(document['_id'], e)
+            logging.error(msg=msg)
 
         return True
 
-    def save_elastic(self, document, elastic_info, db_name, update):
+    def save_elastic(self, document, elastic_info, db_name, insert):
         """
         elastic search 에 문서 저장
 
@@ -769,9 +796,12 @@ class Utils(object):
             }
 
         :param db_name: 디비 이름
-        :param update: 디비 갱신 여부 (True/False)
+        :param insert: 디비 삽입 여부 (True/False)
         :return: True/False
         """
+        if 'date' not in document:
+            return False
+
         from elasticsearch import Elasticsearch
 
         # 인덱스 추출, 몽고 디비 collection 이름 우선
@@ -779,41 +809,55 @@ class Utils(object):
                                                       article_date=document['date'])
 
         if index is None or doc_type is None:
-            return
+            return False
 
-        if 'update' in elastic_info:
-            update = elastic_info['update']
+        if 'insert' in elastic_info:
+            insert = elastic_info['insert']
 
-        # 입력시간 삽입
-        document['insert_date'] = datetime.now()
+        # 입력시간 삽입: 코퍼스 전처리에서 삽입
+        # document['insert_date'] = datetime.now()
 
         # 날짜 변환
         document = self.convert_datetime(document=document)
 
+        document['document_id'] = document['_id']
+        del document['_id']
+
+        bulk_data = [{
+            'update': {
+                '_index': index,
+                '_type': doc_type,
+                '_id': document['document_id']
+            }
+        }, {
+            'doc': document,
+            'doc_as_upsert': insert
+        }]
+
+        # 서버 접속
+        elastic = None
         try:
             elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
 
             if elastic.indices.exists(index) is False:
                 self.create_elastic_index(elastic, index)
-
-            document['document_id'] = document['_id']
-            del document['_id']
-
-            bulk_data = [{
-                'update': {
-                    '_index': index,
-                    '_type': doc_type,
-                    '_id': document['document_id']
-                }
-            }, {
-                'doc': document,
-                'doc_as_upsert': update
-            }]
-
-            response = elastic.bulk(index=index, body=bulk_data, refresh=True)
-            logging.info(msg='elastic-search 저장 결과: errors = {}'.format(response['errors']))
         except Exception as e:
-            logging.error(msg='elastic-search 저장 에러: {}'.format(e))
+            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
+
+        if elastic is None:
+            return False
+
+        # 문서 저장
+        try:
+            response = elastic.bulk(index=index, body=bulk_data, refresh=True)
+
+            msg = 'elastic-search 저장 결과: errors = {}, {}/{}/{}/{}'.format(
+                response['errors'], elastic_info['host'], index, doc_type, document['document_id'])
+
+            logging.info(msg=msg)
+        except Exception as e:
+            msg = 'elastic-search 저장 에러: {}'.format(e)
+            logging.error(msg=msg)
 
         return True
 
@@ -892,7 +936,7 @@ class Utils(object):
         S3에 기사 이미지 저장
 
         :param document: 저장할 문서
-        :param s3_info:
+        :param s3_info: s3 접속 정보
             {
                 bucket: 'bucket name',
                 url: 'http://paige-cdn.plaync.com'
@@ -985,10 +1029,12 @@ class Utils(object):
         index = db_name
         doc_type = None
 
-        if 'index' in elastic_info and elastic_info['index'] != '' and elastic_info['index'] != '{mongo.name}':
+        if 'index' in elastic_info and elastic_info['index'] != '' \
+                and elastic_info['index'] != '{mongo.name}':
             index = elastic_info['index']
 
-        if 'type' in elastic_info and elastic_info['type'] != '' and elastic_info['type'] != '{mongo.collection}':
+        if 'type' in elastic_info and elastic_info['type'] != '' \
+                and elastic_info['type'] != '{mongo.collection}':
             doc_type = elastic_info['type']
 
         # date 에서 추출
@@ -1100,7 +1146,7 @@ class Utils(object):
                         continue
 
                     self.save_elastic(document=copy.deepcopy(document), elastic_info=elastic_info,
-                                      db_name=db_name, update=update)
+                                      db_name=db_name, insert=update)
 
             # 코퍼스 전처리 시작
             if 'corpus-process' in db_info:
@@ -1112,9 +1158,8 @@ class Utils(object):
                     if 'host' not in api_info:
                         continue
 
-                    self.send_corpus_process(document_id=document['_id'], document=copy.deepcopy(document),
-                                             api_info=api_info, db_name=db_name, update=update,
-                                             mongodb_info=mongo_info)
+                    self.send_corpus_process(document=copy.deepcopy(document), api_info=api_info,
+                                             db_name=db_name, update=update)
 
         self.mutex = False
 
@@ -1284,7 +1329,8 @@ class Utils(object):
             else:
                 collection.insert_one(section_info)
         except errors.DuplicateKeyError:
-            logging.error(msg='섹션 정보 저장 오류: 중복키')
+            # logging.error(msg='섹션 정보 저장 오류: 중복키')
+            pass
         except Exception as e:
             logging.error(msg='섹션 정보 저장 오류: {}'.format(e))
 

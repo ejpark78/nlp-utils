@@ -14,7 +14,7 @@ default: crawler
 # crawler
 .ONESHELL:
 crawler: 
-	tar cvfz ./build/app.tar.gz --exclude=build --exclude=__pycache__ --exclude=language_utils --exclude=data --exclude=notebook --exclude=wrap --exclude=*.jar --exclude=venv --exclude=.git --exclude=.idea --exclude=*.pycharm* --exclude=tmp .
+	tar cvfz ./build/app.tar.gz --exclude=*.tar.gz --exclude=build --exclude=__pycache__ --exclude=language_utils --exclude=data --exclude=notebook --exclude=wrap --exclude=*.jar --exclude=venv --exclude=.git --exclude=.idea --exclude=*.pycharm* --exclude=tmp .
 	cd build/
 	docker build -t $(IMAGE_NAME):$(VERSION) -f Dockerfile .
 

@@ -10,9 +10,6 @@
             "corpus-process": [
                 {
                     "host": "http://elastic01:5004/v1.0/api/batch"
-                },
-                {
-                    "host": "http://elastic02:5004/v1.0/api/batch"
                 }
             ],
             "db_name": "joins_live_baseball"
@@ -39,9 +36,6 @@
         "sleep_range": "03,04"
     },
     "state": {
-        "host": "gollum01",
-        "progress": "0.5",
-        "running": "2018-01-03",
         "state": "running"
     }
 }

@@ -71,18 +71,11 @@ def change_db_info():
 
         db_info = parameter['db_info']
 
-        if 'mongo' not in db_info:
+        if 'elastic' not in db_info:
             continue
 
-        mongo = db_info['mongo']
-
-        if 'update' not in mongo:
-            continue
-
-        if mongo['update'] is True:
-            db_info['update'] = True
-
-        del mongo['update']
+        elastic = db_info['elastic']
+        elastic['insert'] = True
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)

@@ -13,9 +13,6 @@
             "corpus-process": [
                 {
                     "host": "http://elastic01:5004/v1.0/api/batch"
-                },
-                {
-                    "host": "http://elastic02:5004/v1.0/api/batch"
                 }
             ],
             "db_name": "sportschosun_baseball"
