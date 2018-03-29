@@ -28,6 +28,11 @@ class CorpusProcessUtils(object):
     def __init__(self):
         super()
 
+        self.s3_info = {
+            'bucket': 'paige-cdn-origin',
+            'url_prefix': 'http://paige-cdn.plaync.com'
+        }
+
     @staticmethod
     def convert_datetime(document):
         """
@@ -111,7 +116,6 @@ class CorpusProcessUtils(object):
         update = True
 
         host = 'http://nlpapi.ncsoft.com:9200'
-        elastic = None
         elastic = Elasticsearch(host, timeout=30)
 
         count = 0
@@ -163,7 +167,58 @@ class CorpusProcessUtils(object):
         return
 
     @staticmethod
-    def save_s3(document, s3_info, db_name):
+    def open_s3_bucket(s3_info):
+        """
+        :return:
+        """
+        import os
+        import boto3.session
+
+        # http://boto3.readthedocs.io/en/latest/reference/services/s3.html
+        bucket_name = s3_info['bucket']
+
+        aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
+        aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
+
+        s3 = boto3.resource('s3',
+                            aws_access_key_id=aws_access_key_id,
+                            aws_secret_access_key=aws_secret_access_key)
+
+        bucket = s3.Bucket(bucket_name)
+
+        return s3, bucket, bucket_name
+
+    @staticmethod
+    def file_exits_on_s3(s3, bucket_name, file_name):
+        """
+        :return:
+        """
+        from botocore.exceptions import ClientError
+
+        try:
+            s3.Object(bucket_name, file_name).get()
+            return True
+        except ClientError as e:
+            logging.info('{}'.format(e))
+
+        return False
+
+    @staticmethod
+    def push_image_to_s3(bucket, upload_file, content, content_type):
+        """
+        :return:
+        """
+        try:
+            response = bucket.put_object(Key=upload_file, Body=content, ACL='public-read',
+                                         ContentType=content_type)
+            logging.info(msg='save S3: {}'.format(response))
+            return True
+        except Exception as e:
+            logging.error(msg='s3 저장 오류: {}'.format(e))
+
+        return False
+
+    def save_s3(self, document, s3_info, db_name):
         """
         S3에 기사 이미지 저장
 
@@ -176,8 +231,6 @@ class CorpusProcessUtils(object):
         :param db_name: 디비명
         :return: document
         """
-        import os
-        import logging
 
         # 이미지 목록 추출
         image_list = None
@@ -189,19 +242,9 @@ class CorpusProcessUtils(object):
             return
 
         import pathlib
-        import boto3.session
-        from botocore.exceptions import ClientError
 
-        # http://boto3.readthedocs.io/en/latest/reference/services/s3.html
-        bucket_name = s3_info['bucket']
-        aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
-        aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
-
-        s3 = boto3.resource('s3',
-                            aws_access_key_id=aws_access_key_id,
-                            aws_secret_access_key=aws_secret_access_key)
-
-        bucket = s3.Bucket(bucket_name)
+        # S3 연결
+        s3, bucket, bucket_name = self.open_s3_bucket(s3_info)
 
         # 이미지 목록
         count = 0
@@ -219,28 +262,15 @@ class CorpusProcessUtils(object):
             count += 1
 
             # 파일 확인
-            file_exists = False
-            try:
-                s3.Object(bucket_name, upload_file).get()
-                file_exists = True
-            except ClientError as e:
-                logging.info('{}'.format(e))
-
-            if file_exists is True:
+            if self.file_exits_on_s3(s3, bucket_name, upload_file) is True:
                 # cdn 이미지 주소 추가
                 image['cdn_image'] = '{}/{}'.format(s3_info['url_prefix'], upload_file)
                 continue
 
             # 2. s3에 업로드
-            try:
-                response = bucket.put_object(Key=upload_file, Body=r.content, ACL='public-read',
-                                             ContentType=r.headers['content-type'])
-                logging.info(msg='save S3: {}'.format(response))
-
+            if self.push_image_to_s3(bucket, upload_file, r.content, r.headers['content-type']):
                 # cdn 이미지 주소 추가
                 image['cdn_image'] = '{}/{}'.format(s3_info['url_prefix'], upload_file)
-            except Exception as e:
-                logging.error(msg='s3 저장 오류: {}'.format(e))
 
         # 이미지 목록 업데이트
         document['image_list'] = image_list
@@ -321,11 +351,6 @@ class CorpusProcessUtils(object):
         host = 'http://nlpapi.ncsoft.com:9200'
         # host = 'http://10.255.62.138:9200'
 
-        s3_info = {
-            'bucket': 'paige-cdn-origin',
-            'url_prefix': 'http://paige-cdn.plaync.com'
-        }
-
         elastic = Elasticsearch(host)
 
         start = 0
@@ -349,7 +374,7 @@ class CorpusProcessUtils(object):
             hits = search_result['hits']
             total = hits['total']
 
-            print('start: ', start, ', total:', total, flush=True)
+            logging.info('start: {}, total: {}'.format(start, total))
 
             start += size
 
@@ -368,14 +393,65 @@ class CorpusProcessUtils(object):
                             save_flag = True
 
                             # 이미지 다운로드
-                            document = self.save_s3(document, s3_info, index_name)
-                        # else:
-                        #     document = save_s3(document, s3_info, index_name)
+                            document = self.save_s3(document, self.s3_info, index_name)
 
                 if save_flag is True:
                     # 저장
                     self.save_elastic(document, item['_index'], item['_type'], host)
-                    print(document, flush=True)
+                    logging.info('{}'.format(document))
+
+        return
+
+    def push_image(self):
+        """
+        :return:
+        """
+        import pathlib
+
+        # S3 연결
+        s3, bucket, bucket_name = self.open_s3_bucket(self.s3_info)
+
+        file_name = 'keyword_image.txt'
+
+        count = 0
+        with open(file_name, 'r') as fp:
+            result = []
+            for line in fp.readlines():
+                if line.find('\t') <= 0:
+                    continue
+
+                # url 분리
+                keyword, url = line.strip().split('\t')
+                url = url.split('?')[0]
+
+                # 이미지 확장자 추출
+
+                suffix = pathlib.Path(url).suffix
+
+                # 1. 이미지 파일 다운로드
+                r = requests.get(url)
+
+                upload_file = 'keyword_image/{}-{:02d}{}'.format(keyword, count, suffix)
+                count += 1
+
+                # 2. s3에 업로드
+                if self.push_image_to_s3(bucket, upload_file, r.content, r.headers['content-type']):
+                    # cdn 이미지 주소 추가
+                    cdn_image = '{}/{}'.format(self.s3_info['url_prefix'], upload_file)
+
+                    result.append({
+                        'keyword': keyword,
+                        'url': url,
+                        'cdn_image': cdn_image
+                    })
+
+                    logging.info(cdn_image)
+
+            import json
+            with open(file_name + '.json', 'w') as fp:
+                str_result = json.dumps(result, ensure_ascii=False, sort_keys=True, indent=4)
+                fp.write(str_result + '\n')
+                fp.flush()
 
         return
 
@@ -383,5 +459,7 @@ class CorpusProcessUtils(object):
 if __name__ == '__main__':
     utils = CorpusProcessUtils()
 
-    utils.corpus_process()
+    # utils.corpus_process()
     # utils.download_image()
+
+    utils.push_image()
