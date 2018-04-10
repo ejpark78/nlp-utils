@@ -12,8 +12,13 @@ from urllib.parse import urljoin
 
 from dateutil.relativedelta import relativedelta
 
+# from logger.errorcode import CrawlerError
+# from logger.log_factory import root_logger
 from url_index_db import UrlIndexDB
 from utils import Utils
+
+# logger = root_logger.get(CrawlerError.MODULE_CODE)
+# logger.info('----- Logger load ------', 0)
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
