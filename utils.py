@@ -98,7 +98,7 @@ class Utils(object):
         :param html_body: html 본문
         :return: BeautifulSoup 반환
         """
-        soup = BeautifulSoup(html_body, 'lxml')
+        soup = BeautifulSoup(html_body, 'html5lib')
 
         if soup.meta is None:
             return soup, None
@@ -184,7 +184,7 @@ class Utils(object):
 
         # 상태 출력
         if self.debug_mode is True:
-            sleep_time = 1
+            sleep_time = int(os.getenv('SLEEP', 1))
 
         logging.info(msg='크롤러 sleep: {} secs'.format(sleep_time))
         sleep(sleep_time)
@@ -221,6 +221,9 @@ class Utils(object):
                     if self.debug_mode is False:
                         logging.error(msg='최대 크롤링 시도 횟수 초과: {}'.format(curl_url))
                         sleep(sleep_time * 10)
+                    else:
+                        sleep_time = int(os.getenv('SLEEP', 1))
+                        sleep(sleep_time)
 
                     return self.curl_html(curl_url=curl_url, delay=delay, post_data=post_data,
                                           html_parser=html_parser, json_type=json_type, encoding=encoding,
@@ -252,9 +255,10 @@ class Utils(object):
 
             # lxml is the faster parser and can handle broken HTML quite well,
             # html5lib comes closest to how your browser would parse broken HTML but is a lot slower.
+            # lxml
 
             if html_parser is None:
-                return BeautifulSoup(content, 'lxml')
+                return BeautifulSoup(content, 'html5lib')
             else:
                 return BeautifulSoup(content, html_parser)
         except Exception as e:
@@ -341,8 +345,15 @@ class Utils(object):
         """
         from pymongo import MongoClient
 
-        connect = MongoClient('mongodb://{}:{}'.format(host, port))
-        db = connect.get_database(db_name)
+        connect = None
+        try:
+            connect = MongoClient('mongodb://{}:{}'.format(host, port))
+        except Exception as e:
+            logging.error(msg='{}'.format(e))
+
+        db = None
+        if connect is not None:
+            db = connect.get_database(db_name)
 
         return connect, db
 
@@ -563,11 +574,9 @@ class Utils(object):
         :param mongodb_info: 몽고 디비 접속 정보
         :param db_name: 저장할 디비 이름
             "mongo": {
-                "collection": "2017-07",
                 "port": 27018,
                 "update": false,
                 "host": "frodo",
-                "name": "daum_economy"
             }
         :param update: 내용 갱신 여부 (True/False)
         :return: True/False
@@ -770,9 +779,6 @@ class Utils(object):
         headers = {'Content-Type': 'application/json'}
         try:
             url = api_info['host']
-            if self.debug_mode is True:
-                url = 'http://localhost:5004/v1.0/api/batch'
-
             requests.post(url=url, json=body, headers=headers,
                           allow_redirects=True, timeout=30, verify=False)
 
@@ -820,8 +826,11 @@ class Utils(object):
         # 날짜 변환
         document = self.convert_datetime(document=document)
 
-        document['document_id'] = document['_id']
-        del document['_id']
+        if '_id' in document:
+            document['document_id'] = document['_id']
+            del document['_id']
+        else:
+            document['document_id'] = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
 
         bulk_data = [{
             'update': {
@@ -1043,6 +1052,56 @@ class Utils(object):
 
         return index, doc_type
 
+    def save_article_list(self, url, article_list, db_info):
+        """
+        기사 목록 저장
+
+        :param url: url 주소
+        :param article_list: 기사 목록
+        :param db_info: 디비 접속 정보
+        :return:
+        """
+        from dateutil.parser import parse as parse_date
+
+        if 'db_name' in db_info:
+            db_name = db_info['db_name']
+        else:
+            db_name = re.sub('^.+://(.+?)/', '\g<1>', url).replace('.', '_')
+
+        # 날짜 추출
+        date = datetime.now()
+        if len(article_list) > 0 and 'datetime' in article_list[0]:
+            try:
+                date = parse_date(article_list[0]['datetime'])
+            except Exception as e:
+                logging.error(msg='{}'.format(e))
+
+        # 저장할 문서 생성
+        doc = {
+            'url': url,
+            'date': date,
+            'article_list': article_list
+        }
+
+        # 저장
+        if 'article_list' in db_info:
+            batch_list = [db_info['article_list']]
+            if isinstance(db_info['article_list'], list):
+                batch_list = db_info['article_list']
+
+            for elastic_info in batch_list:
+                index = '{}_article_list'.format(db_name)
+
+                if 'index' in elastic_info:
+                    index = elastic_info['index']
+
+                if 'host' not in elastic_info:
+                    continue
+
+                self.save_elastic(document=doc, db_name=index, insert=True, elastic_info=elastic_info)
+
+        return
+
     def save_article(self, document, db_info):
         """
         문서 저장
@@ -1059,22 +1118,18 @@ class Utils(object):
             'document': document
         }
 
-        if self.debug_mode is True:
+        # queue 목록에 작업 저장
+        start_thread = False
+        if self.job_queue.empty() is True:
+            start_thread = True
+
+            logging.info(msg='저장 큐에 저장: {:,}'.format(self.job_queue.qsize()))
             self.job_queue.put(job)
-            self._save_article()
-        else:
-            # queue 목록에 작업 저장
-            start_thread = False
-            if self.job_queue.empty() is True:
-                start_thread = True
 
-                logging.info(msg='저장 큐에 저장: {:,}'.format(self.job_queue.qsize()))
-                self.job_queue.put(job)
-
-            if start_thread is True:
-                # 스래드 시작
-                thread = threading.Thread(target=self._save_article)
-                thread.start()
+        if start_thread is True:
+            # 스래드 시작
+            thread = threading.Thread(target=self._save_article)
+            thread.start()
 
         return True
 
@@ -1182,11 +1237,14 @@ class Utils(object):
             logging.error(msg='make_simple_url: get_query 오류 {}'.format(e))
             return False
 
-        url_info = {
-            'full': document['url'],
-            'simple': '',
-            'query': query
-        }
+        if isinstance(document['url'], str):
+            url_info = {
+                'full': document['url'],
+                'simple': '',
+                'query': query
+            }
+        else:
+            url_info = document['url']
 
         if 'url' in parsing_info:
             parsing_url = parsing_info['url']

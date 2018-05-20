@@ -127,12 +127,13 @@ class Crawler(Utils):
 
         return True
 
-    def curl_article(self, article, response_type='html'):
+    def curl_article(self, article, response_type='html', check_url_exits=True):
         """
         기사 본문을 웹에서 가져와서 디비에 저장하는 함수
 
         :param article: 기사 본문
         :param response_type: 기사 본문 형식
+        :param check_url_exits: url 이 있는지 검사
         :return: True/False
         """
         target_tags = None
@@ -149,8 +150,9 @@ class Crawler(Utils):
 
         # url 중복 체크, 섹션 정보 저장
         url = self.get_url(article['url'])
+
         # if self.debug_mode is False and self.is_url_exists(url, article, response_type):
-        if self.is_url_exists(url, article, response_type):
+        if check_url_exits is True and self.is_url_exists(url, article, response_type):
             return
 
         # const value 삽입
@@ -349,6 +351,10 @@ class Crawler(Utils):
         :return: None
         """
         logging.info(msg='json 형식의 데이터 목록 크롤링: {}'.format(domain_url))
+
+        # 기사 목록 저장
+        if 'article_list' in self.db_info:
+            self.save_article_list(url=domain_url, article_list=article_list, db_info=self.db_info)
 
         # 개별 기사 URL
         for article in article_list:
@@ -896,76 +902,150 @@ class Crawler(Utils):
 
         return
 
-    def update_article_by_date(self):
+    def update_article(self):
         """
         기사 본문 재 크롤링
 
         :return:
+
+        CONTAINER_HOST_NAME=koala DEBUG=true SLEEP=1 python3 scheduler.py -document_id naver_recrawling
+
         """
-        start_date, end_date, original_start_date, date_step = self.get_date_range()
 
-        curl_date = None
-        if 'curl_date' in self.parameter:
-            curl_date = self.parse_date_string(self.parameter['curl_date'])
+        def _json_serial(obj):
+            """
+            json.dumps 의 콜백 함수로 넘겨주는 함수
+            날자 형식을 문자로 반환
 
-        mongodb_info = self.db_info['mongo']
+            :param obj: 기사 문서 아이템
+            :return:
+            """
+            from datetime import datetime
 
-        if 'collection' not in mongodb_info or mongodb_info['collection'] is None:
-            logging.error(msg='no collection in db info')
-            return
+            if isinstance(obj, datetime):
+                return obj.strftime('%Y-%m-%d %H:%M:%S')
 
-        # 숫자일 경우 문자로 변경
-        if isinstance(mongodb_info['collection'], int) is True:
-            mongodb_info['collection'] = str(mongodb_info['collection'])
+            raise TypeError("Type not serializable")
 
-        if 'port' not in mongodb_info:
-            mongodb_info['port'] = 27017
+        def get_document_list(db_name, col_name):
+            connect, mongodb = self.open_db(host='frodo', port='27018', db_name=db_name)
+            collection = mongodb.get_collection(col_name)
 
-        # 디비 연결
-        connect, mongodb = self.open_db(host=mongodb_info['host'],
-                                        db_name=mongodb_info['name'], port=mongodb_info['port'])
+            cursor = collection.find({})[:]
 
-        collection = mongodb.get_collection(mongodb_info['collection'])
+            result = {}
+            for doc in cursor:
+                result[doc['_id']] = doc
 
-        # 1차 날짜 기준 필터링
-        logging.info(msg='date range: {} ~ {}'.format(start_date, end_date))
+            cursor.close()
+            connect.close()
 
-        cursor = collection.find({
-            'date': {
-                '$gte': start_date,
-                '$lte': end_date
-            }
-        })[:]
+            return result
 
-        document_list = []
-        for document in cursor:
-            date = document['date']
-            if end_date < date < start_date:
-                continue
+        from dateutil.parser import parse as parse_date
 
-            if curl_date is not None and 'curl_date' in document and curl_date < document['curl_date']:
-                continue
+        curl_date = parse_date('2018-04-20')
 
-            document_list.append(document)
+        source_list = '동아일보,중앙일보,한겨레,조선일보,디지털타임스,전자신문,코리아헤럴드,매일경제,머니투데이,서울경제,아시아경제,' \
+                      '이데일리,파이낸셜뉴스,한국경제,헤럴드경제,경향신문,국민일보,문화일보,서울신문,세계일보,한국일보'.split(',')
+        db_list = 'naver_politics,naver_international,naver_it,naver_economy,naver_society'.split(',')
 
-        cursor.close()
+        # collection_list = '2018-04,2018-03,2018-02,2018-01,' \
+        # collection_list = '2017-12,2017-11,2017-10,2017-09,2017-08,2017-07,' \
+        collection_list = '2017-09,2017-08,2017-07,' \
+                          '2017-06,2017-05,2017-04,2017-03,2017-02,2017-01'.split(',')
 
-        connect.close()
+        for collection_name in collection_list:
+            for source in source_list:
+                for db_name in db_list:
+                    # 디비 연결
+                    connect, mongodb = self.open_db(host='frodo', port=27018, db_name=db_name)
+                    collection = mongodb.get_collection(collection_name)
 
-        # 크롤링 시작
-        count = 0
-        total = len(document_list)
+                    # 날짜 기준 검색
+                    query = {
+                        'source': source,
+                        'paper': {'$exists': 0},
+                        'curl_date': {
+                            '$lte': curl_date
+                        }
+                    }
+                    cursor = collection.find(query)[:]
 
-        logging.info(msg='total: {:,}'.format(total))
-        for document in document_list:
-            self.curl_article(article=document)
+                    document_list = []
+                    for document in cursor:
+                        if 'paper' in document:
+                            continue
 
-            paper = ''
-            if 'paper' in document:
-                paper = document['paper']
+                        if document['curl_date'] > curl_date:
+                            continue
 
-            logging.info(msg='{:,}/{:,}\t{}'.format(count, total, paper))
-            count += 1
+                        document_list.append(document)
+
+                    cursor.close()
+
+                    connect.close()
+
+                    # 크롤링 시작
+                    self.db_info = {
+                        'db_name': db_name,
+                        'mongo': {
+                            'host': 'frodo',
+                            'port': 27018,
+                            'update': True,
+                            'collection': collection_name
+                        }
+                    }
+
+                    count = 0
+                    total = len(document_list)
+
+                    logging.info(msg='{} {} {} {:,}'.format(db_name, collection_name, source, total))
+                    for document in document_list:
+                        self.curl_article(article=document, check_url_exits=False)
+
+                        paper = ''
+                        if 'paper' in document:
+                            paper = document['paper']
+
+                        msg = '{} {} {} {:,}/{:,}\t{}'.format(db_name, source, collection_name, count, total, paper)
+                        logging.info(msg=msg)
+                        count += 1
+
+        # import json
+
+        # 벡업
+        # for collection_name in collection_list:
+        #     with open('naver_politics.{}.json'.format(collection_name), 'w') as fp:
+        #         for doc_id in document_list:
+        #             document = document_list[doc_id]
+        #
+        #             line = json.dumps(document, ensure_ascii=False, sort_keys=True, default=_json_serial)
+        #             fp.write(line + '\n')
+
+        # 삭제 & 이동
+        # for collection_name in collection_list:
+        #     logging.info(msg=collection_name)
+        #
+        #     naver_politics = get_document_list(db_name='naver_politics', col_name=collection_name)
+        #
+        #     for db_name in db_list:
+        #         logging.info(msg='{} {}'.format(db_name, collection_name))
+        #
+        #         document_list = get_document_list(db_name=db_name, col_name=collection_name)
+        #
+        #         connect, mongodb = self.open_db(host='frodo', port=27018, db_name=db_name)
+        #         collection = mongodb.get_collection('naver_politics')
+        #
+        #         for doc_id in document_list:
+        #             if doc_id not in naver_politics:
+        #                 continue
+        #
+        #             collection.remove({'_id': doc_id})
+        #
+        #             logging.info(msg='{} {} {}'.format(db_name, collection_name, doc_id))
+        #
+        #         connect.close()
 
         return
 
@@ -1053,12 +1133,13 @@ class Crawler(Utils):
         """
         self._init_variable(scheduler_db_info, job_info)
 
+        if 'update_article' in self.parameter:
+            self.update_article()
+            return
+
         # 크롤링 방식에 따른 실행: 날짜 기준 크롤링 or 기사 고유 아이디 기준 크롤링
         if 'start_date' in self.parameter or 'start_month' in self.parameter:
-            if 'update_article' in self.parameter:
-                self.update_article_by_date()
-            else:
-                self.curl_by_date()
+            self.curl_by_date()
         else:
             self.curl_by_page_id()
 
