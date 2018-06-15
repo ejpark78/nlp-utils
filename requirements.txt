@@ -11,3 +11,4 @@ pymongo
 requests
 selenium
 html5lib
+openpyxl

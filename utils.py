@@ -1714,7 +1714,7 @@ class Utils(object):
                                     data[key].append(link['href'])
                         else:
                             # html
-                            data[key] = str(data_tag)
+                            data[key] = str(data_tag.prettify())
 
                         # replace
                         if 'replace' in data_tag_info:

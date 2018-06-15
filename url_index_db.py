@@ -28,9 +28,8 @@ class UrlIndexDB(object):
     def set_pragma(cursor, readonly=True):
         """
         sqlite 의 속도 개선을 위한 설정
-
-        :param cursor:
-        :param readonly:
+        :param cursor: 디비 핸들
+        :param readonly: 읽기 전용 플래그
         :return:
         """
         # cursor.execute('PRAGMA threads       = 8;')
@@ -54,8 +53,8 @@ class UrlIndexDB(object):
     def open_db(self, filename=None, delete=False):
         """
         url 을 저장하는 캐쉬 디비(sqlite) 오픈
-        :param filename:
-        :param delete:
+        :param filename: 파일명
+        :param delete: 기존 파일 삭제 여부
         :return:
         """
         if filename is not None:

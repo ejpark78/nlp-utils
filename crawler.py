@@ -12,13 +12,8 @@ from urllib.parse import urljoin
 
 from dateutil.relativedelta import relativedelta
 
-# from logger.errorcode import CrawlerError
-# from logger.log_factory import root_logger
 from url_index_db import UrlIndexDB
 from utils import Utils
-
-# logger = root_logger.get(CrawlerError.MODULE_CODE)
-# logger.info('----- Logger load ------', 0)
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -952,7 +947,7 @@ class Crawler(Utils):
 
         # collection_list = '2018-04,2018-03,2018-02,2018-01,' \
         # collection_list = '2017-12,2017-11,2017-10,2017-09,2017-08,2017-07,' \
-        collection_list = '2017-09,2017-08,2017-07,' \
+        collection_list = '2017-08,2017-07,' \
                           '2017-06,2017-05,2017-04,2017-03,2017-02,2017-01'.split(',')
 
         for collection_name in collection_list:
@@ -1002,6 +997,16 @@ class Crawler(Utils):
 
                     logging.info(msg='{} {} {} {:,}'.format(db_name, collection_name, source, total))
                     for document in document_list:
+                        # 오류 보정
+                        if 'url' in document and 'full' in document['url'] and 'full' in document['url']['full']:
+                            document['url'] = document['url']['full']
+
+                        if 'url' in document and 'full' in document['url'] and 'full' in document['url']['full']:
+                            document['url'] = document['url']['full']
+
+                        if 'url' in document and 'full' in document['url'] and 'full' in document['url']['full']:
+                            document['url'] = document['url']['full']
+
                         self.curl_article(article=document, check_url_exits=False)
 
                         paper = ''
