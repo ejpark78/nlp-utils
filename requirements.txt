@@ -12,3 +12,4 @@ requests
 selenium
 html5lib
 openpyxl
+jsonlines
