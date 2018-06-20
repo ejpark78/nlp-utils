@@ -150,17 +150,7 @@ class NaverKinCrawler(Utils):
         cursor = conn.cursor()
 
         # 테이블 생성
-        if table_name == 'detail' or table_name == 'question_list' or table_name == 'answer_list':
-            sql = '''
-              CREATE TABLE IF NOT EXISTS {table_name} (
-                d1_id INTEGER NOT NULL,
-                dir_id INTEGER NOT NULL,
-                doc_id INTEGER NOT NULL,
-                content TEXT NOT NULL,
-                PRIMARY KEY (d1_id, dir_id, doc_id)
-              )
-            '''.format(table_name=table_name)
-        elif table_name == 'user_list':
+        if table_name == 'user_list':
             sql = '''
               CREATE TABLE IF NOT EXISTS {table_name} (
                 u VARCHAR(255) NOT NULL,
@@ -168,6 +158,16 @@ class NaverKinCrawler(Utils):
                 category VARCHAR(255) NOT NULL,
                 content TEXT NOT NULL,
                 PRIMARY KEY (u)
+              )
+            '''.format(table_name=table_name)
+        else:
+            sql = '''
+              CREATE TABLE IF NOT EXISTS {table_name} (
+                d1_id INTEGER NOT NULL,
+                dir_id INTEGER NOT NULL,
+                doc_id INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                PRIMARY KEY (d1_id, dir_id, doc_id)
               )
             '''.format(table_name=table_name)
 
@@ -240,7 +240,7 @@ class NaverKinCrawler(Utils):
         for dir_id in dir_id_list:
             result_path = '{data_path}/{dir_id}'.format(data_path=self.data_home, dir_id=dir_id)
 
-            self.get_question_list(url=url, dir_id=dir_id, result_path=result_path)
+            self.get_question_list(url=url, dir_id=dir_id, result_path=result_path, end=20)
 
         return
 
@@ -937,7 +937,7 @@ class NaverKinCrawler(Utils):
         from os import listdir
         from os.path import isdir, join
 
-        from urllib.parse import quote_plus, unquote
+        from urllib.parse import unquote
 
         # 파일 로딩
         user_list = []
@@ -1019,6 +1019,123 @@ class NaverKinCrawler(Utils):
 
         return
 
+    def insert_question_list(self, data_path=''):
+        """
+        질문 목록을 sqlite3 에 입력
+        :param data_path: 사용자 목록이 저장된 경로 data/naver/kin/question_list/경제
+
+        질문 자료 구조
+            {
+                "thumbnailInfos": null,
+                "betPoint": 0,
+                "kinupPoint": 0,
+                "d2id": 701,
+                "readCnt": 1,
+                "isContainsLocation": false,
+                "d1Id": 7,
+                "title": "명치아플땐?",
+                "qboardId": 0,
+                "answerCnt": 1,
+                "writeTime": 1529107180000,
+                "isFromMobile": true,
+                "firstFlag": null,
+                "mediaFlag": 0,
+                "isAutoTitle": true,
+                "kinupCnt": 0,
+                "isAdult": false,
+                "fullDirNamePath": "Q&A > 건강 > 건강상담 > 내과 > 소화기내과",
+                "autoTitle": false,
+                "renewFlag": null,
+                "gdId": "10000009_00001218bc79",
+                "tags": null,
+                "d5id": 0,
+                "unreadFlag": null,
+                "entryLink": null,
+                "answerTime": null,
+                "adultFlag": "N",
+                "inputDevice": "MOBILE_WEB",
+                "dirName": "소화기내과",
+                "kinFlag": null,
+                "isContainsAudio": false,
+                "dirId": 7010102,
+                "juniorFlag": null,
+                "isContainsMovie": false,
+                "isContainsImage": false,
+                "previewContents": "명치아플땐?",
+                "entry": null,
+                "d4id": 7010102,
+                "tagList": null,
+                "docId": 303611001,
+                "formattedWriteTime": "오늘",
+                "metooWonderCnt": 0,
+                "d3id": 70101,
+                "openFlag": "N"
+            }
+
+        :return:
+        """
+        import json
+
+        from os import listdir
+        from os.path import isdir, join
+
+        # 파일 로딩
+        count = 0
+        question_list = {}
+        for file in listdir(data_path):
+            filename = join(data_path, file)
+            if isdir(filename):
+                continue
+
+            logging.info(msg='filename: {}'.format(filename))
+
+            # 질문 로딩
+            with open(filename, 'r') as fp:
+                body = '\n'.join(fp.readlines())
+
+                q_list = json.loads(body)
+
+                # 카테고리별로 분리
+                for q in q_list:
+                    category_id = '{}'.format(q['dirId'])
+
+                    if category_id not in question_list:
+                        question_list[category_id] = []
+
+                    count += 1
+                    question_list[category_id].append(q)
+
+        logging.info(msg='question_list: category={:,}, total={:,}'.format(len(question_list), count))
+
+        table_name = 'question_list'
+
+        for category_id in question_list:
+            db_filename = 'data/naver/kin/question_list/{}.sqlite3'.format(category_id)
+            conn, cursor = self.open_sqlite(filename=db_filename, table_name=table_name)
+
+            value_list = []
+            for question in question_list[category_id]:
+                # (d1_id, dir_id, doc_id, category, content)
+                content = json.dumps(question, ensure_ascii=False, sort_keys=True, indent=4)
+                values = (question['d1Id'], question['dirId'], question['docId'], content,)
+                value_list.append(values)
+
+                if len(value_list) > 500:
+                    self.batch_save_content(cursor=cursor, table_name=table_name,
+                                            value_list=value_list)
+                    conn.commit()
+
+                    value_list = []
+
+            if len(value_list) > 0:
+                self.batch_save_content(cursor=cursor, table_name=table_name,
+                                        value_list=value_list)
+                conn.commit()
+
+            conn.close()
+
+        return
+
 
 def init_arguments():
     """
@@ -1080,6 +1197,18 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/p
 python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/expert -category 경제
 python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/elite -category 년도별
 
+# 질문 목록을 DB에 저장
+python3 naver_kin_crawler.py -insert_question_list -data_path data/naver/kin/question_list/경제
+
+IFS=$'\\n'
+for d in $(ls -1 data/naver/kin/question_list.old) ; do
+    echo ${d}
+
+    python3 naver_kin_crawler.py -insert_question_list \\
+        -data_path data/naver/kin/question_list.old/${d}
+done
+
+
     ''')
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -1105,6 +1234,8 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/e
                         help='질문 상세 페이지에서 정보 추출')
     parser.add_argument('-insert_user_list', action='store_true', default=False,
                         help='사용자 목록을 DB에 저장')
+    parser.add_argument('-insert_question_list', action='store_true', default=False,
+                        help='질문 목록을 DB에 저장')
 
     # 파라메터
     parser.add_argument('-filename', default='data/naver/test-detail.sqlite3', help='')
@@ -1143,3 +1274,6 @@ if __name__ == '__main__':
 
     if args.insert_user_list:
         crawler.insert_user_list(data_path=args.data_path, category=args.category)
+
+    if args.insert_question_list:
+        crawler.insert_question_list(data_path=args.data_path)
