@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
-import os
 import sqlite3
 
 from utils import Utils
@@ -16,9 +15,9 @@ logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     level=logging.INFO)
 
 
-class NaverKinCrawler(Utils):
+class NaverKinDBUtils(Utils):
     """
-    크롤러
+    네이버 크롤링 결과 저장 유틸
     """
 
     def __init__(self):
@@ -28,12 +27,6 @@ class NaverKinCrawler(Utils):
         super().__init__()
 
         self.data_home = 'data/naver/kin'
-
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
-                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
-                          'Version/11.0 Mobile/15A372 Safari/604.1'
-        }
 
         self.detail_parsing_info = [
             {
@@ -308,6 +301,629 @@ class NaverKinCrawler(Utils):
 
         return
 
+    def save_data_list(self, data_list, result_path,
+                       table_name='question_list', update=False):
+        """
+        질문 목록 저장
+        :param data_list: 데이터 목록
+        :param result_path: 저장 경로
+        :param update: 내용 업데이트 플래그
+        :param table_name: 테이블명
+        :return:
+        """
+        import os
+
+        # 결과 경로가 없는 경우 생성
+        if not os.path.exists(result_path):
+            os.makedirs(result_path)
+
+        for dir_id in data_list:
+            db_filename = '{}/{}.sqlite3'.format(result_path, dir_id)
+            conn, cursor = self.open_sqlite(filename=db_filename, table_name=table_name)
+
+            buf = []
+            for value in data_list[dir_id]:
+                buf.append(value)
+
+                if len(buf) > 500:
+                    self.batch_save_content(cursor=cursor, table_name=table_name,
+                                            value_list=buf, update=update)
+                    conn.commit()
+                    buf = []
+
+            if len(buf) > 0:
+                self.batch_save_content(cursor=cursor, table_name=table_name,
+                                        value_list=buf, update=update)
+                conn.commit()
+
+            conn.close()
+
+        return
+
+    def batch_save_content(self, cursor, table_name, value_list, update=False):
+        """
+        답변 상세 페이지를 10개 단위로 배치 저장
+        :param cursor: DB 커서
+        :param table_name: 테이블명
+        :param value_list: 저장할 데이터
+        :param update: 데이터 갱신 여부
+        :return:
+        """
+        for values in value_list:
+            self.save_content(cursor=cursor, table_name=table_name, update=update,
+                              values=values, commit=False, conn=None)
+
+        return
+
+    @staticmethod
+    def save_to_excel(file_name, data, column_names):
+        """
+        엑셀로 저장
+        :param file_name: 파일명
+        :param data: 저장할 데이터
+        :param column_names: 컬럼 이름
+        :return:
+        """
+        from openpyxl import Workbook
+
+        status = []
+
+        wb = Workbook()
+
+        for path in data:
+            count = '{:,}'.format(len(data[path]))
+            status.append([path, count])
+
+            ws = wb.create_sheet(path)
+
+            if len(column_names) == 0:
+                column_names = list(data[path][0].keys())
+
+            ws.append(column_names)
+            for doc in data[path]:
+                lines = []
+                for c in column_names:
+                    v = doc[c]
+                    if v is None:
+                        v = ''
+
+                    lines.append('{}'.format(v))
+
+                ws.append(lines)
+
+        # 통계 정보 저장
+        ws = wb['Sheet']
+        for row in status:
+            ws.append(row)
+
+        ws.title = 'status'
+
+        wb.save(file_name)
+
+        return
+
+    def insert_question_list(self, data_path=''):
+        """
+        질문 목록을 sqlite3 에 입력
+        :param data_path: 사용자 목록이 저장된 경로 data/naver/kin/question_list/경제
+
+        질문 자료 구조
+            {
+                "thumbnailInfos": null,
+                "betPoint": 0,
+                "kinupPoint": 0,
+                "d2id": 701,
+                "readCnt": 1,
+                "isContainsLocation": false,
+                "d1Id": 7,
+                "title": "명치아플땐?",
+                "qboardId": 0,
+                "answerCnt": 1,
+                "writeTime": 1529107180000,
+                "isFromMobile": true,
+                "firstFlag": null,
+                "mediaFlag": 0,
+                "isAutoTitle": true,
+                "kinupCnt": 0,
+                "isAdult": false,
+                "fullDirNamePath": "Q&A > 건강 > 건강상담 > 내과 > 소화기내과",
+                "autoTitle": false,
+                "renewFlag": null,
+                "gdId": "10000009_00001218bc79",
+                "tags": null,
+                "d5id": 0,
+                "unreadFlag": null,
+                "entryLink": null,
+                "answerTime": null,
+                "adultFlag": "N",
+                "inputDevice": "MOBILE_WEB",
+                "dirName": "소화기내과",
+                "kinFlag": null,
+                "isContainsAudio": false,
+                "dirId": 7010102,
+                "juniorFlag": null,
+                "isContainsMovie": false,
+                "isContainsImage": false,
+                "previewContents": "명치아플땐?",
+                "entry": null,
+                "d4id": 7010102,
+                "tagList": null,
+                "docId": 303611001,
+                "formattedWriteTime": "오늘",
+                "metooWonderCnt": 0,
+                "d3id": 70101,
+                "openFlag": "N"
+            }
+
+        :return:
+        """
+        import json
+
+        from os import listdir
+        from os.path import isdir, join
+
+        # 파일 로딩
+        count = 0
+        question_list = {}
+        for file in listdir(data_path):
+            filename = join(data_path, file)
+            if isdir(filename):
+                continue
+
+            logging.info(msg='filename: {}'.format(filename))
+
+            # 질문 로딩
+            with open(filename, 'r') as fp:
+                body = '\n'.join(fp.readlines())
+
+                q_list = json.loads(body)
+
+                # 카테고리별로 분리
+                for q in q_list:
+                    dir_id = q['dirId']
+
+                    if dir_id not in question_list:
+                        question_list[dir_id] = []
+
+                    count += 1
+                    question_list[dir_id].append(q)
+
+        logging.info(msg='question_list: category={:,}, total={:,}'.format(len(question_list), count))
+
+        self.save_question_list(question_list=question_list, result_path='data/naver/kin/question_list')
+        return
+
+    def insert_user_list(self, data_path='', category=''):
+        """
+        사용자 목록을 sqlite3 에 입력
+        :param data_path: 사용자 목록이 저장된 경로
+        :param category: 카테고리 정보
+
+        expert 사용자 정보 (랭킹)
+            {
+                "encodedU": "qXbgNEA8MzxTqYTJ0KdlLcw9j%2FOdLGczxe1xmpkrRuQ%3D",
+                "lastWeekRank": 3,
+                "nickname": "",
+                "photoUrl": "https://ssl.pstatic.net/static/kin/09renewal/avatar/33x33/8.png",
+                "totalDirPoint": 383,
+                "u": "qXbgNEA8MzxTqYTJ0KdlLcw9j/OdLGczxe1xmpkrRuQ=",
+                "useNickname": false,
+                "userId": "ospdb",
+                "viewUserId": "ospd****",
+                "weekDirPoint": 101,
+                "weekRank": 2
+            }
+
+        elite 년도별 전문가
+            {
+                "activeDirId": 10102,
+                "activeDirName": "노트북",
+                "cheerCnt": 39,
+                "cheered": false,
+                "description": "전자제품 박학다식 끝판왕",
+                "displayYn": "Y",
+                "eliteFlag": 0,
+                "honorKin": false,
+                "month": 5,
+                "powerKin": false,
+                "profilePhotoUrl": "https://kin-phinf.pstatic.net/20180426_110/1524732986074Gv6GP_JPEG/
+                    %BA%CE%C7%B0%C1%A4%B8%AE.jpg?type=w200",
+                "selectBestCnt": 2997,
+                "u": "X/XrUkwNpssPPgqPB+TNUGm+PjMq/YHPNL4nAHhrM74=",
+                "viewId": "박학다식전문가",
+                "year": 2018
+            }
+
+        분야별 지식인
+            GyOWWwK059X2dLySrX%2Fd6uWqE60LWxo1q2tZ9d5IOc8%3D	우리세무사
+            JikckmNyrpnFIST1cyw44Nbizfuto0Tb0LrSrUSgILw%3D	깊은샘
+
+        :return:
+        """
+        import re
+        import json
+
+        from os import listdir
+        from os.path import isdir, join
+
+        from urllib.parse import unquote
+
+        # 파일 로딩
+        user_list = []
+        if isdir(data_path):
+            for file in listdir(data_path):
+                print(file)
+
+                filename = join(data_path, file)
+                if isdir(filename):
+                    continue
+
+                with open(filename, 'r') as fp:
+                    buf = []
+                    for line in fp.readlines():
+                        line = line.rstrip()
+
+                        buf.append(line)
+
+                        if line != '}':
+                            continue
+
+                        doc = json.loads(''.join(buf))
+                        buf = []
+
+                        doc['f_name'] = re.sub('^.+/(.+?)\.json', '\g<1>', filename)
+                        user_list.append(doc)
+        else:
+            with open(data_path, 'r') as fp:
+                f_name = re.sub('^.+/(.+?)$', '\g<1>', data_path)
+
+                for line in fp.readlines():
+                    line = line.rstrip()
+                    if line == '' or line[0] == '#':
+                        continue
+
+                    u, name = line.split('\t', maxsplit=1)
+
+                    user_list.append({
+                        'u': unquote(u),
+                        'viewId': name,
+                        'f_name': f_name
+                    })
+
+        db_filename = 'data/naver/kin/user_list.sqlite3'
+        table_name = 'user_list'
+
+        conn, cursor = self.open_sqlite(filename=db_filename, table_name=table_name)
+
+        value_list = []
+
+        for user in user_list:
+            name = ''
+            if 'userId' in user:
+                name = user['userId']
+
+            if 'viewId' in user:
+                name = user['viewId']
+
+            print(name, user['u'])
+
+            # (u, name, category, content)
+            str_user = json.dumps(user, ensure_ascii=False, sort_keys=True, indent=4)
+            values = (user['u'], name, '{} ({})'.format(category, user['f_name']), str_user,)
+            value_list.append(values)
+
+            if len(value_list) > 100:
+                self.batch_save_content(cursor=cursor, table_name=table_name,
+                                        value_list=value_list)
+                conn.commit()
+
+                value_list = []
+
+        if len(value_list) > 0:
+            self.batch_save_content(cursor=cursor, table_name=table_name,
+                                    value_list=value_list)
+            conn.commit()
+
+        conn.close()
+
+        return
+
+    def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
+        """
+        네이버 지식인 질문 목록 결과 취합
+        :param data_path: 질문 목록 경로
+        :param result_filename: 결과 파일명
+        :return:
+        """
+        import bz2
+        import sys
+        import json
+
+        from os import listdir
+        from os.path import isdir, join
+
+        # 파일 목록 추출
+        file_list = []
+        if isdir(data_path):
+            for file in listdir(data_path):
+                filename = join(data_path, file)
+                if isdir(filename):
+                    continue
+
+                file_list.append(filename)
+
+            file_list = sorted(file_list)
+        else:
+            file_list = [data_path]
+
+        doc_index = {}
+
+        # columns = []
+        columns = 'fullDirNamePath,docId,title,previewContents,tagList'.split(',')
+
+        count = 0
+        for file in file_list:
+            doc_list = []
+            if file.find('.bz2') > 0:
+                with bz2.open(file, 'rb') as fp:
+                    buf = []
+                    for line in fp.readlines():
+                        line = str(line, encoding='utf-8').strip()
+
+                        buf.append(line)
+
+                        if len(buf) > 0 and line == '}':
+                            body = ''.join(buf)
+                            doc_list.append(json.loads(body))
+
+                            buf = []
+            else:
+                with open(file, 'r') as fp:
+                    doc_list = json.loads(''.join(fp.readlines()))
+
+            for doc in doc_list:
+                path = 'etc'
+                if 'fullDirNamePath' in doc:
+                    path = doc['fullDirNamePath'].replace('Q&A > ', '')
+
+                if 'category' in doc:
+                    path = doc['category']
+
+                if isinstance(path, list):
+                    path = 'etc'
+
+                if path not in doc_index:
+                    doc_index[path] = []
+
+                doc_index[path].append(doc)
+
+                line = json.dumps(doc, ensure_ascii=False, sort_keys=True, indent=4)
+                print(line, end='\n\n', flush=True)
+
+                count += 1
+                print('{} {:,}'.format(file, count), end='\r', flush=True, file=sys.stderr)
+
+        # excel 저장
+        self.save_to_excel(file_name=result_filename, data=doc_index, column_names=columns)
+
+        return
+
+    def parse_content(self, filename):
+        """
+        상세 정보 HTML 파싱
+        :param filename: 디비 파일명
+        :return:
+        """
+        import re
+        import sys
+        import json
+        from bs4 import BeautifulSoup
+
+        table_name = 'detail'
+        conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
+
+        sql = 'SELECT d1_id, dir_id, doc_id, content FROM {}'.format(table_name)
+        cursor.execute(sql)
+
+        row_list = cursor.fetchall()[:]
+
+        conn.close()
+
+        # 본문 파싱
+        count = 0
+        total = len(row_list)
+
+        for row in row_list:
+            soup = BeautifulSoup(row[3], 'html5lib')
+
+            qa = {}
+            for item in self.detail_parsing_info:
+                tag_list = []
+                self.trace_tag(soup=soup, tag_list=item['tag'], index=0, result=tag_list)
+
+                value_list = []
+                for tag in tag_list:
+                    if item['type'] == 'text':
+                        value = tag.get_text().strip().replace('\n', '')
+                        value = re.sub('\s+', ' ', value)
+                    elif item['type'] == 'html':
+                        value = str(tag.prettify())
+                    else:
+                        if tag.has_attr(item['type']):
+                            value = tag[item['type']]
+                        else:
+                            value = str(tag.prettify())
+
+                    value_list.append(value)
+
+                if len(value_list) == 1:
+                    value_list = value_list[0]
+
+                qa[item['key']] = value_list
+
+            qa['question_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
+            line = json.dumps(qa, ensure_ascii=False, sort_keys=True, indent=4)
+            print(line, end='\n\n', flush=True)
+
+            count += 1
+            print('{:,} / {:,}'.format(count, total), end='\r', flush=True, file=sys.stderr)
+
+        return
+
+    def trace_tag(self, soup, tag_list, index, result):
+        """
+        :param soup: bs4 개체
+        :param tag_list: 테그 위치 목록
+        :param index: 테그 인덱스
+        :param result: 결과
+        :return:
+        """
+        from bs4 import element
+
+        if soup is None:
+            return
+
+        if len(tag_list) == index and soup is not None:
+            result.append(soup)
+            return
+
+        soup = soup.findAll(tag_list[index]['name'], attrs=tag_list[index]['attribute'])
+
+        if isinstance(soup, element.ResultSet):
+            for tag in soup:
+                self.trace_tag(soup=tag, tag_list=tag_list, index=index + 1, result=result)
+
+        return
+
+    @staticmethod
+    def remove_comment(soup):
+        """
+        html 태그 중에서 주석 태그를 제거
+        :param soup: 웹페이지 본문
+        :return: True/False
+        """
+        from bs4 import Comment
+
+        for element in soup(text=lambda text: isinstance(text, Comment)):
+            element.extract()
+
+        return True
+
+    @staticmethod
+    def remove_banner(soup):
+        """
+        베너 삭제
+        :param soup:
+        :return:
+        """
+        tag_list = soup.findAll('div', {'id': 'suicidalPreventionBanner'})
+        for tag in tag_list:
+            tag.extract()
+
+        return soup
+
+    @staticmethod
+    def remove_attribute(soup, attribute_list):
+        """
+        속성 삭제
+        :param soup: html 객체
+        :param attribute_list: onclick
+        :return:
+        """
+
+        for tag in soup.findAll(True):
+            if len(tag.attrs) == 0:
+                continue
+
+            new_attrs = {}
+            for name in tag.attrs:
+                if name in attribute_list:
+                    continue
+
+                if 'javascript' in tag.attrs[name] or 'void' in tag.attrs[name] or '#' in tag.attrs[name]:
+                    continue
+
+                new_attrs[name] = tag.attrs[name]
+
+            tag.attrs = new_attrs
+
+        return soup
+
+    def split_detail(self):
+        """
+        질문 상세 페이지 저장 디비를 카테고리별로 분리
+        :return:
+        """
+        from bs4 import BeautifulSoup
+
+        filename = 'data/naver/test-detail.sqlite3'
+
+        table_name = 'detail'
+        conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
+
+        sql = 'SELECT d1_id, dir_id, doc_id, content FROM {}'.format(table_name)
+        cursor.execute(sql)
+
+        row_list = cursor.fetchall()[:]
+
+        conn.close()
+
+        # 본문 파싱
+        result_path = 'data/naver/kin/detail'
+
+        count = 0
+        detail_list = {}
+        for row in row_list:
+            dir_id = row[1]
+
+            if dir_id not in detail_list:
+                detail_list[dir_id] = []
+
+            soup = BeautifulSoup(row[3], 'html5lib')
+
+            # 테그 정리
+            self.remove_comment(soup)
+            self.remove_banner(soup=soup)
+            self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
+
+            content = str(soup.prettify())
+            value = (row[0], row[1], row[2], content,)
+
+            detail_list[dir_id].append(value)
+
+            logging.info(msg='{:,} {:,}'.format(count, len(row_list)))
+            count += 1
+
+            if count % 500 == 0:
+                self.save_data_list(data_list=detail_list, result_path=result_path,
+                                    table_name=table_name, update=True)
+
+                detail_list = {}
+
+        if len(detail_list) > 0:
+            self.save_data_list(data_list=detail_list, result_path=result_path,
+                                table_name=table_name, update=True)
+
+        return
+
+
+class NaverKinCrawler(NaverKinDBUtils):
+    """
+    크롤러
+    """
+
+    def __init__(self):
+        """
+        생성자
+        """
+        super().__init__()
+
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                          'Version/11.0 Mobile/15A372 Safari/604.1'
+        }
+
     def batch_question_list(self, result_path):
         """
         질문 목록 전부를 가져온다.
@@ -338,6 +954,7 @@ class NaverKinCrawler(Utils):
         :param result_path: 결과를 저장할 경로
         :return:
         """
+        import json
         import requests
         from time import sleep
 
@@ -373,9 +990,14 @@ class NaverKinCrawler(Utils):
                 if dir_id not in question_list:
                     question_list[dir_id] = []
 
-                question_list[dir_id].append(q)
+                # (d1_id, dir_id, doc_id, category, content)
+                content = json.dumps(q, ensure_ascii=False, sort_keys=True, indent=4)
+                value = (q['d1Id'], q['dirId'], q['docId'], content,)
 
-            self.save_question_list(question_list=question_list, result_path=result_path, update=True)
+                question_list[dir_id].append(value)
+
+            self.save_data_list(data_list=question_list, result_path=result_path,
+                                table_name='question_list', update=True)
 
             sleep(delay)
 
@@ -535,11 +1157,8 @@ class NaverKinCrawler(Utils):
         상세 페이지 크롤링
         :param data_path: 데이터 경로
         :return:
-            def _remove_attrs(soup):
-                for tag in soup.findAll(True):
-                    tag.attrs = None
-                return soup
-
+            https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=4&dirId=40308&docId=303328933
+            https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id=6&dirId=60222&docId=301601614
         """
         import json
         import requests
@@ -552,9 +1171,6 @@ class NaverKinCrawler(Utils):
         from urllib.parse import urljoin
 
         from bs4 import BeautifulSoup
-
-        # https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=4&dirId=40308&docId=303328933
-        # https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id=6&dirId=60222&docId=301601614
 
         url = 'https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id={d1Id}&dirId={dirId}&docId={docId}'
 
@@ -639,9 +1255,9 @@ class NaverKinCrawler(Utils):
                         self.replace_tag(content, ['script', 'javascript', 'style'])
 
                         # 필요없는 테그 삭제
-                        tag_list = content.findAll('div', {'id': 'suicidalPreventionBanner'})
-                        for remove_tag in tag_list:
-                            remove_tag.extract()
+                        self.remove_comment(soup)
+                        self.remove_banner(soup=soup)
+                        self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
 
                         value = str(content.prettify())
 
@@ -672,410 +1288,6 @@ class NaverKinCrawler(Utils):
 
         detail_conn.close()
         answer_conn.close()
-
-        return
-
-    def batch_save_content(self, cursor, table_name, value_list, update=False):
-        """
-        답변 상세 페이지를 10개 단위로 배치 저장
-        :param cursor: DB 커서
-        :param table_name: 테이블명
-        :param value_list: 저장할 데이터
-        :param update: 데이터 갱신 여부
-        :return:
-        """
-        for values in value_list:
-            self.save_content(cursor=cursor, table_name=table_name, update=update,
-                              values=values, commit=False, conn=None)
-
-        return
-
-    def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
-        """
-        네이버 지식인 질문 목록 결과 취합
-        :param data_path: 질문 목록 경로
-        :param result_filename: 결과 파일명
-        :return:
-        """
-        import bz2
-        import sys
-        import json
-
-        from os import listdir
-        from os.path import isdir, join
-
-        # 파일 목록 추출
-        file_list = []
-        if isdir(data_path):
-            for file in listdir(data_path):
-                filename = join(data_path, file)
-                if isdir(filename):
-                    continue
-
-                file_list.append(filename)
-
-            file_list = sorted(file_list)
-        else:
-            file_list = [data_path]
-
-        doc_index = {}
-
-        # columns = []
-        columns = 'fullDirNamePath,docId,title,previewContents,tagList'.split(',')
-
-        count = 0
-        for file in file_list:
-            doc_list = []
-            if file.find('.bz2') > 0:
-                with bz2.open(file, 'rb') as fp:
-                    buf = []
-                    for line in fp.readlines():
-                        line = str(line, encoding='utf-8').strip()
-
-                        buf.append(line)
-
-                        if len(buf) > 0 and line == '}':
-                            body = ''.join(buf)
-                            doc_list.append(json.loads(body))
-
-                            buf = []
-            else:
-                with open(file, 'r') as fp:
-                    doc_list = json.loads(''.join(fp.readlines()))
-
-            for doc in doc_list:
-                path = 'etc'
-                if 'fullDirNamePath' in doc:
-                    path = doc['fullDirNamePath'].replace('Q&A > ', '')
-
-                if 'category' in doc:
-                    path = doc['category']
-
-                if isinstance(path, list):
-                    path = 'etc'
-
-                if path not in doc_index:
-                    doc_index[path] = []
-
-                doc_index[path].append(doc)
-
-                line = json.dumps(doc, ensure_ascii=False, sort_keys=True, indent=4)
-                print(line, end='\n\n', flush=True)
-
-                count += 1
-                print('{} {:,}'.format(file, count), end='\r', flush=True, file=sys.stderr)
-
-        # excel 저장
-        self.save_to_excel(file_name=result_filename, data=doc_index, column_names=columns)
-
-        return
-
-    @staticmethod
-    def save_to_excel(file_name, data, column_names):
-        """
-        엑셀로 저장
-        :param file_name: 파일명
-        :param data: 저장할 데이터
-        :param column_names: 컬럼 이름
-        :return:
-        """
-        from openpyxl import Workbook
-
-        status = []
-
-        wb = Workbook()
-
-        for path in data:
-            count = '{:,}'.format(len(data[path]))
-            status.append([path, count])
-
-            ws = wb.create_sheet(path)
-
-            if len(column_names) == 0:
-                column_names = list(data[path][0].keys())
-
-            ws.append(column_names)
-            for doc in data[path]:
-                lines = []
-                for c in column_names:
-                    v = doc[c]
-                    if v is None:
-                        v = ''
-
-                    lines.append('{}'.format(v))
-
-                ws.append(lines)
-
-        # 통계 정보 저장
-        ws = wb['Sheet']
-        for row in status:
-            ws.append(row)
-
-        ws.title = 'status'
-
-        wb.save(file_name)
-
-        return
-
-    def parse_content(self, filename):
-        """
-        상세 정보 HTML 파싱
-        :param filename: 디비 파일명
-        :return:
-        """
-        import re
-        import sys
-        import json
-        from bs4 import BeautifulSoup
-
-        table_name = 'detail'
-
-        conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
-
-        sql = 'SELECT d1_id, dir_id, doc_id, content FROM {}'.format(table_name)
-        cursor.execute(sql)
-
-        row_list = cursor.fetchall()[:]
-
-        conn.close()
-
-        # 본문 파싱
-        count = 0
-        total = len(row_list)
-
-        for row in row_list:
-            soup = BeautifulSoup(row[3], 'html5lib')
-
-            qa = {}
-            for item in self.detail_parsing_info:
-                tag_list = []
-                self.trace_tag(soup=soup, tag_list=item['tag'], index=0, result=tag_list)
-
-                value_list = []
-                for tag in tag_list:
-                    if item['type'] == 'text':
-                        value = tag.get_text().strip().replace('\n', '')
-                        value = re.sub('\s+', ' ', value)
-                    elif item['type'] == 'html':
-                        value = str(tag.prettify())
-                    else:
-                        if tag.has_attr(item['type']):
-                            value = tag[item['type']]
-                        else:
-                            value = str(tag.prettify())
-
-                    value_list.append(value)
-
-                if len(value_list) == 1:
-                    value_list = value_list[0]
-
-                qa[item['key']] = value_list
-
-            qa['question_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
-            line = json.dumps(qa, ensure_ascii=False, sort_keys=True, indent=4)
-            print(line, end='\n\n', flush=True)
-
-            count += 1
-            print('{:,} / {:,}'.format(count, total), end='\r', flush=True, file=sys.stderr)
-
-        return
-
-    def trace_tag(self, soup, tag_list, index, result):
-        """
-        :param soup: bs4 개체
-        :param tag_list: 테그 위치 목록
-        :param index: 테그 인덱스
-        :param result: 결과
-        :return:
-        """
-        from bs4 import element
-
-        if soup is None:
-            return
-
-        if len(tag_list) == index and soup is not None:
-            result.append(soup)
-            return
-
-        soup = soup.findAll(tag_list[index]['name'],
-                            attrs=tag_list[index]['attribute'])
-
-        if isinstance(soup, element.ResultSet):
-            for tag in soup:
-                self.trace_tag(soup=tag, tag_list=tag_list, index=index + 1, result=result)
-
-        return
-
-    def insert_user_list(self, data_path='', category=''):
-        """
-        사용자 목록을 sqlite3 에 입력
-        :param data_path: 사용자 목록이 저장된 경로
-        :param category: 카테고리 정보
-
-        expert 사용자 정보 (랭킹)
-            {
-                "encodedU": "qXbgNEA8MzxTqYTJ0KdlLcw9j%2FOdLGczxe1xmpkrRuQ%3D",
-                "lastWeekRank": 3,
-                "nickname": "",
-                "photoUrl": "https://ssl.pstatic.net/static/kin/09renewal/avatar/33x33/8.png",
-                "totalDirPoint": 383,
-                "u": "qXbgNEA8MzxTqYTJ0KdlLcw9j/OdLGczxe1xmpkrRuQ=",
-                "useNickname": false,
-                "userId": "ospdb",
-                "viewUserId": "ospd****",
-                "weekDirPoint": 101,
-                "weekRank": 2
-            }
-
-        elite 년도별 전문가
-            {
-                "activeDirId": 10102,
-                "activeDirName": "노트북",
-                "cheerCnt": 39,
-                "cheered": false,
-                "description": "전자제품 박학다식 끝판왕",
-                "displayYn": "Y",
-                "eliteFlag": 0,
-                "honorKin": false,
-                "month": 5,
-                "powerKin": false,
-                "profilePhotoUrl": "https://kin-phinf.pstatic.net/20180426_110/1524732986074Gv6GP_JPEG/
-                    %BA%CE%C7%B0%C1%A4%B8%AE.jpg?type=w200",
-                "selectBestCnt": 2997,
-                "u": "X/XrUkwNpssPPgqPB+TNUGm+PjMq/YHPNL4nAHhrM74=",
-                "viewId": "박학다식전문가",
-                "year": 2018
-            }
-
-        분야별 지식인
-            GyOWWwK059X2dLySrX%2Fd6uWqE60LWxo1q2tZ9d5IOc8%3D	우리세무사
-            JikckmNyrpnFIST1cyw44Nbizfuto0Tb0LrSrUSgILw%3D	깊은샘
-
-        :return:
-        """
-        import re
-        import json
-
-        from os import listdir
-        from os.path import isdir, join
-
-        from urllib.parse import unquote
-
-        # 파일 로딩
-        user_list = []
-        if isdir(data_path):
-            for file in listdir(data_path):
-                print(file)
-
-                filename = join(data_path, file)
-                if isdir(filename):
-                    continue
-
-                with open(filename, 'r') as fp:
-                    buf = []
-                    for line in fp.readlines():
-                        line = line.rstrip()
-
-                        buf.append(line)
-
-                        if line != '}':
-                            continue
-
-                        doc = json.loads(''.join(buf))
-                        buf = []
-
-                        doc['f_name'] = re.sub('^.+/(.+?)\.json', '\g<1>', filename)
-                        user_list.append(doc)
-        else:
-            with open(data_path, 'r') as fp:
-                f_name = re.sub('^.+/(.+?)$', '\g<1>', data_path)
-
-                for line in fp.readlines():
-                    line = line.rstrip()
-                    if line == '' or line[0] == '#':
-                        continue
-
-                    u, name = line.split('\t', maxsplit=1)
-
-                    user_list.append({
-                        'u': unquote(u),
-                        'viewId': name,
-                        'f_name': f_name
-                    })
-
-        db_filename = 'data/naver/kin/user_list.sqlite3'
-        table_name = 'user_list'
-
-        conn, cursor = self.open_sqlite(filename=db_filename, table_name=table_name)
-
-        value_list = []
-
-        for user in user_list:
-            name = ''
-            if 'userId' in user:
-                name = user['userId']
-
-            if 'viewId' in user:
-                name = user['viewId']
-
-            print(name, user['u'])
-
-            # (u, name, category, content)
-            str_user = json.dumps(user, ensure_ascii=False, sort_keys=True, indent=4)
-            values = (user['u'], name, '{} ({})'.format(category, user['f_name']), str_user,)
-            value_list.append(values)
-
-            if len(value_list) > 100:
-                self.batch_save_content(cursor=cursor, table_name=table_name,
-                                        value_list=value_list)
-                conn.commit()
-
-                value_list = []
-
-        if len(value_list) > 0:
-            self.batch_save_content(cursor=cursor, table_name=table_name,
-                                    value_list=value_list)
-            conn.commit()
-
-        conn.close()
-
-        return
-
-    def save_question_list(self, question_list, result_path, update=False):
-        """
-        질문 목록 저장
-        :param question_list: 질문 목록
-        :param result_path: 저장 경로
-        :param update: 내용 업데이트 플래그
-        :return:
-        """
-        import json
-
-        table_name = 'question_list'
-        for dir_id in question_list:
-            db_filename = '{}/{}.sqlite3'.format(result_path, dir_id)
-            conn, cursor = self.open_sqlite(filename=db_filename, table_name=table_name)
-
-            value_list = []
-            for question in question_list[dir_id]:
-                # (d1_id, dir_id, doc_id, category, content)
-                content = json.dumps(question, ensure_ascii=False, sort_keys=True, indent=4)
-                values = (question['d1Id'], question['dirId'], question['docId'], content,)
-                value_list.append(values)
-
-                if len(value_list) > 500:
-                    self.batch_save_content(cursor=cursor, table_name=table_name,
-                                            value_list=value_list, update=update)
-                    conn.commit()
-
-                    value_list = []
-
-            if len(value_list) > 0:
-                self.batch_save_content(cursor=cursor, table_name=table_name,
-                                        value_list=value_list, update=update)
-                conn.commit()
-
-            conn.close()
 
         return
 
@@ -1140,6 +1352,20 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/p
 python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/expert -category 경제
 python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/elite -category 년도별
 
+# 질문 상세 목록 분리
+python3 naver_kin_crawler.py -split_detail
+
+# 질문 목록을 DB에 저장
+python3 naver_kin_crawler.py -insert_question_list -data_path data/naver/kin/question_list/경제
+
+IFS=$'\\n'
+for d in $(ls -1 data/naver/kin/question_list.old) ; do
+    echo ${d}
+
+    python3 naver_kin_crawler.py -insert_question_list \\
+        -data_path data/naver/kin/question_list.old/${d}
+done
+
     ''')
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -1165,6 +1391,10 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/e
                         help='질문 상세 페이지에서 정보 추출')
     parser.add_argument('-insert_user_list', action='store_true', default=False,
                         help='사용자 목록을 DB에 저장')
+    parser.add_argument('-insert_question_list', action='store_true', default=False,
+                        help='질문 목록을 DB에 저장')
+    parser.add_argument('-split_detail', action='store_true', default=False,
+                        help='질문 상세 디비를 카테고리별로 분리')
 
     # 파라메터
     parser.add_argument('-filename', default='data/naver/test-detail.sqlite3', help='')
@@ -1203,3 +1433,9 @@ if __name__ == '__main__':
 
     if args.insert_user_list:
         crawler.insert_user_list(data_path=args.data_path, category=args.category)
+
+    if args.insert_question_list:
+        crawler.insert_question_list(data_path=args.data_path)
+
+    if args.split_detail:
+        crawler.split_detail()

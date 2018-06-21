@@ -78,14 +78,14 @@ class Utils(object):
         return True
 
     @staticmethod
-    def remove_comment(html_tag):
+    def remove_comment(soup):
         """
         html 태그 중에서 주석 태그를 제거
 
-        :param html_tag: 웹페이지 본문
+        :param soup: 웹페이지 본문
         :return: True/False
         """
-        for element in html_tag(text=lambda text: isinstance(text, Comment)):
+        for element in soup(text=lambda text: isinstance(text, Comment)):
             element.extract()
 
         return True
