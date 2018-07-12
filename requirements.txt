@@ -13,3 +13,4 @@ selenium
 html5lib
 openpyxl
 jsonlines
+urllib3

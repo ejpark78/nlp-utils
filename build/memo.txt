@@ -1,0 +1,20 @@
+http://nlpapi.ncsoft.com:9200/yonhapnews_sports/_search
+
+
+{
+ "query": {
+    "bool": {
+      "filter": {
+        "range": {
+          "insert_date": {
+            "format": "yyyy-MM-dd HH:mm:ss",
+            "lt": "2018-03-14 18:48:00",
+            "gte": "2018-03-14 13:38:00"
+          }
+        }
+      }
+    }
+  },	
+    "_source": ["title", "date", "image_list", "insert_date"]
+}
+

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""웹 크롤링에 필요한 유틸"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -17,24 +18,18 @@ from time import sleep
 from urllib.parse import urljoin
 
 import requests
-from bs4 import BeautifulSoup, Comment
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class Utils(object):
-    """
-    크롤러 유틸
-    """
+    """ 크롤러 유틸 """
 
     def __init__(self):
-        """
-        생성자
-        """
+        """ 생성자 """
         super().__init__()
-
-        import urllib3
-
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        urllib3.disable_warnings(UserWarning)
 
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
@@ -53,11 +48,11 @@ class Utils(object):
 
         self.debug_mode = False
 
+        self.bulk_data = []
+
     @staticmethod
     def replace_tag(html_tag, tag_list, replacement='', attribute=None):
-        """
-        html 태그 중 특정 태그를 삭제
-        ex) script, caption will be removed
+        """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ...
 
         :param html_tag: html 본문
         :param tag_list: 제거할 태그 목록
@@ -79,12 +74,13 @@ class Utils(object):
 
     @staticmethod
     def remove_comment(soup):
-        """
-        html 태그 중에서 주석 태그를 제거
+        """ html 태그 중에서 주석 태그를 제거한다.
 
         :param soup: 웹페이지 본문
         :return: True/False
         """
+        from bs4 import Comment
+
         for element in soup(text=lambda text: isinstance(text, Comment)):
             element.extract()
 
@@ -92,12 +88,13 @@ class Utils(object):
 
     @staticmethod
     def get_encoding_type(html_body):
-        """
-        메타 정보에서 인코딩 정보 반환
+        """ 메타 정보에서 인코딩 정보 반환한다.
 
         :param html_body: html 본문
         :return: BeautifulSoup 반환
         """
+        from bs4 import BeautifulSoup
+
         soup = BeautifulSoup(html_body, 'html5lib')
 
         if soup.meta is None:
@@ -120,8 +117,7 @@ class Utils(object):
 
     @staticmethod
     def get_url(url, url_type=None):
-        """
-        url 문자열을 찾아서 반환
+        """ url 문자열을 찾아서 반환한다.
 
         :param url: url 구조체
         :param url_type: url 타입 명시
@@ -142,8 +138,7 @@ class Utils(object):
 
     def curl_html(self, curl_url, delay='6~9', post_data=None, json_type=False,
                   encoding=None, max_try=3, headers=None, html_parser=None):
-        """
-        랜덤하게 기다린후 웹 페이지 크롤링, 결과는 bs4 파싱 결과를 반환
+        """랜덤하게 기다린후 웹 페이지 크롤링, bs4 파싱 결과를 반환한다.
 
         :param curl_url: 받아올 URL 주소
         :param delay: delay 범위: 10~15, 10초에서 15초 사이
@@ -250,6 +245,8 @@ class Utils(object):
 
         # html 일 경우
         try:
+            from bs4 import BeautifulSoup
+
             if soup is not None and encoding is None:
                 return soup
 
@@ -267,8 +264,7 @@ class Utils(object):
         return None
 
     def parse_html(self, article, soup, target_tags, article_list):
-        """
-        html 파싱, 지정된 태그에서 정보 추출
+        """ html 파싱, 지정된 태그에서 정보를 추출한다.
 
         :param article: 신문 기사 문서
         :param soup: soup 개체
@@ -293,8 +289,7 @@ class Utils(object):
 
     @staticmethod
     def get_date_collection_name(date):
-        """
-        날짜와 컬랙션 이름 변환
+        """ 날짜와 컬랙션 이름을 변환한다.
 
         :param date: 날짜 문자열
         :return: 날짜와 컬랙션 이름
@@ -335,8 +330,7 @@ class Utils(object):
 
     @staticmethod
     def open_db(db_name, host='gollum', port=27017):
-        """
-        몽고 디비 핸들 오픈
+        """ 몽고 디비에 연결한다.
 
         :param db_name: 데이터베이스명
         :param host: 서버 주소
@@ -359,8 +353,7 @@ class Utils(object):
 
     @staticmethod
     def get_document_id(url):
-        """
-        url 주소를 문서 아이디로 반환
+        """ url 주소를 문서 아이디로 변환하여 반환한다.
 
         :param url: url 주소
         :return: 문서 아이디
@@ -390,9 +383,7 @@ class Utils(object):
 
     @staticmethod
     def _json_serial(obj):
-        """
-        json.dumps 의 콜백 함수로 넘겨주는 함수
-        날자 형식을 문자로 반환
+        """ json.dumps 의 콜백 함수로 넘겨주는 함수이다. 날자 형식을 문자로 반환한다.
 
         :param obj: 기사 문서 아이템
         :return:
@@ -405,40 +396,46 @@ class Utils(object):
         raise TypeError("Type not serializable")
 
     def send_kafka_message(self, document, kafka_info, mongodb_info):
-        """
-        kafka 에 메세지 전송
+        """ kafka 에 메세지를 전송한다.
 
         :param document: 기사 본문
-        :param kafka_info: 카프카 접속 정보
-            "kafka": {
-              "host": "gollum",
-              "result": {
-                "elastic": {
-                  "type": "2017-11",
-                  "host": "frodo",
-                  "index": "naver_society",
-                  "update": true
-                }
-              },
-              "job_id": "crawler_naver_society_2017",
-              "port": 9092,
-              "topic": "crawler"
-            }
+        :param kafka_info:
+            카프카 접속 정보::
 
-        :param mongodb_info: 몽고 디비 정보: collection 명과 일치
+                "kafka": {
+                  "host": "gollum",
+                  "result": {
+                    "elastic": {
+                      "type": "2017-11",
+                      "host": "frodo",
+                      "index": "naver_society",
+                      "update": true
+                    }
+                  },
+                  "job_id": "crawler_naver_society_2017",
+                  "port": 9092,
+                  "topic": "crawler"
+                }
+
+        :param mongodb_info: 몽고 디비 정보, collection 명과 일치
         :return: True/False
 
-        콘솔에서 디버깅 방법
+        콘솔에서 디버깅 방법::
+
             $ kafka-topics.sh --list --zookeeper gollum:2181
             $ kafka-console-consumer.sh --bootstrap-server gollum:9092 --topic crawler --from-beginning
 
         """
+        try:
+            from kafka import KafkaProducer
+        except ImportError:
+            logging.error(msg='kafka import error')
+            return False
+
         if 'port' not in kafka_info:
             kafka_info['port'] = 9092
 
         try:
-            from kafka import KafkaProducer
-
             producer = KafkaProducer(
                 bootstrap_servers='{}:{}'.format(kafka_info['host'], kafka_info['port']),
                 compression_type='gzip'
@@ -465,14 +462,17 @@ class Utils(object):
         return True
 
     def send_mqtt_message(self, document, mqtt_info):
-        """
-        mqtt로 메세지 전송
+        """ mqtt로 크롤링 메세지를 전송한다.
 
         :param document: 기사 본문
         :param mqtt_info: mqtt 서버 접속 정보
         :return: True/False
         """
-        import paho.mqtt.publish as publish
+        try:
+            import paho.mqtt.publish as publish
+        except ImportError:
+            logging.error(msg='paho.mqtt import error')
+            return False
 
         str_now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -526,12 +526,15 @@ class Utils(object):
 
     @staticmethod
     def create_elastic_index(elastic, index_name=None):
-        """
-        elastic search 인덱스 생성
+        """ elastic-search 에 인덱스를 생성한다.
 
         :param elastic: elastic 서버 접속 정보
         :param index_name: 생성할 인덱스 이름
         :return: True/False
+        settings 정보:
+            * 'number_of_shards': 샤딩 수
+            * 'number_of_replicas': 리플리카 수
+            * 'index.mapper.dynamic': mapping 자동 할당
         """
         if elastic is None:
             return False
@@ -551,8 +554,7 @@ class Utils(object):
 
     @staticmethod
     def convert_datetime(document):
-        """
-        datetime 객체 문자열로 변환
+        """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다.
 
         :param document: 문서
         :return: 변환된 문서
@@ -567,17 +569,19 @@ class Utils(object):
         return document
 
     def save_mongodb(self, document, mongodb_info, db_name, update):
-        """
-        몽고 디비에 문서 저장
+        """ 몽고 디비에 문서를 저장
 
         :param document: 저장할 문서
-        :param mongodb_info: 몽고 디비 접속 정보
+        :param mongodb_info:
+            몽고 디비 접속 정보::
+
+                "mongo": {
+                    "port": 27018,
+                    "update": false,
+                    "host": "frodo",
+                }
+
         :param db_name: 저장할 디비 이름
-            "mongo": {
-                "port": 27018,
-                "update": false,
-                "host": "frodo",
-            }
         :param update: 내용 갱신 여부 (True/False)
         :return: True/False
         """
@@ -676,8 +680,7 @@ class Utils(object):
         return True
 
     def save_logs(self, document, elastic_info, mongodb_info):
-        """
-        엘라스틱서치에 로그 저장
+        """ 엘라스틱서치에 로그 저장
 
         :param document: 크롤링 결과 문서
         :param elastic_info: elastic 접속 정보
@@ -743,8 +746,7 @@ class Utils(object):
         return True
 
     def send_corpus_process(self, document, api_info, db_name, update):
-        """
-        코퍼스 저처리 분석 데몬에 문서 아이디 전달
+        """ 코퍼스 저처리 분석 데몬에 문서 아이디 전달
 
         :param document: 전달할 문서
         :param api_info: 전처리 API 서버 정보
@@ -790,31 +792,38 @@ class Utils(object):
 
         return True
 
-    def save_elastic(self, document, elastic_info, db_name, insert):
-        """
-        elastic search 에 문서 저장
+    def save_elastic(self, document, elastic_info, db_name, insert, bulk_size=0):
+        """elastic search 에 문서를 저장한다.
 
-        :param document: 문서
-        :param elastic_info: elastic 접속 정보
-            "elastic": {
-              "update": true,
-              "host": "http://nlpapi.ncsoft.com:9200"
-            }
+        :param document: 저장할 문서
+        :param elastic_info:
+            elastic 접속 정보::
+
+                {
+                  "host": "http://nlpapi.ncsoft.com:9200",
+                  "index": None,
+                  "type": None,
+                  "insert": true
+                }
 
         :param db_name: 디비 이름
         :param insert: 디비 삽입 여부 (True/False)
+        :param bulk_size: elastic-search 한번에 저장할 크기
         :return: True/False
         """
-        if 'date' not in document:
-            return False
-
         from elasticsearch import Elasticsearch
+
+        if document is not None and 'date' in document:
+            article_date = document['date']
+        else:
+            article_date = datetime.now()
 
         # 인덱스 추출, 몽고 디비 collection 이름 우선
         index, doc_type = self.get_elastic_index_info(db_name=db_name, elastic_info=elastic_info,
-                                                      article_date=document['date'])
+                                                      article_date=article_date)
 
         if index is None or doc_type is None:
+            logging.error(msg='index or doc_type is None: {} {}'.format(index, doc_type))
             return False
 
         if 'insert' in elastic_info:
@@ -823,25 +832,35 @@ class Utils(object):
         # 입력시간 삽입: 코퍼스 전처리에서 삽입
         # document['insert_date'] = datetime.now()
 
-        # 날짜 변환
-        document = self.convert_datetime(document=document)
+        if document is not None:
+            # 날짜 변환
+            document = self.convert_datetime(document=document)
 
-        if '_id' in document:
-            document['document_id'] = document['_id']
-            del document['_id']
-        else:
-            document['document_id'] = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
+            if '_id' in document:
+                document['document_id'] = document['_id']
+                del document['_id']
+            else:
+                document['document_id'] = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
 
-        bulk_data = [{
-            'update': {
-                '_index': index,
-                '_type': doc_type,
-                '_id': document['document_id']
-            }
-        }, {
-            'doc': document,
-            'doc_as_upsert': insert
-        }]
+            self.bulk_data.append({
+                'update': {
+                    '_index': index,
+                    '_type': doc_type,
+                    '_id': document['document_id']
+                }
+            })
+
+            self.bulk_data.append({
+                'doc': document,
+                'doc_as_upsert': insert
+            })
+
+            # 버퍼링
+            if bulk_size > len(self.bulk_data):
+                return True
+
+        if len(self.bulk_data) == 0:
+            return True
 
         # 서버 접속
         elastic = None
@@ -858,11 +877,23 @@ class Utils(object):
 
         # 문서 저장
         try:
-            response = elastic.bulk(index=index, body=bulk_data, refresh=True)
+            response = elastic.bulk(index=index, body=self.bulk_data, refresh=True)
 
-            msg = 'elastic-search 저장 결과: errors = {}, {}/{}/{}/{}'.format(
-                response['errors'], elastic_info['host'], index, doc_type, document['document_id'])
+            size = len(self.bulk_data)
+            doc_id_list = []
+            for doc in self.bulk_data:
+                doc_id_list.append(doc['update']['_id'])
 
+            self.bulk_data = []
+
+            error = '성공'
+            if response['errors'] is True:
+                error = '에러'
+
+            msg = 'elastic-search 저장 결과: {}, {:,}'.format(error, size)
+            logging.info(msg=msg)
+
+            msg = '{}/{}/{}/{}?pretty'.format(elastic_info['host'], index, doc_type, doc_id_list[0])
             logging.info(msg=msg)
         except Exception as e:
             msg = 'elastic-search 저장 에러: {}'.format(e)
@@ -941,18 +972,26 @@ class Utils(object):
         return result
 
     def save_s3(self, document, s3_info, db_name):
-        """
-        S3에 기사 이미지 저장
+        """ S3에 기사 이미지를 저장한다.
 
         :param document: 저장할 문서
-        :param s3_info: s3 접속 정보
-            {
-                bucket: 'bucket name',
-                url: 'http://paige-cdn.plaync.com'
-            }
+        :param s3_info:
+            s3 접속 정보::
+
+                {
+                    bucket: 'bucket name',
+                    url: 'http://paige-cdn.plaync.com'
+                }
+
         :param db_name: 디비명
         :return: document
         """
+        import boto3
+        import pathlib
+
+        from bs4 import BeautifulSoup
+        from botocore.exceptions import ClientError
+
         # 이미지 목록 추출
         image_list = None
         if 'image_list' in document:
@@ -965,10 +1004,6 @@ class Utils(object):
         # 추출된 이미지 목록이 없을 경우
         if image_list is None:
             return
-
-        import boto3
-        import pathlib
-        from botocore.exceptions import ClientError
 
         # api 메뉴얼: http://boto3.readthedocs.io/en/latest/reference/services/s3.html
         bucket_name = s3_info['bucket']
@@ -1026,10 +1061,19 @@ class Utils(object):
         return document
 
     def get_elastic_index_info(self, db_name, elastic_info, article_date):
-        """
-        elastic search 의 저장 정보
+        """ elastic search 의 저장 정보
+
         :param db_name: 디비명
-        :param elastic_info: elastic 접속 정보
+        :param elastic_info:
+            elastic 접속 정보::
+
+                {
+                  "host": "http://nlpapi.ncsoft.com:9200",
+                  "index": None,
+                  "type": None,
+                  "insert": true
+                }
+
         :param article_date: 날짜
         :return: 인덱스, doc_type (날짜형: 2018-03)
         """
@@ -1053,8 +1097,7 @@ class Utils(object):
         return index, doc_type
 
     def save_article_list(self, url, article_list, db_info):
-        """
-        기사 목록 저장
+        """ 기사 목록 저장
 
         :param url: url 주소
         :param article_list: 기사 목록
@@ -1103,8 +1146,7 @@ class Utils(object):
         return
 
     def save_article(self, document, db_info):
-        """
-        문서 저장
+        """ 문서 저장
 
         :param document: 저장할 문서
         :param db_info: 디비 접속 정보
@@ -1134,8 +1176,7 @@ class Utils(object):
         return True
 
     def _save_article(self):
-        """
-        스래드 안에서 문서 저장
+        """ 스래드 안에서 문서 저장
 
         :return: True/False
         """
@@ -1224,8 +1265,7 @@ class Utils(object):
         return True
 
     def make_simple_url(self, document, parsing_info):
-        """
-        url 단축
+        """ url 단축
 
         :param document: 크롤링 문서
         :param parsing_info: 문서 파싱 정보: 단축 url 패턴 사용
@@ -1314,9 +1354,7 @@ class Utils(object):
 
     @staticmethod
     def get_next_id(collection, document_name='section_id', value='section'):
-        """
-        auto-increment 기능 구현
-        몽고 디비에 primary id 기능 구현
+        """ auto-increment 기능 구현, 몽고 디비에 primary id 기능 구현
 
         :param collection: 컬랙션 이름
         :param document_name: 문서 아이디
@@ -1346,8 +1384,7 @@ class Utils(object):
         return '{:06d}'.format(max_id)
 
     def save_section_info(self, document, mongodb_info, db_name, collection_name):
-        """
-        문서의 섹션 정보 저장
+        """ 문서의 섹션 정보 저장
 
         :param document: 크롤링된 문서
         :param db_name: 디비명
@@ -1419,8 +1456,7 @@ class Utils(object):
 
     @staticmethod
     def get_value(data, key):
-        """
-        해쉬에서 해당 키의 값을 반환
+        """ 해쉬에서 해당 키의 값을 반환
 
         :param data: 해쉬
         :param key: 찾을 키
@@ -1433,8 +1469,7 @@ class Utils(object):
 
     @staticmethod
     def get_container_host_name(state):
-        """
-        컨테이너가 실행중인 서버 이름 반환
+        """ 컨테이너가 실행중인 서버 이름 반환
 
         :param state: 상태 정보
         :return: 컨테이너가 실행중인 서버 이름
@@ -1446,8 +1481,7 @@ class Utils(object):
         return host_name
 
     def update_state(self, str_state, current_date, job_info, scheduler_db_info, start_date, end_date):
-        """
-        현재 작업 상태 변경
+        """ 현재 작업 상태 변경
 
         :param str_state:
             상태, running, ready, stop
@@ -1486,8 +1520,7 @@ class Utils(object):
 
     @staticmethod
     def change_key(json_data, key_mapping):
-        """
-        json 키를 변경
+        """ json 키를 변경
 
         :param json_data: json 데이터
         :param key_mapping: 키 매핑 정보
@@ -1511,8 +1544,7 @@ class Utils(object):
         return True
 
     def get_query(self, url):
-        """
-        url 에서 쿼리문을 반환
+        """ url 에서 쿼리문을 반환
 
         :param url: url 주소
         :return: url 쿼리 파싱 결과 반환
@@ -1529,8 +1561,7 @@ class Utils(object):
         return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path), url_info
 
     def update_state_by_id(self, str_state, job_info, scheduler_db_info, url, query_key_mapping=None):
-        """
-        현재 작업 상태 변경
+        """ 현재 작업 상태 변경
 
         :param str_state: 경과 시간 (상태, running, ready, stoped)
         :param job_info: 작업 정보
@@ -1569,8 +1600,7 @@ class Utils(object):
         return True
 
     def update_document(self, document, db_info):
-        """
-        문서 저장
+        """ 문서 저장
 
         :param document: 저장할 문서
         :param db_info: 디비 접속 정보
@@ -1591,8 +1621,7 @@ class Utils(object):
         return
 
     def get_parsing_information(self, db_info, parsing_id):
-        """
-        디비에서 작업을 찾아 반환
+        """ 디비에서 작업을 찾아 반환
 
         :param db_info: scheduler 디비 접속 정보
         :param parsing_id: 파싱 아이디
@@ -1618,8 +1647,7 @@ class Utils(object):
 
     @staticmethod
     def get_meta_value(soup, result_list):
-        """
-        메타 테그 추출
+        """ 메타 테그 추출
 
         :param soup: html soup
         :param result_list: 메타 태그 결과
@@ -1651,8 +1679,7 @@ class Utils(object):
         return True
 
     def get_target_value(self, soup, target_tag_info, result_list, base_url):
-        """
-        계층적으로 표현된 태그 정보를 따라가면서 값을 찾아냄.
+        """ 계층적으로 표현된 태그 정보를 따라가면서 값을 찾아냄.
 
         :param soup: HTML 파싱 개체
         :param target_tag_info: 찾을 테그 정보
@@ -1729,8 +1756,7 @@ class Utils(object):
 
     @staticmethod
     def parse_date_string(date_string, is_end_date=False):
-        """
-        문자열 날짜 형식을 date 형으로 반환
+        """ 문자열 날짜 형식을 date 형으로 반환
 
         :param date_string: 2016-01, 2016-01-01
         :param is_end_date: 마지막 일자 플래그, 마지막 날짜의 경우
@@ -1760,8 +1786,8 @@ class Utils(object):
 
     @staticmethod
     def print_summary(start_time, total=0, count=0, tag=''):
-        """
-        크롤링 진행 상황을 출력한다.
+        """ 크롤링 진행 상황을 출력한다.
+
         :param total: 전체 수량
         :param count: 현재 진행 수량
         :param start_time: 시작 시간

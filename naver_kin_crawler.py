@@ -15,18 +15,169 @@ logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     level=logging.INFO)
 
 
-class NaverKinDBUtils(Utils):
-    """
-    네이버 크롤링 결과 저장 유틸
-    """
+class SqliteUtils(Utils):
+    """ sqlite 유틸 """
 
     def __init__(self):
+        """ 생성자 """
+        super().__init__()
+
+    @staticmethod
+    def set_pragma(cursor, readonly=True):
+        """ sqlite 속도 개선을 위한 설정
+
+        :param cursor: 디비 핸들
+        :param readonly: 읽기 전용 플래그
+        :return:
         """
-        생성자
+        # cursor.execute('PRAGMA threads       = 8;')
+
+        # 700,000 = 1.05G, 2,100,000 = 3G
+        cursor.execute('PRAGMA cache_size    = 2100000;')
+        cursor.execute('PRAGMA count_changes = OFF;')
+        cursor.execute('PRAGMA foreign_keys  = OFF;')
+        cursor.execute('PRAGMA journal_mode  = OFF;')
+        cursor.execute('PRAGMA legacy_file_format = 1;')
+        cursor.execute('PRAGMA locking_mode  = EXCLUSIVE;')
+        cursor.execute('PRAGMA page_size     = 4096;')
+        cursor.execute('PRAGMA synchronous   = OFF;')
+        cursor.execute('PRAGMA temp_store    = MEMORY;')
+
+        if readonly is True:
+            cursor.execute('PRAGMA query_only    = 1;')
+
+        return
+
+    @staticmethod
+    def open_sqlite(filename, table_name):
+        """url 을 저장하는 캐쉬 디비(sqlite)를 오픈한다.
+
+        :param filename: 파일명
+        :param table_name: 테이블명
+        :return:
         """
+        # 디비 연결
+        conn = sqlite3.connect(filename)
+
+        cursor = conn.cursor()
+
+        # 테이블 생성
+        if table_name == 'user_list':
+            sql = '''
+              CREATE TABLE IF NOT EXISTS {table_name} (
+                u VARCHAR(255) NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                category VARCHAR(255) NOT NULL,
+                content TEXT NOT NULL,
+                PRIMARY KEY (u)
+              )
+            '''.format(table_name=table_name)
+        else:
+            sql = '''
+              CREATE TABLE IF NOT EXISTS {table_name} (
+                d1_id INTEGER NOT NULL,
+                dir_id INTEGER NOT NULL,
+                doc_id INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                PRIMARY KEY (d1_id, dir_id, doc_id)
+              )
+            '''.format(table_name=table_name)
+
+        cursor.execute(sql)
+
+        # self.set_pragma(cursor, readonly=False)
+
+        # sql 명령 실행
+        conn.commit()
+
+        return conn, cursor
+
+    @staticmethod
+    def check_doc_id(cursor, d1_id, dir_id, doc_id, table_name):
+        """다운 받을 문서 아이디가 인덱스 디비에 있는지 검사한다.
+
+        :param cursor: 디비 핸들
+        :param d1_id: d1 아이디
+        :param dir_id: 카테고리 아이디
+        :param doc_id: 문서 아이디
+        :param table_name: 테이블명
+        :return: 있으면 True, 없으면 False
+        """
+        # url 주소 조회
+        sql = 'SELECT 1 ' \
+              'FROM {} ' \
+              'WHERE d1_id=? AND dir_id=? AND doc_id=?'.format(table_name)
+        cursor.execute(sql, (d1_id, dir_id, doc_id,))
+
+        row = cursor.fetchone()
+        if row is not None and len(row) == 1:
+            return True
+
+        return False
+
+    @staticmethod
+    def save_content(cursor, table_name, values, update=False, commit=True, conn=None):
+        """ 입력 받은 html 를 저장한다.
+
+        :param conn: 디비 커넥션
+        :param cursor: 디비 핸들
+        :param table_name: 테이블명
+        :param values: 저장 값 (d1_id, dir_id, doc_id, content,)
+        :param commit: 커밋 여부
+        :param update: 업데이트 여부
+        :return:
+        """
+        if table_name == 'user_list':
+            sql = 'INSERT INTO {} (u, name, category, content) ' \
+                  'VALUES (?, ?, ?, ?)'.format(table_name)
+        else:
+            sql = 'INSERT INTO {} (d1_id, dir_id, doc_id, content) ' \
+                  'VALUES (?, ?, ?, ?)'.format(table_name)
+
+        try:
+            cursor.execute(sql, values)
+        except sqlite3.IntegrityError as e:
+            if update is True:
+                if table_name == 'user_list':
+                    pass
+                else:
+                    update_values = (values[3], values[0], values[1], values[2],)
+
+                    sql = 'UPDATE {} SET content=? WHERE d1_id=? AND dir_id=? AND doc_id=?'.format(table_name)
+                    try:
+                        cursor.execute(sql, update_values)
+                        logging.info('디비 내용 업데이트: {}-{}'.format(values[1], values[2]))
+                    except Exception as e:
+                        logging.error('디비 업데이트 오류: {}'.format(e))
+            else:
+                logging.error('키 중복: {}'.format(e))
+        except Exception as e:
+            logging.error('디비 저장 오류: {}'.format(e))
+
+        try:
+            if conn is not None and commit is True:
+                conn.commit()
+        except Exception as e:
+            logging.error('디비 커밋 오류: {}'.format(e))
+
+        return
+
+
+class NaverKinUtils(SqliteUtils):
+    """ 네이버 크롤링 결과 저장 유틸 """
+
+    def __init__(self):
+        """ 생성자 """
         super().__init__()
 
         self.data_home = 'data/naver/kin'
+
+        self.elastic_info = {
+            'host': 'http://koala:9200',
+            'index': 'naver_kin',
+            'type': 'naver_kin',
+            'insert': True
+        }
 
         self.detail_parsing_info = [
             {
@@ -163,148 +314,10 @@ class NaverKinDBUtils(Utils):
             '경제 기관, 단체': '410',
         }
 
-    @staticmethod
-    def set_pragma(cursor, readonly=True):
-        """
-        sqlite 의 속도 개선을 위한 설정
-        :param cursor: 디비 핸들
-        :param readonly: 읽기 전용 플래그
-        :return:
-        """
-        # cursor.execute('PRAGMA threads       = 8;')
-
-        # 700,000 = 1.05G, 2,100,000 = 3G
-        cursor.execute('PRAGMA cache_size    = 2100000;')
-        cursor.execute('PRAGMA count_changes = OFF;')
-        cursor.execute('PRAGMA foreign_keys  = OFF;')
-        cursor.execute('PRAGMA journal_mode  = OFF;')
-        cursor.execute('PRAGMA legacy_file_format = 1;')
-        cursor.execute('PRAGMA locking_mode  = EXCLUSIVE;')
-        cursor.execute('PRAGMA page_size     = 4096;')
-        cursor.execute('PRAGMA synchronous   = OFF;')
-        cursor.execute('PRAGMA temp_store    = MEMORY;')
-
-        if readonly is True:
-            cursor.execute('PRAGMA query_only    = 1;')
-
-        return
-
-    @staticmethod
-    def open_sqlite(filename, table_name):
-        """
-        url 을 저장하는 캐쉬 디비(sqlite) 오픈
-        :param filename: 파일명
-        :param table_name: 테이블명
-        :return:
-        """
-        # 디비 연결
-        conn = sqlite3.connect(filename)
-
-        cursor = conn.cursor()
-
-        # 테이블 생성
-        if table_name == 'user_list':
-            sql = '''
-              CREATE TABLE IF NOT EXISTS {table_name} (
-                u VARCHAR(255) NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                category VARCHAR(255) NOT NULL,
-                content TEXT NOT NULL,
-                PRIMARY KEY (u)
-              )
-            '''.format(table_name=table_name)
-        else:
-            sql = '''
-              CREATE TABLE IF NOT EXISTS {table_name} (
-                d1_id INTEGER NOT NULL,
-                dir_id INTEGER NOT NULL,
-                doc_id INTEGER NOT NULL,
-                content TEXT NOT NULL,
-                PRIMARY KEY (d1_id, dir_id, doc_id)
-              )
-            '''.format(table_name=table_name)
-
-        cursor.execute(sql)
-
-        # self.set_pragma(cursor, readonly=False)
-
-        # sql 명령 실행
-        conn.commit()
-
-        return conn, cursor
-
-    @staticmethod
-    def check_doc_id(cursor, d1_id, dir_id, doc_id, table_name):
-        """
-        다운 받을 문서 아이디가 인덱스 디비에 있는지 검사
-
-        :param cursor: 디비 핸들
-        :param d1_id: d1 아이디
-        :param dir_id: 카테고리 아이디
-        :param doc_id: 문서 아이디
-        :param table_name: 테이블명
-        :return: 있으면 True, 없으면 False
-        """
-        # url 주소 조회
-        sql = 'SELECT 1 FROM {} WHERE d1_id=? AND dir_id=? AND doc_id=?'.format(table_name)
-        cursor.execute(sql, (d1_id, dir_id, doc_id,))
-
-        row = cursor.fetchone()
-        if row is not None and len(row) == 1:
-            return True
-
-        return False
-
-    @staticmethod
-    def save_content(cursor, table_name, values, update=False, commit=True, conn=None):
-        """
-        입력 받은 html 저장
-
-        :param conn: 디비 커넥션
-        :param cursor: 디비 핸들
-        :param table_name: 테이블명
-        :param values: 저장 값 (d1_id, dir_id, doc_id, content,)
-        :param commit: 커밋 여부
-        :param update: 업데이트 여부
-        :return:
-        """
-        if table_name == 'user_list':
-            sql = 'INSERT INTO {} (u, name, category, content) VALUES (?, ?, ?, ?)'.format(table_name)
-        else:
-            sql = 'INSERT INTO {} (d1_id, dir_id, doc_id, content) VALUES (?, ?, ?, ?)'.format(table_name)
-
-        try:
-            cursor.execute(sql, values)
-        except sqlite3.IntegrityError as e:
-            if update is True:
-                if table_name == 'user_list':
-                    pass
-                else:
-                    update_values = (values[3], values[0], values[1], values[2],)
-
-                    sql = 'UPDATE {} SET content=? WHERE d1_id=? AND dir_id=? AND doc_id=?'.format(table_name)
-                    try:
-                        cursor.execute(sql, update_values)
-                        logging.info('디비 내용 업데이트: {}-{}'.format(values[1], values[2]))
-                    except Exception as e:
-                        logging.error('디비 업데이트 오류: {}'.format(e))
-            else:
-                logging.error('키 중복: {}'.format(e))
-        except Exception as e:
-            logging.error('디비 저장 오류: {}'.format(e))
-
-        try:
-            if conn is not None and commit is True:
-                conn.commit()
-        except Exception as e:
-            logging.error('디비 커밋 오류: {}'.format(e))
-
-        return
-
     def save_data_list(self, data_list, result_path,
                        table_name='question_list', update=False):
-        """
-        질문 목록 저장
+        """ 질문 목록을 저장한다.
+
         :param data_list: 데이터 목록
         :param result_path: 저장 경로
         :param update: 내용 업데이트 플래그
@@ -341,8 +354,8 @@ class NaverKinDBUtils(Utils):
         return
 
     def batch_save_content(self, cursor, table_name, value_list, update=False):
-        """
-        답변 상세 페이지를 10개 단위로 배치 저장
+        """ 답변 상세 페이지를 10개 단위로 배치 단위로 저장한다.
+
         :param cursor: DB 커서
         :param table_name: 테이블명
         :param value_list: 저장할 데이터
@@ -357,8 +370,8 @@ class NaverKinDBUtils(Utils):
 
     @staticmethod
     def save_to_excel(file_name, data, column_names):
-        """
-        엑셀로 저장
+        """ 크롤링 결과를 엑셀로 저장한다.
+
         :param file_name: 파일명
         :param data: 저장할 데이터
         :param column_names: 컬럼 이름
@@ -403,11 +416,13 @@ class NaverKinDBUtils(Utils):
         return
 
     def insert_question_list(self, data_path=''):
-        """
-        질문 목록을 sqlite3 에 입력
-        :param data_path: 사용자 목록이 저장된 경로 data/naver/kin/question_list/경제
+        """ 질문 목록을 elastic-search 에 저장한다.
 
-        질문 자료 구조
+        :param data_path:
+            사용자 목록이 저장된 경로 data/naver/kin/question_list/경제
+
+        질문 자료 구조::
+
             {
                 "thumbnailInfos": null,
                 "betPoint": 0,
@@ -458,9 +473,15 @@ class NaverKinDBUtils(Utils):
         :return:
         """
         import json
+        import shutil
 
         from os import listdir
         from os.path import isdir, join
+
+        table_name = 'question_list'
+
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
 
         # 파일 로딩
         count = 0
@@ -472,34 +493,39 @@ class NaverKinDBUtils(Utils):
 
             logging.info(msg='filename: {}'.format(filename))
 
-            # 질문 로딩
-            with open(filename, 'r') as fp:
-                body = '\n'.join(fp.readlines())
+            conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
 
-                q_list = json.loads(body)
+            sql = 'SELECT * FROM {}'.format(table_name)
+            cursor.execute(sql)
 
-                # 카테고리별로 분리
-                for q in q_list:
-                    dir_id = q['dirId']
+            # columns = [d[0] for d in cursor.description]
+            for row in cursor.fetchall():
+                doc = json.loads(row[3])
 
-                    if dir_id not in question_list:
-                        question_list[dir_id] = []
+                doc['_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
 
-                    count += 1
-                    question_list[dir_id].append(q)
+                self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                  db_name=table_name, insert=True, bulk_size=2 * 1000)
+
+            self.save_elastic(document=None, elastic_info=self.elastic_info,
+                              db_name=table_name, insert=True, bulk_size=0)
+
+            conn.close()
+
+            # 완료 파일 이동
+            shutil.move(filename, '{}/done/{}'.format(data_path, file))
 
         logging.info(msg='question_list: category={:,}, total={:,}'.format(len(question_list), count))
-
-        self.save_question_list(question_list=question_list, result_path='data/naver/kin/question_list')
         return
 
     def insert_user_list(self, data_path='', category=''):
-        """
-        사용자 목록을 sqlite3 에 입력
+        """ 사용자 목록을 sqlite3 에 저장한다.
+
         :param data_path: 사용자 목록이 저장된 경로
         :param category: 카테고리 정보
 
-        expert 사용자 정보 (랭킹)
+        expert 사용자 정보 (랭킹)::
+
             {
                 "encodedU": "qXbgNEA8MzxTqYTJ0KdlLcw9j%2FOdLGczxe1xmpkrRuQ%3D",
                 "lastWeekRank": 3,
@@ -514,7 +540,8 @@ class NaverKinDBUtils(Utils):
                 "weekRank": 2
             }
 
-        elite 년도별 전문가
+        elite 년도별 전문가::
+
             {
                 "activeDirId": 10102,
                 "activeDirName": "노트북",
@@ -534,7 +561,8 @@ class NaverKinDBUtils(Utils):
                 "year": 2018
             }
 
-        분야별 지식인
+        분야별 지식인::
+
             GyOWWwK059X2dLySrX%2Fd6uWqE60LWxo1q2tZ9d5IOc8%3D	우리세무사
             JikckmNyrpnFIST1cyw44Nbizfuto0Tb0LrSrUSgILw%3D	깊은샘
 
@@ -628,9 +656,84 @@ class NaverKinDBUtils(Utils):
 
         return
 
-    def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
+    def insert_answer_list(self, data_path=''):
+        """ 답변 목록을 sqlite3 에 입력한다.
+
+        :param data_path: 사용자 목록이 저장된 경로 data/naver/kin/by_user.economy
+            답변 자료 구조::
+
+                {
+                    "kinupPoint": 1,
+                    "isBest": false,
+                    "isContainsLocation": false,
+                    "isOne2OneAnswer": false,
+                    "isSelectBest": false,
+                    "showAdultMark": false,
+                    "title": "화물운송관련해서 궁금하게 있어서 올립니다.",
+                    "style": "NORMAL",
+                    "kinupCnt": 1,
+                    "articleOpenYn": "Y",
+                    "gdId": "10000009_00000fc80f93",
+                    "detailUrl": "/mobile/qna/detail.nhn?d1Id=4&dirId=40607&docId=264769427",
+                    "isIng": false,
+                    "inputDevice": "PC",
+                    "answerNo": 1,
+                    "dirId": 40607,
+                    "isContainsAudio": false,
+                    "isContainsMovie": false,
+                    "previewContents": "안녕하세요? 한국무역의 도움이 네이버 지식파트너 한국무역협회입니다. 영업용 개별화물 운송관련 카페에 가입하시어 정보공유 및 질의 해 보세요. 지...",
+                    "isContainsImage": false,
+                    "docId": 264769427,
+                    "formattedWriteTime": "2016.11.30.",
+                    "isNetizenBest": false,
+                    "openFlag": true
+                }
+        :return:
         """
-        네이버 지식인 질문 목록 결과 취합
+        import json
+
+        from os import listdir
+        from os.path import isdir, join
+
+        # 파일 로딩
+        count = 0
+        answer_list = {}
+        for file in listdir(data_path):
+            filename = join(data_path, file)
+            if isdir(filename):
+                continue
+
+            logging.info(msg='filename: {}'.format(filename))
+
+            # 질문 로딩
+            with open(filename, 'r') as fp:
+                body = '\n'.join(fp.readlines())
+
+                q_list = json.loads(body)
+
+                # 카테고리별로 분리
+                for q in q_list:
+                    dir_id = q['dirId']
+
+                    if dir_id not in answer_list:
+                        answer_list[dir_id] = []
+
+                    count += 1
+                    content = json.dumps(q, ensure_ascii=False, indent=4, sort_keys=True)
+
+                    value = (str(dir_id)[0], str(dir_id), q['docId'], content,)
+                    answer_list[dir_id].append(value)
+
+        logging.info(msg='answer_list: category={:,}, total={:,}'.format(len(answer_list), count))
+
+        result_path = 'data/naver/kin/answer_list'
+        self.save_data_list(data_list=answer_list, result_path=result_path,
+                            table_name='answer_list')
+        return
+
+    def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
+        """ 네이버 지식인 질문 목록 결과를 취합한다.
+
         :param data_path: 질문 목록 경로
         :param result_filename: 결과 파일명
         :return:
@@ -709,8 +812,8 @@ class NaverKinDBUtils(Utils):
         return
 
     def parse_content(self, filename):
-        """
-        상세 정보 HTML 파싱
+        """ 상세 정보 HTML 을 파싱한다.
+
         :param filename: 디비 파일명
         :return:
         """
@@ -771,7 +874,8 @@ class NaverKinDBUtils(Utils):
         return
 
     def trace_tag(self, soup, tag_list, index, result):
-        """
+        """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다.
+
         :param soup: bs4 개체
         :param tag_list: 테그 위치 목록
         :param index: 테그 인덱스
@@ -797,8 +901,8 @@ class NaverKinDBUtils(Utils):
 
     @staticmethod
     def remove_comment(soup):
-        """
-        html 태그 중에서 주석 태그를 제거
+        """ html 태그 중에서 주석 태그를 제거한다.
+
         :param soup: 웹페이지 본문
         :return: True/False
         """
@@ -811,8 +915,8 @@ class NaverKinDBUtils(Utils):
 
     @staticmethod
     def remove_banner(soup):
-        """
-        베너 삭제
+        """ 자살 방지 베너 삭제를 삭제한다.
+
         :param soup:
         :return:
         """
@@ -824,8 +928,8 @@ class NaverKinDBUtils(Utils):
 
     @staticmethod
     def remove_attribute(soup, attribute_list):
-        """
-        속성 삭제
+        """ 속성을 삭제한다.
+
         :param soup: html 객체
         :param attribute_list: onclick
         :return:
@@ -835,7 +939,7 @@ class NaverKinDBUtils(Utils):
             if len(tag.attrs) == 0:
                 continue
 
-            new_attrs = {}
+            new_attribute = {}
             for name in tag.attrs:
                 if name in attribute_list:
                     continue
@@ -843,15 +947,15 @@ class NaverKinDBUtils(Utils):
                 if 'javascript' in tag.attrs[name] or 'void' in tag.attrs[name] or '#' in tag.attrs[name]:
                     continue
 
-                new_attrs[name] = tag.attrs[name]
+                new_attribute[name] = tag.attrs[name]
 
-            tag.attrs = new_attrs
+            tag.attrs = new_attribute
 
         return soup
 
     def split_detail(self):
-        """
-        질문 상세 페이지 저장 디비를 카테고리별로 분리
+        """ 질문 상세 페이지 저장 디비를 카테고리별로 분리한다.
+
         :return:
         """
         from bs4 import BeautifulSoup
@@ -907,15 +1011,11 @@ class NaverKinDBUtils(Utils):
         return
 
 
-class NaverKinCrawler(NaverKinDBUtils):
-    """
-    크롤러
-    """
+class Crawler(NaverKinUtils):
+    """ 네이버 지식인 크롤러 """
 
     def __init__(self):
-        """
-        생성자
-        """
+        """ 생성자 """
         super().__init__()
 
         self.headers = {
@@ -924,41 +1024,44 @@ class NaverKinCrawler(NaverKinDBUtils):
                           'Version/11.0 Mobile/15A372 Safari/604.1'
         }
 
-    def batch_question_list(self, result_path):
-        """
-        질문 목록 전부를 가져온다.
-        :param result_path: 결과 저장 경로
-        :return:
+    def batch_question_list(self):
+        """ 질문 목록 전부를 가져온다.
+
+        :return: 없음
         """
         url = 'https://m.kin.naver.com/mobile/qna/kinupList.nhn?' \
               'sortType=writeTime&resultMode=json&dirId={dir_id}&countPerPage={size}&page={page}'
 
         dir_id_list = [4, 11, 1, 2, 3, 8, 7, 6, 9, 10, 5, 13, 12, 20]
         for dir_id in dir_id_list:
-            self.get_question_list(url=url, dir_id=dir_id, result_path=result_path, end=500)
+            self.get_question_list(url=url, dir_id=dir_id, end=500)
 
         return
 
-    def get_question_list(self, url, dir_id=4, start=1, end=90000, size=20,
-                          result_path='data/naver/kin/question_list'):
-        """
-        네이버 지식인 경제 분야 크롤링
+    def get_question_list(self, url, dir_id=4, start=1, end=90000, size=20):
+        """ 네이버 지식인 경제 분야 질문 목록을 크롤링한다.
 
-        :param url: 쿼리 조회 URL 패턴
-            (https://m.kin.naver.com/mobile/qna/kinupList.nhn?
-                sortType=writeTime&resultMode=json&dirId={dir_id}&countPerPage={size}&page={page})
+        :param url:
+            쿼리 조회 URL 패턴::
+
+                https://m.kin.naver.com/mobile/qna/kinupList.nhn?
+                    sortType=writeTime
+                    &resultMode=json
+                    &dirId={dir_id}
+                    &countPerPage={size}
+                    &page={page}
+
         :param dir_id: 도메인 (4: 경제)
         :param start: 시작 페이지
         :param end: 종료 페이지
         :param size: 페이지 크기
-        :param result_path: 결과를 저장할 경로
-        :return:
+        :return: 없음
         """
-        import json
         import requests
         from time import sleep
 
         delay = 5
+        table_name = 'question_list'
 
         for page in range(start, end):
             query_url = url.format(dir_id=dir_id, size=size, page=page)
@@ -981,31 +1084,22 @@ class NaverKinCrawler(NaverKinDBUtils):
             logging.info(msg='{} {:,} ~ {:,} {:,}'.format(dir_id, page, end, len(result_list)))
 
             # 결과 저장
-            question_list = {}
+            for doc in result_list:
+                doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
 
-            # 카테고리별로 분리
-            for q in result_list:
-                dir_id = q['dirId']
+                self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                  db_name=table_name, insert=True, bulk_size=2 * 100)
 
-                if dir_id not in question_list:
-                    question_list[dir_id] = []
-
-                # (d1_id, dir_id, doc_id, category, content)
-                content = json.dumps(q, ensure_ascii=False, sort_keys=True, indent=4)
-                value = (q['d1Id'], q['dirId'], q['docId'], content,)
-
-                question_list[dir_id].append(value)
-
-            self.save_data_list(data_list=question_list, result_path=result_path,
-                                table_name='question_list', update=True)
+            self.save_elastic(document=None, elastic_info=self.elastic_info,
+                              db_name=table_name, insert=True, bulk_size=0)
 
             sleep(delay)
 
         return
 
     def batch_answer_list(self, user_filename='society.user-list', result_path='by_user'):
-        """
-        답변자별 답변 목록 전부를 가져온다.
+        """ 사용자별 답변 목록를 가져온다.
+
         :param user_filename: 사용자 목록 파일명
         :param result_path: 저장 경로
         :return:
@@ -1035,15 +1129,15 @@ class NaverKinCrawler(NaverKinDBUtils):
             query_url = url.format(user_id=user_id)
 
             print(user_name, user_id, query_url)
-            target_path = '{data_path}/{user_name}'.format(data_path=result_path, user_name=user_name)
+            # target_path = '{data_path}/{user_name}'.format(data_path=result_path, user_name=user_name)
 
-            self.get_question_list(url=query_url, dir_id=0, result_path=target_path)
+            # self.get_question_list(url=query_url, dir_id=0)
 
         return
 
     def get_elite_user_list(self):
-        """
-        명예의 전당 채택과 년도별 사용자 목록 추출
+        """ 명예의 전당 채택과 년도별 사용자 목록을 가져온다.
+
         :return:
         """
         import json
@@ -1093,8 +1187,8 @@ class NaverKinCrawler(NaverKinDBUtils):
         return
 
     def get_expert_user_list(self):
-        """
-        분야별 전문가 목록 추출
+        """ 분야별 전문가 목록을 추출한다.
+
         :return:
         """
         import json
@@ -1153,8 +1247,8 @@ class NaverKinCrawler(NaverKinDBUtils):
         return
 
     def get_detail(self, data_path='by_user.economy'):
-        """
-        상세 페이지 크롤링
+        """질문/답변 상세 페이지를 크롤링한다.
+
         :param data_path: 데이터 경로
         :return:
             https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=4&dirId=40308&docId=303328933
@@ -1162,6 +1256,7 @@ class NaverKinCrawler(NaverKinDBUtils):
         """
         import json
         import requests
+        import shutil
 
         from time import sleep
 
@@ -1276,6 +1371,9 @@ class NaverKinCrawler(NaverKinDBUtils):
 
                     sleep(delay)
 
+            # 완료로 이동
+            shutil.move(sub_dir, join(data_path + '.done', user_name))
+
         if len(batch_answer) > 0:
             self.batch_save_content(cursor=answer_cursor, table_name='answer_list',
                                     value_list=batch_answer)
@@ -1293,8 +1391,8 @@ class NaverKinCrawler(NaverKinDBUtils):
 
 
 def init_arguments():
-    """
-    옵션 설정
+    """ 옵션 설정
+
     :return:
     """
     import textwrap
@@ -1302,7 +1400,7 @@ def init_arguments():
 
     description = textwrap.dedent('''\
 # 질문 목록 크롤링
-python3 naver_kin_crawler.py -question_list -result_path data/naver/kin/question_list
+python3 naver_kin_crawler.py -question_list 
 
 # 답변 목록 크롤링 
 python3 naver_kin_crawler.py -answer_list \\
@@ -1337,13 +1435,14 @@ python3 naver_kin_crawler.py -merge_question \\
 
 # 질문 목록 취합
 IFS=$'\\n'
-for d in $(ls -1 data/naver/kin/question_list) ; do
+data_path="data/naver/kin/question_list"
+for d in $(ls -1 ${data_path}) ; do
     echo ${d}
 
     python3 naver_kin_crawler.py -merge_question \\
-        -data_path data/naver/kin/question_list/${d} \\
-        -filename data/naver/kin/${d}.xlsx \\
-        | bzip2 - > data/naver/kin/${d}.json.bz2
+        -data_path "${data_path}/${d}" \\
+        -filename "data/naver/kin/${d}.xlsx" \\
+        | bzip2 - > "data/naver/kin/${d}.json.bz2"
 done
 
 # 사용자 목록을 DB에 저장
@@ -1356,15 +1455,29 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/e
 python3 naver_kin_crawler.py -split_detail
 
 # 질문 목록을 DB에 저장
-python3 naver_kin_crawler.py -insert_question_list -data_path data/naver/kin/question_list/경제
+# python3 naver_kin_crawler.py -insert_question_list -data_path data/naver/kin/question_list
+# 
+# IFS=$'\\n'
+# data_path="data/naver/kin/question_list.old"
+# for d in $(ls -1 ${data_path}) ; do
+#     echo ${d}
+# 
+#     python3 naver_kin_crawler.py -insert_question_list \\
+#         -data_path "${data_path}/${d}"
+# done
+
+# 답변 목록을 DB에 저장
+python3 naver_kin_crawler.py -insert_answer_list -data_path "data/naver/kin/by_user.economy/(사)한국무역협회"
 
 IFS=$'\\n'
-for d in $(ls -1 data/naver/kin/question_list.old) ; do
+data_path="data/naver/kin/by_user.economy"
+for d in $(ls -1 ${data_path}) ; do
     echo ${d}
 
-    python3 naver_kin_crawler.py -insert_question_list \\
-        -data_path data/naver/kin/question_list.old/${d}
+    python3 naver_kin_crawler.py -insert_answer_list \\
+        -data_path "${data_path}/${d}"
 done
+
 
     ''')
 
@@ -1393,6 +1506,8 @@ done
                         help='사용자 목록을 DB에 저장')
     parser.add_argument('-insert_question_list', action='store_true', default=False,
                         help='질문 목록을 DB에 저장')
+    parser.add_argument('-insert_answer_list', action='store_true', default=False,
+                        help='답변 목록을 DB에 저장')
     parser.add_argument('-split_detail', action='store_true', default=False,
                         help='질문 상세 디비를 카테고리별로 분리')
 
@@ -1405,13 +1520,14 @@ done
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+def main():
+    """메인"""
     args = init_arguments()
 
-    crawler = NaverKinCrawler()
+    crawler = Crawler()
 
     if args.question_list:
-        crawler.batch_question_list(result_path=args.result_path)
+        crawler.batch_question_list()
 
     if args.answer_list:
         crawler.batch_answer_list(user_filename=args.filename, result_path=args.result_path)
@@ -1437,5 +1553,14 @@ if __name__ == '__main__':
     if args.insert_question_list:
         crawler.insert_question_list(data_path=args.data_path)
 
+    if args.insert_answer_list:
+        crawler.insert_answer_list(data_path=args.data_path)
+
     if args.split_detail:
         crawler.split_detail()
+
+    return
+
+
+if __name__ == '__main__':
+    main()
