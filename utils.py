@@ -856,7 +856,7 @@ class Utils(object):
             })
 
             # 버퍼링
-            if bulk_size > len(self.bulk_data):
+            if bulk_size * 2 > len(self.bulk_data):
                 return True
 
         if len(self.bulk_data) == 0:
@@ -882,7 +882,8 @@ class Utils(object):
             size = len(self.bulk_data)
             doc_id_list = []
             for doc in self.bulk_data:
-                doc_id_list.append(doc['update']['_id'])
+                if 'update' in doc and '_id' in doc['update']:
+                    doc_id_list.append(doc['update']['_id'])
 
             self.bulk_data = []
 
@@ -890,11 +891,12 @@ class Utils(object):
             if response['errors'] is True:
                 error = '에러'
 
-            msg = 'elastic-search 저장 결과: {}, {:,}'.format(error, size)
+            msg = 'elastic-search 저장 결과: {}, {:,}'.format(error, int(size / 2))
             logging.info(msg=msg)
 
-            msg = '{}/{}/{}/{}?pretty'.format(elastic_info['host'], index, doc_type, doc_id_list[0])
-            logging.info(msg=msg)
+            if len(doc_id_list) > 0:
+                msg = '{}/{}/{}/{}?pretty'.format(elastic_info['host'], index, doc_type, doc_id_list[0])
+                logging.info(msg=msg)
         except Exception as e:
             msg = 'elastic-search 저장 에러: {}'.format(e)
             logging.error(msg=msg)

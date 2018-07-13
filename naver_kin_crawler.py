@@ -480,8 +480,11 @@ class NaverKinUtils(SqliteUtils):
 
         table_name = 'question_list'
 
+        # 인덱스명 설정
         self.elastic_info['index'] = table_name
         self.elastic_info['type'] = table_name
+
+        bulk_size = 1000
 
         # 파일 로딩
         count = 0
@@ -493,6 +496,7 @@ class NaverKinUtils(SqliteUtils):
 
             logging.info(msg='filename: {}'.format(filename))
 
+            # sqlite all data fetch
             conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
 
             sql = 'SELECT * FROM {}'.format(table_name)
@@ -505,7 +509,7 @@ class NaverKinUtils(SqliteUtils):
                 doc['_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
 
                 self.save_elastic(document=doc, elastic_info=self.elastic_info,
-                                  db_name=table_name, insert=True, bulk_size=2 * 1000)
+                                  db_name=table_name, insert=True, bulk_size=bulk_size)
 
             self.save_elastic(document=None, elastic_info=self.elastic_info,
                               db_name=table_name, insert=True, bulk_size=0)
@@ -519,7 +523,7 @@ class NaverKinUtils(SqliteUtils):
         return
 
     def insert_user_list(self, data_path='', category=''):
-        """ 사용자 목록을 sqlite3 에 저장한다.
+        """ 사용자 목록을 elastic-search 에 저장한다.
 
         :param data_path: 사용자 목록이 저장된 경로
         :param category: 카테고리 정보
@@ -561,10 +565,15 @@ class NaverKinUtils(SqliteUtils):
                 "year": 2018
             }
 
-        분야별 지식인::
+        분야별 지식인 (partner)::
 
             GyOWWwK059X2dLySrX%2Fd6uWqE60LWxo1q2tZ9d5IOc8%3D	우리세무사
             JikckmNyrpnFIST1cyw44Nbizfuto0Tb0LrSrUSgILw%3D	깊은샘
+
+            {
+                "u": "GyOWWwK059X2dLySrX%2Fd6uWqE60LWxo1q2tZ9d5IOc8%3D",
+                "viewId": "우리세무사"
+            }
 
         :return:
         """
@@ -656,8 +665,13 @@ class NaverKinUtils(SqliteUtils):
 
         return
 
+    @staticmethod
+    def get_columns(cursor):
+        """"""
+        return [d[0] for d in cursor.description]
+
     def insert_answer_list(self, data_path=''):
-        """ 답변 목록을 sqlite3 에 입력한다.
+        """ 답변 목록을 elastic-search 에 입력한다.
 
         :param data_path: 사용자 목록이 저장된 경로 data/naver/kin/by_user.economy
             답변 자료 구조::
@@ -691,13 +705,21 @@ class NaverKinUtils(SqliteUtils):
         :return:
         """
         import json
+        import shutil
 
         from os import listdir
         from os.path import isdir, join
 
+        table_name = 'answer_list'
+
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
+
+        from_sqlite = False
+        bulk_size = 1000
+
         # 파일 로딩
-        count = 0
-        answer_list = {}
         for file in listdir(data_path):
             filename = join(data_path, file)
             if isdir(filename):
@@ -705,30 +727,55 @@ class NaverKinUtils(SqliteUtils):
 
             logging.info(msg='filename: {}'.format(filename))
 
-            # 질문 로딩
-            with open(filename, 'r') as fp:
-                body = '\n'.join(fp.readlines())
+            if from_sqlite is True:
+                # sqlite all data fetch
+                conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
 
-                q_list = json.loads(body)
+                sql = 'SELECT * FROM {}'.format(table_name)
+                cursor.execute(sql)
 
-                # 카테고리별로 분리
-                for q in q_list:
-                    dir_id = q['dirId']
+                for row in cursor.fetchall():
+                    doc = json.loads(row[3])
 
-                    if dir_id not in answer_list:
-                        answer_list[dir_id] = []
+                    doc['_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
 
-                    count += 1
-                    content = json.dumps(q, ensure_ascii=False, indent=4, sort_keys=True)
+                    self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                      db_name=table_name, insert=True, bulk_size=bulk_size)
 
-                    value = (str(dir_id)[0], str(dir_id), q['docId'], content,)
-                    answer_list[dir_id].append(value)
+                conn.close()
 
-        logging.info(msg='answer_list: category={:,}, total={:,}'.format(len(answer_list), count))
+                # 완료 파일 이동
+                shutil.move(filename, '{}/done/{}'.format(data_path, file))
+            else:
+                # 질문 로딩
+                token = data_path.strip('/').split('/')
 
-        result_path = 'data/naver/kin/answer_list'
-        self.save_data_list(data_list=answer_list, result_path=result_path,
-                            table_name='answer_list')
+                section = token[-2].replace('by_user.', '').replace('.done', '')
+                user_name = token[-1]
+
+                with open(filename, 'r') as fp:
+                    body = '\n'.join(fp.readlines())
+
+                    doc_list = json.loads(body)
+
+                    # 카테고리별로 분리
+                    for doc in doc_list:
+                        dir_id = doc['dirId']
+
+                        doc['_id'] = '{}-{}-{}'.format(str(dir_id)[0], str(dir_id), doc['docId'])
+
+                        if 'section' not in doc:
+                            doc['section'] = section
+
+                        if 'user_name' not in doc:
+                            doc['user_name'] = user_name
+
+                        self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                          db_name=table_name, insert=True, bulk_size=bulk_size)
+
+        self.save_elastic(document=None, elastic_info=self.elastic_info,
+                          db_name=table_name, insert=True, bulk_size=0)
+
         return
 
     def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
@@ -811,67 +858,55 @@ class NaverKinUtils(SqliteUtils):
 
         return
 
-    def parse_content(self, filename):
+    def parse_content(self, html, soup=None):
         """ 상세 정보 HTML 을 파싱한다.
 
-        :param filename: 디비 파일명
-        :return:
+        :param html: html
+        :param soup: soup
+        :return: 파싱된 결과
         """
         import re
-        import sys
-        import json
         from bs4 import BeautifulSoup
 
-        table_name = 'detail'
-        conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
+        if html is not None:
+            soup = BeautifulSoup(html, 'html5lib')
 
-        sql = 'SELECT d1_id, dir_id, doc_id, content FROM {}'.format(table_name)
-        cursor.execute(sql)
+        if soup is None:
+            return None, None
 
-        row_list = cursor.fetchall()[:]
+        # 테그 정리
+        self.replace_tag(soup, ['script', 'javascript', 'style'])
 
-        conn.close()
+        self.remove_comment(soup)
+        self.remove_banner(soup=soup)
+        self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
 
-        # 본문 파싱
-        count = 0
-        total = len(row_list)
+        result = {}
+        for item in self.detail_parsing_info:
+            tag_list = []
+            self.trace_tag(soup=soup, tag_list=item['tag'], index=0, result=tag_list)
 
-        for row in row_list:
-            soup = BeautifulSoup(row[3], 'html5lib')
-
-            qa = {}
-            for item in self.detail_parsing_info:
-                tag_list = []
-                self.trace_tag(soup=soup, tag_list=item['tag'], index=0, result=tag_list)
-
-                value_list = []
-                for tag in tag_list:
-                    if item['type'] == 'text':
-                        value = tag.get_text().strip().replace('\n', '')
-                        value = re.sub('\s+', ' ', value)
-                    elif item['type'] == 'html':
-                        value = str(tag.prettify())
+            value_list = []
+            for tag in tag_list:
+                if item['type'] == 'text':
+                    value = tag.get_text().strip().replace('\n', '')
+                    value = re.sub('\s+', ' ', value)
+                elif item['type'] == 'html':
+                    value = str(tag.prettify())
+                else:
+                    if tag.has_attr(item['type']):
+                        value = tag[item['type']]
                     else:
-                        if tag.has_attr(item['type']):
-                            value = tag[item['type']]
-                        else:
-                            value = str(tag.prettify())
+                        value = str(tag.prettify())
 
-                    value_list.append(value)
+                value_list.append(value)
 
-                if len(value_list) == 1:
-                    value_list = value_list[0]
+            if len(value_list) == 1:
+                value_list = value_list[0]
 
-                qa[item['key']] = value_list
+            result[item['key']] = value_list
 
-            qa['question_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
-            line = json.dumps(qa, ensure_ascii=False, sort_keys=True, indent=4)
-            print(line, end='\n\n', flush=True)
-
-            count += 1
-            print('{:,} / {:,}'.format(count, total), end='\r', flush=True, file=sys.stderr)
-
-        return
+        return result, soup
 
     def trace_tag(self, soup, tag_list, index, result):
         """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다.
@@ -953,60 +988,43 @@ class NaverKinUtils(SqliteUtils):
 
         return soup
 
-    def split_detail(self):
-        """ 질문 상세 페이지 저장 디비를 카테고리별로 분리한다.
+    def insert_detail(self, filename):
+        """질문 상세 페이지를 elastic-search 에 입력한다.
 
+        :param filename: sqlite 파일명
         :return:
         """
-        from bs4 import BeautifulSoup
-
-        filename = 'data/naver/test-detail.sqlite3'
-
         table_name = 'detail'
+
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
+
         conn, cursor = self.open_sqlite(filename=filename, table_name=table_name)
 
-        sql = 'SELECT d1_id, dir_id, doc_id, content FROM {}'.format(table_name)
+        sql = 'SELECT d1_id, dir_id, doc_id, content ' \
+              'FROM {}'.format(table_name)
         cursor.execute(sql)
 
-        row_list = cursor.fetchall()[:]
+        bulk_size = 200
 
-        conn.close()
-
-        # 본문 파싱
-        result_path = 'data/naver/kin/detail'
-
-        count = 0
-        detail_list = {}
-        for row in row_list:
-            dir_id = row[1]
-
-            if dir_id not in detail_list:
-                detail_list[dir_id] = []
-
-            soup = BeautifulSoup(row[3], 'html5lib')
-
-            # 테그 정리
-            self.remove_comment(soup)
-            self.remove_banner(soup=soup)
-            self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
+        for row in cursor:
+            doc, soup = self.parse_content(row[3])
 
             content = str(soup.prettify())
-            value = (row[0], row[1], row[2], content,)
 
-            detail_list[dir_id].append(value)
+            doc['_id'] = '{}-{}-{}'.format(row[0], row[1], row[2])
+            doc['html'] = content
 
-            logging.info(msg='{:,} {:,}'.format(count, len(row_list)))
-            count += 1
+            self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                              db_name=table_name, insert=True, bulk_size=bulk_size)
 
-            if count % 500 == 0:
-                self.save_data_list(data_list=detail_list, result_path=result_path,
-                                    table_name=table_name, update=True)
+        self.save_elastic(document=None, elastic_info=self.elastic_info,
+                          db_name=table_name, insert=True, bulk_size=0)
 
-                detail_list = {}
+        cursor.close()
 
-        if len(detail_list) > 0:
-            self.save_data_list(data_list=detail_list, result_path=result_path,
-                                table_name=table_name, update=True)
+        conn.close()
 
         return
 
@@ -1061,7 +1079,12 @@ class Crawler(NaverKinUtils):
         from time import sleep
 
         delay = 5
+        bulk_size = 100
+
         table_name = 'question_list'
+
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
 
         for page in range(start, end):
             query_url = url.format(dir_id=dir_id, size=size, page=page)
@@ -1088,7 +1111,7 @@ class Crawler(NaverKinUtils):
                 doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
 
                 self.save_elastic(document=doc, elastic_info=self.elastic_info,
-                                  db_name=table_name, insert=True, bulk_size=2 * 100)
+                                  db_name=table_name, insert=True, bulk_size=bulk_size)
 
             self.save_elastic(document=None, elastic_info=self.elastic_info,
                               db_name=table_name, insert=True, bulk_size=0)
@@ -1097,11 +1120,99 @@ class Crawler(NaverKinUtils):
 
         return
 
-    def batch_answer_list(self, user_filename='society.user-list', result_path='by_user'):
-        """ 사용자별 답변 목록를 가져온다.
+    def get_detail(self, index='question_list', match_phrase=None):
+        """질문/답변 상세 페이지를 크롤링한다.
+
+        :param index: 인덱스명 question_list, answer_list
+        :param match_phrase: "fullDirNamePath": "주식"
+        :return:
+            https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=4&dirId=40308&docId=303328933
+            https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id=6&dirId=60222&docId=301601614
+        """
+        import json
+        import requests
+        from time import sleep
+
+        from bs4 import BeautifulSoup
+
+        delay = 5
+
+        url_frame = 'https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}'
+
+        query = {
+            '_source': 'd1Id,dirId,docId'.split(','),
+            'size': '1000',
+            'query': {
+                'bool': {
+                    'must': {
+                        'match_phrase': {
+                            'fullDirNamePath': '주식'
+                        }
+                    }
+                }
+            }
+        }
+
+        if match_phrase is not None:
+            if isinstance(match_phrase, str):
+                match_phrase = json.loads(match_phrase)
+
+            query['query']['bool']['must']['match_phrase'] = match_phrase
+
+        question_list, elastic = self.get_document_list(index=index, query=query)
+
+        detail_index = 'detail'
+
+        # 저장 인덱스명 설정
+        self.elastic_info['index'] = detail_index
+        self.elastic_info['type'] = detail_index
+
+        i = -1
+        size = len(question_list)
+
+        for question in question_list:
+            if 'd1Id' not in question:
+                question['d1Id'] = str(question['dirId'])[0]
+
+            i += 1
+            doc_id = '{}-{}-{}'.format(question['d1Id'], question['dirId'], question['docId'])
+
+            exists = elastic.exists(index=detail_index, doc_type=detail_index, id=doc_id)
+            if exists is True:
+                logging.info(msg='skip {} {}'.format(doc_id, detail_index))
+                continue
+
+            request_url = url_frame.format(**question)
+
+            # 질문 상세 페이지 크롤링
+            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+            request_result = requests.get(url=request_url, headers=self.headers,
+                                          allow_redirects=True, timeout=60)
+
+            # 저장
+            soup = BeautifulSoup(request_result.content, 'html5lib')
+
+            content = soup.find('div', {'class': 'sec_col1'})
+            if content is None:
+                continue
+
+            detail_doc, content = self.parse_content(html=None, soup=content)
+
+            detail_doc['_id'] = doc_id
+            detail_doc['html'] = str(content.prettify())
+
+            self.save_elastic(document=detail_doc, elastic_info=self.elastic_info,
+                              db_name=detail_index, insert=True, bulk_size=0)
+
+            sleep(delay)
+
+        return
+
+    @staticmethod
+    def batch_answer_list(user_filename='society.user-list'):
+        """사용자별 답변 목록를 가져온다.
 
         :param user_filename: 사용자 목록 파일명
-        :param result_path: 저장 경로
         :return:
         """
 
@@ -1135,12 +1246,203 @@ class Crawler(NaverKinUtils):
 
         return
 
+    def get_partner_list(self):
+        """지식 파트너 목록을 크롤링한다.
+
+        저장 구조::
+
+            {
+              "countPerPage": 10,
+              "page": 1,
+              "totalCount": 349,
+              "isSuccess": true,
+              "queryTime": "2018-07-13 16:28:46",
+              "lists": [
+                {
+                  "partnerName": "여성가족부.한국청소년상담복지개발원",
+                  "bestAnswerRate": 70.5,
+                  "bestAnswerCnt": 10083,
+                  "u": "6oCfeacJKVQGwsBB7OHEIS4miiPixwQ%2FoueervNeYrg%3D",
+                  "userActiveDirs": [
+                    {
+                      "divisionIds": [],
+                      "masterId": 0,
+                      "dirType": "NONLEAF",
+                      "localId": 0,
+                      "sexFlag": "N",
+                      "parentId": 20,
+                      "dbName": "db_worry",
+                      "open100Flag": "N",
+                      "topShow": "N",
+                      "relatedIds": "0",
+                      "restFlag": "N",
+                      "namePath": "고민Q&A>아동, 미성년 상담",
+                      "hiddenFlag": "N",
+                      "adultFlag": "N",
+                      "linkedId": "0",
+                      "displayFlag": 0,
+                      "dirName": "아동, 미성년 상담",
+                      "templateIds": [],
+                      "depth": 2,
+                      "dirId": 2001,
+                      "linkId": 0,
+                      "didPath": "20>2001",
+                      "childCnt": 7,
+                      "edirId": 0,
+                      "expertListType": "",
+                      "popular": "N",
+                      "showOrder": 0
+                    }
+                  ],
+                  "memberViewType": false,
+                  "viewType": "ANSWER",
+                  "photoUrl": "https://kin-phinf.pstatic.net/20120727_216/1343367618928V5OzE_JPEG/%B3%D7%C0%CC%B9%F6%BF%EB%B7%CE%B0%ED%28300.3000%29.jpg"
+                },
+                (...)
+              ]
+            }
+        :return:
+        """
+        import requests
+        from time import sleep
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                          'Version/11.0 Mobile/15A372 Safari/604.1'
+        }
+
+        url_frame = 'https://m.kin.naver.com/mobile/people/partnerList.nhn' \
+                    '?resultMode=json&m=partnerList&page={page}&dirId=0'
+
+        table_name = 'partner_list'
+
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
+
+        for page in range(1, 1000):
+            request_url = url_frame.format(page=page)
+
+            request_result = requests.get(url=request_url, headers=headers,
+                                          allow_redirects=True, timeout=30, verify=False)
+
+            result = request_result.json()
+
+            if 'lists' in result:
+                size = len(result['lists'])
+                if size == 0:
+                    break
+
+                logging.info(msg='{}, {}'.format(size, request_url))
+
+                for doc in result['lists']:
+                    doc['_id'] = doc['u']
+
+                    self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                      db_name=table_name, insert=True, bulk_size=100)
+
+            self.save_elastic(document=None, elastic_info=self.elastic_info,
+                              db_name=table_name, insert=True, bulk_size=0)
+            sleep(5)
+
+        return
+
+    def get_expert_list(self):
+        """분야별 전문가 목록을 크롤링한다.
+
+            반환 구조::
+
+                {
+                  "result": [
+                    {
+                      "locationUrl": "http://map.naver.com/local/siteview.nhn?code=71373752",
+                      "occupation": "전문의",
+                      "companyOpen": "Y",
+                      "organizationName": "하이닥",
+                      "expertRole": 1,
+                      "encodedU": "%2F3soE1QYD7D3mkrmubU2VOr7v7y2zOUWTkk2cj31yRU%3D",
+                      "organizationId": 2,
+                      "companyName": "고운마취통증의학과의원",
+                      "photo": "https://kin-phinf.pstatic.net/exphoto/expert/65/fourlong_1452051150989.jpg",
+                      "homepage": "http://gwpainfree.com",
+                      "country": "",
+                      "area": "경남",
+                      "locationOpen": "Y",
+                      "answerCount": 5587,
+                      "writeTime": "2016-01-06 12:15:59.0",
+                      "edirId": 3,
+                      "divisionId": 1,
+                      "companyPosition": "원장",
+                      "workingArea": "domestic",
+                      "name": "노민현",
+                      "homepageOpen": "Y",
+                      "edirName": "마취통증의학과"
+                    },
+                    (...)
+                  ],
+                  "totalCount": 10,
+                  "errorMsg": "",
+                  "isSuccess": true
+                }
+        """
+        import requests
+        from time import sleep
+        from urllib.parse import unquote
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                          'Version/11.0 Mobile/15A372 Safari/604.1'
+        }
+
+        expert_type_list = ['doctor', 'lawyer', 'labor', 'animaldoctor', 'pharmacist', 'taxacc', 'dietitian']
+
+        url_frame = 'https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn' \
+                    '?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0'
+
+        table_name = 'expert_user_list'
+
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
+
+        for expert_type in expert_type_list:
+            for page in range(1, 1000):
+                request_url = url_frame.format(expert_type=expert_type, page=page)
+
+                request_result = requests.get(url=request_url, headers=headers,
+                                              allow_redirects=True, timeout=30, verify=False)
+
+                result = request_result.json()
+
+                if 'result' in result:
+                    size = len(result['result'])
+                    if size == 0:
+                        break
+
+                    logging.info(msg='{}, {}'.format(size, request_url))
+
+                    for doc in result['result']:
+                        doc['expert_type'] = expert_type
+
+                        doc['u'] = unquote(doc['encodedU'])
+                        doc['_id'] = doc['u']
+
+                        self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                          db_name=table_name, insert=True, bulk_size=100)
+
+                self.save_elastic(document=None, elastic_info=self.elastic_info,
+                                  db_name=table_name, insert=True, bulk_size=0)
+                sleep(5)
+
+        return
+
     def get_elite_user_list(self):
         """ 명예의 전당 채택과 년도별 사용자 목록을 가져온다.
 
         :return:
         """
-        import json
         import requests
         from time import sleep
 
@@ -1152,6 +1454,12 @@ class Crawler(NaverKinUtils):
 
         month = 0
         for year in range(2012, 2019):
+            table_name = 'expert_user_list_{}'.format(year)
+
+            # 인덱스명 설정
+            self.elastic_info['index'] = table_name
+            self.elastic_info['type'] = table_name
+
             url = 'https://kin.naver.com/hall/eliteUser.nhn?year={}'.format(year)
 
             result = requests.get(url=url, headers=headers,
@@ -1162,11 +1470,9 @@ class Crawler(NaverKinUtils):
 
             headers['referer'] = url
 
-            filename = '{}/users/elite_user_list.{}.json'.format(self.data_home, year)
-
             for page in range(1, 6):
-                list_url = 'https://kin.naver.com/ajax/eliteUserAjax.nhn?year={}&month={}&page={}'.format(year, month,
-                                                                                                          page)
+                list_url = 'https://kin.naver.com/ajax/eliteUserAjax.nhn' \
+                           '?year={}&month={}&page={}'.format(year, month, page)
 
                 request_result = requests.get(url=list_url, headers=headers, cookies=cookies,
                                               allow_redirects=True, timeout=60)
@@ -1176,22 +1482,23 @@ class Crawler(NaverKinUtils):
                 if 'eliteUserList' in result:
                     logging.info(msg='{}, {}'.format(len(result['eliteUserList']), list_url))
 
-                    with open(filename, 'a') as fp:
-                        for user in result['eliteUserList']:
-                            str_line = json.dumps(user, ensure_ascii=False, sort_keys=True, indent=4)
-                            fp.write(str_line + '\n\n')
-                            fp.flush()
+                    for doc in result['eliteUserList']:
+                        doc['_id'] = doc['u']
 
+                        self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                          db_name=table_name, insert=True, bulk_size=100)
+
+                    self.save_elastic(document=None, elastic_info=self.elastic_info,
+                                      db_name=table_name, insert=True, bulk_size=0)
                 sleep(5)
 
         return
 
-    def get_expert_user_list(self):
+    def get_rank_user_list(self):
         """ 분야별 전문가 목록을 추출한다.
 
         :return:
         """
-        import json
         import requests
         from time import sleep
 
@@ -1202,10 +1509,17 @@ class Crawler(NaverKinUtils):
         }
 
         url_frame = 'https://kin.naver.com/qna/directoryExpertList.nhn?dirId={dir_id}'
+
         list_url_frame = [
             'https://kin.naver.com/ajax/qnaWeekRankAjax.nhn?requestId=weekRank&dirId={dir_id}&page={page}',
             'https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}'
         ]
+
+        table_name = 'rank_user_list'
+
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
 
         for dir_name in self.category_list:
             dir_id = self.category_list[dir_name]
@@ -1219,8 +1533,6 @@ class Crawler(NaverKinUtils):
 
             headers['referer'] = url
 
-            filename = '{}/users/expert/{}.json'.format(self.data_home, dir_name)
-
             for u_frame in list_url_frame:
                 for page in range(1, 10):
                     list_url = u_frame.format(dir_id=dir_id, page=page)
@@ -1233,11 +1545,15 @@ class Crawler(NaverKinUtils):
                     if 'result' in result:
                         logging.info(msg='{}, {}'.format(len(result['result']), list_url))
 
-                        with open(filename, 'a') as fp:
-                            for user in result['result']:
-                                str_line = json.dumps(user, ensure_ascii=False, sort_keys=True, indent=4)
-                                fp.write(str_line + '\n\n')
-                                fp.flush()
+                        for doc in result['result']:
+                            doc['_id'] = doc['u']
+                            doc['rank_type'] = dir_name
+
+                            self.save_elastic(document=doc, elastic_info=self.elastic_info,
+                                              db_name=table_name, insert=True, bulk_size=100)
+
+                        self.save_elastic(document=None, elastic_info=self.elastic_info,
+                                          db_name=table_name, insert=True, bulk_size=0)
 
                         if len(result['result']) != 20:
                             break
@@ -1246,148 +1562,85 @@ class Crawler(NaverKinUtils):
 
         return
 
-    def get_detail(self, data_path='by_user.economy'):
-        """질문/답변 상세 페이지를 크롤링한다.
-
-        :param data_path: 데이터 경로
-        :return:
-            https://m.kin.naver.com/mobile/qna/detail.nhn?d1id=4&dirId=40308&docId=303328933
-            https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id=6&dirId=60222&docId=301601614
-        """
-        import json
+    def get_curation_list(self):
+        """큐레이션 목록을 크롤링한다."""
         import requests
-        import shutil
-
         from time import sleep
 
-        from os import listdir
-        from os.path import isdir, isfile, join
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                          'Version/11.0 Mobile/15A372 Safari/604.1'
+        }
 
-        from urllib.parse import urljoin
+        url_frame = 'https://m.kin.naver.com/mobile/best/curationListAjax.nhn' \
+                    '?curationTimestamp=1521527891000&isMoreDirection=true&count=10&_=1531468917051'
 
-        from bs4 import BeautifulSoup
+        table_name = 'curation_list'
 
-        url = 'https://m.kin.naver.com/mobile/qna/detail.nhn?d1Id={d1Id}&dirId={dirId}&docId={docId}'
-
-        delay = 5
-
-        detail_filename = 'data/naver/detail.sqlite3'
-        answer_filename = 'data/naver/answer.sqlite3'
-
-        detail_conn, detail_cursor = self.open_sqlite(filename=detail_filename, table_name='detail')
-        answer_conn, answer_cursor = self.open_sqlite(filename=answer_filename, table_name='answer_list')
-
-        history = {}
-
-        batch_answer = []
-        batch_detail = []
-
-        for sub_dir in listdir(data_path):
-            user_name = sub_dir
-            sub_dir = join(data_path, sub_dir)
-
-            if not isdir(sub_dir):
-                continue
-
-            for file in listdir(sub_dir):
-                file = join(sub_dir, file)
-                if not isfile(file):
-                    continue
-
-                # 파일 읽기
-                with open(file, 'r') as fp:
-                    doc_list = json.loads(''.join(fp.readlines()))
-
-                for doc in doc_list:
-                    if 'detailUrl' in doc:
-                        query_url = urljoin(url, doc['detailUrl'])
-                        q, _, _ = self.get_query(url=query_url)
-                    else:
-                        q = {
-                            'd1Id': doc['d1Id'],
-                            'dirId': doc['dirId'],
-                            'docId': doc['docId']
-                        }
-
-                        query_url = url.format(**q)
-
-                    q_id = '{} {} {}'.format(q['d1Id'], q['dirId'], q['docId'])
-                    if q_id in history:
-                        continue
-
-                    history[q_id] = 1
-
-                    check = self.check_doc_id(d1_id=q['d1Id'], dir_id=q['dirId'], doc_id=q['docId'],
-                                              table_name='detail', cursor=detail_cursor)
-
-                    if check is True:
-                        logging.info(msg='skip {} {}'.format(q_id, user_name))
-                        continue
-
-                    # 질문 상세 페이지 크롤링
-                    logging.info(msg='질문 상세: {} {} {}'.format(q_id, user_name, query_url))
-                    request_result = requests.get(url=query_url, headers=self.headers,
-                                                  allow_redirects=True, timeout=60)
-
-                    # 답변 정보 저장
-                    str_doc = json.dumps(doc, ensure_ascii=False, sort_keys=True)
-
-                    values = (q['d1Id'], q['dirId'], q['docId'], str_doc,)
-                    batch_answer.append(values)
-
-                    if len(batch_answer) > 10:
-                        self.batch_save_content(cursor=answer_cursor, table_name='answer_list',
-                                                value_list=batch_answer)
-
-                        answer_conn.commit()
-                        batch_answer = []
-
-                    # 저장
-                    soup = BeautifulSoup(request_result.content, 'html5lib')
-                    content_list = soup.findAll('div', {'class': 'sec_col1'})
-
-                    for content in content_list:
-                        self.replace_tag(content, ['script', 'javascript', 'style'])
-
-                        # 필요없는 테그 삭제
-                        self.remove_comment(soup)
-                        self.remove_banner(soup=soup)
-                        self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
-
-                        value = str(content.prettify())
-
-                        values = (q['d1Id'], q['dirId'], q['docId'], value,)
-                        batch_detail.append(values)
-                        break
-
-                    if len(batch_detail) > 10:
-                        self.batch_save_content(cursor=detail_cursor, table_name='detail',
-                                                value_list=batch_detail)
-
-                        detail_conn.commit()
-
-                        history = {}
-                        batch_detail = []
-
-                    sleep(delay)
-
-            # 완료로 이동
-            shutil.move(sub_dir, join(data_path + '.done', user_name))
-
-        if len(batch_answer) > 0:
-            self.batch_save_content(cursor=answer_cursor, table_name='answer_list',
-                                    value_list=batch_answer)
-            answer_conn.commit()
-
-        if len(batch_detail) > 0:
-            self.batch_save_content(cursor=detail_cursor, table_name='detail',
-                                    value_list=batch_detail)
-            detail_conn.commit()
-
-        detail_conn.close()
-        answer_conn.close()
+        # 인덱스명 설정
+        self.elastic_info['index'] = table_name
+        self.elastic_info['type'] = table_name
 
         return
+
+    def get_document_list(self, index, query):
+        """elastic-search 에서 문서를 검색해 반환한다.
+
+        :param index: 인덱스명
+        :param query: 검색 조건
+        :return: 문서 목록
+        """
+        from elasticsearch import Elasticsearch
+
+        # 한번에 가져올 문서수
+        size = 1000
+
+        count = 1
+        sum_count = 0
+        scroll_id = ''
+        total = -1
+
+        # 서버 접속
+        try:
+            elastic = Elasticsearch(hosts=[self.elastic_info['host']], timeout=30)
+
+            if elastic.indices.exists(index) is False:
+                self.create_elastic_index(elastic, index)
+        except Exception as e:
+            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
+            return
+
+        result = []
+
+        while count > 0:
+            # 스크롤 아이디가 있다면 scroll 함수 호출
+            if scroll_id == '':
+                search_result = elastic.search(index=index, doc_type=index, body=query, scroll='2m', size=size)
+            else:
+                search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
+
+            # 검색 결과 추출
+            scroll_id = search_result['_scroll_id']
+
+            hits = search_result['hits']
+
+            if total != hits['total']:
+                total = hits['total']
+
+            count = len(hits['hits'])
+
+            sum_count += count
+            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+            for item in hits['hits']:
+                result.append(item['_source'])
+
+            # 종료 조건
+            if count < size:
+                break
+
+        return result, elastic
 
 
 def init_arguments():
@@ -1452,7 +1705,7 @@ python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/e
 python3 naver_kin_crawler.py -insert_user_list -data_path data/naver/kin/users/elite -category 년도별
 
 # 질문 상세 목록 분리
-python3 naver_kin_crawler.py -split_detail
+python3 naver_kin_crawler.py -insert_detail -filename data/naver/kin/detail/detail2.00.db
 
 # 질문 목록을 DB에 저장
 # python3 naver_kin_crawler.py -insert_question_list -data_path data/naver/kin/question_list
@@ -1470,7 +1723,7 @@ python3 naver_kin_crawler.py -split_detail
 python3 naver_kin_crawler.py -insert_answer_list -data_path "data/naver/kin/by_user.economy/(사)한국무역협회"
 
 IFS=$'\\n'
-data_path="data/naver/kin/by_user.economy"
+data_path="data/naver/kin/by_user.economy.done"
 for d in $(ls -1 ${data_path}) ; do
     echo ${d}
 
@@ -1487,15 +1740,20 @@ done
     # 크롤링
     parser.add_argument('-question_list', action='store_true', default=False,
                         help='질문 목록 크롤링')
+    parser.add_argument('-detail', action='store_true', default=False,
+                        help='답변 상세 페이지 크롤링')
+
+    parser.add_argument('-answer_list', action='store_true', default=False,
+                        help='답변 목록 크롤링 (전문가 답변, 지식 파트너 답변 등)')
 
     parser.add_argument('-elite_user_list', action='store_true', default=False,
                         help='전문가 목록 크롤링')
-    parser.add_argument('-expert_user_list', action='store_true', default=False,
+    parser.add_argument('-rank_user_list', action='store_true', default=False,
                         help='랭킹 사용자 목록 크롤링')
-    parser.add_argument('-answer_list', action='store_true', default=False,
-                        help='답변 목록 크롤링 (전문가 답변, 지식 파트너 답변 등)')
-    parser.add_argument('-detail', action='store_true', default=False,
-                        help='답변 상세 페이지 크롤링')
+    parser.add_argument('-partner_list', action='store_true', default=False,
+                        help='지식 파트너 목록 크롤링')
+    parser.add_argument('-get_expert_list', action='store_true', default=False,
+                        help='전문가 목록 크롤링')
 
     # 결과 취합
     parser.add_argument('-merge_question', action='store_true', default=False,
@@ -1508,14 +1766,16 @@ done
                         help='질문 목록을 DB에 저장')
     parser.add_argument('-insert_answer_list', action='store_true', default=False,
                         help='답변 목록을 DB에 저장')
-    parser.add_argument('-split_detail', action='store_true', default=False,
-                        help='질문 상세 디비를 카테고리별로 분리')
+    parser.add_argument('-insert_detail', action='store_true', default=False,
+                        help='질문 상세 디비를 elastic-search 에 저장한다.')
 
     # 파라메터
     parser.add_argument('-filename', default='data/naver/test-detail.sqlite3', help='')
     parser.add_argument('-result_path', default='data/naver/kin', help='')
     parser.add_argument('-data_path', default='data/naver/kin', help='')
     parser.add_argument('-category', default='', help='')
+    parser.add_argument('-index', default='question_list', help='인덱스명')
+    parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
 
     return parser.parse_args()
 
@@ -1530,23 +1790,29 @@ def main():
         crawler.batch_question_list()
 
     if args.answer_list:
-        crawler.batch_answer_list(user_filename=args.filename, result_path=args.result_path)
+        crawler.batch_answer_list(user_filename=args.filename)
 
     if args.detail:
-        crawler.get_detail(data_path=args.data_path)
+        crawler.get_detail(index=args.index, match_phrase=args.match_phrase)
 
+    # 질문 취합
     if args.merge_question:
         crawler.merge_question(data_path=args.data_path, result_filename=args.filename)
 
-    if args.parse_content:
-        crawler.parse_content(filename=args.filename)
-
+    # 사용자 목록 크롤링
     if args.elite_user_list:
         crawler.get_elite_user_list()
 
-    if args.expert_user_list:
-        crawler.get_expert_user_list()
+    if args.rank_user_list:
+        crawler.get_rank_user_list()
 
+    if args.partner_list:
+        crawler.get_partner_list()
+
+    if args.get_expert_list:
+        crawler.get_expert_list()
+
+    # 크롤링 데이터를 디비에 입력
     if args.insert_user_list:
         crawler.insert_user_list(data_path=args.data_path, category=args.category)
 
@@ -1556,8 +1822,8 @@ def main():
     if args.insert_answer_list:
         crawler.insert_answer_list(data_path=args.data_path)
 
-    if args.split_detail:
-        crawler.split_detail()
+    if args.insert_detail:
+        crawler.insert_detail(filename=args.filename)
 
     return
 

@@ -1,35 +1,42 @@
 
-VERSION ?= 1.0
+VERSION = 1.0
+DOCKER_REGISTRY = gollum12:5000
+IMAGE_NAME = $(DOCKER_REGISTRY)/crawler:$(VERSION)
 
-IMAGE_NAME ?= crawler
+default: build
 
-SERVER ?= gollum01
+.PHONY: build push clean run
 
-IMAGES ?= docker/images
-
-default: crawler
-
-.PHONY: crawler save load 
-
-# crawler
 .ONESHELL:
-crawler: 
-	tar cvfz ./build/app.tar.gz --exclude=*.tar.gz --exclude=build --exclude=__pycache__ --exclude=language_utils --exclude=data --exclude=notebook --exclude=wrap --exclude=*.jar --exclude=venv --exclude=.git --exclude=.idea --exclude=*.pycharm* --exclude=tmp .
+build: 
+	tar cvfz ./build/app.tar.gz \
+		--exclude=.git \
+		--exclude=.idea \
+		--exclude=.vscode \
+		--exclude=*.jar \
+		--exclude=*.tar.gz \
+		--exclude=*.pycharm* \
+		--exclude=__pycache__ \
+		--exclude=build \
+		--exclude=data \
+		--exclude=notebook \
+		--exclude=wrap \
+		--exclude=venv \
+		--exclude=tmp \
+		.
+
 	cd build/
-	docker build -t $(IMAGE_NAME):$(VERSION) -f Dockerfile .
+	docker build -t $(IMAGE_NAME) -f Dockerfile .
 
-# 이미지 배포
-push: save load
+push: 
+	docker push $(IMAGE_NAME)
 
-# 도커 이미지 저장
-save:
-	echo "이미지 저장: $(IMAGE_NAME):$(VERSION)"
-	mkdir -p $(IMAGES)
-	docker save $(IMAGE_NAME):$(VERSION) | gzip - > $(IMAGES)/$(IMAGE_NAME).$(VERSION).tar.gz
-
-load:
-	echo "이미지 업로드: $(IMAGES)/$(IMAGE_NAME).$(VERSION).tar.gz -> $(IMAGE_NAME):$(VERSION)"
-	docker -H $(SERVER):2376 load < $(IMAGES)/$(IMAGE_NAME).$(VERSION).tar.gz
+run: 
+	docker run \
+		-it --rm \
+		--add-host="koala:172.20.79.85" \
+		--name crawler \
+		$(IMAGE_NAME)
 
 clean:
 	docker system prune -f
