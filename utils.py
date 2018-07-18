@@ -48,7 +48,7 @@ class Utils(object):
 
         self.debug_mode = False
 
-        self.bulk_data = []
+        self.bulk_data = {}
 
     @staticmethod
     def replace_tag(html_tag, tag_list, replacement='', attribute=None):
@@ -687,8 +687,6 @@ class Utils(object):
         :param mongodb_info: 몽고 디비 접속 정보: collection 이름 사용
         :return: True/False
         """
-        from elasticsearch import Elasticsearch
-
         # 타입 추출, 몽고 디비 collection 이름 우선
         index_type = mongodb_info['name']
         if 'type' in elastic_info and elastic_info['type'] is not None:
@@ -725,15 +723,7 @@ class Utils(object):
         }]
 
         # 서버 접속
-        elastic = None
-        try:
-            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
-
-            if elastic.indices.exists(elastic_info['index']) is False:
-                self.create_elastic_index(elastic, elastic_info['index'])
-        except Exception as e:
-            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
-
+        elastic = self.open_elastic_search(host=[elastic_info['host']], index=elastic_info['index'])
         if elastic is None:
             return False
 
@@ -792,6 +782,27 @@ class Utils(object):
 
         return True
 
+    def open_elastic_search(self, host, index):
+        """elastic-search 에 접속한다.
+
+        :param host: 접속 url
+        :param index: 인덱스명
+        :return: 접속 정보
+        """
+        from elasticsearch import Elasticsearch
+
+        # target 접속
+        try:
+            elastic = Elasticsearch(hosts=host, timeout=30)
+
+            if elastic.indices.exists(index) is False:
+                self.create_elastic_index(elastic, index)
+        except Exception as e:
+            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
+            return None
+
+        return elastic
+
     def save_elastic(self, document, elastic_info, db_name, insert, bulk_size=0):
         """elastic search 에 문서를 저장한다.
 
@@ -811,8 +822,6 @@ class Utils(object):
         :param bulk_size: elastic-search 한번에 저장할 크기
         :return: True/False
         """
-        from elasticsearch import Elasticsearch
-
         if document is not None and 'date' in document:
             article_date = document['date']
         else:
@@ -832,60 +841,76 @@ class Utils(object):
         # 입력시간 삽입: 코퍼스 전처리에서 삽입
         # document['insert_date'] = datetime.now()
 
+        # 문서 저장
+        self.save_elastic_search_document(host=elastic_info['host'], index=index, doc_type=doc_type,
+                                          document=document, bulk_size=bulk_size, insert=insert)
+
+        return True
+
+    def save_elastic_search_document(self, document, index, doc_type, host, bulk_size, insert):
+        """문서를 elastic-search 에 저장한다.
+
+        :param document: 저장할 문서
+        :param insert: 디비 삽입 여부 (True/False)
+        :param index: 인덱스명
+        :param doc_type: 문서 타입
+        :param host: 접속 주소
+        :param bulk_size: 한번에 저장할 문서의 수
+        :return:
+        """
         if document is not None:
             # 날짜 변환
             document = self.convert_datetime(document=document)
 
+            document_id = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
+
             if '_id' in document:
                 document['document_id'] = document['_id']
                 del document['_id']
+            elif 'document_id' in document:
+                document_id = document['document_id']
             else:
-                document['document_id'] = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
+                document['document_id'] = document_id
 
-            self.bulk_data.append({
+            if host not in self.bulk_data:
+                self.bulk_data[host] = []
+
+            self.bulk_data[host].append({
                 'update': {
                     '_index': index,
                     '_type': doc_type,
-                    '_id': document['document_id']
+                    '_id': document_id
                 }
             })
 
-            self.bulk_data.append({
+            self.bulk_data[host].append({
                 'doc': document,
                 'doc_as_upsert': insert
             })
 
             # 버퍼링
-            if bulk_size * 2 > len(self.bulk_data):
+            if bulk_size * 2 > len(self.bulk_data[host]):
                 return True
 
-        if len(self.bulk_data) == 0:
+        if host not in self.bulk_data or len(self.bulk_data[host]) == 0:
             return True
 
         # 서버 접속
-        elastic = None
-        try:
-            elastic = Elasticsearch(hosts=[elastic_info['host']], timeout=30)
-
-            if elastic.indices.exists(index) is False:
-                self.create_elastic_index(elastic, index)
-        except Exception as e:
-            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
+        elastic = self.open_elastic_search(host=host, index=index)
 
         if elastic is None:
             return False
 
-        # 문서 저장
         try:
-            response = elastic.bulk(index=index, body=self.bulk_data, refresh=True)
+            response = elastic.bulk(index=index, body=self.bulk_data[host], refresh=True)
 
-            size = len(self.bulk_data)
+            size = len(self.bulk_data[host])
             doc_id_list = []
-            for doc in self.bulk_data:
+            for doc in self.bulk_data[host]:
                 if 'update' in doc and '_id' in doc['update']:
                     doc_id_list.append(doc['update']['_id'])
 
-            self.bulk_data = []
+            self.bulk_data[host] = []
 
             error = '성공'
             if response['errors'] is True:
@@ -895,7 +920,7 @@ class Utils(object):
             logging.info(msg=msg)
 
             if len(doc_id_list) > 0:
-                msg = '{}/{}/{}/{}?pretty'.format(elastic_info['host'], index, doc_type, doc_id_list[0])
+                msg = '{}/{}/{}/{}?pretty'.format(host, index, doc_type, doc_id_list[0])
                 logging.info(msg=msg)
         except Exception as e:
             msg = 'elastic-search 저장 에러: {}'.format(e)
