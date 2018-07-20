@@ -427,11 +427,13 @@ class NaverKinUtils(Utils):
 
         return soup
 
-    def get_document_list(self, index, query):
+    def get_document_list(self, index, query, only_source=True, limit=-1):
         """elastic-search 에서 문서를 검색해 반환한다.
 
         :param index: 인덱스명
         :param query: 검색 조건
+        :param only_source: _source 필드 반환
+        :param limit: 최대 반환 크기 설정
         :return: 문서 목록
         """
         # 한번에 가져올 문서수
@@ -470,10 +472,16 @@ class NaverKinUtils(Utils):
             logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
 
             for item in hits['hits']:
-                result.append(item['_source'])
+                if only_source is True:
+                    result.append(item['_source'])
+                else:
+                    result.append(item)
 
             # 종료 조건
             if count < size:
+                break
+
+            if 0 < limit < sum_count:
                 break
 
         return result, elastic
@@ -690,22 +698,29 @@ class Crawler(NaverKinUtils):
 
         return
 
-    def move_document(self, source_index, target_index, document_id, host):
+    def move_document(self, source_index, target_index, document_id, host, source_id=None):
         """ 문서를 이동한다.
+
         :param source_index: 원본 인덱스명
         :param target_index: 이동할 인덱스명
+        :param source_id: 원본 문서 아이디
         :param document_id: 문서 아이디
         :param host: 접속 주소
         :return: 없음
         """
         # import elasticsearch
 
+        if source_id is None:
+            source_id = document_id
+
         source = self.open_elastic_search(host=host, index=source_index)
 
         # 문서 읽기
         try:
-            document = source.get(index=source_index, doc_type=source_index, id=document_id)
-        # except elasticsearch.exceptions.NotFoundError as e:
+            document = source.get(index=source_index, doc_type=source_index, id=source_id)
+
+            if source_id != document_id:
+                document['_source']['_id'] = document_id
         except Exception as e:
             logging.error(msg='error as move_document', exc_info=e)
             return
@@ -715,7 +730,37 @@ class Crawler(NaverKinUtils):
                                           bulk_size=0, insert=True, doc_type=target_index)
 
         # 기존 문서 삭제
-        source.delete(index=source_index, doc_type=source_index, id=document_id)
+        source.delete(index=source_index, doc_type=source_index, id=source_id)
+
+        return
+
+    def sync_id(self, index='detail'):
+        """document_id 와 _id 가 형식에 맞지 않는 것을 바꾼다. """
+        query = {
+            '_source': 'd1Id,dirId,docId,document_id'.split(','),
+            'size': '1000',
+            'query': {
+                'match_all': {}
+            }
+        }
+
+        data_list, elastic = self.get_document_list(index=index, query=query, only_source=False, limit=-1)
+
+        for item in data_list:
+            doc = item['_source']
+
+            if index == 'detail' and 'document_id' in doc:
+                d_id = doc['document_id']
+            else:
+                if 'd1Id' not in doc:
+                    doc['d1Id'] = str(doc['dirId'])[0]
+
+                d_id = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
+
+            if item['_id'].find('201807') == 0 or d_id != item['_id']:
+                print(item)
+                self.move_document(host=self.elastic_info['host'], source_index=index, target_index=index,
+                                   document_id=d_id, source_id=item['_id'])
 
         return
 
@@ -1240,6 +1285,9 @@ python3 naver_kin_crawler.py -dump_elastic_search \\
     parser.add_argument('-dump_elastic_search', action='store_true', default=False,
                         help='데이터 덤프')
 
+    parser.add_argument('-sync_id', action='store_true', default=False,
+                        help='')
+
     # 파라메터
     parser.add_argument('-host', default='http://localhost:9200', help='elastic-search 주소')
     parser.add_argument('-index', default='question_list', help='인덱스명')
@@ -1282,6 +1330,9 @@ def main():
 
     if args.export_detail:
         crawler.export_detail()
+
+    if args.sync_id:
+        crawler.sync_id(index=args.index)
 
     return
 

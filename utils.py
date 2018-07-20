@@ -865,12 +865,12 @@ class Utils(object):
             document_id = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
 
             if '_id' in document:
-                document['document_id'] = document['_id']
+                document_id = document['_id']
                 del document['_id']
             elif 'document_id' in document:
                 document_id = document['document_id']
-            else:
-                document['document_id'] = document_id
+
+            document['document_id'] = document_id
 
             if host not in self.bulk_data:
                 self.bulk_data[host] = []

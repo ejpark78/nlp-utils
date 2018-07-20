@@ -2,7 +2,7 @@
 
 IFS=$'\n'
 
-data_path="data/naver/kin/tmp/by_user.economy"
+data_path="data/naver/kin/tmp/by_user.분야별지식인"
 for d in $(ls -1 ${data_path}) ; do
     echo ${d}
 
