@@ -24,9 +24,9 @@ class NaverKinUtils(Utils):
         self.data_home = 'data/naver/kin'
 
         self.elastic_info = {
-            'host': 'http://koala:9200',
-            'index': 'naver_kin',
-            'type': 'naver_kin',
+            'host': 'http://gollum:9200',
+            'index': 'naver-kin',
+            'type': 'naver-kin',
             'insert': True
         }
 
@@ -405,7 +405,7 @@ class NaverKinUtils(Utils):
         """ 속성을 삭제한다.
 
         :param soup: html 객체
-        :param attribute_list: onclick
+        :param attribute_list: [onclick, style, ...]
         :return:
         """
 
@@ -657,10 +657,10 @@ class Crawler(NaverKinUtils):
         delay = 5
         bulk_size = 100
 
-        table_name = 'question_list'
+        table_name = 'naver-kin-question_list'
 
         self.elastic_info['index'] = table_name
-        self.elastic_info['type'] = table_name
+        self.elastic_info['type'] = 'doc'
 
         for page in range(start, end):
             query_url = url.format(dir_id=dir_id, size=size, page=page)
@@ -687,11 +687,11 @@ class Crawler(NaverKinUtils):
                 doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
 
                 self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                  doc_type=table_name, document=doc,
+                                                  doc_type=self.elastic_info['type'], document=doc,
                                                   bulk_size=bulk_size, insert=True)
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                              doc_type=table_name, document=None,
+                                              doc_type=self.elastic_info['type'], document=None,
                                               bulk_size=0, insert=True)
 
             sleep(delay)
@@ -727,7 +727,7 @@ class Crawler(NaverKinUtils):
 
         # 문서 저장
         self.save_elastic_search_document(document=document['_source'], index=target_index, host=host,
-                                          bulk_size=0, insert=True, doc_type=target_index)
+                                          bulk_size=0, insert=True, doc_type='doc')
 
         # 기존 문서 삭제
         source.delete(index=source_index, doc_type=source_index, id=source_id)
@@ -802,11 +802,11 @@ class Crawler(NaverKinUtils):
 
         question_list, elastic = self.get_document_list(index=index, query=query)
 
-        detail_index = 'detail'
+        detail_index = 'naver-kin-detail'
 
         # 저장 인덱스명 설정
         self.elastic_info['index'] = detail_index
-        self.elastic_info['type'] = detail_index
+        self.elastic_info['type'] = 'doc'
 
         i = -1
         size = len(question_list)
@@ -845,7 +845,7 @@ class Crawler(NaverKinUtils):
             detail_doc['html'] = str(content.prettify())
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=detail_index,
-                                              doc_type=detail_index, document=detail_doc,
+                                              doc_type=self.elastic_info['type'], document=detail_doc,
                                               bulk_size=0, insert=True)
 
             self.move_document(source_index=index, target_index='{}.done'.format(index),
@@ -957,11 +957,11 @@ class Crawler(NaverKinUtils):
         url_frame = 'https://m.kin.naver.com/mobile/people/partnerList.nhn' \
                     '?resultMode=json&m=partnerList&page={page}&dirId=0'
 
-        table_name = 'partner_list'
+        table_name = 'naver-kin-partner_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name
-        self.elastic_info['type'] = table_name
+        self.elastic_info['type'] = 'doc'
 
         for page in range(1, 1000):
             request_url = url_frame.format(page=page)
@@ -982,11 +982,11 @@ class Crawler(NaverKinUtils):
                     doc['_id'] = doc['u']
 
                     self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                      doc_type=table_name, document=doc,
+                                                      doc_type=self.elastic_info['type'], document=doc,
                                                       bulk_size=100, insert=True)
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                              doc_type=table_name, document=None,
+                                              doc_type=self.elastic_info['type'], document=None,
                                               bulk_size=0, insert=True)
 
             sleep(5)
@@ -1046,11 +1046,11 @@ class Crawler(NaverKinUtils):
         url_frame = 'https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn' \
                     '?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0'
 
-        table_name = 'expert_user_list'
+        table_name = 'naver-kin-expert_user_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name
-        self.elastic_info['type'] = table_name
+        self.elastic_info['type'] = 'doc'
 
         for expert_type in expert_type_list:
             for page in range(1, 1000):
@@ -1075,11 +1075,11 @@ class Crawler(NaverKinUtils):
                         doc['_id'] = doc['u']
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=table_name, document=doc,
+                                                          doc_type=self.elastic_info['type'], document=doc,
                                                           bulk_size=100, insert=True)
 
                 self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                  doc_type=table_name, document=None,
+                                                  doc_type=self.elastic_info['type'], document=None,
                                                   bulk_size=0, insert=True)
                 sleep(5)
 
@@ -1101,11 +1101,11 @@ class Crawler(NaverKinUtils):
 
         month = 0
         for year in range(2012, 2019):
-            table_name = 'expert_user_list_{}'.format(year)
+            table_name = 'naver-kin-expert_user_list_{}'.format(year)
 
             # 인덱스명 설정
             self.elastic_info['index'] = table_name
-            self.elastic_info['type'] = table_name
+            self.elastic_info['type'] = 'doc'
 
             url = 'https://kin.naver.com/hall/eliteUser.nhn?year={}'.format(year)
 
@@ -1133,11 +1133,11 @@ class Crawler(NaverKinUtils):
                         doc['_id'] = doc['u']
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=table_name, document=doc,
+                                                          doc_type=self.elastic_info['type'], document=doc,
                                                           bulk_size=100, insert=True)
 
                     self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                      doc_type=table_name, document=None,
+                                                      doc_type=self.elastic_info['type'], document=None,
                                                       bulk_size=0, insert=True)
                 sleep(5)
 
@@ -1164,11 +1164,11 @@ class Crawler(NaverKinUtils):
             'https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}'
         ]
 
-        table_name = 'rank_user_list'
+        table_name = 'naver-kin-rank_user_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name
-        self.elastic_info['type'] = table_name
+        self.elastic_info['type'] = 'doc'
 
         for dir_name in self.category_list:
             dir_id = self.category_list[dir_name]
@@ -1199,11 +1199,11 @@ class Crawler(NaverKinUtils):
                             doc['rank_type'] = dir_name
 
                             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                              doc_type=table_name, document=doc,
+                                                              doc_type=self.elastic_info['type'], document=doc,
                                                               bulk_size=100, insert=True)
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=table_name, document=None,
+                                                          doc_type=self.elastic_info['type'], document=None,
                                                           bulk_size=0, insert=True)
 
                         if len(result['result']) != 20:

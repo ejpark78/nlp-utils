@@ -9,23 +9,9 @@ import json
 from pymongo import MongoClient
 
 
-def parse_argument():
-    """
-    옵션 설정
-    :return:
-    """
-    import argparse
-
-    arg_parser = argparse.ArgumentParser(description='')
-
-    arg_parser.add_argument('-tag', help='tag', default='tag')
-
-    return arg_parser.parse_args()
-
-
 def open_db(db_name, host='frodo', port=27018):
-    """
-    몽고 디비 핸들 오픈
+    """ 몽고 디비 핸들 오픈
+
     :param db_name: 디비명
     :param host: 서버 주소
     :param port: 서버 포트
@@ -38,7 +24,7 @@ def open_db(db_name, host='frodo', port=27018):
 
 
 def change_db_info():
-    """
+    """ 크롤링 스케쥴 정보 변경
 
     :return:
     """
@@ -61,21 +47,38 @@ def change_db_info():
         document_id = document['_id']
         print(document_id, flush=True)
 
-        if 'parameter' not in document:
+        if 'docker' not in document:
             continue
 
-        parameter = document['parameter']
+        docker = document['docker']
 
-        if 'db_info' not in parameter:
-            continue
+        docker['image'] = 'nlpapi:5000/crawler:1.0'
 
-        db_info = parameter['db_info']
+        # if 'parameter' not in document:
+        #     continue
+        #
+        # parameter = document['parameter']
+        #
+        # if 'db_info' not in parameter:
+        #     continue
+        #
+        # db_info = parameter['db_info']
 
-        if 'elastic' not in db_info:
-            continue
+        # if 'elastic' in db_info:
+        #     elastic = db_info['elastic']
+        #     elastic['host'] = 'http://frodo01:9200'
+        #
+        # if 'article_list' in db_info:
+        #     elastic = db_info['article_list']
+        #     elastic['host'] = 'http://frodo01:9200'
 
-        elastic = db_info['elastic']
-        elastic['insert'] = True
+        # if 'corpus-process' in db_info:
+        #     elastic = db_info['corpus-process']
+        #     elastic['host'] = 'http://nlp.ncsoft.com:10009/v1.0/batch'
+
+        # schedule = document['schedule']
+        # if 'sleep_range' in schedule:
+        #     schedule['sleep_range'] = '03,05'
 
         str_document = json.dumps(document, indent=4, ensure_ascii=False, sort_keys=True)
         print(str_document, flush=True)

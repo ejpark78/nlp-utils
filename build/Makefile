@@ -1,6 +1,7 @@
 
 VERSION = 1.0
-DOCKER_REGISTRY = gollum12:5000
+DOCKER_REGISTRY = nlpapi:5000
+CONTAINER = crawler
 IMAGE_NAME = $(DOCKER_REGISTRY)/crawler:$(VERSION)
 
 default: build
@@ -8,7 +9,8 @@ default: build
 .PHONY: build push clean run
 
 .ONESHELL:
-build: 
+build:
+	cd ../
 	tar cvfz ./build/app.tar.gz \
 		--exclude=.git \
 		--exclude=.idea \
@@ -34,9 +36,20 @@ push:
 run: 
 	docker run \
 		-it --rm \
-		--add-host="koala:172.20.79.85" \
-		--name crawler \
+		-v /etc/hosts:/etc/hosts:ro \
+		--name $(CONTAINER) \
 		$(IMAGE_NAME)
+
+test: 
+	docker run \
+		-it --rm \
+		-v /etc/hosts:/etc/hosts:ro \
+		-v $(PWD)/..:/usr/local/app \
+		--name $(CONTAINER) \
+		$(IMAGE_NAME)
+
+sh: 
+	docker exec -it $(CONTAINER) /bin/sh
 
 clean:
 	docker system prune -f
