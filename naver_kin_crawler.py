@@ -13,6 +13,9 @@ logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
                     level=logging.INFO)
 
+MESSAGE = 25
+logging.addLevelName(MESSAGE, 'MESSAGE')
+
 
 class NaverKinUtils(Utils):
     """ 네이버 크롤링 결과 저장 유틸 """
@@ -454,7 +457,7 @@ class NaverKinUtils(Utils):
         while count > 0:
             # 스크롤 아이디가 있다면 scroll 함수 호출
             if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type=index, body=query, scroll='2m', size=size)
+                search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m', size=size)
             else:
                 search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
 
@@ -486,7 +489,7 @@ class NaverKinUtils(Utils):
 
         return result, elastic
 
-    def dump_elastic_search(self, host='http://localhost:9200', index='detail'):
+    def dump_elastic_search(self, host='http://localhost:9200', index='naver-kin-detail'):
         """elastic-search 의 데이터를 덤프 받는다.
 
         :param host: 접속 주소
@@ -511,7 +514,7 @@ class NaverKinUtils(Utils):
         while count > 0:
             # 스크롤 아이디가 있다면 scroll 함수 호출
             if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type=index, body={}, scroll='2m', size=size)
+                search_result = elastic.search(index=index, doc_type='doc', body={}, scroll='2m', size=size)
             else:
                 search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
 
@@ -541,7 +544,7 @@ class NaverKinUtils(Utils):
     def export_detail(self):
         """"""
         host = 'http://localhost:9200'
-        index = 'detail'
+        index = 'naver-kin-detail'
 
         # 한번에 가져올 문서수
         size = 1000
@@ -564,7 +567,7 @@ class NaverKinUtils(Utils):
         while count > 0:
             # 스크롤 아이디가 있다면 scroll 함수 호출
             if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type=index, body=query, scroll='2m', size=size)
+                search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m', size=size)
             else:
                 search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
 
@@ -651,6 +654,7 @@ class Crawler(NaverKinUtils):
         :param size: 페이지 크기
         :return: 없음
         """
+        import json
         import requests
         from time import sleep
 
@@ -687,12 +691,21 @@ class Crawler(NaverKinUtils):
                 doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
 
                 self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                  doc_type=self.elastic_info['type'], document=doc,
+                                                  doc_type='doc', document=doc,
                                                   bulk_size=bulk_size, insert=True)
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                              doc_type=self.elastic_info['type'], document=None,
+                                              doc_type='doc', document=None,
                                               bulk_size=0, insert=True)
+
+            try:
+                logging.log(level=MESSAGE, msg=json.dumps(
+                    {
+                        'doc_id': doc['_id'],
+                        'question': doc['question']
+                    }, ensure_ascii=False, sort_keys=True))
+            except Exception as e:
+                pass
 
             sleep(delay)
 
@@ -709,6 +722,7 @@ class Crawler(NaverKinUtils):
         :return: 없음
         """
         # import elasticsearch
+        from elasticsearch.exceptions import NotFoundError
 
         if source_id is None:
             source_id = document_id
@@ -717,10 +731,12 @@ class Crawler(NaverKinUtils):
 
         # 문서 읽기
         try:
-            document = source.get(index=source_index, doc_type=source_index, id=source_id)
+            document = source.get(index=source_index, doc_type='doc', id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
+        except NotFoundError as e:
+            return
         except Exception as e:
             logging.error(msg='error as move_document', exc_info=e)
             return
@@ -730,11 +746,11 @@ class Crawler(NaverKinUtils):
                                           bulk_size=0, insert=True, doc_type='doc')
 
         # 기존 문서 삭제
-        source.delete(index=source_index, doc_type=source_index, id=source_id)
+        source.delete(index=source_index, doc_type='doc', id=source_id)
 
         return
 
-    def sync_id(self, index='detail'):
+    def sync_id(self, index='naver-kin-detail'):
         """document_id 와 _id 가 형식에 맞지 않는 것을 바꾼다. """
         query = {
             '_source': 'd1Id,dirId,docId,document_id'.split(','),
@@ -749,7 +765,7 @@ class Crawler(NaverKinUtils):
         for item in data_list:
             doc = item['_source']
 
-            if index == 'detail' and 'document_id' in doc:
+            if index == 'naver-kin-detail' and 'document_id' in doc:
                 d_id = doc['document_id']
             else:
                 if 'd1Id' not in doc:
@@ -764,7 +780,7 @@ class Crawler(NaverKinUtils):
 
         return
 
-    def get_detail(self, index='question_list', match_phrase='{"fullDirNamePath": "주식"}'):
+    def get_detail(self, index='naver-kin-question_list', match_phrase='{"fullDirNamePath": "주식"}'):
         """질문/답변 상세 페이지를 크롤링한다.
 
         :param index: 인덱스명 question_list, answer_list
@@ -818,10 +834,11 @@ class Crawler(NaverKinUtils):
             i += 1
             doc_id = '{}-{}-{}'.format(question['d1Id'], question['dirId'], question['docId'])
 
-            exists = elastic.exists(index=detail_index, doc_type=detail_index, id=doc_id)
+            exists = elastic.exists(index=detail_index, doc_type='doc', id=doc_id)
             if exists is True:
                 logging.info(msg='skip {} {}'.format(doc_id, detail_index))
-                self.move_document(source_index=index, target_index='{}.done'.format(index),
+
+                self.move_document(source_index=index, target_index='{}_done'.format(index),
                                    document_id=doc_id, host=self.elastic_info['host'])
                 continue
 
@@ -845,11 +862,20 @@ class Crawler(NaverKinUtils):
             detail_doc['html'] = str(content.prettify())
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=detail_index,
-                                              doc_type=self.elastic_info['type'], document=detail_doc,
+                                              doc_type='doc', document=detail_doc,
                                               bulk_size=0, insert=True)
 
-            self.move_document(source_index=index, target_index='{}.done'.format(index),
+            self.move_document(source_index=index, target_index='{}_done'.format(index),
                                document_id=doc_id, host=self.elastic_info['host'])
+
+            try:
+                logging.log(level=MESSAGE, msg=json.dumps(
+                    {
+                        'doc_id': doc_id,
+                        'question': detail_doc['question']
+                    }, ensure_ascii=False, sort_keys=True))
+            except Exception as e:
+                pass
 
             sleep(delay)
 
@@ -982,11 +1008,11 @@ class Crawler(NaverKinUtils):
                     doc['_id'] = doc['u']
 
                     self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                      doc_type=self.elastic_info['type'], document=doc,
+                                                      doc_type='doc', document=doc,
                                                       bulk_size=100, insert=True)
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                              doc_type=self.elastic_info['type'], document=None,
+                                              doc_type='doc', document=None,
                                               bulk_size=0, insert=True)
 
             sleep(5)
@@ -1075,11 +1101,11 @@ class Crawler(NaverKinUtils):
                         doc['_id'] = doc['u']
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=self.elastic_info['type'], document=doc,
+                                                          doc_type='doc', document=doc,
                                                           bulk_size=100, insert=True)
 
                 self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                  doc_type=self.elastic_info['type'], document=None,
+                                                  doc_type='doc', document=None,
                                                   bulk_size=0, insert=True)
                 sleep(5)
 
@@ -1133,11 +1159,11 @@ class Crawler(NaverKinUtils):
                         doc['_id'] = doc['u']
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=self.elastic_info['type'], document=doc,
+                                                          doc_type='doc', document=doc,
                                                           bulk_size=100, insert=True)
 
                     self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                      doc_type=self.elastic_info['type'], document=None,
+                                                      doc_type='doc', document=None,
                                                       bulk_size=0, insert=True)
                 sleep(5)
 
@@ -1199,11 +1225,11 @@ class Crawler(NaverKinUtils):
                             doc['rank_type'] = dir_name
 
                             self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                              doc_type=self.elastic_info['type'], document=doc,
+                                                              doc_type='doc', document=doc,
                                                               bulk_size=100, insert=True)
 
                         self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                          doc_type=self.elastic_info['type'], document=None,
+                                                          doc_type='doc', document=None,
                                                           bulk_size=0, insert=True)
 
                         if len(result['result']) != 20:

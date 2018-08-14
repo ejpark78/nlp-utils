@@ -48,8 +48,8 @@ test:
 		--name $(CONTAINER) \
 		$(IMAGE_NAME)
 
-sh: 
-	docker exec -it $(CONTAINER) /bin/sh
+bash: 
+	docker exec -it $(CONTAINER) /bin/bash
 
 clean:
 	docker system prune -f
