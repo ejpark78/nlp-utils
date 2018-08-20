@@ -544,8 +544,7 @@ class Utils(object):
             body={
                 'settings': {
                     'number_of_shards': 3,
-                    'number_of_replicas': 2,
-                    'index.mapper.dynamic': True
+                    'number_of_replicas': 3
                 }
             }
         )
@@ -901,8 +900,10 @@ class Utils(object):
         if elastic is None:
             return False
 
+        params = {'request_timeout': 2 * 60}
+
         try:
-            response = elastic.bulk(index=index, body=self.bulk_data[host], refresh=True)
+            response = elastic.bulk(index=index, body=self.bulk_data[host], refresh=True, params=params)
 
             size = len(self.bulk_data[host])
             doc_id_list = []
@@ -930,8 +931,8 @@ class Utils(object):
 
     @staticmethod
     def get_tag_text(tag):
-        """
-        텍스트 반환
+        """텍스트 반환
+
         :param tag: HTML 테그 정보
         :return: 추출된 텍스트
         """
@@ -946,8 +947,7 @@ class Utils(object):
         return tag.get_text().strip()
 
     def extract_image(self, soup, delete_caption=False):
-        """
-        기사 본문에서 이미지와 캡션 추출
+        """기사 본문에서 이미지와 캡션 추출
 
         :param soup: HTML 파싱 개체
         :param delete_caption: 캡션 삭제 여부

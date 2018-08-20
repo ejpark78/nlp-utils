@@ -27,9 +27,9 @@ class NaverKinUtils(Utils):
         self.data_home = 'data/naver/kin'
 
         self.elastic_info = {
-            'host': 'http://gollum:9200',
-            'index': 'naver-kin',
-            'type': 'naver-kin',
+            'host': 'http://gollum06:9201',
+            'index': 'crawler-naver-kin',
+            'type': 'doc',
             'insert': True
         }
 
@@ -430,22 +430,45 @@ class NaverKinUtils(Utils):
 
         return soup
 
-    def get_document_list(self, index, query, only_source=True, limit=-1):
+    @staticmethod
+    def elastic_scroll(elastic, scroll_id, index, size, query, sum_count):
+        """"""
+        params = {'request_timeout': 2 * 60}
+
+        # 스크롤 아이디가 있다면 scroll 함수 호출
+        if scroll_id == '':
+            search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m',
+                                           size=size, params=params)
+        else:
+            search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m', params=params)
+
+        # 검색 결과 추출
+        scroll_id = search_result['_scroll_id']
+
+        hits = search_result['hits']
+
+        total = hits['total']
+
+        count = len(hits['hits'])
+
+        sum_count += count
+        logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+        return hits['hits'], scroll_id, count, sum_count
+
+    def get_document_list(self, index, query, only_source=True, limit=-1, size=1000):
         """elastic-search 에서 문서를 검색해 반환한다.
 
         :param index: 인덱스명
         :param query: 검색 조건
         :param only_source: _source 필드 반환
         :param limit: 최대 반환 크기 설정
+        :param size: 한번에 가져올 문서수
         :return: 문서 목록
         """
-        # 한번에 가져올 문서수
-        size = 1000
-
         count = 1
         sum_count = 0
         scroll_id = ''
-        total = -1
 
         # 서버 접속
         elastic = self.open_elastic_search(host=self.elastic_info['host'], index=index)
@@ -453,28 +476,12 @@ class NaverKinUtils(Utils):
             return None, None
 
         result = []
-
         while count > 0:
-            # 스크롤 아이디가 있다면 scroll 함수 호출
-            if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m', size=size)
-            else:
-                search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
+            hits, scroll_id, count, sum_count = self.elastic_scroll(
+                elastic=elastic, scroll_id=scroll_id, index=index,
+                size=size, query=query, sum_count=sum_count)
 
-            # 검색 결과 추출
-            scroll_id = search_result['_scroll_id']
-
-            hits = search_result['hits']
-
-            if total != hits['total']:
-                total = hits['total']
-
-            count = len(hits['hits'])
-
-            sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
-
-            for item in hits['hits']:
+            for item in hits:
                 if only_source is True:
                     result.append(item['_source'])
                 else:
@@ -489,7 +496,7 @@ class NaverKinUtils(Utils):
 
         return result, elastic
 
-    def dump_elastic_search(self, host='http://localhost:9200', index='naver-kin-detail'):
+    def dump_elastic_search(self, host='http://localhost:9200', index='crawler-naver-kin-detail'):
         """elastic-search 의 데이터를 덤프 받는다.
 
         :param host: 접속 주소
@@ -504,7 +511,6 @@ class NaverKinUtils(Utils):
         count = 1
         sum_count = 0
         scroll_id = ''
-        total = -1
 
         # 서버 접속
         elastic = self.open_elastic_search(host=[host], index=index)
@@ -512,26 +518,11 @@ class NaverKinUtils(Utils):
             return
 
         while count > 0:
-            # 스크롤 아이디가 있다면 scroll 함수 호출
-            if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type='doc', body={}, scroll='2m', size=size)
-            else:
-                search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
+            hits, scroll_id, count, sum_count = self.elastic_scroll(
+                elastic=elastic, scroll_id=scroll_id, index=index,
+                size=size, query={}, sum_count=sum_count)
 
-            # 검색 결과 추출
-            scroll_id = search_result['_scroll_id']
-
-            hits = search_result['hits']
-
-            if total != hits['total']:
-                total = hits['total']
-
-            count = len(hits['hits'])
-
-            sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
-
-            for item in hits['hits']:
+            for item in hits:
                 line = json.dumps(item, ensure_ascii=False, sort_keys=True)
                 print(line, flush=True)
 
@@ -544,7 +535,7 @@ class NaverKinUtils(Utils):
     def export_detail(self):
         """"""
         host = 'http://localhost:9200'
-        index = 'naver-kin-detail'
+        index = 'crawler-naver-kin-detail'
 
         # 한번에 가져올 문서수
         size = 1000
@@ -552,7 +543,6 @@ class NaverKinUtils(Utils):
         count = 1
         sum_count = 0
         scroll_id = ''
-        total = -1
 
         # 서버 접속
         elastic = self.open_elastic_search(host=[host], index=index)
@@ -561,30 +551,15 @@ class NaverKinUtils(Utils):
 
         query = {
             '_source': 'category,question,detail_question,answer,answer_user'.split(','),
-            'size': '1000'
+            'size': size
         }
 
         while count > 0:
-            # 스크롤 아이디가 있다면 scroll 함수 호출
-            if scroll_id == '':
-                search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m', size=size)
-            else:
-                search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m')
+            hits, scroll_id, count, sum_count = self.elastic_scroll(
+                elastic=elastic, scroll_id=scroll_id, index=index,
+                size=size, query=query, sum_count=sum_count)
 
-            # 검색 결과 추출
-            scroll_id = search_result['_scroll_id']
-
-            hits = search_result['hits']
-
-            if total != hits['total']:
-                total = hits['total']
-
-            count = len(hits['hits'])
-
-            sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
-
-            for item in hits['hits']:
+            for item in hits:
                 doc = item['_source']
 
                 common = [
@@ -597,13 +572,27 @@ class NaverKinUtils(Utils):
                 for i in range(len(doc['answer'])):
                     try:
                         answer = [doc['answer_user'][i], doc['answer'][i]]
-                        print('\t'.join(common + answer), flush=True)
+                        logging.info(msg='\t'.join(common + answer))
                     except Exception as e:
+                        logging.error(msg='{}'.format(e))
                         pass
 
             # 종료 조건
             if count < size:
                 break
+
+        return
+
+    @staticmethod
+    def print_message(msg):
+        """"""
+        import json
+
+        try:
+            str_msg = json.dumps(msg, ensure_ascii=False, sort_keys=True)
+            logging.log(level=MESSAGE, msg=str_msg)
+        except Exception as e:
+            logging.info(msg='{}'.format(e))
 
         return
 
@@ -654,14 +643,13 @@ class Crawler(NaverKinUtils):
         :param size: 페이지 크기
         :return: 없음
         """
-        import json
         import requests
         from time import sleep
 
         delay = 5
         bulk_size = 100
 
-        table_name = 'naver-kin-question_list'
+        table_name = 'crawler-naver-kin-question_list'
 
         self.elastic_info['index'] = table_name
         self.elastic_info['type'] = 'doc'
@@ -690,30 +678,25 @@ class Crawler(NaverKinUtils):
             for doc in result_list:
                 doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
 
-                self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                                  doc_type='doc', document=doc,
-                                                  bulk_size=bulk_size, insert=True)
+                self.print_message(msg={
+                    'doc_id': doc['_id'],
+                    'question': doc['question']
+                })
 
-            self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name,
-                                              doc_type='doc', document=None,
-                                              bulk_size=0, insert=True)
+                self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name, doc_type='doc',
+                                                  document=doc, bulk_size=bulk_size, insert=True)
 
-            try:
-                logging.log(level=MESSAGE, msg=json.dumps(
-                    {
-                        'doc_id': doc['_id'],
-                        'question': doc['question']
-                    }, ensure_ascii=False, sort_keys=True))
-            except Exception as e:
-                pass
+            self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name, doc_type='doc',
+                                              document=None, bulk_size=0, insert=True)
 
             sleep(delay)
 
         return
 
-    def move_document(self, source_index, target_index, document_id, host, source_id=None):
+    def move_document(self, elastic, source_index, target_index, document_id, host, source_id=None):
         """ 문서를 이동한다.
 
+        :param elastic: elastic search 연결
         :param source_index: 원본 인덱스명
         :param target_index: 이동할 인덱스명
         :param source_id: 원본 문서 아이디
@@ -721,24 +704,26 @@ class Crawler(NaverKinUtils):
         :param host: 접속 주소
         :return: 없음
         """
-        # import elasticsearch
-        from elasticsearch.exceptions import NotFoundError
-
         if source_id is None:
             source_id = document_id
 
-        source = self.open_elastic_search(host=host, index=source_index)
+        try:
+            exists = elastic.exists(index=source_index, doc_type='doc', id=source_id)
+            if exists is False:
+                logging.info(msg='move_document 문서 없음: {} {}'.format(source_index, source_id))
+                return
+        except Exception as e:
+            logging.error(msg='move_document 문서 찾기 오류 {}'.format(e))
+            return
 
         # 문서 읽기
         try:
-            document = source.get(index=source_index, doc_type='doc', id=source_id)
+            document = elastic.get(index=source_index, doc_type='doc', id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
-        except NotFoundError as e:
-            return
         except Exception as e:
-            logging.error(msg='error as move_document', exc_info=e)
+            logging.error(msg='move_document 문서 읽기 오류 {}'.format(e))
             return
 
         # 문서 저장
@@ -746,11 +731,11 @@ class Crawler(NaverKinUtils):
                                           bulk_size=0, insert=True, doc_type='doc')
 
         # 기존 문서 삭제
-        source.delete(index=source_index, doc_type='doc', id=source_id)
+        elastic.delete(index=source_index, doc_type='doc', id=source_id)
 
         return
 
-    def sync_id(self, index='naver-kin-detail'):
+    def sync_id(self, index='crawler-naver-kin-detail'):
         """document_id 와 _id 가 형식에 맞지 않는 것을 바꾼다. """
         query = {
             '_source': 'd1Id,dirId,docId,document_id'.split(','),
@@ -765,7 +750,7 @@ class Crawler(NaverKinUtils):
         for item in data_list:
             doc = item['_source']
 
-            if index == 'naver-kin-detail' and 'document_id' in doc:
+            if index == 'crawler-naver-kin-detail' and 'document_id' in doc:
                 d_id = doc['document_id']
             else:
                 if 'd1Id' not in doc:
@@ -780,7 +765,7 @@ class Crawler(NaverKinUtils):
 
         return
 
-    def get_detail(self, index='naver-kin-question_list', match_phrase='{"fullDirNamePath": "주식"}'):
+    def get_detail(self, index='crawler-naver-kin-question_list', match_phrase='{"fullDirNamePath": "주식"}'):
         """질문/답변 상세 페이지를 크롤링한다.
 
         :param index: 인덱스명 question_list, answer_list
@@ -798,27 +783,28 @@ class Crawler(NaverKinUtils):
         delay = 5
         url_frame = 'https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}'
 
+        if match_phrase is not None:
+            if isinstance(match_phrase, str):
+                match_phrase = json.loads(match_phrase)
+            else:
+                match_phrase = {}
+
         query = {
             '_source': 'd1Id,dirId,docId'.split(','),
-            'size': '1000',
+            'size': 1000,
             'query': {
                 'bool': {
                     'must': {
-                        'match_phrase': {}
+                        'match_phrase': match_phrase
                     }
                 }
             }
         }
 
-        if match_phrase is not None:
-            if isinstance(match_phrase, str):
-                match_phrase = json.loads(match_phrase)
+        question_list, elastic = self.get_document_list(index=index, query=query,
+                                                        limit=50000, size=500, only_source=False)
 
-            query['query']['bool']['must']['match_phrase'] = match_phrase
-
-        question_list, elastic = self.get_document_list(index=index, query=query)
-
-        detail_index = 'naver-kin-detail'
+        detail_index = 'crawler-naver-kin-detail'
 
         # 저장 인덱스명 설정
         self.elastic_info['index'] = detail_index
@@ -827,21 +813,27 @@ class Crawler(NaverKinUtils):
         i = -1
         size = len(question_list)
 
-        for question in question_list:
+        for item in question_list:
+            question = item['_source']
+
+            # 문서 아이디 생성
             if 'd1Id' not in question:
                 question['d1Id'] = str(question['dirId'])[0]
 
             i += 1
             doc_id = '{}-{}-{}'.format(question['d1Id'], question['dirId'], question['docId'])
 
-            exists = elastic.exists(index=detail_index, doc_type='doc', id=doc_id)
-            if exists is True:
-                logging.info(msg='skip {} {}'.format(doc_id, detail_index))
+            if 'question_list' not in index:
+                # 이미 받은 질문인지 검사
+                exists = elastic.exists(index=detail_index, doc_type='doc', id=doc_id)
+                if exists is True:
+                    logging.info(msg='skip {} {}'.format(doc_id, detail_index))
 
-                self.move_document(source_index=index, target_index='{}_done'.format(index),
-                                   document_id=doc_id, host=self.elastic_info['host'])
-                continue
+                    self.move_document(elastic=elastic, source_index=index, target_index='{}_done'.format(index),
+                                       source_id=item['_id'], document_id=doc_id, host=self.elastic_info['host'])
+                    continue
 
+            # url 생성
             request_url = url_frame.format(**question)
 
             # 질문 상세 페이지 크롤링
@@ -853,9 +845,14 @@ class Crawler(NaverKinUtils):
             soup = BeautifulSoup(request_result.content, 'html5lib')
 
             content = soup.find('div', {'class': 'sec_col1'})
+
+            # 이미 삭제된 질문일 경우
             if content is None:
+                self.move_document(elastic=elastic, source_index=index, target_index='{}_done'.format(index),
+                                   source_id=item['_id'], document_id=doc_id, host=self.elastic_info['host'])
                 continue
 
+            # 질문 정보 추출
             detail_doc, content = self.parse_content(html=None, soup=content)
 
             detail_doc['_id'] = doc_id
@@ -865,17 +862,13 @@ class Crawler(NaverKinUtils):
                                               doc_type='doc', document=detail_doc,
                                               bulk_size=0, insert=True)
 
-            self.move_document(source_index=index, target_index='{}_done'.format(index),
-                               document_id=doc_id, host=self.elastic_info['host'])
+            self.move_document(elastic=elastic, source_index=index, target_index='{}_done'.format(index),
+                               source_id=item['_id'], document_id=doc_id, host=self.elastic_info['host'])
 
-            try:
-                logging.log(level=MESSAGE, msg=json.dumps(
-                    {
-                        'doc_id': doc_id,
-                        'question': detail_doc['question']
-                    }, ensure_ascii=False, sort_keys=True))
-            except Exception as e:
-                pass
+            self.print_message(msg={
+                'doc_id': doc_id,
+                'question': detail_doc['question']
+            })
 
             sleep(delay)
 
@@ -983,7 +976,7 @@ class Crawler(NaverKinUtils):
         url_frame = 'https://m.kin.naver.com/mobile/people/partnerList.nhn' \
                     '?resultMode=json&m=partnerList&page={page}&dirId=0'
 
-        table_name = 'naver-kin-partner_list'
+        table_name = 'crawler-naver-kin-partner_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name
@@ -1072,7 +1065,7 @@ class Crawler(NaverKinUtils):
         url_frame = 'https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn' \
                     '?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0'
 
-        table_name = 'naver-kin-expert_user_list'
+        table_name = 'crawler-naver-kin-expert_user_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name
@@ -1127,7 +1120,7 @@ class Crawler(NaverKinUtils):
 
         month = 0
         for year in range(2012, 2019):
-            table_name = 'naver-kin-expert_user_list_{}'.format(year)
+            table_name = 'crawler-naver-kin-expert_user_list_{}'.format(year)
 
             # 인덱스명 설정
             self.elastic_info['index'] = table_name
@@ -1190,7 +1183,7 @@ class Crawler(NaverKinUtils):
             'https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}'
         ]
 
-        table_name = 'naver-kin-rank_user_list'
+        table_name = 'crawler-naver-kin-rank_user_list'
 
         # 인덱스명 설정
         self.elastic_info['index'] = table_name

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-IFS=$'\n'
+cd /usr/local/app
 
-data_path="data/naver/kin/tmp/by_user.분야별지식인"
-for d in $(ls -1 ${data_path}) ; do
-    echo ${d}
+./batch.1.sh &
 
-    python3 naver_kin_crawler.py -detail -index naver-kin-answer_list -match_phrase '{"user_name": "'${d}'"}'
-done
+sleep 10
+./batch.2.sh &
 
+sleep 10
+./batch.3.sh &
+
+wait
