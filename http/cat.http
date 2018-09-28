@@ -1,0 +1,51 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### indices 목록
+GET http://gollum:9200/_cat/indices?v&s=index
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_cat/recovery?v&active_only=true
+Content-Type: application/json
+Accept: application/json
+
+
+###
+GET http://gollum:9200/_cat/pending_tasks?v
+Content-Type: application/json
+Accept: application/json
+
+
+###
+GET http://gollum:9200/_cat/shards?h=index,shard,prirep,state,unassigned.reason
+Content-Type: application/text
+Accept: application/text
+
+###
+GET http://gollum:9200/_cat/shards?v
+Accept: application/text
+
+
+### health
+GET http://gollum:9200/_cat/health?v
+Accept: application/text
+
+
+### nodes
+GET http://gollum:9200/_cat/nodes?v
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_cat/recovery
+Accept: application/text
+
+
+

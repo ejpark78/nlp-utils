@@ -1,0 +1,68 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### indices 목록
+GET http://gollum:9200/_cat/indices?v&s=index
+Accept: application/text
+
+
+###
+GET http://gollum:9200/crawler-lineagem-free/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+###
+GET http://gollum:9200/crawler-lineagem-free/doc/board.free.1140134
+Content-Type: application/json
+Accept: application/json
+
+
+###
+GET http://gollum:9200/crawler-naver-kin-answer_list/_search
+Content-Type: application/text
+Accept: application/text
+
+
+###
+GET http://gollum:9200/corpus-baseball-game-log-2015/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+        "must": {
+            "range": {
+                "date": {
+                    "gte": "2015-04-16 00:00:00",
+                    "lte": "2015-04-17 00:00:00",
+                    "format": "yyyy-MM-dd HH:mm:ss"
+                }
+            }
+        }
+    }
+  }
+}
+
+
+
+###
+GET http://gollum:9200/crawler-naver-kin-question_list/doc/4-4010502-309851013
+Content-Type: application/json
+Accept: application/json
+
+###
+
+

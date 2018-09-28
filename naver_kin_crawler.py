@@ -27,7 +27,7 @@ class NaverKinUtils(Utils):
         self.data_home = 'data/naver/kin'
 
         self.elastic_info = {
-            'host': 'http://gollum06:9201',
+            'host': 'http://gollum:9200',
             'index': 'crawler-naver-kin',
             'type': 'doc',
             'insert': True
@@ -680,7 +680,7 @@ class Crawler(NaverKinUtils):
 
                 self.print_message(msg={
                     'doc_id': doc['_id'],
-                    'question': doc['question']
+                    'title': doc['title']
                 })
 
                 self.save_elastic_search_document(host=self.elastic_info['host'], index=table_name, doc_type='doc',
@@ -856,7 +856,12 @@ class Crawler(NaverKinUtils):
             detail_doc, content = self.parse_content(html=None, soup=content)
 
             detail_doc['_id'] = doc_id
-            detail_doc['html'] = str(content.prettify())
+            detail_doc['html'] = str(content)
+
+            try:
+                detail_doc['html'] = str(content.prettify())
+            except Exception as e:
+                logging.info(msg='{}'.format(e))
 
             self.save_elastic_search_document(host=self.elastic_info['host'], index=detail_index,
                                               doc_type='doc', document=detail_doc,

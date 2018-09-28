@@ -1,53 +1,59 @@
-FROM alpine:3.7
+FROM debian:stretch-slim
 
-LABEL maintainer "ejpark@ncsoft.com"
+LABEL maintainer="ejpark@ncsoft.co.kr"
 
-# koala mirror
-ENV APK_MIRROR=http://172.20.79.85:88/alpine/v3.7
 
-# koala pip_mirror
-ENV PIP_MIRROR=172.20.79.85
-# ENV PIP_MIRROR=mirror.kakao.com
+# 사용자를 root로 설정
+USER root
 
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV NOTVISIBLE "in users profile"
+
+# frodo
+ENV APT_MIRROR=mirror.kakao.com
+#ENV APT_MIRROR=nlp.ncsoft.com:8010
 ENV APP_HOME=/usr/local/app
 
-# 1. 설치시 사용할 경로 설정
-WORKDIR $APP_HOME
+ENV PIP_MIRROR=mirror.kakao.com
+#ENV PIP_MIRROR=nlp.ncsoft.com
 
-RUN echo && echo "# apk 저장소 변경" \
-    && { \
-		echo "${APK_MIRROR}/main"; \
-		echo "${APK_MIRROR}/community"; \
-	} > /etc/apk/repositories \
+# 1. 설치시 사용할 경로 설정
+WORKDIR $HOME
+
+RUN echo && echo "# apt 저장소 변경" \
+    && rm -rf /var/lib/apt/lists/* \
+	&& { \
+		echo "deb http://${APT_MIRROR}/debian stretch main contrib non-free"; \
+#        echo "deb http://${APT_MIRROR}/debian-security stretch/updates main contrib"; \
+	} > /etc/apt/sources.list \
+    && apt-get update -yq \
     \
-	&& apk update \
-	&& apk add --no-cache \
-		bash \
+    && apt-get install -yq --no-install-recommends \
         bridge-utils \
-        db-dev \
-        g++ \
-        libffi-dev \
-        libxml2 \
-        libxml2-dev \
-        libxslt-dev \
-        openssl-dev \
+        build-essential \
+        libdb-dev \
         python3 \
+        python3-dateutil \
         python3-dev \
-	&& mkdir -p /usr/local/lib \
-	&& apk del --purge
+        python3-lxml \
+        python3-pip \
+    \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
-		echo "index-url = http://${PIP_MIRROR}:3141/root/pypi"; \
+#		echo "index-url = http://${PIP_MIRROR}:3141/root/pypi"; \
+		echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
 		echo "[install]"; \
 		echo "trusted-host = ${PIP_MIRROR}"; \
 	} > ~/.pip/pip.conf \
     \
     && echo && echo "# 기본 유틸 설치" \
-    && pip3 install --upgrade --no-cache-dir --force-reinstall \
+    && pip3 install --upgrade --no-cache-dir \
         pip \
         setuptools \
         wheel
@@ -57,6 +63,7 @@ ADD app.tar.gz ${APP_HOME}
 
 RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
-COPY Dockerfile ${APP_HOME}/
+COPY Dockerfile ${APP_HOME}
 
 WORKDIR ${APP_HOME}
+#CMD ["python3", "app.py"]

@@ -1,0 +1,61 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+###
+GET http://gollum:9200
+Accept: application/text
+
+
+###
+POST http://gollum:9200/_flush/synced
+Accept: application/text
+
+
+###
+POST http://gollum:9200/corpus-baseball-game-log-2015/_flush/synced
+Content-Type: application/json
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_stats?filter_path=**.commit&level=shards
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_tasks?detailed=true&actions=*reindex
+Content-Type: application/text
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_tasks?detailed=true
+Content-Type: application/text
+Accept: application/text
+
+
+###
+POST http://gollum:9200/_flush/synced
+Content-Type: application/json
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_nodes/settings?pretty
+Content-Type: application/text
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_nodes?pretty
+Content-Type: application/text
+Accept: application/text
+
+
+###
+

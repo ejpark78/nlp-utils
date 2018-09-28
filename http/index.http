@@ -1,0 +1,60 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+###
+DELETE http://gollum:9200/.kibana,.monitoring-*
+Accept: application/text
+
+
+###
+GET http://gollum:9200/crawler-naver-kin-question_list/_settings
+Content-Type: application/text
+Accept: application/text
+
+
+###
+PUT http://gollum:9200/_settings
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "number_of_replicas": 2
+  }
+}
+
+
+###
+PUT http://gollum:9200/_settings
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}
+
+
+###
+# _reindex
+POST http://gollum:9200/_reindex?wait_for_completion=false
+Content-Type: application/json
+Accept: application/text
+
+{
+  "source": {
+    "index": "naver-kin-answer_list_done"
+  },
+  "dest": {
+    "index": "crawler-naver-kin-answer_list_done"
+  }
+}
+
