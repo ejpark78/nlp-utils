@@ -4,14 +4,14 @@
 
 IFS=$'\n'
 
-host="http://gollum06:9201"
-data_path="data/dump/crawler.2018-08-18/batch"
+host="http://gollum:9200"
+#data_path="data/dump/crawler.2018-08-18/batch"
+data_path="data/mlbpark/kbo/batch"
 
 for d in $(ls -1 ${data_path}) ; do
     echo ${d}
 
     bzcat ${data_path}/${d}/*.json.bz2 | python3 mongo2elastic.py -push_data -host ${host} -db_name ${d}
-
     mv ${data_path}/${d} ${data_path}/../${d}
 done
 
