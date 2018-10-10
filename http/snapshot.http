@@ -19,8 +19,6 @@ Content-Type: application/text
 Accept: application/text
 
 
-
-
 ###
 PUT http://gollum:9200/_snapshot/2018-09-07
 Content-Type: application/json
@@ -33,3 +31,5 @@ Accept: application/text
         "compress": true
     }
 }
+
+###

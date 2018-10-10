@@ -1668,6 +1668,10 @@ class Utils(object):
 
             parsing_info = db.get_collection('parsing_information').find_one({'_id': parsing_id})
 
+            for k in parsing_info:
+                if isinstance(parsing_info[k], datetime):
+                    parsing_info[k] = str(parsing_info[k])
+
             connect.close()
 
         return parsing_info

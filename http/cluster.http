@@ -12,30 +12,6 @@ Accept: application/text
 
 
 ###
-PUT http://gollum:9200/_cluster/settings
-Content-Type: application/json
-Accept: application/text
-
-{
-  "transient": {
-    "cluster.routing.allocation.include._ip": null
-  }
-}
-
-
-###
-PUT http://gollum:9200/_cluster/settings
-Content-Type: application/json
-Accept: application/text
-
-{
-  "transient": {
-    "cluster.routing.allocation.exclude._name": null
-  }
-}
-
-
-###
 GET http://gollum:9200/_cluster/allocation/explain?pretty
 Content-Type: application/text
 Accept: application/text
@@ -63,26 +39,6 @@ Accept: application/text
 {
   "persistent": {
     "cluster.routing.allocation.enable": "all"
-  }
-}
-
-
-###
-PUT http://gollum:9200/_cluster/settings
-Content-Type: application/json
-Accept: application/text
-
-{
-  "persistent": {
-    "cluster": {
-      "routing": {
-        "allocation": {
-          "awareness": {
-            "attributes": null
-          }
-        }
-      }
-    }
   }
 }
 

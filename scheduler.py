@@ -49,6 +49,8 @@ class Scheduler:
         :param scheduler_db_info: 스케쥴 디비 정보
         :return: 스케쥴
         """
+        from datetime import datetime
+
         if scheduler_db_info['file_db'] is True:
             file_name = 'schedule/list/{}.json'.format(scheduler_db_info['document_id'])
             with open(file_name, 'r') as fp:
@@ -64,6 +66,10 @@ class Scheduler:
                 job_info = collection.find_one({
                     '_id': scheduler_db_info['document_id']
                 })
+
+                for k in job_info:
+                    if isinstance(job_info[k], datetime):
+                        job_info[k] = str(job_info[k])
             else:
                 return None
 

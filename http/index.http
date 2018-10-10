@@ -6,13 +6,24 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
+### indices 목록
+GET http://gollum:9200/_cat/indices?v&s=index
+Accept: application/text
+
+
 ###
 DELETE http://gollum:9200/.kibana,.monitoring-*
 Accept: application/text
 
 
 ###
-GET http://gollum:9200/crawler-naver-kin-question_list/_settings
+GET http://gollum:9200/_settings
+Content-Type: application/text
+Accept: application/text
+
+
+###
+GET http://gollum:9200/_settings
 Content-Type: application/text
 Accept: application/text
 
@@ -25,6 +36,20 @@ Accept: application/text
 {
   "index": {
     "number_of_replicas": 2
+  }
+}
+
+
+###
+PUT http://gollum:9200/_settings
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "mapper": {
+      "dynamic": null
+    }
   }
 }
 
