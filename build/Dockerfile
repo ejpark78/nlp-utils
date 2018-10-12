@@ -40,7 +40,8 @@ RUN echo && echo "# apt 저장소 변경" \
 
 # ENV PIP_MIRROR=mirror.kakao.com
 # nlp.ncsoft.com
-ENV PIP_MIRROR=mirror.kakao.com
+#ENV PIP_MIRROR=mirror.kakao.com
+ENV PIP_MIRROR=172.20.78.170
 
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
@@ -48,7 +49,8 @@ RUN echo && echo "# pip 저장소 설정" \
 		echo "[global]"; \
 		echo "timeout = 60"; \
 #		echo "index-url = http://${PIP_MIRROR}:3141/root/pypi"; \
-        echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
+#        echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
+		echo "index-url = http://${PIP_MIRROR}:8081/repository/pypi/simple"; \
 		echo "trusted-host = ${PIP_MIRROR}"; \
 	} > ~/.pip/pip.conf \
     \

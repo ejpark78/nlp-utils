@@ -1071,14 +1071,14 @@ class Crawler(Utils):
 
         # 기존 url 목록 저장
         if 'mongo' in self.db_info:
-            self.url_index_db.update_mongodb_url_list(db_name=self.db_info['db_name'],
-                                                      collection_name=collection_name,
-                                                      mongodb_info=self.db_info['mongo'])
+            self.url_index_db.update_mongodb_url_list(
+                db_name=self.db_info['db_name'], collection_name=collection_name,
+                mongodb_info=self.db_info['mongo'])
 
-        if 'elastic' in self.db_info:
-            self.url_index_db.update_elastic_url_list(index=self.db_info['db_name'],
-                                                      doc_type=collection_name,
-                                                      elastic_info=self.db_info['elastic'])
+        # if 'elastic' in self.db_info:
+        #     self.url_index_db.update_elastic_url_list(
+        #         index=self.db_info['db_name'], doc_type=collection_name,
+        #         elastic_info=self.db_info['elastic'])
 
         return
 
@@ -1090,6 +1090,8 @@ class Crawler(Utils):
         :param job_info: 스케쥴 정보
         :return: None
         """
+        import json
+
         self.duplicated_url_count = 0
 
         self.job_info = job_info
@@ -1098,8 +1100,6 @@ class Crawler(Utils):
         debug = os.getenv('DEBUG', 'False')
         if debug == 'true' or debug == 'True' or debug == '1':
             self.debug_mode = True
-
-        import json
 
         msg = '변수 초기화: job info = {}'.format(json.dumps(self.job_info, ensure_ascii=False))
         logging.info(msg=msg)
@@ -1113,8 +1113,8 @@ class Crawler(Utils):
 
         # 파싱 정보 가져오기
         if self.parsing_info is None and 'parsing_info' in self.parameter:
-            self.parsing_info = self.get_parsing_information(scheduler_db_info,
-                                                             self.parameter['parsing_info'])
+            self.parsing_info = self.get_parsing_information(
+                scheduler_db_info, self.parameter['parsing_info'])
 
         msg = '변수 초기화: job parameter = {}'.format(json.dumps(self.parameter, ensure_ascii=False))
         logging.info(msg=msg)
