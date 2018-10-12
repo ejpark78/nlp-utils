@@ -43,15 +43,15 @@ Accept: application/json
 {
   "query": {
     "bool": {
-        "must": {
-            "range": {
-                "date": {
-                    "gte": "2015-04-16 00:00:00",
-                    "lte": "2015-04-17 00:00:00",
-                    "format": "yyyy-MM-dd HH:mm:ss"
-                }
-            }
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2015-04-16 00:00:00",
+            "lte": "2015-04-17 00:00:00",
+            "format": "yyyy-MM-dd HH:mm:ss"
+          }
         }
+      }
     }
   }
 }
@@ -69,23 +69,97 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "_source": ["articleId", "title", "contents"],
-    "from": 0,
-    "size": 500,
-    "query": {
-        "bool": {
-            "must": {
-                "range": {
-                    "postDate": {
-                        "gte": "2018-08-01",
-                        "lte": "2018-08-31",
-                        "format": "yyyy-MM-dd"
-                    }
-                }
-            }
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "postDate": {
+            "gte": "2018-08-01",
+            "lte": "2018-08-31",
+            "format": "yyyy-MM-dd"
+          }
         }
+      }
     }
+  }
 }
+
+
+###
+POST http://gollum:9200/bbs-lineagem/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 10,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": {
+            "range": {
+              "postDate": {
+                "gte": "2018-08-01",
+                "lte": "2018-08-31",
+                "format": "yyyy-MM-dd"
+              }
+            }
+          }
+        }
+      },
+      "boost": "5",
+      "random_score": {},
+      "boost_mode": "multiply"
+    }
+  }
+}
+
+
+###
+POST http://gollum:9200/bbs-lineagem/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents",
+    "comment_list"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "기사"
+          }
+        },
+        {
+          "match_phrase": {
+            "contents": "기사"
+          }
+        }
+      ]
+    }
+  }
+}
+
 
 ###
 POST http://gollum:9200/corpus_processor-naver-economy/_search
@@ -93,56 +167,79 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "_source": ["document_id", "title", "date", "content", "image_list"],
-    "from": 0,
-    "size": 30,
-    "query": {
-        "bool": {
-            "must": [{
-                "match_phrase": {"title": "삼성전자"}
-              },
-              {
-                "match_phrase": {
-                  "content": "삼성전자"
-                }
-              }, {
-                "range": {
-                    "date": {
-                        "gte": "2018-01-01",
-                        "lte": "2018-10-04",
-                        "format": "yyyy-MM-dd"
-                    }
-                }
-            }]
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "삼성전자"
+          }
+        },
+        {
+          "match_phrase": {
+            "content": "삼성전자"
+          }
+        },
+        {
+          "range": {
+            "date": {
+              "gte": "2018-01-01",
+              "lte": "2018-10-04",
+              "format": "yyyy-MM-dd"
+            }
+          }
         }
+      ]
     }
+  }
 }
 
 
 ###
+POST http://gollum:9200/corpus_processor-naver-economy/_search
+Content-Type: application/json
+Accept: application/json
 
 {
-    "_source": ["document_id", "title", "date", "content", "image_list"],
-    "from": 0,
-    "size": 30,
-    "query": {
-        "multi_match": {
-            "query": "삼성전자",
-            "type": "phrase",
-            "fields": ["title", "content"]
-        },
-        "bool": {
-            "must": {
-                "range": {
-                    "date": {
-                        "gte": "2018-01-01",
-                        "lte": "2018-10-04",
-                        "format": "yyyy-MM-dd"
-                    }
-                }
-            }
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "multi_match": {
+      "query": "삼성전자",
+      "type": "phrase",
+      "fields": [
+        "title",
+        "content"
+      ]
+    },
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-01-01",
+            "lte": "2018-10-04",
+            "format": "yyyy-MM-dd"
+          }
         }
+      }
     }
+  }
 }
 
 ###

@@ -35,6 +35,9 @@ class ElasticSearchUtils(object):
 
         self.insert = insert
 
+        if self.host is not None:
+            self.open()
+
     @staticmethod
     def create_index(elastic, index=None):
         """ elastic-search 에 인덱스를 생성한다.
@@ -200,7 +203,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def scroll(self, scroll_id, index, size, query, sum_count):
+    def scroll(self, scroll_id, query, size=1000):
         """"""
         params = {
             'request_timeout': 2 * 60
@@ -208,7 +211,7 @@ class ElasticSearchUtils(object):
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            search_result = self.elastic.search(index=index, doc_type='doc', body=query, scroll='2m',
+            search_result = self.elastic.search(index=self.index, doc_type='doc', body=query, scroll='2m',
                                                 size=size, params=params)
         else:
             search_result = self.elastic.scroll(scroll_id=scroll_id, scroll='2m', params=params)
@@ -221,18 +224,10 @@ class ElasticSearchUtils(object):
         total = hits['total']
         count = len(hits['hits'])
 
-        sum_count += count
-        logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+        return hits['hits'], scroll_id, count, total
 
-        return hits['hits'], scroll_id, count, sum_count
-
-    def get_id_list(self, index, use_cache=False):
-        """ elastic search 에 문서 아이디 목록을 조회한다.
-
-        :param index: 인덱스명
-        :param use_cache: 캐쉬 사용
-        :return: 문서 아이디 목록
-        """
+    def get_id_list(self, index, use_cache=False, size=5000):
+        """ elastic search 에 문서 아이디 목록을 조회한다. """
         filename = 'data/{}.plk'.format(index)
         if use_cache is True:
             result = self.load_cache(filename)
@@ -240,27 +235,24 @@ class ElasticSearchUtils(object):
             if len(result) > 0:
                 return result, filename
 
-        # 한번에 가져올 문서수
-        size = 5000
+        result = {}
 
         count = 1
         sum_count = 0
         scroll_id = ''
-
-        result = {}
 
         query = {
             '_source': '',
         }
 
         while count > 0:
-            hits, scroll_id, count, sum_count = self.scroll(
-                scroll_id=scroll_id, index=index,
-                size=size, query=query, sum_count=sum_count)
+            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+
+            sum_count += count
+            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
 
             for item in hits:
                 document_id = item['_id']
-
                 result[document_id] = document_id
 
             # 종료 조건
@@ -295,6 +287,32 @@ class ElasticSearchUtils(object):
 
         return result
 
+    def dump_documents(self, index, size=1000):
+        """"""
+        import json
+
+        count = 1
+        sum_count = 0
+        scroll_id = ''
+
+        query = {}
+
+        while count > 0:
+            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+
+            sum_count += count
+            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+            for item in hits:
+                document = json.dumps(item['_source'], ensure_ascii=False, sort_keys=True)
+                print(document, flush=True)
+
+            # 종료 조건
+            if count < size:
+                break
+
+        return
+
     @staticmethod
     def init_arguments():
         """ 옵션 설정"""
@@ -302,6 +320,25 @@ class ElasticSearchUtils(object):
 
         parser = argparse.ArgumentParser(description='')
 
-        parser.add_argument('-test', action='store_true', default=False, help='')
+        parser.add_argument('-dump_data', action='store_true', default=False, help='')
+
+        parser.add_argument('-host', default='http://gollum01:9200', help='elastic search 주소')
+        parser.add_argument('-index', default=None, help='인덱스명')
 
         return parser.parse_args()
+
+
+def main():
+    """메인"""
+    args = ElasticSearchUtils.init_arguments()
+
+    utils = ElasticSearchUtils(host=args.host, index=args.index)
+
+    if args.dump_data:
+        utils.dump_documents(args.index)
+
+    return
+
+
+if __name__ == '__main__':
+    main()
