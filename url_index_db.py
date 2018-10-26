@@ -65,19 +65,31 @@ class UrlIndexDB(object):
         if os.path.exists(self.filename) and delete is True:
             os.remove(self.filename)
 
-        # 디비 연결
-        self.conn = sqlite3.connect(self.filename)
+        try:
+            if self.conn is not None:
+                self.conn.commit()
 
-        self.cursor = self.conn.cursor()
+                self.cursor.close()
+                self.conn.close()
+        except Exception as e:
+            logging.error(msg='{}'.format(e))
 
-        # 테이블 생성
-        self.cursor.execute('CREATE TABLE IF NOT EXISTS url_list (url TEXT PRIMARY KEY NOT NULL)')
-        self.cursor.execute('CREATE TABLE IF NOT EXISTS id_list (id TEXT PRIMARY KEY NOT NULL)')
+        try:
+            # 디비 연결
+            self.conn = sqlite3.connect(self.filename)
 
-        self.set_pragma(self.cursor, readonly=False)
+            self.cursor = self.conn.cursor()
 
-        # sql 명령 실행
-        self.conn.commit()
+            # 테이블 생성
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS url_list (url TEXT PRIMARY KEY NOT NULL)')
+            self.cursor.execute('CREATE TABLE IF NOT EXISTS id_list (id TEXT PRIMARY KEY NOT NULL)')
+
+            self.set_pragma(self.cursor, readonly=False)
+
+            # sql 명령 실행
+            self.conn.commit()
+        except Exception as e:
+            logging.error(msg='{}'.format(e))
 
         return
 

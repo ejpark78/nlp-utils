@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
+import os
 
 from utils import Utils
 
@@ -27,7 +28,7 @@ class NaverKinUtils(Utils):
         self.data_home = 'data/naver/kin'
 
         self.elastic_info = {
-            'host': 'http://gollum:9200',
+            'host': os.getenv('ELASTIC_SEARCH', 'http://gollum:9200'),
             'index': 'crawler-naver-kin',
             'type': 'doc',
             'insert': True

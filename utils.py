@@ -23,6 +23,9 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
+MESSAGE = 25
+logging.addLevelName(MESSAGE, 'MESSAGE')
+
 
 class Utils(object):
     """ 크롤러 유틸 """
@@ -674,7 +677,7 @@ class Utils(object):
                 msg.append(document[key].strftime('%Y-%m-%d %H:%M:%S'))
 
         if len(msg) > 0:
-            logging.info(msg='몽고디비 저장 정보: {}'.format('\t'.join(msg)))
+            logging.log(level=MESSAGE, msg='몽고디비 저장: {}'.format('\t'.join(msg)))
 
         return True
 
@@ -774,7 +777,7 @@ class Utils(object):
                           allow_redirects=True, timeout=30, verify=False)
 
             msg = '코퍼스 전처리: {} {} {}'.format(url, document['_id'], document['title'])
-            logging.info(msg=msg)
+            logging.log(level=MESSAGE, msg=msg)
         except Exception as e:
             msg = '코퍼스 전처리 에러: {} {}'.format(document['_id'], e)
             logging.error(msg=msg)
@@ -917,8 +920,8 @@ class Utils(object):
             if response['errors'] is True:
                 error = '에러'
 
-            msg = 'elastic-search 저장 결과: {}, {:,}'.format(error, int(size / 2))
-            logging.info(msg=msg)
+            msg = 'elasticsearch 저장: {}, {:,}'.format(error, int(size / 2))
+            logging.log(level=MESSAGE, msg=msg)
 
             if len(doc_id_list) > 0:
                 msg = '{}/{}/{}/{}?pretty'.format(host, index, doc_type, doc_id_list[0])

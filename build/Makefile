@@ -2,11 +2,19 @@
 VERSION = 1.0
 DOCKER_REGISTRY = nlpapi:5000
 CONTAINER = crawler
+
+BASE_IMAGE = base/crawler:$(VERSION)
 IMAGE_NAME = $(DOCKER_REGISTRY)/crawler:$(VERSION)
 
 default: build
 
-.PHONY: build push clean run
+.PHONY: base build push clean run
+
+.ONESHELL:
+base:
+	rm app.tar.gz
+	cp ../requirements.txt ./
+	docker build -t $(BASE_IMAGE) -f Dockerfile.base .
 
 .ONESHELL:
 build:
@@ -28,7 +36,7 @@ build:
 		.
 
 	cd build/
-	docker build -t $(IMAGE_NAME) -f Dockerfile .
+	docker build --build-arg BASE_IMAGE=$(BASE_IMAGE) -t $(IMAGE_NAME) -f Dockerfile .
 
 push: 
 	docker push $(IMAGE_NAME)

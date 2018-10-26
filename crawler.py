@@ -19,6 +19,9 @@ logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
                     level=logging.INFO)
 
+MESSAGE = 25
+logging.addLevelName(MESSAGE, 'MESSAGE')
+
 
 class Crawler(Utils):
     """
