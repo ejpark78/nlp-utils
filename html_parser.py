@@ -7,15 +7,13 @@ from __future__ import print_function
 
 import logging
 import re
-
 import sys
+
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
-from utils import Utils as CrawlerUtils
 
-
-class CommonHtmlParseUtils(object):
+class HtmlParserBase(object):
     """"""
 
     @staticmethod
@@ -45,8 +43,25 @@ class CommonHtmlParseUtils(object):
 
         return soup
 
+    @staticmethod
+    def parse_url(url):
+        """ url 에서 쿼리문을 반환
 
-class MlbParkUtils(CommonHtmlParseUtils):
+        :param url: url 주소
+        :return: url 쿼리 파싱 결과 반환
+        """
+        from urllib.parse import urlparse, parse_qs
+
+        url_info = urlparse(url)
+        result = parse_qs(url_info.query)
+        for key in result:
+            result[key] = result[key][0]
+
+        base_url = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+        return result, base_url, url_info
+
+
+class MlbParkUtils(HtmlParserBase):
     """"""
 
     def parse_mlbpark(self, document):
@@ -643,6 +658,28 @@ class HtmlParser(MlbParkUtils):
 
         return result
 
+    @staticmethod
+    def replace_tag(html_tag, tag_list, replacement='', attribute=None):
+        """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ...
+
+        :param html_tag: html 본문
+        :param tag_list: 제거할 태그 목록
+        :param replacement: 치환할 문자
+        :param attribute: 특정 속성값 포함 여부
+        :return: True/False
+        """
+        if html_tag is None:
+            return False
+
+        for tag_name in tag_list:
+            for tag in html_tag.find_all(tag_name, attrs=attribute):
+                if replacement == '':
+                    tag.extract()
+                else:
+                    tag.replace_with(replacement)
+
+        return True
+
     def get_article_body(self, html_content):
         """
         html 본문에서 텍스트만 추출 해서 반환
@@ -662,8 +699,8 @@ class HtmlParser(MlbParkUtils):
 
         article_contents = BeautifulSoup(html_content, 'lxml')
 
-        CrawlerUtils().replace_tag(article_contents, ['caption'])
-        CrawlerUtils().replace_tag(article_contents, ['br', 'dl', 'BR', 'DL'], '\n')
+        self.replace_tag(article_contents, ['caption'])
+        self.replace_tag(article_contents, ['br', 'dl', 'BR', 'DL'], '\n')
 
         self.remove_link_tag(article_contents)
 

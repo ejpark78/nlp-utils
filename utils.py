@@ -1302,9 +1302,9 @@ class Utils(object):
         :return: True/False
         """
         try:
-            query, base_url, parsed_url = self.get_query(document['url'])
+            query, base_url, parsed_url = self.parse_url(document['url'])
         except Exception as e:
-            logging.error(msg='make_simple_url: get_query 오류 {}'.format(e))
+            logging.error(msg='make_simple_url: parse_url 오류 {}'.format(e))
             return False
 
         if isinstance(document['url'], str):
@@ -1573,7 +1573,7 @@ class Utils(object):
 
         return True
 
-    def get_query(self, url):
+    def parse_url(self, url):
         """ url 에서 쿼리문을 반환
 
         :param url: url 주소
@@ -1588,7 +1588,8 @@ class Utils(object):
         for key in result:
             result[key] = result[key][0]
 
-        return result, '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path), url_info
+        base_url = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+        return result, base_url, url_info
 
     def update_state_by_id(self, str_state, job_info, scheduler_db_info, url, query_key_mapping=None):
         """ 현재 작업 상태 변경
@@ -1603,7 +1604,7 @@ class Utils(object):
         # query 정보 추출
         query = {}
         if query_key_mapping is not None and url != '':
-            query, _, _ = self.get_query(url)
+            query, _, _ = self.parse_url(url)
             self.change_key(query, query_key_mapping)
 
         state = job_info['state']

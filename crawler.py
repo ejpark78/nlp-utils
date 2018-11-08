@@ -242,7 +242,7 @@ class Crawler(Utils):
         else:
             collection = '{l1}-{l2}'.format(**section)
 
-        query, _, _ = self.get_query(curl_url)
+        query, _, _ = self.parse_url(curl_url)
         if 'page' not in query:
             query['page'] = 1
 
@@ -528,7 +528,7 @@ class Crawler(Utils):
                 # end 확인후 end 까지만 실행
                 if 'end' in self.parameter:
                     end = int(self.parameter['end'])
-                    query, _, _ = self.get_query(url)
+                    query, _, _ = self.parse_url(url)
 
                     if 'query_key_mapping' in self.parsing_info:
                         self.change_key(query, self.parsing_info['query_key_mapping'])
