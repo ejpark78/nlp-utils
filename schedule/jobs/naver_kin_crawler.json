@@ -10,10 +10,30 @@
     "index": "crawler-naver-kin-detail",
     "url_frame": "https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}"
   },
-  "answer_list": {
+  "partner_list": {
+    "host": "http://b1:9200",
+    "index": "crawler-naver-kin-partner_list",
+    "url_frame": "https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId=0"
+  },
+  "expert_list": {
     "host": "http://b1:9200",
     "index": "crawler-naver-kin-expert_user_list",
-    "url_frame": "",
+    "url_frame": "https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0"
+  },
+  "elite_user_list": {
+    "host": "http://b1:9200",
+    "index": "crawler-naver-kin-elite_user_list",
+    "url_list": "https://kin.naver.com/hall/eliteUser.nhn?year={year}",
+    "url_frame": "https://kin.naver.com/ajax/eliteUserAjax.nhn?year={year}&month={month}&page={page}"
+  },
+  "rank_user_list": {
+    "host": "http://b1:9200",
+    "index": "crawler-naver-kin-rank_user_list",
+    "url_list": "https://kin.naver.com/qna/directoryExpertList.nhn?dirId={dir_id}",
+    "url_frame": [
+      "https://kin.naver.com/ajax/qnaWeekRankAjax.nhn?requestId=weekRank&dirId={dir_id}&page={page}",
+      "https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}"
+    ],
     "category_list": {
       "금융": "401",
       "예금, 적금": "40101",

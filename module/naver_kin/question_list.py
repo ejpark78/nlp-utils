@@ -10,10 +10,10 @@ from time import sleep
 
 import requests
 import urllib3
-from module.naver_kin.config import Config
-from module.common_utils import CommonUtils
 
-from elasticsearch_utils import ElasticSearchUtils
+from module.common_utils import CommonUtils
+from module.elasticsearch_utils import ElasticSearchUtils
+from module.naver_kin.config import Config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

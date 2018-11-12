@@ -11,10 +11,10 @@ from time import sleep
 
 import requests
 
-from elasticsearch_utils import ElasticSearchUtils
 from module.common_utils import CommonUtils
-from module.naver_kin.config import Config
+from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
+from module.naver_kin.config import Config
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],

@@ -12,6 +12,9 @@ import sys
 from os import listdir
 from os.path import isdir, join
 
+from module.elasticsearch_utils import ElasticSearchUtils
+from module.naver_kin.config import Config
+
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
                     level=logging.INFO)
@@ -25,6 +28,7 @@ class CorpusUtils(object):
 
     def __init__(self):
         """ 생성자 """
+        self.cfg = Config()
 
     @staticmethod
     def save_to_excel(file_name, data, column_names):
@@ -133,114 +137,11 @@ class CorpusUtils(object):
 
         return
 
-    @staticmethod
-    def elastic_scroll(elastic, scroll_id, index, size, query, sum_count):
-        """"""
-        params = {'request_timeout': 2 * 60}
-
-        # 스크롤 아이디가 있다면 scroll 함수 호출
-        if scroll_id == '':
-            search_result = elastic.search(index=index, doc_type='doc', body=query, scroll='2m',
-                                           size=size, params=params)
-        else:
-            search_result = elastic.scroll(scroll_id=scroll_id, scroll='2m', params=params)
-
-        # 검색 결과 추출
-        scroll_id = search_result['_scroll_id']
-
-        hits = search_result['hits']
-
-        total = hits['total']
-
-        count = len(hits['hits'])
-
-        sum_count += count
-        logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
-
-        return hits['hits'], scroll_id, count, sum_count
-
-    def dump_elastic_search(self, host='http://localhost:9200', index='crawler-naver-kin-detail'):
-        """elastic-search 의 데이터를 덤프 받는다."""
-        # 한번에 가져올 문서수
-        size = 1000
-
-        count = 1
-        sum_count = 0
-        scroll_id = ''
-
-        # 서버 접속
-        elastic = self.open_elastic_search(host=[host], index=index)
-        if elastic is None:
-            return
-
-        while count > 0:
-            hits, scroll_id, count, sum_count = self.elastic_scroll(
-                elastic=elastic, scroll_id=scroll_id, index=index,
-                size=size, query={}, sum_count=sum_count)
-
-            for item in hits:
-                line = json.dumps(item, ensure_ascii=False, sort_keys=True)
-                print(line, flush=True)
-
-            # 종료 조건
-            if count < size:
-                break
-
-        return
-
-    def export_detail(self):
-        """"""
-        host = 'http://localhost:9200'
-        index = 'crawler-naver-kin-detail'
-
-        # 한번에 가져올 문서수
-        size = 1000
-
-        count = 1
-        sum_count = 0
-        scroll_id = ''
-
-        # 서버 접속
-        elastic = self.open_elastic_search(host=[host], index=index)
-        if elastic is None:
-            return
-
-        query = {
-            '_source': 'category,question,detail_question,answer,answer_user'.split(','),
-            'size': size
-        }
-
-        while count > 0:
-            hits, scroll_id, count, sum_count = self.elastic_scroll(
-                elastic=elastic, scroll_id=scroll_id, index=index,
-                size=size, query=query, sum_count=sum_count)
-
-            for item in hits:
-                doc = item['_source']
-
-                common = [
-                    item['_id'],
-                    doc['category'],
-                    doc['question'],
-                    doc['detail_question']
-                ]
-
-                for i in range(len(doc['answer'])):
-                    try:
-                        answer = [doc['answer_user'][i], doc['answer'][i]]
-                        logging.info(msg='\t'.join(common + answer))
-                    except Exception as e:
-                        logging.error(msg='{}'.format(e))
-                        pass
-
-            # 종료 조건
-            if count < size:
-                break
-
-        return
-
     def sync_id(self, index='crawler-naver-kin-detail'):
         """document_id 와 _id 가 형식에 맞지 않는 것을 바꾼다. """
+
+        job_info = self.cfg.job_info['detail']
+
         query = {
             '_source': 'd1Id,dirId,docId,document_id'.split(','),
             'size': '1000',
@@ -249,7 +150,9 @@ class CorpusUtils(object):
             }
         }
 
-        data_list, elastic = self.get_document_list(index=index, query=query, only_source=False, limit=-1)
+        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
+
+        data_list = elastic_utils.dump_documents(index=index, query=query, only_source=False, limit=5000)
 
         for item in data_list:
             doc = item['_source']
@@ -264,7 +167,8 @@ class CorpusUtils(object):
 
             if item['_id'].find('201807') == 0 or d_id != item['_id']:
                 print(item)
-                self.move_document(host=self.elastic_info['host'], source_index=index, target_index=index,
-                                   document_id=d_id, source_id=item['_id'])
+                elastic_utils.move_document(host=job_info['host'],
+                                            source_index=index, target_index=index,
+                                            document_id=d_id, source_id=item['_id'])
 
         return
