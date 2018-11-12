@@ -18,14 +18,11 @@ logging.basicConfig(format="[%(levelname)-s] %(message)s",
 
 
 class LineageMConverter:
+    """"""
 
     @staticmethod
     def parse_argument():
-        """
-        옵션 설정
-
-        :return:
-        """
+        """옵션 설정"""
         import argparse
 
         arg_parser = argparse.ArgumentParser(description='')
@@ -38,13 +35,7 @@ class LineageMConverter:
 
     @staticmethod
     def set_pragam(cursor, readonly=True):
-        """
-        sqlite의 속도 개선을 위한 설정
-
-        :param cursor:
-        :param readonly:
-        :return:
-        """
+        """sqlite의 속도 개선을 위한 설정"""
         # cursor.execute('PRAGMA threads       = 8;')
 
         # 700,000 = 1.05G, 2,100,000 = 3G
@@ -64,12 +55,7 @@ class LineageMConverter:
         return
 
     def open_sqlite(self, filename, delete=True):
-        """
-
-        :param filename:
-        :param delete:
-        :return:
-        """
+        """"""
         import os
 
         if os.path.exists(filename) and delete is True:
@@ -89,12 +75,7 @@ class LineageMConverter:
 
     @staticmethod
     def simplify(col_list, document):
-        """
-
-        :param col_list:
-        :param document:
-        :return:
-        """
+        """"""
         result = {}
 
         try:
@@ -115,10 +96,7 @@ class LineageMConverter:
         return result
 
     def make_index(self):
-        """
-
-        :return:
-        """
+        """"""
         title = ['articleId', 'title', 'contents', 'commentCount',
                  'postDate', 'replyCount', 'url', 'writer', 'hitCount']
         comment_title = ['contents', 'postDate', 'replyCount', 'writer']
@@ -182,9 +160,7 @@ class LineageMConverter:
         return
 
     def merge_comment(self):
-        """
-        :return:
-        """
+        """"""
         conn, cursor = self.open_sqlite('lineagem.sqlite3', delete=False)
 
         row_id = 0
@@ -233,10 +209,7 @@ class LineageMConverter:
 
     @staticmethod
     def to_xlsx():
-        """
-
-        :return:
-        """
+        """"""
         title = ['articleId', 'title', 'contents', 'commentCount', 'postDate', 'replyCount', 'writer', 'hitCount']
         reply_title = ['articleId', 'contents', 'postDate', 'writer']
 
@@ -312,10 +285,7 @@ class LineageMConverter:
 
 
 def main():
-    """
-
-    :return:
-    """
+    """"""
     converter = LineageMConverter()
 
     args = converter.parse_argument()

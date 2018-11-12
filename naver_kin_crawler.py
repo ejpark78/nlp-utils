@@ -19,10 +19,7 @@ logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
 def init_arguments():
-    """ 옵션 설정
-
-    :return:
-    """
+    """ 옵션 설정 """
     import textwrap
     import argparse
 
@@ -109,9 +106,6 @@ def main():
 
     if args.detail:
         QuestionDetail().get_detail(index=args.index, match_phrase=args.match_phrase)
-
-    # if args.answer_list:
-    #     crawler.batch_answer_list(index=args.index, match_phrase=args.match_phrase)
 
     # # 사용자 목록 크롤링
     # if args.elite_user_list:
