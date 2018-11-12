@@ -10,9 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV NOTVISIBLE "in users profile"
 
-# ENV APT_MIRROR=mirror.kakao.com
-# nlp.ncsoft.com
-ENV APT_MIRROR=172.20.79.157:8010
+ENV APT_MIRROR=172.20.78.134:8081/repository
 
 ENV APP_HOME=/usr/local/app
 
@@ -38,19 +36,13 @@ RUN echo && echo "# apt 저장소 변경" \
     \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# ENV PIP_MIRROR=mirror.kakao.com
-# nlp.ncsoft.com
-#ENV PIP_MIRROR=mirror.kakao.com
-ENV PIP_MIRROR=172.20.78.170
+ENV PIP_MIRROR=172.20.78.134
 
-COPY requirements.txt /tmp/
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
-#		echo "index-url = http://${PIP_MIRROR}:3141/root/pypi"; \
-#        echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
 		echo "index-url = http://${PIP_MIRROR}:8081/repository/pypi/simple"; \
 		echo "trusted-host = ${PIP_MIRROR}"; \
 	} > ~/.pip/pip.conf \
@@ -61,5 +53,21 @@ RUN echo && echo "# pip 저장소 설정" \
         setuptools \
         wheel
 
-RUN echo && echo "# requirements.txt 설치" \
-    pip3 install --upgrade --no-cache-dir -r /tmp/requirements.txt
+RUN echo && echo "# 의존성 라이브러리 설치" \
+    && pip3 install --upgrade --no-cache-dir \
+        python-dateutil \
+        boto3 \
+        bs4 \
+        elasticsearch \
+        hdfs \
+        kafka-python \
+        lxml \
+        numpy \
+        paho-mqtt \
+        pymongo \
+        requests \
+        selenium \
+        html5lib \
+        openpyxl \
+        jsonlines \
+        urllib3

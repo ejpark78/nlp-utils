@@ -24,6 +24,11 @@ class UrlIndexDB(object):
         self.cursor = None
 
     @staticmethod
+    def get_columns(cursor):
+        """sqlite 테이블에서 컬럼 목록을 반환한다."""
+        return [d[0] for d in cursor.description]
+
+    @staticmethod
     def set_pragma(cursor, readonly=True):
         """ sqlite 의 속도 개선을 위한 설정
 

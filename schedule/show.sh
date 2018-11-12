@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 list=`cat aws_crawler.list`
 for l in $list ; do
 	echo "- $l"

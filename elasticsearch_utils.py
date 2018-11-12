@@ -164,6 +164,9 @@ class ElasticSearchUtils(object):
         if self.elastic is None:
             return None
 
+        if len(self.bulk_data[self.host]) == 0:
+            return None
+
         size = -1
         response = None
         doc_id_list = []
@@ -203,15 +206,18 @@ class ElasticSearchUtils(object):
 
         return
 
-    def scroll(self, scroll_id, query, size=1000):
+    def scroll(self, scroll_id, query, index=None, size=1000):
         """"""
+        if index is None:
+            index = self.index
+
         params = {
             'request_timeout': 2 * 60
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            search_result = self.elastic.search(index=self.index, doc_type='doc', body=query, scroll='2m',
+            search_result = self.elastic.search(index=index, doc_type='doc', body=query, scroll='2m',
                                                 size=size, params=params)
         else:
             search_result = self.elastic.scroll(scroll_id=scroll_id, scroll='2m', params=params)
@@ -287,29 +293,64 @@ class ElasticSearchUtils(object):
 
         return result
 
-    def dump_documents(self, index, size=1000):
-        """"""
-        import json
-
+    def dump_documents(self, index=None, query=None, size=1000, limit=-1, only_source=True):
+        """문서를 덤프 받는다."""
         count = 1
         sum_count = 0
         scroll_id = ''
 
-        query = {}
-
+        result = []
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+            hits, scroll_id, count, total = self.scroll(index=index, scroll_id=scroll_id, size=size, query=query)
 
             sum_count += count
             logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
 
             for item in hits:
-                document = json.dumps(item['_source'], ensure_ascii=False, sort_keys=True)
-                print(document, flush=True)
+                if only_source is True:
+                    result.append(item['_source'])
+                else:
+                    result.append(item)
+
+            if limit > 0 and sum_count < limit:
+                break
 
             # 종료 조건
             if count < size:
                 break
+
+        return result
+
+    def move_document(self, source_index, target_index, document_id, host, source_id=None):
+        """ 문서를 이동한다."""
+        if source_id is None:
+            source_id = document_id
+
+        try:
+            exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
+            if exists is False:
+                logging.info(msg='move_document 문서 없음: {} {}'.format(source_index, source_id))
+                return
+        except Exception as e:
+            logging.error(msg='move_document 문서 찾기 오류 {}'.format(e))
+            return
+
+        # 문서 읽기
+        try:
+            document = self.elastic.get(index=source_index, doc_type='doc', id=source_id)
+
+            if source_id != document_id:
+                document['_source']['_id'] = document_id
+        except Exception as e:
+            logging.error(msg='move_document 문서 읽기 오류 {}'.format(e))
+            return
+
+        # 문서 저장
+        self.save_document(document=document['_source'], index=target_index)
+        self.flush()
+
+        # 기존 문서 삭제
+        self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
 
         return
 
@@ -330,12 +371,17 @@ class ElasticSearchUtils(object):
 
 def main():
     """메인"""
+    import json
+
     args = ElasticSearchUtils.init_arguments()
 
     utils = ElasticSearchUtils(host=args.host, index=args.index)
 
     if args.dump_data:
-        utils.dump_documents(args.index)
+        doc_list = utils.dump_documents(args.index)
+        for doc in doc_list:
+            document = json.dumps(doc, ensure_ascii=False, sort_keys=True)
+            print(document, flush=True)
 
     return
 

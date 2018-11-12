@@ -36,7 +36,12 @@ build:
 		.
 
 	cd build/
-	docker build --build-arg BASE_IMAGE=$(BASE_IMAGE) -t $(IMAGE_NAME) -f Dockerfile .
+	docker build \
+		-t $(IMAGE_NAME) \
+		-f Dockerfile \
+		.
+
+#		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
 
 push: 
 	docker push $(IMAGE_NAME)
@@ -44,6 +49,7 @@ push:
 run: 
 	docker run \
 		-it --rm \
+		--user crawler \
 		-v /etc/hosts:/etc/hosts:ro \
 		--name $(CONTAINER) \
 		$(IMAGE_NAME)

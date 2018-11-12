@@ -1,12 +1,23 @@
-ARG BASE_IMAGE=base/crawler:latest
-FROM ${BASE_IMAGE}
+FROM base/crawler:1.0
+
+#ARG BASE_IMAGE=base/crawler:latest
+#FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
-RUN mkdir -p ${APP_HOME}
+ENV UID=1000 GID=1000 USER=crawler
+
+RUN echo "사용자 생성: ${USER}..." \
+    && mkdir -p ${APP_HOME} \
+	&& echo "사용자 생성..." \
+	&& addgroup --gid ${GID} ${USER} \
+	&& useradd --no-create-home --uid ${UID} --gid ${GID} -s /bin/bash ${USER} \
+	&& chown -R ${UID}:${GID} ${APP_HOME} \
+	&& usermod -G sudo ${USER} \
+	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 ADD app.tar.gz ${APP_HOME}
 
-#RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
-#COPY Dockerfile ${APP_HOME}
+RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
 WORKDIR ${APP_HOME}
