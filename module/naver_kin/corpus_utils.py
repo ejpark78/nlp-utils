@@ -13,7 +13,7 @@ from os import listdir
 from os.path import isdir, join
 
 from module.elasticsearch_utils import ElasticSearchUtils
-from module.naver_kin.config import Config
+from module.config import Config
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -28,7 +28,7 @@ class CorpusUtils(object):
 
     def __init__(self):
         """ 생성자 """
-        self.cfg = Config()
+        self.cfg = Config(job_id='naver_kin')
 
     @staticmethod
     def save_to_excel(file_name, data, column_names):

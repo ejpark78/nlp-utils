@@ -14,7 +14,7 @@ import requests
 from module.common_utils import CommonUtils
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
-from module.naver_kin.config import Config
+from module.config import Config
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -31,15 +31,16 @@ class QuestionDetail(object):
         """ 생성자 """
         super().__init__()
 
+        self.job_id = 'naver_kin'
         self.common_utils = CommonUtils()
         self.parser = HtmlParser()
 
-        cfg = Config()
+        cfg = Config(job_id=self.job_id)
 
         self.headers = cfg.headers
 
         self.job_info = cfg.job_info['detail']
-        self.parsing_info = cfg.parsing_info
+        self.parsing_info = cfg.parsing_info['values']
 
     def get_detail(self, index='crawler-naver-kin-question_list', match_phrase='{"fullDirNamePath": "주식"}'):
         """질문/답변 상세 페이지를 크롤링한다."""
@@ -62,7 +63,8 @@ class QuestionDetail(object):
                 }
             }
 
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
+                                           index=self.job_info['index'], bulk_size=10)
 
         question_list = elastic_utils.dump_documents(index=index, query=query, only_source=False, limit=5000)
 
@@ -95,11 +97,11 @@ class QuestionDetail(object):
 
             # 질문 상세 페이지 크롤링
             logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
-            request_result = requests.get(url=request_url, headers=self.headers,
-                                          allow_redirects=True, timeout=60)
+            resp = requests.get(url=request_url, headers=self.headers,
+                                allow_redirects=True, timeout=60)
 
             # 저장
-            soup = BeautifulSoup(request_result.content, 'html5lib')
+            soup = BeautifulSoup(resp.content, 'html5lib')
 
             # 이미 삭제된 질문일 경우
             if soup is None:

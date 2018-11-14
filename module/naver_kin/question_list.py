@@ -13,7 +13,7 @@ import urllib3
 
 from module.common_utils import CommonUtils
 from module.elasticsearch_utils import ElasticSearchUtils
-from module.naver_kin.config import Config
+from module.config import Config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -33,9 +33,10 @@ class QuestionList(object):
         """ 생성자 """
         super().__init__()
 
+        self.job_id = 'naver_kin'
         self.common_utils = CommonUtils()
 
-        cfg = Config()
+        cfg = Config(job_id=self.job_id)
 
         self.headers = cfg.headers
         self.job_info = cfg.job_info['question_list']

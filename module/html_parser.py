@@ -54,12 +54,18 @@ class HtmlParser(object):
                     try:
                         value = str(tag.prettify())
                     except Exception as e:
-                        pass
+                        logging.error('{}'.format(e))
                 else:
                     if tag.has_attr(item['type']):
                         value = tag[item['type']]
                     else:
                         value = str(tag.prettify())
+
+                # replace
+                if 'replace' in item:
+                    for pattern in item['replace']:
+                        value = re.sub('\r?\n', ' ', value, flags=re.MULTILINE)
+                        value = re.sub(pattern['from'], pattern['to'], value, flags=re.DOTALL)
 
                 value_list.append(value)
 
@@ -72,14 +78,7 @@ class HtmlParser(object):
 
     @staticmethod
     def replace_tag(html_tag, tag_list, replacement='', attribute=None):
-        """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ...
-
-        :param html_tag: html 본문
-        :param tag_list: 제거할 태그 목록
-        :param replacement: 치환할 문자
-        :param attribute: 특정 속성값 포함 여부
-        :return: True/False
-        """
+        """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ... """
         if html_tag is None:
             return False
 
@@ -93,14 +92,7 @@ class HtmlParser(object):
         return True
 
     def trace_tag(self, soup, tag_list, index, result):
-        """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다.
-
-        :param soup: bs4 개체
-        :param tag_list: 테그 위치 목록
-        :param index: 테그 인덱스
-        :param result: 결과
-        :return:
-        """
+        """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다."""
         from bs4 import element
 
         if soup is None:
@@ -162,3 +154,17 @@ class HtmlParser(object):
             tag.attrs = new_attribute
 
         return soup
+
+    @staticmethod
+    def parse_url(url):
+        """url 에서 쿼리문을 반환한다."""
+        from urllib.parse import urlparse, parse_qs
+
+        url_info = urlparse(url)
+        result = parse_qs(url_info.query)
+        for key in result:
+            result[key] = result[key][0]
+
+        base_url = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+
+        return result, base_url, url_info

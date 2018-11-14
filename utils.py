@@ -1574,11 +1574,7 @@ class Utils(object):
         return True
 
     def parse_url(self, url):
-        """ url 에서 쿼리문을 반환
-
-        :param url: url 주소
-        :return: url 쿼리 파싱 결과 반환
-        """
+        """url 에서 쿼리문을 반환한다."""
         from urllib.parse import urlparse, parse_qs
 
         url = self.get_url(url)

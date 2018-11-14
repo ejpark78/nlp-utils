@@ -1,5 +1,5 @@
 {
-  "_id": "naver_kin_crawler",
+  "_id": "naver_kin",
   "question_list": {
     "host": "http://b1:9200",
     "index": "crawler-naver-kin-question_list",
