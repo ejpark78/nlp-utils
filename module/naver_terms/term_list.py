@@ -36,39 +36,41 @@ class TermList(object):
         super().__init__()
 
         self.job_id = 'naver_terms'
+        column = 'term_list'
 
         self.common_utils = CommonUtils()
         self.parser = HtmlParser()
 
         self.cfg = Config(job_id=self.job_id)
 
+        # request 헤더 정보
         self.headers = self.cfg.headers
 
         # html 파싱 정보
-        self.parsing_info = self.cfg.parsing_info['term_list']
+        self.parsing_info = self.cfg.parsing_info[column]
 
         # crawler job 정보
-        self.job_info = self.cfg.job_info['term_list']
+        self.job_info = self.cfg.job_info[column]
         self.category = self.job_info['category']
         self.sleep = self.job_info['sleep']
 
         # 크롤링 상태 정보
-        self.status = self.cfg.status
+        self.status = self.cfg.status[column]
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
         # 이전 카테고리를 찾는다.
         category_id = None
-        if 'category_id' in self.status:
-            category_id = self.status['category_id']
+        if 'id' in self.status:
+            category_id = self.status['id']
 
         # 카테고리 하위 목록을 크롤링한다.
         for c in self.category:
-            if category_id is not None and c['category_id'] != category_id:
+            if category_id is not None and c['id'] != category_id:
                 continue
 
             category_id = None
-            self.get_term_list(category_id=c['category_id'], category_name=c['name'])
+            self.get_term_list(category_id=c['id'], category_name=c['name'])
 
         return
 

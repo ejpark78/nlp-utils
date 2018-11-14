@@ -36,30 +36,35 @@ class QuestionList(object):
         self.job_id = 'naver_kin'
         self.common_utils = CommonUtils()
 
-        cfg = Config(job_id=self.job_id)
+        column = 'question_list'
+        self.cfg = Config(job_id=self.job_id)
 
-        self.headers = cfg.headers
-        self.job_info = cfg.job_info['question_list']
+        self.headers = self.cfg.headers
+
+        self.status = self.cfg.status[column]
+
+        self.job_info = self.cfg.job_info[column]
+        self.sleep = self.job_info['sleep']
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
-        dir_id_list = [4, 11, 1, 2, 3, 8, 7, 6, 9, 10, 5, 13, 12, 20]
-        for dir_id in dir_id_list:
-            self.get_question_list(url=self.job_info['url_frame'],
-                                   host=self.job_info['host'],
-                                   index=self.job_info['index'],
-                                   dir_id=dir_id, end=500)
+        category = self.job_info['category']
+
+        for c in category:
+            self.get_question_list(category=c)
 
         return
 
-    def get_question_list(self, url, host, index, dir_id=4, start=1, end=90000, size=20):
+    def get_question_list(self, category, size=20):
         """ 네이버 지식인 경제 분야 질문 목록을 크롤링한다."""
-        delay = 5
+        url = self.job_info['url_frame']
 
-        elastic_utils = ElasticSearchUtils(host=host, index=index, bulk_size=10)
+        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
+                                           bulk_size=50)
 
-        for page in range(start, end):
-            query_url = url.format(dir_id=dir_id, size=size, page=page)
+        # start 부터 end 까지 반복한다.
+        for page in range(self.status['start'], self.status['end'], self.status['step']):
+            query_url = url.format(dir_id=category['id'], size=size, page=page)
 
             resp = requests.get(url=query_url, headers=self.headers,
                                 allow_redirects=True, timeout=60)
@@ -76,7 +81,8 @@ class QuestionList(object):
             if len(result_list) == 0:
                 break
 
-            logging.info(msg='{} {:,} ~ {:,} {:,}'.format(dir_id, page, end, len(result_list)))
+            logging.info(msg='{} {:,} ~ {:,} {:,}'.format(category['name'], page,
+                                                          self.status['end'], len(result_list)))
 
             # 결과 저장
             for doc in result_list:
@@ -91,5 +97,5 @@ class QuestionList(object):
 
             elastic_utils.flush()
 
-            sleep(delay)
+            sleep(self.sleep)
         return

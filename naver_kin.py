@@ -105,7 +105,7 @@ def main():
         QuestionList().batch()
 
     if args.detail:
-        QuestionDetail().get_detail(index=args.index, match_phrase=args.match_phrase)
+        QuestionDetail().get_detail(question_list_index=args.index, match_phrase=args.match_phrase)
 
     # # 사용자 목록 크롤링
     # if args.elite_user_list:
@@ -119,16 +119,6 @@ def main():
     #
     # if args.get_expert_list:
     #     crawler.get_expert_list()
-    #
-    # # 데이터 추출
-    # if args.dump_elastic_search:
-    #     crawler.dump_elastic_search(host=args.host, index=args.index)
-    #
-    # if args.export_detail:
-    #     crawler.export_detail()
-    #
-    # if args.sync_id:
-    #     crawler.sync_id(index=args.index)
 
     return
 

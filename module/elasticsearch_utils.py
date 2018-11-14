@@ -187,6 +187,9 @@ class ElasticSearchUtils(object):
 
     def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True):
         """문서를 덤프 받는다."""
+        if index is None:
+            index = self.index
+
         count = 1
         sum_count = 0
         scroll_id = ''

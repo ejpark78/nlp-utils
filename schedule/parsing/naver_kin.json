@@ -1,191 +1,205 @@
 {
   "_id": "naver_kin",
-  "values": [
-    {
-      "key": "html",
+  "detail": {
+    "trace": {
+      "key": "html_content",
       "type": "html",
       "tag": [
         {
-          "name": "div",
+          "name": "li",
           "attribute": {
-            "class": "sec_col1"
+            "class": "thumb_list_item"
           }
         }
       ]
     },
-    {
-      "key": "category",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
+    "values": [
+      {
+        "key": "html",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
           }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "depth depth2"
+        ]
+      },
+      {
+        "key": "category",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "depth depth2"
+            }
           }
-        }
-      ]
-    },
-    {
-      "key": "question",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
+        ]
+      },
+      {
+        "key": "question",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "title_wrapper"
+            }
           }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "title_wrapper"
+        ]
+      },
+      {
+        "key": "info",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "_questionArea"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "info_zone"
+            }
           }
-        }
-      ]
-    },
-    {
-      "key": "info",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
+        ]
+      },
+      {
+        "key": "reply_count",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "a",
+            "attribute": {
+              "class": "reply_count"
+            }
+          },
+          {
+            "name": "em",
+            "attribute": {
+              "class": "count_number"
+            }
           }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "_questionArea"
+        ]
+      },
+      {
+        "key": "detail_question",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "_questionArea"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "user_content"
+            }
           }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "info_zone"
+        ]
+      },
+      {
+        "key": "answer",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "_answer"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "user_content"
+            }
           }
-        }
-      ]
-    },
-    {
-      "key": "reply_count",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
+        ]
+      },
+      {
+        "key": "answer_user",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "_answer"
+            }
+          },
+          {
+            "name": "h3",
+            "attribute": {
+              "class": "heading"
+            }
           }
-        },
-        {
-          "name": "a",
-          "attribute": {
-            "class": "reply_count"
+        ]
+      },
+      {
+        "key": "user_uid",
+        "type": "data-u",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "sec_col1"
+            }
+          },
+          {
+            "name": "a",
+            "attribute": {
+              "class": "button_friend"
+            }
           }
-        },
-        {
-          "name": "em",
-          "attribute": {
-            "class": "count_number"
-          }
-        }
-      ]
-    },
-    {
-      "key": "detail_question",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "_questionArea"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "user_content"
-          }
-        }
-      ]
-    },
-    {
-      "key": "answer",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "_answer"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "user_content"
-          }
-        }
-      ]
-    },
-    {
-      "key": "answer_user",
-      "type": "text",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "_answer"
-          }
-        },
-        {
-          "name": "h3",
-          "attribute": {
-            "class": "heading"
-          }
-        }
-      ]
-    },
-    {
-      "key": "user_uid",
-      "type": "data-u",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "sec_col1"
-          }
-        },
-        {
-          "name": "a",
-          "attribute": {
-            "class": "button_friend"
-          }
-        }
-      ]
-    }
-  ]
+        ]
+      }
+    ]
+  }
 }

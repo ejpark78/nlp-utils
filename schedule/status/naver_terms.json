@@ -1,7 +1,9 @@
 {
-  "category_id": "32075",
-  "category_name": "두산백과/생활",
-  "end": 2000,
-  "start": 523,
-  "step": 1
+  "term_list": {
+    "category_id": "32742",
+    "category_name": "두산백과/의학",
+    "end": 5000,
+    "start": 6,
+    "step": 1
+  }
 }

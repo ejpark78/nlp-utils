@@ -58,7 +58,14 @@ class Config(object):
 
     def save_status(self):
         """현재 크롤링 위치를 저장한다."""
-        str_config = json.dumps(self.status, ensure_ascii=False, sort_keys=True, indent=2)
+        # 최신 status 정보 로딩
+        status = self.open_config(filename=self.status_filename, create=True)
+
+        # 병합
+        status.update(self.status)
+
+        # 저장
+        str_config = json.dumps(status, ensure_ascii=False, sort_keys=True, indent=2)
         with open(self.status_filename, 'w') as fp:
             fp.write(str_config + '\n')
 

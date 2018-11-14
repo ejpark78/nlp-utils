@@ -10,6 +10,7 @@ import logging
 from time import sleep
 
 import requests
+from bs4 import BeautifulSoup
 
 from module.common_utils import CommonUtils
 from module.config import Config
@@ -32,23 +33,121 @@ class QuestionDetail(object):
         super().__init__()
 
         self.job_id = 'naver_kin'
+        column = 'detail'
+
         self.common_utils = CommonUtils()
         self.parser = HtmlParser()
 
-        cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_id=self.job_id)
 
-        self.headers = cfg.headers
+        # request 헤더 정보
+        self.headers = self.cfg.headers
 
-        self.job_info = cfg.job_info['detail']
-        self.parsing_info = cfg.parsing_info['values']
+        # html 파싱 정보
+        self.parsing_info = self.cfg.parsing_info[column]
 
-    def get_detail(self, index='crawler-naver-kin-question_list', match_phrase='{"fullDirNamePath": "주식"}'):
-        """질문/답변 상세 페이지를 크롤링한다."""
-        from bs4 import BeautifulSoup
+        # crawler job 정보
+        self.job_info = self.cfg.job_info[column]
+
+        self.sleep = self.job_info['sleep']
+
+    def get_detail(self, question_list_index='crawler-naver-kin-question_list', match_phrase='{}'):
+        """상세 페이지를 크롤링한다."""
+        elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
+                                           index=self.job_info['index'], bulk_size=10)
+
+        # 질문 목록 조회
+        question_list = self.get_question_list(elastic_utils=elastic_utils, index=question_list_index,
+                                               match_phrase=match_phrase)
+
+        i = -1
+        size = len(question_list)
 
         url_frame = self.job_info['url_frame']
 
-        delay = 5
+        for item in question_list:
+            q = item['_source']
+
+            # 문서 아이디 생성
+            if 'd1Id' not in q:
+                q['d1Id'] = str(q['dirId'])[0]
+
+            i += 1
+            doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
+
+            # 이미 받은 질문인지 검사
+            is_skip = self.exists(question_list_index=question_list_index, elastic_utils=elastic_utils,
+                                  doc_id=doc_id, question_id=item['_id'])
+
+            if is_skip is True:
+                logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+                continue
+
+            # url 생성
+            request_url = url_frame.format(**q)
+
+            # 질문 상세 페이지 크롤링
+            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+            resp = requests.get(url=request_url, headers=self.headers,
+                                allow_redirects=True, timeout=60)
+
+            # 저장
+            self.save_doc(html=resp.content, elastic_utils=elastic_utils,
+                          question_list_index=question_list_index,
+                          doc_id=doc_id, question_id=item['_id'])
+
+            sleep(self.sleep)
+
+        return
+
+    def exists(self, question_list_index, elastic_utils, doc_id, question_id):
+        """상세 질문이 있는지 확인한다."""
+        if 'question_list' not in question_list_index:
+            exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
+            if exists is True:
+                elastic_utils.move_document(source_index=question_list_index,
+                                            target_index='{}_done'.format(question_list_index),
+                                            source_id=question_id, document_id=doc_id,
+                                            host=self.job_info['host'])
+                return True
+
+        return False
+
+    def save_doc(self, html, elastic_utils, question_list_index, doc_id, question_id):
+        """크롤링 문서를 저장한다."""
+        soup = BeautifulSoup(html, 'html5lib')
+
+        # 이미 삭제된 질문일 경우
+        if soup is None:
+            elastic_utils.move_document(source_index=question_list_index,
+                                        target_index='{}_done'.format(question_list_index),
+                                        source_id=question_id, document_id=doc_id,
+                                        host=self.job_info['host'])
+            return
+
+        # 질문 정보 추출
+        doc = self.parser.parse(html=None, soup=soup,
+                                parsing_info=self.parsing_info['values'])
+
+        doc['_id'] = doc_id
+
+        # 문서 저장
+        elastic_utils.save_document(index=self.job_info['host'], document=doc)
+        elastic_utils.flush()
+
+        # 질문 목록에서 완료 목록으로 이동
+        elastic_utils.move_document(source_index=question_list_index,
+                                    target_index='{}_done'.format(question_list_index),
+                                    source_id=question_id, document_id=doc_id,
+                                    host=self.job_info['host'])
+
+        logging.info(msg='{} {}'.format(doc_id, doc['question']))
+
+        return
+
+    @staticmethod
+    def get_question_list(elastic_utils, index, match_phrase):
+        """질문 목록을 조회한다."""
         query = {
             '_source': 'd1Id,dirId,docId'.split(','),
             'size': 1000
@@ -63,71 +162,6 @@ class QuestionDetail(object):
                 }
             }
 
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
-                                           index=self.job_info['index'], bulk_size=10)
-
-        question_list = elastic_utils.dump(index=index, query=query, only_source=False, limit=5000)
-
-        i = -1
-        size = len(question_list)
-
-        for item in question_list:
-            question = item['_source']
-
-            # 문서 아이디 생성
-            if 'd1Id' not in question:
-                question['d1Id'] = str(question['dirId'])[0]
-
-            i += 1
-            doc_id = '{}-{}-{}'.format(question['d1Id'], question['dirId'], question['docId'])
-
-            if 'question_list' not in index:
-                # 이미 받은 질문인지 검사
-                exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
-                if exists is True:
-                    logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
-
-                    elastic_utils.move_document(source_index=index, target_index='{}_done'.format(index),
-                                                source_id=item['_id'], document_id=doc_id,
-                                                host=self.job_info['host'])
-                    continue
-
-            # url 생성
-            request_url = url_frame.format(**question)
-
-            # 질문 상세 페이지 크롤링
-            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
-            resp = requests.get(url=request_url, headers=self.headers,
-                                allow_redirects=True, timeout=60)
-
-            # 저장
-            soup = BeautifulSoup(resp.content, 'html5lib')
-
-            # 이미 삭제된 질문일 경우
-            if soup is None:
-                elastic_utils.move_document(source_index=index, target_index='{}_done'.format(index),
-                                            source_id=item['_id'], document_id=doc_id,
-                                            host=self.job_info['host'])
-                continue
-
-            # 질문 정보 추출
-            detail_doc = self.parser.parse(html=None, soup=soup,
-                                           parsing_info=self.parsing_info)
-
-            detail_doc['_id'] = doc_id
-
-            elastic_utils.save_document(index=self.job_info['host'], document=detail_doc)
-            elastic_utils.flush()
-
-            elastic_utils.move_document(source_index=index, target_index='{}_done'.format(index),
-                                        source_id=item['_id'], document_id=doc_id,
-                                        host=self.job_info['host'])
-
-            self.common_utils.print_message(msg={
-                'doc_id': doc_id,
-                'question': detail_doc['question']
-            })
-
-            sleep(delay)
-
-        return
+        result = elastic_utils.dump(index=index, query=query,
+                                    only_source=False, limit=5000)
+        return result
