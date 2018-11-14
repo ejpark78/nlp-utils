@@ -12,8 +12,8 @@ import requests
 import urllib3
 
 from module.common_utils import CommonUtils
-from module.elasticsearch_utils import ElasticSearchUtils
 from module.config import Config
+from module.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

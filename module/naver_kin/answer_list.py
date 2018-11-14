@@ -11,8 +11,8 @@ from time import sleep
 import requests
 
 from module.common_utils import CommonUtils
-from module.elasticsearch_utils import ElasticSearchUtils
 from module.config import Config
+from module.elasticsearch_utils import ElasticSearchUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],

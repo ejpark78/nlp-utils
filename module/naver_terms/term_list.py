@@ -57,28 +57,32 @@ class TermList(object):
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
+        # 이전 카테고리를 찾는다.
+        category_id = None
+        if 'category_id' in self.status:
+            category_id = self.status['category_id']
+
+        # 카테고리 하위 목록을 크롤링한다.
         for c in self.category:
-            if 'category_id' in self.status and self.status['category_id'] != c['category_id']:
+            if category_id is not None and c['category_id'] != category_id:
                 continue
 
-            self.get_term_list(url=self.job_info['url_frame'],
-                               host=self.job_info['host'], index=self.job_info['index'],
-                               category_id=c['category_id'], category_name=c['name'])
+            category_id = None
+            self.get_term_list(category_id=c['category_id'], category_name=c['name'])
 
         return
 
-    def get_term_list(self, url, host, index, category_id, category_name):
+    def get_term_list(self, category_id, category_name):
         """용어 목록을 크롤링한다."""
-
-        elastic_utils = ElasticSearchUtils(host=host, index=index, bulk_size=20)
-
         history = {}
-        trace_tag = self.parsing_info['trace']['tag']
-
         count = {
             'prev': -1
         }
 
+        url = self.job_info['url_frame']
+        trace_tag = self.parsing_info['trace']['tag']
+
+        # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'], self.status['step']):
             # 쿼리 url 생성
             query_url = url.format(category_id=category_id, page=page)
@@ -89,7 +93,7 @@ class TermList(object):
 
             # 문서 저장
             is_stop = self.save_doc(html=resp.content, trace_tag=trace_tag, count=count,
-                                    category_name=category_name, elastic_utils=elastic_utils, history=history)
+                                    category_name=category_name, history=history)
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
@@ -106,11 +110,17 @@ class TermList(object):
 
             sleep(self.sleep)
 
+        # 위치 초기화
+        self.status['start'] = 1
+        del self.status['category_id']
+
         return
 
-    def save_doc(self, html, trace_tag, history, elastic_utils,
-                 category_name, count):
+    def save_doc(self, html, trace_tag, history, category_name, count):
         """크롤링한 문서를 저장한다."""
+        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
+                                           bulk_size=20)
+
         soup = BeautifulSoup(html, 'html5lib')
 
         count['element'] = 0

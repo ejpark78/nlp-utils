@@ -8,6 +8,7 @@ from __future__ import print_function
 import logging
 
 from module.naver_terms.term_list import TermList
+from module.naver_terms.corpus_utils import CorpusUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -25,11 +26,7 @@ def init_arguments():
 
     # 크롤링
     parser.add_argument('-term_list', action='store_true', default=False, help='목록 크롤링')
-
-    # 파라메터
-    parser.add_argument('-host', default='http://localhost:9200', help='elastic-search 주소')
-    parser.add_argument('-index', default='question_list', help='인덱스명')
-    parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
+    parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     return parser.parse_args()
 
@@ -40,6 +37,9 @@ def main():
 
     if args.term_list:
         TermList().batch()
+
+    if args.dump:
+        CorpusUtils().dump()
 
     return
 

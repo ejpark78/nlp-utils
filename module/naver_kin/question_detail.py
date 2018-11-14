@@ -12,9 +12,9 @@ from time import sleep
 import requests
 
 from module.common_utils import CommonUtils
+from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
-from module.config import Config
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -66,7 +66,7 @@ class QuestionDetail(object):
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
                                            index=self.job_info['index'], bulk_size=10)
 
-        question_list = elastic_utils.dump_documents(index=index, query=query, only_source=False, limit=5000)
+        question_list = elastic_utils.dump(index=index, query=query, only_source=False, limit=5000)
 
         i = -1
         size = len(question_list)

@@ -40,16 +40,7 @@ class ElasticSearchUtils(object):
 
     @staticmethod
     def create_index(elastic, index=None):
-        """ elastic-search 에 인덱스를 생성한다.
-
-        :param elastic: elastic 서버 접속 정보
-        :param index: 인덱스 이름
-        :return: True/False
-        settings 정보:
-            * 'number_of_shards': 샤딩 수
-            * 'number_of_replicas': 리플리카 수
-            * 'index.mapper.dynamic': mapping 자동 할당
-        """
+        """인덱스를 생성한다."""
         if elastic is None:
             return False
 
@@ -67,11 +58,7 @@ class ElasticSearchUtils(object):
 
     @staticmethod
     def convert_datetime(document):
-        """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다.
-
-        :param document: 문서
-        :return: 변환된 문서
-        """
+        """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
         for k in document:
             item = document[k]
 
@@ -81,10 +68,7 @@ class ElasticSearchUtils(object):
         return document
 
     def open(self):
-        """elastic-search 에 접속한다.
-
-        :return: 접속 정보
-        """
+        """elastic-search 에 접속한다."""
         # host 접속
         try:
             self.elastic = Elasticsearch(hosts=self.host, timeout=30)
@@ -102,12 +86,7 @@ class ElasticSearchUtils(object):
         return
 
     def save_document(self, document, index=None):
-        """문서를 elastic-search 에 저장한다.
-
-        :param document: 저장할 문서
-        :param index: 인덱스명
-        :return:
-        """
+        """문서를 저장한다."""
         # 서버 접속
         if self.elastic is None:
             self.open()
@@ -160,7 +139,7 @@ class ElasticSearchUtils(object):
         return True
 
     def flush(self):
-        """"""
+        """버퍼에 남은 문서를 저장한다."""
         if self.elastic is None:
             return None
 
@@ -206,8 +185,36 @@ class ElasticSearchUtils(object):
 
         return
 
+    def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True):
+        """문서를 덤프 받는다."""
+        count = 1
+        sum_count = 0
+        scroll_id = ''
+
+        result = []
+        while count > 0:
+            hits, scroll_id, count, total = self.scroll(index=index, scroll_id=scroll_id, size=size, query=query)
+
+            sum_count += count
+            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+            for item in hits:
+                if only_source is True:
+                    result.append(item['_source'])
+                else:
+                    result.append(item)
+
+            if limit > 0 and sum_count < limit:
+                break
+
+            # 종료 조건
+            if count < size:
+                break
+
+        return result
+
     def scroll(self, scroll_id, query, index=None, size=1000):
-        """"""
+        """스크롤 방식으로 데이터를 조회한다."""
         if index is None:
             index = self.index
 
@@ -272,7 +279,7 @@ class ElasticSearchUtils(object):
 
     @staticmethod
     def save_cache(filename, cache_data):
-        """"""
+        """데이를 피클로 저장한다."""
         import pickle
 
         with open(filename, 'wb') as fp:
@@ -282,7 +289,7 @@ class ElasticSearchUtils(object):
 
     @staticmethod
     def load_cache(filename):
-        """"""
+        """피클로 저장된 데이터를 반환한다."""
         import pickle
         from os.path import isfile
 
@@ -290,34 +297,6 @@ class ElasticSearchUtils(object):
         if isfile(filename):
             with open(filename, 'rb') as fp:
                 result = pickle.load(fp)
-
-        return result
-
-    def dump_documents(self, index=None, query=None, size=1000, limit=-1, only_source=True):
-        """문서를 덤프 받는다."""
-        count = 1
-        sum_count = 0
-        scroll_id = ''
-
-        result = []
-        while count > 0:
-            hits, scroll_id, count, total = self.scroll(index=index, scroll_id=scroll_id, size=size, query=query)
-
-            sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
-
-            for item in hits:
-                if only_source is True:
-                    result.append(item['_source'])
-                else:
-                    result.append(item)
-
-            if limit > 0 and sum_count < limit:
-                break
-
-            # 종료 조건
-            if count < size:
-                break
 
         return result
 
@@ -378,7 +357,7 @@ def main():
     utils = ElasticSearchUtils(host=args.host, index=args.index)
 
     if args.dump_data:
-        doc_list = utils.dump_documents(args.index)
+        doc_list = utils.dump(args.index)
         for doc in doc_list:
             document = json.dumps(doc, ensure_ascii=False, sort_keys=True)
             print(document, flush=True)

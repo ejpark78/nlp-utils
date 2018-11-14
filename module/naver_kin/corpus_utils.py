@@ -12,8 +12,9 @@ import sys
 from os import listdir
 from os.path import isdir, join
 
-from module.elasticsearch_utils import ElasticSearchUtils
 from module.config import Config
+from module.common_utils import CommonUtils
+from module.elasticsearch_utils import ElasticSearchUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -28,48 +29,10 @@ class CorpusUtils(object):
 
     def __init__(self):
         """ 생성자 """
-        self.cfg = Config(job_id='naver_kin')
+        self.job_id = 'naver_kin'
+        self.cfg = Config(job_id=self.job_id)
 
-    @staticmethod
-    def save_to_excel(file_name, data, column_names):
-        """ 크롤링 결과를 엑셀로 저장한다. """
-        from openpyxl import Workbook
-
-        status = []
-
-        wb = Workbook()
-
-        for path in data:
-            count = '{:,}'.format(len(data[path]))
-            status.append([path, count])
-
-            ws = wb.create_sheet(path)
-
-            if len(column_names) == 0:
-                column_names = list(data[path][0].keys())
-
-            ws.append(column_names)
-            for doc in data[path]:
-                lines = []
-                for c in column_names:
-                    v = doc[c]
-                    if v is None:
-                        v = ''
-
-                    lines.append('{}'.format(v))
-
-                ws.append(lines)
-
-        # 통계 정보 저장
-        ws = wb['Sheet']
-        for row in status:
-            ws.append(row)
-
-        ws.title = 'status'
-
-        wb.save(file_name)
-
-        return
+        self.common_utils = CommonUtils()
 
     def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
         """ 네이버 지식인 질문 목록 결과를 취합한다. """
@@ -133,7 +96,7 @@ class CorpusUtils(object):
                 print('{} {:,}'.format(file, count), end='\r', flush=True, file=sys.stderr)
 
         # excel 저장
-        self.save_to_excel(file_name=result_filename, data=doc_index, column_names=columns)
+        self.common_utils.save_excel(filename=result_filename, data=doc_index, columns=columns)
 
         return
 
@@ -152,7 +115,7 @@ class CorpusUtils(object):
 
         elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
 
-        data_list = elastic_utils.dump_documents(index=index, query=query, only_source=False, limit=5000)
+        data_list = elastic_utils.dump(index=index, query=query, only_source=False, limit=5000)
 
         for item in data_list:
             doc = item['_source']
