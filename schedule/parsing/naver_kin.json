@@ -1,18 +1,7 @@
 {
   "_id": "naver_kin",
   "detail": {
-    "trace": {
-      "key": "html_content",
-      "type": "html",
-      "tag": [
-        {
-          "name": "li",
-          "attribute": {
-            "class": "thumb_list_item"
-          }
-        }
-      ]
-    },
+    "trace": {},
     "values": [
       {
         "key": "html",

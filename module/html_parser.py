@@ -93,7 +93,7 @@ class HtmlParser(object):
 
     def trace_tag(self, soup, tag_list, index, result):
         """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다."""
-        from bs4 import element
+        # from bs4 import element
 
         if soup is None:
             return
@@ -102,10 +102,14 @@ class HtmlParser(object):
             result.append(soup)
             return
 
-        soup = soup.findAll(tag_list[index]['name'], attrs=tag_list[index]['attribute'])
+        tag_info = tag_list[index]
+        if 'attribute' not in tag_info:
+            tag_info['attribute'] = None
 
-        if isinstance(soup, element.ResultSet):
-            for tag in soup:
+        trace_soup = soup.find_all(tag_info['name'], attrs=tag_info['attribute'])
+
+        if trace_soup is not None:
+            for tag in trace_soup:
                 self.trace_tag(soup=tag, tag_list=tag_list, index=index + 1, result=result)
 
         return

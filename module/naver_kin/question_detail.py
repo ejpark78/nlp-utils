@@ -12,7 +12,6 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup
 
-from module.common_utils import CommonUtils
 from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
@@ -35,7 +34,6 @@ class QuestionDetail(object):
         self.job_id = 'naver_kin'
         column = 'detail'
 
-        self.common_utils = CommonUtils()
         self.parser = HtmlParser()
 
         self.cfg = Config(job_id=self.job_id)
@@ -51,21 +49,19 @@ class QuestionDetail(object):
 
         self.sleep = self.job_info['sleep']
 
-    def get_detail(self, question_list_index='crawler-naver-kin-question_list', match_phrase='{}'):
+    def batch(self, list_index='crawler-naver-kin-question_list', match_phrase='{}'):
         """상세 페이지를 크롤링한다."""
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
                                            index=self.job_info['index'], bulk_size=10)
 
         # 질문 목록 조회
-        question_list = self.get_question_list(elastic_utils=elastic_utils, index=question_list_index,
-                                               match_phrase=match_phrase)
+        doc_list = self.get_doc_list(elastic_utils=elastic_utils, index=list_index,
+                                     match_phrase=match_phrase)
 
         i = -1
-        size = len(question_list)
+        size = len(doc_list)
 
-        url_frame = self.job_info['url_frame']
-
-        for item in question_list:
+        for item in doc_list:
             q = item['_source']
 
             # 문서 아이디 생성
@@ -75,78 +71,74 @@ class QuestionDetail(object):
             i += 1
             doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
 
-            # 이미 받은 질문인지 검사
-            is_skip = self.exists(question_list_index=question_list_index, elastic_utils=elastic_utils,
-                                  doc_id=doc_id, question_id=item['_id'])
+            # 이미 받은 항목인지 검사
+            is_skip = self.exists(list_index=list_index, elastic_utils=elastic_utils,
+                                  doc_id=doc_id, list_id=item['_id'])
 
             if is_skip is True:
                 logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
                 continue
 
-            # url 생성
-            request_url = url_frame.format(**q)
-
             # 질문 상세 페이지 크롤링
-            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+            request_url = self.job_info['url_frame'].format(**q)
+
             resp = requests.get(url=request_url, headers=self.headers,
                                 allow_redirects=True, timeout=60)
 
+            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+
             # 저장
             self.save_doc(html=resp.content, elastic_utils=elastic_utils,
-                          question_list_index=question_list_index,
-                          doc_id=doc_id, question_id=item['_id'])
+                          list_index=list_index,
+                          doc_id=doc_id, list_id=item['_id'])
 
             sleep(self.sleep)
 
         return
 
-    def exists(self, question_list_index, elastic_utils, doc_id, question_id):
+    def exists(self, list_index, elastic_utils, doc_id, list_id):
         """상세 질문이 있는지 확인한다."""
-        if 'question_list' not in question_list_index:
-            exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
-            if exists is True:
-                elastic_utils.move_document(source_index=question_list_index,
-                                            target_index='{}_done'.format(question_list_index),
-                                            source_id=question_id, document_id=doc_id,
-                                            host=self.job_info['host'])
-                return True
+        if 'question_list' in list_index:
+            return False
+
+        exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
+        if exists is True:
+            elastic_utils.move_document(source_index=list_index,
+                                        target_index='{}_done'.format(list_index),
+                                        source_id=list_id, document_id=doc_id,
+                                        host=self.job_info['host'])
+            return True
 
         return False
 
-    def save_doc(self, html, elastic_utils, question_list_index, doc_id, question_id):
+    def save_doc(self, html, elastic_utils, list_index, doc_id, list_id):
         """크롤링 문서를 저장한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
         # 이미 삭제된 질문일 경우
-        if soup is None:
-            elastic_utils.move_document(source_index=question_list_index,
-                                        target_index='{}_done'.format(question_list_index),
-                                        source_id=question_id, document_id=doc_id,
-                                        host=self.job_info['host'])
-            return
+        if soup is not None:
+            # 질문 정보 추출
+            doc = self.parser.parse(html=None, soup=soup,
+                                    parsing_info=self.parsing_info['values'])
 
-        # 질문 정보 추출
-        doc = self.parser.parse(html=None, soup=soup,
-                                parsing_info=self.parsing_info['values'])
+            doc['_id'] = doc_id
 
-        doc['_id'] = doc_id
+            # 문서 저장
+            elastic_utils.save_document(index=self.job_info['index'], document=doc)
+            elastic_utils.flush()
 
-        # 문서 저장
-        elastic_utils.save_document(index=self.job_info['host'], document=doc)
-        elastic_utils.flush()
+            logging.info(msg='{} {}'.format(doc_id, doc['question']))
 
         # 질문 목록에서 완료 목록으로 이동
-        elastic_utils.move_document(source_index=question_list_index,
-                                    target_index='{}_done'.format(question_list_index),
-                                    source_id=question_id, document_id=doc_id,
+        elastic_utils.move_document(source_index=list_index,
+                                    target_index='{}_done'.format(list_index),
+                                    source_id=list_id, document_id=doc_id,
                                     host=self.job_info['host'])
-
-        logging.info(msg='{} {}'.format(doc_id, doc['question']))
 
         return
 
     @staticmethod
-    def get_question_list(elastic_utils, index, match_phrase):
+    def get_doc_list(elastic_utils, index, match_phrase):
         """질문 목록을 조회한다."""
         query = {
             '_source': 'd1Id,dirId,docId'.split(','),

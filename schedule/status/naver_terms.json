@@ -1,9 +1,11 @@
 {
   "term_list": {
-    "category_id": "32742",
-    "category_name": "두산백과/의학",
+    "category": {
+      "id": "32855",
+      "name": "두산백과/문화예술"
+    },
     "end": 5000,
-    "start": 6,
+    "start": 2095,
     "step": 1
   }
 }

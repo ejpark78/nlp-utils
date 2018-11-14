@@ -48,9 +48,16 @@ class QuestionList(object):
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
-        category = self.job_info['category']
 
-        for c in category:
+        category_id = None
+        if 'category' in self.status:
+            category_id = self.status['category']['id']
+
+        for c in self.job_info['category']:
+            if category_id is not None and c['id'] != category_id:
+                continue
+
+            category_id = None
             self.get_question_list(category=c)
 
         return
@@ -69,33 +76,45 @@ class QuestionList(object):
             resp = requests.get(url=query_url, headers=self.headers,
                                 allow_redirects=True, timeout=60)
 
-            result = resp.json()
-
-            result_list = []
-            if 'answerList' in result:
-                result_list = result['answerList']
-
-            if 'lists' in result:
-                result_list = result['lists']
-
-            if len(result_list) == 0:
+            is_stop = self.save_doc(result=resp.json(), elastic_utils=elastic_utils)
+            if is_stop is True:
                 break
 
-            logging.info(msg='{} {:,} ~ {:,} {:,}'.format(category['name'], page,
-                                                          self.status['end'], len(result_list)))
+            self.status['start'] = page
+            self.status['category'] = category
 
-            # 결과 저장
-            for doc in result_list:
-                doc['_id'] = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
+            self.cfg.save_status()
 
-                self.common_utils.print_message(msg={
-                    'doc_id': doc['_id'],
-                    'title': doc['title']
-                })
-
-                elastic_utils.save_document(document=doc)
-
-            elastic_utils.flush()
+            logging.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
 
             sleep(self.sleep)
+
+        self.status['start'] = 1
+        self.cfg.save_status()
+
         return
+
+    @staticmethod
+    def save_doc(result, elastic_utils):
+        """크롤링 결과를 저장한다."""
+        result_list = []
+        if 'answerList' in result:
+            result_list = result['answerList']
+
+        if 'lists' in result:
+            result_list = result['lists']
+
+        if len(result_list) == 0:
+            return True
+
+        # 결과 저장
+        for doc in result_list:
+            doc_id = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
+            doc['_id'] = doc_id
+
+            elastic_utils.save_document(document=doc)
+            logging.info(msg='{} {}'.format(doc_id, doc['title']))
+
+        elastic_utils.flush()
+
+        return False

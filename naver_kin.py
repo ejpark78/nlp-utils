@@ -80,17 +80,7 @@ python3 naver_kin_crawler.py -dump_elastic_search \\
     parser.add_argument('-get_expert_list', action='store_true', default=False,
                         help='전문가 목록 크롤링')
 
-    # 결과 덤프
-    parser.add_argument('-export_detail', action='store_true', default=False,
-                        help='export_detail')
-    parser.add_argument('-dump_elastic_search', action='store_true', default=False,
-                        help='데이터 덤프')
-
-    parser.add_argument('-sync_id', action='store_true', default=False,
-                        help='')
-
     # 파라메터
-    parser.add_argument('-host', default='http://localhost:9200', help='elastic-search 주소')
     parser.add_argument('-index', default='question_list', help='인덱스명')
     parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
 
@@ -105,7 +95,7 @@ def main():
         QuestionList().batch()
 
     if args.detail:
-        QuestionDetail().get_detail(question_list_index=args.index, match_phrase=args.match_phrase)
+        QuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
 
     # # 사용자 목록 크롤링
     # if args.elite_user_list:

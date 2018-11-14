@@ -51,7 +51,6 @@ class TermList(object):
 
         # crawler job 정보
         self.job_info = self.cfg.job_info[column]
-        self.category = self.job_info['category']
         self.sleep = self.job_info['sleep']
 
         # 크롤링 상태 정보
@@ -61,20 +60,20 @@ class TermList(object):
         """카테고리 하위 목록을 크롤링한다."""
         # 이전 카테고리를 찾는다.
         category_id = None
-        if 'id' in self.status:
-            category_id = self.status['id']
+        if 'category' in self.status:
+            category_id = self.status['category']['id']
 
         # 카테고리 하위 목록을 크롤링한다.
-        for c in self.category:
+        for c in self.job_info['category']:
             if category_id is not None and c['id'] != category_id:
                 continue
 
             category_id = None
-            self.get_term_list(category_id=c['id'], category_name=c['name'])
+            self.get_term_list(category=c)
 
         return
 
-    def get_term_list(self, category_id, category_name):
+    def get_term_list(self, category):
         """용어 목록을 크롤링한다."""
         history = {}
         count = {
@@ -82,30 +81,29 @@ class TermList(object):
         }
 
         url = self.job_info['url_frame']
-        trace_tag = self.parsing_info['trace']['tag']
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'], self.status['step']):
             # 쿼리 url 생성
-            query_url = url.format(category_id=category_id, page=page)
+            query_url = url.format(categoryId=category['id'], page=page)
 
             # 페이지 조회
             resp = requests.get(url=query_url, headers=self.headers,
                                 allow_redirects=True, timeout=60)
 
             # 문서 저장
-            is_stop = self.save_doc(html=resp.content, trace_tag=trace_tag, count=count,
-                                    category_name=category_name, history=history)
+            is_stop = self.save_doc(html=resp.content, count=count,
+                                    category_name=category['name'], history=history)
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
-            self.status['category_id'] = category_id
-            self.status['category_name'] = category_name
+            self.status['category'] = category
 
             self.cfg.save_status()
 
             # 현재 상태 로그 표시
-            logging.info(msg='{} {:,}, {:,} {:,}'.format(category_id, page, count['prev'], count['element']))
+            logging.info(msg='{} {:,}, {:,} {:,}'.format(category['name'], page,
+                                                         count['prev'], count['element']))
 
             if is_stop is True:
                 break
@@ -116,9 +114,11 @@ class TermList(object):
         self.status['start'] = 1
         del self.status['category_id']
 
+        self.cfg.save_status()
+
         return
 
-    def save_doc(self, html, trace_tag, history, category_name, count):
+    def save_doc(self, html, history, category_name, count):
         """크롤링한 문서를 저장한다."""
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
                                            bulk_size=20)
@@ -128,6 +128,8 @@ class TermList(object):
         count['element'] = 0
         count['overlap'] = -1
 
+        trace_tag = self.parsing_info['trace']['tag']
+
         for trace in trace_tag:
             item_list = soup.find_all(trace['name'], trace['attribute'])
             for item in item_list:
@@ -136,7 +138,7 @@ class TermList(object):
                                         parsing_info=self.parsing_info['values'])
 
                 # url 파싱
-                q, _, _ = self.parser.parse_url(doc['detail_link'])
+                q = self.parser.parse_url(doc['detail_link'])[0]
 
                 # 문서 메타정보 등록
                 doc['_id'] = '{}-{}'.format(q['cid'], q['docId'])
@@ -144,6 +146,9 @@ class TermList(object):
                 doc['cid'] = q['cid']
                 doc['doc_id'] = q['docId']
                 doc['category'] = category_name
+
+                html_key = self.parsing_info['trace']['key']
+                doc[html_key] = str(item)
 
                 # 저장 로그 표시
                 msg = '{} {} {} {}'.format(category_name, doc['_id'], doc['name'], doc['define'][:30])

@@ -4,7 +4,7 @@
     "host": "http://b1:9200",
     "index": "crawler-naver-terms-list",
     "sleep": 2,
-    "url_frame": "https://m.terms.naver.com/listAjax.nhn?categoryId={id}&so=st3.asc&index=&page={page}&viewType=list",
+    "url_frame": "https://m.terms.naver.com/listAjax.nhn?categoryId={categoryId}&so=st3.asc&index=&page={page}&viewType=list",
     "category": [
       {
         "name": "두산백과/경제·경영",
@@ -841,5 +841,11 @@
         "id": "43658"
       }
     ]
+  },
+  "detail": {
+    "host": "http://b1:9200",
+    "list_index": "crawler-naver-terms-list",
+    "index": "crawler-naver-terms-detail",
+    "sleep": 2
   }
 }
