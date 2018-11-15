@@ -64,32 +64,40 @@ class QuestionList(object):
 
     def get_question_list(self, category, size=20):
         """ 네이버 지식인 경제 분야 질문 목록을 크롤링한다."""
-        url = self.job_info['url_frame']
-
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
                                            bulk_size=50)
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'], self.status['step']):
-            query_url = url.format(dir_id=category['id'], size=size, page=page)
+            query_url = self.job_info['url_frame'].format(dir_id=category['id'], size=size, page=page)
 
             resp = requests.get(url=query_url, headers=self.headers,
                                 allow_redirects=True, timeout=60)
 
-            is_stop = self.save_doc(result=resp.json(), elastic_utils=elastic_utils)
-            if is_stop is True:
+            try:
+                is_stop = self.save_doc(result=resp.json(), elastic_utils=elastic_utils)
+                if is_stop is True:
+                    break
+            except Exception as e:
+                logging.error(msg='{}'.format(e))
                 break
 
+            # 현재 상태 저장
             self.status['start'] = page
             self.status['category'] = category
 
             self.cfg.save_status()
 
+            # 로그 표시
             logging.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
 
             sleep(self.sleep)
 
+        # status 초기화
         self.status['start'] = 1
+        if 'category' in self.status:
+            del self.status['category']
+
         self.cfg.save_status()
 
         return

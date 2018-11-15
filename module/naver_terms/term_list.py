@@ -112,7 +112,8 @@ class TermList(object):
 
         # 위치 초기화
         self.status['start'] = 1
-        del self.status['category_id']
+        if 'category' in self.status:
+            del self.status['category']
 
         self.cfg.save_status()
 

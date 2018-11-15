@@ -160,7 +160,11 @@ class TermDetail(object):
             elastic_utils.save_document(index=self.job_info['index'], document=doc)
             elastic_utils.flush()
 
-            logging.info(msg='{} {}'.format(doc_id, doc['title']))
+            msg = '{}'.format(doc_id)
+            if 'title' in doc:
+                msg = '{} {}'.format(doc_id, doc['title'])
+
+            logging.info(msg=msg)
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(source_index=list_index,

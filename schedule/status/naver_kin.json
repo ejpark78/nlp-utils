@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "406",
-      "name": "경제/직업, 취업"
+      "id": "401",
+      "name": "경제/금융"
     },
     "end": 100,
-    "start": 83,
+    "start": 92,
     "step": 1
   }
 }
