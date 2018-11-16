@@ -1,11 +1,7 @@
 {
   "question_list": {
-    "category": {
-      "id": "401",
-      "name": "경제/금융"
-    },
     "end": 100,
-    "start": 92,
+    "start": 1,
     "step": 1
   }
 }

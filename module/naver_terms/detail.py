@@ -90,8 +90,8 @@ class TermDetail(object):
                                                      categoryId=q['categoryId'])
 
         # 이미 받은 항목인지 검사
-        is_skip = self.exists(list_index=list_index, elastic_utils=elastic_utils,
-                              doc_id=doc_id, list_id=list_id)
+        is_skip = elastic_utils.exists(host=self.job_info['host'], index=self.job_info['index'],
+                                       list_index=list_index, doc_id=doc_id, list_id=list_id)
 
         if is_skip is True:
             logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
@@ -107,21 +107,6 @@ class TermDetail(object):
                       doc_id=doc_id, list_id=list_id)
 
         logging.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
-
-        return False
-
-    def exists(self, list_index, elastic_utils, doc_id, list_id):
-        """상세 질문이 있는지 확인한다."""
-        if 'question_list' in list_index:
-            return False
-
-        exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
-        if exists is True:
-            elastic_utils.move_document(source_index=list_index,
-                                        target_index='{}_done'.format(list_index),
-                                        source_id=list_id, document_id=doc_id,
-                                        host=self.job_info['host'])
-            return True
 
         return False
 

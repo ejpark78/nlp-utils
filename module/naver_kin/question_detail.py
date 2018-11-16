@@ -72,12 +72,13 @@ class QuestionDetail(object):
             doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
 
             # 이미 받은 항목인지 검사
-            is_skip = self.exists(list_index=list_index, elastic_utils=elastic_utils,
-                                  doc_id=doc_id, list_id=item['_id'])
+            if 'question_list' not in list_index:
+                is_skip = elastic_utils.exists(host=self.job_info['host'], index=self.job_info['index'],
+                                               list_index=list_index, doc_id=doc_id, list_id=item['_id'])
 
-            if is_skip is True:
-                logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
-                continue
+                if is_skip is True:
+                    logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+                    continue
 
             # 질문 상세 페이지 크롤링
             request_url = self.job_info['url_frame'].format(**q)
@@ -95,21 +96,6 @@ class QuestionDetail(object):
             sleep(self.sleep)
 
         return
-
-    def exists(self, list_index, elastic_utils, doc_id, list_id):
-        """상세 질문이 있는지 확인한다."""
-        if 'question_list' in list_index:
-            return False
-
-        exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=doc_id)
-        if exists is True:
-            elastic_utils.move_document(source_index=list_index,
-                                        target_index='{}_done'.format(list_index),
-                                        source_id=list_id, document_id=doc_id,
-                                        host=self.job_info['host'])
-            return True
-
-        return False
 
     def save_doc(self, html, elastic_utils, list_index, doc_id, list_id):
         """크롤링 문서를 저장한다."""
