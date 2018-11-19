@@ -25,16 +25,14 @@ class CorpusUtils(object):
 
     def __init__(self):
         """ 생성자 """
-        self.job_id = 'naver_terms'
+        self.job_id = 'twitter'
         self.cfg = Config(job_id=self.job_id)
 
-        self.job_info = self.cfg.job_info['term_list']
+        self.job_info = self.cfg.job_info['twitter_list']
         self.common_utils = CommonUtils()
 
     def dump(self):
         """"""
-        import re
-
         # 데이터 덤프
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
                                            bulk_size=20)
@@ -44,24 +42,32 @@ class CorpusUtils(object):
         # 카테고리별로 분리
         data = {}
         for doc in doc_list:
-            if 'name' in doc and doc['name'].find('['):
-                name = doc['name']
-                doc['name'] = re.sub('\[.+\]', '', name)
-                doc['name_etc'] = re.sub('^.+\[(.+)\]', '\g<1>', name)
+            user_name = doc['user']['name']
 
-            category = 'etc'
-            if 'category' in doc:
-                category = doc['category']
+            if user_name not in data:
+                data[user_name] = []
 
-            if category not in data:
-                data[category] = []
+            item = {
+                'user_name': user_name,
+                'tweet_id': doc['id'],
+                'tweet_text': doc['text']
+            }
 
-            data[category].append(doc)
+            if 'reply' in doc:
+                for reply in doc['reply']:
+                    reply['reply_name'] = reply['name']
+                    reply['reply_text'] = reply['text']
+
+                    reply.update(item)
+
+                    data[user_name].append(reply)
+            else:
+                data[user_name].append(item)
 
         # 데이터 저장
         date_tag = datetime.now().strftime('%Y-%m-%d')
 
-        columns = ['document_id', 'category', 'hit_view', 'like_count', 'name', 'name_etc', 'define', 'detail_link']
+        columns = ['user_name', 'tweet_id', 'tweet_text', 'reply_name', 'reply_text']
         self.common_utils.save_excel(filename='{}-{}.xlsx'.format(self.job_info['index'], date_tag),
                                      data=data, columns=columns)
         return

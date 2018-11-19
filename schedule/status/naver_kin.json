@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "703",
-      "name": "건강/한의학"
+      "id": "603",
+      "name": "사회, 정치/병역"
     },
     "end": 100,
-    "start": 49,
+    "start": 82,
     "step": 1
   }
 }

@@ -101,6 +101,10 @@ class TwitterUtils(object):
 
     def get_reply(self, screen_name, tweet):
         """트윗에 대한 댓글을 조회한다."""
+        if isinstance(tweet, str):
+            logging.error('tweet: {}'.format(tweet))
+            return
+
         headers = {
             'accept': 'application/json, text/javascript, */*; q=0.01',
             'accept-encoding': 'gzip, deflate, br',
@@ -125,7 +129,7 @@ class TwitterUtils(object):
         return
 
     def save_tweet(self, tweet, reply_page):
-        """"""
+        """트윗과 댓글을 저장한다."""
         trace_tag = self.parsing_info['trace']['tag']
 
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
