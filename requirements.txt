@@ -14,3 +14,4 @@ html5lib
 openpyxl
 jsonlines
 urllib3
+requests-oauthlib

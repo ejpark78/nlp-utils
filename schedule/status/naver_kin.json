@@ -1,7 +1,11 @@
 {
   "question_list": {
+    "category": {
+      "id": "703",
+      "name": "건강/한의학"
+    },
     "end": 100,
-    "start": 1,
+    "start": 49,
     "step": 1
   }
 }

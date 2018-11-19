@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import json
 import logging
+from os.path import isfile
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -31,7 +32,8 @@ class Config(object):
         self.job_info = self.open_config(filename=job_info_filename)
 
         parsing_info_filename = 'schedule/parsing/{}.json'.format(job_id)
-        self.parsing_info = self.open_config(filename=parsing_info_filename)
+        if isfile(parsing_info_filename):
+            self.parsing_info = self.open_config(filename=parsing_info_filename)
 
         self.status_filename = 'schedule/status/{}.json'.format(job_id)
         self.status = self.open_config(filename=self.status_filename, create=True)

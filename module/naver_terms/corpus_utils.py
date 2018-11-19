@@ -32,6 +32,8 @@ class CorpusUtils(object):
 
     def dump(self):
         """"""
+        import re
+
         # 데이터 덤프
         elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
                                            bulk_size=20)
@@ -41,6 +43,11 @@ class CorpusUtils(object):
         # 카테고리별로 분리
         data = {}
         for doc in doc_list:
+            if 'name' in doc and doc['name'].find('['):
+                name = doc['name']
+                doc['name'] = re.sub('\[.+\]', '', name)
+                doc['name_etc'] = re.sub('^.+\[(.+)\]', '\g<1>', name)
+
             category = 'etc'
             if 'category' in doc:
                 category = doc['category']
@@ -51,7 +58,7 @@ class CorpusUtils(object):
             data[category].append(doc)
 
         # 데이터 저장
-        columns = ['document_id', 'category', 'hit_view', 'like_count', 'name', 'define', 'detail_link']
+        columns = ['document_id', 'category', 'hit_view', 'like_count', 'name', 'name_etc', 'define', 'detail_link']
         self.common_utils.save_excel(filename='{}.xlsx'.format(self.job_info['index']),
                                      data=data, columns=columns)
         return
