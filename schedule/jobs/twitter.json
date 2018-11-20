@@ -3,6 +3,9 @@
   "twitter_list": {
     "host": "http://b1:9200",
     "index": "crawler-twitter",
+    "url_frame": {
+      "user_timeline": "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={screen_name}"
+    },
     "sleep": 2,
     "api": {
       "key": "i2ccapiplATOZPqH7wRtPvkjo",

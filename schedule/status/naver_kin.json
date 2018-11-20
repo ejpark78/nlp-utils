@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "603",
-      "name": "사회, 정치/병역"
+      "id": "205",
+      "name": "게임/레이싱게임"
     },
     "end": 100,
-    "start": 82,
+    "start": 16,
     "step": 1
   }
 }

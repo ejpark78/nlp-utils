@@ -81,11 +81,11 @@ class TwitterUtils(object):
                                 resource_owner_key=self.job_info['access_token']['token'],
                                 resource_owner_secret=self.job_info['access_token']['secret'])
 
-        url_frame = 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={screen_name}'
+        url_frame = self.job_info['url_frame']['user_timeline']
         url = url_frame.format(screen_name=category['id'])
 
         resp = twitter.get(url)
-        sleep(1)
+        sleep(self.sleep)
 
         tweet_list = resp.json()
         for tweet in tweet_list:
@@ -96,6 +96,10 @@ class TwitterUtils(object):
             self.status['category'] = category
 
             self.cfg.save_status()
+
+        # 크롤링 위치 초기화
+        del self.status['category']
+        self.cfg.save_status()
 
         return
 
@@ -119,13 +123,18 @@ class TwitterUtils(object):
         url = url_frame.format(screen_name, tweet['id'], tweet['id'])
 
         resp = requests.get(url, headers=headers)
-        reply = resp.json()
+        try:
+            reply = resp.json()
+        except Exception as e:
+            logging.error('{} {}'.format(e, resp.text))
+            sleep(self.sleep * 5)
+            return
 
         # 댓글 저장
         if 'page' in reply:
             self.save_tweet(tweet, reply['page'])
 
-        sleep(1)
+        sleep(self.sleep)
         return
 
     def save_tweet(self, tweet, reply_page):
@@ -146,15 +155,28 @@ class TwitterUtils(object):
                 values = self.parser.parse(html=None, soup=item,
                                            parsing_info=self.parsing_info['values'])
 
-                if tweet['id'] in uniq_tweet:
+                tweet_id = tweet['id']
+                if tweet_id in uniq_tweet:
                     continue
-                uniq_tweet[tweet['id']] = 1
+                uniq_tweet[tweet_id] = 1
 
                 k0, doc = self.merge_values(values)
 
-                tweet['_id'] = tweet['id']
+                tweet['_id'] = tweet_id
                 if k0 != '':
                     tweet[k0] = doc
+
+                # 이전에 수집한 문서와 병합
+                exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=tweet_id)
+                if exists is True:
+                    doc = elastic_utils.elastic.get(index=self.job_info['index'], doc_type='doc', id=tweet_id)
+                    prev_tweet = doc['_source']
+
+                    if 'reply' in prev_tweet and 'reply' in tweet:
+                        tweet['reply'] = self.merge_reply(prev_tweet['reply'], tweet['reply'])
+
+                    prev_tweet.update(tweet)
+                    tweet = prev_tweet
 
                 # 현재 상태 로그 표시
                 msg = '{} {}'.format(tweet['id'], tweet['text'])
@@ -168,6 +190,20 @@ class TwitterUtils(object):
             elastic_utils.flush()
 
         return
+
+    @staticmethod
+    def merge_reply(prev_reply, reply):
+        """"""
+        from operator import eq
+
+        new_data = []
+        for item in reply:
+            if eq(item, prev_reply[0]) is True:
+                break
+
+            new_data.append(item)
+
+        return new_data + prev_reply
 
     @staticmethod
     def merge_values(doc):

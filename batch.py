@@ -7,8 +7,9 @@ from __future__ import print_function
 
 import logging
 
+from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
-from module.twitter.corpus_utils import CorpusUtils
+from module.udemy.udemy import UdemyUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -25,7 +26,8 @@ def init_arguments():
     parser = argparse.ArgumentParser()
 
     # 크롤링
-    parser.add_argument('-twitter_list', action='store_true', default=False, help='목록 크롤링')
+    parser.add_argument('-udemy', action='store_true', default=False, help='udemy 크롤링')
+    parser.add_argument('-twitter', action='store_true', default=False, help='트위터 크롤링')
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     return parser.parse_args()
@@ -35,11 +37,15 @@ def main():
     """메인"""
     args = init_arguments()
 
-    if args.dump:
-        CorpusUtils().dump()
-        return
+    if args.twitter:
+        if args.dump:
+            TwitterCorpusUtils().dump()
+            return
 
-    TwitterUtils().batch()
+        TwitterUtils().batch()
+
+    if args.udemy:
+        UdemyUtils().batch()
 
     return
 

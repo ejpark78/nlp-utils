@@ -15,3 +15,4 @@ openpyxl
 jsonlines
 urllib3
 requests-oauthlib
+tqdm
