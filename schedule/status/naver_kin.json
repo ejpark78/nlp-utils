@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "208",
-      "name": "게임/모바일게임"
+      "id": "902",
+      "name": "여행/해외여행 "
     },
     "end": 100,
-    "start": 88,
+    "start": 51,
     "step": 1
   }
 }

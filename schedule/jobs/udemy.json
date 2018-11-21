@@ -58,7 +58,27 @@
       ]
     }
   },
-  "course_list": [
+  "free": [
+    {
+      "id": 1943926,
+      "name": "Kubernetes for developers",
+      "home": "kubernetes-for-developers"
+    },
+    {
+      "id": 1945632,
+      "name": "Simulating Real World Problems with Python",
+      "home": "simulating-real-world-problems-with-python"
+    },
+    {
+      "id": 1443358,
+      "name": "The Advanced HTML5 Bootcamp",
+      "home": "the-advanced-html5-bootcamp"
+    },
+    {
+      "id": 1655400,
+      "name": "Angular - Mastering the Basics",
+      "home": "angular-mastering-the-basics"
+    },
     {
       "id": 980086,
       "name": "Deep Learning Prerequisites: The Numpy Stack in Python",
@@ -85,19 +105,9 @@
       "home": "bootstrap-4"
     },
     {
-      "id": 1443358,
-      "name": "The Advanced HTML5 Bootcamp",
-      "home": "the-advanced-html5-bootcamp"
-    },
-    {
       "id": 1321494,
       "name": "Getting Started With Ansible: Key Concepts for Beginners",
       "home": "ansible-quick-start"
-    },
-    {
-      "id": 1945632,
-      "name": "Simulating Real World Problems with Python",
-      "home": "simulating-real-world-problems-with-python"
     },
     {
       "id": 1555134,
@@ -113,11 +123,6 @@
       "id": 980086,
       "name": "Deep Learning Prerequisites: The Numpy Stack in Python",
       "home": "deep-learning-prerequisites-the-numpy-stack-in-python"
-    },
-    {
-      "id": 1943926,
-      "name": "Kubernetes for developers",
-      "home": "kubernetes-for-developers"
     },
     {
       "id": 1001266,
@@ -150,19 +155,9 @@
       "home": "web-design-secrets"
     },
     {
-      "id": 1655400,
-      "name": "Angular - Mastering the Basics",
-      "home": "angular-mastering-the-basics"
-    },
-    {
       "id": 1137730,
       "name": "A Gentle Introduction to Machine Learning Using SciKit-Learn",
       "home": "a-gentle-introduction-to-machine-learning-using-scikit-learn"
-    },
-    {
-      "id": 1502702,
-      "name": "Keras 를 활용한 Deep Learning 입문",
-      "home": "keras-deep-learning"
     },
     {
       "id": 1646506,
@@ -240,12 +235,42 @@
       "home": "qspabtyl"
     },
     {
+      "id": 1502702,
+      "name": "Keras 를 활용한 Deep Learning 입문",
+      "home": "keras-deep-learning"
+    },
+    {
       "id": 1364418,
       "name": "자바 기초 프로그래밍 강좌 (Java Programming Tutorial 2017)",
       "home": "java-programming-tutorial-2017"
     }
   ],
-  "done": [
+  "course_list": [
+    {
+      "id": 1348330,
+      "name": "처음시작하는 HTML & HTML5 Tutorials 강사 윤재성",
+      "home": "softcampus-html5"
+    },
+    {
+      "id": 1498304,
+      "name": "부트스트랩 4와 함께하는 웹 디자인 마스터 코스 (Bootstrap 4 Web Design Tutorial)",
+      "home": "bootstrap-4-web-design-tutorial"
+    },
+    {
+      "id": 918390,
+      "name": "Natural Language Processing with Deep Learning in Python",
+      "home": "natural-language-processing-with-deep-learning-in-python"
+    },
+    {
+      "id": 866460,
+      "name": "Angular 2+ with Typescript - Essential Training",
+      "home": "angular-2-training"
+    },
+    {
+      "id": 1035018,
+      "name": "화이트해커가 되기 위한 8가지 웹 해킹 기술",
+      "home": "everything-about-white-hat-hacker"
+    },
     {
       "id": 1034400,
       "name": "Master Jenkins CI For DevOps and Developers",
@@ -270,11 +295,6 @@
       "id": 1350412,
       "name": "Learn DevOps: Advanced Kubernetes Usage",
       "home": "learn-devops-advanced-kubernetes-usage"
-    },
-    {
-      "id": 1035018,
-      "name": "화이트해커가 되기 위한 8가지 웹 해킹 기술",
-      "home": "everything-about-white-hat-hacker"
     },
     {
       "id": 1233648,
@@ -307,29 +327,14 @@
       "home": "mastering-ansible-x"
     },
     {
-      "id": 866460,
-      "name": "Angular 2+ with Typescript - Essential Training",
-      "home": "angular-2-training"
-    },
-    {
       "id": 772462,
       "name": "Modern Deep Learning in Python",
       "home": "data-science-deep-learning-in-theano-tensorflow"
     },
     {
-      "id": 918390,
-      "name": "Natural Language Processing with Deep Learning in Python",
-      "home": "natural-language-processing-with-deep-learning-in-python"
-    },
-    {
       "id": 1007250,
       "name": "Learn DevOps: The Complete Kubernetes Course",
       "home": "learn-devops-the-complete-kubernetes-course"
-    },
-    {
-      "id": 1348330,
-      "name": "처음시작하는 HTML & HTML5 Tutorials 강사 윤재성",
-      "home": "softcampus-html5"
     },
     {
       "id": 1026604,
@@ -340,11 +345,6 @@
       "id": 1252484,
       "name": "Learn Bootstrap 4 Responsive Web Development",
       "home": "bootstrap-web"
-    },
-    {
-      "id": 1498304,
-      "name": "부트스트랩 4와 함께하는 웹 디자인 마스터 코스 (Bootstrap 4 Web Design Tutorial)",
-      "home": "bootstrap-4-web-design-tutorial"
     }
   ]
 }

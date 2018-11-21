@@ -7,16 +7,14 @@ from __future__ import print_function
 
 import logging
 
+from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
+from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
+from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
+from module.naver_terms.detail import TermDetail as NaverTermDetail
+from module.naver_terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils
-
-from module.naver_terms.term_list import TermList as NaverTermList
-from module.naver_terms.detail import TermDetail as NaverTermDetail
-from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
-
-from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
-from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -38,19 +36,25 @@ def init_arguments():
 
     parser.add_argument('-naver', action='store_true', default=False, help='네이버')
 
+    # 백과 사전
     parser.add_argument('-term_list', action='store_true', default=False, help='목록 크롤링')
     parser.add_argument('-term_detail', action='store_true', default=False, help='본문 크롤링')
 
+    # 지식인
     parser.add_argument('-kin_question_list', action='store_true', default=False,
                         help='질문 목록 크롤링')
     parser.add_argument('-kin_detail', action='store_true', default=False,
                         help='답변 상세 페이지 크롤링')
 
-    parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
-
-    # elasticsearch 파라메터
+    # 지식인 질문 상세 페이지: elasticsearch 파라메터
     parser.add_argument('-index', default='question_list', help='인덱스명')
     parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
+
+    # 데이터 덤프
+    parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
+
+    # 실행 모드 데몬/배치
+    parser.add_argument('-daemon', action='store_true', default=False, help='데몬으로 실행')
 
     return parser.parse_args()
 
@@ -65,7 +69,10 @@ def main():
             TwitterCorpusUtils().dump()
             return
 
-        TwitterUtils().batch()
+        if args.daemon:
+            TwitterUtils().daemon()
+        else:
+            TwitterUtils().batch()
 
     # udemy
     if args.udemy:

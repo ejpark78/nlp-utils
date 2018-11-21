@@ -116,13 +116,14 @@ class UdemyUtils(object):
                                          query='&'.join(url_info['query']['article']))
 
         # 세부 강좌 목록 조회
-        result = self.open_cache(path=path, name=name)
+        # result = self.open_cache(path=path, name=name)
+        result = None
         if result is None:
             resp = requests.get(url=url, headers=self.headers, allow_redirects=True, timeout=60)
             result = resp.json()
 
             self.save_cache(cache=result, path=path, name=name)
-            sleep(self.sleep)
+            # sleep(self.sleep)
 
         # 속성에 따른 다운로드
         if asset['asset_type'] == 'Video':
@@ -140,19 +141,39 @@ class UdemyUtils(object):
 
     def get_video(self, video, path, name):
         """동영상을 다운로드 받는다."""
+        from os.path import getsize
+
         filename = '{path}/{name}.mp4'.format(path=path, name=name)
         if isfile(filename):
-            logging.info('skip {}'.format(filename))
-            return True
+            size = getsize(filename)
+            if size > 1000:
+                logging.info('skip {}'.format(filename))
+                return True
 
         for v in video:
             if v['label'] != '720':
                 continue
 
             logging.info(filename)
-            resp = requests.get(url=v['file'], headers=self.headers, allow_redirects=True, timeout=6000, stream=True)
+            logging.info(v['file'])
+
+            resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
+
+            # resp = requests.get(url=v['file'], headers=self.headers,
+            #                     allow_redirects=True, timeout=6000, stream=True)
+
+            if resp.status_code // 100 != 2:
+                logging.error('error: {}'.format(resp.text))
 
             total_size = int(resp.headers.get('content-length', 0))
+            # if total_size < 1000:
+            #     resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
+            #     total_size = int(resp.headers.get('content-length', 0))
+            #
+            #     if resp.status_code // 100 != 2:
+            #         logging.error('error: {}'.format(resp.text))
+
+            logging.info('size: {:,}'.format(total_size))
 
             block_size = 1024
             wrote = 0

@@ -37,35 +37,38 @@ class TwitterUtils(object):
         super().__init__()
 
         self.job_id = 'twitter'
-        column = 'twitter_list'
+
+        self.column = 'twitter_list'
+        self.column_parsing = 'reply_list'
 
         self.common_utils = CommonUtils()
         self.parser = HtmlParser()
 
         self.cfg = Config(job_id=self.job_id)
 
-        # request 헤더 정보
-        self.headers = self.cfg.headers
+    def daemon(self):
+        """batch를 무한 반복한다."""
+        while True:
+            # batch 시작전 설정 변경 사항을 업데이트 한다.
+            self.cfg = Config(job_id=self.job_id)
+            daemon_info = self.cfg.job_info['daemon']
 
-        # html 파싱 정보
-        self.parsing_info = self.cfg.parsing_info['reply_list']
+            # 시작
+            self.batch()
 
-        # crawler job 정보
-        self.job_info = self.cfg.job_info[column]
-        self.sleep = self.job_info['sleep']
-
-        # 크롤링 상태 정보
-        self.status = self.cfg.status[column]
+            logging.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            sleep(daemon_info['sleep'])
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
         # 이전 카테고리를 찾는다.
         category_id = None
-        if 'category' in self.status:
-            category_id = self.status['category']['id']
+        if 'category' in self.cfg.status[self.column]:
+            category_id = self.cfg.status[self.column]['category']['id']
 
         # 카테고리 하위 목록을 크롤링한다.
-        for c in self.job_info['category']:
+        category_list = self.cfg.job_info[self.column]['category']
+        for c in category_list:
             if category_id is not None and c['id'] != category_id:
                 continue
 
@@ -76,16 +79,17 @@ class TwitterUtils(object):
 
     def get_category(self, category):
         """카테고리 하위 목록을 크롤링한다."""
-        twitter = OAuth1Session(self.job_info['api']['key'],
-                                client_secret=self.job_info['api']['secret'],
-                                resource_owner_key=self.job_info['access_token']['token'],
-                                resource_owner_secret=self.job_info['access_token']['secret'])
+        job_info = self.cfg.job_info[self.column]
+        twitter = OAuth1Session(job_info['api']['key'],
+                                client_secret=job_info['api']['secret'],
+                                resource_owner_key=job_info['access_token']['token'],
+                                resource_owner_secret=job_info['access_token']['secret'])
 
-        url_frame = self.job_info['url_frame']['user_timeline']
+        url_frame = job_info['url_frame']['user_timeline']
         url = url_frame.format(screen_name=category['id'])
 
         resp = twitter.get(url)
-        sleep(self.sleep)
+        self.sleep()
 
         tweet_list = resp.json()
         for tweet in tweet_list:
@@ -93,12 +97,12 @@ class TwitterUtils(object):
             self.get_reply(screen_name=category['id'], tweet=tweet)
 
             # 현재 크롤링 위치 저장
-            self.status['category'] = category
+            self.cfg.status[self.column]['category'] = category
 
             self.cfg.save_status()
 
         # 크롤링 위치 초기화
-        del self.status['category']
+        del self.cfg.status[self.column]['category']
         self.cfg.save_status()
 
         return
@@ -127,38 +131,40 @@ class TwitterUtils(object):
             reply = resp.json()
         except Exception as e:
             logging.error('{} {}'.format(e, resp.text))
-            sleep(self.sleep * 5)
+            sleep(30)
             return
 
         # 댓글 저장
         if 'page' in reply:
             self.save_tweet(tweet, reply['page'])
 
-        sleep(self.sleep)
+        self.sleep()
         return
 
     def save_tweet(self, tweet, reply_page):
         """트윗과 댓글을 저장한다."""
-        trace_tag = self.parsing_info['trace']['tag']
+        job_info = self.cfg.job_info[self.column]
+        parsing_info = self.cfg.parsing_info[self.column_parsing]
+        trace_tag = parsing_info['trace']['tag']
 
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
+        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'],
                                            bulk_size=20)
 
         soup = BeautifulSoup(reply_page, 'html5lib')
 
-        uniq_tweet = {}
+        unique_tweet = {}
 
         for trace in trace_tag:
             item_list = soup.find_all(trace['name'], trace['attribute'])
             for item in item_list:
                 # html 본문에서 값 추출
                 values = self.parser.parse(html=None, soup=item,
-                                           parsing_info=self.parsing_info['values'])
+                                           parsing_info=parsing_info['values'])
 
                 tweet_id = tweet['id']
-                if tweet_id in uniq_tweet:
+                if tweet_id in unique_tweet:
                     continue
-                uniq_tweet[tweet_id] = 1
+                unique_tweet[tweet_id] = 1
 
                 k0, doc = self.merge_values(values)
 
@@ -167,16 +173,7 @@ class TwitterUtils(object):
                     tweet[k0] = doc
 
                 # 이전에 수집한 문서와 병합
-                exists = elastic_utils.elastic.exists(index=self.job_info['index'], doc_type='doc', id=tweet_id)
-                if exists is True:
-                    doc = elastic_utils.elastic.get(index=self.job_info['index'], doc_type='doc', id=tweet_id)
-                    prev_tweet = doc['_source']
-
-                    if 'reply' in prev_tweet and 'reply' in tweet:
-                        tweet['reply'] = self.merge_reply(prev_tweet['reply'], tweet['reply'])
-
-                    prev_tweet.update(tweet)
-                    tweet = prev_tweet
+                tweet = self.merge_doc(elastic_utils=elastic_utils, index=job_info['index'], tweet=tweet)
 
                 # 현재 상태 로그 표시
                 msg = '{} {}'.format(tweet['id'], tweet['text'])
@@ -185,15 +182,38 @@ class TwitterUtils(object):
 
                 logging.info(msg=msg)
 
+                # 문서 저장
                 elastic_utils.save_document(document=tweet)
 
             elastic_utils.flush()
 
         return
 
+    def merge_doc(self, elastic_utils, index, tweet):
+        """이전에 수집한 문서와 병합"""
+        tweet_id = tweet['id']
+
+        exists = elastic_utils.elastic.exists(index=index, doc_type='doc', id=tweet_id)
+        if exists is False:
+            return tweet
+
+        doc = elastic_utils.elastic.get(index=index, doc_type='doc', id=tweet_id)
+        if '_source' not in doc:
+            return tweet
+
+        prev_tweet = doc['_source']
+
+        if 'reply' in prev_tweet and 'reply' in tweet:
+            tweet['reply'] = self.merge_reply(prev_tweet['reply'], tweet['reply'])
+
+        # 문서 병합
+        prev_tweet.update(tweet)
+
+        return prev_tweet
+
     @staticmethod
     def merge_reply(prev_reply, reply):
-        """"""
+        """댓글을 합친다."""
         from operator import eq
 
         new_data = []
@@ -234,3 +254,9 @@ class TwitterUtils(object):
             result.append(item)
 
         return k0, result
+
+    def sleep(self):
+        """잠시 쉰다."""
+        sleep_sec = self.cfg.job_info[self.column]['sleep']
+        sleep(sleep_sec)
+        return

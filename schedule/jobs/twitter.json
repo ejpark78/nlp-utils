@@ -1,12 +1,15 @@
 {
   "_id": "twitter",
+  "daemon": {
+    "sleep": 360
+  },
   "twitter_list": {
     "host": "http://b1:9200",
     "index": "crawler-twitter",
+    "sleep": 2,
     "url_frame": {
       "user_timeline": "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={screen_name}"
     },
-    "sleep": 2,
     "api": {
       "key": "i2ccapiplATOZPqH7wRtPvkjo",
       "secret": "cgDrgrOzkk9dIGIlSRCIP4L74AaiJN546Mrrb3EwxWznMx4dcE"

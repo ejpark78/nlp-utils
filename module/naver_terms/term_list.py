@@ -121,7 +121,9 @@ class TermList(object):
 
     def save_doc(self, html, history, category_name, count):
         """크롤링한 문서를 저장한다."""
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
+        job_info = self.job_info
+
+        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'],
                                            bulk_size=20)
 
         soup = BeautifulSoup(html, 'html5lib')
@@ -160,6 +162,9 @@ class TermList(object):
 
                 history[doc['_id']] = 1
 
+                # 이전에 수집한 문서와 병합
+                doc = self.merge_doc(elastic_utils=elastic_utils, index=job_info['index'], doc=doc)
+
                 count['element'] += 1
                 elastic_utils.save_document(document=doc)
 
@@ -175,3 +180,30 @@ class TermList(object):
         count['prev'] = count['element']
 
         return False
+
+    @staticmethod
+    def merge_doc(elastic_utils, index, doc):
+        """이전에 수집한 문서와 병합"""
+        doc_id = doc['_id']
+
+        exists = elastic_utils.elastic.exists(index=index, doc_type='doc', id=doc_id)
+        if exists is False:
+            return doc
+
+        resp = elastic_utils.elastic.get(index=index, doc_type='doc', id=doc_id)
+        if '_source' not in resp:
+            return doc
+
+        prev_doc = resp['_source']
+
+        if 'category' in prev_doc and 'category' in doc:
+            category = '{};{}'.format(prev_doc['category'], doc['category'])
+            category = category.split(';')
+            category = set(category)
+
+            doc['category'] = ';'.join(list(category))
+
+        # 문서 병합
+        prev_doc.update(doc)
+
+        return prev_doc
