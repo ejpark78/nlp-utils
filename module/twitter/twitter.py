@@ -126,11 +126,14 @@ class TwitterUtils(object):
         url_frame = 'https://twitter.com/{}/status/{}?conversation_id={}'
         url = url_frame.format(screen_name, tweet['id'], tweet['id'])
 
-        resp = requests.get(url, headers=headers)
+        resp = None
         try:
+            resp = requests.get(url, headers=headers)
             reply = resp.json()
         except Exception as e:
-            logging.error('{} {}'.format(e, resp.text))
+            if resp is not None:
+                logging.error('{} {}'.format(e, resp.text))
+
             sleep(30)
             return
 

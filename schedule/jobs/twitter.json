@@ -335,6 +335,166 @@
         "name": "톨",
         "id": "kimtolkong",
         "job": "카피라이터"
+      },
+      {
+        "name": "딴지일보",
+        "id": "ddanzis",
+        "job": "언론사"
+      },
+      {
+        "name": "KBS 뉴스",
+        "id": "KBSnews ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "MBC 뉴스",
+        "id": "mbcnews ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "YTN 뉴스",
+        "id": "YTN24 ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "JTBC 뉴스",
+        "id": "JTBC_news ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "SBS 뉴스",
+        "id": "SBS8news ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "연합 뉴스",
+        "id": "yonhaptweet ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "오마이뉴스뉴스",
+        "id": "OhmyNews_Korea ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "Naver D2",
+        "id": "naver_d2 ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "중앙일보",
+        "id": "joongangilbo ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "한겨레",
+        "id": "hanitweet ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "OhmyNews_TV",
+        "id": "OhmyNews_TV ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "매일경제",
+        "id": "maekyungsns ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "딴지일보",
+        "id": "ddanzis ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "위키트리",
+        "id": "wikitree ‏",
+        "job": "언론사"
+      },
+      {
+        "name": "ㅋ뉴스",
+        "id": "Kinewsnet"
+      },
+      {
+        "name": "경향신문",
+        "id": "kyunghyang"
+      },
+      {
+        "name": "경향신문",
+        "id": "kyunghyang"
+      },
+      {
+        "name": "노컷뉴스",
+        "id": "nocutnews"
+      },
+      {
+        "name": "뉴스1",
+        "id": "News1Kr"
+      },
+      {
+        "name": "뉴스타파",
+        "id": "newstapa"
+      },
+      {
+        "name": "뉴시스",
+        "id": "newsis"
+      },
+      {
+        "name": "동아일보",
+        "id": "dongamedia"
+      },
+      {
+        "name": "문화뉴스",
+        "id": "munhwanews"
+      },
+      {
+        "name": "미디어스파이더",
+        "id": "mediaspiderkr"
+      },
+      {
+        "name": "미디어오늘",
+        "id": "mediatodaynews"
+      },
+      {
+        "name": "연합뉴스",
+        "id": "yonhaptweet"
+      },
+      {
+        "name": "연합뉴스 그래픽뉴스팀",
+        "id": "yonhap_graphics"
+      },
+      {
+        "name": "연합뉴스TV",
+        "id": "News_Y"
+      },
+      {
+        "name": "연합뉴스TV",
+        "id": "News_Y"
+      },
+      {
+        "name": "연합뉴스미디어랩",
+        "id": "ymedialab"
+      },
+      {
+        "name": "오마이뉴스",
+        "id": "OhmyNews_Korea"
+      },
+      {
+        "name": "이데일리",
+        "id": "edaily_news"
+      },
+      {
+        "name": "조선일보",
+        "id": "Chosun"
+      },
+      {
+        "name": "한국일보",
+        "id": "hankookilbo"
+      },
+      {
+        "name": "경향신문",
+        "id": "kyunghyang",
+        "job": "언론사"
       }
     ]
   }

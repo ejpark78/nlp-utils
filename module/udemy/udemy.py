@@ -41,16 +41,17 @@ class UdemyUtils(object):
         self.headers = None
 
         # crawler job 정보
-        self.job_info = self.cfg.job_info
+        job_info = self.cfg.job_info
 
-        self.url_info = self.job_info['url_info']
+        self.url_info = job_info['url_info']
 
-        self.update_token(self.job_info['token'])
-        self.course_list = self.job_info['course_list']
+        self.update_token(job_info['token'])
 
-        self.sleep = self.job_info['sleep']
+        category_name = job_info['category_name']
+        self.course_list = job_info[category_name]
 
-        self.data_path = self.job_info['data_path']
+        self.sleep = job_info['sleep']
+        self.data_path = job_info['data_path']
 
     def batch(self):
         """코스 목록 전체를 다운로드한다."""
@@ -115,15 +116,14 @@ class UdemyUtils(object):
             url = url_info['url'].format(asset_id=asset['id'],
                                          query='&'.join(url_info['query']['article']))
 
-        # 세부 강좌 목록 조회
-        # result = self.open_cache(path=path, name=name)
-        result = None
-        if result is None:
-            resp = requests.get(url=url, headers=self.headers, allow_redirects=True, timeout=60)
-            result = resp.json()
+        if url == '':
+            return
 
-            self.save_cache(cache=result, path=path, name=name)
-            # sleep(self.sleep)
+        # 세부 강좌 목록 조회
+        resp = requests.get(url=url, headers=self.headers, allow_redirects=True, timeout=60)
+        result = resp.json()
+
+        self.save_cache(cache=result, path=path, name=name)
 
         # 속성에 따른 다운로드
         if asset['asset_type'] == 'Video':
@@ -159,20 +159,10 @@ class UdemyUtils(object):
 
             resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
 
-            # resp = requests.get(url=v['file'], headers=self.headers,
-            #                     allow_redirects=True, timeout=6000, stream=True)
-
             if resp.status_code // 100 != 2:
                 logging.error('error: {}'.format(resp.text))
 
             total_size = int(resp.headers.get('content-length', 0))
-            # if total_size < 1000:
-            #     resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
-            #     total_size = int(resp.headers.get('content-length', 0))
-            #
-            #     if resp.status_code // 100 != 2:
-            #         logging.error('error: {}'.format(resp.text))
-
             logging.info('size: {:,}'.format(total_size))
 
             block_size = 1024
@@ -186,7 +176,7 @@ class UdemyUtils(object):
                     fp.write(data)
 
             os.rename(filename + '.parted', filename)
-            os.sync()
+            # os.sync()
 
             sleep(self.sleep)
             break
