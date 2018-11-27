@@ -1,11 +1,7 @@
 {
   "question_list": {
-    "category": {
-      "id": "1130",
-      "name": "교육, 학문/심리학"
-    },
     "end": 100,
-    "start": 36,
+    "start": 1,
     "step": 1
   }
 }

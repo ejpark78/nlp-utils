@@ -143,7 +143,7 @@ class ElasticSearchUtils(object):
         if self.elastic is None:
             return None
 
-        if len(self.bulk_data[self.host]) == 0:
+        if self.host not in self.bulk_data or len(self.bulk_data[self.host]) == 0:
             return None
 
         size = -1

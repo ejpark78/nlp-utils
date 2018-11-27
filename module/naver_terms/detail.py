@@ -98,8 +98,13 @@ class TermDetail(object):
             return True
 
         # 질문 상세 페이지 크롤링
-        resp = requests.get(url=request_url, headers=self.headers,
-                            allow_redirects=True, timeout=60)
+        try:
+            resp = requests.get(url=request_url, headers=self.headers,
+                                allow_redirects=True, timeout=60)
+        except Exception as e:
+            logging.error('{}'.format(e))
+            sleep(10)
+            return
 
         # 저장
         self.save_doc(html=resp.content, elastic_utils=elastic_utils,
