@@ -88,8 +88,13 @@ class TermList(object):
             query_url = url.format(categoryId=category['id'], page=page)
 
             # 페이지 조회
-            resp = requests.get(url=query_url, headers=self.headers,
-                                allow_redirects=True, timeout=60)
+            try:
+                resp = requests.get(url=query_url, headers=self.headers,
+                                    allow_redirects=True, timeout=60)
+            except Exception as e:
+                logging.error('{}'.format(e))
+                sleep(10)
+                continue
 
             # 문서 저장
             is_stop = self.save_doc(html=resp.content, count=count,

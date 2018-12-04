@@ -1,0 +1,141 @@
+{
+  "_id": "yonhapnews",
+  "trace_list": {
+    "trace": {
+      "key": "html_content",
+      "type": "html",
+      "tag": [
+        {
+          "name": "li",
+          "attribute": {
+            "class": "section02"
+          }
+        },
+        {
+          "name": "div",
+          "attribute": {
+            "class": "con"
+          }
+        }
+      ]
+    },
+    "list": [
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "name": "strong",
+            "attribute": {
+              "class": "news-tl"
+            }
+          },
+          {
+            "name": "a"
+          }
+        ]
+      },
+      {
+        "comment": "url",
+        "key": "url",
+        "type": "href",
+        "tag": [
+          {
+            "name": "strong",
+            "attribute": {
+              "class": "news-tl"
+            }
+          },
+          {
+            "name": "a"
+          }
+        ]
+      }
+    ],
+    "article": [
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleWrap"
+            }
+          },
+          {
+            "name": "h1",
+            "attribute": {
+              "class": "tit-article"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleWrap"
+            }
+          },
+          {
+            "name": "span",
+            "attribute": {
+              "class": "tt"
+            }
+          }
+        ],
+        "replace": [
+          {
+            "from": "송고시간[ ]+[|][ ]+",
+            "to": ""
+          }
+        ]
+      },
+      {
+        "comment": "본문",
+        "key": "html_content",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleWrap"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "article"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleWrap"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "article"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

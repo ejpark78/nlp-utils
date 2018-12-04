@@ -332,7 +332,11 @@ class ElasticSearchUtils(object):
         self.flush()
 
         # 기존 문서 삭제
-        self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
+        try:
+            self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
+        except Exception as e:
+            logging.error(msg='move_document 문서 삭제 오류 {}'.format(e))
+            return
 
         return
 

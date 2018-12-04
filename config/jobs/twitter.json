@@ -343,72 +343,67 @@
       },
       {
         "name": "KBS 뉴스",
-        "id": "KBSnews ‏",
+        "id": "KBSnews",
         "job": "언론사"
       },
       {
         "name": "MBC 뉴스",
-        "id": "mbcnews ‏",
+        "id": "mbcnews",
         "job": "언론사"
       },
       {
         "name": "YTN 뉴스",
-        "id": "YTN24 ‏",
+        "id": "YTN24",
         "job": "언론사"
       },
       {
         "name": "JTBC 뉴스",
-        "id": "JTBC_news ‏",
-        "job": "언론사"
-      },
-      {
-        "name": "SBS 뉴스",
-        "id": "SBS8news ‏",
+        "id": "JTBC_news",
         "job": "언론사"
       },
       {
         "name": "연합 뉴스",
-        "id": "yonhaptweet ‏",
+        "id": "yonhaptweet",
         "job": "언론사"
       },
       {
         "name": "오마이뉴스뉴스",
-        "id": "OhmyNews_Korea ‏",
+        "id": "OhmyNews_Korea",
         "job": "언론사"
       },
       {
         "name": "Naver D2",
-        "id": "naver_d2 ‏",
+        "id": "naver_d2",
         "job": "언론사"
       },
       {
         "name": "중앙일보",
-        "id": "joongangilbo ‏",
+        "id": "joongangilbo",
         "job": "언론사"
       },
       {
         "name": "한겨레",
-        "id": "hanitweet ‏",
+        "id": "hanitweet",
         "job": "언론사"
       },
       {
         "name": "OhmyNews_TV",
-        "id": "OhmyNews_TV ‏",
+        "id": "OhmyNews_TV",
         "job": "언론사"
       },
       {
         "name": "매일경제",
-        "id": "maekyungsns ‏",
+        "id": "maekyungsns",
         "job": "언론사"
       },
       {
         "name": "딴지일보",
-        "id": "ddanzis ‏",
+        "id": "ddanzis",
         "job": "언론사"
       },
       {
         "name": "위키트리",
-        "id": "wikitree ‏",
+        "id": "wikitree",
         "job": "언론사"
       },
       {

@@ -1,0 +1,19 @@
+{
+  "_id": "yonhapnews",
+  "daemon": {
+    "sleep": 360
+  },
+  "trace_list": {
+    "host": "http://b1:9200",
+    "index": "crawler-major_press-yonhapnews",
+    "sleep": 2,
+    "url_frame": "https://www.yna.co.kr/sports/baseball/{page}",
+    "category": [
+      {
+        "name": "야구",
+        "id": "baseball"
+      }
+    ]
+
+  }
+}

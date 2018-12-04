@@ -46,6 +46,8 @@ class TwitterUtils(object):
 
         self.cfg = Config(job_id=self.job_id)
 
+        self.max_error_count = 0
+
     def daemon(self):
         """batch를 무한 반복한다."""
         while True:
@@ -91,10 +93,15 @@ class TwitterUtils(object):
         resp = twitter.get(url)
         self.sleep()
 
+        self.max_error_count = 10
+
         tweet_list = resp.json()
         for tweet in tweet_list:
             # tweet 저장 및 댓글 조회
             self.get_reply(screen_name=category['id'], tweet=tweet)
+
+            if self.max_error_count < 0:
+                break
 
             # 현재 크롤링 위치 저장
             self.cfg.status[self.column]['category'] = category
@@ -134,7 +141,9 @@ class TwitterUtils(object):
             if resp is not None:
                 logging.error('{} {}'.format(e, resp.text))
 
-            sleep(30)
+            self.max_error_count -= 1
+            logging.info('슬립: {} [{}] {} {} 초'.format(self.max_error_count, screen_name, url, 10))
+            sleep(10)
             return
 
         # 댓글 저장
@@ -261,5 +270,6 @@ class TwitterUtils(object):
     def sleep(self):
         """잠시 쉰다."""
         sleep_sec = self.cfg.job_info[self.column]['sleep']
+        logging.info('슬립: {} 초'.format(sleep_sec))
         sleep(sleep_sec)
         return

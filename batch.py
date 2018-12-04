@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import logging
 
+from module.major_press.yonhapnews import YonhapNewsList
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
@@ -30,15 +31,20 @@ def init_arguments():
 
     parser = argparse.ArgumentParser()
 
-    # 크롤링
+    # 대분류
     parser.add_argument('-udemy', action='store_true', default=False, help='udemy 크롤링')
     parser.add_argument('-twitter', action='store_true', default=False, help='트위터 크롤링')
 
     parser.add_argument('-naver', action='store_true', default=False, help='네이버')
 
+    parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
+
     # 백과 사전
     parser.add_argument('-term_list', action='store_true', default=False, help='목록 크롤링')
     parser.add_argument('-term_detail', action='store_true', default=False, help='본문 크롤링')
+
+    # 주요 신문사
+    parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
 
     # 지식인
     parser.add_argument('-kin_question_list', action='store_true', default=False,
@@ -62,6 +68,11 @@ def init_arguments():
 def main():
     """메인"""
     args = init_arguments()
+
+    # 주요 신문사
+    if args.major_press:
+        if args.yonhapnews:
+            YonhapNewsList().daemon()
 
     # 트위터
     if args.twitter:
