@@ -8,7 +8,7 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 
-from module.common_utils import CommonUtils
+from module.crawler_base import CrawlerBase
 from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 
@@ -20,7 +20,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class CorpusUtils(object):
+class CorpusUtils(CrawlerBase):
     """크롤링 결과 추출"""
 
     def __init__(self):
@@ -29,7 +29,6 @@ class CorpusUtils(object):
         self.cfg = Config(job_id=self.job_id)
 
         self.job_info = self.cfg.job_info['twitter_list']
-        self.common_utils = CommonUtils()
 
     def dump(self):
         """"""
@@ -68,6 +67,6 @@ class CorpusUtils(object):
         date_tag = datetime.now().strftime('%Y-%m-%d')
 
         columns = ['user_name', 'tweet_id', 'tweet_text', 'reply_name', 'reply_text']
-        self.common_utils.save_excel(filename='{}-{}.xlsx'.format(self.job_info['index'], date_tag),
-                                     data=data, columns=columns)
+        # self.save_excel(filename='{}-{}.xlsx'.format(self.job_info['index'], date_tag),
+        #                 data=data, columns=columns)
         return

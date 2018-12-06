@@ -11,7 +11,7 @@ from time import sleep
 import requests
 import urllib3
 
-from module.common_utils import CommonUtils
+from module.crawler_base import CrawlerBase
 from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 
@@ -26,7 +26,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class QuestionList(object):
+class QuestionList(CrawlerBase):
     """질문 목록 크롤링"""
 
     def __init__(self):
@@ -34,20 +34,11 @@ class QuestionList(object):
         super().__init__()
 
         self.job_id = 'naver_kin'
-        self.common_utils = CommonUtils()
-
-        column = 'question_list'
-        self.cfg = Config(job_id=self.job_id)
-
-        self.headers = self.cfg.headers
-
-        self.status = self.cfg.status[column]
-
-        self.job_info = self.cfg.job_info[column]
-        self.sleep = self.job_info['sleep']
+        self.column = 'question_list'
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
+        self.update_config()
 
         category_id = None
         if 'category' in self.status:
@@ -91,7 +82,7 @@ class QuestionList(object):
             # 로그 표시
             logging.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
 
-            sleep(self.sleep)
+            sleep(self.sleep_time)
 
         # status 초기화
         self.status['start'] = 1

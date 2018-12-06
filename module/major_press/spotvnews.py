@@ -17,9 +17,9 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class YonhapNewsCrawler(WebNewsCrawler):
-    """연합뉴스 크롤링"""
+class SpotvNewsCrawler(WebNewsCrawler):
+    """스포티비 크롤링"""
 
     def __init__(self):
         """ 생성자 """
-        super().__init__(job_id='yonhapnews', column='trace_list')
+        super().__init__(job_id='spotvnews', column='trace_list')

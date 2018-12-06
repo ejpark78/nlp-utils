@@ -1,23 +1,18 @@
 {
-  "_id": "yonhapnews",
+  "_id": "spotvnews",
   "daemon": {
     "sleep": 360
   },
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-major_press-yonhapnews",
+      "index": "crawler-major_press-spotvnews",
       "sleep": 2,
-      "url_frame": "https://www.yna.co.kr/sports/baseball/{page}",
+      "url_frame": "http://www.spotvnews.co.kr/?page={page}&mod=news&act=articleList&sc_code=1384128643&view_type=S",
       "category": "야구",
       "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/view/",
-            "to": ""
-          }
-        ]
+        "type": "query",
+        "frame": "{sc_code}-{idxno}"
       }
     }
   ],
@@ -25,7 +20,7 @@
     {
       "name": "코퍼스 전처리",
       "module": "send_corpus_process",
-      "index": "corpus_process-major_press-yonhapnews",
+      "index": "corpus_process-major_press-spotvnews",
       "target_url": "http://172.20.78.134:9200",
       "host": "http://nlp.ncsoft.com:10009/v1.0/batch"
     }

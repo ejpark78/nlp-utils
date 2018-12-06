@@ -7,7 +7,8 @@ from __future__ import print_function
 
 import logging
 
-from module.major_press.yonhapnews import YonhapNewsList
+from module.major_press.yonhapnews import YonhapNewsCrawler
+from module.major_press.spotvnews import SpotvNewsCrawler
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
@@ -45,6 +46,7 @@ def init_arguments():
 
     # 주요 신문사
     parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
+    parser.add_argument('-spotvnews', action='store_true', default=False, help='스포티비뉴스')
 
     # 지식인
     parser.add_argument('-kin_question_list', action='store_true', default=False,
@@ -72,7 +74,10 @@ def main():
     # 주요 신문사
     if args.major_press:
         if args.yonhapnews:
-            YonhapNewsList().daemon()
+            YonhapNewsCrawler().daemon()
+
+        if args.spotvnews:
+            SpotvNewsCrawler().daemon()
 
     # 트위터
     if args.twitter:

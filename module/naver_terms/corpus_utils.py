@@ -8,7 +8,6 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 
-from module.common_utils import CommonUtils
 from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 
@@ -29,7 +28,6 @@ class CorpusUtils(object):
         self.cfg = Config(job_id=self.job_id)
 
         self.job_info = self.cfg.job_info['term_list']
-        self.common_utils = CommonUtils()
 
     def dump(self):
         """"""
@@ -62,6 +60,50 @@ class CorpusUtils(object):
         date_tag = datetime.now().strftime('%Y-%m-%d')
 
         columns = ['document_id', 'category', 'hit_view', 'like_count', 'name', 'name_etc', 'define', 'detail_link']
-        self.common_utils.save_excel(filename='{}-{}.xlsx'.format(self.job_info['index'], date_tag),
-                                     data=data, columns=columns)
+        self.save_excel(filename='{}-{}.xlsx'.format(self.job_info['index'], date_tag),
+                        data=data, columns=columns)
+        return
+
+    @staticmethod
+    def save_excel(filename, data, columns):
+        """ 크롤링 결과를 엑셀로 저장한다. """
+        from openpyxl import Workbook
+
+        status = []
+        wb = Workbook()
+
+        for path in data:
+            count = '{:,}'.format(len(data[path]))
+            status.append([path, count])
+
+            ws = wb.create_sheet(path.replace('/', '-'))
+
+            if len(columns) == 0:
+                columns = list(data[path][0].keys())
+
+            ws.append(columns)
+            for doc in data[path]:
+                lines = []
+                for c in columns:
+                    v = ''
+                    if c in doc:
+                        v = doc[c]
+
+                    if v is None:
+                        v = ''
+
+                    lines.append('{}'.format(v))
+
+                ws.append(lines)
+
+        # 통계 정보 저장
+        ws = wb['Sheet']
+        for row in status:
+            ws.append(row)
+
+        ws.title = 'status'
+
+        # 파일 저장
+        wb.save(filename)
+
         return

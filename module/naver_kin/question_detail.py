@@ -12,9 +12,8 @@ from time import sleep
 import requests
 from bs4 import BeautifulSoup
 
-from module.config import Config
+from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
-from module.html_parser import HtmlParser
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -24,7 +23,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class QuestionDetail(object):
+class QuestionDetail(CrawlerBase):
     """질문 상세 페이지 크롤링"""
 
     def __init__(self):
@@ -32,22 +31,9 @@ class QuestionDetail(object):
         super().__init__()
 
         self.job_id = 'naver_kin'
-        column = 'detail'
+        self.column = 'detail'
 
-        self.parser = HtmlParser()
-
-        self.cfg = Config(job_id=self.job_id)
-
-        # request 헤더 정보
-        self.headers = self.cfg.headers
-
-        # html 파싱 정보
-        self.parsing_info = self.cfg.parsing_info[column]
-
-        # crawler job 정보
-        self.job_info = self.cfg.job_info[column]
-
-        self.sleep = self.job_info['sleep']
+        self.update_config()
 
     def batch(self, list_index='crawler-naver-kin-question_list', match_phrase='{}'):
         """상세 페이지를 크롤링한다."""
@@ -93,7 +79,7 @@ class QuestionDetail(object):
                           list_index=list_index,
                           doc_id=doc_id, list_id=item['_id'])
 
-            sleep(self.sleep)
+            sleep(self.sleep_time)
 
         return
 

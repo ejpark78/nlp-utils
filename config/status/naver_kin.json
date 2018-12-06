@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "302",
-      "name": "엔터테인먼트, 예술/음악"
+      "id": "1212",
+      "name": "지역&플레이스/전라남도"
     },
     "end": 100,
-    "start": 62,
+    "start": 12,
     "step": 1
   }
 }

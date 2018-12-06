@@ -10,8 +10,7 @@ from time import sleep
 
 import requests
 
-from module.common_utils import CommonUtils
-from module.config import Config
+from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
@@ -22,7 +21,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class AnswerList(object):
+class AnswerList(CrawlerBase):
     """답변 목록을 중심으로 크롤링"""
 
     def __init__(self):
@@ -30,11 +29,9 @@ class AnswerList(object):
         super().__init__()
 
         self.job_id = 'naver_kin'
-        self.common_utils = CommonUtils()
+        self.column = 'partner_list'
 
-        self.cfg = Config(job_id=self.job_id)
-
-        self.headers = self.cfg.headers
+        self.update_config()
 
     def get_partner_list(self):
         """지식 파트너 목록을 크롤링한다."""

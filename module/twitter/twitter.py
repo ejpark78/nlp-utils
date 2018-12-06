@@ -13,7 +13,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
 
-from module.common_utils import CommonUtils
+from module.crawler_base import CrawlerBase
 from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
@@ -29,7 +29,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class TwitterUtils(object):
+class TwitterUtils(CrawlerBase):
     """트위터 크롤링"""
 
     def __init__(self):
@@ -41,18 +41,13 @@ class TwitterUtils(object):
         self.column = 'twitter_list'
         self.column_parsing = 'reply_list'
 
-        self.common_utils = CommonUtils()
-        self.parser = HtmlParser()
-
-        self.cfg = Config(job_id=self.job_id)
-
         self.max_error_count = 0
 
     def daemon(self):
         """batch를 무한 반복한다."""
         while True:
             # batch 시작전 설정 변경 사항을 업데이트 한다.
-            self.cfg = Config(job_id=self.job_id)
+            self.update_config()
             daemon_info = self.cfg.job_info['daemon']
 
             # 시작

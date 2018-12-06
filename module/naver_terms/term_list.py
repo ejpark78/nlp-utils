@@ -12,10 +12,8 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-from module.common_utils import CommonUtils
-from module.config import Config
+from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
-from module.html_parser import HtmlParser
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -28,7 +26,7 @@ MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
-class TermList(object):
+class TermList(CrawlerBase):
     """백과사전 크롤링"""
 
     def __init__(self):
@@ -36,28 +34,12 @@ class TermList(object):
         super().__init__()
 
         self.job_id = 'naver_terms'
-        column = 'term_list'
-
-        self.common_utils = CommonUtils()
-        self.parser = HtmlParser()
-
-        self.cfg = Config(job_id=self.job_id)
-
-        # request 헤더 정보
-        self.headers = self.cfg.headers
-
-        # html 파싱 정보
-        self.parsing_info = self.cfg.parsing_info[column]
-
-        # crawler job 정보
-        self.job_info = self.cfg.job_info[column]
-        self.sleep = self.job_info['sleep']
-
-        # 크롤링 상태 정보
-        self.status = self.cfg.status[column]
+        self.column = 'term_list'
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
+        self.update_config()
+
         # 이전 카테고리를 찾는다.
         category_id = None
         if 'category' in self.status:
@@ -113,7 +95,7 @@ class TermList(object):
             if is_stop is True:
                 break
 
-            sleep(self.sleep)
+            sleep(self.sleep_time)
 
         # 위치 초기화
         self.status['start'] = 1
