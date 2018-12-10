@@ -69,7 +69,7 @@ class QuestionDetail(CrawlerBase):
             # 질문 상세 페이지 크롤링
             request_url = self.job_info['url_frame'].format(**q)
 
-            resp = requests.get(url=request_url, headers=self.headers,
+            resp = requests.get(url=request_url, headers=self.headers['mobile'],
                                 allow_redirects=True, timeout=60)
 
             logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))

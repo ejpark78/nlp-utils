@@ -62,7 +62,7 @@ def init_arguments():
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     # 실행 모드 데몬/배치
-    parser.add_argument('-daemon', action='store_true', default=False, help='데몬으로 실행')
+    parser.add_argument('-batch', action='store_true', default=False, help='데몬으로 실행')
 
     return parser.parse_args()
 
@@ -85,10 +85,10 @@ def main():
             TwitterCorpusUtils().dump()
             return
 
-        if args.daemon:
-            TwitterUtils().daemon()
-        else:
+        if args.batch:
             TwitterUtils().batch()
+        else:
+            TwitterUtils().daemon()
 
     # udemy
     if args.udemy:
@@ -106,7 +106,7 @@ def main():
             NaverCorpusUtils().dump()
 
         if args.kin_question_list:
-            NaverKinQuestionList().batch()
+            NaverKinQuestionList().daemon()
 
         if args.kin_detail:
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)

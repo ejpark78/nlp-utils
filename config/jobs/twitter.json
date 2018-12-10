@@ -1,7 +1,7 @@
 {
   "_id": "twitter",
   "daemon": {
-    "sleep": 360
+    "sleep": 1800
   },
   "twitter_list": {
     "host": "http://b1:9200",

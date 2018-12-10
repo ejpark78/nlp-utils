@@ -85,7 +85,7 @@ class TermDetail(CrawlerBase):
 
         # 질문 상세 페이지 크롤링
         try:
-            resp = requests.get(url=request_url, headers=self.headers,
+            resp = requests.get(url=request_url, headers=self.headers['mobile'],
                                 allow_redirects=True, timeout=60)
         except Exception as e:
             logging.error('{}'.format(e))

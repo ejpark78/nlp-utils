@@ -42,7 +42,7 @@ class AnswerList(CrawlerBase):
         for page in range(1, 1000):
             request_url = job_info['url_frame'].format(page=page)
 
-            request_result = requests.get(url=request_url, headers=self.headers,
+            request_result = requests.get(url=request_url, headers=self.headers['mobile'],
                                           allow_redirects=True, timeout=30, verify=False)
 
             result = request_result.json()
@@ -79,7 +79,7 @@ class AnswerList(CrawlerBase):
             for page in range(1, 1000):
                 request_url = job_info['url_frame'].format(expert_type=expert_type, page=page)
 
-                request_result = requests.get(url=request_url, headers=self.headers,
+                request_result = requests.get(url=request_url, headers=self.headers['mobile'],
                                               allow_redirects=True, timeout=30, verify=False)
 
                 result = request_result.json()
@@ -116,17 +116,17 @@ class AnswerList(CrawlerBase):
 
             url = job_info['url_list'].format(year=year)
 
-            result = requests.get(url=url, headers=self.headers,
+            result = requests.get(url=url, headers=self.headers['mobile'],
                                   allow_redirects=True, timeout=30, verify=False)
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
             logging.info(msg='eliteUser cookie: {} {}'.format(result, cookies))
 
-            self.headers['referer'] = url
+            self.headers['mobile']['referer'] = url
             for page in range(1, 6):
                 list_url = job_info['url_frame'].format(year=year, month=month, page=page)
 
-                request_result = requests.get(url=list_url, headers=self.headers, cookies=cookies,
+                request_result = requests.get(url=list_url, headers=self.headers['mobile'], cookies=cookies,
                                               allow_redirects=True, timeout=60)
 
                 result = request_result.json()
@@ -157,19 +157,19 @@ class AnswerList(CrawlerBase):
             dir_id = category_list[dir_name]
             url = job_info['url_list'].format(dir_id=dir_id)
 
-            result = requests.get(url=url, headers=self.headers,
+            result = requests.get(url=url, headers=self.headers['mobile'],
                                   allow_redirects=True, timeout=30, verify=False)
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
             logging.info(msg='cookie: {} {}'.format(result, cookies))
 
-            self.headers['referer'] = url
+            self.headers['mobile']['referer'] = url
 
             for u_frame in job_info['url_frame']:
                 for page in range(1, 10):
                     list_url = u_frame.format(dir_id=dir_id, page=page)
 
-                    request_result = requests.get(url=list_url, headers=self.headers, cookies=cookies,
+                    request_result = requests.get(url=list_url, headers=self.headers['mobile'], cookies=cookies,
                                                   allow_redirects=True, timeout=60)
 
                     result = request_result.json()

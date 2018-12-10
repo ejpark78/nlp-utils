@@ -1,5 +1,8 @@
 {
   "_id": "naver_kin",
+  "daemon": {
+    "sleep": 3600
+  },
   "question_list": {
     "sleep": 2,
     "host": "http://b1:9200",

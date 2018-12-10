@@ -18,14 +18,21 @@ logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
 class Config(object):
-    """"""
+    """크롤러 설정"""
 
     def __init__(self, job_id):
         """ 생성자 """
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
-                          'AppleWebKit/604.1.38 (KHTML, like Gecko) '
-                          'Version/11.0 Mobile/15A372 Safari/604.1'
+            'mobile': {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                              'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                              'Version/11.0 Mobile/15A372 Safari/604.1'
+            },
+            'desktop': {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/70.0.3538.110 Safari/537.36'
+            }
         }
 
         job_info_filename = 'config/jobs/{}.json'.format(job_id)
@@ -40,7 +47,7 @@ class Config(object):
 
     @staticmethod
     def open_config(filename, create=False):
-        """"""
+        """설정 파일을 읽는다."""
         from os.path import isfile
 
         # 없을 경우 파일 생성

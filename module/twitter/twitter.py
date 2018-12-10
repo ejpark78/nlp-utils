@@ -14,9 +14,7 @@ from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
 
 from module.crawler_base import CrawlerBase
-from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
-from module.html_parser import HtmlParser
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -37,9 +35,7 @@ class TwitterUtils(CrawlerBase):
         super().__init__()
 
         self.job_id = 'twitter'
-
         self.column = 'twitter_list'
-        self.column_parsing = 'reply_list'
 
         self.max_error_count = 0
 
@@ -48,6 +44,7 @@ class TwitterUtils(CrawlerBase):
         while True:
             # batch 시작전 설정 변경 사항을 업데이트 한다.
             self.update_config()
+
             daemon_info = self.cfg.job_info['daemon']
 
             # 시작
@@ -58,13 +55,15 @@ class TwitterUtils(CrawlerBase):
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
+        self.update_config()
+
         # 이전 카테고리를 찾는다.
         category_id = None
-        if 'category' in self.cfg.status[self.column]:
-            category_id = self.cfg.status[self.column]['category']['id']
+        if 'category' in self.status:
+            category_id = self.status['category']['id']
 
         # 카테고리 하위 목록을 크롤링한다.
-        category_list = self.cfg.job_info[self.column]['category']
+        category_list = self.job_info['category']
         for c in category_list:
             if category_id is not None and c['id'] != category_id:
                 continue
@@ -76,7 +75,7 @@ class TwitterUtils(CrawlerBase):
 
     def get_category(self, category):
         """카테고리 하위 목록을 크롤링한다."""
-        job_info = self.cfg.job_info[self.column]
+        job_info = self.job_info
         twitter = OAuth1Session(job_info['api']['key'],
                                 client_secret=job_info['api']['secret'],
                                 resource_owner_key=job_info['access_token']['token'],
@@ -99,12 +98,12 @@ class TwitterUtils(CrawlerBase):
                 break
 
             # 현재 크롤링 위치 저장
-            self.cfg.status[self.column]['category'] = category
+            self.status['category'] = category
 
             self.cfg.save_status()
 
         # 크롤링 위치 초기화
-        del self.cfg.status[self.column]['category']
+        del self.status['category']
         self.cfg.save_status()
 
         return
@@ -150,8 +149,8 @@ class TwitterUtils(CrawlerBase):
 
     def save_tweet(self, tweet, reply_page):
         """트윗과 댓글을 저장한다."""
-        job_info = self.cfg.job_info[self.column]
-        parsing_info = self.cfg.parsing_info[self.column_parsing]
+        job_info = self.job_info
+        parsing_info = self.parsing_info
         trace_tag = parsing_info['trace']['tag']
 
         elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'],
@@ -264,7 +263,6 @@ class TwitterUtils(CrawlerBase):
 
     def sleep(self):
         """잠시 쉰다."""
-        sleep_sec = self.cfg.job_info[self.column]['sleep']
-        logging.info('슬립: {} 초'.format(sleep_sec))
-        sleep(sleep_sec)
+        logging.info('슬립: {} 초'.format(self.sleep_time))
+        sleep(self.sleep_time)
         return

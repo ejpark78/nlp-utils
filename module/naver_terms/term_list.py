@@ -71,7 +71,7 @@ class TermList(CrawlerBase):
 
             # 페이지 조회
             try:
-                resp = requests.get(url=query_url, headers=self.headers,
+                resp = requests.get(url=query_url, headers=self.headers['mobile'],
                                     allow_redirects=True, timeout=60)
             except Exception as e:
                 logging.error('{}'.format(e))

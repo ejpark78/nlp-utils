@@ -68,18 +68,11 @@ class CrawlerBase(object):
 
         return
 
-    @staticmethod
-    def get_html_page(url):
+    def get_html_page(self, url):
         """웹 문서를 조회한다."""
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/70.0.3538.110 Safari/537.36'
-        }
-
         # 페이지 조회
         try:
-            resp = requests.get(url=url, headers=headers,
+            resp = requests.get(url=url, headers=self.headers['desktop'],
                                 allow_redirects=True, timeout=60)
         except Exception as e:
             logging.error('url 조회 에러: {} 초, {}'.format(10, e))

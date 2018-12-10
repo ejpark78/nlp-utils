@@ -12,7 +12,6 @@ import requests
 import urllib3
 
 from module.crawler_base import CrawlerBase
-from module.config import Config
 from module.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -35,6 +34,20 @@ class QuestionList(CrawlerBase):
 
         self.job_id = 'naver_kin'
         self.column = 'question_list'
+
+    def daemon(self):
+        """batch를 무한 반복한다."""
+        while True:
+            # batch 시작전 설정 변경 사항을 업데이트 한다.
+            self.update_config()
+
+            daemon_info = self.cfg.job_info['daemon']
+
+            # 시작
+            self.batch()
+
+            logging.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            sleep(daemon_info['sleep'])
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
@@ -62,7 +75,7 @@ class QuestionList(CrawlerBase):
         for page in range(self.status['start'], self.status['end'], self.status['step']):
             query_url = self.job_info['url_frame'].format(dir_id=category['id'], size=size, page=page)
 
-            resp = requests.get(url=query_url, headers=self.headers,
+            resp = requests.get(url=query_url, headers=self.headers['mobile'],
                                 allow_redirects=True, timeout=60)
 
             try:
