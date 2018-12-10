@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV NOTVISIBLE "in users profile"
 
-ENV APT_MIRROR=172.20.78.134:8081/repository
+ENV APT_MIRROR=mirror.kakao.com
+ENV PIP_MIRROR=mirror.kakao.com
 
 ENV APP_HOME=/usr/local/app
 
@@ -20,7 +21,7 @@ WORKDIR $HOME
 RUN echo && echo "# apt 저장소 변경" \
     && rm -rf /var/lib/apt/lists/* \
 	&& { \
-		echo "deb http://${APT_MIRROR}/debian stretch main contrib non-free"; \
+		echo "deb http://${APT_MIRROR}/debian buster main contrib non-free"; \
 	} > /etc/apt/sources.list \
     && apt-get update -yq \
     \
@@ -36,14 +37,13 @@ RUN echo && echo "# apt 저장소 변경" \
     \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV PIP_MIRROR=172.20.78.134
 
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
-		echo "index-url = http://${PIP_MIRROR}:8081/repository/pypi/simple"; \
+		echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
 		echo "trusted-host = ${PIP_MIRROR}"; \
 	} > ~/.pip/pip.conf \
     \

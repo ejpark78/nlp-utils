@@ -11,8 +11,8 @@
       "sleep": 2,
       "url_frame": "https://www.yna.co.kr/sports/baseball/{page}",
       "category": "야구",
+      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
-        "#": "문서 아이디: type=url 종류, path, query",
         "type": "path",
         "replace": [
           {

@@ -1,0 +1,83 @@
+{
+  "_id": "yonhapnewstv.sports",
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "inner"
+      },
+      "data": {
+        "title": {
+          "tag_name": "h1",
+          "attr": {
+            "id": "title"
+          },
+          "value": "text"
+        }
+      }
+    },
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "section-content"
+      },
+      "data": {
+        "date": {
+          "tag_name": "span",
+          "attr": {
+            "class": "time"
+          },
+          "value": "text"
+        },
+        "html_content": {
+          "tag_name": "div",
+          "attr": {
+            "itemprop": "articleBody"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ],
+  "comment": "연합 뉴스 TV 기사",
+  "id": {
+    "replace": [
+      {
+        "from": "/+$",
+        "to": ""
+      },
+      {
+        "from": "^[a-zA-Z:./0-9]+[/]",
+        "to": ""
+      },
+      {
+        "from": "^/+",
+        "to": ""
+      }
+    ]
+  },
+  "page_list": {},
+  "parsing_type": "",
+  "subject_page": {
+    "attr": {
+      "class": "loop-content switchable-view grid-mini"
+    },
+    "next_tag": {
+      "attr": {
+        "class": "title"
+      },
+      "data": {
+        "title": {
+          "tag_name": "a",
+          "value": "title"
+        },
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        }
+      },
+      "tag_name": "h2"
+    },
+    "tag_name": "div"
+  }
+}

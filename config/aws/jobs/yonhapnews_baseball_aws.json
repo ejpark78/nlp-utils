@@ -1,0 +1,46 @@
+{
+    "_id": "yonhapnews_baseball_aws",
+    "docker": {
+        "command": "python3 scheduler.py",
+        "image": "crawler:1.0",
+        "working_dir": "/usr/local/app"
+    },
+    "parameter": {
+        "const_value": {
+            "section": "야구"
+        },
+        "db_info": {
+            "corpus-process": [
+                {
+                    "host": "http://elastic01:5004/v1.0/api/batch"
+                }
+            ],
+            "db_name": "yonhapnews_sports",
+            "s3": {
+                "bucket": "paige-cdn-origin",
+                "url_prefix": "http://paige-cdn.plaync.com"
+            }
+        },
+        "delay": "20~30",
+        "document_id": "{_id}",
+        "end": "2",
+        "max_skip": 5000,
+        "parsing_info": "yonhapnews.sports",
+        "start": "1",
+        "url_frame": [
+            {
+                "const_value": {
+                    "section": "야구"
+                },
+                "url": "http://www.yonhapnews.co.kr/sports/10010000{start:02d}.html"
+            }
+        ]
+    },
+    "schedule": {
+        "group": "aws",
+        "mode": "daemon",
+        "sleep": "20",
+        "sleep_range": "03,04"
+    },
+    "state": {}
+}

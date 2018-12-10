@@ -1,0 +1,95 @@
+{
+  "_id": "joins-live.sports",
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "article_tit"
+      },
+      "data": {
+        "title": {
+          "tag_name": "h2",
+          "value": "text"
+        },
+        "author": {
+          "tag_name": "span",
+          "attr": {
+            "class": "provider"
+          },
+          "value": "text"
+        },
+        "date": {
+          "tag_name": "span",
+          "attr": {
+            "class": "write"
+          },
+          "value": "text",
+          "replace": [
+            {
+              "from": "^.+(20[0-9][0-9][.\\- :0-9]+).+$",
+              "to": "\\g<1>"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tag_name": "body",
+      "data": {
+        "html_content": {
+          "tag_name": "div",
+          "attr": {
+            "id": "adiContents"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ],
+  "comment": "일간스포츠 야구 기사",
+  "id": {
+    "replace": [
+      {
+        "from": "^.+total_id=(.+?)[&].+$",
+        "to": "\\g<1>"
+      }
+    ]
+  },
+  "page_list": {
+    "index": {
+      "tag_name": "a"
+    },
+    "next": {
+      "attr": {
+        "class": "next"
+      },
+      "tag_name": "a"
+    },
+    "panel": {
+      "attr": {
+        "id": "paginate"
+      },
+      "tag_name": "div"
+    }
+  },
+  "parsing_type": "",
+  "subject_page": {
+    "attr": {
+      "id": "news_list"
+    },
+    "next_tag": {
+      "data": {
+        "title": {
+          "tag_name": "a",
+          "value": "text"
+        },
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        }
+      },
+      "tag_name": "li"
+    },
+    "tag_name": "div"
+  }
+}

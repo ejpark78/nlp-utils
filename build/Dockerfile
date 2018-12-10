@@ -1,7 +1,4 @@
-FROM base/crawler:1.0
-
-#ARG BASE_IMAGE=base/crawler:latest
-#FROM ${BASE_IMAGE}
+FROM base/crawler:latest
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 

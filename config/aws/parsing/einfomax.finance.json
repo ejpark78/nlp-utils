@@ -1,0 +1,90 @@
+{
+  "_id": "einfomax.finance",
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "View_Title"
+      },
+      "data": {
+        "title": {
+          "tag_name": "strong",
+          "value": "text"
+        }
+      }
+    },
+    {
+      "tag_name": "body",
+      "data": {
+        "date": {
+          "tag_name": "div",
+          "attr": {
+            "class": "View_Time"
+          },
+          "value": "text",
+          "replace": [
+            {
+              "from": "승인[ ]+",
+              "to": ""
+            },
+            {
+              "from": "([&]nbsp;)+",
+              "to": " "
+            }
+          ]
+        },
+        "html_content": {
+          "tag_name": "td",
+          "attr": {
+            "id": "articleBody"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ],
+  "comment": "연합 인포맥스 금융",
+  "id": {
+    "replace": [
+      {
+        "from": "^[a-zA-Z:./0-9?]+[=]",
+        "to": ""
+      },
+      {
+        "from": "^[=]+",
+        "to": ""
+      }
+    ]
+  },
+  "page_list": {},
+  "parsing_type": "",
+  "query_key_mapping": {
+    "page": "start"
+  },
+  "subject_page": {
+    "attr": {
+      "border": "0",
+      "cellpadding": "0",
+      "cellspacing": "0",
+      "style": "margin-top:10px;",
+      "width": "100%"
+    },
+    "next_tag": {
+      "attr": {
+        "class": "ArtList_Title"
+      },
+      "data": {
+        "title": {
+          "tag_name": "a",
+          "value": "text"
+        },
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        }
+      },
+      "tag_name": "td"
+    },
+    "tag_name": "table"
+  }
+}

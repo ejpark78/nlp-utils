@@ -1,0 +1,42 @@
+{
+    "_id": "newsis_sports",
+    "docker": {
+        "command": "python3 scheduler.py",
+        "image": "crawler:1.0",
+        "working_dir": "/usr/local/app"
+    },
+    "parameter": {
+        "const_value": {
+            "section": "야구"
+        },
+        "db_info": {
+            "corpus-process": [
+                {
+                    "host": "http://elastic01:5004/v1.0/api/batch"
+                }
+            ],
+            "db_name": "newsis_sports"
+        },
+        "delay": "20~30",
+        "document_id": "{_id}",
+        "end": "2",
+        "max_skip": 5000,
+        "parsing_info": "newsis.sports",
+        "start": "1",
+        "url_frame": [
+            {
+                "const_value": {
+                    "section": "야구"
+                },
+                "url": "http://www.newsis.com/spo/list/?cid=10500&scid=10502&page={start}"
+            }
+        ]
+    },
+    "schedule": {
+        "group": "aws",
+        "mode": "daemon",
+        "sleep": "20",
+        "sleep_range": "03,04"
+    },
+    "state": {}
+}

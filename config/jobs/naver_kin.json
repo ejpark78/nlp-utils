@@ -767,7 +767,10 @@
     "sleep": 2,
     "host": "http://b1:9200",
     "index": "crawler-naver-kin-detail",
-    "url_frame": "https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}"
+    "url_frame": "https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}",
+    "category": [
+
+    ]
   },
   "partner_list": {
     "sleep": 2,

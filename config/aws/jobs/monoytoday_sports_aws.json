@@ -1,0 +1,42 @@
+{
+    "_id": "monoytoday_sports",
+    "docker": {
+        "command": "python3 scheduler.py",
+        "image": "crawler:1.0",
+        "working_dir": "/usr/local/app"
+    },
+    "parameter": {
+        "const_value": {
+            "section": "스포츠"
+        },
+        "db_info": {
+            "corpus-process": [
+                {
+                    "host": "http://elastic01:5004/v1.0/api/batch"
+                }
+            ],
+            "db_name": "monoytoday_sports"
+        },
+        "delay": "20~30",
+        "document_id": "{_id}",
+        "end": "2",
+        "max_skip": 5000,
+        "parsing_info": "monoytoday.sports",
+        "start": "1",
+        "url_frame": [
+            {
+                "const_value": {
+                    "section": "스포츠"
+                },
+                "url": "http://news.mt.co.kr/newsList.html?type=1&comd=&pDepth=enter&pDepth1=sports&pDepth2=Stotal&vgb=sports&page={start}"
+            }
+        ]
+    },
+    "schedule": {
+        "group": "aws",
+        "mode": "daemon",
+        "sleep": "20",
+        "sleep_range": "03,04"
+    },
+    "state": {}
+}

@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "504",
-      "name": "쇼핑/패션"
+      "id": "510",
+      "name": "쇼핑/예약, 예매"
     },
     "end": 100,
-    "start": 42,
+    "start": 10,
     "step": 1
   }
 }

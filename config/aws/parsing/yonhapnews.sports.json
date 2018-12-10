@@ -1,0 +1,77 @@
+{
+  "_id": "yonhapnews.sports",
+  "comment": "연합 뉴스 기사",
+  "parsing_type": "",
+  "id": {
+    "replace": [
+      {
+        "from": "^[a-zA-Z:./0-9]+/",
+        "to": ""
+      },
+      {
+        "from": "[.][a-zA-Z]+$",
+        "to": ""
+      }
+    ]
+  },
+  "page_list": {},
+  "subject_page": {
+    "tag_name": "div",
+    "attr": {
+      "class": "headlines headline-list"
+    },
+    "next_tag": {
+      "tag_name": "strong",
+      "attr": {
+        "class": "news-tl"
+      },
+      "data": {
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        },
+        "title": {
+          "tag_name": "a",
+          "value": "text"
+        }
+      }
+    }
+  },
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "id": "articleWrap"
+      },
+      "data": {
+        "title": {
+          "tag_name": "h1",
+          "attr": {
+            "class": "tit-article"
+          },
+          "value": "text"
+        },
+        "date": {
+          "tag_name": "span",
+          "attr": {
+            "class": "tt"
+          },
+          "value": "text",
+          "replace": [
+            {
+              "from": "송고시간[ ]+[|][ ]+",
+              "to": ""
+            }
+          ]
+        },
+        "html_content": {
+          "tag_name": "div",
+          "attr": {
+            "class": "article"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "_id": "chosun.sports",
+  "article_page": [
+    {
+      "tag_name": "div",
+      "attr": {
+        "class": "news_title"
+      },
+      "data": {
+        "title": {
+          "tag_name": "h1",
+          "attr": {
+            "id": "news_title_text_id"
+          },
+          "value": "text"
+        },
+        "author": {
+          "tag_name": "div",
+          "attr": {
+            "class": "news_title_author"
+          },
+          "value": "text"
+        }
+      }
+    },
+    {
+      "tag_name": "article",
+      "attr": {
+        "class": "news_article"
+      },
+      "data": {
+        "date": {
+          "tag_name": "div",
+          "attr": {
+            "class": "date_ctrl_2011"
+          },
+          "value": "text",
+          "replace": [
+            {
+              "from": "^.+(20[0-9][0-9][.\\- :0-9]+).+$",
+              "to": "\\g<1>"
+            }
+          ]
+        },
+        "html_content": {
+          "tag_name": "div",
+          "attr": {
+            "id": "news_body_id"
+          },
+          "value": "html"
+        }
+      }
+    }
+  ],
+  "comment": "조선일보 스포츠",
+  "id": {
+    "replace": [
+      {
+        "from": "^.+[/]",
+        "to": ""
+      },
+      {
+        "from": "^[/]",
+        "to": ""
+      },
+      {
+        "from": "[.]html",
+        "to": ""
+      }
+    ]
+  },
+  "page_list": {
+    "index": {
+      "tag_name": "a"
+    },
+    "next": {
+      "attr": {
+        "class": "next"
+      },
+      "tag_name": "a"
+    },
+    "panel": {
+      "attr": {
+        "class": "paginate"
+      },
+      "tag_name": "div"
+    }
+  },
+  "parsing_type": "",
+  "query_key_mapping": {
+    "pn": "start"
+  },
+  "subject_page": {
+    "attr": {
+      "id": "list_body_id"
+    },
+    "next_tag": {
+      "attr": {
+        "class": "list_item"
+      },
+      "data": {
+        "author": {
+          "attr": {
+            "class": "author"
+          },
+          "tag_name": "span",
+          "value": "text"
+        },
+        "title": {
+          "tag_name": "a",
+          "value": "text"
+        },
+        "url": {
+          "tag_name": "a",
+          "value": "href"
+        }
+      },
+      "tag_name": "dl"
+    },
+    "tag_name": "div"
+  }
+}
