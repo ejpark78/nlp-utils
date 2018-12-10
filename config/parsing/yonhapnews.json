@@ -2,6 +2,7 @@
   "_id": "yonhapnews",
   "trace_list": {
     "parser": "html5lib",
+    "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
     "trace": {
       "key": "html_content",
       "type": "html",
@@ -20,6 +21,7 @@
         }
       ]
     },
+    "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
     "list": [
       {
         "comment": "제목",
@@ -54,6 +56,7 @@
         ]
       }
     ],
+    "#article": "기사 본문에서 추출해야하는 tag 정보",
     "article": [
       {
         "comment": "제목",

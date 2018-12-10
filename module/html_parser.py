@@ -8,6 +8,7 @@ from __future__ import print_function
 import logging
 import re
 from datetime import datetime
+from urllib.parse import urljoin
 
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
@@ -226,5 +227,99 @@ class HtmlParser(object):
                     result[key].append(content)
             else:
                 result[key] = content
+
+        return result
+
+    @staticmethod
+    def get_encoding_type(html_body):
+        """ 메타 정보에서 인코딩 정보 반환한다."""
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(html_body, 'html5lib')
+
+        if soup.meta is None:
+            return soup, None
+
+        encoding = soup.meta.get('charset', None)
+        if encoding is None:
+            encoding = soup.meta.get('content-type', None)
+
+            if encoding is None:
+                content = soup.meta.get('content', None)
+
+                match = re.search('charset=(.*)', content)
+                if match:
+                    encoding = match.group(1)
+                else:
+                    return soup, None
+
+        return soup, encoding
+
+    @staticmethod
+    def get_tag_text(tag):
+        """텍스트 반환"""
+        import bs4
+
+        if tag is None:
+            return ''
+
+        if isinstance(tag, bs4.element.NavigableString) is True:
+            return str(tag).strip()
+
+        return tag.get_text().strip()
+
+    def extract_image(self, soup, base_url, delete_caption=False):
+        """기사 본문에서 이미지와 캡션 추출"""
+
+        result = []
+        for tag in soup.find_all('img'):
+            next_element = tag.next_element
+
+            # 광고일 경우 iframe 으로 text 가 널이다.
+            limit = 10
+            if next_element is not None:
+                str_next_element = self.get_tag_text(next_element)
+
+                try:
+                    while str_next_element == '':
+                        limit -= 1
+                        if limit < 0:
+                            break
+
+                        if next_element.next_element is None:
+                            break
+
+                        next_element = next_element.next_element
+                        str_next_element = self.get_tag_text(next_element)
+
+                    if len(str_next_element) < 200 and str_next_element.find('\n') < 0:
+                        caption = str_next_element
+                        result.append({
+                            'image': urljoin(base_url, tag['src']),
+                            'caption': caption
+                        })
+                    else:
+                        next_element = None
+                        result.append({
+                            'image': urljoin(base_url, tag['src']),
+                            'caption': ''
+                        })
+                except Exception as e:
+                    logging.error(msg='이미지 추출 에러: {}'.format(e))
+            else:
+                result.append({
+                    'image': urljoin(base_url, tag['src']),
+                    'caption': ''
+                })
+
+            # 캡션을 본문에서 삭제
+            if delete_caption is True:
+                try:
+                    if next_element is not None:
+                        next_element.replace_with('')
+
+                    tag.replace_with('')
+                except Exception as e:
+                    logging.error(msg='이미지 캡션 추출 에러: {}'.format(e))
 
         return result

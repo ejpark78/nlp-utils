@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "313",
-      "name": "엔터테인먼트, 예술/디자인"
+      "id": "504",
+      "name": "쇼핑/패션"
     },
     "end": 100,
-    "start": 33,
+    "start": 42,
     "step": 1
   }
 }

@@ -3,6 +3,7 @@
   "daemon": {
     "sleep": 1800
   },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
   "trace_list": [
     {
       "host": "http://b1:9200",
@@ -11,6 +12,7 @@
       "url_frame": "https://www.yna.co.kr/sports/baseball/{page}",
       "category": "야구",
       "id_frame": {
+        "#": "문서 아이디: type=url 종류, path, query",
         "type": "path",
         "replace": [
           {
@@ -21,6 +23,7 @@
       }
     }
   ],
+  "#post_process": "기사를 저장하고 실행해야 하는 모듈",
   "post_process": [
     {
       "name": "코퍼스 전처리",
@@ -28,6 +31,13 @@
       "index": "corpus_process-major_press-yonhapnews",
       "target_url": "http://172.20.78.134:9200",
       "host": "http://nlp.ncsoft.com:10009/v1.0/batch"
+    },
+    {
+      "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
+      "module": "save_s3",
+      "path": "yonhapnews_sports",
+      "bucket": "paige-cdn-origin",
+      "url_prefix": "http://paige-cdn.plaync.com"
     }
   ]
 }
