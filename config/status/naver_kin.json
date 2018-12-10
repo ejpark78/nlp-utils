@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "510",
-      "name": "쇼핑/예약, 예매"
+      "id": "1303",
+      "name": "쥬니버Q&A/게임"
     },
     "end": 100,
-    "start": 10,
+    "start": 16,
     "step": 1
   }
 }

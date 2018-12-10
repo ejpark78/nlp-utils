@@ -2,9 +2,9 @@
   "_id": "twitter",
   "twitter_list": {
     "category": {
-      "id": "dodaeche_J",
-      "job": "작가",
-      "name": "도대체"
+      "id": "hanitweet",
+      "job": "언론사",
+      "name": "한겨레"
     }
   }
 }

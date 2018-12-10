@@ -1,5 +1,5 @@
 
-VERSION = 1.0
+VERSION = 2.0
 DOCKER_REGISTRY = nlpapi:5000
 CONTAINER = crawler
 
