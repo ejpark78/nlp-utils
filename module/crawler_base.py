@@ -141,6 +141,6 @@ class CrawlerBase(object):
             self.status = self.cfg.status[self.column]
 
         # 후처리 정보
-        if 'post_process' in self.cfg.job_info:
-            self.post_process_list = self.cfg.job_info['post_process']
+        if 'post_process' in self.job_info:
+            self.post_process_list = self.job_info['post_process']
         return

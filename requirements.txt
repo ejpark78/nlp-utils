@@ -3,10 +3,8 @@ boto3
 bs4
 elasticsearch
 hdfs
-kafka-python
 lxml
 numpy
-paho-mqtt
 pymongo
 requests
 selenium
@@ -18,3 +16,5 @@ requests-oauthlib
 tqdm
 werkzeug
 botocore
+kombu
+queues

@@ -1,10 +1,4 @@
 {
   "_id": "twitter",
-  "twitter_list": {
-    "category": {
-      "id": "hanitweet",
-      "job": "언론사",
-      "name": "한겨레"
-    }
-  }
+  "twitter_list": {}
 }

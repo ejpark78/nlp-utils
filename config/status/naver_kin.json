@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "1303",
-      "name": "쥬니버Q&A/게임"
+      "id": "812",
+      "name": "생활/교통, 길찾기"
     },
     "end": 100,
-    "start": 16,
+    "start": 44,
     "step": 1
   }
 }

@@ -20,24 +20,33 @@
             "to": ""
           }
         ]
-      }
-    }
-  ],
-  "#post_process": "기사를 저장하고 실행해야 하는 모듈",
-  "post_process": [
-    {
-      "name": "코퍼스 전처리",
-      "module": "send_corpus_process",
-      "index": "corpus_process-major_press-yonhapnews",
-      "target_url": "http://172.20.78.134:9200",
-      "host": "http://nlp.ncsoft.com:10009/v1.0/batch"
-    },
-    {
-      "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
-      "module": "save_s3",
-      "path": "yonhapnews_sports",
-      "bucket": "paige-cdn-origin",
-      "url_prefix": "http://paige-cdn.plaync.com"
+      },
+      "#post_process": "기사를 저장후, 실행하는 작업",
+      "post_process": [
+        {
+          "name": "코퍼스 전처리",
+          "module": "corpus_process",
+          "index": "corpus_process-major_press-yonhapnews",
+          "target_url": "http://172.20.78.134:9200",
+          "host": "http://nlp.ncsoft.com:10009/v1.0/batch"
+        },
+        {
+          "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
+          "module": "save_s3",
+          "path": "yonhapnews_sports",
+          "bucket": "paige-cdn-origin",
+          "url_prefix": "http://paige-cdn.plaync.com"
+        },
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler/yonhapnews_sports"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//"
+        }
+      ]
     }
   ]
 }

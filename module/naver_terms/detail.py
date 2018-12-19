@@ -99,6 +99,9 @@ class TermDetail(CrawlerBase):
 
         logging.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
 
+        # 후처리 작업 실행
+        self.post_process_utils.insert_job(document=doc, post_process_list=self.post_process_list)
+
         return False
 
     def save_doc(self, html, elastic_utils, list_index, list_doc, doc_id, list_id):

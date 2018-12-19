@@ -177,7 +177,12 @@ class TermList(CrawlerBase):
         if exists is False:
             return doc
 
-        resp = elastic_utils.elastic.get(index=index, doc_type='doc', id=doc_id)
+        try:
+            resp = elastic_utils.elastic.get(index=index, doc_type='doc', id=doc_id)
+        except Exception as e:
+            logging.error('{}'.format(e))
+            return doc
+
         if '_source' not in resp:
             return doc
 

@@ -171,7 +171,7 @@ class WebNewsCrawler(CrawlerBase):
 
             doc_history[doc_id] = 1
 
-            # 후처리 모듈 실행
+            # 후처리 작업 실행
             self.post_process_utils.insert_job(document=doc, post_process_list=self.post_process_list)
 
             logging.info('슬립: {} 초'.format(self.sleep_time))

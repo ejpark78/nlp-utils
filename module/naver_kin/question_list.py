@@ -75,8 +75,13 @@ class QuestionList(CrawlerBase):
         for page in range(self.status['start'], self.status['end'], self.status['step']):
             query_url = self.job_info['url_frame'].format(dir_id=category['id'], size=size, page=page)
 
-            resp = requests.get(url=query_url, headers=self.headers['mobile'],
-                                allow_redirects=True, timeout=60)
+            try:
+                resp = requests.get(url=query_url, headers=self.headers['mobile'],
+                                    allow_redirects=True, timeout=60)
+            except Exception as e:
+                logging.error(msg='{}'.format(e))
+                sleep(10)
+                continue
 
             try:
                 is_stop = self.save_doc(result=resp.json(), elastic_utils=elastic_utils)

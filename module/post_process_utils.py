@@ -34,6 +34,10 @@ class PostProcessUtils(object):
 
     def insert_job(self, document, post_process_list):
         """스레드 큐에 문서와 할일을 저장한다."""
+
+        if post_process_list is None:
+            return
+
         # 스래드로 작업 시작
         job = {
             'document': document,
@@ -72,12 +76,56 @@ class PostProcessUtils(object):
             post_process_list = job['post_process_list']
 
             for item in post_process_list:
-                if item['module'] == 'send_corpus_process':
-                    self.send_corpus_process(document=document, info=item)
+                if item['module'] == 'corpus_process':
+                    self.corpus_process(document=document, info=item)
                 elif item['module'] == 'save_s3':
                     self.save_s3(document=document, info=item)
+                elif item['module'] == 'rabbit_mq':
+                    self.rabbit_mq(document=document, info=item)
 
         return
+
+    @staticmethod
+    def rabbit_mq(document, info):
+        """ Rabbit MQ로 메세지를 보낸다. """
+        if document is None:
+            return False
+
+        from kombu import Connection, Exchange
+        from kombu.pools import producers
+
+        payload = {
+            'document': document
+        }
+
+        retry_policy = {
+            'interval_start': 1,
+            'interval_step': 2,
+            'interval_max': 30,
+            'max_retries': 10
+        }
+
+        try:
+            connection = Connection(hostname=info['host'])
+            exchange = Exchange(name=info['exchange']['name'], type=info['exchange']['type'])
+
+            with producers[connection].acquire(block=True) as producer:
+                producer.publish(payload,
+                                 serializer='pickle',
+                                 compression='bzip2',
+                                 exchange=exchange,
+                                 declare=[exchange],
+                                 expiration=21600,
+                                 retry=True,
+                                 retry_policy=retry_policy)
+
+                msg = 'Rabbit MQ 전달: {}'.format(info['exchange']['name'])
+                logging.log(level=MESSAGE, msg=msg)
+        except Exception as e:
+            msg = 'Rabbit MQ 전달 에러: {}'.format(info['exchange']['name'], e)
+            logging.error(msg=msg)
+
+        return True
 
     @staticmethod
     def convert_datetime(document):
@@ -90,7 +138,7 @@ class PostProcessUtils(object):
 
         return document
 
-    def send_corpus_process(self, document, info):
+    def corpus_process(self, document, info):
         """ 코퍼스 저처리 분석 데몬에 문서를 전달한다. """
         if document is None:
             return False
