@@ -32,7 +32,7 @@ class MqProducerUtils(object):
         payload = {}
         try:
             if 'payload' in info:
-                payload = json.loads(info['payload'])
+                payload = info['payload']
         except Exception as e:
             logging.error('{}'.format(e))
 
@@ -78,16 +78,16 @@ class MqProducerUtils(object):
                 "name": "crawler"
             },
             "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
-            "payload": "{"
-                       "    \"elastic\": {"
-                       "       \"host\": \"http://b1:9200\", "
-                       "       \"index\": \"corpus_process-major_press-spotvnews\""
-                       "    }"
-                       "}"
+            "payload": {
+                "elastic": {
+                    "host": "http://b1:9200",
+                    "index": "corpus_process-major_press-yonhapnews"
+                }
+            }
         }
 
         host = 'http://b1:9200'
-        index = 'crawler-major_press-spotvnews'
+        index = 'crawler-major_press-yonhapnews'
 
         elastic_utils = ElasticSearchUtils(host=host, index=index, bulk_size=100)
 

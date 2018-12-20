@@ -28,6 +28,21 @@
           "path": "spotv_baseball",
           "bucket": "paige-cdn-origin",
           "url_prefix": "http://paige-cdn.plaync.com"
+        },
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http//b1:9200",
+              "index": "corpus_process-major_press-spotvnews"
+            }
+          }
         }
       ]
     }

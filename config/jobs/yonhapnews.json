@@ -42,10 +42,15 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler.yonhapnews_sports"
+            "name": "crawler"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
-          "payload": "{\"elastic\": {\"host\": \"http//b1:9200\", \"index\": \"corpus_process-major_press-yonhapnews\"}}"
+          "payload": {
+            "elastic": {
+              "host": "http//b1:9200",
+              "index": "corpus_process-major_press-yonhapnews"
+            }
+          }
         }
       ]
     }

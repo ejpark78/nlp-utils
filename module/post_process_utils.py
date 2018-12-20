@@ -98,7 +98,7 @@ class PostProcessUtils(object):
         payload = {}
         try:
             if 'payload' in info:
-                payload = json.loads(info['payload'])
+                payload = info['payload']
         except Exception as e:
             logging.error('{}'.format(e))
 

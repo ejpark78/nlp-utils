@@ -1,11 +1,7 @@
 {
   "question_list": {
-    "category": {
-      "id": "1307",
-      "name": "쥬니버Q&A/스포츠"
-    },
     "end": 100,
-    "start": 44,
+    "start": 1,
     "step": 1
   }
 }
