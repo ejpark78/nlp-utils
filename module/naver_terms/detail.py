@@ -76,8 +76,8 @@ class TermDetail(CrawlerBase):
                                                      categoryId=q['categoryId'])
 
         # 이미 받은 항목인지 검사
-        is_skip = elastic_utils.exists(host=self.job_info['host'], index=self.job_info['index'],
-                                       list_index=list_index, doc_id=doc_id, list_id=list_id)
+        is_skip = elastic_utils.exists(index=self.job_info['index'], list_index=list_index,
+                                       doc_id=doc_id, list_id=list_id, merge_column='category')
 
         if is_skip is True:
             logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
@@ -108,7 +108,7 @@ class TermDetail(CrawlerBase):
         """크롤링 문서를 저장한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
-        # 이미 삭제된 질문일 경우
+        # 질문 내용이 있는 경우
         if soup is not None:
             trace_tag = self.parsing_info['trace']['tag']
 
@@ -149,7 +149,7 @@ class TermDetail(CrawlerBase):
         elastic_utils.move_document(source_index=list_index,
                                     target_index='{}_done'.format(list_index),
                                     source_id=list_id, document_id=doc_id,
-                                    host=self.job_info['host'])
+                                    merge_column='category')
 
         return
 

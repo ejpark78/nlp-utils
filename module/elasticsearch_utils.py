@@ -19,7 +19,7 @@ logging.addLevelName(MESSAGE, 'MESSAGE')
 
 
 class ElasticSearchUtils(object):
-    """"""
+    """엘라스틱 서치"""
 
     def __init__(self, host, index, bulk_size=1000, insert=True, doc_type='doc'):
         """ 생성자 """
@@ -68,7 +68,7 @@ class ElasticSearchUtils(object):
         return document
 
     def open(self):
-        """elastic-search 에 접속한다."""
+        """서버에 접속한다."""
         # host 접속
         try:
             self.elastic = Elasticsearch(hosts=self.host, timeout=30)
@@ -303,29 +303,34 @@ class ElasticSearchUtils(object):
 
         return result
 
-    def move_document(self, source_index, target_index, document_id, host, source_id=None):
+    def move_document(self, source_index, target_index, document_id, source_id=None, merge_column=None):
         """ 문서를 이동한다."""
         if source_id is None:
             source_id = document_id
 
+        # 원본 문서 확인
         try:
             exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
             if exists is False:
-                logging.info(msg='move_document 문서 없음: {} {}'.format(source_index, source_id))
+                logging.info(msg='move document 문서 없음: {} {}'.format(source_index, source_id))
                 return
         except Exception as e:
-            logging.error(msg='move_document 문서 찾기 오류 {}'.format(e))
+            logging.error(msg='move document 문서 찾기 오류 {}'.format(e))
             return
 
-        # 문서 읽기
+        # 원본 문서 읽기
         try:
             document = self.elastic.get(index=source_index, doc_type='doc', id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
         except Exception as e:
-            logging.error(msg='move_document 문서 읽기 오류 {}'.format(e))
+            logging.error(msg='move document 문서 읽기 오류 {}'.format(e))
             return
+
+        # 문서 병합
+        if merge_column is not None:
+            document = self.merge_doc(index=target_index, doc=document, column=merge_column)
 
         # 문서 저장
         self.save_document(document=document['_source'], index=target_index)
@@ -335,12 +340,46 @@ class ElasticSearchUtils(object):
         try:
             self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
         except Exception as e:
-            logging.error(msg='move_document 문서 삭제 오류 {}'.format(e))
+            logging.error(msg='move document 문서 삭제 오류 {}'.format(e))
             return
 
         return
 
-    def exists(self, host, index, doc_id, list_index, list_id):
+    def merge_doc(self, index, doc, column):
+        """이전에 수집한 문서와 병합"""
+        doc_id = doc['_id']
+
+        exists = self.elastic.exists(index=index, doc_type='doc', id=doc_id)
+        if exists is False:
+            return doc
+
+        try:
+            resp = self.elastic.get(index=index, doc_type='doc', id=doc_id)
+        except Exception as e:
+            logging.error('{}'.format(e))
+            return doc
+
+        if '_source' not in resp:
+            return doc
+
+        prev_doc = resp['_source']
+
+        for c in column:
+            if c not in prev_doc or c not in doc:
+                continue
+
+            value = '{};{}'.format(prev_doc[c], doc[c])
+            value = value.split(';')
+            value = set(value)
+
+            doc[c] = ';'.join(list(value))
+
+        # 문서 병합
+        prev_doc.update(doc)
+
+        return prev_doc
+
+    def exists(self, index, doc_id, list_index, list_id, merge_column=None):
         """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
         exists_doc = self.elastic.exists(index=index, doc_type='doc', id=doc_id)
 
@@ -348,7 +387,7 @@ class ElasticSearchUtils(object):
             self.move_document(source_index=list_index,
                                target_index='{}_done'.format(list_index),
                                source_id=list_id, document_id=doc_id,
-                               host=host)
+                               merge_column=merge_column)
             return True
 
         return False

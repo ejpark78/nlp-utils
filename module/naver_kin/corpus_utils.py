@@ -130,8 +130,7 @@ class CorpusUtils(object):
 
             if item['_id'].find('201807') == 0 or d_id != item['_id']:
                 print(item)
-                elastic_utils.move_document(host=job_info['host'],
-                                            source_index=index, target_index=index,
+                elastic_utils.move_document(source_index=index, target_index=index,
                                             document_id=d_id, source_id=item['_id'])
 
         return

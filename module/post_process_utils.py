@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import logging
 import os
 import pathlib
@@ -94,9 +95,15 @@ class PostProcessUtils(object):
         from kombu import Connection, Exchange
         from kombu.pools import producers
 
-        payload = {
-            'document': document
-        }
+        payload = {}
+        try:
+            if 'payload' in info:
+                payload = json.loads(info['payload'])
+        except Exception as e:
+            logging.error('{}'.format(e))
+
+        payload['id'] = datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
+        payload['document'] = document
 
         retry_policy = {
             'interval_start': 1,

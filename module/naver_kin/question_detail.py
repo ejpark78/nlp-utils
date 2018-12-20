@@ -59,8 +59,8 @@ class QuestionDetail(CrawlerBase):
 
             # 이미 받은 항목인지 검사
             if 'question_list' not in list_index:
-                is_skip = elastic_utils.exists(host=self.job_info['host'], index=self.job_info['index'],
-                                               list_index=list_index, doc_id=doc_id, list_id=item['_id'])
+                is_skip = elastic_utils.exists(index=self.job_info['index'], list_index=list_index,
+                                               doc_id=doc_id, list_id=item['_id'])
 
                 if is_skip is True:
                     logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
@@ -104,8 +104,7 @@ class QuestionDetail(CrawlerBase):
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(source_index=list_index,
                                     target_index='{}_done'.format(list_index),
-                                    source_id=list_id, document_id=doc_id,
-                                    host=self.job_info['host'])
+                                    source_id=list_id, document_id=doc_id)
 
         return
 

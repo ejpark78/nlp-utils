@@ -840,17 +840,6 @@
     "host": "http://b1:9200",
     "list_index": "crawler-naver-terms-list",
     "index": "crawler-naver-terms-detail",
-    "sleep": 2,
-    "post_process": [
-      {
-        "name": "rabbit mq 에 메세지를 보낸다.",
-        "module": "rabbit_mq",
-        "exchange": {
-          "type": "topic",
-          "name": "crawler/naver_terms_detail"
-        },
-        "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//"
-      }
-    ]
+    "sleep": 2
   }
 }
