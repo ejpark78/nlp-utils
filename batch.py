@@ -37,17 +37,18 @@ def init_arguments():
 
     parser.add_argument('-naver', action='store_true', default=False, help='네이버')
 
-    parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
-
     # 백과 사전
     parser.add_argument('-term_list', action='store_true', default=False, help='목록 크롤링')
     parser.add_argument('-term_detail', action='store_true', default=False, help='본문 크롤링')
 
     # 주요 신문사
+    parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
+
     parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
     parser.add_argument('-spotvnews', action='store_true', default=False, help='스포티비뉴스')
     parser.add_argument('-sportskhan', action='store_true', default=False, help='스포츠칸')
     parser.add_argument('-khan', action='store_true', default=False, help='경향신문 야구')
+    parser.add_argument('-donga', action='store_true', default=False, help='동아일보 야구')
 
     # 지식인
     parser.add_argument('-kin_question_list', action='store_true', default=False,
@@ -87,6 +88,9 @@ def main():
 
         if args.khan:
             WebNewsCrawler(job_id='khan', column='trace_list').daemon()
+
+        if args.donga:
+            WebNewsCrawler(job_id='donga', column='trace_list').daemon()
 
     # 트위터
     if args.twitter:

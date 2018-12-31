@@ -64,6 +64,9 @@ test:
 batch:
 	docker-compose --project-directory crawler -f docker-compose.yml up -d
 
+down:
+	docker-compose --project-directory crawler -f docker-compose.yml down
+
 batch-logs:
 	docker-compose --project-directory crawler -f docker-compose.yml logs -f
 

@@ -91,7 +91,15 @@ class HtmlParser(object):
 
                 value_list.append(value)
 
-            if len(value_list) == 1:
+            # 타입 제약: 디폴트 목록형
+            if 'value_type' in item and item['value_type'] == 'single':
+                if len(value_list) > 0:
+                    value_list = value_list[0]
+                else:
+                    value_list = ''
+
+            # 값의 개수가 하나인 경우, 스칼라로 변경한다.
+            if isinstance(value_list, list) and len(value_list) == 1:
                 value_list = value_list[0]
 
             result[item['key']] = value_list
