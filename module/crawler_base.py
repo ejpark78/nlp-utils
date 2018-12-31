@@ -143,4 +143,5 @@ class CrawlerBase(object):
         # 후처리 정보
         if 'post_process' in self.job_info:
             self.post_process_list = self.job_info['post_process']
+
         return

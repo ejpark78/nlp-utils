@@ -47,8 +47,10 @@ run:
 	docker run \
 		-it --rm \
 		--user crawler \
-		-v /etc/hosts:/etc/hosts:ro \
 		--name $(CONTAINER) \
+		-v /etc/hosts:/etc/hosts:ro \
+		-v /etc/timezone:/etc/timezone:ro \
+		-v /etc/localtime:/etc/localtime:ro \
 		$(IMAGE_NAME)
 
 test: 
@@ -59,7 +61,13 @@ test:
 		--name $(CONTAINER) \
 		$(IMAGE_NAME)
 
-bash: 
+batch:
+	docker-compose --project-directory crawler -f docker-compose.yml up -d
+
+batch-logs:
+	docker-compose --project-directory crawler -f docker-compose.yml logs -f
+
+bash:
 	docker exec -it $(CONTAINER) /bin/bash
 
 clean:

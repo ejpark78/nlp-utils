@@ -47,7 +47,7 @@
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {
             "elastic": {
-              "host": "http//b1:9200",
+              "host": "http://b1:9200",
               "index": "corpus_process-major_press-yonhapnews"
             }
           }

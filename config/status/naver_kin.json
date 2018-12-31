@@ -1,7 +1,11 @@
 {
   "question_list": {
+    "category": {
+      "id": "103",
+      "name": "컴퓨터통신/운영체제(OS)"
+    },
     "end": 100,
-    "start": 1,
+    "start": 13,
     "step": 1
   }
 }

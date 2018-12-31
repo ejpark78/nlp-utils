@@ -51,9 +51,19 @@ class HtmlParser(object):
 
             value_list = []
             for tag in tag_list:
+                # 태그 삭제
+                if 'remove' in item:
+                    for pattern in item['remove']:
+                        target_list = []
+                        self.trace_tag(soup=tag, tag_list=[pattern], index=0, result=target_list)
+
+                        for target in target_list:
+                            target.extract()
+
+                # 값 추출
                 if item['type'] == 'text':
                     value = tag.get_text().strip().replace('\n', '')
-                    value = re.sub('\s+', ' ', value)
+                    value = re.sub('[ ]+', ' ', value)
                 elif item['type'] == 'html':
                     value = str(tag)
                     try:

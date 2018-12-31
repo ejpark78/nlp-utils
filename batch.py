@@ -7,8 +7,6 @@ from __future__ import print_function
 
 import logging
 
-from module.major_press.yonhapnews import YonhapNewsCrawler
-from module.major_press.spotvnews import SpotvNewsCrawler
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
@@ -17,6 +15,7 @@ from module.naver_terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils
+from module.web_news import WebNewsCrawler
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],
@@ -47,6 +46,8 @@ def init_arguments():
     # 주요 신문사
     parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
     parser.add_argument('-spotvnews', action='store_true', default=False, help='스포티비뉴스')
+    parser.add_argument('-sportskhan', action='store_true', default=False, help='스포츠칸')
+    parser.add_argument('-khan', action='store_true', default=False, help='경향신문 야구')
 
     # 지식인
     parser.add_argument('-kin_question_list', action='store_true', default=False,
@@ -76,10 +77,16 @@ def main():
     # 주요 신문사
     if args.major_press:
         if args.yonhapnews:
-            YonhapNewsCrawler().daemon()
+            WebNewsCrawler(job_id='yonhapnews', column='trace_list').daemon()
 
         if args.spotvnews:
-            SpotvNewsCrawler().daemon()
+            WebNewsCrawler(job_id='spotvnews', column='trace_list').daemon()
+
+        if args.sportskhan:
+            WebNewsCrawler(job_id='sportskhan', column='trace_list').daemon()
+
+        if args.khan:
+            WebNewsCrawler(job_id='khan', column='trace_list').daemon()
 
     # 트위터
     if args.twitter:

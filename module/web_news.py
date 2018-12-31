@@ -172,7 +172,10 @@ class WebNewsCrawler(CrawlerBase):
             doc_history[doc_id] = 1
 
             # 후처리 작업 실행
-            self.post_process_utils.insert_job(document=doc, post_process_list=self.post_process_list)
+            if 'post_process' not in job:
+                job['post_process'] = None
+
+            self.post_process_utils.insert_job(document=doc, post_process_list=job['post_process'])
 
             logging.info('슬립: {} 초'.format(self.sleep_time))
             sleep(self.sleep_time)
