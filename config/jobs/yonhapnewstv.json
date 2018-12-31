@@ -1,5 +1,5 @@
 {
-  "_id": "donga",
+  "_id": "yonhapnewstv",
   "daemon": {
     "sleep": 1800
   },
@@ -7,21 +7,17 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-major_press-donga",
+      "index": "crawler-major_press-yonhapnewstv",
       "sleep": 2,
-      "url_frame": "http://news.donga.com/List/Sports/Base?prod=news&ymd=&m=NP&p={page}",
+      "url_frame": "http://www.yonhapnewstv.co.kr/category/news/sports/page/{page}/",
       "category": "스포츠",
       "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
         "type": "path",
         "replace": [
           {
-            "from": "/List/SportsBase/",
-            "to": ""
-          },
-          {
             "from": "/",
-            "to": "-"
+            "to": ""
           }
         ]
       },
@@ -38,7 +34,7 @@
           "payload": {
             "elastic": {
               "host": "http://b1:9200",
-              "index": "corpus_process-major_press-donga"
+              "index": "corpus_process-major_press-yonhapnewstv"
             }
           }
         }

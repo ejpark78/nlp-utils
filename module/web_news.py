@@ -8,11 +8,11 @@ from __future__ import print_function
 import logging
 import re
 from datetime import datetime
-from time import sleep
 from urllib.parse import urljoin
 
 import urllib3
 from bs4 import BeautifulSoup
+from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -76,7 +76,9 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             # 문서 저장
-            self.trace_news(html=resp, base_url=query_url, job=job)
+            early_stop = self.trace_news(html=resp, base_url=query_url, job=job)
+            if early_stop is True:
+                break
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
@@ -111,6 +113,10 @@ class WebNewsCrawler(CrawlerBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
+            if len(q) == 0:
+                logging.info('skip {}'.format(url))
+                return None
+
             result = id_frame['frame'].format(**q)
 
         result = result.strip()
@@ -137,6 +143,11 @@ class WebNewsCrawler(CrawlerBase):
         trace_list = []
         self.parser.trace_tag(soup=soup, tag_list=trace_tag, index=0, result=trace_list)
 
+        # 기사 목록이 3개 이하인 경우 조기 종료
+        if len(trace_list) < 3:
+            logging.info('early stopping : size {}'.format(len(trace_list)))
+            return True
+
         # url 저장 이력 조회
         doc_history = self.get_doc_history()
 
@@ -148,13 +159,16 @@ class WebNewsCrawler(CrawlerBase):
             item = self.parser.parse(html=None, soup=trace,
                                      parsing_info=self.parsing_info['list'])
 
-            if isinstance(item['url'], list):
+            if isinstance(item['url'], list) and len(item['url']) > 0:
                 item['url'] = item['url'][0]
 
             item['url'] = urljoin(base_url, item['url'])
             item['category'] = job['category']
 
             doc_id = self.get_doc_id(url=item['url'], job=job)
+            if doc_id is None:
+                continue
+
             is_skip = self.check_doc_id(doc_id=doc_id, elastic_utils=elastic_utils,
                                         url=item['url'], index=job['index'], doc_history=doc_history)
             if is_skip is True:

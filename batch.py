@@ -45,6 +45,7 @@ def init_arguments():
     parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
 
     parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
+    parser.add_argument('-yonhapnewstv', action='store_true', default=False, help='연합뉴스 티비')
     parser.add_argument('-spotvnews', action='store_true', default=False, help='스포티비뉴스')
     parser.add_argument('-sportskhan', action='store_true', default=False, help='스포츠칸')
     parser.add_argument('-khan', action='store_true', default=False, help='경향신문 야구')
@@ -79,6 +80,9 @@ def main():
     if args.major_press:
         if args.yonhapnews:
             WebNewsCrawler(job_id='yonhapnews', column='trace_list').daemon()
+
+        if args.yonhapnewstv:
+            WebNewsCrawler(job_id='yonhapnewstv', column='trace_list').daemon()
 
         if args.spotvnews:
             WebNewsCrawler(job_id='spotvnews', column='trace_list').daemon()
