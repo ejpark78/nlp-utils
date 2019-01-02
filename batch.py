@@ -31,41 +31,24 @@ def init_arguments():
 
     parser = argparse.ArgumentParser()
 
-    # 대분류
-    parser.add_argument('-udemy', action='store_true', default=False, help='udemy 크롤링')
-    parser.add_argument('-twitter', action='store_true', default=False, help='트위터 크롤링')
+    # 작업 아이디
+    parser.add_argument('-job_id', default='', help='작업 아이디')
 
+    # 네이버
     parser.add_argument('-naver', action='store_true', default=False, help='네이버')
-
-    # 백과 사전
-    parser.add_argument('-term_list', action='store_true', default=False, help='목록 크롤링')
-    parser.add_argument('-term_detail', action='store_true', default=False, help='본문 크롤링')
 
     # 주요 신문사
     parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
 
-    parser.add_argument('-yonhapnews', action='store_true', default=False, help='연합뉴스')
-    parser.add_argument('-yonhapnewstv', action='store_true', default=False, help='연합뉴스 티비')
-    parser.add_argument('-spotvnews', action='store_true', default=False, help='스포티비뉴스')
-    parser.add_argument('-sportskhan', action='store_true', default=False, help='스포츠칸')
-    parser.add_argument('-khan', action='store_true', default=False, help='경향신문 야구')
-    parser.add_argument('-donga', action='store_true', default=False, help='동아일보 야구')
-
-    # 지식인
-    parser.add_argument('-kin_question_list', action='store_true', default=False,
-                        help='질문 목록 크롤링')
-    parser.add_argument('-kin_detail', action='store_true', default=False,
-                        help='답변 상세 페이지 크롤링')
-
-    # 지식인 질문 상세 페이지: elasticsearch 파라메터
-    parser.add_argument('-index', default='question_list', help='인덱스명')
-    parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
-
     # 데이터 덤프
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
+    # 지식인 질문 상세 페이지: elasticsearch 파라메터, job_id가 kin_detail일 경우
+    parser.add_argument('-index', default='question_list', help='인덱스명')
+    parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
+
     # 실행 모드 데몬/배치
-    parser.add_argument('-batch', action='store_true', default=False, help='데몬으로 실행')
+    parser.add_argument('-batch', action='store_true', default=False, help='배치 모드로 실행')
 
     parser.add_argument('-producer', action='store_true', default=False, help='mq producer test')
 
@@ -76,57 +59,44 @@ def main():
     """메인"""
     args = init_arguments()
 
-    # 주요 신문사
-    if args.major_press:
-        if args.yonhapnews:
-            WebNewsCrawler(job_id='yonhapnews', column='trace_list').daemon()
-
-        if args.yonhapnewstv:
-            WebNewsCrawler(job_id='yonhapnewstv', column='trace_list').daemon()
-
-        if args.spotvnews:
-            WebNewsCrawler(job_id='spotvnews', column='trace_list').daemon()
-
-        if args.sportskhan:
-            WebNewsCrawler(job_id='sportskhan', column='trace_list').daemon()
-
-        if args.khan:
-            WebNewsCrawler(job_id='khan', column='trace_list').daemon()
-
-        if args.donga:
-            WebNewsCrawler(job_id='donga', column='trace_list').daemon()
-
-    # 트위터
-    if args.twitter:
-        if args.dump:
-            TwitterCorpusUtils().dump()
-            return
-
-        if args.batch:
-            TwitterUtils().batch()
-        else:
-            TwitterUtils().daemon()
-
-    # udemy
-    if args.udemy:
-        UdemyUtils().batch()
-
     # 네이버
     if args.naver:
-        if args.term_list:
+        if args.job_id == 'term_list':
             NaverTermList().batch()
 
-        if args.term_detail:
+        if args.job_id == 'term_detail':
             NaverTermDetail().batch()
 
-        if args.dump:
+        if args.job_id == 'dump':
             NaverCorpusUtils().dump()
 
-        if args.kin_question_list:
+        if args.job_id == 'kin_question_list':
             NaverKinQuestionList().daemon()
 
-        if args.kin_detail:
+        if args.job_id == 'kin_detail':
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
+
+    # 주요 신문사
+    if args.job_id:
+        # 트위터
+        if args.job_id == 'twitter':
+            if args.dump:
+                TwitterCorpusUtils().dump()
+                return
+
+            if args.batch:
+                TwitterUtils().batch()
+            else:
+                TwitterUtils().daemon()
+
+        # udemy
+        if args.job_id == 'udemy':
+            UdemyUtils().batch()
+
+        if args.batch:
+            WebNewsCrawler(job_id=args.job_id, column='trace_list').batch()
+        else:
+            WebNewsCrawler(job_id=args.job_id, column='trace_list').daemon()
 
     if args.producer:
         from module.producer import MqProducerUtils

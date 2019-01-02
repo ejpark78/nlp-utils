@@ -1,0 +1,39 @@
+{
+  "_id": "monoytoday",
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-major_press-monoytoday",
+      "sleep": 2,
+      "url_frame": "http://news.mt.co.kr/newsList.html?type=1&comd=&pDepth=enter&pDepth1=sports&pDepth2=Stotal&vgb=sports&page={page}",
+      "category": "스포츠",
+      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
+      "id_frame": {
+        "type": "query",
+        "frame": "{no}"
+      },
+      "#post_process": "기사를 저장후, 실행하는 작업",
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-major_press-monoytoday"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
