@@ -9,8 +9,12 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-starnews",
       "sleep": 2,
-      "url_frame": "http://star.mt.co.kr/newsList.html?type=1&comd=&pDepth=news&pDepth1=sports&pDepth2=baseball1&page={page}",
-      "category": "야구",
+      "url_frame": [
+        {
+          "url": "http://star.mt.co.kr/newsList.html?type=1&comd=&pDepth=news&pDepth1=sports&pDepth2=baseball1&page={page}",
+          "category": "야구"
+        }
+      ],
       "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
         "type": "query",

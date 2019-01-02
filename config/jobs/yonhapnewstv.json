@@ -9,8 +9,12 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-yonhapnewstv",
       "sleep": 2,
-      "url_frame": "http://www.yonhapnewstv.co.kr/category/news/sports/page/{page}/",
-      "category": "스포츠",
+      "url_frame": [
+        {
+          "url": "http://www.yonhapnewstv.co.kr/category/news/sports/page/{page}/",
+          "category": "스포츠"
+        }
+      ],
       "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
         "type": "path",

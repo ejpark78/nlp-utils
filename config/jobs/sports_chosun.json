@@ -9,8 +9,12 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-sports_chosun",
       "sleep": 2,
-      "url_frame": "http://sports.chosun.com/latest/l_baseball.htm?page={page}",
-      "category": "야구",
+      "url_frame": [
+        {
+          "url": "http://sports.chosun.com/latest/l_baseball.htm?page={page}",
+          "category": "야구"
+        }
+      ],
       "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
         "type": "query",

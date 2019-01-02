@@ -3,24 +3,20 @@
   "trace_list": {
     "parser": "lxml",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
-    "trace": {
-      "key": "news_list",
-      "type": "html",
-      "tag": [
-        {
-          "name": "li",
-          "attribute": {
-            "class": "p1_bundle"
-          }
-        },
-        {
-          "name": "div",
-          "attribute": {
-            "class": "area"
-          }
+    "trace": [
+      {
+        "name": "li",
+        "attribute": {
+          "class": "p1_bundle"
         }
-      ]
-    },
+      },
+      {
+        "name": "div",
+        "attribute": {
+          "class": "area"
+        }
+      }
+    ],
     "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
     "list": [
       {
@@ -55,10 +51,12 @@
             }
           }
         ],
-        "replace": [{
-          "from": "[|].+$",
-          "to": ""
-        }]
+        "replace": [
+          {
+            "from": "[|].+$",
+            "to": ""
+          }
+        ]
       }
     ],
     "#article": "기사 본문에서 추출해야하는 tag 정보",

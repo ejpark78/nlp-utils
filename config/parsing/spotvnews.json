@@ -2,24 +2,20 @@
   "_id": "spotvnews",
   "trace_list": {
     "parser": "lxml",
-    "trace": {
-      "key": "html_content",
-      "type": "html",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "class": "summary_list"
-          }
-        },
-        {
-          "name": "li",
-          "attribute": {
-            "class": "li title"
-          }
+    "trace": [
+      {
+        "name": "div",
+        "attribute": {
+          "class": "summary_list"
         }
-      ]
-    },
+      },
+      {
+        "name": "li",
+        "attribute": {
+          "class": "li title"
+        }
+      }
+    ],
     "list": [
       {
         "comment": "제목",

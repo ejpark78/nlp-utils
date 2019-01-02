@@ -3,21 +3,17 @@
   "trace_list": {
     "parser": "lxml",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
-    "trace": {
-      "key": "html_content",
-      "type": "html",
-      "tag": [
-        {
-          "name": "div",
-          "attribute": {
-            "id": "content_sm"
-          }
-        },
-        {
-          "name": "dl"
+    "trace": [
+      {
+        "name": "div",
+        "attribute": {
+          "id": "content_sm"
         }
-      ]
-    },
+      },
+      {
+        "name": "dl"
+      }
+    ],
     "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
     "list": [
       {

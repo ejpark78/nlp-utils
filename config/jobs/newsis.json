@@ -9,8 +9,12 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-newsis",
       "sleep": 2,
-      "url_frame": "http://www.newsis.com/spo/list/?cid=10500&scid=10502&page={page}",
-      "category": "스포츠",
+      "url_frame": [
+        {
+          "url": "http://www.newsis.com/spo/list/?cid=10500&scid=10502&page={page}",
+          "category": "스포츠"
+        }
+      ],
       "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
       "id_frame": {
         "type": "query",

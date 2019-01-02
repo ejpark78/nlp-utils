@@ -56,54 +56,55 @@ class WebNewsCrawler(CrawlerBase):
         for job in self.job_info:
             self.sleep_time = job['sleep']
 
-            self.trace_list(job=job)
+            self.trace_url_list(job=job)
 
         return
 
-    def trace_list(self, job):
-        """뉴스 목록을 크롤링한다."""
+    def trace_url_list(self, job):
+        """url_frame 목록을 반복한다."""
         url_list = job['url_frame']
 
-        # 타입 변환
-        if isinstance(url_list, str):
-            url_list = [{
-                'url': url_list,
-                'category': job['category']
-            }]
+        # url 목록 반복
+        for url in url_list:
+            # page 단위로 크롤링한다.
+            self.trace_page_list(url=url, job=job)
+
+        return
+
+    def trace_page_list(self, url, job):
+        """뉴스 목록을 크롤링한다."""
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
-            # url 목록 조회
-            for url in url_list:
-                # 쿼리 url 생성
-                query_url = url['url'].format(page=page)
+            # 쿼리 url 생성
+            query_url = url['url'].format(page=page)
 
-                if 'category' in url:
-                    job['category'] = url['category']
+            if 'category' in url:
+                job['category'] = url['category']
 
-                parser_type = None
-                if 'parser' in url:
-                    parser_type = url['parser']
+            parser_type = None
+            if 'parser' in url:
+                parser_type = url['parser']
 
-                # 기사 목록 조회
-                resp = self.get_html_page(url=query_url, parser_type=parser_type)
-                if resp is None:
-                    continue
+            # 기사 목록 조회
+            resp = self.get_html_page(url=query_url, parser_type=parser_type)
+            if resp is None:
+                continue
 
-                # 문서 저장
-                early_stop = self.trace_news(html=resp, base_url=query_url, job=job)
-                if early_stop is True:
-                    break
+            # 문서 저장
+            early_stop = self.trace_news(html=resp, base_url=query_url, job=job)
+            if early_stop is True:
+                break
 
-                # 현재 크롤링 위치 저장
-                self.status['start'] = page
+            # 현재 크롤링 위치 저장
+            self.status['start'] = page
 
-                self.cfg.save_status()
+            self.cfg.save_status()
 
-                # 현재 상태 로그 표시
-                msg = '기사 목록 조회, 슬립: {} 초, {} {:,}'.format(self.sleep_time, job['category'], page)
-                logging.info(msg=msg)
-                sleep(self.sleep_time)
+            # 현재 상태 로그 표시
+            msg = '기사 목록 조회, 슬립: {} 초, {} {:,}'.format(self.sleep_time, job['category'], page)
+            logging.info(msg=msg)
+            sleep(self.sleep_time)
 
         # 위치 초기화
         self.status['start'] = 1
@@ -144,11 +145,13 @@ class WebNewsCrawler(CrawlerBase):
 
         trace_list = []
         if isinstance(html, dict) or isinstance(html, list):
-            trace_list = html[self.parsing_info['trace']['column']]
+            column = self.parsing_info['trace']
+            if column in html:
+                trace_list = html[column]
         else:
             soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
 
-            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace']['tag'],
+            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace'],
                                   index=0, result=trace_list)
 
         # 기사 목록이 3개 이하인 경우 조기 종료

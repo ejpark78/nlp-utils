@@ -3,24 +3,20 @@
   "trace_list": {
     "parser": "html5lib",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
-    "trace": {
-      "key": "news_list",
-      "type": "html",
-      "tag": [
-        {
-          "name": "li",
-          "attribute": {
-            "class": "bundle"
-          }
-        },
-        {
-          "name": "strong",
-          "attribute": {
-            "class": "tit"
-          }
+    "trace": [
+      {
+        "name": "li",
+        "attribute": {
+          "class": "bundle"
         }
-      ]
-    },
+      },
+      {
+        "name": "strong",
+        "attribute": {
+          "class": "tit"
+        }
+      }
+    ],
     "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
     "list": [
       {

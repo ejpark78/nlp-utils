@@ -9,9 +9,12 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-chosun",
       "sleep": 2,
-      "url_frame": "http://news.chosun.com/svc/list_in/list.html?catid=82&source=1&pn={page}",
-      "category": "야구",
-      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
+      "url_frame": [
+        {
+          "url": "http://news.chosun.com/svc/list_in/list.html?catid=82&source=1&pn={page}",
+          "category": "야구"
+        }
+      ],
       "id_frame": {
         "type": "path",
         "replace": [
@@ -29,7 +32,6 @@
           }
         ]
       },
-      "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [
         {
           "name": "rabbit mq 에 메세지를 보낸다.",
