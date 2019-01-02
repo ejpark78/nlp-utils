@@ -11,7 +11,6 @@ from datetime import datetime
 from urllib.parse import urljoin
 
 import urllib3
-from bs4 import BeautifulSoup
 from time import sleep
 
 from module.crawler_base import CrawlerBase
@@ -63,32 +62,48 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_list(self, job):
         """뉴스 목록을 크롤링한다."""
-        url = job['url_frame']
+        url_list = job['url_frame']
+
+        # 타입 변환
+        if isinstance(url_list, str):
+            url_list = [{
+                'url': url_list,
+                'category': job['category']
+            }]
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
-            # 쿼리 url 생성
-            query_url = url.format(page=page)
+            # url 목록 조회
+            for url in url_list:
+                # 쿼리 url 생성
+                query_url = url['url'].format(page=page)
 
-            # 기사 목록 조회
-            resp = self.get_html_page(query_url)
-            if resp is None:
-                continue
+                if 'category' in url:
+                    job['category'] = url['category']
 
-            # 문서 저장
-            early_stop = self.trace_news(html=resp, base_url=query_url, job=job)
-            if early_stop is True:
-                break
+                parser_type = None
+                if 'parser' in url:
+                    parser_type = url['parser']
 
-            # 현재 크롤링 위치 저장
-            self.status['start'] = page
+                # 기사 목록 조회
+                resp = self.get_html_page(url=query_url, parser_type=parser_type)
+                if resp is None:
+                    continue
 
-            self.cfg.save_status()
+                # 문서 저장
+                early_stop = self.trace_news(html=resp, base_url=query_url, job=job)
+                if early_stop is True:
+                    break
 
-            # 현재 상태 로그 표시
-            msg = '기사 목록 조회, 슬립: {} 초, {} {:,}'.format(self.sleep_time, job['category'], page)
-            logging.info(msg=msg)
-            sleep(self.sleep_time)
+                # 현재 크롤링 위치 저장
+                self.status['start'] = page
+
+                self.cfg.save_status()
+
+                # 현재 상태 로그 표시
+                msg = '기사 목록 조회, 슬립: {} 초, {} {:,}'.format(self.sleep_time, job['category'], page)
+                logging.info(msg=msg)
+                sleep(self.sleep_time)
 
         # 위치 초기화
         self.status['start'] = 1
@@ -123,25 +138,18 @@ class WebNewsCrawler(CrawlerBase):
 
         return result
 
-    def parse_html(self, html):
-        """html 문서를 파싱한다."""
-        if self.parsing_info['parser'] == 'lxml':
-            soup = BeautifulSoup(html, 'lxml')
-        else:
-            soup = BeautifulSoup(html, 'html5lib')
-
-        return soup
-
     def trace_news(self, html, base_url, job):
         """개별 뉴스를 따라간다."""
         elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
 
-        soup = self.parse_html(html=html)
-
-        trace_tag = self.parsing_info['trace']['tag']
-
         trace_list = []
-        self.parser.trace_tag(soup=soup, tag_list=trace_tag, index=0, result=trace_list)
+        if isinstance(html, dict) or isinstance(html, list):
+            trace_list = html[self.parsing_info['trace']['column']]
+        else:
+            soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
+
+            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace']['tag'],
+                                  index=0, result=trace_list)
 
         # 기사 목록이 3개 이하인 경우 조기 종료
         if len(trace_list) < 3:
@@ -155,9 +163,16 @@ class WebNewsCrawler(CrawlerBase):
 
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
-            # 목록에서 기사 본문 링크 추출
-            item = self.parser.parse(html=None, soup=trace,
-                                     parsing_info=self.parsing_info['list'])
+            if isinstance(trace, dict):
+                item = trace
+
+                for k in self.parsing_info['list']:
+                    v = self.parsing_info['list'][k]
+                    item[k] = v.format(**trace)
+            else:
+                # 목록에서 기사 본문 링크 추출
+                item = self.parser.parse(html=None, soup=trace,
+                                         parsing_info=self.parsing_info['list'])
 
             if isinstance(item['url'], list) and len(item['url']) > 0:
                 item['url'] = item['url'][0]
@@ -201,7 +216,7 @@ class WebNewsCrawler(CrawlerBase):
 
     def save_doc(self, html, doc, elastic_utils):
         """크롤링한 문서를 저장한다."""
-        soup = self.parse_html(html=html)
+        soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
 
         # html 본문에서 값 추출
         item = self.parser.parse(soup=soup, parsing_info=self.parsing_info['article'])

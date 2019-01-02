@@ -68,7 +68,7 @@ class CrawlerBase(object):
 
         return
 
-    def get_html_page(self, url):
+    def get_html_page(self, url, parser_type=None):
         """웹 문서를 조회한다."""
         # 페이지 조회
         try:
@@ -84,6 +84,9 @@ class CrawlerBase(object):
         if status_code // 100 != 2:
             logging.error(msg='페이지 조회 에러: {} {} {}'.format(status_code, url, resp.text))
             return None
+
+        if parser_type == 'json':
+            return resp.json()
 
         return resp.content
 

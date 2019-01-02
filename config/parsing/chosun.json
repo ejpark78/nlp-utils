@@ -1,16 +1,16 @@
 {
-  "_id": "einfomax",
+  "_id": "chosun",
   "trace_list": {
-    "parser": "lxml",
+    "parser": "html5lib",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
     "trace": {
       "key": "news_list",
       "type": "html",
       "tag": [
         {
-          "name": "div",
+          "name": "dl",
           "attribute": {
-            "class": "table-row"
+            "class": "list_item"
           }
         }
       ]
@@ -23,13 +23,10 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
+            "name": "dt"
           },
           {
-            "name": "strong"
+            "name": "a"
           }
         ]
       },
@@ -39,16 +36,10 @@
         "type": "href",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
+            "name": "dt"
           },
           {
-            "name": "a",
-            "attribute": {
-              "class": "links"
-            }
+            "name": "a"
           }
         ]
       },
@@ -60,15 +51,21 @@
         "value_type": "single",
         "tag": [
           {
-            "name": "div",
+            "name": "dd",
             "attribute": {
-              "class": "list-dated table-cell"
+              "class": "date_author"
+            }
+          },
+          {
+            "name": "span",
+            "attribute": {
+              "class": "date"
             }
           }
         ],
         "replace": [
           {
-            "from": "^.+[|]",
+            "from": "[(].+[)]",
             "to": ""
           }
         ]
@@ -82,9 +79,9 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
+            "name": "h1",
             "attribute": {
-              "class": "article-head-title"
+              "id": "news_title_text_id"
             }
           }
         ]
@@ -99,21 +96,17 @@
           {
             "name": "div",
             "attribute": {
-              "class": "info-text"
+              "class": "news_date"
             }
           }
         ],
         "replace": [
           {
-            "from": "^.*승인",
+            "from": "입력",
             "to": ""
           },
           {
-            "from": "댓글.*$",
-            "to": ""
-          },
-          {
-            "from": "[|]",
+            "from": "^.+수정",
             "to": ""
           }
         ]
@@ -126,14 +119,27 @@
           {
             "name": "div",
             "attribute": {
-              "class": "info-text"
+              "class": "news_title_author"
+            }
+          },
+          {
+            "name": "li",
+            "attribute": {
+              "id": "j1"
             }
           }
-        ],
-        "replace": [
+        ]
+      },
+      {
+        "comment": "글쓴이 소속",
+        "key": "author_source",
+        "type": "text",
+        "tag": [
           {
-            "from": "승인.+$",
-            "to": ""
+            "name": "span",
+            "attribute": {
+              "class": "author_source"
+            }
           }
         ]
       },
@@ -141,26 +147,21 @@
         "comment": "html 본문",
         "key": "html_content",
         "type": "html",
+        "value_type": "merge",
         "tag": [
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "class": "par"
             }
           }
         ],
         "remove": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "view-copyright"
-            }
+            "name": "iframe"
           },
           {
-            "name": "div",
-            "attribute": {
-              "class": "view-editors"
-            }
+            "name": "script"
           }
         ]
       },
@@ -168,26 +169,58 @@
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",
+        "value_type": "merge",
         "tag": [
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "class": "par"
             }
           }
-        ],
-        "remove": [
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
           {
             "name": "div",
             "attribute": {
-              "class": "view-copyright"
+              "class": "news_imgbox"
             }
           },
           {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "tag": [
+          {
             "name": "div",
             "attribute": {
-              "class": "view-editors"
+              "class": "news_imgbox"
             }
+          }
+        ]
+      },
+      {
+        "comment": "다국어 기사",
+        "key": "language_list",
+        "type": "href",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "news_lang"
+            }
+          },
+          {
+            "name": "a"
           }
         ]
       }

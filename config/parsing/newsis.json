@@ -1,5 +1,5 @@
 {
-  "_id": "einfomax",
+  "_id": "newsis",
   "trace_list": {
     "parser": "lxml",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
@@ -8,9 +8,15 @@
       "type": "html",
       "tag": [
         {
+          "name": "li",
+          "attribute": {
+            "class": "p1_bundle"
+          }
+        },
+        {
           "name": "div",
           "attribute": {
-            "class": "table-row"
+            "class": "area"
           }
         }
       ]
@@ -23,13 +29,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
-          },
-          {
-            "name": "strong"
+            "name": "a"
           }
         ]
       },
@@ -39,39 +39,26 @@
         "type": "href",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
-          },
-          {
-            "name": "a",
-            "attribute": {
-              "class": "links"
-            }
+            "name": "a"
           }
         ]
       },
       {
-        "comment": "날짜",
-        "key": "date",
+        "comment": "author",
+        "key": "author",
         "type": "text",
-        "type_convert": "date",
-        "value_type": "single",
         "tag": [
           {
-            "name": "div",
+            "name": "span",
             "attribute": {
-              "class": "list-dated table-cell"
+              "class": "date"
             }
           }
         ],
-        "replace": [
-          {
-            "from": "^.+[|]",
-            "to": ""
-          }
-        ]
+        "replace": [{
+          "from": "[|].+$",
+          "to": ""
+        }]
       }
     ],
     "#article": "기사 본문에서 추출해야하는 tag 정보",
@@ -84,8 +71,11 @@
           {
             "name": "div",
             "attribute": {
-              "class": "article-head-title"
+              "class": "article_tbx mgt8 w970"
             }
+          },
+          {
+            "name": "h1"
           }
         ]
       },
@@ -99,40 +89,13 @@
           {
             "name": "div",
             "attribute": {
-              "class": "info-text"
+              "class": "date"
             }
           }
         ],
         "replace": [
           {
-            "from": "^.*승인",
-            "to": ""
-          },
-          {
-            "from": "댓글.*$",
-            "to": ""
-          },
-          {
-            "from": "[|]",
-            "to": ""
-          }
-        ]
-      },
-      {
-        "comment": "글쓴이",
-        "key": "author",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "info-text"
-            }
-          }
-        ],
-        "replace": [
-          {
-            "from": "승인.+$",
+            "from": "등록[ ]+",
             "to": ""
           }
         ]
@@ -151,16 +114,7 @@
         ],
         "remove": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "view-copyright"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "view-editors"
-            }
+            "name": "iframe"
           }
         ]
       },
@@ -175,18 +129,39 @@
               "itemprop": "articleBody"
             }
           }
-        ],
-        "remove": [
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
           {
-            "name": "div",
+            "name": "table",
             "attribute": {
-              "class": "view-copyright"
+              "class": "article_photo center"
             }
           },
           {
-            "name": "div",
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "tag": [
+          {
+            "name": "table",
             "attribute": {
-              "class": "view-editors"
+              "class": "article_photo center"
+            }
+          },
+          {
+            "name": "td",
+            "attribute": {
+              "class": "desc"
             }
           }
         ]

@@ -1,0 +1,91 @@
+{
+  "_id": "osen",
+  "daemon": {
+    "sleep": 1800
+  },
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-major_press-osen",
+      "sleep": 2,
+      "url_frame": [
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/lions?offset={page}",
+          "parser": "json",
+          "category": "야구/삼성"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/heroes?offset={page}",
+          "parser": "json",
+          "category": "야구/넥센"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/dinos?offset={page}",
+          "parser": "json",
+          "category": "야구/NC"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/twins?offset={page}",
+          "parser": "json",
+          "category": "야구/LG"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/wyverns?offset={page}",
+          "parser": "json",
+          "category": "야구/SK"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/bears?offset={page}",
+          "parser": "json",
+          "category": "야구/두산"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/giants?offset={page}",
+          "parser": "json",
+          "category": "야구/롯데"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/tigers?offset={page}",
+          "parser": "json",
+          "category": "야구/KIA"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/eagles?offset={page}",
+          "parser": "json",
+          "category": "야구/한화"
+        },
+        {
+          "url": "http://osen.mt.co.kr/api/probaseball/team_news/wiz?offset={page}",
+          "parser": "json",
+          "category": "야구/KT"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/article/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-major_press-osen"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

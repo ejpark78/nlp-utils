@@ -10,6 +10,7 @@ import re
 from datetime import datetime
 from urllib.parse import urljoin
 
+from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
@@ -26,6 +27,19 @@ class HtmlParser(object):
 
     def __init__(self):
         """ 생성자 """
+        pass
+
+    @staticmethod
+    def parse_html(html, parser_type):
+        """html 문서를 파싱한다."""
+        soup = None
+
+        if parser_type == 'lxml':
+            soup = BeautifulSoup(html, 'lxml')
+        elif parser_type == 'html5lib':
+            soup = BeautifulSoup(html, 'html5lib')
+
+        return soup
 
     def parse(self, parsing_info, html=None, soup=None):
         """ 상세 정보 HTML 을 파싱한다."""
@@ -92,11 +106,18 @@ class HtmlParser(object):
                 value_list.append(value)
 
             # 타입 제약: 디폴트 목록형
-            if 'value_type' in item and item['value_type'] == 'single':
-                if len(value_list) > 0:
-                    value_list = value_list[0]
-                else:
-                    value_list = ''
+            if 'value_type' in item:
+                if item['value_type'] == 'single':
+                    if len(value_list) > 0:
+                        value_list = value_list[0]
+                    else:
+                        value_list = ''
+
+                if item['value_type'] == 'merge':
+                    value_list = '\n'.join(value_list)
+
+                if item['value_type'] == 'unique':
+                    value_list = list(set(value_list))
 
             # 값의 개수가 하나인 경우, 스칼라로 변경한다.
             if isinstance(value_list, list) and len(value_list) == 1:

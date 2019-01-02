@@ -1,0 +1,140 @@
+{
+  "_id": "osen",
+  "trace_list": {
+    "parser": "html5lib",
+    "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
+    "trace": {
+      "column": "rows"
+    },
+    "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
+    "list": {
+      "url": "http://osen.mt.co.kr/article/{GISANO}",
+      "title": "{TITLE}"
+    },
+    "#article": "기사 본문에서 추출해야하는 tag 정보",
+    "article": [
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "detailTitle"
+            }
+          },
+          {
+            "name": "h1"
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "detailTitle"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "detailTitle__post-infos"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "html 본문",
+        "key": "html_content",
+        "type": "html",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "detailView"
+            }
+          }
+        ],
+        "remove": [
+          {
+            "name": "iframe"
+          },
+          {
+            "name": "script"
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "news-copyright"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "realtime-session"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "id": "taboola-organic-below-article-thumbnails"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "id": "taboola-below-article-thumbnails"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "id": "divBox"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "content-inner__banner"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "detailView"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "img",
+            "attribute": {
+              "class": "view_photo up"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

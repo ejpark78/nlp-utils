@@ -1,7 +1,7 @@
 {
-  "_id": "einfomax",
+  "_id": "sports_chosun",
   "trace_list": {
-    "parser": "lxml",
+    "parser": "html5lib",
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
     "trace": {
       "key": "news_list",
@@ -10,8 +10,11 @@
         {
           "name": "div",
           "attribute": {
-            "class": "table-row"
+            "class": "list_rbox"
           }
+        },
+        {
+          "name": "dl"
         }
       ]
     },
@@ -23,13 +26,10 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
+            "name": "dt"
           },
           {
-            "name": "strong"
+            "name": "a"
           }
         ]
       },
@@ -39,16 +39,10 @@
         "type": "href",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-titles table-cell"
-            }
+            "name": "dt"
           },
           {
-            "name": "a",
-            "attribute": {
-              "class": "links"
-            }
+            "name": "a"
           }
         ]
       },
@@ -60,16 +54,10 @@
         "value_type": "single",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "list-dated table-cell"
-            }
-          }
-        ],
-        "replace": [
+            "name": "dd"
+          },
           {
-            "from": "^.+[|]",
-            "to": ""
+            "name": "span"
           }
         ]
       }
@@ -84,8 +72,11 @@
           {
             "name": "div",
             "attribute": {
-              "class": "article-head-title"
+              "class": "acle_c"
             }
+          },
+          {
+            "name": "h1"
           }
         ]
       },
@@ -99,40 +90,23 @@
           {
             "name": "div",
             "attribute": {
-              "class": "info-text"
+              "class": "acle_c"
             }
-          }
-        ],
-        "replace": [
-          {
-            "from": "^.*승인",
-            "to": ""
           },
           {
-            "from": "댓글.*$",
-            "to": ""
-          },
-          {
-            "from": "[|]",
-            "to": ""
-          }
-        ]
-      },
-      {
-        "comment": "글쓴이",
-        "key": "author",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
+            "name": "span",
             "attribute": {
-              "class": "info-text"
+              "class": "a_day"
             }
           }
         ],
         "replace": [
           {
-            "from": "승인.+$",
+            "from": "기사입력",
+            "to": ""
+          },
+          {
+            "from": "^.+최종수정",
             "to": ""
           }
         ]
@@ -145,22 +119,16 @@
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "class": "news_content"
             }
           }
         ],
         "remove": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "view-copyright"
-            }
+            "name": "iframe"
           },
           {
-            "name": "div",
-            "attribute": {
-              "class": "view-editors"
-            }
+            "name": "script"
           }
         ]
       },
@@ -172,21 +140,44 @@
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "class": "news_content"
             }
           }
-        ],
-        "remove": [
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "value_type": "unique",
+        "tag": [
           {
             "name": "div",
             "attribute": {
-              "class": "view-copyright"
+              "class": "news_content"
             }
           },
           {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "value_type": "unique",
+        "tag": [
+          {
             "name": "div",
             "attribute": {
-              "class": "view-editors"
+              "class": "news_content"
+            }
+          },
+          {
+            "name": "td",
+            "attribute": {
+              "class": "caption"
             }
           }
         ]
