@@ -35,6 +35,7 @@ class CrawlerBase(object):
         """ 생성자 """
         super().__init__()
 
+        self.job_category = ''
         self.job_id = ''
         self.column = ''
 
@@ -124,7 +125,7 @@ class CrawlerBase(object):
 
     def update_config(self):
         """설정 정보를 읽어 드린다."""
-        self.cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_category=self.job_category, job_id=self.job_id)
 
         # request 헤더 정보
         self.headers = self.cfg.headers

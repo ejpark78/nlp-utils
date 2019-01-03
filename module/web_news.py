@@ -7,10 +7,12 @@ from __future__ import print_function
 
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urljoin
 
 import urllib3
+from dateutil.parser import parse as date_parse
+from dateutil.rrule import rrule, DAILY
 from time import sleep
 
 from module.crawler_base import CrawlerBase
@@ -30,12 +32,15 @@ logging.addLevelName(MESSAGE, 'MESSAGE')
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러 베이스"""
 
-    def __init__(self, job_id='', column=''):
+    def __init__(self, job_category='', job_id='', column=''):
         """ 생성자 """
         super().__init__()
 
+        self.job_category = job_category
         self.job_id = job_id
         self.column = column
+
+        self.trace_depth = 0
 
     def daemon(self):
         """데몬으로 실행"""
@@ -66,18 +71,43 @@ class WebNewsCrawler(CrawlerBase):
 
         # url 목록 반복
         for url in url_list:
-            # page 단위로 크롤링한다.
-            self.trace_page_list(url=url, job=job)
+            if url['url'].find('date') < 0:
+                # page 단위로 크롤링한다.
+                self.trace_page_list(url=url, job=job, dt='')
+            else:
+                # 날짜 지정시
+                start_date = date_parse(self.status['start_date'])
+                until = date_parse(self.status['end_date'])
+
+                date_list = list(rrule(DAILY, dtstart=start_date, until=until))
+                for dt in date_list:
+                    if dt > datetime.now() + timedelta(1):
+                        break
+
+                    # page 단위로 크롤링한다.
+                    self.trace_page_list(url=url, job=job, dt=dt.strftime(url['date_format']))
+
+                    # 현재 크롤링 위치 저장
+                    now = dt - timedelta(1)
+                    if now > start_date:
+                        self.status['start_date'] = now.strftime('%Y-%m-%d')
+                        self.cfg.save_status()
 
         return
 
-    def trace_page_list(self, url, job):
+    def trace_page_list(self, url, job, dt):
         """뉴스 목록을 크롤링한다."""
+
+        self.trace_depth = 0
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
             # 쿼리 url 생성
-            query_url = url['url'].format(page=page)
+            q = {
+                'page': page,
+                'date': dt
+            }
+            query_url = url['url'].format(**q)
 
             if 'category' in url:
                 job['category'] = url['category']
@@ -98,7 +128,6 @@ class WebNewsCrawler(CrawlerBase):
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
-
             self.cfg.save_status()
 
             # 현재 상태 로그 표시
@@ -115,34 +144,9 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def get_doc_id(self, url, job):
-        """문서 아이디를 반환한다."""
-        id_frame = job['id_frame']
-
-        q, _, url_info = self.parser.parse_url(url)
-
-        result = '{}.{}'.format(url_info.path, '.'.join(q.values()))
-
-        if id_frame['type'] == 'path':
-            result = url_info.path
-
-            for pattern in id_frame['replace']:
-                result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
-        elif id_frame['type'] == 'query':
-            if len(q) == 0:
-                logging.info('skip {}'.format(url))
-                return None
-
-            result = id_frame['frame'].format(**q)
-
-        result = result.strip()
-
-        return result
-
     def trace_news(self, html, base_url, job):
         """개별 뉴스를 따라간다."""
-        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
-
+        # 기사 목록을 추출한다.
         trace_list = []
         if isinstance(html, dict) or isinstance(html, list):
             column = self.parsing_info['trace']
@@ -155,14 +159,22 @@ class WebNewsCrawler(CrawlerBase):
                                   index=0, result=trace_list)
 
         # 기사 목록이 3개 이하인 경우 조기 종료
-        if len(trace_list) < 3:
-            logging.info('early stopping : size {}'.format(len(trace_list)))
+        min_trace_size = 5
+        if 'min_trace_size' in job:
+            min_trace_size = job['min_trace_size']
+
+        if min_trace_size >= 0 and len(trace_list) <= min_trace_size:
+            logging.info('early stopping : size {}, 슬립: {} 초'.format(len(trace_list), self.sleep_time))
+            sleep(self.sleep_time)
             return True
 
         # url 저장 이력 조회
         doc_history = self.get_doc_history()
 
-        _, base_url, _ = self.parser.parse_url(base_url)
+        base_url = self.parser.parse_url(base_url)[1]
+
+        # 디비에 연결한다.
+        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
 
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
@@ -177,12 +189,16 @@ class WebNewsCrawler(CrawlerBase):
                 item = self.parser.parse(html=None, soup=trace,
                                          parsing_info=self.parsing_info['list'])
 
-            if isinstance(item['url'], list) and len(item['url']) > 0:
-                item['url'] = item['url'][0]
+            if isinstance(item['url'], list):
+                if len(item['url']) > 0:
+                    item['url'] = item['url'][0]
+                else:
+                    continue
 
             item['url'] = urljoin(base_url, item['url'])
             item['category'] = job['category']
 
+            # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job)
             if doc_id is None:
                 continue
@@ -215,7 +231,53 @@ class WebNewsCrawler(CrawlerBase):
         # 캐쉬 저장
         self.set_doc_history(doc_history)
 
+        # 다음 페이지 정보가 있는 경우
+        self.trace_next_page(html=html, base_url=base_url, job=job)
+
         return False
+
+    def trace_next_page(self, html, base_url, job):
+        """다음 페이지를 따라간다."""
+        if 'trace_next_page' not in self.parsing_info:
+            return
+
+        # html 이 json 인 경우
+        if isinstance(html, dict) or isinstance(html, list):
+            return
+
+        # 한번에 따라갈 깊이
+        trace_tag = self.parsing_info['trace_next_page']
+        if trace_tag['max_trace'] > 0:
+            if trace_tag['max_trace'] < self.trace_depth:
+                self.trace_depth = 0
+                return
+
+        self.trace_depth += 1
+
+        # 다음 페이지 url 추출
+        trace_list = []
+        soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
+        self.parser.trace_tag(soup=soup, tag_list=trace_tag['tag'], index=0, result=trace_list)
+
+        for tag in trace_list:
+            if tag.has_attr('href') is False:
+                continue
+
+            url = urljoin(base_url, tag['href'])
+            if 'replace' in trace_tag:
+                for pattern in trace_tag['replace']:
+                    url = re.sub(pattern['from'], pattern['to'], url, flags=re.DOTALL)
+
+            resp = self.get_html_page(url=url, parser_type=self.parsing_info['parser'])
+            if resp is None:
+                continue
+
+            logging.info('슬립: {} 초'.format(self.sleep_time))
+            sleep(self.sleep_time)
+
+            self.trace_news(html=resp, base_url=url, job=job)
+
+        return
 
     def save_doc(self, html, doc, elastic_utils):
         """크롤링한 문서를 저장한다."""
@@ -237,3 +299,27 @@ class WebNewsCrawler(CrawlerBase):
         elastic_utils.flush()
 
         return doc
+
+    def get_doc_id(self, url, job):
+        """문서 아이디를 반환한다."""
+        id_frame = job['id_frame']
+
+        q, _, url_info = self.parser.parse_url(url)
+
+        result = '{}.{}'.format(url_info.path, '.'.join(q.values()))
+
+        if id_frame['type'] == 'path':
+            result = url_info.path
+
+            for pattern in id_frame['replace']:
+                result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
+        elif id_frame['type'] == 'query':
+            if len(q) == 0:
+                logging.info('skip {}'.format(url))
+                return None
+
+            result = id_frame['frame'].format(**q)
+
+        result = result.strip()
+
+        return result

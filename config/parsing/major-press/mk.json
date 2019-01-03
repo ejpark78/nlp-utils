@@ -1,0 +1,227 @@
+{
+  "_id": "mk",
+  "trace_list": {
+    "parser": "html5lib",
+    "#trace_next_page": "다음 페이지를 따라간다.",
+    "trace_next_page": {
+      "max_trace": -1,
+      "tag": [
+        {
+          "name": "div",
+          "attribute": {
+            "class": "list_paging"
+          }
+        },
+        {
+          "name": "a",
+          "attribute": {
+            "class": "next"
+          }
+        }
+      ],
+      "replace": [
+        {
+          "from": "cm=.+?&",
+          "to": ""
+        }
+      ]
+    },
+    "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
+    "trace": [
+      {
+        "name": "div",
+        "attribute": {
+          "class": "list_area"
+        }
+      },
+      {
+        "name": "dl"
+      }
+    ],
+    "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
+    "list": [
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "name": "dt",
+            "attribute": {
+              "class": "tit"
+            }
+          },
+          {
+            "name": "a"
+          }
+        ]
+      },
+      {
+        "comment": "url",
+        "key": "url",
+        "type": "href",
+        "tag": [
+          {
+            "name": "dt",
+            "attribute": {
+              "class": "tit"
+            }
+          },
+          {
+            "name": "a"
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
+        "tag": [
+          {
+            "name": "span",
+            "attribute": {
+              "class": "date"
+            }
+          }
+        ]
+      }
+    ],
+    "#article": "기사 본문에서 추출해야하는 tag 정보",
+    "article": [
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "view_tit"
+            }
+          },
+          {
+            "name": "span",
+            "attribute": {
+              "class": "head_tit"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "view_tit"
+            }
+          },
+          {
+            "name": "span",
+            "attribute": {
+              "class": "sm_num"
+            }
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.+(20[0-9][0-9][.\\- :0-9]+).+$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "html 본문",
+        "key": "html_content",
+        "type": "html",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "artText"
+            }
+          }
+        ],
+        "remove": [
+          {
+            "name": "iframe"
+          },
+          {
+            "name": "script"
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "id": "slot6"
+            }
+          },
+          {
+            "name": "a",
+            "attribute": {
+              "target": "_blank"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "artText"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "read_txt"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "center_image"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "center_image"
+            }
+          },
+          {
+            "name": "p"
+          }
+        ]
+      }
+    ]
+  }
+}

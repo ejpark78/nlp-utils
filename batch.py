@@ -32,13 +32,8 @@ def init_arguments():
     parser = argparse.ArgumentParser()
 
     # 작업 아이디
+    parser.add_argument('-job_category', default='', help='작업 카테고리')
     parser.add_argument('-job_id', default='', help='작업 아이디')
-
-    # 네이버
-    parser.add_argument('-naver', action='store_true', default=False, help='네이버')
-
-    # 주요 신문사
-    parser.add_argument('-major_press', action='store_true', default=False, help='주요 신문사')
 
     # 데이터 덤프
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
@@ -60,7 +55,7 @@ def main():
     args = init_arguments()
 
     # 네이버
-    if args.naver:
+    if args.job_category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
 
@@ -77,7 +72,7 @@ def main():
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
 
     # 주요 신문사
-    if args.job_id:
+    if args.job_category == 'major-press':
         # 트위터
         if args.job_id == 'twitter':
             if args.dump:
@@ -94,9 +89,9 @@ def main():
             UdemyUtils().batch()
 
         if args.batch:
-            WebNewsCrawler(job_id=args.job_id, column='trace_list').batch()
+            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
         else:
-            WebNewsCrawler(job_id=args.job_id, column='trace_list').daemon()
+            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
 
     if args.producer:
         from module.producer import MqProducerUtils

@@ -165,7 +165,7 @@ class HtmlParser(object):
                 offset = int(date.replace('시간전', ''))
                 date = datetime.now()
                 date += relativedelta(hours=-offset)
-            else:
+            elif date != '':
                 date = parse_date(date)
         except Exception as e:
             logging.error(msg='날짜 변환 오류: {} {}'.format(date, e))

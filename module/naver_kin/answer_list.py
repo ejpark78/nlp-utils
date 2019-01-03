@@ -28,6 +28,7 @@ class AnswerList(CrawlerBase):
         """ 생성자 """
         super().__init__()
 
+        self.job_category = 'naver'
         self.job_id = 'naver_kin'
         self.column = 'partner_list'
 

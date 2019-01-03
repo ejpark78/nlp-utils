@@ -34,6 +34,7 @@ class TwitterUtils(CrawlerBase):
         """ 생성자 """
         super().__init__()
 
+        self.job_category = 'twitter'
         self.job_id = 'twitter'
         self.column = 'twitter_list'
 

@@ -1,0 +1,48 @@
+{
+  "_id": "joins",
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-major_press-joins",
+      "sleep": 2,
+      "min_trace_size": 0,
+      "url_frame": [
+        {
+          "url": "http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}",
+          "date_format": "%Y-%m-%d",
+          "category": "야구"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/article/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-major_press-joins"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
