@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import logging
 
+from module.elasticsearch_utils import ElasticSearchUtils
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
@@ -39,6 +40,7 @@ def init_arguments():
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     # 지식인 질문 상세 페이지: elasticsearch 파라메터, job_id가 kin_detail일 경우
+    parser.add_argument('-host', default=None, help='호스트')
     parser.add_argument('-index', default='question_list', help='인덱스명')
     parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
 
@@ -71,6 +73,8 @@ def main():
         if args.job_id == 'kin_detail':
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
 
+        return
+
     # 주요 신문사
     if args.job_category == 'major-press':
         # 트위터
@@ -84,6 +88,8 @@ def main():
             else:
                 TwitterUtils().daemon()
 
+            return
+
         # udemy
         if args.job_id == 'udemy':
             UdemyUtils().batch()
@@ -93,10 +99,19 @@ def main():
         else:
             WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
 
+        return
+
+    # producer
     if args.producer:
         from module.producer import MqProducerUtils
 
         MqProducerUtils().batch()
+        return
+
+    # elasticsearch 배치 작업
+    if args.batch:
+        ElasticSearchUtils(host=args.host, index=args.index).batch()
+        return
 
     return
 

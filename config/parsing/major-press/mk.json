@@ -4,7 +4,7 @@
     "parser": "html5lib",
     "#trace_next_page": "다음 페이지를 따라간다.",
     "trace_next_page": {
-      "max_trace": -1,
+      "max_trace": 10,
       "tag": [
         {
           "name": "div",

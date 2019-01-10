@@ -392,6 +392,18 @@ class ElasticSearchUtils(object):
 
         return False
 
+    def batch(self):
+        """ 배치 작업을 수행한다."""
+        # doc_list = self.dump()
+        #
+        # for doc in doc_list:
+        #     doc['category'] = '스포츠'
+        #
+        #     self.save_document(document=doc)
+        #
+        # self.flush()
+        return
+
     @staticmethod
     def init_arguments():
         """ 옵션 설정"""
@@ -401,7 +413,7 @@ class ElasticSearchUtils(object):
 
         parser.add_argument('-dump_data', action='store_true', default=False, help='')
 
-        parser.add_argument('-host', default='http://gollum01:9200', help='elastic search 주소')
+        parser.add_argument('-host', default='http://b1:9200', help='elastic search 주소')
         parser.add_argument('-index', default=None, help='인덱스명')
 
         return parser.parse_args()

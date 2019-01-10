@@ -12,7 +12,7 @@
       "min_trace_size": 0,
       "url_frame": [
         {
-          "url": "http://isplus.live.joins.com/news/list/list.asp?page={page}&dt={date}&tm=i_b_6110",
+          "url": "http://isplus.live.joins.com/news/list/list.asp?page={page}&tm=i_b_6110",
           "date_format": "%Y%m%d",
           "category": "야구"
         }

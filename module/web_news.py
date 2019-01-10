@@ -108,6 +108,7 @@ class WebNewsCrawler(CrawlerBase):
                 'date': dt
             }
             query_url = url['url'].format(**q)
+            logging.info('page url: {}'.format(query_url))
 
             if 'category' in url:
                 job['category'] = url['category']

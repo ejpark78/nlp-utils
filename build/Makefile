@@ -62,13 +62,14 @@ test:
 		$(IMAGE_NAME)
 
 batch:
-	docker-compose --project-directory crawler -f docker-compose.yml up -d
+	docker-compose --project-directory crawler_major_press -f major-press.yml up -d
+#	docker-compose --project-directory crawler_naver -f naver.yml up -d
 
 down:
-	docker-compose --project-directory crawler -f docker-compose.yml down
+	docker-compose --project-directory crawler_major_press -f major-press.yml down
 
 batch-logs:
-	docker-compose --project-directory crawler -f docker-compose.yml logs -f
+	docker-compose --project-directory crawler_major_press -f major-press.yml logs -f
 
 bash:
 	docker exec -it $(CONTAINER) /bin/bash
