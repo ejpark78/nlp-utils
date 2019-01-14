@@ -2,12 +2,12 @@ version: '3'
 
 services:
 
-  naver_term_list:
+  naver-economy:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id term_list
+    command: python3 batch.py -job_category naver -job_id economy
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -17,12 +17,12 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  naver_term_detail:
+  naver-international:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id term_detail
+    command: python3 batch.py -job_category naver -job_id international
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -32,12 +32,102 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  naver_kin_question_list:
+  naver-it:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id kin_question_list
+    command: python3 batch.py -job_category naver -job_id it
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-living:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id living
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-opinion:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id opinion
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-politics:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id politics
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-society:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id society
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-sports:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id sports
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  naver-tv:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id tv
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -52,4 +142,4 @@ networks:
   default:
     ipam:
       config:
-        - subnet: 190.23.0.0/24
+        - subnet: 190.122.0.0/24

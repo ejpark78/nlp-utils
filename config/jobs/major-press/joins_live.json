@@ -9,7 +9,6 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-joins_live",
       "sleep": 2,
-      "min_trace_size": 0,
       "url_frame": [
         {
           "url": "http://isplus.live.joins.com/news/list/list.asp?page={page}&tm=i_b_6110",
@@ -27,7 +26,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler"
+            "name": "crawler.major_press"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {

@@ -38,7 +38,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler"
+            "name": "crawler.major_press"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {

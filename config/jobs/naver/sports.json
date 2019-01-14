@@ -1,5 +1,4 @@
 {
-  "_id": "naver_sports",
   "daemon": {
     "sleep": 1800
   },
@@ -9,7 +8,6 @@
       "host": "http://b1:9200",
       "index": "crawler-naver-sports",
       "sleep": 2,
-      "min_trace_size": 3,
       "url_frame": [
         {
           "url": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
@@ -22,6 +20,54 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "해외야구"
+        },
+        {
+          "url": "https://sports.news.naver.com/esports/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/게임"
+        },
+        {
+          "url": "https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/축구"
+        },
+        {
+          "url": "https://sports.news.naver.com/wfootball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/해외축구"
+        },
+        {
+          "url": "https://sports.news.naver.com/basketball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/농구"
+        },
+        {
+          "url": "https://sports.news.naver.com/volleyball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/배구"
+        },
+        {
+          "url": "https://sports.news.naver.com/golf/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/골프"
+        },
+        {
+          "url": "https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/축구"
+        },
+        {
+          "url": "https://sports.news.naver.com/general/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/스포츠-일반"
         }
       ],
       "id_frame": {

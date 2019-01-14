@@ -1,5 +1,4 @@
 {
-  "_id": "naver_terms",
   "term_list": {
     "host": "http://b1:9200",
     "index": "crawler-naver-terms-list",

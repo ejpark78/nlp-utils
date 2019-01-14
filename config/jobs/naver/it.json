@@ -1,0 +1,76 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-naver-it",
+      "sleep": 2,
+      "url_frame": [
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/모바일"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=226&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/인터넷/SNS"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=227&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/통신/뉴미디어"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=230&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/IT 일반"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=732&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/보안/해킹"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=283&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/컴퓨터"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=229&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/게임/리뷰"
+        },
+        {
+          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=228&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "IT/과학 일반"
+        }
+      ],
+      "id_frame": {
+        "type": "query",
+        "frame": "{oid}-{aid}"
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-naver-it"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

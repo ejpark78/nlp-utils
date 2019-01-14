@@ -112,6 +112,10 @@ class PostProcessUtils(object):
             'max_retries': 10
         }
 
+        doc_url = ''
+        if 'url' in document:
+            doc_url = document['url']
+
         try:
             connection = Connection(hostname=info['host'])
             exchange = Exchange(name=info['exchange']['name'], type=info['exchange']['type'])
@@ -126,10 +130,10 @@ class PostProcessUtils(object):
                                  retry=True,
                                  retry_policy=retry_policy)
 
-                msg = 'Rabbit MQ 전달: {}'.format(info['exchange']['name'])
+                msg = 'Rabbit MQ 전달: {}, {}'.format(info['exchange']['name'], doc_url)
                 logging.log(level=MESSAGE, msg=msg)
         except Exception as e:
-            msg = 'Rabbit MQ 전달 에러: {}'.format(info['exchange']['name'], e)
+            msg = 'Rabbit MQ 전달 에러: {}, {}, {}'.format(info['exchange']['name'], doc_url, e)
             logging.error(msg=msg)
 
         return True

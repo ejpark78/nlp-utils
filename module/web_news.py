@@ -146,61 +146,6 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def get_trace_list(self, html):
-        """"""
-        trace_list = []
-        if isinstance(html, dict) or isinstance(html, list):
-            column = self.parsing_info['trace']
-            if column in html:
-                trace_list = html[column]
-
-            str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
-        else:
-            soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
-
-            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace'],
-                                  index=0, result=trace_list)
-
-            str_trace_list = ''
-            for item in trace_list:
-                str_trace_list += str(item)
-
-        # trace_list 이력 조회
-        trace_list_history = self.get_history(name='trace_list', default='')
-        if isinstance(trace_list_history, str) is True:
-            if str_trace_list == trace_list_history:
-                msg = 'early stopping (trace_list overlapping): size {}, 슬립: {} 초'\
-                    .format(len(trace_list), self.sleep_time)
-                logging.info(msg=msg)
-
-                sleep(self.sleep_time)
-                return None
-
-        self.set_history(value=str_trace_list, name='trace_list')
-
-        return trace_list
-
-    def get_trace_item(self, trace):
-        """"""
-        if isinstance(trace, dict):
-            item = trace
-
-            for k in self.parsing_info['list']:
-                v = self.parsing_info['list'][k]
-                item[k] = v.format(**trace)
-        else:
-            # 목록에서 기사 본문 링크 추출
-            item = self.parser.parse(html=None, soup=trace,
-                                     parsing_info=self.parsing_info['list'])
-
-        if isinstance(item['url'], list):
-            if len(item['url']) > 0:
-                item['url'] = item['url'][0]
-            else:
-                return None
-
-        return item
-
     def trace_news(self, html, base_url, job):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
@@ -255,16 +200,6 @@ class WebNewsCrawler(CrawlerBase):
 
             logging.info('슬립: {} 초'.format(self.sleep_time))
             sleep(self.sleep_time)
-
-        # 기사 목록이 3개 이하인 경우 조기 종료
-        min_trace_size = 5
-        if 'min_trace_size' in job:
-            min_trace_size = job['min_trace_size']
-
-        if min_trace_size >= 0 and len(trace_list) <= min_trace_size:
-            logging.info('early stopping : size {}, 슬립: {} 초'.format(len(trace_list), self.sleep_time))
-            sleep(self.sleep_time)
-            return True
 
         # 캐쉬 저장
         self.set_history(value=doc_history, name='doc_history')
@@ -361,3 +296,57 @@ class WebNewsCrawler(CrawlerBase):
         result = result.strip()
 
         return result
+
+    def get_trace_list(self, html):
+        """trace tag 목록을 추출해서 반환한다."""
+        trace_list = []
+        if isinstance(html, dict) or isinstance(html, list):
+            column = self.parsing_info['trace']
+            if column in html:
+                trace_list = html[column]
+
+            str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
+        else:
+            soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
+
+            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace'],
+                                  index=0, result=trace_list)
+
+            str_trace_list = ''
+            for item in trace_list:
+                str_trace_list += str(item)
+
+        # trace_list 이력 조회
+        trace_list_history = self.get_history(name='trace_list', default='')
+        if isinstance(trace_list_history, str) is True:
+            if str_trace_list == trace_list_history:
+                msg = '이전 목록과 일치함, 조기 종료: size {}, 슬립: {} 초'.format(len(trace_list), self.sleep_time)
+                logging.info(msg=msg)
+
+                sleep(self.sleep_time)
+                return None
+
+        self.set_history(value=str_trace_list, name='trace_list')
+
+        return trace_list
+
+    def get_trace_item(self, trace):
+        """trace tag 하나를 파싱해서 반환한다."""
+        if isinstance(trace, dict):
+            item = trace
+
+            for k in self.parsing_info['list']:
+                v = self.parsing_info['list'][k]
+                item[k] = v.format(**trace)
+        else:
+            # 목록에서 기사 본문 링크 추출
+            item = self.parser.parse(html=None, soup=trace,
+                                     parsing_info=self.parsing_info['list'])
+
+        if isinstance(item['url'], list):
+            if len(item['url']) > 0:
+                item['url'] = item['url'][0]
+            else:
+                return None
+
+        return item

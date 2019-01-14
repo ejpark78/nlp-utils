@@ -1,5 +1,4 @@
 {
-  "_id": "joins",
   "daemon": {
     "sleep": 1800
   },
@@ -7,23 +6,18 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-major_press-joins",
+      "index": "crawler-naver-tv",
       "sleep": 2,
       "url_frame": [
         {
-          "url": "http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}",
-          "date_format": "%Y-%m-%d",
-          "category": "야구"
+          "url": "http://news.naver.com/main/list.nhn?sid1=115&listType=title&mid=shm&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "TV"
         }
       ],
       "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/article/",
-            "to": ""
-          }
-        ]
+        "type": "query",
+        "frame": "{oid}-{aid}"
       },
       "post_process": [
         {
@@ -31,13 +25,13 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler.major_press"
+            "name": "crawler"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {
             "elastic": {
               "host": "http://b1:9200",
-              "index": "corpus_process-major_press-joins"
+              "index": "corpus_process-naver-tv"
             }
           }
         }

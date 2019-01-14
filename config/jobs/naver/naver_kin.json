@@ -1,5 +1,4 @@
 {
-  "_id": "naver_kin",
   "daemon": {
     "sleep": 3600
   },

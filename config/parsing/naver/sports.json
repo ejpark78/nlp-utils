@@ -1,5 +1,4 @@
 {
-  "_id": "naver_sports",
   "trace_list": {
     "parser": "html5lib",
     "trace": "list",
