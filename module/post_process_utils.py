@@ -17,12 +17,12 @@ import requests
 
 from module.html_parser import HtmlParser
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class PostProcessUtils(object):
@@ -130,10 +130,10 @@ class PostProcessUtils(object):
                                  retry=True,
                                  retry_policy=retry_policy)
 
-                msg = 'Rabbit MQ 전달: {}, {}'.format(info['exchange']['name'], doc_url)
+                msg = 'Rabbit MQ: {}, {}'.format(info['exchange']['name'], doc_url)
                 logging.log(level=MESSAGE, msg=msg)
         except Exception as e:
-            msg = 'Rabbit MQ 전달 에러: {}, {}, {}'.format(info['exchange']['name'], doc_url, e)
+            msg = 'Rabbit MQ 에러: {}, {}, {}'.format(info['exchange']['name'], doc_url, e)
             logging.error(msg=msg)
 
         return True

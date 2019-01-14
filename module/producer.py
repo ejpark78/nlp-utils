@@ -9,12 +9,12 @@ import json
 import logging
 from datetime import datetime
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class MqProducerUtils(object):

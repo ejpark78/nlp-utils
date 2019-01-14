@@ -20,12 +20,12 @@ from module.post_process_utils import PostProcessUtils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class CrawlerBase(object):
@@ -130,7 +130,7 @@ class CrawlerBase(object):
         # request 헤더 정보
         self.headers = self.cfg.headers
 
-        if self.column in self.cfg.parsing_info:
+        if self.cfg.parsing_info is not None and self.column in self.cfg.parsing_info:
             self.parsing_info = self.cfg.parsing_info[self.column]
 
         # crawler job 정보

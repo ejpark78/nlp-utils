@@ -227,20 +227,20 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-#  joins:
-#    image: nlpapi:5000/crawler:2.0
-#    restart: always
-#    hostname: crawler
-#    working_dir: /usr/local/app
-#    command: python3 batch.py -job_category major-press -job_id joins
-#    extra_hosts:
-#      - "b1:172.20.78.134"
-#      - "b1.korea.ncsoft.corp:172.20.78.134"
-#      - "koala:172.20.78.107"
-#      - "koala.korea.ncsoft.corp:172.20.78.107"
-#    volumes:
-#      - /etc/timezone:/etc/timezone:ro
-#      - /etc/localtime:/etc/localtime:ro
+  joins:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category major-press -job_id joins
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
 # 네트워크 인터페이스 정의
 networks:

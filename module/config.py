@@ -9,12 +9,12 @@ import json
 import logging
 from os.path import isfile
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class Config(object):
@@ -37,6 +37,8 @@ class Config(object):
 
         job_info_filename = 'config/jobs/{}/{}.json'.format(job_category, job_id)
         self.job_info = self.open_config(filename=job_info_filename)
+
+        self.parsing_info = None
 
         parsing_info_filename = 'config/parsing/{}/{}.json'.format(job_category, job_id)
         if isfile(parsing_info_filename):

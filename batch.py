@@ -18,12 +18,12 @@ from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 def init_arguments():
@@ -56,7 +56,7 @@ def main():
     """메인"""
     args = init_arguments()
 
-    # 네이버
+    # 네이버 지식인/백과사전
     if args.job_category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
@@ -78,37 +78,22 @@ def main():
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
             return
 
+    # 트위터
+    if args.job_id == 'twitter':
+        if args.dump:
+            TwitterCorpusUtils().dump()
+            return
+
         if args.batch:
-            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
+            TwitterUtils().batch()
         else:
-            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
+            TwitterUtils().daemon()
 
         return
 
-    # 주요 신문사
-    if args.job_category == 'major-press':
-        # 트위터
-        if args.job_id == 'twitter':
-            if args.dump:
-                TwitterCorpusUtils().dump()
-                return
-
-            if args.batch:
-                TwitterUtils().batch()
-            else:
-                TwitterUtils().daemon()
-
-            return
-
-        # udemy
-        if args.job_id == 'udemy':
-            UdemyUtils().batch()
-
-        if args.batch:
-            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
-        else:
-            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
-
+    # udemy
+    if args.job_id == 'udemy':
+        UdemyUtils().batch()
         return
 
     # producer
@@ -123,7 +108,12 @@ def main():
         ElasticSearchUtils(host=args.host, index=args.index).batch()
         return
 
-    return
+    if args.batch:
+        WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
+        return
+    else:
+        WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
+        return
 
 
 if __name__ == '__main__':

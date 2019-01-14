@@ -61,9 +61,17 @@ test:
 		--name $(CONTAINER) \
 		$(IMAGE_NAME)
 
-batch:
+major-press:
 	docker-compose --project-directory crawler_major_press -f major-press.yml up -d
-#	docker-compose --project-directory crawler_naver -f naver.yml up -d
+
+naver-kin:
+	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml up -d
+
+naver:
+	docker-compose --project-directory crawler_naver -f naver.yml up -d
+
+twitter:
+	docker-compose --project-directory crawler_twitter -f twitter.yml up -d
 
 down:
 	docker-compose --project-directory crawler_major_press -f major-press.yml down

@@ -1,0 +1,71 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-nate-politics",
+      "sleep": 2,
+      "url_frame": [
+        {
+          "url": "http://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/청와대"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/국회/정당"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/외교/국방"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/북한"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/행정"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/정치 일반"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/view/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler.nate"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-nate-politics"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

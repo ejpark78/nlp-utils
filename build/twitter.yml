@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  twitter:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category twitter -job_id twitter
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+# 네트워크 인터페이스 정의
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 190.23.1.0/24

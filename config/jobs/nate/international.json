@@ -6,38 +6,48 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-naver-international",
+      "index": "crawler-nate-international",
       "sleep": 2,
       "url_frame": [
         {
-          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=231&listType=title&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0502&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/아시아호주"
         },
         {
-          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=232&listType=title&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0503&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/미국중남미"
         },
         {
-          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=233&listType=title&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0504&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/유럽"
         },
         {
-          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=234&listType=title&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0505&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/중동아프리카"
         },
         {
-          "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=322&listType=title&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0506&type=t&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/해외화제"
+        },
+        {
+          "url": "http://news.nate.com/subsection?mid=n0507&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/일반"
         }
       ],
       "id_frame": {
-        "type": "query",
-        "frame": "{oid}-{aid}"
+        "type": "path",
+        "replace": [
+          {
+            "from": "/view/",
+            "to": ""
+          }
+        ]
       },
       "post_process": [
         {
@@ -45,13 +55,13 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler.naver"
+            "name": "crawler.nate"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {
             "elastic": {
               "host": "http://b1:9200",
-              "index": "corpus_process-naver-international"
+              "index": "corpus_process-nate-international"
             }
           }
         }

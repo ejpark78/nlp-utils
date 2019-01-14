@@ -13,13 +13,13 @@
           "url": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
           "parser": "json",
           "date_format": "%Y%m%d",
-          "category": "야구"
+          "category": "스포츠/야구"
         },
         {
           "url": "https://sports.news.naver.com/wbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
           "parser": "json",
           "date_format": "%Y%m%d",
-          "category": "해외야구"
+          "category": "스포츠/해외야구"
         },
         {
           "url": "https://sports.news.naver.com/esports/news/list.nhn?isphoto=&date={date}&page={page}",
@@ -80,7 +80,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler"
+            "name": "crawler.naver"
           },
           "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
           "payload": {

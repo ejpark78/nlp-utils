@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 import json
+import logging
 import re
 from datetime import datetime, timedelta
 from urllib.parse import urljoin
@@ -22,12 +22,12 @@ from module.elasticsearch_utils import ElasticSearchUtils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class WebNewsCrawler(CrawlerBase):
@@ -133,8 +133,8 @@ class WebNewsCrawler(CrawlerBase):
             self.cfg.save_status()
 
             # 현재 상태 로그 표시
-            msg = '기사 목록 조회, 슬립: {} 초, {} {:,}, {}'.format(self.sleep_time, job['category'], page, dt)
-            logging.info(msg=msg)
+            msg = '기사 목록: {}, {}'.format(job['category'], query_url)
+            logging.log(level=MESSAGE, msg=msg)
             sleep(self.sleep_time)
 
         # 위치 초기화
@@ -264,12 +264,14 @@ class WebNewsCrawler(CrawlerBase):
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now()
 
-        msg = '문서 저장: {} {} {}'.format(doc['_id'], doc['date'], doc['title'])
-        logging.log(level=MESSAGE, msg=msg)
-
         # 문서 저장
         elastic_utils.save_document(document=doc)
         elastic_utils.flush()
+
+        # 로그 표시
+        doc_url = '{}/{}/doc/{}?pretty'.format(elastic_utils.host, elastic_utils.index, doc['document_id'])
+        msg = '문서 저장: {} {} {}, {}'.format(doc['document_id'], doc['date'], doc['title'], doc_url)
+        logging.log(level=MESSAGE, msg=msg)
 
         return doc
 
@@ -321,7 +323,7 @@ class WebNewsCrawler(CrawlerBase):
         if isinstance(trace_list_history, str) is True:
             if str_trace_list == trace_list_history:
                 msg = '이전 목록과 일치함, 조기 종료: size {}, 슬립: {} 초'.format(len(trace_list), self.sleep_time)
-                logging.info(msg=msg)
+                logging.log(level=MESSAGE, msg=msg)
 
                 sleep(self.sleep_time)
                 return None
