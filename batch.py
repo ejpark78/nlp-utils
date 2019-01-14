@@ -60,18 +60,28 @@ def main():
     if args.job_category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
+            return
 
         if args.job_id == 'term_detail':
             NaverTermDetail().batch()
+            return
 
         if args.job_id == 'dump':
             NaverCorpusUtils().dump()
+            return
 
         if args.job_id == 'kin_question_list':
             NaverKinQuestionList().daemon()
+            return
 
         if args.job_id == 'kin_detail':
             NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
+            return
+
+        if args.batch:
+            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
+        else:
+            WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
 
         return
 

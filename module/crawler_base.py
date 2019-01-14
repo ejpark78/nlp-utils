@@ -91,20 +91,20 @@ class CrawlerBase(object):
 
         return resp.content
 
-    def set_doc_history(self, doc_history):
+    def set_history(self, value, name):
         """문서 아이디 이력을 저장한다."""
-        self.cache.set('doc_history', doc_history, timeout=600)
+        self.cache.set(name, value, timeout=600)
         return
 
-    def get_doc_history(self):
+    def get_history(self, name, default):
         """문서 아이디 이력을 반환한다."""
-        doc_history = self.cache.get('doc_history')
+        value = self.cache.get(name)
 
-        if doc_history is None:
-            doc_history = {}
-            self.cache.set('doc_history', doc_history, timeout=600)
+        if value is None:
+            value = default
+            self.cache.set(name, value, timeout=600)
 
-        return doc_history
+        return value
 
     @staticmethod
     def check_doc_id(doc_id, elastic_utils, url, index, doc_history):

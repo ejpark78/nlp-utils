@@ -1,0 +1,50 @@
+{
+  "_id": "naver_sports",
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-naver-sports",
+      "sleep": 2,
+      "min_trace_size": 3,
+      "url_frame": [
+        {
+          "url": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "야구"
+        },
+        {
+          "url": "https://sports.news.naver.com/wbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "해외야구"
+        }
+      ],
+      "id_frame": {
+        "type": "query",
+        "frame": "{oid}-{aid}"
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-naver-sports"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
