@@ -10,27 +10,27 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://media.daum.net/breakingnews/editorial/column?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/editorial/column?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "칼럼-칼럼"
         },
         {
-          "url": "http://media.daum.net/breakingnews/editorial/editorial?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/editorial/editorial?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "칼럼-사설"
         },
         {
-          "url": "http://media.daum.net/breakingnews/editorial/opinion?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/editorial/opinion?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "칼럼-여론"
         },
         {
-          "url": "http://media.daum.net/breakingnews/editorial/cartoon?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/editorial/cartoon?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "칼럼-만평"
         },
         {
-          "url": "http://media.daum.net/breakingnews/editorial?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/editorial?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "칼럼"
         }

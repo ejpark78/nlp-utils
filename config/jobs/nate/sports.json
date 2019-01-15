@@ -10,32 +10,32 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/야구"
         },
         {
-          "url": "http://sports.news.nate.com/abrbaseball/recent?&type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/abrbaseball/recent?&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외야구"
         },
         {
-          "url": "http://sports.news.nate.com/soccer/recent?&type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/soccer/recent?&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/축구"
         },
         {
-          "url": "http://sports.news.nate.com/abrsoccer/recent?&type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/abrsoccer/recent?&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외축구"
         },
         {
-          "url": "http://sports.news.nate.com/basketvolley/recent?&type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/basketvolley/recent?&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/농구-배구"
         },
         {
-          "url": "http://sports.news.nate.com/general/recent?&type=t&date={date}&page={page}",
+          "url": "https://sports.news.nate.com/general/recent?&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "스포츠/스포츠-일반"
         }

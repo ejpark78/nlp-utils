@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  nate-economy:
+  economy:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -18,7 +18,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-international:
+  international:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -34,7 +34,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-entertainment:
+  entertainment:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -50,7 +50,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-it:
+  it:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -66,7 +66,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-politics:
+  politics:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -82,7 +82,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-society:
+  society:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -98,7 +98,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-sports:
+  sports:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -114,7 +114,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-#  nate-tv:
+#  tv:
 #    image: nlpapi:5000/crawler:2.0
 #    restart: always
 #    hostname: crawler
@@ -130,7 +130,7 @@ services:
 #      - /etc/localtime:/etc/localtime:ro
 #      - $PWD/../config/status:/usr/local/app/config/status:rw
 
-#  nate-opinion:
+#  opinion:
 #    image: nlpapi:5000/crawler:2.0
 #    restart: always
 #    hostname: crawler

@@ -10,52 +10,52 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://news.nate.com/subsection?mid=n0402&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0402&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/사건사고"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0403&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0403&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/교육학교"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0404&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0404&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/교통지역"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0405&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0405&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/인권복지"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0406&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0406&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/여성노동"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0407&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0407&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/환경"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0408&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0408&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/미디어"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0409&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0409&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/종교"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0410&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0410&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/인물"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0411&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0411&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/일반"
         }

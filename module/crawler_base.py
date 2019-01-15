@@ -73,10 +73,10 @@ class CrawlerBase(object):
         """웹 문서를 조회한다."""
         # 페이지 조회
         try:
-            resp = requests.get(url=url, headers=self.headers['desktop'],
+            resp = requests.get(url=url, headers=self.headers['desktop'], verify=False,
                                 allow_redirects=True, timeout=60)
         except Exception as e:
-            logging.error('url 조회 에러: {} 초, {}'.format(10, e))
+            logging.error('url 조회 에러: {}, {} 초, {}'.format(url, 10, e))
             sleep(10)
             return None
 

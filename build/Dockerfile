@@ -16,5 +16,6 @@ RUN echo "사용자 생성: ${USER}..." \
 ADD app.tar.gz ${APP_HOME}
 
 RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
+RUN pip3 install --no-cache-dir -U requests[security]
 
 WORKDIR ${APP_HOME}

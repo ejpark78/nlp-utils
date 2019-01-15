@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  naver-term_list:
+  term-list:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -17,7 +17,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  naver-term_detail:
+  term-detail:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
@@ -32,7 +32,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  naver-kin_question_list:
+  question-list:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler

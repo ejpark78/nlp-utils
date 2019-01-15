@@ -259,7 +259,14 @@ class WebNewsCrawler(CrawlerBase):
         # html 본문에서 값 추출
         item = self.parser.parse(soup=soup, parsing_info=self.parsing_info['article'])
 
-        doc.update(item)
+        if 'html_content' in item and isinstance(item['date'], datetime):
+            doc.update(item)
+        else:
+            doc['parsing_error'] = True
+            doc['raw_html'] = str(html)
+
+            msg = '파싱 에러: {}'.format(doc['url'])
+            logging.error(msg=msg)
 
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now()

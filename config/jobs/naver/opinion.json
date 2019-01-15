@@ -10,7 +10,7 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://news.naver.com/main/list.nhn?sid1=110&listType=title&mid=shm&date={date}&page={page}",
+          "url": "https://news.naver.com/main/list.nhn?sid1=110&listType=title&mid=shm&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "오피니언"
         }

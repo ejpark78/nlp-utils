@@ -10,32 +10,32 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://media.daum.net/breakingnews/digital/device?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/device?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/IT기기"
         },
         {
-          "url": "http://media.daum.net/breakingnews/digital/mobile?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/mobile?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/통신모바일"
         },
         {
-          "url": "http://media.daum.net/breakingnews/digital/software?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/software?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/소프트웨어"
         },
         {
-          "url": "http://media.daum.net/breakingnews/digital/internet?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/internet?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/인터넷"
         },
         {
-          "url": "http://media.daum.net/breakingnews/digital/game?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/game?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/게임"
         },
         {
-          "url": "http://media.daum.net/breakingnews/digital/others?regDate={date}&page={page}",
+          "url": "https://media.daum.net/breakingnews/digital/others?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/IT일반"
         }

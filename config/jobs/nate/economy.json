@@ -10,37 +10,37 @@
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://news.nate.com/subsection?mid=n0302&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0302&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/생활 경제"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0303&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0303&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/부동산"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0304&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0304&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/금융/증권"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0305&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0305&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/산업/기업"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0306&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0306&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/취업/창업"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0307&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0307&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/국제경제"
         },
         {
-          "url": "http://news.nate.com/subsection?mid=n0308&type=t&date={date}&page={page}",
+          "url": "https://news.nate.com/subsection?mid=n0308&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "경제/경제 일반"
         }

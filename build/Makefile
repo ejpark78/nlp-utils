@@ -68,10 +68,27 @@ naver-kin:
 	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml up -d
 
 naver:
-	docker-compose --project-directory crawler_naver -f naver.yml up -d
+	docker-compose --project-directory crawler-naver -f naver.yml up -d
 
 nate:
-	docker-compose --project-directory crawler_nate -f nate.yml up -d
+	docker-compose --project-directory crawler-nate -f nate.yml up -d
+
+daum:
+	docker-compose --project-directory crawler-daum -f daum.yml up -d
+
+naver-logs:
+	docker-compose --project-directory crawler-naver -f naver.yml logs -f
+
+nate-logs:
+	docker-compose --project-directory crawler-nate -f nate.yml logs -f
+
+daum-logs:
+	docker-compose --project-directory crawler-daum -f daum.yml logs -f
+
+down-all:
+	docker-compose --project-directory crawler-naver -f naver.yml down
+	docker-compose --project-directory crawler-nate -f nate.yml down
+	docker-compose --project-directory crawler-daum -f daum.yml down
 
 twitter:
 	docker-compose --project-directory crawler_twitter -f twitter.yml up -d
