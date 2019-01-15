@@ -1,0 +1,89 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-daum-sports",
+      "sleep": 10,
+      "url_frame": [
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1028&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/야구"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1015&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/해외야구"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1079&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/게임"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1027&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/축구"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=100032&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/해외축구"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=5000&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/골프"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1029&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/농구&배구"
+        },
+        {
+          "url": "http://sports.media.daum.net/sports/api/news/list.jsonp?cateIds=1031&pageSize=20&pageNumber={page}&date={date}",
+          "parser": "json",
+          "date_format": "%Y%m%d",
+          "category": "스포츠/일반"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/v/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler.daum"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-daum-sports"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

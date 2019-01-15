@@ -164,7 +164,7 @@ class ElasticSearchUtils(object):
 
             self.bulk_data[self.host] = []
         except Exception as e:
-            msg = 'elastic-search 저장 에러: {}'.format(e)
+            msg = '저장 에러: {}'.format(e)
             logging.error(msg=msg)
 
         try:

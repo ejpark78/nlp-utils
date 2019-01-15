@@ -16,6 +16,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-international:
     image: nlpapi:5000/crawler:2.0
@@ -31,6 +32,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-it:
     image: nlpapi:5000/crawler:2.0
@@ -46,6 +48,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-living:
     image: nlpapi:5000/crawler:2.0
@@ -61,6 +64,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-opinion:
     image: nlpapi:5000/crawler:2.0
@@ -76,6 +80,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-politics:
     image: nlpapi:5000/crawler:2.0
@@ -91,6 +96,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-society:
     image: nlpapi:5000/crawler:2.0
@@ -106,6 +112,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-sports:
     image: nlpapi:5000/crawler:2.0
@@ -121,6 +128,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   naver-tv:
     image: nlpapi:5000/crawler:2.0
@@ -136,6 +144,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
 # 네트워크 인터페이스 정의
 networks:

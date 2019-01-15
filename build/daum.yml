@@ -2,12 +2,12 @@ version: '3'
 
 services:
 
-  nate-economy:
+  daum-culture:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id economy
+    command: python3 batch.py -job_category daum -job_id culture
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -18,12 +18,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-international:
+  daum-economy:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id international
+    command: python3 batch.py -job_category daum -job_id economy
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -34,12 +34,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-entertainment:
+  daum-international:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id entertainment
+    command: python3 batch.py -job_category daum -job_id international
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -50,12 +50,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-it:
+  daum-it:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id it
+    command: python3 batch.py -job_category daum -job_id it
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -66,12 +66,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-politics:
+  daum-opinion:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id politics
+    command: python3 batch.py -job_category daum -job_id opinion
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -82,12 +82,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-society:
+  daum-politics:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id society
+    command: python3 batch.py -job_category daum -job_id politics
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -98,12 +98,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  nate-sports:
+  daum-society:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category nate -job_id sports
+    command: python3 batch.py -job_category daum -job_id society
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"
@@ -114,41 +114,25 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-#  nate-tv:
-#    image: nlpapi:5000/crawler:2.0
-#    restart: always
-#    hostname: crawler
-#    working_dir: /usr/local/app
-#    command: python3 batch.py -job_category nate -job_id tv
-#    extra_hosts:
-#      - "b1:172.20.78.134"
-#      - "b1.korea.ncsoft.corp:172.20.78.134"
-#      - "koala:172.20.78.107"
-#      - "koala.korea.ncsoft.corp:172.20.78.107"
-#    volumes:
-#      - /etc/timezone:/etc/timezone:ro
-#      - /etc/localtime:/etc/localtime:ro
-#      - $PWD/../config/status:/usr/local/app/config/status:rw
-
-#  nate-opinion:
-#    image: nlpapi:5000/crawler:2.0
-#    restart: always
-#    hostname: crawler
-#    working_dir: /usr/local/app
-#    command: python3 batch.py -job_category nate -job_id opinion
-#    extra_hosts:
-#      - "b1:172.20.78.134"
-#      - "b1.korea.ncsoft.corp:172.20.78.134"
-#      - "koala:172.20.78.107"
-#      - "koala.korea.ncsoft.corp:172.20.78.107"
-#    volumes:
-#      - /etc/timezone:/etc/timezone:ro
-#      - /etc/localtime:/etc/localtime:ro
-#      - $PWD/../config/status:/usr/local/app/config/status:rw
+  daum-sports:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category daum -job_id sports
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
 # 네트워크 인터페이스 정의
 networks:
   default:
     ipam:
       config:
-        - subnet: 190.123.0.0/24
+        - subnet: 190.126.0.0/24

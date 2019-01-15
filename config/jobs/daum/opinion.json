@@ -1,0 +1,66 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-daum-opinion",
+      "sleep": 10,
+      "url_frame": [
+        {
+          "url": "http://media.daum.net/breakingnews/editorial/column?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "칼럼-칼럼"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/editorial/editorial?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "칼럼-사설"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/editorial/opinion?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "칼럼-여론"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/editorial/cartoon?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "칼럼-만평"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/editorial?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "칼럼"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/v/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler.daum"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-daum-opinion"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

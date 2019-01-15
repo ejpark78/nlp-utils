@@ -16,6 +16,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   yonhapnewstv:
     image: nlpapi:5000/crawler:2.0
@@ -31,6 +32,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   spotvnews:
     image: nlpapi:5000/crawler:2.0
@@ -46,6 +48,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   khan:
     image: nlpapi:5000/crawler:2.0
@@ -61,6 +64,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   sportskhan:
     image: nlpapi:5000/crawler:2.0
@@ -76,6 +80,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   donga:
     image: nlpapi:5000/crawler:2.0
@@ -91,6 +96,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   monoytoday:
     image: nlpapi:5000/crawler:2.0
@@ -106,6 +112,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   starnews:
     image: nlpapi:5000/crawler:2.0
@@ -121,6 +128,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   newsis:
     image: nlpapi:5000/crawler:2.0
@@ -136,6 +144,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   chosun:
     image: nlpapi:5000/crawler:2.0
@@ -151,6 +160,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   sports_chosun:
     image: nlpapi:5000/crawler:2.0
@@ -166,6 +176,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   joins_live:
     image: nlpapi:5000/crawler:2.0
@@ -181,6 +192,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   osen:
     image: nlpapi:5000/crawler:2.0
@@ -196,6 +208,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   mk:
     image: nlpapi:5000/crawler:2.0
@@ -211,6 +224,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   einfomax:
     image: nlpapi:5000/crawler:2.0
@@ -226,6 +240,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
   joins:
     image: nlpapi:5000/crawler:2.0
@@ -241,6 +256,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
 
 # 네트워크 인터페이스 정의
 networks:

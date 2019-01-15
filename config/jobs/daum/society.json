@@ -1,0 +1,131 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "http://b1:9200",
+      "index": "crawler-daum-society",
+      "sleep": 10,
+      "url_frame": [
+        {
+          "url": "http://media.daum.net/breakingnews/society/affair?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/사건사고"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/chungcheong?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/충청"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/education?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/교육"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/environment?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/환경"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/gangwon?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/강원"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/gyeongsang?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/경상"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/jeju?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/제주"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/jeolla?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/전라"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/labor?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/노동"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/media?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/미디어"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/metro?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/수도권"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/nation?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/전국"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/nation_others?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/지역일반"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/others?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/사회일반"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/people?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/인물"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/seoul?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/서울"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/welfare?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/복지"
+        },
+        {
+          "url": "http://media.daum.net/breakingnews/society/woman?regDate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "사회/여성"
+        }
+      ],
+      "id_frame": {
+        "type": "path",
+        "replace": [
+          {
+            "from": "/v/",
+            "to": ""
+          }
+        ]
+      },
+      "post_process": [
+        {
+          "name": "rabbit mq 에 메세지를 보낸다.",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler.daum"
+          },
+          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "payload": {
+            "elastic": {
+              "host": "http://b1:9200",
+              "index": "corpus_process-daum-society"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
