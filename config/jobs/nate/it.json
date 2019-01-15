@@ -6,38 +6,38 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-nate-sports",
+      "index": "crawler-nate-it",
       "sleep": 10,
       "url_frame": [
         {
-          "url": "http://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0602&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/야구"
+          "category": "IT/과학"
         },
         {
-          "url": "http://sports.news.nate.com/abrbaseball/recent?&type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0603&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/해외야구"
+          "category": "IT/디지털"
         },
         {
-          "url": "http://sports.news.nate.com/soccer/recent?&type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0604&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/축구"
+          "category": "IT/컴퓨터/인터넷"
         },
         {
-          "url": "http://sports.news.nate.com/abrsoccer/recent?&type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0605&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/해외축구"
+          "category": "IT/뉴미디어/통신"
         },
         {
-          "url": "http://sports.news.nate.com/basketvolley/recent?&type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0606&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/농구-배구"
+          "category": "IT/게임"
         },
         {
-          "url": "http://sports.news.nate.com/general/recent?&type=t&date={date}&page={page}",
+          "url": "http://news.nate.com/subsection?mid=n0607&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
-          "category": "스포츠/스포츠-일반"
+          "category": "IT/IT/과학 일반"
         }
       ],
       "id_frame": {
@@ -61,7 +61,7 @@
           "payload": {
             "elastic": {
               "host": "http://b1:9200",
-              "index": "corpus_process-nate-sports"
+              "index": "corpus_process-nate-it"
             }
           }
         }

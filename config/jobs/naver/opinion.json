@@ -7,7 +7,7 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-naver-opinion",
-      "sleep": 2,
+      "sleep": 10,
       "url_frame": [
         {
           "url": "http://news.naver.com/main/list.nhn?sid1=110&listType=title&mid=shm&date={date}&page={page}",

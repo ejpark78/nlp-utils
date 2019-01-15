@@ -2,7 +2,7 @@
   "term_list": {
     "host": "http://b1:9200",
     "index": "crawler-naver-terms-list",
-    "sleep": 2,
+    "sleep": 10,
     "url_frame": "https://m.terms.naver.com/listAjax.nhn?categoryId={categoryId}&so=st3.asc&index=&page={page}&viewType=list",
     "category": [
       {

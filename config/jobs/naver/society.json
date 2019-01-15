@@ -7,7 +7,7 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-naver-society",
-      "sleep": 2,
+      "sleep": 10,
       "url_frame": [
         {
           "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=249&listType=title&date={date}&page={page}",

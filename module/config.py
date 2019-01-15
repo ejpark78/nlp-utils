@@ -7,6 +7,8 @@ from __future__ import print_function
 
 import json
 import logging
+from os import makedirs
+from os.path import dirname, abspath, isdir
 from os.path import isfile
 
 MESSAGE = 25
@@ -74,6 +76,11 @@ class Config(object):
 
         # 병합
         status.update(self.status)
+
+        # 저장할 파일 위치의 경로 생성
+        path = dirname(abspath(self.status_filename))
+        if isdir(path) is False:
+            makedirs(path)
 
         # 저장
         str_config = json.dumps(status, ensure_ascii=False, sort_keys=True, indent=2)

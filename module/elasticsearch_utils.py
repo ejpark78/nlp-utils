@@ -168,20 +168,20 @@ class ElasticSearchUtils(object):
             logging.error(msg=msg)
 
         try:
-            error = '성공'
             if response['errors'] is True:
-                error = '에러'
+                reason = response['items'][0]['update']['error']['reason']
+                msg = '저장 에러: {}'.format(reason)
+                logging.error(msg=msg)
+            else:
+                msg = '저장 성공: {:,}'.format(int(size / 2))
+                logging.info(msg=msg)
 
-            msg = 'elastic-search 저장 결과: {}, {:,}'.format(error, int(size / 2))
-            logging.info(msg=msg)
-
-            if len(doc_id_list) > 0:
-                for doc_id in doc_id_list[:10]:
-                    msg = '{}/{}/{}/{}?pretty'.format(self.host, self.index, self.doc_type, doc_id)
-                    logging.info(msg=msg)
+                if len(doc_id_list) > 0:
+                    for doc_id in doc_id_list[:10]:
+                        msg = '{}/{}/{}/{}?pretty'.format(self.host, self.index, self.doc_type, doc_id)
+                        logging.info(msg=msg)
         except Exception as e:
-            msg = 'elastic-search logging 에러: {}'.format(e)
-            logging.error(msg=msg)
+            logging.error(msg='로깅 에러: {}'.format(e))
 
         return
 

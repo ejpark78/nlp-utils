@@ -7,7 +7,7 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-nate-international",
-      "sleep": 2,
+      "sleep": 10,
       "url_frame": [
         {
           "url": "http://news.nate.com/subsection?mid=n0502&type=t&date={date}&page={page}",

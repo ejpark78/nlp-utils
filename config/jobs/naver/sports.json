@@ -7,7 +7,7 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-naver-sports",
-      "sleep": 2,
+      "sleep": 10,
       "url_frame": [
         {
           "url": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}",

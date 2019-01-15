@@ -7,7 +7,7 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-naver-politics",
-      "sleep": 2,
+      "sleep": 10,
       "url_frame": [
         {
           "url": "http://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=264&listType=title&date={date}&page={page}",

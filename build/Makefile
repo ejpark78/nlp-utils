@@ -70,6 +70,9 @@ naver-kin:
 naver:
 	docker-compose --project-directory crawler_naver -f naver.yml up -d
 
+nate:
+	docker-compose --project-directory crawler_nate -f nate.yml up -d
+
 twitter:
 	docker-compose --project-directory crawler_twitter -f twitter.yml up -d
 
