@@ -53,7 +53,7 @@ class WebNewsCrawler(CrawlerBase):
             # 시작
             self.batch()
 
-            logging.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            logging.log(level=MESSAGE, msg='데몬 슬립: {} 초'.format(daemon_info['sleep']))
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -259,7 +259,12 @@ class WebNewsCrawler(CrawlerBase):
         # html 본문에서 값 추출
         item = self.parser.parse(soup=soup, parsing_info=self.parsing_info['article'])
 
-        if 'html_content' in item and isinstance(item['date'], datetime):
+        # 후처리
+        doc = self.parser.merge_values(item=doc)
+        item = self.parser.merge_values(item=item)
+
+        # 파싱 에러 처리
+        if 'html_content' in item and len(item['html_content']) != 0:
             doc.update(item)
         else:
             doc['parsing_error'] = True

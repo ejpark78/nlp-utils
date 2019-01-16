@@ -1,5 +1,4 @@
 {
-  "_id": "monoytoday",
   "daemon": {
     "sleep": 1800
   },
@@ -7,7 +6,7 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-major_press-monoytoday",
+      "index": "crawler-major_press-moneytoday",
       "sleep": 2,
       "url_frame": [
         {
@@ -33,7 +32,7 @@
           "payload": {
             "elastic": {
               "host": "http://b1:9200",
-              "index": "corpus_process-major_press-monoytoday"
+              "index": "corpus_process-major_press-moneytoday"
             }
           }
         }

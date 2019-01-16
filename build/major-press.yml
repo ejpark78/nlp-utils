@@ -98,12 +98,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  monoytoday:
+  moneytoday:
     image: nlpapi:5000/crawler:2.0
     restart: always
     hostname: crawler
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category major-press -job_id monoytoday
+    command: python3 batch.py -job_category major-press -job_id moneytoday
     extra_hosts:
       - "b1:172.20.78.134"
       - "b1.korea.ncsoft.corp:172.20.78.134"

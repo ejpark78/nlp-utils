@@ -30,6 +30,49 @@ class HtmlParser(object):
         pass
 
     @staticmethod
+    def merge_values(item):
+        """key 에 . 이 들어있는 컬럼을 합친다."""
+        # key 에 . 이 들어있는 컬럼 분리
+        new_item = {}
+        remove_list = []
+        for col in item:
+            if col.find('.') < 0:
+                continue
+
+            remove_list.append(col)
+
+            # replay_list.text 를 l1, l2로 분리
+            l1, l2 = col.split('.', maxsplit=1)
+
+            if l1 not in new_item:
+                new_item[l1] = []
+
+            # single value 일때
+            values = item[col]
+            if isinstance(values, list) is False:
+                values = [values]
+
+            # merge
+            for i in range(len(values)):
+                if len(new_item[l1]) <= i:
+                    new_item[l1].append({l2: values[i]})
+                    continue
+
+                new_item[l1][i][l2] = values[i]
+
+        # 합쳐진 항목 삭제
+        for col in remove_list:
+            if col not in item:
+                continue
+
+            del item[col]
+
+        # 추출된 값 머지
+        item.update(new_item)
+
+        return item
+
+    @staticmethod
     def parse_html(html, parser_type):
         """html 문서를 파싱한다."""
         soup = None

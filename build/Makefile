@@ -62,19 +62,29 @@ test:
 		$(IMAGE_NAME)
 
 major-press:
+	docker-compose --project-directory crawler_major_press -f major-press.yml down
 	docker-compose --project-directory crawler_major_press -f major-press.yml up -d
+	docker-compose --project-directory crawler_major_press -f major-press.yml logs -f
 
 naver-kin:
+	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml down
 	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml up -d
+	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml logs -f
 
 naver:
+	docker-compose --project-directory crawler-naver -f naver.yml down
 	docker-compose --project-directory crawler-naver -f naver.yml up -d
+	docker-compose --project-directory crawler-naver -f naver.yml logs -f
 
 nate:
+	docker-compose --project-directory crawler-nate -f nate.yml down
 	docker-compose --project-directory crawler-nate -f nate.yml up -d
+	docker-compose --project-directory crawler-nate -f nate.yml logs -f
 
 daum:
+	docker-compose --project-directory crawler-daum -f daum.yml down
 	docker-compose --project-directory crawler-daum -f daum.yml up -d
+	docker-compose --project-directory crawler-daum -f daum.yml logs -f
 
 naver-logs:
 	docker-compose --project-directory crawler-naver -f naver.yml logs -f
