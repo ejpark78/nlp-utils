@@ -9,16 +9,17 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-einfomax",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://news.einfomax.co.kr/news/articleList.html?sc_section_code=S1N15&sc_order_by=R&page={page}",
+          "url_frame": "http://news.einfomax.co.kr/news/articleList.html?sc_section_code=S1N15&sc_order_by=R&page={page}",
           "category": "정책/금융"
         }
       ],
-      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
-      "id_frame": {
-        "type": "query",
-        "frame": "{idxno}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{idxno}"
+        }
       },
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [

@@ -8,71 +8,73 @@
       "host": "http://b1:9200",
       "index": "crawler-daum-culture",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://media.daum.net/breakingnews/culture/art?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/art?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/공연전시"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/book?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/book?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/책"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/fashion?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/fashion?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/뷰티패션"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/food?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/food?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/음식맛집"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/health?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/health?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/건강"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/home?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/home?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/가정육아"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/leisure?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/leisure?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/여행레저"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/life?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/life?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/생활정보"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/others?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/others?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/생활일반"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/religion?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/religion?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/종교"
         },
         {
-          "url": "https://media.daum.net/breakingnews/culture/weather?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/culture/weather?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "문화/날씨"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/v/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/v/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

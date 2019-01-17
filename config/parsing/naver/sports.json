@@ -1,10 +1,8 @@
 {
   "trace_list": {
     "parser": "html5lib",
-    "trace": "list",
+    "trace": {},
     "list": {
-      "url": "/kbaseball/news/read.nhn?oid={oid}&aid={aid}",
-      "title": "{title}"
     },
     "#article": "기사 본문에서 추출해야하는 tag 정보",
     "article": [

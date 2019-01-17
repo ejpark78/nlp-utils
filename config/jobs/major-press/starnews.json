@@ -9,16 +9,17 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-starnews",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://star.mt.co.kr/newsList.html?type=1&comd=&pDepth=news&pDepth1=sports&pDepth2=baseball1&page={page}",
+          "url_frame": "http://star.mt.co.kr/newsList.html?type=1&comd=&pDepth=news&pDepth1=sports&pDepth2=baseball1&page={page}",
           "category": "야구"
         }
       ],
-      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
-      "id_frame": {
-        "type": "query",
-        "frame": "{no}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{no}"
+        }
       },
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [

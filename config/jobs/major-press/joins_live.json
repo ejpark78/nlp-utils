@@ -9,16 +9,18 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-joins_live",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://isplus.live.joins.com/news/list/list.asp?page={page}&tm=i_b_6110",
+          "url_frame": "http://isplus.live.joins.com/news/list/list.asp?page={page}&tm=i_b_6110",
           "date_format": "%Y%m%d",
           "category": "야구"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{ctg}-{mc}-{total_id}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{ctg}-{mc}-{total_id}"
+        }
       },
       "post_process": [
         {

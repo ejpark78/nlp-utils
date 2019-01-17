@@ -9,16 +9,17 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-sports_chosun",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://sports.chosun.com/latest/l_baseball.htm?page={page}",
+          "url_frame": "http://sports.chosun.com/latest/l_baseball.htm?page={page}",
           "category": "야구"
         }
       ],
-      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
-      "id_frame": {
-        "type": "query",
-        "frame": "{id}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{id}"
+        }
       },
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [

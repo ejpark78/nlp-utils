@@ -1,0 +1,74 @@
+version: '3'
+
+services:
+
+  mlbpark-kbo:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category bbs -job_id mlbpark-kbo
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
+
+  mlbpark-mlb:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category bbs -job_id mlbpark-mlb
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
+
+  mlbpark-bullpen:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category bbs -job_id mlbpark-bullpen
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
+
+  lineagem:
+    image: nlpapi:5000/crawler:2.0
+    restart: always
+    hostname: crawler
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category bbs -job_id lineagem
+    extra_hosts:
+      - "b1:172.20.78.134"
+      - "b1.korea.ncsoft.corp:172.20.78.134"
+      - "koala:172.20.78.107"
+      - "koala.korea.ncsoft.corp:172.20.78.107"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
+
+# 네트워크 인터페이스 정의
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 190.113.0.0/24

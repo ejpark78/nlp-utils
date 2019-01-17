@@ -8,66 +8,68 @@
       "host": "http://b1:9200",
       "index": "crawler-naver-living",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=241&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=241&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/건강정보"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=239&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=239&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/자동차시승기"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=240&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=240&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/도로교통"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=237&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=237&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/여행/레저"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=238&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=238&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/음식맛집"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=376&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=376&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/패션뷰티"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=242&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=242&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/공연전시"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=243&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=243&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/책"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=244&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=244&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/종교"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=248&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=248&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/날씨"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=245&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=245&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "생활/일반"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{oid}-{aid}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
       },
       "post_process": [
         {

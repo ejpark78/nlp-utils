@@ -8,66 +8,148 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-osen",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/lions?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/lions?offset={page}",
           "parser": "json",
-          "category": "야구/삼성"
+          "category": "야구/삼성",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/heroes?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/heroes?offset={page}",
           "parser": "json",
-          "category": "야구/넥센"
+          "category": "야구/넥센",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/dinos?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/dinos?offset={page}",
           "parser": "json",
-          "category": "야구/NC"
+          "category": "야구/NC",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/twins?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/twins?offset={page}",
           "parser": "json",
-          "category": "야구/LG"
+          "category": "야구/LG",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/wyverns?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/wyverns?offset={page}",
           "parser": "json",
-          "category": "야구/SK"
+          "category": "야구/SK",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/bears?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/bears?offset={page}",
           "parser": "json",
-          "category": "야구/두산"
+          "category": "야구/두산",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/giants?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/giants?offset={page}",
           "parser": "json",
-          "category": "야구/롯데"
+          "category": "야구/롯데",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/tigers?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/tigers?offset={page}",
           "parser": "json",
-          "category": "야구/KIA"
+          "category": "야구/KIA",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/eagles?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/eagles?offset={page}",
           "parser": "json",
-          "category": "야구/한화"
+          "category": "야구/한화",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         },
         {
-          "url": "http://osen.mt.co.kr/api/probaseball/team_news/wiz?offset={page}",
+          "url_frame": "http://osen.mt.co.kr/api/probaseball/team_news/wiz?offset={page}",
           "parser": "json",
-          "category": "야구/KT"
+          "category": "야구/KT",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "trace": "rows",
+          "mapping": {
+            "url": "http://osen.mt.co.kr/article/{GISANO}",
+            "title": "{TITLE}"
+          }
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/article/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/article/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

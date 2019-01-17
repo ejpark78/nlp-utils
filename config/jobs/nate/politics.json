@@ -8,46 +8,48 @@
       "host": "http://b1:9200",
       "index": "crawler-nate-politics",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/청와대"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/국회/정당"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/외교/국방"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/북한"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/행정"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "사회/정치 일반"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/view/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/view/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

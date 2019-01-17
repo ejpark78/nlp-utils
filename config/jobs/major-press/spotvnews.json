@@ -8,15 +8,17 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-spotvnews",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://www.spotvnews.co.kr/?page={page}&mod=news&act=articleList&sc_code=1384128643&view_type=S",
+          "url_frame": "http://www.spotvnews.co.kr/?page={page}&mod=news&act=articleList&sc_code=1384128643&view_type=S",
           "category": "야구"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{sc_code}-{idxno}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{sc_code}-{idxno}"
+        }
       },
       "post_process": [
         {

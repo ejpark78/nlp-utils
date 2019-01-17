@@ -8,36 +8,38 @@
       "host": "http://b1:9200",
       "index": "crawler-naver-international",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=231&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=231&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/아시아호주"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=232&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=232&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/미국중남미"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=233&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=233&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/유럽"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=234&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=234&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/중동아프리카"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=322&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=322&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/일반"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{oid}-{aid}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
       },
       "post_process": [
         {

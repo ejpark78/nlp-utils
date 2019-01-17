@@ -86,6 +86,11 @@ daum:
 	docker-compose --project-directory crawler-daum -f daum.yml up -d
 	docker-compose --project-directory crawler-daum -f daum.yml logs -f
 
+bbs:
+	docker-compose --project-directory crawler-bbs -f bbs.yml down
+	docker-compose --project-directory crawler-bbs -f bbs.yml up -d
+	docker-compose --project-directory crawler-bbs -f bbs.yml logs -f
+
 naver-logs:
 	docker-compose --project-directory crawler-naver -f naver.yml logs -f
 

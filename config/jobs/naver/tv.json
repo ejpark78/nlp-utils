@@ -8,16 +8,18 @@
       "host": "http://b1:9200",
       "index": "crawler-naver-tv",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.naver.com/main/list.nhn?sid1=115&listType=title&mid=shm&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?sid1=115&listType=title&mid=shm&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "TV"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{oid}-{aid}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
       },
       "post_process": [
         {

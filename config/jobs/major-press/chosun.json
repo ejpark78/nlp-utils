@@ -9,28 +9,30 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-chosun",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://news.chosun.com/svc/list_in/list.html?catid=82&source=1&pn={page}",
+          "url_frame": "http://news.chosun.com/svc/list_in/list.html?catid=82&source=1&pn={page}",
           "category": "야구"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/site/data/html_dir/[0-9]+/[0-9]+/[0-9]+/",
-            "to": ""
-          },
-          {
-            "from": "/",
-            "to": "-"
-          },
-          {
-            "from": ".html",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/site/data/html_dir/[0-9]+/[0-9]+/[0-9]+/",
+              "to": ""
+            },
+            {
+              "from": "/",
+              "to": "-"
+            },
+            {
+              "from": ".html",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

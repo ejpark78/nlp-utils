@@ -69,25 +69,30 @@ class CrawlerBase(object):
 
         return
 
-    def get_html_page(self, url, parser_type=None):
+    def get_html_page(self, url_info):
         """웹 문서를 조회한다."""
+        headers = self.headers['desktop']
+        if 'headers' in url_info:
+            headers.update(url_info['headers'])
+
         # 페이지 조회
         try:
-            resp = requests.get(url=url, headers=self.headers['desktop'], verify=False,
-                                allow_redirects=True, timeout=60)
+            resp = requests.get(url=url_info['url'], headers=headers, verify=False, allow_redirects=True, timeout=60)
         except Exception as e:
-            logging.error('url 조회 에러: {}, {} 초, {}'.format(url, 10, e))
+            logging.error('url 조회 에러: {}, {} 초, {}'.format(url_info['url'], 10, e))
             sleep(10)
             return None
 
         # 상태 코드 확인
         status_code = resp.status_code
         if status_code // 100 != 2:
-            logging.error(msg='페이지 조회 에러: {} {} {}'.format(status_code, url, resp.text))
+            logging.error(msg='페이지 조회 에러: {} {} {}'.format(status_code, url_info['url'], resp.text))
+            sleep(10)
             return None
 
-        if parser_type == 'json':
-            return resp.json()
+        if url_info is not None:
+            if 'parser' in url_info and url_info['parser'] == 'json':
+                return resp.json()
 
         return resp.content
 

@@ -8,15 +8,17 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-mk",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://sports.mk.co.kr/list.php?sc=71000002&mc=B",
+          "url_frame": "http://sports.mk.co.kr/list.php?sc=71000002&mc=B",
           "category": "야구"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{sc}-{mc}-{year}-{no}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{sc}-{mc}-{year}-{no}"
+        }
       },
       "post_process": [
         {

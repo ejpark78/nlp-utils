@@ -8,46 +8,48 @@
       "host": "http://b1:9200",
       "index": "crawler-nate-international",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.nate.com/subsection?mid=n0502&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0502&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/아시아호주"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0503&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0503&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/미국중남미"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0504&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0504&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/유럽"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0505&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0505&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/중동아프리카"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0506&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0506&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/해외화제"
         },
         {
-          "url": "https://news.nate.com/subsection?mid=n0507&type=t&date={date}&page={page}",
+          "url_frame": "https://news.nate.com/subsection?mid=n0507&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "세계/일반"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/view/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/view/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

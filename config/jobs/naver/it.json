@@ -8,51 +8,53 @@
       "host": "http://b1:9200",
       "index": "crawler-naver-it",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/모바일"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=226&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=226&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/인터넷/SNS"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=227&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=227&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/통신/뉴미디어"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=230&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=230&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/IT 일반"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=732&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=732&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/보안/해킹"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=283&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=283&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/컴퓨터"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=229&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=229&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/게임/리뷰"
         },
         {
-          "url": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=228&listType=title&date={date}&page={page}",
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=228&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "IT/과학 일반"
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{oid}-{aid}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
       },
       "post_process": [
         {

@@ -8,61 +8,63 @@
       "host": "http://b1:9200",
       "index": "crawler-daum-international",
       "sleep": 10,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://media.daum.net/breakingnews/foreign/japan?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/japan?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/일본"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/china?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/china?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/중국"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/asia?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/asia?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/아시아/대양주"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/america?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/america?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/미주/아메리카"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/europe?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/europe?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/유럽"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/africa?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/africa?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/중동/아프리카"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/englishnews?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/englishnews?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/영어뉴스"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/topic?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/topic?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/해외화제"
         },
         {
-          "url": "https://media.daum.net/breakingnews/foreign/others?regDate={date}&page={page}",
+          "url_frame": "https://media.daum.net/breakingnews/foreign/others?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "category": "국제/국제일반"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/v/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/v/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

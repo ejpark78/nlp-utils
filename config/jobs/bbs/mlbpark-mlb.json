@@ -7,16 +7,19 @@
     {
       "host": "http://b1:9200",
       "index": "crawler-bbs-mlbpark_kbo",
-      "sleep": 10,
-      "url_frame": [
+      "sleep": 3,
+      "list": [
         {
-          "url": "http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=",
-          "category": "MLB"
+          "url_frame": "http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=",
+          "category": "MLB",
+          "check_doc_id": false
         }
       ],
-      "id_frame": {
-        "type": "query",
-        "frame": "{id}"
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{id}"
+        }
       },
       "post_process": [
       ]

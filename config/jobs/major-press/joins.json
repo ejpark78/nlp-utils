@@ -9,21 +9,23 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-joins",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}",
+          "url_frame": "http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}",
           "date_format": "%Y-%m-%d",
           "category": "야구"
         }
       ],
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/article/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/article/",
+              "to": ""
+            }
+          ]
+        }
       },
       "post_process": [
         {

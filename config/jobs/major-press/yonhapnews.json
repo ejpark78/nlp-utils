@@ -9,21 +9,22 @@
       "host": "http://b1:9200",
       "index": "crawler-major_press-yonhapnews",
       "sleep": 2,
-      "url_frame": [
+      "list": [
         {
-          "url": "https://www.yna.co.kr/sports/baseball/{page}",
+          "url_frame": "https://www.yna.co.kr/sports/baseball/{page}",
           "category": "야구"
         }
       ],
-      "#id_frame": "url에서 문서 아이디 추출 정보 (path, query)",
-      "id_frame": {
-        "type": "path",
-        "replace": [
-          {
-            "from": "/view/",
-            "to": ""
-          }
-        ]
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/view/",
+              "to": ""
+            }
+          ]
+        }
       },
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [
