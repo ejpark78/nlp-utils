@@ -6,7 +6,7 @@
   "trace_list": [
     {
       "host": "http://b1:9200",
-      "index": "crawler-bbs-mlbpark_kbo",
+      "index": "crawler-bbs-mlbpark_mlb",
       "sleep": 3,
       "list": [
         {

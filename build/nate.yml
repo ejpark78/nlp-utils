@@ -5,15 +5,10 @@ services:
   economy:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id economy
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -21,15 +16,10 @@ services:
   international:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id international
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -37,15 +27,10 @@ services:
   entertainment:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id entertainment
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -53,15 +38,10 @@ services:
   it:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id it
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -69,15 +49,10 @@ services:
   politics:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id politics
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -85,15 +60,10 @@ services:
   society:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id society
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -101,15 +71,10 @@ services:
   sports:
     image: nlpapi:5000/crawler:2.0
     restart: always
-    hostname: crawler
     working_dir: /usr/local/app
     command: python3 batch.py -job_category nate -job_id sports
-    extra_hosts:
-      - "b1:172.20.78.134"
-      - "b1.korea.ncsoft.corp:172.20.78.134"
-      - "koala:172.20.78.107"
-      - "koala.korea.ncsoft.corp:172.20.78.107"
     volumes:
+      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -117,15 +82,10 @@ services:
 #  tv:
 #    image: nlpapi:5000/crawler:2.0
 #    restart: always
-#    hostname: crawler
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -job_category nate -job_id tv
-#    extra_hosts:
-#      - "b1:172.20.78.134"
-#      - "b1.korea.ncsoft.corp:172.20.78.134"
-#      - "koala:172.20.78.107"
-#      - "koala.korea.ncsoft.corp:172.20.78.107"
 #    volumes:
+#      - /etc/hosts:/etc/hosts:ro
 #      - /etc/timezone:/etc/timezone:ro
 #      - /etc/localtime:/etc/localtime:ro
 #      - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -133,15 +93,10 @@ services:
 #  opinion:
 #    image: nlpapi:5000/crawler:2.0
 #    restart: always
-#    hostname: crawler
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -job_category nate -job_id opinion
-#    extra_hosts:
-#      - "b1:172.20.78.134"
-#      - "b1.korea.ncsoft.corp:172.20.78.134"
-#      - "koala:172.20.78.107"
-#      - "koala.korea.ncsoft.corp:172.20.78.107"
 #    volumes:
+#      - /etc/hosts:/etc/hosts:ro
 #      - /etc/timezone:/etc/timezone:ro
 #      - /etc/localtime:/etc/localtime:ro
 #      - $PWD/../config/status:/usr/local/app/config/status:rw

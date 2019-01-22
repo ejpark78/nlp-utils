@@ -62,60 +62,44 @@ test:
 		$(IMAGE_NAME)
 
 major-press:
-	docker-compose --project-directory crawler_major_press -f major-press.yml down
-	docker-compose --project-directory crawler_major_press -f major-press.yml up -d
-	docker-compose --project-directory crawler_major_press -f major-press.yml logs -f
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory major-press -f major-press.yml down
+	docker-compose --project-directory major-press -f major-press.yml up -d
+	docker-compose --project-directory major-press -f major-press.yml logs -f
 
 naver-kin:
-	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml down
-	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml up -d
-	docker-compose --project-directory crawler_naver_kin -f naver-kin.yml logs -f
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory naver-kin -f naver-kin.yml down
+	docker-compose --project-directory naver-kin -f naver-kin.yml up -d
+	docker-compose --project-directory naver-kin -f naver-kin.yml logs -f
 
 naver:
-	docker-compose --project-directory crawler-naver -f naver.yml down
-	docker-compose --project-directory crawler-naver -f naver.yml up -d
-	docker-compose --project-directory crawler-naver -f naver.yml logs -f
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory naver -f naver.yml down
+	docker-compose --project-directory naver -f naver.yml up -d
+	docker-compose --project-directory naver -f naver.yml logs -f
 
 nate:
-	docker-compose --project-directory crawler-nate -f nate.yml down
-	docker-compose --project-directory crawler-nate -f nate.yml up -d
-	docker-compose --project-directory crawler-nate -f nate.yml logs -f
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory nate -f nate.yml down
+	docker-compose --project-directory nate -f nate.yml up -d
+	docker-compose --project-directory nate -f nate.yml logs -f
 
 daum:
-	docker-compose --project-directory crawler-daum -f daum.yml down
-	docker-compose --project-directory crawler-daum -f daum.yml up -d
-	docker-compose --project-directory crawler-daum -f daum.yml logs -f
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory daum -f daum.yml down
+	docker-compose --project-directory daum -f daum.yml up -d
+	docker-compose --project-directory daum -f daum.yml logs -f
 
 bbs:
-	docker-compose --project-directory crawler-bbs -f bbs.yml down
-	docker-compose --project-directory crawler-bbs -f bbs.yml up -d
-	docker-compose --project-directory crawler-bbs -f bbs.yml logs -f
-
-naver-logs:
-	docker-compose --project-directory crawler-naver -f naver.yml logs -f
-
-nate-logs:
-	docker-compose --project-directory crawler-nate -f nate.yml logs -f
-
-daum-logs:
-	docker-compose --project-directory crawler-daum -f daum.yml logs -f
-
-down-all:
-	docker-compose --project-directory crawler-naver -f naver.yml down
-	docker-compose --project-directory crawler-nate -f nate.yml down
-	docker-compose --project-directory crawler-daum -f daum.yml down
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory bbs -f bbs.yml down
+	docker-compose --project-directory bbs -f bbs.yml up -d
+	docker-compose --project-directory bbs -f bbs.yml logs -f
 
 twitter:
-	docker-compose --project-directory crawler_twitter -f twitter.yml up -d
-
-down:
-	docker-compose --project-directory crawler_major_press -f major-press.yml down
-
-batch-logs:
-	docker-compose --project-directory crawler_major_press -f major-press.yml logs -f
-
-bash:
-	docker exec -it $(CONTAINER) /bin/bash
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory twitter -f twitter.yml up -d
 
 clean:
 	docker system prune -f
