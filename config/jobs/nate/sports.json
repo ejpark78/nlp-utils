@@ -5,7 +5,7 @@
   "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
   "trace_list": [
     {
-      "host": "http://b1:9200",
+      "host": "http://nlpapi.ncsoft.com:9200",
       "index": "crawler-nate-sports",
       "sleep": 10,
       "list": [
@@ -59,10 +59,10 @@
             "type": "topic",
             "name": "crawler.nate"
           },
-          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "host": "amqp://user:nlplab!@g7:5672//",
           "payload": {
             "elastic": {
-              "host": "http://b1:9200",
+              "host": "http://nlpapi.ncsoft.com:9200",
               "index": "corpus_process-nate-sports"
             }
           }

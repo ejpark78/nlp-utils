@@ -97,9 +97,9 @@ bbs:
 	docker-compose --project-directory bbs -f bbs.yml up -d
 	docker-compose --project-directory bbs -f bbs.yml logs -f
 
-twitter:
+sns:
 	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory twitter -f twitter.yml up -d
+	docker-compose --project-directory sns -f sns.yml up -d
 
 clean:
 	docker system prune -f

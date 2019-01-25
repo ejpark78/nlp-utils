@@ -58,17 +58,6 @@ class CrawlerBase(object):
         self.post_process_list = None
         self.cache = SimpleCache()
 
-    @staticmethod
-    def print_message(msg):
-        """화면에 메세지를 출력한다."""
-        try:
-            str_msg = json.dumps(msg, ensure_ascii=False, sort_keys=True)
-            logging.log(level=MESSAGE, msg=str_msg)
-        except Exception as e:
-            logging.info(msg='{}'.format(e))
-
-        return
-
     def get_html_page(self, url_info):
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
@@ -79,15 +68,35 @@ class CrawlerBase(object):
         try:
             resp = requests.get(url=url_info['url'], headers=headers, verify=False, allow_redirects=True, timeout=60)
         except Exception as e:
-            logging.error('url 조회 에러: {}, {} 초, {}'.format(url_info['url'], 10, e))
-            sleep(10)
+            sleep_time = 10
+
+            log_msg = {
+                'task': 'url 조회',
+                'status': '에러',
+                'url_info': url_info,
+                'sleep_time': sleep_time,
+                'exception': e
+            }
+
+            logging.error(msg=log_msg)
+            sleep(sleep_time)
             return None
 
         # 상태 코드 확인
         status_code = resp.status_code
         if status_code // 100 != 2:
-            logging.error(msg='페이지 조회 에러: {} {} {}'.format(status_code, url_info['url'], resp.text))
-            sleep(10)
+            sleep_time = 10
+
+            log_msg = {
+                'task': 'url 조회',
+                'status': '상태 코드 에러',
+                'url_info': url_info,
+                'sleep_time': sleep_time,
+                'status_code': status_code
+            }
+            logging.error(msg=log_msg)
+
+            sleep(sleep_time)
             return None
 
         if url_info is not None:
@@ -116,14 +125,29 @@ class CrawlerBase(object):
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
-            logging.info('skip (cache) {} {}'.format(doc_id, url))
+            log_msg = {
+                'task': '중복 문서 확인',
+                'message': '중복 문서, 건너뜀',
+                'doc_id': doc_id,
+                'url': url
+            }
+
+            logging.info(msg=log_msg)
             return True
 
         # elasticsearch 에 문서가 있는지 조회
         is_exists = elastic_utils.elastic.exists(index=index, doc_type='doc', id=doc_id)
         if is_exists is True:
             doc_history[doc_id] = 1
-            logging.info('skip (elastic) {} {}'.format(doc_id, url))
+
+            log_msg = {
+                'task': '중복 문서 확인',
+                'message': 'elasticsearch 에 존재함, 건너뜀',
+                'doc_id': doc_id,
+                'url': url
+            }
+
+            logging.info(msg=log_msg)
             return True
 
         return False

@@ -5,7 +5,7 @@
   },
   "trace_list": [
     {
-      "host": "http://b1:9200",
+      "host": "http://nlpapi.ncsoft.com:9200",
       "index": "crawler-major_press-osen",
       "sleep": 2,
       "list": [
@@ -159,10 +159,10 @@
             "type": "topic",
             "name": "crawler.major_press"
           },
-          "host": "amqp://user:nlplab!@koala.korea.ncsoft.corp:5672//",
+          "host": "amqp://user:nlplab!@g7:5672//",
           "payload": {
             "elastic": {
-              "host": "http://b1:9200",
+              "host": "http://nlpapi.ncsoft.com:9200",
               "index": "corpus_process-major_press-osen"
             }
           }

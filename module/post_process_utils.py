@@ -50,7 +50,13 @@ class PostProcessUtils(object):
         if self.job_queue.empty() is True:
             start_thread = True
 
-            logging.info(msg='저장 큐에 저장: {:,}'.format(self.job_queue.qsize()))
+            log_msg = {
+                'task': '크롤링 후처리',
+                'message': '저장 큐에 저장',
+                'queue_size': self.job_queue.qsize()
+            }
+
+            logging.info(msg=log_msg)
             self.job_queue.put(job)
         else:
             self.job_queue.put(job)
@@ -100,7 +106,13 @@ class PostProcessUtils(object):
             if 'payload' in info:
                 payload = info['payload']
         except Exception as e:
-            logging.error('{}'.format(e))
+            log_msg = {
+                'task': '크롤링 후처리',
+                'message': 'Rabbit MQ payload 파싱 에러',
+                'payload': info['payload'],
+                'exception': e
+            }
+            logging.error(msg=log_msg)
 
         payload['id'] = datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
         payload['document'] = document
@@ -130,11 +142,24 @@ class PostProcessUtils(object):
                                  retry=True,
                                  retry_policy=retry_policy)
 
-                msg = 'Rabbit MQ: {}, {}'.format(info['exchange']['name'], doc_url)
-                logging.log(level=MESSAGE, msg=msg)
+                log_msg = {
+                    'task': '크롤링 후처리',
+                    'message': 'Rabbit MQ',
+                    'exchange_name': info['exchange']['name'],
+                    'doc_url': doc_url
+                }
+
+                logging.log(level=MESSAGE, msg=log_msg)
         except Exception as e:
-            msg = 'Rabbit MQ 에러: {}, {}, {}'.format(info['exchange']['name'], doc_url, e)
-            logging.error(msg=msg)
+            log_msg = {
+                'task': '크롤링 후처리',
+                'message': 'Rabbit MQ 전달 에러',
+                'doc_url': doc_url,
+                'info': info,
+                'exception': e
+            }
+
+            logging.error(msg=log_msg)
 
         return True
 
@@ -168,11 +193,24 @@ class PostProcessUtils(object):
             requests.post(url=url, json=body, headers=headers,
                           allow_redirects=True, timeout=30, verify=False)
 
-            msg = '코퍼스 전처리: {} {} {}'.format(url, document['document_id'], document['title'])
-            logging.log(level=MESSAGE, msg=msg)
+            log_msg = {
+                'task': '크롤링 후처리',
+                'message': '코퍼스 전처리',
+                'url': url,
+                'id': document['document_id'],
+                'title': document['title']
+            }
+
+            logging.log(level=MESSAGE, msg=log_msg)
         except Exception as e:
-            msg = '코퍼스 전처리 에러: {} {}'.format(document['document_id'], e)
-            logging.error(msg=msg)
+            log_msg = {
+                'task': '크롤링 후처리',
+                'message': '코퍼스 전처리 에러',
+                'id': document['document_id'],
+                'exception': e
+            }
+
+            logging.error(msg=log_msg)
 
         return True
 
@@ -228,7 +266,14 @@ class PostProcessUtils(object):
                 s3.Object(bucket_name, upload_file).get()
                 file_exists = True
             except ClientError as e:
-                logging.info('{}'.format(e))
+                log_msg = {
+                    'task': '크롤링 후처리',
+                    'message': 'AWS S3 파일 exists 에러',
+                    'bucket_name': bucket_name,
+                    'exception': e
+                }
+
+                logging.info(msg=log_msg)
 
             if file_exists is True:
                 # cdn 이미지 주소 추가
@@ -244,7 +289,13 @@ class PostProcessUtils(object):
                 # cdn 이미지 주소 추가
                 image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
             except Exception as e:
-                logging.error(msg='s3 저장 오류: {}'.format(e))
+                log_msg = {
+                    'task': '크롤링 후처리',
+                    'message': 'AWS S3 저장 에러',
+                    'bucket_name': bucket_name,
+                    'exception': e
+                }
+                logging.error(msg=log_msg)
 
         # 이미지 목록 업데이트
         document['image_list'] = image_list

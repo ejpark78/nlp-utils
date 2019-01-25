@@ -126,7 +126,13 @@ class HtmlParser(object):
                     try:
                         value = str(tag.prettify())
                     except Exception as e:
-                        logging.error('{}'.format(e))
+                        log_msg = {
+                            'task': 'html 파싱',
+                            'message': 'prettify 에러',
+                            'exception': e
+                        }
+
+                        logging.error(msg=log_msg)
                 else:
                     if tag.has_attr(item['type']):
                         value = tag[item['type']]
@@ -211,7 +217,14 @@ class HtmlParser(object):
             elif date != '':
                 date = parse_date(date)
         except Exception as e:
-            logging.error(msg='날짜 변환 오류: {} {}'.format(date, e))
+            log_msg = {
+                'task': 'html 파싱',
+                'message': '날짜 변환 에러',
+                'date': date,
+                'exception': e
+            }
+
+            logging.error(msg=log_msg)
             return date
 
         return date
@@ -387,7 +400,13 @@ class HtmlParser(object):
                             'caption': ''
                         })
                 except Exception as e:
-                    logging.error(msg='이미지 추출 에러: {}'.format(e))
+                    log_msg = {
+                        'task': 'html 파싱',
+                        'message': '이미지 추출 에러',
+                        'exception': e
+                    }
+
+                    logging.error(msg=log_msg)
             else:
                 result.append({
                     'image': urljoin(base_url, tag['src']),
@@ -402,6 +421,12 @@ class HtmlParser(object):
 
                     tag.replace_with('')
                 except Exception as e:
-                    logging.error(msg='이미지 캡션 추출 에러: {}'.format(e))
+                    log_msg = {
+                        'task': 'html 파싱',
+                        'message': '이미지 캡션 추출 에러',
+                        'exception': e
+                    }
+
+                    logging.error(msg=log_msg)
 
         return result

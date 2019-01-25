@@ -47,8 +47,6 @@ def init_arguments():
     # 실행 모드 데몬/배치
     parser.add_argument('-batch', action='store_true', default=False, help='배치 모드로 실행')
 
-    parser.add_argument('-producer', action='store_true', default=False, help='mq producer test')
-
     return parser.parse_args()
 
 
@@ -94,13 +92,6 @@ def main():
     # udemy
     if args.job_id == 'udemy':
         UdemyUtils().batch()
-        return
-
-    # producer
-    if args.producer:
-        from module.producer import MqProducerUtils
-
-        MqProducerUtils().batch()
         return
 
     # elasticsearch 배치 작업

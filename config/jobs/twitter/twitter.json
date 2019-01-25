@@ -4,7 +4,7 @@
     "sleep": 1800
   },
   "twitter_list": {
-    "host": "http://b1:9200",
+    "host": "http://nlpapi.ncsoft.com:9200",
     "index": "crawler-twitter",
     "sleep": 2,
     "url_frame": {
