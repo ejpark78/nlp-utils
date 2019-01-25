@@ -1,6 +1,6 @@
 {
   "_id": "twitter",
-  "twitter_list": {
+  "trace_list": {
     "trace": {
       "key": "html_content",
       "type": "html",

@@ -19,3 +19,4 @@ werkzeug
 botocore
 kombu
 queues
+pika

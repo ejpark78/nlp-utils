@@ -3,7 +3,7 @@
   "daemon": {
     "sleep": 1800
   },
-  "twitter_list": {
+  "trace_list": {
     "host": "http://nlpapi.ncsoft.com:9200",
     "index": "crawler-twitter",
     "sleep": 2,

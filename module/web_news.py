@@ -74,6 +74,8 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_url_list(self, job):
         """url_frame 목록을 반복한다."""
+        from dateutil.relativedelta import relativedelta
+
         # url 목록 반복
         for url in job['list']:
             if url['url_frame'].find('date') < 0:
@@ -94,7 +96,7 @@ class WebNewsCrawler(CrawlerBase):
                 self.trace_page_list(url=url, job=job, dt=dt.strftime(url['date_format']))
 
                 # 현재 크롤링 위치 저장
-                now = dt - timedelta(1)
+                now = dt + relativedelta(days=-1)
                 if now > start_date:
                     self.status['start_date'] = now.strftime('%Y-%m-%d')
                     self.cfg.save_status()

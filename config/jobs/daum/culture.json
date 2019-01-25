@@ -84,7 +84,12 @@
             "type": "topic",
             "name": "crawler.daum"
           },
-          "host": "amqp://user:nlplab!@g7:5672//",
+          "host": {
+            "name": "g7",
+            "port": 5672,
+            "user_name": "user",
+            "user_password": "nlplab!"
+          },
           "payload": {
             "elastic": {
               "host": "http://nlpapi.ncsoft.com:9200",

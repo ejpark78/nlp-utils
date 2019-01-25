@@ -6,12 +6,12 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
-from time import sleep
 
 import requests
 import urllib3
 from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
+from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -19,12 +19,12 @@ from module.elasticsearch_utils import ElasticSearchUtils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
 logging.addLevelName(MESSAGE, 'MESSAGE')
+
+logging.basicConfig(format="[%(levelname)-s] %(message)s",
+                    handlers=[logging.StreamHandler()],
+                    level=MESSAGE)
 
 
 class TwitterUtils(CrawlerBase):
@@ -34,9 +34,9 @@ class TwitterUtils(CrawlerBase):
         """ 생성자 """
         super().__init__()
 
-        self.job_category = 'twitter'
+        self.job_category = 'sns'
         self.job_id = 'twitter'
-        self.column = 'twitter_list'
+        self.column = 'trace_list'
 
         self.max_error_count = 0
 
@@ -51,7 +51,13 @@ class TwitterUtils(CrawlerBase):
             # 시작
             self.batch()
 
-            logging.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            log_msg = {
+                'task': '데몬',
+                'message': '슬립',
+                'sleep_time': daemon_info['sleep']
+            }
+
+            logging.log(level=MESSAGE, msg=log_msg)
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -112,7 +118,12 @@ class TwitterUtils(CrawlerBase):
     def get_reply(self, screen_name, tweet):
         """트윗에 대한 댓글을 조회한다."""
         if isinstance(tweet, str):
-            logging.error('tweet: {}'.format(tweet))
+            log_msg = {
+                'task': '트윗 댓글 조회',
+                'message': '에러',
+                'tweet': tweet
+            }
+            logging.error(msg=log_msg)
             return
 
         headers = {
@@ -134,10 +145,24 @@ class TwitterUtils(CrawlerBase):
             reply = resp.json()
         except Exception as e:
             if resp is not None:
-                logging.error('{} {}'.format(e, resp.text))
+                log_msg = {
+                    'task': '트윗 댓글 조회',
+                    'message': 'resp 가 없음',
+                    'exception': e
+                }
+                logging.error(msg=log_msg)
 
             self.max_error_count -= 1
-            logging.info('슬립: {} [{}] {} {} 초'.format(self.max_error_count, screen_name, url, 10))
+
+            log_msg = {
+                'task': '트윗 댓글 조회',
+                'message': '슬립',
+                'max_error_count': self.max_error_count,
+                'screen_name': screen_name,
+                'url': url,
+                'sleep': 10
+            }
+            logging.log(level=MESSAGE, msg=log_msg)
             sleep(10)
             return
 
@@ -183,11 +208,16 @@ class TwitterUtils(CrawlerBase):
                 tweet = self.merge_doc(elastic_utils=elastic_utils, index=job_info['index'], tweet=tweet)
 
                 # 현재 상태 로그 표시
-                msg = '{} {}'.format(tweet['id'], tweet['text'])
-                if 'reply' in tweet:
-                    msg = '{} {} {}'.format(tweet['id'], tweet['text'], tweet['reply'])
+                log_msg = {
+                    'task': '트윗 저장',
+                    'id': tweet['id'],
+                    'text': tweet['text']
+                }
 
-                logging.info(msg=msg)
+                if 'reply' in tweet:
+                    log_msg['reply'] = tweet['reply']
+
+                logging.log(level=MESSAGE, msg=log_msg)
 
                 # 문서 저장
                 elastic_utils.save_document(document=tweet)
@@ -264,6 +294,10 @@ class TwitterUtils(CrawlerBase):
 
     def sleep(self):
         """잠시 쉰다."""
-        logging.info('슬립: {} 초'.format(self.sleep_time))
+        log_msg = {
+            'task': '슬립',
+            'sleep_time': self.sleep_time
+        }
+        logging.log(level=MESSAGE, msg=log_msg)
         sleep(self.sleep_time)
         return
