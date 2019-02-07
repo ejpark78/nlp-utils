@@ -90,16 +90,16 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
-  tv:
-    image: nlpapi:5000/crawler:2.0
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id tv
-    volumes:
-      - /etc/hosts:/etc/hosts:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+#  tv:
+#    image: nlpapi:5000/crawler:2.0
+#    restart: always
+#    working_dir: /usr/local/app
+#    command: python3 batch.py -job_category naver -job_id tv
+#    volumes:
+#      - /etc/hosts:/etc/hosts:ro
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+#      - $PWD/../config/status:/usr/local/app/config/status:rw
 
 # 네트워크 인터페이스 정의
 networks:

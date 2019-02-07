@@ -11,7 +11,7 @@ services:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../config:/usr/local/app/config:rw
 
   mlbpark-mlb:
     image: nlpapi:5000/crawler:2.0
@@ -22,7 +22,7 @@ services:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../config:/usr/local/app/config:rw
 
   mlbpark-bullpen:
     image: nlpapi:5000/crawler:2.0
@@ -33,7 +33,7 @@ services:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../config:/usr/local/app/config:rw
 
   lineagem:
     image: nlpapi:5000/crawler:2.0
@@ -44,7 +44,7 @@ services:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../config:/usr/local/app/config:rw
 
 # 네트워크 인터페이스 정의
 networks:

@@ -12,7 +12,7 @@
         {
           "url_frame": "http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=kbotown&query=&select=&user=",
           "category": "KBO",
-          "check_doc_id": false
+          "check_id": true
         }
       ],
       "article": {

@@ -99,7 +99,9 @@ bbs:
 
 sns:
 	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory sns -f sns.yml down
 	docker-compose --project-directory sns -f sns.yml up -d
+	docker-compose --project-directory sns -f sns.yml logs -f
 
 clean:
 	docker system prune -f

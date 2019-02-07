@@ -162,49 +162,6 @@ class PostProcessUtils(object):
 
             logging.error(msg=log_msg)
 
-        # from kombu import Connection, Exchange
-        # from kombu.pools import producers
-
-        # retry_policy = {
-        #     'interval_start': 1,
-        #     'interval_step': 2,
-        #     'interval_max': 30,
-        #     'max_retries': 10
-        # }
-
-        # try:
-        #     connection = Connection(hostname=info['host'])
-        #     exchange = Exchange(name=info['exchange']['name'], type=info['exchange']['type'])
-        #
-        #     with producers[connection].acquire(block=True) as producer:
-        #         producer.publish(payload,
-        #                          serializer='pickle',
-        #                          compression='bzip2',
-        #                          exchange=exchange,
-        #                          declare=[exchange],
-        #                          expiration=21600,
-        #                          retry=True,
-        #                          retry_policy=retry_policy)
-        #
-        #         log_msg = {
-        #             'task': '크롤링 후처리',
-        #             'message': 'Rabbit MQ',
-        #             'exchange_name': info['exchange']['name'],
-        #             'doc_url': doc_url
-        #         }
-        #
-        #         logging.log(level=MESSAGE, msg=log_msg)
-        # except Exception as e:
-        #     log_msg = {
-        #         'task': '크롤링 후처리',
-        #         'message': 'Rabbit MQ 전달 에러',
-        #         'doc_url': doc_url,
-        #         'info': info,
-        #         'exception': e
-        #     }
-        #
-        #     logging.error(msg=log_msg)
-
         return True
 
     @staticmethod

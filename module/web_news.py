@@ -193,7 +193,7 @@ class WebNewsCrawler(CrawlerBase):
             if doc_id is None:
                 continue
 
-            if 'check_doc_id' in url_info and url_info['check_doc_id'] is True:
+            if 'check_id' not in url_info or url_info['check_id'] is True:
                 is_skip = self.check_doc_id(doc_id=doc_id, elastic_utils=elastic_utils,
                                             url=item['url'], index=job['index'], doc_history=doc_history)
                 if is_skip is True:

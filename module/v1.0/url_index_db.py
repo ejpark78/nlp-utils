@@ -30,12 +30,7 @@ class UrlIndexDB(object):
 
     @staticmethod
     def set_pragma(cursor, readonly=True):
-        """ sqlite 의 속도 개선을 위한 설정
-
-        :param cursor: 디비 핸들
-        :param readonly: 읽기 전용 플래그
-        :return:
-        """
+        """ sqlite 의 속도 개선을 위한 설정 """
         # cursor.execute('PRAGMA threads       = 8;')
 
         # 700,000 = 1.05G, 2,100,000 = 3G
@@ -55,12 +50,7 @@ class UrlIndexDB(object):
         return
 
     def open_db(self, filename=None, delete=False):
-        """ url 을 저장하는 캐쉬 디비(sqlite) 오픈
-
-        :param filename: 파일명
-        :param delete: 기존 파일 삭제 여부
-        :return:
-        """
+        """ url 을 저장하는 캐쉬 디비(sqlite) 오픈 """
         if filename is not None:
             self.filename = filename
 
@@ -100,11 +90,7 @@ class UrlIndexDB(object):
 
     @staticmethod
     def get_url(url):
-        """ url 문자열을 찾아서 반환
-
-        :param url:
-        :return:
-        """
+        """ url 문자열을 찾아서 반환 """
 
         if isinstance(url, str) is True:
             return url
@@ -116,11 +102,7 @@ class UrlIndexDB(object):
         return url
 
     def check_url(self, url):
-        """ 다운 받을 url 이 디비에 있는지 검사
-
-        :param url: url 주소
-        :return: 있으면 True, 없으면 False
-        """
+        """ 다운 받을 url 이 디비에 있는지 검사 """
         if self.cursor is None:
             return False
 
@@ -137,11 +119,7 @@ class UrlIndexDB(object):
         return False
 
     def check_id(self, id):
-        """ 다운 받을 문서 아이디가 인덱스 디비에 있는지 검사
-
-        :param id: 문서 아이디
-        :return: 있으면 True, 없으면 False
-        """
+        """ 다운 받을 문서 아이디가 인덱스 디비에 있는지 검사 """
         if self.cursor is None:
             return False
 
@@ -156,12 +134,7 @@ class UrlIndexDB(object):
         return False
 
     def save_url(self, url, id):
-        """ 입력 받은 URL 저장
-
-        :param url: url 주소
-        :param id: 문서 아이디
-        :return:
-        """
+        """ 입력 받은 URL 저장 """
         if self.cursor is None:
             return
 
@@ -182,13 +155,7 @@ class UrlIndexDB(object):
         return
 
     def update_elastic_url_list(self, index, elastic_info, doc_type=None):
-        """ 디비에 있는 url 목록을 인덱스 디비에 저장
-
-        :param index: 인덱스명
-        :param doc_type: 문서 타입
-        :param elastic_info: elastic search 접속 정보
-        :return: void
-        """
+        """ 디비에 있는 url 목록을 인덱스 디비에 저장 """
         if self.cursor is None:
             return
 
@@ -233,13 +200,7 @@ class UrlIndexDB(object):
         return
 
     def update_mongodb_url_list(self, db_name, mongodb_info, collection_name=None):
-        """ 디비에 있는 url 목록을 인덱스 디비에 저장
-
-        :param db_name: 디비 이름
-        :param collection_name: 컬랙션명
-        :param mongodb_info: 몽고 디비 접속 정보
-        :return: void
-        """
+        """ 디비에 있는 url 목록을 인덱스 디비에 저장 """
         if self.cursor is None:
             return
 
