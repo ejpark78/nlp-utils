@@ -13,6 +13,7 @@
           "url_frame": "https://lineagem.plaync.com/board/all/articles.json?page={page}&isReferer=false&isVote=true&size=20&query=&searchType=&categoryId=&summary=true",
           "parser": "json",
           "category": "all",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },

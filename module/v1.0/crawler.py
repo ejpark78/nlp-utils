@@ -911,13 +911,7 @@ class Crawler(Utils):
         """
 
         def _json_serial(obj):
-            """
-            json.dumps 의 콜백 함수로 넘겨주는 함수
-            날자 형식을 문자로 반환
-
-            :param obj: 기사 문서 아이템
-            :return:
-            """
+            """ json.dumps 의 콜백 함수로 넘겨주는 함수, 날자 형식을 문자로 반환"""
             from datetime import datetime
 
             if isinstance(obj, datetime):
