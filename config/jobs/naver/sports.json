@@ -164,7 +164,27 @@
             "elastic": {
               "host": "http://nlpapi.ncsoft.com:9200",
               "index": "corpus_process-naver-sports"
-            }
+            },
+            "module": [
+              {
+                "name": "sp/pos_tagger",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "pos_tagged"
+              },
+              {
+                "name": "sp/ne_tagger",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "named_entity"
+              },
+              {
+                "name": "nc/ne_tagger_v2",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "named_entity_v2"
+              }
+            ]
           }
         }
       ]

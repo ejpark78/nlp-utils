@@ -32,6 +32,7 @@ build:
 		--exclude=wrap \
 		--exclude=venv \
 		--exclude=tmp \
+		--exclude=module/selenium-data \
 		.
 
 	cd build/
@@ -61,47 +62,63 @@ test:
 		--name $(CONTAINER) \
 		$(IMAGE_NAME)
 
-major-press:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory major-press -f major-press.yml down
-	docker-compose --project-directory major-press -f major-press.yml up -d
-	docker-compose --project-directory major-press -f major-press.yml logs -f
-
 naver-kin:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory naver-kin -f naver-kin.yml down
 	docker-compose --project-directory naver-kin -f naver-kin.yml up -d
 	docker-compose --project-directory naver-kin -f naver-kin.yml logs -f
 
+major-press:
+	docker pull $(IMAGE_NAME)
+	docker-compose --project-directory major-press -f major-press.yml down
+	docker-compose --project-directory major-press -f major-press.yml up -d
+
+logs-major-press:
+	docker-compose --project-directory major-press -f major-press.yml logs -f
+
 naver:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory naver -f naver.yml down
 	docker-compose --project-directory naver -f naver.yml up -d
+
+logs-naver:
 	docker-compose --project-directory naver -f naver.yml logs -f
 
 nate:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory nate -f nate.yml down
 	docker-compose --project-directory nate -f nate.yml up -d
+
+logs-nate:
 	docker-compose --project-directory nate -f nate.yml logs -f
 
 daum:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory daum -f daum.yml down
 	docker-compose --project-directory daum -f daum.yml up -d
+
+logs-daum:
 	docker-compose --project-directory daum -f daum.yml logs -f
 
 bbs:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory bbs -f bbs.yml down
 	docker-compose --project-directory bbs -f bbs.yml up -d
+
+logs-bbs:
 	docker-compose --project-directory bbs -f bbs.yml logs -f
 
 sns:
 	docker pull $(IMAGE_NAME)
 	docker-compose --project-directory sns -f sns.yml down
 	docker-compose --project-directory sns -f sns.yml up -d
+
+logs-sns:
 	docker-compose --project-directory sns -f sns.yml logs -f
+
+release:
+	rsync -avz --delete --exclude=*.tar.gz ./ g7:crawler/build/
+	rsync -avz --delete ../config/jobs/ g7:crawler/config/jobs/
 
 clean:
 	docker system prune -f

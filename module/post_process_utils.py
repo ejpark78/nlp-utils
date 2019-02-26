@@ -95,17 +95,20 @@ class PostProcessUtils(object):
     @staticmethod
     def rabbit_mq(document, info):
         """ Rabbit MQ로 메세지를 보낸다. """
-        import pika
         import bz2
+        import pika
         import pickle
 
         if document is None:
             return False
 
-        payload = {}
+        payload = {
+            'id': datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f'),
+            'document': document
+        }
         try:
             if 'payload' in info:
-                payload = info['payload']
+                payload.update(info['payload'])
         except Exception as e:
             log_msg = {
                 'task': '크롤링 후처리',
@@ -114,9 +117,6 @@ class PostProcessUtils(object):
                 'exception': e
             }
             logging.error(msg=log_msg)
-
-        payload['id'] = datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f')
-        payload['document'] = document
 
         doc_url = ''
         if 'url' in document:

@@ -36,10 +36,31 @@
             "user_password": "nlplab!"
           },
           "payload": {
+            "post_mq": false,
             "elastic": {
               "host": "http://nlpapi.ncsoft.com:9200",
               "index": "corpus_process-major_press-moneytoday"
-            }
+            },
+            "module": [
+              {
+                "name": "sp/pos_tagger",
+                "domain": "general",
+                "column": "html_content",
+                "result": "pos_tagged"
+              },
+              {
+                "name": "sp/ne_tagger",
+                "domain": "economy",
+                "column": "html_content",
+                "result": "named_entity"
+              },
+              {
+                "name": "nc/ne_tagger_v2",
+                "domain": "economy",
+                "column": "html_content",
+                "result": "named_entity_v2"
+              }
+            ]
           }
         }
       ]
