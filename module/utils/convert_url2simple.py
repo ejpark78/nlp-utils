@@ -12,9 +12,7 @@ import json
 
 
 def get_query(url):
-    """
-    url 에서 쿼리문을 반환
-    """
+    """ url 에서 쿼리문을 반환 """
     from urllib.parse import urlparse, parse_qs
 
     url_info = urlparse(url)
@@ -26,8 +24,7 @@ def get_query(url):
 
 
 def merge_section():
-    """
-    """
+    """ """
     new_id = '{oid}-{aid}'
     simple_query = 'oid={oid}&aid={aid}'
 

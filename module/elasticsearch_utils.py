@@ -6,16 +6,15 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
+import pickle
 from datetime import datetime
+from os.path import isfile
 
 from elasticsearch import Elasticsearch
 
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+from module.logging_format import LogMessage as LogMsg
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class ElasticSearchUtils(object):
@@ -73,14 +72,25 @@ class ElasticSearchUtils(object):
         try:
             self.elastic = Elasticsearch(hosts=self.host, timeout=30)
         except Exception as e:
-            logging.error(msg='elastic-search 접속 에러: {}'.format(e))
+            log_msg = {
+                'message': '서버 접속 에러',
+                'host': self.host,
+                'exception': e
+            }
+            logger.error(msg=LogMsg(log_msg))
             return
 
         try:
             if self.elastic.indices.exists(self.index) is False:
                 self.create_index(self.elastic, self.index)
         except Exception as e:
-            logging.error(msg='elastic-search 인덱스 생성 에러: {}'.format(e))
+            log_msg = {
+                'message': '인덱스 생성 에러',
+                'host': self.host,
+                'index': self.index,
+                'exception': e
+            }
+            logger.error(msg=LogMsg(log_msg))
             return
 
         return
@@ -164,24 +174,41 @@ class ElasticSearchUtils(object):
 
             self.bulk_data[self.host] = []
         except Exception as e:
-            msg = '저장 에러: {}'.format(e)
-            logging.error(msg=msg)
+            log_msg = {
+                'message': '저장 에러',
+                'exception': e
+            }
+            logger.error(msg=LogMsg(log_msg))
 
         try:
             if response['errors'] is True:
                 reason = response['items'][0]['update']['error']['reason']
-                msg = '저장 에러: {}'.format(reason)
-                logging.error(msg=msg)
+
+                log_msg = {
+                    'message': '저장 에러',
+                    'reason': reason
+                }
+                logger.error(msg=LogMsg(log_msg))
             else:
-                msg = '저장 성공: {:,}'.format(int(size / 2))
-                logging.info(msg=msg)
+                log_msg = {
+                    'message': '저장 성공',
+                    'count': int(size / 2)
+                }
+                logger.info(msg=LogMsg(log_msg))
 
                 if len(doc_id_list) > 0:
                     for doc_id in doc_id_list[:10]:
-                        msg = '{}/{}/{}/{}?pretty'.format(self.host, self.index, self.doc_type, doc_id)
-                        logging.info(msg=msg)
+                        log_msg = {
+                            'message': '저장 성공',
+                            'url': '{}/{}/{}/{}?pretty'.format(self.host, self.index, self.doc_type, doc_id),
+                        }
+                        logger.info(msg=LogMsg(log_msg))
         except Exception as e:
-            logging.error(msg='로깅 에러: {}'.format(e))
+            log_msg = {
+                'message': '로깅 에러',
+                'exception': e
+            }
+            logger.error(msg=LogMsg(log_msg))
 
         return
 
@@ -199,7 +226,14 @@ class ElasticSearchUtils(object):
             hits, scroll_id, count, total = self.scroll(index=index, scroll_id=scroll_id, size=size, query=query)
 
             sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+            log_msg = {
+                'index': index,
+                'count': count,
+                'sum_count': sum_count,
+                'total': total,
+            }
+            logger.info(msg=LogMsg(log_msg))
 
             for item in hits:
                 if only_source is True:
@@ -265,7 +299,14 @@ class ElasticSearchUtils(object):
             hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
 
             sum_count += count
-            logging.info(msg='{} {:,} {:,} {:,}'.format(index, count, sum_count, total))
+
+            log_msg = {
+                'index': index,
+                'count': count,
+                'sum_count': sum_count,
+                'total': total,
+            }
+            logger.info(msg=LogMsg(log_msg))
 
             for item in hits:
                 document_id = item['_id']
@@ -283,8 +324,6 @@ class ElasticSearchUtils(object):
     @staticmethod
     def save_cache(filename, cache_data):
         """데이를 피클로 저장한다."""
-        import pickle
-
         with open(filename, 'wb') as fp:
             pickle.dump(cache_data, fp)
 
@@ -293,9 +332,6 @@ class ElasticSearchUtils(object):
     @staticmethod
     def load_cache(filename):
         """피클로 저장된 데이터를 반환한다."""
-        import pickle
-        from os.path import isfile
-
         result = {}
         if isfile(filename):
             with open(filename, 'rb') as fp:
@@ -312,10 +348,22 @@ class ElasticSearchUtils(object):
         try:
             exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
             if exists is False:
-                logging.info(msg='move document 문서 없음: {} {}'.format(source_index, source_id))
+                log_msg = {
+                    'message': 'move document 문서 없음',
+                    'source_index': source_index,
+                    'source_id': source_id,
+                    'document_id': document_id,
+                }
+                logger.info(msg=LogMsg(log_msg))
                 return
         except Exception as e:
-            logging.error(msg='move document 문서 찾기 오류 {}'.format(e))
+            log_msg = {
+                'message': 'move document 문서 찾기 오류',
+                'source_id': source_id,
+                'document_id': document_id,
+                'exception': e,
+            }
+            logger.error(msg=LogMsg(log_msg))
             return
 
         # 원본 문서 읽기
@@ -325,7 +373,13 @@ class ElasticSearchUtils(object):
             if source_id != document_id:
                 document['_source']['_id'] = document_id
         except Exception as e:
-            logging.error(msg='move document 문서 읽기 오류 {}'.format(e))
+            log_msg = {
+                'message': 'move document 문서 읽기 오류',
+                'source_id': source_id,
+                'document_id': document_id,
+                'exception': e,
+            }
+            logger.error(msg=LogMsg(log_msg))
             return
 
         # 문서 병합
@@ -340,7 +394,13 @@ class ElasticSearchUtils(object):
         try:
             self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
         except Exception as e:
-            logging.error(msg='move document 문서 삭제 오류 {}'.format(e))
+            log_msg = {
+                'message': 'move document 문서 삭제 오류',
+                'source_index': source_index,
+                'source_id': source_id,
+                'exception': e,
+            }
+            logger.error(msg=LogMsg(log_msg))
             return
 
         return
@@ -356,7 +416,14 @@ class ElasticSearchUtils(object):
         try:
             resp = self.elastic.get(index=index, doc_type='doc', id=doc_id)
         except Exception as e:
-            logging.error('{}'.format(e))
+            log_msg = {
+                'message': '문서 병합 에러',
+                'index': index,
+                'column': column,
+                'doc_id': doc_id,
+                'exception': e,
+            }
+            logger.error(msg=LogMsg(log_msg))
             return doc
 
         if '_source' not in resp:

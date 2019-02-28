@@ -2,7 +2,6 @@ python-dateutil
 boto3
 bs4
 elasticsearch
-hdfs
 lxml
 numpy
 pymongo
@@ -17,6 +16,5 @@ requests-oauthlib
 tqdm
 werkzeug
 botocore
-kombu
 queues
 pika

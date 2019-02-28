@@ -15,12 +15,7 @@ from bs4 import BeautifulSoup
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logger = logging.getLogger()
 
 
 class QuestionDetail(CrawlerBase):
@@ -64,7 +59,7 @@ class QuestionDetail(CrawlerBase):
                                                doc_id=doc_id, list_id=item['_id'])
 
                 if is_skip is True:
-                    logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+                    logger.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
                     continue
 
             # 질문 상세 페이지 크롤링
@@ -73,7 +68,7 @@ class QuestionDetail(CrawlerBase):
             resp = requests.get(url=request_url, headers=self.headers['mobile'],
                                 allow_redirects=True, timeout=60)
 
-            logging.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+            logger.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
 
             # 저장
             self.save_doc(html=resp.content, elastic_utils=elastic_utils,
@@ -100,7 +95,7 @@ class QuestionDetail(CrawlerBase):
             elastic_utils.save_document(index=self.job_info['index'], document=doc)
             elastic_utils.flush()
 
-            logging.info(msg='{} {}'.format(doc_id, doc['question']))
+            logger.info(msg='{} {}'.format(doc_id, doc['question']))
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(source_index=list_index,

@@ -6,12 +6,13 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
+from time import sleep
 
 import requests
 import urllib3
 from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
-from time import sleep
+from module.logging_format import LogMessage as LogMsg
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -20,11 +21,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class TwitterUtils(CrawlerBase):
@@ -57,7 +55,7 @@ class TwitterUtils(CrawlerBase):
                 'sleep_time': daemon_info['sleep']
             }
 
-            logging.log(level=MESSAGE, msg=log_msg)
+            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -123,7 +121,7 @@ class TwitterUtils(CrawlerBase):
                 'message': '에러',
                 'tweet': tweet
             }
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
             return
 
         headers = {
@@ -150,7 +148,7 @@ class TwitterUtils(CrawlerBase):
                     'message': 'resp 가 없음',
                     'exception': e
                 }
-                logging.error(msg=log_msg)
+                logger.error(msg=LogMsg(log_msg))
 
             self.max_error_count -= 1
 
@@ -162,7 +160,7 @@ class TwitterUtils(CrawlerBase):
                 'url': url,
                 'sleep': 10
             }
-            logging.log(level=MESSAGE, msg=log_msg)
+            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             sleep(10)
             return
 
@@ -217,7 +215,7 @@ class TwitterUtils(CrawlerBase):
                 if 'reply' in tweet:
                     log_msg['reply'] = tweet['reply']
 
-                logging.log(level=MESSAGE, msg=log_msg)
+                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
 
                 # 문서 저장
                 elastic_utils.save_document(document=tweet)
@@ -298,6 +296,6 @@ class TwitterUtils(CrawlerBase):
             'task': '슬립',
             'sleep_time': self.sleep_time
         }
-        logging.log(level=MESSAGE, msg=log_msg)
+        logger.log(level=MESSAGE, msg=LogMsg(log_msg))
         sleep(self.sleep_time)
         return

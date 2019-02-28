@@ -11,6 +11,7 @@ import json
 
 
 if __name__ == '__main__':
+    """"""
     section = {}
 
     for line in sys.stdin:

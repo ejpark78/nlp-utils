@@ -14,12 +14,7 @@ from time import sleep
 
 
 def curl_issue():
-    """
-    다음 이슈 크롤링
-
-    :return:
-        True/False
-    """
+    """ 다음 이슈 크롤링 """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -83,6 +78,7 @@ def curl_issue():
 
 
 def merge_documents(issue_id, issue_title):
+    """"""
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -230,6 +226,7 @@ def merge_documents(issue_id, issue_title):
 
 
 def main():
+    """"""
 
     issue_list = [
         {'168501': '세월호 침몰 사고'},

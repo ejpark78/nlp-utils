@@ -9,25 +9,23 @@ import json
 import logging
 import re
 from datetime import datetime, timedelta
+from time import sleep
 from urllib.parse import urljoin
 
 import urllib3
 from dateutil.parser import parse as date_parse
 from dateutil.rrule import rrule, DAILY
-from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
+from module.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class WebNewsCrawler(CrawlerBase):
@@ -59,7 +57,7 @@ class WebNewsCrawler(CrawlerBase):
                 'sleep_time': daemon_info['sleep']
             }
 
-            logging.log(level=MESSAGE, msg=log_msg)
+            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -124,7 +122,7 @@ class WebNewsCrawler(CrawlerBase):
                 'query': q
             }
 
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
 
             if 'category' in url:
                 job['category'] = url['category']
@@ -151,7 +149,7 @@ class WebNewsCrawler(CrawlerBase):
                 'url': url['url']
             }
 
-            logging.log(level=MESSAGE, msg=log_msg)
+            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             sleep(self.sleep_time)
 
         # 위치 초기화
@@ -214,7 +212,7 @@ class WebNewsCrawler(CrawlerBase):
                 'message': '뉴스 본문 크롤링: 슬립',
                 'sleep_time': self.sleep_time
             }
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
             sleep(self.sleep_time)
 
         # 캐쉬 저장
@@ -288,7 +286,7 @@ class WebNewsCrawler(CrawlerBase):
                 'message': '다음페이지 크롤링: 슬립',
                 'sleep_time': self.sleep_time
             }
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
             sleep(self.sleep_time)
 
             self.trace_news(html=resp, url_info=url_info, job=job)
@@ -313,7 +311,7 @@ class WebNewsCrawler(CrawlerBase):
                 'message': 'html_content 필드가 없음',
                 'url': doc['url']
             }
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
 
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now()
@@ -333,7 +331,7 @@ class WebNewsCrawler(CrawlerBase):
             if k in doc:
                 log_msg[k] = doc[k]
 
-        logging.log(level=MESSAGE, msg=log_msg)
+        logger.log(level=MESSAGE, msg=LogMsg(log_msg))
 
         return doc
 
@@ -358,7 +356,7 @@ class WebNewsCrawler(CrawlerBase):
                     'url': url
                 }
 
-                logging.info(msg=log_msg)
+                logger.info(msg=LogMsg(log_msg))
                 return None
 
             result = id_frame['frame'].format(**q)
@@ -399,7 +397,7 @@ class WebNewsCrawler(CrawlerBase):
                     'sleep_time': self.sleep_time
                 }
 
-                logging.log(level=MESSAGE, msg=log_msg)
+                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
 
                 sleep(self.sleep_time)
                 return None

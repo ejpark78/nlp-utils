@@ -11,13 +11,6 @@ from os import makedirs
 from os.path import dirname, abspath, isdir
 from os.path import isfile
 
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
-
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
-
 
 class Config(object):
     """크롤러 설정"""

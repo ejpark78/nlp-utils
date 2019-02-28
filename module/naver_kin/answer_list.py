@@ -13,12 +13,7 @@ import requests
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logger = logging.getLogger()
 
 
 class AnswerList(CrawlerBase):
@@ -53,7 +48,7 @@ class AnswerList(CrawlerBase):
                 if size == 0:
                     break
 
-                logging.info(msg='{}, {}'.format(size, request_url))
+                logger.info(msg='{}, {}'.format(size, request_url))
 
                 for doc in result['lists']:
                     doc['_id'] = doc['u']
@@ -90,7 +85,7 @@ class AnswerList(CrawlerBase):
                     if size == 0:
                         break
 
-                    logging.info(msg='{}, {}'.format(size, request_url))
+                    logger.info(msg='{}, {}'.format(size, request_url))
 
                     for doc in result['result']:
                         doc['expert_type'] = expert_type
@@ -121,7 +116,7 @@ class AnswerList(CrawlerBase):
                                   allow_redirects=True, timeout=30, verify=False)
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
-            logging.info(msg='eliteUser cookie: {} {}'.format(result, cookies))
+            logger.info(msg='eliteUser cookie: {} {}'.format(result, cookies))
 
             self.headers['mobile']['referer'] = url
             for page in range(1, 6):
@@ -133,7 +128,7 @@ class AnswerList(CrawlerBase):
                 result = request_result.json()
 
                 if 'eliteUserList' in result:
-                    logging.info(msg='{}, {}'.format(len(result['eliteUserList']), list_url))
+                    logger.info(msg='{}, {}'.format(len(result['eliteUserList']), list_url))
 
                     for doc in result['eliteUserList']:
                         doc['_id'] = doc['u']
@@ -162,7 +157,7 @@ class AnswerList(CrawlerBase):
                                   allow_redirects=True, timeout=30, verify=False)
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
-            logging.info(msg='cookie: {} {}'.format(result, cookies))
+            logger.info(msg='cookie: {} {}'.format(result, cookies))
 
             self.headers['mobile']['referer'] = url
 
@@ -176,7 +171,7 @@ class AnswerList(CrawlerBase):
                     result = request_result.json()
 
                     if 'result' in result:
-                        logging.info(msg='{}, {}'.format(len(result['result']), list_url))
+                        logger.info(msg='{}, {}'.format(len(result['result']), list_url))
 
                         for doc in result['result']:
                             doc['_id'] = doc['u']

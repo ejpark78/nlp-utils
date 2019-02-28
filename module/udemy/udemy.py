@@ -19,12 +19,7 @@ from tqdm import tqdm
 
 from module.config import Config
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logger = logging.getLogger()
 
 
 class UdemyUtils(object):
@@ -36,7 +31,7 @@ class UdemyUtils(object):
 
         self.job_id = 'udemy'
 
-        self.cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_category='udemy', job_id=self.job_id)
 
         self.headers = None
 
@@ -84,7 +79,7 @@ class UdemyUtils(object):
         }
 
         for item in lecture_list['results']:
-            logging.info('title: {}'.format(item['title']))
+            logger.info('title: {}'.format(item['title']))
 
             if item['_class'] == 'chapter':
                 path = '{}/{}/{:02d}. {}'.format(self.data_path, course['name'], count['chapter'], item['title'])
@@ -147,23 +142,23 @@ class UdemyUtils(object):
         if isfile(filename):
             size = getsize(filename)
             if size > 1000:
-                logging.info('skip {}'.format(filename))
+                logger.info('skip {}'.format(filename))
                 return True
 
         for v in video:
             if v['label'] != '720':
                 continue
 
-            logging.info(filename)
-            logging.info(v['file'])
+            logger.info(filename)
+            logger.info(v['file'])
 
             resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
 
             if resp.status_code // 100 != 2:
-                logging.error('error: {}'.format(resp.text))
+                logger.error('error: {}'.format(resp.text))
 
             total_size = int(resp.headers.get('content-length', 0))
-            logging.info('size: {:,}'.format(total_size))
+            logger.info('size: {:,}'.format(total_size))
 
             block_size = 1024
             wrote = 0
@@ -191,7 +186,7 @@ class UdemyUtils(object):
 
         filename = '{path}/{name}.html'.format(path=path, name=name)
         if isfile(filename):
-            logging.info('skip {}'.format(filename))
+            logger.info('skip {}'.format(filename))
             return
 
         with open(filename, 'w') as fp:
@@ -210,7 +205,7 @@ class UdemyUtils(object):
                                                            label=cap['video_label'])
 
             if isfile(filename):
-                logging.info('skip {}'.format(filename))
+                logger.info('skip {}'.format(filename))
                 return
 
             with open(filename, 'w') as fp:

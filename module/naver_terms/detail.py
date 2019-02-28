@@ -15,12 +15,7 @@ from bs4 import BeautifulSoup
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logger = logging.getLogger()
 
 
 class TermDetail(CrawlerBase):
@@ -81,7 +76,7 @@ class TermDetail(CrawlerBase):
                                        doc_id=doc_id, list_id=list_id, merge_column='category')
 
         if is_skip is True:
-            logging.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+            logger.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
             return True
 
         # 질문 상세 페이지 크롤링
@@ -89,7 +84,7 @@ class TermDetail(CrawlerBase):
             resp = requests.get(url=request_url, headers=self.headers['mobile'],
                                 allow_redirects=True, timeout=60)
         except Exception as e:
-            logging.error('{}'.format(e))
+            logger.error('{}'.format(e))
             sleep(10)
             return
 
@@ -98,7 +93,7 @@ class TermDetail(CrawlerBase):
                       list_index=list_index, list_doc=doc,
                       doc_id=doc_id, list_id=list_id)
 
-        logging.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
+        logger.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
 
         # 후처리 작업 실행
         self.post_process_utils.insert_job(document=doc, post_process_list=self.post_process_list)
@@ -144,7 +139,7 @@ class TermDetail(CrawlerBase):
             if 'title' in doc:
                 msg = '{} {}'.format(doc_id, doc['title'])
 
-            logging.info(msg=msg)
+            logger.info(msg=msg)
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(source_index=list_index,

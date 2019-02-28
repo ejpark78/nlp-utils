@@ -17,12 +17,7 @@ from module.elasticsearch_utils import ElasticSearchUtils
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logger = logging.getLogger()
 
 
 class QuestionList(CrawlerBase):
@@ -47,7 +42,7 @@ class QuestionList(CrawlerBase):
             # 시작
             self.batch()
 
-            logging.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            logger.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -80,7 +75,7 @@ class QuestionList(CrawlerBase):
                 resp = requests.get(url=query_url, headers=self.headers['mobile'],
                                     allow_redirects=True, timeout=60)
             except Exception as e:
-                logging.error(msg='{}'.format(e))
+                logger.error(msg='{}'.format(e))
                 sleep(10)
                 continue
 
@@ -89,7 +84,7 @@ class QuestionList(CrawlerBase):
                 if is_stop is True:
                     break
             except Exception as e:
-                logging.error(msg='{}'.format(e))
+                logger.error(msg='{}'.format(e))
                 break
 
             # 현재 상태 저장
@@ -99,7 +94,7 @@ class QuestionList(CrawlerBase):
             self.cfg.save_status()
 
             # 로그 표시
-            logging.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
+            logger.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
 
             sleep(self.sleep_time)
 
@@ -131,7 +126,7 @@ class QuestionList(CrawlerBase):
             doc['_id'] = doc_id
 
             elastic_utils.save_document(document=doc)
-            logging.info(msg='{} {}'.format(doc_id, doc['title']))
+            logger.info(msg='{} {}'.format(doc_id, doc['title']))
 
         elastic_utils.flush()
 

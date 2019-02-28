@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import logging
 import os
 import pathlib
@@ -16,13 +15,11 @@ from datetime import datetime
 import requests
 
 from module.html_parser import HtmlParser
+from module.logging_format import LogMessage as LogMsg
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class PostProcessUtils(object):
@@ -56,7 +53,7 @@ class PostProcessUtils(object):
                 'queue_size': self.job_queue.qsize()
             }
 
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
             self.job_queue.put(job)
         else:
             self.job_queue.put(job)
@@ -116,7 +113,7 @@ class PostProcessUtils(object):
                 'payload': info['payload'],
                 'exception': e
             }
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
 
         doc_url = ''
         if 'url' in document:
@@ -150,7 +147,7 @@ class PostProcessUtils(object):
                     'doc_url': doc_url
                 }
 
-                logging.log(level=MESSAGE, msg=log_msg)
+                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
         except Exception as e:
             log_msg = {
                 'task': '크롤링 후처리',
@@ -160,7 +157,7 @@ class PostProcessUtils(object):
                 'exception': e
             }
 
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
 
         return True
 
@@ -202,7 +199,7 @@ class PostProcessUtils(object):
                 'title': document['title']
             }
 
-            logging.log(level=MESSAGE, msg=log_msg)
+            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
         except Exception as e:
             log_msg = {
                 'task': '크롤링 후처리',
@@ -211,7 +208,7 @@ class PostProcessUtils(object):
                 'exception': e
             }
 
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
 
         return True
 
@@ -274,7 +271,7 @@ class PostProcessUtils(object):
                     'exception': e
                 }
 
-                logging.info(msg=log_msg)
+                logger.info(msg=LogMsg(log_msg))
 
             if file_exists is True:
                 # cdn 이미지 주소 추가
@@ -285,7 +282,13 @@ class PostProcessUtils(object):
             try:
                 response = bucket.put_object(Key=upload_file, Body=r.content, ACL='public-read',
                                              ContentType=r.headers['content-type'])
-                logging.info(msg='save S3: {}'.format(response))
+
+                log_msg = {
+                    'task': '크롤링 후처리',
+                    'message': 'AWS S3 저장 성공',
+                    'response': response
+                }
+                logger.info(msg=LogMsg(log_msg))
 
                 # cdn 이미지 주소 추가
                 image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
@@ -296,7 +299,7 @@ class PostProcessUtils(object):
                     'bucket_name': bucket_name,
                     'exception': e
                 }
-                logging.error(msg=log_msg)
+                logger.error(msg=LogMsg(log_msg))
 
         # 이미지 목록 업데이트
         document['image_list'] = image_list

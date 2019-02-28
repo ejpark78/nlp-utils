@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import logging
 from time import sleep
 
@@ -16,16 +15,12 @@ from werkzeug.contrib.cache import SimpleCache
 from module.config import Config
 from module.html_parser import HtmlParser
 from module.post_process_utils import PostProcessUtils
+from module.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
-
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class CrawlerBase(object):
@@ -78,7 +73,7 @@ class CrawlerBase(object):
                 'exception': e
             }
 
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
             sleep(sleep_time)
             return None
 
@@ -94,7 +89,7 @@ class CrawlerBase(object):
                 'sleep_time': sleep_time,
                 'status_code': status_code
             }
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
 
             sleep(sleep_time)
             return None
@@ -132,7 +127,7 @@ class CrawlerBase(object):
                 'url': url
             }
 
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
             return True
 
         # elasticsearch 에 문서가 있는지 조회
@@ -147,7 +142,7 @@ class CrawlerBase(object):
                 'url': url
             }
 
-            logging.info(msg=log_msg)
+            logger.info(msg=LogMsg(log_msg))
             return True
 
         return False

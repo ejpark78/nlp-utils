@@ -14,12 +14,9 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+from module.logging_format import LogMessage as LogMsg
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logger = logging.getLogger()
 
 
 class HtmlParser(object):
@@ -132,7 +129,7 @@ class HtmlParser(object):
                             'exception': e
                         }
 
-                        logging.error(msg=log_msg)
+                        logger.error(msg=LogMsg(log_msg))
                 else:
                     if tag.has_attr(item['type']):
                         value = tag[item['type']]
@@ -224,7 +221,7 @@ class HtmlParser(object):
                 'exception': e
             }
 
-            logging.error(msg=log_msg)
+            logger.error(msg=LogMsg(log_msg))
             return date
 
         return date
@@ -406,7 +403,7 @@ class HtmlParser(object):
                         'exception': e
                     }
 
-                    logging.error(msg=log_msg)
+                    logger.error(msg=LogMsg(log_msg))
             else:
                 result.append({
                     'image': urljoin(base_url, tag['src']),
@@ -427,6 +424,6 @@ class HtmlParser(object):
                         'exception': e
                     }
 
-                    logging.error(msg=log_msg)
+                    logger.error(msg=LogMsg(log_msg))
 
         return result

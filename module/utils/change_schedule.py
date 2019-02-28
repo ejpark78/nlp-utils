@@ -10,13 +10,7 @@ from pymongo import MongoClient
 
 
 def open_db(db_name, host='frodo', port=27018):
-    """ 몽고 디비 핸들 오픈
-
-    :param db_name: 디비명
-    :param host: 서버 주소
-    :param port: 서버 포트
-    :return:
-    """
+    """ 몽고 디비 핸들 오픈 """
     connect = MongoClient('mongodb://{}:{}'.format(host, port))
     db = connect.get_database(db_name)
 
@@ -24,10 +18,7 @@ def open_db(db_name, host='frodo', port=27018):
 
 
 def change_db_info():
-    """ 크롤링 스케쥴 정보 변경
-
-    :return:
-    """
+    """ 크롤링 스케쥴 정보 변경 """
     from datetime import datetime
 
     connect, db = open_db('crawler')

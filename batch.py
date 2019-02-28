@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
+import sys
 
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
@@ -19,11 +20,15 @@ from module.udemy.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=MESSAGE)
+logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(level=MESSAGE, format='%(message)s')
+
+root_logger = logging.getLogger()
+
+root_logger.setLevel(MESSAGE)
+root_logger.handlers = [logging.StreamHandler(sys.stdout)]
+# root_logger.addHandler()
 
 
 def init_arguments():
