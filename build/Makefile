@@ -118,7 +118,7 @@ logs-sns:
 
 release:
 	rsync -avz --delete --exclude=*.tar.gz ./ g7:crawler/build/
-	rsync -avz --delete ../config/jobs/ g7:crawler/config/jobs/
+	#rsync -avz --delete ../config/jobs/ g7:crawler/config/jobs/
 
 clean:
 	docker system prune -f
