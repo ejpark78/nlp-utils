@@ -48,12 +48,13 @@ class PostProcessUtils(object):
             start_thread = True
 
             log_msg = {
+                'LEVEL': 'INFO',
                 'task': '크롤링 후처리',
                 'message': '저장 큐에 저장',
-                'queue_size': self.job_queue.qsize()
+                'queue_size': self.job_queue.qsize(),
             }
-
             logger.info(msg=LogMsg(log_msg))
+
             self.job_queue.put(job)
         else:
             self.job_queue.put(job)
@@ -108,10 +109,11 @@ class PostProcessUtils(object):
                 payload.update(info['payload'])
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'task': '크롤링 후처리',
                 'message': 'Rabbit MQ payload 파싱 에러',
                 'payload': info['payload'],
-                'exception': e
+                'exception': e,
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -141,22 +143,22 @@ class PostProcessUtils(object):
                                       body=body)
 
                 log_msg = {
+                    'LEVEL': 'MESSAGE',
                     'task': '크롤링 후처리',
                     'message': 'Rabbit MQ',
                     'exchange_name': info['exchange']['name'],
-                    'doc_url': doc_url
+                    'doc_url': doc_url,
                 }
-
                 logger.log(level=MESSAGE, msg=LogMsg(log_msg))
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'task': '크롤링 후처리',
                 'message': 'Rabbit MQ 전달 에러',
                 'doc_url': doc_url,
                 'info': info,
-                'exception': e
+                'exception': e,
             }
-
             logger.error(msg=LogMsg(log_msg))
 
         return True
@@ -192,22 +194,23 @@ class PostProcessUtils(object):
                           allow_redirects=True, timeout=30, verify=False)
 
             log_msg = {
+                'LEVEL': 'MESSAGE',
                 'task': '크롤링 후처리',
                 'message': '코퍼스 전처리',
                 'url': url,
                 'id': document['document_id'],
-                'title': document['title']
+                'title': document['title'],
             }
 
             logger.log(level=MESSAGE, msg=LogMsg(log_msg))
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'task': '크롤링 후처리',
                 'message': '코퍼스 전처리 에러',
                 'id': document['document_id'],
-                'exception': e
+                'exception': e,
             }
-
             logger.error(msg=LogMsg(log_msg))
 
         return True
@@ -265,12 +268,12 @@ class PostProcessUtils(object):
                 file_exists = True
             except ClientError as e:
                 log_msg = {
+                    'LEVEL': 'INFO',
                     'task': '크롤링 후처리',
                     'message': 'AWS S3 파일 exists 에러',
                     'bucket_name': bucket_name,
-                    'exception': e
+                    'exception': e,
                 }
-
                 logger.info(msg=LogMsg(log_msg))
 
             if file_exists is True:
@@ -284,6 +287,7 @@ class PostProcessUtils(object):
                                              ContentType=r.headers['content-type'])
 
                 log_msg = {
+                    'LEVEL': 'INFO',
                     'task': '크롤링 후처리',
                     'message': 'AWS S3 저장 성공',
                     'response': response
@@ -294,10 +298,11 @@ class PostProcessUtils(object):
                 image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
             except Exception as e:
                 log_msg = {
+                    'LEVEL': 'ERROR',
                     'task': '크롤링 후처리',
                     'message': 'AWS S3 저장 에러',
                     'bucket_name': bucket_name,
-                    'exception': e
+                    'exception': e,
                 }
                 logger.error(msg=LogMsg(log_msg))
 

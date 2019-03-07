@@ -7,20 +7,21 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import json
-# from datetime import datetime
 
 
 class LogMessage(object):
-    """"""
+    """구조화된 로깅"""
 
     def __init__(self, message, **kwargs):
-        """"""
+        """생성자"""
         self.message = message
         self.kwargs = kwargs
 
     def __str__(self):
-        """"""
+        """문자열로 반환"""
         self.message.update(self.kwargs)
-        # self.message['log_date'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S+0900')
 
-        return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
+        try:
+            return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
+        except Exception as e:
+            return str(self.message)

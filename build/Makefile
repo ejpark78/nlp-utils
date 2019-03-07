@@ -117,8 +117,11 @@ logs-sns:
 	docker-compose --project-directory sns -f sns.yml logs -f
 
 release:
-	rsync -avz --delete --exclude=*.tar.gz ./ g7:crawler/build/
+#	rsync -avz --delete --exclude=*.tar.gz ./ g7:crawler/build/
 	#rsync -avz --delete ../config/jobs/ g7:crawler/config/jobs/
+
+	rsync -avz --delete --exclude=*.tar.gz ./ g5:crawler/build/
+	rsync -avz --delete ../config/jobs/ g5:crawler/config/jobs/
 
 clean:
 	docker system prune -f

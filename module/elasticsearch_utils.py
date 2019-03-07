@@ -73,9 +73,10 @@ class ElasticSearchUtils(object):
             self.elastic = Elasticsearch(hosts=self.host, timeout=30)
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': '서버 접속 에러',
                 'host': self.host,
-                'exception': e
+                'exception': e,
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -85,10 +86,11 @@ class ElasticSearchUtils(object):
                 self.create_index(self.elastic, self.index)
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': '인덱스 생성 에러',
                 'host': self.host,
                 'index': self.index,
-                'exception': e
+                'exception': e,
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -175,8 +177,9 @@ class ElasticSearchUtils(object):
             self.bulk_data[self.host] = []
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': '저장 에러',
-                'exception': e
+                'exception': e,
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -185,28 +188,37 @@ class ElasticSearchUtils(object):
                 reason = response['items'][0]['update']['error']['reason']
 
                 log_msg = {
+                    'LEVEL': 'ERROR',
                     'message': '저장 에러',
-                    'reason': reason
+                    'reason': reason,
                 }
                 logger.error(msg=LogMsg(log_msg))
             else:
                 log_msg = {
+                    'LEVEL': 'INFO',
                     'message': '저장 성공',
-                    'count': int(size / 2)
+                    'count': int(size / 2),
                 }
                 logger.info(msg=LogMsg(log_msg))
 
                 if len(doc_id_list) > 0:
                     for doc_id in doc_id_list[:10]:
                         log_msg = {
+                            'LEVEL': 'INFO',
                             'message': '저장 성공',
-                            'url': '{}/{}/{}/{}?pretty'.format(self.host, self.index, self.doc_type, doc_id),
+                            'url': '{host}/{index}/{doc_type}/{id}?pretty'.format(
+                                host=self.host,
+                                index=self.index,
+                                doc_type=self.doc_type,
+                                id=doc_id,
+                            ),
                         }
                         logger.info(msg=LogMsg(log_msg))
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': '로깅 에러',
-                'exception': e
+                'exception': e,
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -228,6 +240,7 @@ class ElasticSearchUtils(object):
             sum_count += count
 
             log_msg = {
+                'LEVEL': 'INFO',
                 'index': index,
                 'count': count,
                 'sum_count': sum_count,
@@ -301,6 +314,7 @@ class ElasticSearchUtils(object):
             sum_count += count
 
             log_msg = {
+                'LEVEL': 'INFO',
                 'index': index,
                 'count': count,
                 'sum_count': sum_count,
@@ -349,6 +363,7 @@ class ElasticSearchUtils(object):
             exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
             if exists is False:
                 log_msg = {
+                    'LEVEL': 'INFO',
                     'message': 'move document 문서 없음',
                     'source_index': source_index,
                     'source_id': source_id,
@@ -358,6 +373,7 @@ class ElasticSearchUtils(object):
                 return
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': 'move document 문서 찾기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
@@ -374,6 +390,7 @@ class ElasticSearchUtils(object):
                 document['_source']['_id'] = document_id
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': 'move document 문서 읽기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
@@ -395,6 +412,7 @@ class ElasticSearchUtils(object):
             self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': 'move document 문서 삭제 오류',
                 'source_index': source_index,
                 'source_id': source_id,
@@ -417,6 +435,7 @@ class ElasticSearchUtils(object):
             resp = self.elastic.get(index=index, doc_type='doc', id=doc_id)
         except Exception as e:
             log_msg = {
+                'LEVEL': 'ERROR',
                 'message': '문서 병합 에러',
                 'index': index,
                 'column': column,

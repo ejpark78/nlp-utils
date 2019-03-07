@@ -66,11 +66,12 @@ class CrawlerBase(object):
             sleep_time = 10
 
             log_msg = {
+                'LEVEL': 'ERROR',
                 'task': 'url 조회',
                 'status': '에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
-                'exception': e
+                'exception': e,
             }
 
             logger.error(msg=LogMsg(log_msg))
@@ -83,11 +84,12 @@ class CrawlerBase(object):
             sleep_time = 10
 
             log_msg = {
+                'LEVEL': 'ERROR',
                 'task': 'url 조회',
                 'status': '상태 코드 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
-                'status_code': status_code
+                'status_code': status_code,
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -121,25 +123,27 @@ class CrawlerBase(object):
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
             log_msg = {
+                'LEVEL': 'INFO',
                 'task': '중복 문서 확인',
                 'message': '중복 문서, 건너뜀',
                 'doc_id': doc_id,
-                'url': url
+                'url': url,
             }
 
             logger.info(msg=LogMsg(log_msg))
             return True
 
-        # elasticsearch 에 문서가 있는지 조회
+        # 문서가 있는지 조회
         is_exists = elastic_utils.elastic.exists(index=index, doc_type='doc', id=doc_id)
         if is_exists is True:
             doc_history[doc_id] = 1
 
             log_msg = {
+                'LEVEL': 'INFO',
                 'task': '중복 문서 확인',
                 'message': 'elasticsearch 에 존재함, 건너뜀',
                 'doc_id': doc_id,
-                'url': url
+                'url': url,
             }
 
             logger.info(msg=LogMsg(log_msg))
