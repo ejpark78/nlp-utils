@@ -76,7 +76,7 @@ class ElasticSearchUtils(object):
                 'LEVEL': 'ERROR',
                 'message': '서버 접속 에러',
                 'host': self.host,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -90,7 +90,7 @@ class ElasticSearchUtils(object):
                 'message': '인덱스 생성 에러',
                 'host': self.host,
                 'index': self.index,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -179,7 +179,7 @@ class ElasticSearchUtils(object):
             log_msg = {
                 'LEVEL': 'ERROR',
                 'message': '저장 에러',
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -218,7 +218,7 @@ class ElasticSearchUtils(object):
             log_msg = {
                 'LEVEL': 'ERROR',
                 'message': '로깅 에러',
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -377,7 +377,7 @@ class ElasticSearchUtils(object):
                 'message': 'move document 문서 찾기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -394,7 +394,7 @@ class ElasticSearchUtils(object):
                 'message': 'move document 문서 읽기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -416,7 +416,7 @@ class ElasticSearchUtils(object):
                 'message': 'move document 문서 삭제 오류',
                 'source_index': source_index,
                 'source_id': source_id,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return
@@ -440,7 +440,7 @@ class ElasticSearchUtils(object):
                 'index': index,
                 'column': column,
                 'doc_id': doc_id,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
             return doc

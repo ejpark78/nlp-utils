@@ -127,7 +127,7 @@ class HtmlParser(object):
                             'LEVEL': 'ERROR',
                             'task': 'html 파싱',
                             'message': 'prettify 에러',
-                            'exception': e,
+                            'exception': str(e),
                         }
                         logger.error(msg=LogMsg(log_msg))
                 else:
@@ -219,7 +219,7 @@ class HtmlParser(object):
                 'task': 'html 파싱',
                 'message': '날짜 변환 에러',
                 'date': date,
-                'exception': e,
+                'exception': str(e),
             }
 
             logger.error(msg=LogMsg(log_msg))
@@ -402,7 +402,7 @@ class HtmlParser(object):
                         'LEVEL': 'ERROR',
                         'task': 'html 파싱',
                         'message': '이미지 추출 에러',
-                        'exception': e,
+                        'exception': str(e),
                     }
                     logger.error(msg=LogMsg(log_msg))
             else:
@@ -423,7 +423,7 @@ class HtmlParser(object):
                         'LEVEL': 'ERROR',
                         'task': 'html 파싱',
                         'message': '이미지 캡션 추출 에러',
-                        'exception': e,
+                        'exception': str(e),
                     }
                     logger.error(msg=LogMsg(log_msg))
 

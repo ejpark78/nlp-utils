@@ -113,7 +113,7 @@ class PostProcessUtils(object):
                 'task': '크롤링 후처리',
                 'message': 'Rabbit MQ payload 파싱 에러',
                 'payload': info['payload'],
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -157,7 +157,7 @@ class PostProcessUtils(object):
                 'message': 'Rabbit MQ 전달 에러',
                 'doc_url': doc_url,
                 'info': info,
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -209,7 +209,7 @@ class PostProcessUtils(object):
                 'task': '크롤링 후처리',
                 'message': '코퍼스 전처리 에러',
                 'id': document['document_id'],
-                'exception': e,
+                'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
 
@@ -272,7 +272,7 @@ class PostProcessUtils(object):
                     'task': '크롤링 후처리',
                     'message': 'AWS S3 파일 exists 에러',
                     'bucket_name': bucket_name,
-                    'exception': e,
+                    'exception': str(e),
                 }
                 logger.info(msg=LogMsg(log_msg))
 
@@ -302,7 +302,7 @@ class PostProcessUtils(object):
                     'task': '크롤링 후처리',
                     'message': 'AWS S3 저장 에러',
                     'bucket_name': bucket_name,
-                    'exception': e,
+                    'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))
 

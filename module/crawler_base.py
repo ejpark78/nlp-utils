@@ -71,7 +71,7 @@ class CrawlerBase(object):
                 'status': '에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
-                'exception': e,
+                'exception': str(e),
             }
 
             logger.error(msg=LogMsg(log_msg))
