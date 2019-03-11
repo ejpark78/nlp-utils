@@ -22,12 +22,12 @@ from module.web_news import WebNewsCrawler
 MESSAGE = 25
 
 logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(level=MESSAGE, format='%(message)s', handlers=[logging.StreamHandler(sys.stdout)])
+logging.basicConfig(format='%(message)s')
 
 root_logger = logging.getLogger()
 
-# root_logger.setLevel(MESSAGE)
-# root_logger.handlers = [logging.StreamHandler(sys.stdout)]
+root_logger.setLevel(MESSAGE)
+root_logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 def init_arguments():

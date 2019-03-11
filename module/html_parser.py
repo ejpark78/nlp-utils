@@ -124,7 +124,7 @@ class HtmlParser(object):
                         value = str(tag.prettify())
                     except Exception as e:
                         log_msg = {
-                            'LEVEL': 'ERROR',
+                            'level': 'ERROR',
                             'task': 'html 파싱',
                             'message': 'prettify 에러',
                             'exception': str(e),
@@ -215,7 +215,7 @@ class HtmlParser(object):
                 date = parse_date(date)
         except Exception as e:
             log_msg = {
-                'LEVEL': 'ERROR',
+                'level': 'ERROR',
                 'task': 'html 파싱',
                 'message': '날짜 변환 에러',
                 'date': date,
@@ -399,7 +399,7 @@ class HtmlParser(object):
                         })
                 except Exception as e:
                     log_msg = {
-                        'LEVEL': 'ERROR',
+                        'level': 'ERROR',
                         'task': 'html 파싱',
                         'message': '이미지 추출 에러',
                         'exception': str(e),
@@ -420,7 +420,7 @@ class HtmlParser(object):
                     tag.replace_with('')
                 except Exception as e:
                     log_msg = {
-                        'LEVEL': 'ERROR',
+                        'level': 'ERROR',
                         'task': 'html 파싱',
                         'message': '이미지 캡션 추출 에러',
                         'exception': str(e),

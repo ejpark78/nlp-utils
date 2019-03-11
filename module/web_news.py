@@ -52,7 +52,7 @@ class WebNewsCrawler(CrawlerBase):
             self.batch()
 
             log_msg = {
-                'LEVEL': 'MESSAGE',
+                'level': 'MESSAGE',
                 'task': '웹 문서 수집',
                 'message': '데몬 슬립',
                 'sleep_time': daemon_info['sleep'],
@@ -117,7 +117,7 @@ class WebNewsCrawler(CrawlerBase):
             url['url'] = url['url_frame'].format(**q)
 
             log_msg = {
-                'LEVEL': 'INFO',
+                'level': 'INFO',
                 'task': '웹 문서 수집',
                 'message': '뉴스 목록 크롤링',
                 'url': url,
@@ -145,7 +145,7 @@ class WebNewsCrawler(CrawlerBase):
 
             # 현재 상태 로그 표시
             log_msg = {
-                'LEVEL': 'MESSAGE',
+                'level': 'MESSAGE',
                 'task': '웹 문서 수집',
                 'message': '기사 목록 조회',
                 'category': job['category'],
@@ -211,7 +211,7 @@ class WebNewsCrawler(CrawlerBase):
             self.post_process_utils.insert_job(document=article, post_process_list=job['post_process'])
 
             log_msg = {
-                'LEVEL': 'INFO',
+                'level': 'INFO',
                 'task': '웹 문서 수집',
                 'message': '뉴스 본문 크롤링: 슬립',
                 'sleep_time': self.sleep_time,
@@ -286,7 +286,7 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             log_msg = {
-                'LEVEL': 'INFO',
+                'level': 'INFO',
                 'task': '웹 문서 수집',
                 'message': '다음페이지 크롤링: 슬립',
                 'sleep_time': self.sleep_time,
@@ -312,7 +312,7 @@ class WebNewsCrawler(CrawlerBase):
             doc['raw_html'] = str(html)
 
             log_msg = {
-                'LEVEL': 'ERROR',
+                'level': 'ERROR',
                 'task': '웹 문서 수집',
                 'message': 'html_content 필드가 없음',
                 'url': doc['url'],
@@ -328,7 +328,7 @@ class WebNewsCrawler(CrawlerBase):
 
         # 로그 표시
         log_msg = {
-            'LEVEL': 'MESSAGE',
+            'level': 'MESSAGE',
             'task': '웹 문서 수집',
             'message': '기사 저장',
             'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
@@ -362,7 +362,7 @@ class WebNewsCrawler(CrawlerBase):
         elif id_frame['type'] == 'query':
             if len(q) == 0:
                 log_msg = {
-                    'LEVEL': 'INFO',
+                    'level': 'INFO',
                     'task': '웹 문서 수집',
                     'message': '중복 문서, 건너뜀',
                     'url': url,
@@ -403,7 +403,7 @@ class WebNewsCrawler(CrawlerBase):
         if isinstance(trace_list_history, str) is True:
             if str_trace_list == trace_list_history:
                 log_msg = {
-                    'LEVEL': 'MESSAGE',
+                    'level': 'MESSAGE',
                     'task': '웹 문서 수집: 개별 기사 조회',
                     'message': '이전 목록과 일치함, 조기 종료',
                     'trace_size': len(trace_list),

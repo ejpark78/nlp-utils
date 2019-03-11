@@ -66,7 +66,7 @@ class CrawlerBase(object):
             sleep_time = 10
 
             log_msg = {
-                'LEVEL': 'ERROR',
+                'level': 'ERROR',
                 'task': 'url 조회',
                 'status': '에러',
                 'url_info': url_info,
@@ -84,7 +84,7 @@ class CrawlerBase(object):
             sleep_time = 10
 
             log_msg = {
-                'LEVEL': 'ERROR',
+                'level': 'ERROR',
                 'task': 'url 조회',
                 'status': '상태 코드 에러',
                 'url_info': url_info,
@@ -123,7 +123,7 @@ class CrawlerBase(object):
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
             log_msg = {
-                'LEVEL': 'INFO',
+                'level': 'INFO',
                 'task': '중복 문서 확인',
                 'message': '중복 문서, 건너뜀',
                 'doc_id': doc_id,
@@ -139,7 +139,7 @@ class CrawlerBase(object):
             doc_history[doc_id] = 1
 
             log_msg = {
-                'LEVEL': 'INFO',
+                'level': 'INFO',
                 'task': '중복 문서 확인',
                 'message': 'elasticsearch 에 존재함, 건너뜀',
                 'doc_id': doc_id,
