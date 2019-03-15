@@ -52,8 +52,7 @@ class PostProcessUtils(object):
 
             log_msg = {
                 'level': 'INFO',
-                'task': '크롤링 후처리',
-                'message': '저장 큐에 저장',
+                'message': '크롤링 후처리 저장 큐에 저장',
                 'queue_size': self.job_queue.qsize(),
             }
             logger.info(msg=LogMsg(log_msg))
@@ -111,7 +110,6 @@ class PostProcessUtils(object):
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
-                'task': '크롤링 후처리',
                 'message': 'Rabbit MQ payload 파싱 에러',
                 'payload': info['payload'],
                 'exception': str(e),
@@ -164,8 +162,7 @@ class PostProcessUtils(object):
 
                 log_msg = {
                     'level': 'MESSAGE',
-                    'task': '크롤링 후처리',
-                    'message': 'Rabbit MQ',
+                    'message': 'RabbitMQ 메세지 전달 성공',
                     'exchange_name': info['exchange']['name'],
                     'doc_url': doc_url,
                 }
@@ -173,8 +170,7 @@ class PostProcessUtils(object):
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
-                'task': '크롤링 후처리',
-                'message': 'Rabbit MQ 전달 에러',
+                'message': 'RabbitMQ 전달 에러',
                 'doc_url': doc_url,
                 'info': info,
                 'exception': str(e),
@@ -213,25 +209,23 @@ class PostProcessUtils(object):
             requests.post(url=url, json=body, headers=headers,
                           allow_redirects=True, timeout=30, verify=False)
 
-            log_msg = {
+            msg = {
                 'level': 'MESSAGE',
-                'task': '크롤링 후처리',
-                'message': '코퍼스 전처리',
+                'message': '코퍼스 전처리 전달',
                 'url': url,
                 'id': document['document_id'],
                 'title': document['title'],
             }
 
-            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
         except Exception as e:
-            log_msg = {
+            msg = {
                 'level': 'ERROR',
-                'task': '크롤링 후처리',
                 'message': '코퍼스 전처리 에러',
                 'id': document['document_id'],
                 'exception': str(e),
             }
-            logger.error(msg=LogMsg(log_msg))
+            logger.error(msg=LogMsg(msg))
 
         return True
 
@@ -253,6 +247,11 @@ class PostProcessUtils(object):
 
         # 추출된 이미지 목록이 없을 경우
         if image_list is None:
+            log_msg = {
+                'level': 'INFO',
+                'message': 'AWS S3 추출된 이미지 없음',
+            }
+            logger.info(msg=LogMsg(log_msg))
             return
 
         # api 메뉴얼: http://boto3.readthedocs.io/en/latest/reference/services/s3.html
@@ -289,8 +288,7 @@ class PostProcessUtils(object):
             except ClientError as e:
                 log_msg = {
                     'level': 'INFO',
-                    'task': '크롤링 후처리',
-                    'message': 'AWS S3 파일 exists 에러',
+                    'message': 'AWS S3 파일 확인 에러',
                     'bucket_name': bucket_name,
                     'exception': str(e),
                 }
@@ -308,9 +306,10 @@ class PostProcessUtils(object):
 
                 log_msg = {
                     'level': 'INFO',
-                    'task': '크롤링 후처리',
-                    'message': 'AWS S3 저장 성공',
-                    'response': response
+                    'message': 'AWS S3 이미지 저장 성공',
+                    'upload_file': upload_file,
+                    'cdn_image': image['cdn_image'],
+                    'response': response,
                 }
                 logger.info(msg=LogMsg(log_msg))
 
@@ -319,9 +318,10 @@ class PostProcessUtils(object):
             except Exception as e:
                 log_msg = {
                     'level': 'ERROR',
-                    'task': '크롤링 후처리',
-                    'message': 'AWS S3 저장 에러',
+                    'message': 'AWS S3 이미지 저장 에러',
+                    'upload_file': upload_file,
                     'bucket_name': bucket_name,
+                    'cdn_image': image['cdn_image'],
                     'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))

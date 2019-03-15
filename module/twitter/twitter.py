@@ -49,13 +49,12 @@ class TwitterUtils(CrawlerBase):
             # 시작
             self.batch()
 
-            log_msg = {
-                'task': '데몬',
+            msg = {
                 'message': '슬립',
                 'sleep_time': daemon_info['sleep']
             }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -116,12 +115,11 @@ class TwitterUtils(CrawlerBase):
     def get_reply(self, screen_name, tweet):
         """트윗에 대한 댓글을 조회한다."""
         if isinstance(tweet, str):
-            log_msg = {
-                'task': '트윗 댓글 조회',
-                'message': '에러',
-                'tweet': tweet
+            msg = {
+                'message': '트윗 댓글 조회 에러',
+                'tweet': tweet,
             }
-            logger.error(msg=LogMsg(log_msg))
+            logger.error(msg=LogMsg(msg))
             return
 
         headers = {
@@ -143,24 +141,23 @@ class TwitterUtils(CrawlerBase):
             reply = resp.json()
         except Exception as e:
             if resp is not None:
-                log_msg = {
-                    'task': '트윗 댓글 조회',
-                    'message': 'resp 가 없음',
-                    'exception': e
+                msg = {
+                    'message': '트윗 댓글 조회: resp 가 없음',
+                    'exception': str(e),
                 }
-                logger.error(msg=LogMsg(log_msg))
+                logger.error(msg=LogMsg(msg))
 
             self.max_error_count -= 1
 
-            log_msg = {
-                'task': '트윗 댓글 조회',
-                'message': '슬립',
+            msg = {
+                'message': '트윗 댓글 조회: 슬립',
                 'max_error_count': self.max_error_count,
                 'screen_name': screen_name,
                 'url': url,
-                'sleep': 10
+                'sleep': 10,
             }
-            logger.log(level=MESSAGE, msg=LogMsg(log_msg))
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
+
             sleep(10)
             return
 
@@ -206,16 +203,17 @@ class TwitterUtils(CrawlerBase):
                 tweet = self.merge_doc(elastic_utils=elastic_utils, index=job_info['index'], tweet=tweet)
 
                 # 현재 상태 로그 표시
-                log_msg = {
-                    'task': '트윗 저장',
-                    'id': tweet['id'],
-                    'text': tweet['text']
-                }
-
+                replay_list = []
                 if 'reply' in tweet:
-                    log_msg['reply'] = tweet['reply']
+                    replay_list = tweet['reply']
 
-                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
+                msg = {
+                    'message': '트윗 저장 성공',
+                    'id': tweet['id'],
+                    'text': tweet['text'],
+                    'reply': replay_list,
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
 
                 # 문서 저장
                 elastic_utils.save_document(document=tweet)
@@ -292,10 +290,11 @@ class TwitterUtils(CrawlerBase):
 
     def sleep(self):
         """잠시 쉰다."""
-        log_msg = {
-            'task': '슬립',
+        msg = {
+            'message': '슬립',
             'sleep_time': self.sleep_time
         }
-        logger.log(level=MESSAGE, msg=LogMsg(log_msg))
+        logger.log(level=MESSAGE, msg=LogMsg(msg))
+
         sleep(self.sleep_time)
         return

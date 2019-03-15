@@ -65,16 +65,15 @@ class CrawlerBase(object):
         except Exception as e:
             sleep_time = 10
 
-            log_msg = {
+            msg = {
                 'level': 'ERROR',
-                'task': 'url 조회',
-                'status': '에러',
+                'message': 'url 조회 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
                 'exception': str(e),
             }
+            logger.error(msg=LogMsg(msg))
 
-            logger.error(msg=LogMsg(log_msg))
             sleep(sleep_time)
             return None
 
@@ -83,15 +82,14 @@ class CrawlerBase(object):
         if status_code // 100 != 2:
             sleep_time = 10
 
-            log_msg = {
+            msg = {
                 'level': 'ERROR',
-                'task': 'url 조회',
-                'status': '상태 코드 에러',
+                'message': 'url 조회 상태 코드 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
                 'status_code': status_code,
             }
-            logger.error(msg=LogMsg(log_msg))
+            logger.error(msg=LogMsg(msg))
 
             sleep(sleep_time)
             return None
@@ -122,15 +120,13 @@ class CrawlerBase(object):
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
-            log_msg = {
+            msg = {
                 'level': 'INFO',
-                'task': '중복 문서 확인',
                 'message': '중복 문서, 건너뜀',
                 'doc_id': doc_id,
                 'url': url,
             }
-
-            logger.info(msg=LogMsg(log_msg))
+            logger.info(msg=LogMsg(msg))
             return True
 
         # 문서가 있는지 조회
@@ -138,15 +134,13 @@ class CrawlerBase(object):
         if is_exists is True:
             doc_history[doc_id] = 1
 
-            log_msg = {
+            msg = {
                 'level': 'INFO',
-                'task': '중복 문서 확인',
                 'message': 'elasticsearch 에 존재함, 건너뜀',
                 'doc_id': doc_id,
                 'url': url,
             }
-
-            logger.info(msg=LogMsg(log_msg))
+            logger.info(msg=LogMsg(msg))
             return True
 
         return False

@@ -123,13 +123,12 @@ class HtmlParser(object):
                     try:
                         value = str(tag.prettify())
                     except Exception as e:
-                        log_msg = {
+                        msg = {
                             'level': 'ERROR',
-                            'task': 'html 파싱',
-                            'message': 'prettify 에러',
+                            'message': 'html prettify 에러',
                             'exception': str(e),
                         }
-                        logger.error(msg=LogMsg(log_msg))
+                        logger.error(msg=LogMsg(msg))
                 else:
                     if tag.has_attr(item['type']):
                         value = tag[item['type']]
@@ -214,15 +213,14 @@ class HtmlParser(object):
             elif date != '':
                 date = parse_date(date)
         except Exception as e:
-            log_msg = {
+            msg = {
                 'level': 'ERROR',
-                'task': 'html 파싱',
-                'message': '날짜 변환 에러',
+                'message': 'html 날짜 변환 에러',
                 'date': date,
                 'exception': str(e),
             }
+            logger.error(msg=LogMsg(msg))
 
-            logger.error(msg=LogMsg(log_msg))
             return date
 
         return date
@@ -398,13 +396,12 @@ class HtmlParser(object):
                             'caption': ''
                         })
                 except Exception as e:
-                    log_msg = {
+                    msg = {
                         'level': 'ERROR',
-                        'task': 'html 파싱',
-                        'message': '이미지 추출 에러',
+                        'message': 'html 이미지 추출 에러',
                         'exception': str(e),
                     }
-                    logger.error(msg=LogMsg(log_msg))
+                    logger.error(msg=LogMsg(msg))
             else:
                 result.append({
                     'image': urljoin(base_url, tag['src']),
@@ -419,12 +416,11 @@ class HtmlParser(object):
 
                     tag.replace_with('')
                 except Exception as e:
-                    log_msg = {
+                    msg = {
                         'level': 'ERROR',
-                        'task': 'html 파싱',
-                        'message': '이미지 캡션 추출 에러',
+                        'message': 'html 이미지 캡션 추출 에러',
                         'exception': str(e),
                     }
-                    logger.error(msg=LogMsg(log_msg))
+                    logger.error(msg=LogMsg(msg))
 
         return result
