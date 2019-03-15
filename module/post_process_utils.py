@@ -5,9 +5,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import bz2
+import json
 import logging
 import os
 import pathlib
+import pickle
 import queue
 import threading
 from datetime import datetime
@@ -93,9 +96,7 @@ class PostProcessUtils(object):
     @staticmethod
     def rabbit_mq(document, info):
         """ Rabbit MQ로 메세지를 보낸다. """
-        import bz2
         import pika
-        import pickle
 
         if document is None:
             return False
@@ -117,10 +118,31 @@ class PostProcessUtils(object):
             }
             logger.error(msg=LogMsg(log_msg))
 
+            return False
+
+        # 메세지 바디 생성
+        try:
+            body = bz2.compress(pickle.dumps(payload))
+            if 'publish' in info:
+                publish_info = info['publish']
+                if 'serializer' in publish_info and publish_info['serializer'] == 'json':
+                    body = json.dumps(payload, ensure_ascii=False)
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': 'RabbitMQ 메세지 생성 에러',
+                'info': info,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+            return False
+
         doc_url = ''
         if 'url' in document:
             doc_url = document['url']
 
+        # 메세지 전달
         try:
             credentials = pika.PlainCredentials(username=info['host']['user_name'],
                                                 password=info['host']['user_password'])
@@ -131,8 +153,6 @@ class PostProcessUtils(object):
 
             with pika.BlockingConnection(params) as connection:
                 channel = connection.channel()
-
-                body = bz2.compress(pickle.dumps(payload))
 
                 channel.exchange_declare(exchange=info['exchange']['name'],
                                          exchange_type=info['exchange']['type'],
