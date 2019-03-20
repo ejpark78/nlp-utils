@@ -6,9 +6,10 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id term_list
+    command: python3 batch.py -category naver -job_id term_list
+    extra_hosts:
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
@@ -16,9 +17,10 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id term_detail
+    command: python3 batch.py -category naver -job_id term_detail
+    extra_hosts:
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
@@ -26,9 +28,10 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id kin_question_list
+    command: python3 batch.py -category naver -job_id kin_question_list
+    extra_hosts:
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 

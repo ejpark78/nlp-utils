@@ -37,7 +37,7 @@ def init_arguments():
     parser = argparse.ArgumentParser()
 
     # 작업 아이디
-    parser.add_argument('-job_category', default='', help='작업 카테고리')
+    parser.add_argument('-category', default='', help='작업 카테고리')
     parser.add_argument('-job_id', default='', help='작업 아이디')
 
     # 데이터 덤프
@@ -59,7 +59,7 @@ def main():
     args = init_arguments()
 
     # 네이버 지식인/백과사전
-    if args.job_category == 'naver':
+    if args.category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
             return
@@ -104,10 +104,10 @@ def main():
         return
 
     if args.batch:
-        WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').batch()
+        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').batch()
         return
     else:
-        WebNewsCrawler(job_category=args.job_category, job_id=args.job_id, column='trace_list').daemon()
+        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').daemon()
         return
 
 

@@ -6,16 +6,17 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
-from time import sleep
+import re
 
 import requests
 import urllib3
+from time import sleep
 from werkzeug.contrib.cache import SimpleCache
 
 from module.config import Config
 from module.html_parser import HtmlParser
-from module.post_process_utils import PostProcessUtils
 from module.logging_format import LogMessage as LogMsg
+from module.post_process_utils import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -52,6 +53,31 @@ class CrawlerBase(object):
         # 후처리 정보
         self.post_process_list = None
         self.cache = SimpleCache()
+
+    @staticmethod
+    def get_encoding_type(html_body):
+        """ 메타 정보에서 인코딩 정보 반환한다."""
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(html_body, 'html5lib')
+
+        if soup.meta is None:
+            return soup, None
+
+        encoding = soup.meta.get('charset', None)
+        if encoding is None:
+            encoding = soup.meta.get('content-type', None)
+
+            if encoding is None:
+                content = soup.meta.get('content', None)
+
+                match = re.search('charset=(.*)', content)
+                if match:
+                    encoding = match.group(1)
+                else:
+                    return soup, None
+
+        return soup, encoding
 
     def get_html_page(self, url_info):
         """웹 문서를 조회한다."""
@@ -98,7 +124,18 @@ class CrawlerBase(object):
             if 'parser' in url_info and url_info['parser'] == 'json':
                 return resp.json()
 
-        return resp.content
+        # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
+        encoding = None
+
+        result = resp.text
+        if encoding is None:
+            soup, encoding = self.get_encoding_type(result)
+
+        if encoding is not None:
+            content = resp.content
+            result = content.decode(encoding, 'ignore')
+
+        return result
 
     def set_history(self, value, name):
         """문서 아이디 이력을 저장한다."""

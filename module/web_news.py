@@ -31,11 +31,11 @@ logger = logging.getLogger()
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러 베이스"""
 
-    def __init__(self, job_category='', job_id='', column=''):
+    def __init__(self, category='', job_id='', column=''):
         """ 생성자 """
         super().__init__()
 
-        self.job_category = job_category
+        self.job_category = category
         self.job_id = job_id
         self.column = column
 
@@ -322,6 +322,11 @@ class WebNewsCrawler(CrawlerBase):
         elastic_utils.flush()
 
         # 로그 표시
+        doc_info = {}
+        for k in ['document_id', 'date', 'title']:
+            if k in doc:
+                doc_info[k] = doc[k]
+
         msg = {
             'level': 'MESSAGE',
             'message': '기사 저장 성공',
@@ -330,12 +335,8 @@ class WebNewsCrawler(CrawlerBase):
                 index=elastic_utils.index,
                 id=doc['document_id'],
             ),
+            'doc_info': doc_info,
         }
-
-        for k in ['document_id', 'date', 'title']:
-            if k in doc:
-                msg[k] = doc[k]
-
         logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         return doc

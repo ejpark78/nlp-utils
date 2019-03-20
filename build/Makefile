@@ -4,137 +4,25 @@ CONTAINER = crawler
 BASE_IMAGE = corpus:5000/base/crawler:latest
 IMAGE_NAME = corpus:5000/crawler:2.0
 
-default: build
+YAML_DIR = yml
+MK_DIR = mk
 
 .PHONY: *
 
-.ONESHELL:
-base:
-	docker build \
-		-t $(BASE_IMAGE) \
-		-f base/Dockerfile \
-		--add-host "corpus.ncsoft.com:172.20.79.241" \
-		.
+include $(MK_DIR)/build.mk
+include $(MK_DIR)/test.mk
 
-.ONESHELL:
-build:
-	cd ../
-	tar cvfz ./build/app.tar.gz \
-		--exclude=.git \
-		--exclude=.idea \
-		--exclude=.vscode \
-		--exclude=*.jar \
-		--exclude=*.tar.gz \
-		--exclude=*.pycharm* \
-		--exclude=__pycache__ \
-		--exclude=build \
-		--exclude=data \
-		--exclude=notebook \
-		--exclude=wrap \
-		--exclude=venv \
-		--exclude=tmp \
-		--exclude=module/selenium-data \
-		.
+include $(MK_DIR)/naver.mk
+include $(MK_DIR)/major.mk
+include $(MK_DIR)/nate.mk
+include $(MK_DIR)/daum.mk
+include $(MK_DIR)/bbs.mk
+include $(MK_DIR)/sns.mk
 
-	cd build/
-	docker build \
-		-t $(IMAGE_NAME) \
-		-f Dockerfile \
-		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
-		--add-host "corpus.ncsoft.com:172.20.79.241" \
-		.
+include $(MK_DIR)/release.mk
+include $(MK_DIR)/ps.mk
 
-push: 
-	docker push $(IMAGE_NAME)
-
-run: 
-	docker run \
-		-it --rm \
-		--user crawler \
-		--name $(CONTAINER) \
-		-v /etc/hosts:/etc/hosts:ro \
-		-v /etc/timezone:/etc/timezone:ro \
-		-v /etc/localtime:/etc/localtime:ro \
-		$(IMAGE_NAME)
-
-test: 
-	docker run \
-		-it --rm \
-		-v /etc/hosts:/etc/hosts:ro \
-		-v $(PWD)/..:/usr/local/app \
-		--name $(CONTAINER) \
-		$(IMAGE_NAME)
-
-naver-kin:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory naver-kin -f naver-kin.yml down
-	docker-compose --project-directory naver-kin -f naver-kin.yml up -d
-	docker-compose --project-directory naver-kin -f naver-kin.yml logs -f
-
-major-press:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory major-press -f major-press.yml down
-	docker-compose --project-directory major-press -f major-press.yml up -d
-
-logs-major-press:
-	docker-compose --project-directory major-press -f major-press.yml logs -f
-
-naver:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory naver -f naver.yml down
-	docker-compose --project-directory naver -f naver.yml up -d
-
-logs-naver:
-	docker-compose --project-directory naver -f naver.yml logs -f
-
-nate:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory nate -f nate.yml down
-	docker-compose --project-directory nate -f nate.yml up -d
-
-logs-nate:
-	docker-compose --project-directory nate -f nate.yml logs -f
-
-daum:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory daum -f daum.yml down
-	docker-compose --project-directory daum -f daum.yml up -d
-
-logs-daum:
-	docker-compose --project-directory daum -f daum.yml logs -f
-
-bbs:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory bbs -f bbs.yml down
-	docker-compose --project-directory bbs -f bbs.yml up -d
-
-logs-bbs:
-	docker-compose --project-directory bbs -f bbs.yml logs -f
-
-sns:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory sns -f sns.yml down
-	docker-compose --project-directory sns -f sns.yml up -d
-
-logs-sns:
-	docker-compose --project-directory sns -f sns.yml logs -f
-
-release:
-#	rsync -avz --delete --exclude=*.tar.gz ./ g7:crawler/build/
-	#rsync -avz --delete ../config/jobs/ g7:crawler/config/jobs/
-
-	rsync -avz --delete --exclude=*.tar.gz ./ g5:crawler/build/
-	rsync -avz --delete ../config/jobs/ g5:crawler/config/jobs/
-
-clean:
-	docker system prune -f
-
-ps:
-	ssh g1 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-	ssh g2 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-	ssh g3 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-	ssh g4 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-	ssh g5 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-	ssh g6 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
-#	ssh g7 'hostname && docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Status}}"'
+start-all: major nate naver bbs sns daum
+stop-all: stop-major stop-nate stop-naver stop-bbs stop-sns stop-daum
+logs-all: logs-major logs-nate logs-naver logs-bbs logs-sns logs-daum
 

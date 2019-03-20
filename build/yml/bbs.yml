@@ -6,9 +6,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category bbs -job_id mlbpark-kbo
+    command: python3 batch.py -category bbs -job_id mlbpark-kbo
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config:/usr/local/app/config:rw
@@ -17,9 +19,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category bbs -job_id mlbpark-mlb
+    command: python3 batch.py -category bbs -job_id mlbpark-mlb
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config:/usr/local/app/config:rw
@@ -28,9 +32,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category bbs -job_id mlbpark-bullpen
+    command: python3 batch.py -category bbs -job_id mlbpark-bullpen
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config:/usr/local/app/config:rw
@@ -39,9 +45,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category bbs -job_id lineagem
+    command: python3 batch.py -category bbs -job_id lineagem
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config:/usr/local/app/config:rw

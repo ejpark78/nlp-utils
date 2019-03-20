@@ -101,7 +101,7 @@
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "id": "textBody"
             }
           }
         ]
@@ -114,7 +114,7 @@
           {
             "name": "div",
             "attribute": {
-              "itemprop": "articleBody"
+              "id": "textBody"
             }
           }
         ]

@@ -39,6 +39,10 @@ class PostProcessUtils(object):
         if post_process_list is None:
             return
 
+        # 파싱 에러인 경우
+        if 'parsing_error' in document and document['parsing_error'] is True:
+            return
+
         # 스래드로 작업 시작
         job = {
             'document': document,
@@ -61,8 +65,8 @@ class PostProcessUtils(object):
         else:
             self.job_queue.put(job)
 
+        # 스래드 시작
         if start_thread is True:
-            # 스래드 시작
             thread = threading.Thread(target=self.batch)
             thread.daemon = True
             thread.start()

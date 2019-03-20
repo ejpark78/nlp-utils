@@ -6,9 +6,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id economy
+    command: python3 batch.py -category naver -job_id economy
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -17,9 +19,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id international
+    command: python3 batch.py -category naver -job_id international
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -28,9 +32,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id it
+    command: python3 batch.py -category naver -job_id it
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -39,9 +45,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id living
+    command: python3 batch.py -category naver -job_id living
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -50,9 +58,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id opinion
+    command: python3 batch.py -category naver -job_id opinion
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -61,9 +71,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id politics
+    command: python3 batch.py -category naver -job_id politics
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -72,9 +84,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id society
+    command: python3 batch.py -category naver -job_id society
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -83,9 +97,11 @@ services:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category naver -job_id sports
+    command: python3 batch.py -category naver -job_id sports
+    extra_hosts:
+      - "g7:172.20.78.254"
+      - "corpus.ncsoft.com:172.20.79.241"
     volumes:
-      - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
@@ -94,9 +110,11 @@ services:
 #    image: corpus:5000/crawler:2.0
 #    restart: always
 #    working_dir: /usr/local/app
-#    command: python3 batch.py -job_category naver -job_id tv
+#    command: python3 batch.py -category naver -job_id tv
+#    extra_hosts:
+#      - "g7:172.20.78.254"
+#      - "corpus.ncsoft.com:172.20.79.241"
 #    volumes:
-#      - /etc/hosts:/etc/hosts:ro
 #      - /etc/timezone:/etc/timezone:ro
 #      - /etc/localtime:/etc/localtime:ro
 #      - $PWD/../config/status:/usr/local/app/config/status:rw
