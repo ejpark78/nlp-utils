@@ -2,7 +2,6 @@ FROM ubuntu:18.04
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
-
 # 사용자를 root로 설정
 USER root
 
@@ -10,18 +9,18 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV NOTVISIBLE "in users profile"
 
-ENV APT_MIRROR=mirror.kakao.com
-ENV PIP_MIRROR=mirror.kakao.com
-
 ENV APP_HOME=/usr/local/app
 
 # 1. 설치시 사용할 경로 설정
 WORKDIR $HOME
 
-RUN echo && echo "# apt 저장소 변경" \
-    && rm -rf /var/lib/apt/lists/* \
+ENV APT_MIRROR=http://corpus.ncsoft.com:8081/repository/ubuntu/
+
+RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
-		echo "deb http://${APT_MIRROR}/ubuntu bionic main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} bionic main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} bionic-updates main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} bionic-backports main restricted universe multiverse"; \
 	} > /etc/apt/sources.list \
     && apt-get update -yq \
     \
@@ -37,14 +36,17 @@ RUN echo && echo "# apt 저장소 변경" \
     \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# 파이썬 라이브러리 설치
+ENV PIP_TRUST_HOST=corpus.ncsoft.com
+ENV PIP_MIRROR=http://${PIP_TRUST_HOST}:8081/repository/pypi/simple
 
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
 		echo "timeout = 60"; \
-		echo "index-url = http://${PIP_MIRROR}/pypi/simple"; \
-		echo "trusted-host = ${PIP_MIRROR}"; \
+		echo "index-url = ${PIP_MIRROR}"; \
+		echo "trusted-host = ${PIP_TRUST_HOST}"; \
 	} > ~/.pip/pip.conf \
     \
     && echo && echo "# 기본 유틸 설치" \

@@ -499,7 +499,7 @@ class ElasticSearchUtils(object):
 
         parser.add_argument('-dump_data', action='store_true', default=False, help='')
 
-        parser.add_argument('-host', default='http://nlpapi.ncsoft.com:9200', help='elastic search 주소')
+        parser.add_argument('-host', default='http://corpus.ncsoft.com:9200', help='elastic search 주소')
         parser.add_argument('-index', default=None, help='인덱스명')
 
         return parser.parse_args()

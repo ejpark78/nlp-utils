@@ -1,19 +1,20 @@
 
-VERSION = 2.0
-DOCKER_REGISTRY = nlpapi:5000
 CONTAINER = crawler
 
-BASE_IMAGE = base/crawler:latest
-IMAGE_NAME = $(DOCKER_REGISTRY)/crawler:$(VERSION)
+BASE_IMAGE = corpus:5000/base/crawler:latest
+IMAGE_NAME = corpus:5000/crawler:2.0
 
 default: build
 
-.PHONY: base build push clean run
+.PHONY: *
 
 .ONESHELL:
 base:
-	rm app.tar.gz
-	docker build -t $(BASE_IMAGE) -f Dockerfile.base .
+	docker build \
+		-t $(BASE_IMAGE) \
+		-f base/Dockerfile \
+		--add-host "corpus.ncsoft.com:172.20.79.241" \
+		.
 
 .ONESHELL:
 build:
@@ -39,6 +40,8 @@ build:
 	docker build \
 		-t $(IMAGE_NAME) \
 		-f Dockerfile \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
+		--add-host "corpus.ncsoft.com:172.20.79.241" \
 		.
 
 push: 

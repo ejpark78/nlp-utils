@@ -1,4 +1,5 @@
-FROM base/crawler:latest
+ARG BASE_IMAGE=corpus:5000/base/crawler:latest
+FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
@@ -16,6 +17,5 @@ RUN echo "사용자 생성: ${USER}..." \
 ADD app.tar.gz ${APP_HOME}
 
 RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
-RUN pip3 install --no-cache-dir -U requests[security]
 
 WORKDIR ${APP_HOME}

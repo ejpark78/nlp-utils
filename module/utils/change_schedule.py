@@ -43,7 +43,7 @@ def change_db_info():
 
         docker = document['docker']
 
-        docker['image'] = 'nlpapi:5000/crawler:1.0'
+        docker['image'] = 'corpus:5000/crawler:1.0'
 
         # if 'parameter' not in document:
         #     continue

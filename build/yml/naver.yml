@@ -2,22 +2,11 @@ version: '3'
 
 services:
 
-  culture:
-    image: nlpapi:5000/crawler:2.0
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id culture
-    volumes:
-      - /etc/hosts:/etc/hosts:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
-
   economy:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id economy
+    command: python3 batch.py -job_category naver -job_id economy
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -25,10 +14,10 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   international:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id international
+    command: python3 batch.py -job_category naver -job_id international
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -36,10 +25,21 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   it:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id it
+    command: python3 batch.py -job_category naver -job_id it
+    volumes:
+      - /etc/hosts:/etc/hosts:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../config/status:/usr/local/app/config/status:rw
+
+  living:
+    image: corpus:5000/crawler:2.0
+    restart: always
+    working_dir: /usr/local/app
+    command: python3 batch.py -job_category naver -job_id living
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -47,10 +47,10 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   opinion:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id opinion
+    command: python3 batch.py -job_category naver -job_id opinion
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -58,10 +58,10 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   politics:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id politics
+    command: python3 batch.py -job_category naver -job_id politics
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -69,10 +69,10 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   society:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id society
+    command: python3 batch.py -job_category naver -job_id society
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
@@ -80,19 +80,30 @@ services:
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
   sports:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -job_category daum -job_id sports
+    command: python3 batch.py -job_category naver -job_id sports
     volumes:
       - /etc/hosts:/etc/hosts:ro
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../config/status:/usr/local/app/config/status:rw
 
+#  tv:
+#    image: corpus:5000/crawler:2.0
+#    restart: always
+#    working_dir: /usr/local/app
+#    command: python3 batch.py -job_category naver -job_id tv
+#    volumes:
+#      - /etc/hosts:/etc/hosts:ro
+#      - /etc/timezone:/etc/timezone:ro
+#      - /etc/localtime:/etc/localtime:ro
+#      - $PWD/../config/status:/usr/local/app/config/status:rw
+
 # 네트워크 인터페이스 정의
 networks:
   default:
     ipam:
       config:
-        - subnet: 190.126.0.0/24
+        - subnet: 190.122.0.0/24

@@ -3,7 +3,7 @@ version: '3'
 services:
 
   twitter:
-    image: nlpapi:5000/crawler:2.0
+    image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -job_category sns -job_id twitter
