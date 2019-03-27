@@ -36,6 +36,9 @@ class PostProcessUtils(object):
     def insert_job(self, document, post_process_list):
         """스레드 큐에 문서와 할일을 저장한다."""
 
+        if document is None:
+            return
+
         if post_process_list is None:
             return
 
@@ -325,7 +328,7 @@ class PostProcessUtils(object):
                     'message': 'AWS S3 이미지 저장 에러',
                     'upload_file': upload_file,
                     'bucket_name': bucket_name,
-                    'cdn_image': image['cdn_image'],
+                    'image': image,
                     'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))

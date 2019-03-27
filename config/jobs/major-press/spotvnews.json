@@ -56,7 +56,7 @@
             },
             "module": [
               {
-                "name": "sp/pos_tagger",
+                "name": "nlu/POS",
                 "domain": "baseball",
                 "column": "html_content",
                 "result": "pos_tagged"
@@ -68,7 +68,7 @@
                 "result": "named_entity"
               },
               {
-                "name": "nc/ne_tagger_v2",
+                "name": "nlu/NER",
                 "domain": "baseball",
                 "column": "html_content",
                 "result": "named_entity_v2"

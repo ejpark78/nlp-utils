@@ -14,7 +14,10 @@ ENV APP_HOME=/usr/local/app
 # 1. 설치시 사용할 경로 설정
 WORKDIR $HOME
 
-ENV APT_MIRROR=http://corpus.ncsoft.com:8081/repository/ubuntu/
+ARG APT_MIRROR=http://corpus.ncsoft.com:8081/repository/ubuntu/
+
+ARG PIP_TRUST_HOST=corpus.ncsoft.com
+ARG PIP_MIRROR=http://${PIP_TRUST_HOST}:8081/repository/pypi/simple
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
@@ -37,9 +40,6 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 파이썬 라이브러리 설치
-ENV PIP_TRUST_HOST=corpus.ncsoft.com
-ENV PIP_MIRROR=http://${PIP_TRUST_HOST}:8081/repository/pypi/simple
-
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \

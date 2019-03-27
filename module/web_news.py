@@ -294,6 +294,33 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
+    @staticmethod
+    def remove_date_column(document):
+        """날짜 필드를 확인해서 날짜 파싱 오류일 경우, 날짜 필드를 삭제한다."""
+        from dateutil.parser import parse as parse_date
+
+        if 'date' not in document:
+            return
+
+        if document['date'] == '':
+            del document['date']
+            return
+
+        if isinstance(document['date'], str):
+            try:
+                parse_date(document['date'])
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': '날짜 파싱 에러: date 필드 삭제',
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
+
+                del document['date']
+
+        return
+
     def save_article(self, html, doc, article, elastic_utils):
         """크롤링한 문서를 저장한다."""
         # 후처리
@@ -313,6 +340,9 @@ class WebNewsCrawler(CrawlerBase):
                 'url': doc['url'],
             }
             logger.error(msg=LogMsg(msg))
+
+        # 날짜 필드 오류 처리
+        self.remove_date_column(document=doc)
 
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now()

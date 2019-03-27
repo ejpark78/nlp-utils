@@ -4,6 +4,11 @@ CONTAINER = crawler
 BASE_IMAGE = corpus:5000/base/crawler:latest
 IMAGE_NAME = corpus:5000/crawler:2.0
 
+
+APT_MIRROR = http://corpus.ncsoft.com:8081/repository/ubuntu/
+PIP_TRUST_HOST = corpus.ncsoft.com
+PIP_MIRROR = http://corpus.ncsoft.com:8081/repository/pypi/simple
+
 YAML_DIR = yml
 MK_DIR = mk
 

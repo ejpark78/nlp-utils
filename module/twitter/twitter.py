@@ -50,8 +50,9 @@ class TwitterUtils(CrawlerBase):
             self.batch()
 
             msg = {
+                'level': 'MESSAGE',
                 'message': '슬립',
-                'sleep_time': daemon_info['sleep']
+                'sleep_time': daemon_info['sleep'],
             }
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
@@ -116,6 +117,7 @@ class TwitterUtils(CrawlerBase):
         """트윗에 대한 댓글을 조회한다."""
         if isinstance(tweet, str):
             msg = {
+                'level': 'ERROR',
                 'message': '트윗 댓글 조회 에러',
                 'tweet': tweet,
             }
@@ -142,6 +144,7 @@ class TwitterUtils(CrawlerBase):
         except Exception as e:
             if resp is not None:
                 msg = {
+                    'level': 'ERROR',
                     'message': '트윗 댓글 조회: resp 가 없음',
                     'exception': str(e),
                 }
@@ -150,6 +153,7 @@ class TwitterUtils(CrawlerBase):
             self.max_error_count -= 1
 
             msg = {
+                'level': 'MESSAGE',
                 'message': '트윗 댓글 조회: 슬립',
                 'max_error_count': self.max_error_count,
                 'screen_name': screen_name,
@@ -208,6 +212,7 @@ class TwitterUtils(CrawlerBase):
                     replay_list = tweet['reply']
 
                 msg = {
+                    'level': 'MESSAGE',
                     'message': '트윗 저장 성공',
                     'id': tweet['id'],
                     'text': tweet['text'],
@@ -291,6 +296,7 @@ class TwitterUtils(CrawlerBase):
     def sleep(self):
         """잠시 쉰다."""
         msg = {
+            'level': 'MESSAGE',
             'message': '슬립',
             'sleep_time': self.sleep_time
         }

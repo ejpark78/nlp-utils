@@ -5,6 +5,9 @@ base:
 		-t $(BASE_IMAGE) \
 		-f base/Dockerfile \
 		--add-host "corpus.ncsoft.com:172.20.79.241" \
+		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
+		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
+		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		.
 
 .ONESHELL:
@@ -33,6 +36,9 @@ build:
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
 		--add-host "corpus.ncsoft.com:172.20.79.241" \
+		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
+		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
+		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		.
 
 	rm app.tar.gz
