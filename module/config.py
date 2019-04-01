@@ -30,16 +30,16 @@ class Config(object):
             }
         }
 
-        job_info_filename = 'config/jobs/{}/{}.json'.format(job_category, job_id)
+        job_info_filename = 'config/{category}/{job_id}/jobs.json'.format(category=job_category, job_id=job_id)
         self.job_info = self.open_config(filename=job_info_filename)
 
         self.parsing_info = None
 
-        parsing_info_filename = 'config/parsing/{}/{}.json'.format(job_category, job_id)
+        parsing_info_filename = 'config/{category}/{job_id}/parsing.json'.format(category=job_category, job_id=job_id)
         if isfile(parsing_info_filename):
             self.parsing_info = self.open_config(filename=parsing_info_filename)
 
-        self.status_filename = 'config/status/{}/{}.json'.format(job_category, job_id)
+        self.status_filename = 'config/status/{category}/{job_id}.json'.format(category=job_category, job_id=job_id)
         self.status = self.open_config(filename=self.status_filename, create=True)
 
     @staticmethod
