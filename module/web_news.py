@@ -7,14 +7,15 @@ from __future__ import print_function
 
 import json
 import logging
+import os
 import re
 from datetime import datetime, timedelta
-from time import sleep
 from urllib.parse import urljoin
 
 import urllib3
 from dateutil.parser import parse as date_parse
 from dateutil.rrule import rrule, DAILY
+from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -26,6 +27,8 @@ urllib3.disable_warnings(UserWarning)
 MESSAGE = 25
 
 logger = logging.getLogger()
+
+debug = int(os.getenv('DEBUG', 0))
 
 
 class WebNewsCrawler(CrawlerBase):
@@ -103,7 +106,6 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_page_list(self, url, job, dt):
         """뉴스 목록을 크롤링한다."""
-
         self.trace_depth = 0
 
         # start 부터 end 까지 반복한다.
@@ -162,6 +164,8 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_news(self, html, url_info, job):
         """개별 뉴스를 따라간다."""
+        global debug
+
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
@@ -190,11 +194,18 @@ class WebNewsCrawler(CrawlerBase):
             if doc_id is None:
                 continue
 
-            if 'check_id' not in url_info or url_info['check_id'] is True:
-                is_skip = self.check_doc_id(doc_id=doc_id, elastic_utils=elastic_utils,
-                                            url=item['url'], index=job['index'], doc_history=doc_history)
-                if is_skip is True:
-                    continue
+            if debug == 0:
+                if 'check_id' not in url_info or url_info['check_id'] is True:
+                    is_skip = self.check_doc_id(
+                        doc_id=doc_id,
+                        elastic_utils=elastic_utils,
+                        url=item['url'],
+                        index=job['index'],
+                        doc_history=doc_history,
+                    )
+
+                    if is_skip is True:
+                        continue
 
             # 기사 본문 조회
             article = self.get_article(doc_id, item, job, elastic_utils)
@@ -295,29 +306,41 @@ class WebNewsCrawler(CrawlerBase):
         return
 
     @staticmethod
-    def remove_date_column(document):
+    def remove_date_column(doc, html):
         """날짜 필드를 확인해서 날짜 파싱 오류일 경우, 날짜 필드를 삭제한다."""
         from dateutil.parser import parse as parse_date
 
-        if 'date' not in document:
+        if 'date' not in doc:
             return
 
-        if document['date'] == '':
-            del document['date']
-            return
+        str_e = ''
+        parsing_error = False
+        if doc['date'] == '':
+            del doc['date']
 
-        if isinstance(document['date'], str):
+            str_e = 'date missing'
+            parsing_error = True
+
+        if parsing_error is False and isinstance(doc['date'], str):
             try:
-                parse_date(document['date'])
+                parse_date(doc['date'])
             except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': '날짜 파싱 에러: date 필드 삭제',
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                parsing_error = True
+                str_e = str(e)
 
-                del document['date']
+        if parsing_error is True:
+            if 'date' in doc:
+                del doc['date']
+
+            doc['parsing_error'] = True
+            doc['raw_html'] = str(html)
+
+            msg = {
+                'level': 'ERROR',
+                'message': '날짜 파싱 에러: date 필드 삭제',
+                'exception': str_e,
+            }
+            logger.error(msg=LogMsg(msg))
 
         return
 
@@ -341,8 +364,20 @@ class WebNewsCrawler(CrawlerBase):
             }
             logger.error(msg=LogMsg(msg))
 
+        if 'parsing_error' not in doc:
+            if 'title' not in article or len(article['title']) == 0:
+                doc['parsing_error'] = True
+                doc['raw_html'] = str(html)
+
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'title 필드가 없음',
+                    'url': doc['url'],
+                }
+                logger.error(msg=LogMsg(msg))
+
         # 날짜 필드 오류 처리
-        self.remove_date_column(document=doc)
+        self.remove_date_column(doc=doc, html=html)
 
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now()
@@ -373,6 +408,8 @@ class WebNewsCrawler(CrawlerBase):
 
     def get_doc_id(self, url, job, item):
         """문서 아이디를 반환한다."""
+        global debug
+
         id_frame = job['article']['document_id']
 
         q, _, url_info = self.parser.parse_url(url)
@@ -385,7 +422,7 @@ class WebNewsCrawler(CrawlerBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
-            if len(q) == 0:
+            if debug == 0 and len(q) == 0:
                 msg = {
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',

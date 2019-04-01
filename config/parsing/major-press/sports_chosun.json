@@ -68,11 +68,11 @@
           {
             "name": "div",
             "attribute": {
-              "class": "acle_c"
+              "class": "article_top"
             }
           },
           {
-            "name": "h1"
+            "name": "h3"
           }
         ]
       },
@@ -84,15 +84,15 @@
         "value_type": "single",
         "tag": [
           {
-            "name": "div",
+            "name": "p",
             "attribute": {
-              "class": "acle_c"
+              "class": "info-view"
             }
           },
           {
             "name": "span",
             "attribute": {
-              "class": "a_day"
+              "class": "article-day"
             }
           }
         ],

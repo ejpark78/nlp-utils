@@ -3,7 +3,9 @@ FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
-ENV UID=1000 GID=1000 USER=crawler
+ARG UID=1000
+ARG GID=1000
+ARG USER=crawler
 
 RUN echo "사용자 생성: ${USER}..." \
     && mkdir -p ${APP_HOME} \
