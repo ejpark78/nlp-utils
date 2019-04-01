@@ -365,7 +365,7 @@ class WebNewsCrawler(CrawlerBase):
             logger.error(msg=LogMsg(msg))
 
         if 'parsing_error' not in doc:
-            if 'title' not in article or len(article['title']) == 0:
+            if 'title' not in doc or len(doc['title']) == 0:
                 doc['parsing_error'] = True
                 doc['raw_html'] = str(html)
 

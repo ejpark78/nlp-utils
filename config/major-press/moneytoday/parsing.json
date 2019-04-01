@@ -51,7 +51,7 @@
           {
             "name": "div",
             "attribute": {
-              "id": "article"
+              "class": "view_top"
             }
           },
           {
@@ -67,9 +67,15 @@
         "value_type": "single",
         "tag": [
           {
-            "name": "div",
+            "name": "ul",
             "attribute": {
-              "class": "infobox1"
+              "class": "info2"
+            }
+          },
+          {
+            "name": "li",
+            "attribute": {
+              "class": "date"
             }
           }
         ],
