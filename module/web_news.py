@@ -44,6 +44,23 @@ class WebNewsCrawler(CrawlerBase):
 
         self.trace_depth = 0
 
+    def test(self):
+        """디버그"""
+        self.update_config()
+
+        job = self.job_info[0]
+
+        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+
+        item = {
+            'url': 'https://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=110&oid=001&aid=0010733705',
+        }
+
+        doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
+        article = self.get_article(doc_id, item, job, elastic_utils)
+
+        return
+
     def daemon(self):
         """데몬으로 실행"""
         while True:
@@ -182,7 +199,11 @@ class WebNewsCrawler(CrawlerBase):
 
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
-            item = self.parse_tag(resp=trace, url_info=url_info, parsing_info=self.parsing_info['list'])
+            item = self.parse_tag(
+                resp=trace,
+                url_info=url_info,
+                parsing_info=self.parsing_info['list'],
+            )
             if item is None:
                 continue
 
@@ -215,7 +236,10 @@ class WebNewsCrawler(CrawlerBase):
             if 'post_process' not in job:
                 job['post_process'] = None
 
-            self.post_process_utils.insert_job(document=article, post_process_list=job['post_process'])
+            self.post_process_utils.insert_job(
+                document=article,
+                post_process_list=job['post_process'],
+            )
 
             msg = {
                 'level': 'INFO',
@@ -235,7 +259,7 @@ class WebNewsCrawler(CrawlerBase):
         return False
 
     def get_article(self, doc_id, item, job, elastic_utils):
-        """"""
+        """기사 본문을 조회한다."""
         article_url = None
         if 'article' in job:
             article_url = job['article']
@@ -246,12 +270,20 @@ class WebNewsCrawler(CrawlerBase):
             return None
 
         # 문서 저장
-        article = self.parse_tag(resp=resp, url_info=article_url, parsing_info=self.parsing_info['article'])
+        article = self.parse_tag(
+            resp=resp,
+            url_info=article_url,
+            parsing_info=self.parsing_info['article'],
+        )
 
         article['_id'] = doc_id
 
-        doc = self.save_article(html=resp, article=article, doc=item, elastic_utils=elastic_utils)
-        return doc
+        return self.save_article(
+            html=resp,
+            article=article,
+            doc=item,
+            elastic_utils=elastic_utils,
+        )
 
     def trace_next_page(self, html, url_info, job):
         """다음 페이지를 따라간다."""
@@ -273,8 +305,16 @@ class WebNewsCrawler(CrawlerBase):
 
         # 다음 페이지 url 추출
         trace_list = []
-        soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
-        self.parser.trace_tag(soup=soup, tag_list=trace_tag['tag'], index=0, result=trace_list)
+        soup = self.parser.parse_html(
+            html=html,
+            parser_type=self.parsing_info['parser'],
+        )
+        self.parser.trace_tag(
+            soup=soup,
+            tag_list=trace_tag['tag'],
+            index=0,
+            result=trace_list,
+        )
 
         for tag in trace_list:
             if tag.has_attr('href') is False:
@@ -311,13 +351,16 @@ class WebNewsCrawler(CrawlerBase):
         from dateutil.parser import parse as parse_date
 
         if 'date' not in doc:
+            msg = {
+                'level': 'ERROR',
+                'message': 'date 필드가 없습니다.',
+            }
+            logger.error(msg=LogMsg(msg))
             return
 
         str_e = ''
         parsing_error = False
         if doc['date'] == '':
-            del doc['date']
-
             str_e = 'date missing'
             parsing_error = True
 
@@ -329,9 +372,6 @@ class WebNewsCrawler(CrawlerBase):
                 str_e = str(e)
 
         if parsing_error is True:
-            if 'date' in doc:
-                del doc['date']
-
             doc['parsing_error'] = True
             doc['raw_html'] = str(html)
 
@@ -339,8 +379,12 @@ class WebNewsCrawler(CrawlerBase):
                 'level': 'ERROR',
                 'message': '날짜 파싱 에러: date 필드 삭제',
                 'exception': str_e,
+                'date': doc['date'],
             }
             logger.error(msg=LogMsg(msg))
+
+            if 'date' in doc:
+                del doc['date']
 
         return
 
@@ -450,10 +494,17 @@ class WebNewsCrawler(CrawlerBase):
 
             str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
         else:
-            soup = self.parser.parse_html(html=html, parser_type=self.parsing_info['parser'])
+            soup = self.parser.parse_html(
+                html=html,
+                parser_type=self.parsing_info['parser'],
+            )
 
-            self.parser.trace_tag(soup=soup, tag_list=self.parsing_info['trace'],
-                                  index=0, result=trace_list)
+            self.parser.trace_tag(
+                soup=soup,
+                tag_list=self.parsing_info['trace'],
+                index=0,
+                result=trace_list,
+            )
 
             str_trace_list = ''
             for item in trace_list:
@@ -474,7 +525,10 @@ class WebNewsCrawler(CrawlerBase):
                 sleep(self.sleep_time)
                 return None
 
-        self.set_history(value=str_trace_list, name='trace_list')
+        self.set_history(
+            value=str_trace_list,
+            name='trace_list',
+        )
 
         return trace_list
 
@@ -482,48 +536,41 @@ class WebNewsCrawler(CrawlerBase):
         """trace tag 하나를 파싱해서 반환한다."""
         # json 인 경우 맵핑값 매칭
         if 'parser' in url_info and url_info['parser'] == 'json':
-            item = resp
-
-            mapping_info = {}
-            if 'mapping' in url_info:
-                mapping_info = url_info['mapping']
-
-            for k in mapping_info:
-                if k[0] == '_':
-                    continue
-
-                v = mapping_info[k]
-                if v == '' and k in item:
-                    del item[k]
-                    continue
-
-                if v == '/' and k in item:
-                    item.update(item[k])
-                    del item[k]
-                    continue
-
-            for k in mapping_info:
-                if k[0] == '_':
-                    continue
-
-                v = mapping_info[k]
-                if v.find('{') < 0:
-                    continue
-
-                item[k] = v.format(**resp)
-
+            item = self.parser.parse_json(resp=resp, url_info=url_info)
         else:
             if isinstance(resp, str) or isinstance(resp, bytes):
-                resp = self.parser.parse_html(html=resp, parser_type=self.parsing_info['parser'])
+                resp = self.parser.parse_html(
+                    html=resp,
+                    parser_type=self.parsing_info['parser'],
+                )
 
             # 목록에서 기사 본문 링크 추출
-            item = self.parser.parse(html=None, soup=resp, parsing_info=parsing_info)
+            item = self.parser.parse(
+                html=None,
+                soup=resp,
+                parsing_info=parsing_info,
+            )
 
         # url 추출
         if 'url' in item and isinstance(item['url'], list):
             if len(item['url']) > 0:
                 item['url'] = item['url'][0]
             else:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'trace tag에서 url 추출 에러',
+                    'resp': resp,
+                }
+                logger.error(msg=LogMsg(msg))
                 return None
+
+        if len(item) == 0:
+            msg = {
+                'level': 'ERROR',
+                'message': '기사 목록 파싱 에러',
+                'resp': resp,
+            }
+            logger.error(msg=LogMsg(msg))
+            return None
 
         return item

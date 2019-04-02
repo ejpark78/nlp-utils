@@ -36,6 +36,8 @@ def init_arguments():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('-test', action='store_true', default=False, help='디버그')
+
     # 작업 아이디
     parser.add_argument('-category', default='', help='작업 카테고리')
     parser.add_argument('-job_id', default='', help='작업 아이디')
@@ -96,6 +98,10 @@ def main():
     # udemy
     if args.job_id == 'udemy':
         UdemyUtils().batch()
+        return
+
+    if args.test:
+        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').test()
         return
 
     if args.batch:

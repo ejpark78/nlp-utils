@@ -91,7 +91,7 @@ class HtmlParser(object):
         if soup is None:
             return None
 
-        # 테그 정리
+        # 태그 정리
         self.replace_tag(soup, ['script', 'javascript', 'style'])
 
         self.remove_comment(soup)
@@ -105,6 +105,10 @@ class HtmlParser(object):
 
             value_list = []
             for tag in tag_list:
+                # 이미 값이 있는 경우
+                if item['key'] in result and len(result[item['key']]) > 0:
+                    continue
+
                 # 태그 삭제
                 if 'remove' in item:
                     for pattern in item['remove']:
@@ -165,8 +169,16 @@ class HtmlParser(object):
                     value_list = list(set(value_list))
 
             # 값의 개수가 하나인 경우, 스칼라로 변경한다.
-            if isinstance(value_list, list) and len(value_list) == 1:
-                value_list = value_list[0]
+            if isinstance(value_list, list):
+                if len(value_list) == 1:
+                    if value_list[0] == '':
+                        continue
+
+                    result[item['key']] = value_list[0]
+                    continue
+
+                if len(value_list) == 0:
+                    continue
 
             result[item['key']] = value_list
 
@@ -197,6 +209,12 @@ class HtmlParser(object):
     def parse_date(date):
         """날짜를 변환한다."""
         try:
+            if '오전' in date:
+                date = date.replace('오전', '') + ' AM'
+
+            if '오후' in date:
+                date = date.replace('오후', '') + ' PM'
+
             # 상대 시간 계산
             if '일전' in date:
                 offset = int(date.replace('일전', ''))
@@ -424,3 +442,38 @@ class HtmlParser(object):
                     logger.error(msg=LogMsg(msg))
 
         return result
+
+    @staticmethod
+    def parse_json(resp, url_info):
+        """json 본문을 파싱한다."""
+        item = resp
+
+        mapping_info = {}
+        if 'mapping' in url_info:
+            mapping_info = url_info['mapping']
+
+        for k in mapping_info:
+            if k[0] == '_':
+                continue
+
+            v = mapping_info[k]
+            if v == '' and k in item:
+                del item[k]
+                continue
+
+            if v == '/' and k in item:
+                item.update(item[k])
+                del item[k]
+                continue
+
+        for k in mapping_info:
+            if k[0] == '_':
+                continue
+
+            v = mapping_info[k]
+            if v.find('{') < 0:
+                continue
+
+            item[k] = v.format(**resp)
+
+        return item
