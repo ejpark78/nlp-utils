@@ -93,7 +93,7 @@ class CrawlerBase(object):
 
             msg = {
                 'level': 'ERROR',
-                'message': 'url 조회 에러',
+                'message': 'html 페이지 조회 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
                 'exception': str(e),

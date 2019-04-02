@@ -148,6 +148,12 @@ class WebNewsCrawler(CrawlerBase):
             # 기사 목록 조회
             resp = self.get_html_page(url_info=url)
             if resp is None:
+                msg = {
+                    'level': 'ERROR',
+                    'message': '뉴스 목록 조회 에러',
+                    'url': url,
+                }
+                logger.error(msg=LogMsg(msg))
                 continue
 
             # 문서 저장
