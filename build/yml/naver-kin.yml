@@ -8,7 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category naver -job_id term_list
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -20,7 +20,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category naver -job_id term_detail
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -32,7 +32,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category naver -job_id kin_question_list
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro

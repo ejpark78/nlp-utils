@@ -8,7 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category sns -job_id twitter
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro

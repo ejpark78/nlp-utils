@@ -31,7 +31,7 @@
             "name": "crawler.major_press"
           },
           "host": {
-            "name": "g7",
+            "name": "mq-server",
             "port": 5672,
             "user_name": "user",
             "user_password": "nlplab!"

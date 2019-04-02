@@ -8,7 +8,6 @@ from __future__ import print_function
 import logging
 import sys
 
-from module.elasticsearch_utils import ElasticSearchUtils
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
@@ -110,13 +109,6 @@ def main():
     else:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').daemon()
         return
-
-    # elasticsearch 배치 작업
-    # if args.batch:
-    #     ElasticSearchUtils(host=args.host, index=args.index).batch()
-    #     return
-
-    return
 
 
 if __name__ == '__main__':

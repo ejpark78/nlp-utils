@@ -28,8 +28,6 @@ MESSAGE = 25
 
 logger = logging.getLogger()
 
-debug = int(os.getenv('DEBUG', 0))
-
 
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러 베이스"""
@@ -187,8 +185,6 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_news(self, html, url_info, job):
         """개별 뉴스를 따라간다."""
-        global debug
-
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
@@ -221,7 +217,7 @@ class WebNewsCrawler(CrawlerBase):
             if doc_id is None:
                 continue
 
-            if debug == 0:
+            if self.cfg.debug == 0:
                 if 'check_id' not in url_info or url_info['check_id'] is True:
                     is_skip = self.check_doc_id(
                         doc_id=doc_id,
@@ -458,8 +454,6 @@ class WebNewsCrawler(CrawlerBase):
 
     def get_doc_id(self, url, job, item):
         """문서 아이디를 반환한다."""
-        global debug
-
         id_frame = job['article']['document_id']
 
         q, _, url_info = self.parser.parse_url(url)
@@ -472,7 +466,7 @@ class WebNewsCrawler(CrawlerBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
-            if debug == 0 and len(q) == 0:
+            if self.cfg.debug == 0 and len(q) == 0:
                 msg = {
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',

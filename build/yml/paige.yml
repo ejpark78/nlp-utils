@@ -2,11 +2,11 @@ version: '3'
 
 services:
 
-  economy:
+  yonhapnews:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id economy
+    command: python3 batch.py -category paige -job_id yonhapnews
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -15,11 +15,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  international:
+  spotvnews:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id international
+    command: python3 batch.py -category paige -job_id spotvnews
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -28,11 +28,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  it:
+  sports_chosun:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id it
+    command: python3 batch.py -category paige -job_id sports_chosun
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -41,11 +41,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  living:
+  joins_live:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id living
+    command: python3 batch.py -category paige -job_id joins_live
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -54,11 +54,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  opinion:
+  osen:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id opinion
+    command: python3 batch.py -category paige -job_id osen
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -67,11 +67,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  politics:
+  mk:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id politics
+    command: python3 batch.py -category paige -job_id mk
     extra_hosts:
       - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
@@ -79,49 +79,10 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
-
-  society:
-    image: corpus:5000/crawler:2.0
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id society
-    extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  sports:
-    image: corpus:5000/crawler:2.0
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id sports
-    extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-#  tv:
-#    image: corpus:5000/crawler:2.0
-#    restart: always
-#    working_dir: /usr/local/app
-#    command: python3 batch.py -category naver -job_id tv
-#    extra_hosts:
-#      - "mq-server:172.20.78.254"
-#      - "corpus.ncsoft.com:172.20.79.241"
-#    volumes:
-#      - /etc/timezone:/etc/timezone:ro
-#      - /etc/localtime:/etc/localtime:ro
-#      - $PWD/../status:/usr/local/app/status:rw
 
 # 네트워크 인터페이스 정의
 networks:
   default:
     ipam:
       config:
-        - subnet: 190.122.0.0/24
+        - subnet: 190.23.1.0/24

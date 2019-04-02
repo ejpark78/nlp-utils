@@ -8,7 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id economy
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -21,7 +21,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id international
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -34,7 +34,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id entertainment
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -47,7 +47,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id it
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -60,7 +60,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id politics
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -73,7 +73,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id society
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -86,7 +86,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id sports
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -99,7 +99,7 @@ services:
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -category nate -job_id tv
 #    extra_hosts:
-#      - "g7:172.20.78.254"
+#      - "mq-server:172.20.78.254"
 #      - "corpus.ncsoft.com:172.20.79.241"
 #    volumes:
 #      - /etc/timezone:/etc/timezone:ro
@@ -112,7 +112,7 @@ services:
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -category nate -job_id opinion
 #    extra_hosts:
-#      - "g7:172.20.78.254"
+#      - "mq-server:172.20.78.254"
 #      - "corpus.ncsoft.com:172.20.79.241"
 #    volumes:
 #      - /etc/timezone:/etc/timezone:ro

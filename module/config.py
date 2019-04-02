@@ -6,7 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
+import os
 from os import makedirs
 from os.path import dirname, abspath, isdir
 from os.path import isfile
@@ -17,6 +17,10 @@ class Config(object):
 
     def __init__(self, job_category, job_id):
         """ 생성자 """
+        status_dir = os.getenv('STATUS_DIR', 'status')
+
+        self.debug = int(os.getenv('DEBUG', 0))
+
         self.headers = {
             'mobile': {
                 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
@@ -30,16 +34,26 @@ class Config(object):
             }
         }
 
-        job_info_filename = 'config/{category}/{job_id}/jobs.json'.format(category=job_category, job_id=job_id)
+        job_info_filename = 'config/{category}/{job_id}/jobs.json'.format(
+            category=job_category,
+            job_id=job_id,
+        )
         self.job_info = self.open_config(filename=job_info_filename)
 
         self.parsing_info = None
 
-        parsing_info_filename = 'config/{category}/{job_id}/parsing.json'.format(category=job_category, job_id=job_id)
+        parsing_info_filename = 'config/{category}/{job_id}/parsing.json'.format(
+            category=job_category,
+            job_id=job_id,
+        )
         if isfile(parsing_info_filename):
             self.parsing_info = self.open_config(filename=parsing_info_filename)
 
-        self.status_filename = 'status/{category}/{job_id}.json'.format(category=job_category, job_id=job_id)
+        self.status_filename = '{status_dir}/{category}/{job_id}.json'.format(
+            status_dir=status_dir,
+            category=job_category,
+            job_id=job_id,
+        )
         self.status = self.open_config(filename=self.status_filename, create=True)
 
     @staticmethod

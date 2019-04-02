@@ -8,7 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id yonhapnews
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -21,7 +21,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id yonhapnewstv
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -34,7 +34,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id spotvnews
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -47,7 +47,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id khan
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -60,7 +60,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id sportskhan
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -73,7 +73,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id donga
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -86,7 +86,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id moneytoday
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -99,7 +99,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id starnews
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -112,7 +112,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id newsis
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -125,7 +125,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id chosun
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -138,7 +138,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id sports_chosun
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -151,7 +151,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id joins_live
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -164,7 +164,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id osen
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -177,7 +177,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id mk
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -190,7 +190,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id einfomax
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -203,7 +203,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category major-press -job_id joins
     extra_hosts:
-      - "g7:172.20.78.254"
+      - "mq-server:172.20.78.254"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
