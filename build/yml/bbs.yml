@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config:/usr/local/app/config:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-mlb:
     image: corpus:5000/crawler:2.0
@@ -26,7 +26,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config:/usr/local/app/config:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-bullpen:
     image: corpus:5000/crawler:2.0
@@ -39,7 +39,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config:/usr/local/app/config:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   lineagem:
     image: corpus:5000/crawler:2.0
@@ -52,7 +52,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config:/usr/local/app/config:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
 # 네트워크 인터페이스 정의
 networks:

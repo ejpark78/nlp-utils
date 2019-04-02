@@ -39,7 +39,7 @@ class Config(object):
         if isfile(parsing_info_filename):
             self.parsing_info = self.open_config(filename=parsing_info_filename)
 
-        self.status_filename = 'config/status/{category}/{job_id}.json'.format(category=job_category, job_id=job_id)
+        self.status_filename = 'status/{category}/{job_id}.json'.format(category=job_category, job_id=job_id)
         self.status = self.open_config(filename=self.status_filename, create=True)
 
     @staticmethod

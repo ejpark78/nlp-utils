@@ -98,17 +98,19 @@ def main():
         UdemyUtils().batch()
         return
 
-    # elasticsearch 배치 작업
-    if args.batch:
-        ElasticSearchUtils(host=args.host, index=args.index).batch()
-        return
-
     if args.batch:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').batch()
         return
     else:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').daemon()
         return
+
+    # elasticsearch 배치 작업
+    # if args.batch:
+    #     ElasticSearchUtils(host=args.host, index=args.index).batch()
+    #     return
+
+    return
 
 
 if __name__ == '__main__':

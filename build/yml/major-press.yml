@@ -13,7 +13,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   yonhapnewstv:
     image: corpus:5000/crawler:2.0
@@ -26,7 +26,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   spotvnews:
     image: corpus:5000/crawler:2.0
@@ -39,7 +39,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   khan:
     image: corpus:5000/crawler:2.0
@@ -52,7 +52,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   sportskhan:
     image: corpus:5000/crawler:2.0
@@ -65,7 +65,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   donga:
     image: corpus:5000/crawler:2.0
@@ -78,7 +78,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   moneytoday:
     image: corpus:5000/crawler:2.0
@@ -91,7 +91,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   starnews:
     image: corpus:5000/crawler:2.0
@@ -104,7 +104,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   newsis:
     image: corpus:5000/crawler:2.0
@@ -117,7 +117,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   chosun:
     image: corpus:5000/crawler:2.0
@@ -130,7 +130,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   sports_chosun:
     image: corpus:5000/crawler:2.0
@@ -143,7 +143,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   joins_live:
     image: corpus:5000/crawler:2.0
@@ -156,7 +156,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   osen:
     image: corpus:5000/crawler:2.0
@@ -169,7 +169,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   mk:
     image: corpus:5000/crawler:2.0
@@ -182,7 +182,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   einfomax:
     image: corpus:5000/crawler:2.0
@@ -195,7 +195,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
   joins:
     image: corpus:5000/crawler:2.0
@@ -208,7 +208,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../config/status:/usr/local/app/config/status:rw
+      - $PWD/../status:/usr/local/app/status:rw
 
 # 네트워크 인터페이스 정의
 networks:
