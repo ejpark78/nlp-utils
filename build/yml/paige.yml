@@ -2,14 +2,51 @@ version: '3'
 
 services:
 
+  mq:
+    image: rabbitmq:3-management
+    restart: always
+    hostname: mq
+    environment:
+      - "RABBITMQ_DEFAULT_USER=user"
+      - "RABBITMQ_DEFAULT_PASS=nlplab!"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  major_press:
+    image: corpus:5000/api-center/corpus_processor:2.0
+    restart: always
+    links:
+      - mq
+    depends_on:
+      - mq
+    environment:
+      - "ELASTIC_HOST=http://elasticsearch:9200"
+      - "KMAT_RSC=/www-data/dictionary/rsc"
+      - "NAME_ENTITY_TAGGER_V2=/usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule"
+      - "USE_POST_MQ=1"
+      - "USE_CONSUMER=1"
+      - "CONSUMER_EXCHANGE_NAME=crawler.major_press"
+      - "CONSUMER_HOST=mq"
+      - "CONSUMER_USER_NAME=user"
+      - "CONSUMER_USER_PASSWD=nlplab!"
+    extra_hosts:
+      - "elasticsearch:10.242.94.49"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
   yonhapnews:
     image: corpus:5000/crawler:2.0
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id yonhapnews
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -21,8 +58,8 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id spotvnews
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -34,8 +71,8 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id sports_chosun
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -47,8 +84,8 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id joins_live
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -60,8 +97,8 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id osen
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -73,8 +110,8 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id mk
     extra_hosts:
-      - "mq-server:172.20.78.254"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "mq-server:10.242.94.49"
+      - "elasticsearch:10.242.94.49"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
