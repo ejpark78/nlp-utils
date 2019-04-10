@@ -120,7 +120,7 @@
       },
       {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "tag": [
           {

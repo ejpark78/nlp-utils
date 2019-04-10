@@ -165,6 +165,42 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "image_list.image",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "realArtcContents"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "image_list.caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "realArtcContents"
+            }
+          },
+          {
+            "name": "p",
+            "attribute": {
+              "class": "p_caption"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",
@@ -187,41 +223,6 @@
             "name": "iframe",
             "attribute": {
               "title": "광고"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "photo_list",
-        "type": "html",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "realArtcContents"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_caption",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "realArtcContents"
-            }
-          },
-          {
-            "name": "p",
-            "attribute": {
-              "class": "p_caption"
             }
           }
         ]

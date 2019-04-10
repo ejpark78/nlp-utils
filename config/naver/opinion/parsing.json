@@ -260,34 +260,8 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "articleBodyContents"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "텍스트 본문: 연합뉴스",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "newsEndContents"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "tag": [
           {
@@ -303,8 +277,9 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_caption",
+        "key": "image_list.caption",
         "type": "text",
+        "delete": true,
         "tag": [
           {
             "name": "span",
@@ -351,6 +326,32 @@
             "name": "em",
             "attribute": {
               "class": "guide_categorization_item"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleBodyContents"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문: 연합뉴스",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "newsEndContents"
             }
           }
         ]

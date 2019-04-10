@@ -129,21 +129,8 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "news_content"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "value_type": "unique",
         "tag": [
@@ -160,9 +147,10 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_caption",
+        "key": "image_list.caption",
         "type": "text",
         "value_type": "unique",
+        "delete": true,
         "tag": [
           {
             "name": "div",
@@ -174,6 +162,19 @@
             "name": "td",
             "attribute": {
               "class": "caption"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "news_content"
             }
           }
         ]

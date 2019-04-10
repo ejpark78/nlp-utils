@@ -130,7 +130,7 @@
       },
       {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "value_type": "unique",
         "tag": [
@@ -147,7 +147,7 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_caption",
+        "key": "image_list.caption",
         "type": "text",
         "delete": true,
         "value_type": "unique",

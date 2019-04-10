@@ -158,25 +158,8 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "value_type": "merge",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "article_view"
-            }
-          },
-          {
-            "name": "section"
-          }
-        ]
-      },
-      {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "tag": [
           {
@@ -195,8 +178,9 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_caption",
+        "key": "image_list.caption",
         "type": "text",
+        "delete": true,
         "tag": [
           {
             "name": "div",
@@ -225,6 +209,23 @@
           },
           {
             "name": "iframe"
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "article_view"
+            }
+          },
+          {
+            "name": "section"
           }
         ]
       }

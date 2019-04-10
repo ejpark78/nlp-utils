@@ -138,7 +138,7 @@
       },
       {
         "comment": "이미지",
-        "key": "photo_list",
+        "key": "image_list.image",
         "type": "html",
         "tag": [
           {
@@ -154,7 +154,7 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_alt",
+        "key": "image_list.caption",
         "type": "alt",
         "delete": true,
         "tag": [
@@ -171,7 +171,7 @@
       },
       {
         "comment": "이미지 캡션",
-        "key": "photo_caption",
+        "key": "image_list.caption",
         "type": "text",
         "delete": true,
         "tag": [

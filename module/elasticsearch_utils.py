@@ -125,6 +125,14 @@ class ElasticSearchUtils(object):
                 self.bulk_data[self.host] = []
 
             self.bulk_data[self.host].append({
+                'delete': {
+                    '_index': self.index,
+                    '_type': self.doc_type,
+                    '_id': document_id
+                }
+            })
+
+            self.bulk_data[self.host].append({
                 'update': {
                     '_index': self.index,
                     '_type': self.doc_type,
