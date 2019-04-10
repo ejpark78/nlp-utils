@@ -120,6 +120,42 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "image_list.image",
+        "type": "html",
+        "tag": [
+          {
+            "name": "table",
+            "attribute": {
+              "class": "news_photo_table"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "image_list.caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "table",
+            "attribute": {
+              "class": "news_photo_table"
+            }
+          },
+          {
+            "name": "td",
+            "attribute": {
+              "class": "news_photo_table_caption"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",

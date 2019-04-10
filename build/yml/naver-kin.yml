@@ -6,9 +6,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id term_list
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_list
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -18,9 +18,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id term_detail
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_detail
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -30,9 +30,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id kin_question_list
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_question_list
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro

@@ -6,9 +6,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id yonhapnews
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnews
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -19,9 +19,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id yonhapnewstv
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnewstv
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -32,9 +32,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id spotvnews
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id spotvnews
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -45,9 +45,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id khan
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id khan
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -58,9 +58,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id sportskhan
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sportskhan
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -71,9 +71,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id donga
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id donga
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -84,9 +84,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id moneytoday
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id moneytoday
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -97,9 +97,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id starnews
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id starnews
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -110,9 +110,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id newsis
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id newsis
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -123,9 +123,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id chosun
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id chosun
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -136,9 +136,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id sports_chosun
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sports_chosun
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -149,9 +149,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id joins_live
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins_live
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -162,9 +162,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id osen
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id osen
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -175,9 +175,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id mk
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id mk
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -188,9 +188,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id einfomax
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id einfomax
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -201,9 +201,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category major-press -job_id joins
+    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro

@@ -52,6 +52,10 @@ def init_arguments():
     # 실행 모드 데몬/배치
     parser.add_argument('-batch', action='store_true', default=False, help='배치 모드로 실행')
 
+    # 재크롤링
+    parser.add_argument('-re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
+    parser.add_argument('-date_range', default='', help='curl_date 날짜 범위: 2000-01-01~2019-04-10')
+
     return parser.parse_args()
 
 
@@ -99,16 +103,24 @@ def main():
         UdemyUtils().batch()
         return
 
+    # 디버깅 테스트
     if args.test:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').test()
+
+    # 재 크롤링: parsing 정보가 변경되었을 경우
+    if args.re_crawl:
+        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').re_crawl(
+            date_range=args.date_range,
+        )
         return
 
+    # 웹 신문
     if args.batch:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').batch()
-        return
     else:
         WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').daemon()
-        return
+
+    return
 
 
 if __name__ == '__main__':

@@ -6,9 +6,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id culture
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id culture
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -19,9 +19,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id economy
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id economy
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -32,9 +32,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id international
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id international
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -45,9 +45,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id it
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id it
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -58,9 +58,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id opinion
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id opinion
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -71,9 +71,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id politics
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id politics
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -84,9 +84,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id society
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id society
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
@@ -97,9 +97,9 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category daum -job_id sports
+    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id sports
     extra_hosts:
-      - "mq-server:172.20.78.254"
+      - "${MQ_HOSTS}"
       - "corpus.ncsoft.com:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro

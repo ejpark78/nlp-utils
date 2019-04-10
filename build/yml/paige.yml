@@ -43,7 +43,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id yonhapnews
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id yonhapnews
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"
@@ -56,7 +56,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id spotvnews
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id spotvnews
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"
@@ -69,7 +69,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id sports_chosun
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id sports_chosun
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"
@@ -82,7 +82,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id joins_live
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id joins_live
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"
@@ -95,7 +95,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id osen
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id osen
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"
@@ -108,7 +108,7 @@ services:
     image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
-    command: python3 batch.py -category paige -job_id mk
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id mk
     extra_hosts:
       - "mq-server:10.242.94.49"
       - "elasticsearch:10.242.94.49"

@@ -124,6 +124,7 @@ class ElasticSearchUtils(object):
             if self.host not in self.bulk_data:
                 self.bulk_data[self.host] = []
 
+            # 기존 정보 삭제
             self.bulk_data[self.host].append({
                 'delete': {
                     '_index': self.index,
@@ -132,6 +133,7 @@ class ElasticSearchUtils(object):
                 }
             })
 
+            # 저장 정보
             self.bulk_data[self.host].append({
                 'update': {
                     '_index': self.index,
@@ -140,6 +142,7 @@ class ElasticSearchUtils(object):
                 }
             })
 
+            # 저장 문서
             self.bulk_data[self.host].append({
                 'doc': document,
                 'doc_as_upsert': self.insert
@@ -342,6 +345,59 @@ class ElasticSearchUtils(object):
             self.save_cache(cache_data=result, filename=filename)
 
         return result, filename
+
+    def get_url_list(self, index, size=1000, date_range=''):
+        """ elastic search 에서 url 목록을 조회한다. """
+        result = []
+
+        count = 1
+        sum_count = 0
+        scroll_id = ''
+
+        query = {}
+        if date_range != '':
+            token = date_range.split('~')
+
+            query = {
+                'query': {
+                    'bool': {
+                        'must': [
+                            {
+                                'range': {
+                                    'curl_date': {
+                                        'format': 'yyyy-MM-dd',
+                                        'gte': token[0],
+                                        'lte': token[1]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+        while count > 0:
+            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+
+            sum_count += count
+
+            log_msg = {
+                'level': 'INFO',
+                'index': index,
+                'count': count,
+                'sum_count': sum_count,
+                'total': total,
+            }
+            logger.info(msg=LogMsg(log_msg))
+
+            for item in hits:
+                result.append(item['_source'])
+
+            # 종료 조건
+            if count < size:
+                break
+
+        return result
 
     @staticmethod
     def save_cache(filename, cache_data):

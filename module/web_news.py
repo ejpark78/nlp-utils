@@ -51,11 +51,11 @@ class WebNewsCrawler(CrawlerBase):
         elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
 
         item = {
-            'url': 'https://news.naver.com/main/read.nhn?mode=LSD&mid=shm&sid1=110&oid=001&aid=0010733705',
+            'url': 'https://www.yna.co.kr/view/AKR20181210150200007?section=sports/baseball',
         }
 
         doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-        article = self.get_article(doc_id, item, job, elastic_utils)
+        _ = self.get_article(doc_id, item, job, elastic_utils)
 
         return
 
@@ -85,6 +85,47 @@ class WebNewsCrawler(CrawlerBase):
             self.sleep_time = job['sleep']
 
             self.trace_url_list(job=job)
+
+        return
+
+    def re_crawl(self, date_range):
+        """elasticsearch의 url 목록을 다시 크롤링한다."""
+        from tqdm import tqdm
+
+        self.update_config()
+
+        for job in self.job_info:
+            elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+
+            doc_list = elastic_utils.get_url_list(index=job['index'], date_range=date_range)
+
+            for item in tqdm(doc_list):
+                for k in ['photo_list', 'photo_caption']:
+                    if k in item:
+                        del item[k]
+
+                doc_id = item['document_id']
+
+                # 기사 본문 조회
+                article = self.get_article(doc_id, item, job, elastic_utils)
+
+                # 후처리 작업 실행
+                if 'post_process' not in job:
+                    job['post_process'] = None
+
+                self.post_process_utils.insert_job(
+                    document=article,
+                    post_process_list=job['post_process'],
+                )
+
+                msg = {
+                    'level': 'INFO',
+                    'message': '뉴스 본문 크롤링: 슬립',
+                    'sleep_time': self.sleep_time,
+                }
+                logger.info(msg=LogMsg(msg))
+
+                sleep(self.sleep_time)
 
         return
 
