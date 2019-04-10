@@ -113,19 +113,6 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "textBody"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
         "key": "photo_list",
         "type": "html",
@@ -142,9 +129,10 @@
         ]
       },
       {
-        "comment": "이미지",
-        "key": "photo_alt",
+        "comment": "이미지 갭션",
+        "key": "photo_caption",
         "type": "alt",
+        "delete": true,
         "tag": [
           {
             "name": "td",
@@ -154,6 +142,19 @@
           },
           {
             "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "textBody"
+            }
           }
         ]
       }

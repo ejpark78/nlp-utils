@@ -169,19 +169,6 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "articleBodyContents"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
         "key": "photo_list",
         "type": "html",
@@ -201,6 +188,7 @@
         "comment": "이미지 캡션",
         "key": "photo_caption",
         "type": "text",
+        "delete": true,
         "tag": [
           {
             "name": "span",
@@ -247,6 +235,19 @@
             "name": "em",
             "attribute": {
               "class": "guide_categorization_item"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "articleBodyContents"
             }
           }
         ]

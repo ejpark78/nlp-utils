@@ -2,8 +2,9 @@
 CONTAINER = crawler
 
 BASE_IMAGE = corpus:5000/base/crawler:latest
-IMAGE_NAME = corpus:5000/crawler:2.0
 
+IMAGE = corpus:5000/crawler
+IMAGE_TAG = $(shell date +%F.%H)
 
 APT_MIRROR = http://corpus.ncsoft.com:8081/repository/ubuntu/
 PIP_TRUST_HOST = corpus.ncsoft.com
@@ -27,7 +28,6 @@ include $(MK_DIR)/sns.mk
 include $(MK_DIR)/release.mk
 include $(MK_DIR)/ps.mk
 
-start-all: major nate naver bbs sns daum
-stop-all: stop-major stop-nate stop-naver stop-bbs stop-sns stop-daum
-logs-all: logs-major logs-nate logs-naver logs-bbs logs-sns logs-daum
-
+all-start: major-start nate-start naver-start daum-start bbs-start sns-start
+all-stop: major-stop nate-stop naver-stop daum-stop bbs-stop sns-stop
+all-logs: major-logs nate-logs naver-logs daum-logs bbs-logs sns-logs

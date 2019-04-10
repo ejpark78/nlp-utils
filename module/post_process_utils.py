@@ -236,6 +236,41 @@ class PostProcessUtils(object):
 
         return True
 
+    @staticmethod
+    def merge_photo_list(document):
+        """photo_list, photo_caption 을 합친다."""
+        if 'photo_list' not in document:
+            return []
+
+        photo_list = document['photo_list']
+        if isinstance(photo_list, str):
+            photo_list = [photo_list.strip()]
+
+        photo_caption = []
+        if 'photo_caption' in document:
+            photo_caption = document['photo_caption']
+
+            if isinstance(photo_caption, str):
+                photo_caption = [photo_caption.strip()]
+
+        image_list = []
+        for i in range(len(photo_list)):
+            if len(photo_caption) < i:
+                photo_caption[i] = ''
+
+            image_list.append({
+                'image': photo_list[i],
+                'caption': photo_caption[i],
+            })
+
+        if 'photo_list' in document:
+            del document['photo_list']
+
+        if 'photo_caption' in document:
+            del document['photo_caption']
+
+        return image_list
+
     def save_s3(self, document, info):
         """ S3에 기사 이미지를 저장한다."""
         import boto3
@@ -245,12 +280,12 @@ class PostProcessUtils(object):
 
         # 이미지 목록 추출
         image_list = None
-        if 'image_list' in document:
-            image_list = document['image_list']
-        else:
-            if 'html_content' in document:
-                soup = BeautifulSoup(document['html_content'], 'lxml')
-                image_list = self.parser.extract_image(soup=soup, base_url=document['url'])
+        if 'photo_list' in document:
+            image_list = self.merge_photo_list(document)
+
+        if image_list is None and 'html_content' in document:
+            soup = BeautifulSoup(document['html_content'], 'lxml')
+            image_list = self.parser.extract_image(soup=soup, base_url=document['url'])
 
         # 추출된 이미지 목록이 없을 경우
         if image_list is None:
@@ -266,9 +301,11 @@ class PostProcessUtils(object):
         aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
         aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
 
-        s3 = boto3.resource('s3',
-                            aws_access_key_id=aws_access_key_id,
-                            aws_secret_access_key=aws_secret_access_key)
+        s3 = boto3.resource(
+            's3',
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+        )
 
         bucket = s3.Bucket(bucket_name)
 
@@ -282,7 +319,16 @@ class PostProcessUtils(object):
             suffix = pathlib.Path(url).suffix
 
             # 1. 이미지 파일 다운로드
-            r = requests.get(url)
+            try:
+                r = requests.get(url)
+            except Exception as e:
+                log_msg = {
+                    'level': 'ERROR',
+                    'message': '이미지 파일 다운로드 에러',
+                    'url': url,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(log_msg))
 
             upload_file = '{}/{}-{:02d}{}'.format(info['path'], prefix, count, suffix)
             count += 1

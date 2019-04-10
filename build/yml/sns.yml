@@ -1,9 +1,9 @@
-version: '3'
+version: '2'
 
 services:
 
   twitter:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category sns -job_id twitter

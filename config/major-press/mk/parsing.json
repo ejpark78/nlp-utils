@@ -171,26 +171,6 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "value_type": "merge",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "id": "artText"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "read_txt"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
         "key": "photo_list",
         "type": "html",
@@ -210,6 +190,7 @@
         "comment": "이미지 캡션",
         "key": "photo_caption",
         "type": "text",
+        "delete": true,
         "tag": [
           {
             "name": "div",
@@ -219,6 +200,26 @@
           },
           {
             "name": "p"
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "value_type": "merge",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "id": "artText"
+            }
+          },
+          {
+            "name": "div",
+            "attribute": {
+              "class": "read_txt"
+            }
           }
         ]
       }

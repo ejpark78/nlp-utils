@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
 
@@ -17,7 +17,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
   major_press:
-    image: corpus:5000/api-center/corpus_processor:2.0
+    image: ${CORPUS_PROCESSOR_IMAGE}
     restart: always
     links:
       - mq
@@ -40,7 +40,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
 
   yonhapnews:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id yonhapnews
@@ -53,7 +53,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   spotvnews:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id spotvnews
@@ -66,7 +66,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   sports_chosun:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id sports_chosun
@@ -79,7 +79,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   joins_live:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id joins_live
@@ -92,7 +92,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   osen:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id osen
@@ -105,7 +105,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   mk:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category paige -job_id mk

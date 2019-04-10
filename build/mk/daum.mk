@@ -1,11 +1,12 @@
 
-daum:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml down
-	docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml up -d
+daum-start:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml up -d
 
-stop-daum:
-	docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml down
+daum-stop:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml down
 
-logs-daum:
-	docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml logs -f
+daum-logs:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory daum -f $(YAML_DIR)/daum.yml logs -f

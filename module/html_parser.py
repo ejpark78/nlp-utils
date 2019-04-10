@@ -74,6 +74,14 @@ class HtmlParser(object):
         """html 문서를 파싱한다."""
         soup = None
 
+        html = html.replace('\r', '\n')
+
+        html = re.sub('</tr>', '</tr>\n', html, flags=re.IGNORECASE | re.MULTILINE)
+        html = re.sub('</p>', '</p>\n', html, flags=re.IGNORECASE | re.MULTILINE)
+        html = re.sub('<table', '\n<table', html, flags=re.IGNORECASE | re.MULTILINE)
+        html = re.sub('</dl>', '</dl>\n', html, flags=re.IGNORECASE | re.MULTILINE)
+        html = re.sub('<br', '\n<br', html, flags=re.IGNORECASE | re.MULTILINE)
+
         if parser_type == 'lxml':
             soup = BeautifulSoup(html, 'lxml')
         elif parser_type == 'html5lib':
@@ -120,7 +128,7 @@ class HtmlParser(object):
 
                 # 값 추출
                 if item['type'] == 'text':
-                    value = tag.get_text().strip().replace('\n', '')
+                    value = tag.get_text().strip()
                     value = re.sub('[ ]+', ' ', value)
                 elif item['type'] == 'html':
                     value = str(tag)
@@ -138,6 +146,10 @@ class HtmlParser(object):
                         value = tag[item['type']]
                     else:
                         value = str(tag.prettify())
+
+                # 태그 삭제
+                if 'delete' in item and item['delete'] is True:
+                    tag.extract()
 
                 # 문자열 치환
                 if 'replace' in item:

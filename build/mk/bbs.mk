@@ -1,11 +1,12 @@
 
-bbs:
-	docker pull $(IMAGE_NAME)
-	docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml down
-	docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml up -d
+bbs-start:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml up -d
 
-stop-bbs:
-	docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml down
+bbs-stop:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml down
 
-logs-bbs:
-	docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml logs -f
+bbs-logs:
+	IMAGE=$(IMAGE):$(IMAGE_TAG) \
+		docker-compose --project-directory bbs -f $(YAML_DIR)/bbs.yml logs -f

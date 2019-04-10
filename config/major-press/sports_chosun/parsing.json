@@ -129,19 +129,6 @@
         ]
       },
       {
-        "comment": "텍스트 본문",
-        "key": "content",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "news_content"
-            }
-          }
-        ]
-      },
-      {
         "comment": "이미지",
         "key": "photo_list",
         "type": "html",
@@ -162,6 +149,7 @@
         "comment": "이미지 캡션",
         "key": "photo_caption",
         "type": "text",
+        "delete": true,
         "value_type": "unique",
         "tag": [
           {
@@ -174,6 +162,19 @@
             "name": "td",
             "attribute": {
               "class": "caption"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "news_content"
             }
           }
         ]

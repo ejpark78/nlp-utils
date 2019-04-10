@@ -177,6 +177,96 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoL"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoR"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoC"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoR"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoL"
+            }
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "articlePhotoC"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",
@@ -198,93 +288,6 @@
             "name": "div",
             "attribute": {
               "class": "article_keyword"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "photo_list",
-        "type": "html",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoL"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "photo_list",
-        "type": "html",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoR"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "photo_list",
-        "type": "html",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoC"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_caption",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoR"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_caption",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoL"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_caption",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "articlePhotoC"
             }
           }
         ]

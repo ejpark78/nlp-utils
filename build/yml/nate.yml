@@ -1,9 +1,9 @@
-version: '3'
+version: '2'
 
 services:
 
   economy:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id economy
@@ -16,7 +16,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   international:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id international
@@ -29,7 +29,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   entertainment:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id entertainment
@@ -42,7 +42,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   it:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id it
@@ -55,7 +55,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   politics:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id politics
@@ -68,7 +68,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   society:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id society
@@ -81,7 +81,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   sports:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category nate -job_id sports
@@ -94,7 +94,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
 #  tv:
-#    image: corpus:5000/crawler:2.0
+#    image: ${IMAGE}
 #    restart: always
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -category nate -job_id tv
@@ -107,7 +107,7 @@ services:
 #      - $PWD/../status:/usr/local/app/status:rw
 
 #  opinion:
-#    image: corpus:5000/crawler:2.0
+#    image: ${IMAGE}
 #    restart: always
 #    working_dir: /usr/local/app
 #    command: python3 batch.py -category nate -job_id opinion

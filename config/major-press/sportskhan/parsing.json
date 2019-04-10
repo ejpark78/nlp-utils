@@ -119,6 +119,59 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "photo_list",
+        "type": "html",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "art_photo_wrap"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "alt",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "art_photo_wrap"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "photo_caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "art_photo_wrap"
+            }
+          },
+          {
+            "name": "p",
+            "attribute": {
+              "class": "caption"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",
@@ -140,57 +193,6 @@
             "name": "p",
             "attribute": {
               "class": "content_text"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "photo_list",
-        "type": "html",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "art_photo_wrap"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_alt",
-        "type": "alt",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "art_photo_wrap"
-            }
-          },
-          {
-            "name": "img"
-          }
-        ]
-      },
-      {
-        "comment": "이미지 캡션",
-        "key": "photo_caption",
-        "type": "text",
-        "tag": [
-          {
-            "name": "div",
-            "attribute": {
-              "class": "art_photo_wrap"
-            }
-          },
-          {
-            "name": "p",
-            "attribute": {
-              "class": "caption"
             }
           }
         ]

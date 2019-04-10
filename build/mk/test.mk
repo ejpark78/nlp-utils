@@ -7,7 +7,7 @@ run:
 		-v /etc/hosts:/etc/hosts:ro \
 		-v /etc/timezone:/etc/timezone:ro \
 		-v /etc/localtime:/etc/localtime:ro \
-		$(IMAGE_NAME)
+		$(IMAGE):$(IMAGE_TAG)
 
 test: 
 	docker run \
@@ -15,4 +15,4 @@ test:
 		-v /etc/hosts:/etc/hosts:ro \
 		-v $(PWD)/..:/usr/local/app \
 		--name $(CONTAINER) \
-		$(IMAGE_NAME)
+		$(IMAGE):$(IMAGE_TAG)

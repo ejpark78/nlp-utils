@@ -1,9 +1,9 @@
-version: '3'
+version: '2'
 
 services:
 
   mlbpark-kbo:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category bbs -job_id mlbpark-kbo
@@ -16,7 +16,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-mlb:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category bbs -job_id mlbpark-mlb
@@ -29,7 +29,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-bullpen:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category bbs -job_id mlbpark-bullpen
@@ -42,7 +42,7 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   lineagem:
-    image: corpus:5000/crawler:2.0
+    image: ${IMAGE}
     restart: always
     working_dir: /usr/local/app
     command: python3 batch.py -category bbs -job_id lineagem

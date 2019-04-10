@@ -32,16 +32,24 @@ build:
 
 	cd build/
 	docker build \
-		-t $(IMAGE_NAME) \
+		-t $(IMAGE):$(IMAGE_TAG) \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
+		--label "app=crawler" \
+		--label "version=$(IMAGE_TAG)" \
+		--label "image_name=$(IMAGE)" \
+		--label "build-date=$(shell date +'%Y-%m-%d %H:%M:%S')" \
 		--add-host "corpus.ncsoft.com:172.20.79.241" \
 		.
+
+	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
 
 	rm app.tar.gz
 
 pull:
-	docker pull $(IMAGE_NAME)
+	docker pull $(IMAGE):$(IMAGE_TAG)
+	docker pull $(IMAGE):latest
 
 push:
-	docker push $(IMAGE_NAME)
+	docker push $(IMAGE):$(IMAGE_TAG)
+	docker push $(IMAGE):latest
