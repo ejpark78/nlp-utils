@@ -3,44 +3,43 @@ version: '2'
 services:
 
   term-list:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_list
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
   term-detail:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_detail
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
   question-list:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_question_list
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-
-# 네트워크 인터페이스 정의
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: 190.29.0.0/24

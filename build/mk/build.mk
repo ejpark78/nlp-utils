@@ -1,4 +1,15 @@
 
+# image
+BASE_IMAGE = corpus:5000/base/crawler:latest
+
+IMAGE = corpus:5000/crawler
+IMAGE_TAG = $(shell date +%F.%H)
+
+# Mirror
+APT_MIRROR = http://corpus.ncsoft.com:8081/repository/ubuntu/
+PIP_MIRROR = http://corpus.ncsoft.com:8081/repository/pypi/simple
+PIP_TRUST_HOST = corpus.ncsoft.com
+
 .ONESHELL:
 base:
 	docker build \

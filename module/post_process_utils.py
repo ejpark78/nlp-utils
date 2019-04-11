@@ -90,12 +90,41 @@ class PostProcessUtils(object):
             post_process_list = job['post_process_list']
 
             for item in post_process_list:
+                # elasticsearch 의 이름을 실제 아이피값으로 변환한다.
+                self.update_hostname2ip(item)
+
                 if item['module'] == 'corpus_process':
                     self.corpus_process(document=document, info=item)
                 elif item['module'] == 'save_s3':
                     self.save_s3(document=document, info=item)
                 elif item['module'] == 'rabbit_mq':
                     self.rabbit_mq(document=document, info=item)
+
+        return
+
+    @staticmethod
+    def update_hostname2ip(item):
+        """elasticsearch 의 이름을 실제 아이피값으로 변환한다."""
+        import socket
+        from urllib.parse import urlparse
+
+        if 'payload' not in item:
+            return
+
+        if 'elastic' not in item['payload']:
+            return
+
+        if 'host' not in item['payload']['elastic']:
+            return
+
+        # "host": "http://elasticsearch:9200",
+        url = item['payload']['elastic']['host']
+        addr = urlparse(url)
+
+        netloc = addr.netloc.split(':')
+        netloc[0] = socket.gethostbyname(netloc[0])
+
+        item['payload']['elastic']['host'] = '{}://{}'.format(addr.scheme, ':'.join(netloc))
 
         return
 

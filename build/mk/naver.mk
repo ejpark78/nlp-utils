@@ -1,23 +1,43 @@
 
-naver-kin:
-	docker-compose --project-directory naver-kin -f $(YAML_DIR)/naver-kin.yml down
-	docker-compose --project-directory naver-kin -f $(YAML_DIR)/naver-kin.yml up -d
-	docker-compose --project-directory naver-kin -f $(YAML_DIR)/naver-kin.yml logs -f
+NAVER_PRJ = naver
+NAVER_YAML = $(YAML_DIR)/naver.yml
+NAVER_EX_NAME = crawler.naver
 
 naver-start:
-	IMAGE=$(IMAGE):$(IMAGE_TAG) \
-	MQ_HOSTS=$(MQ_HOSTS) \
 	CRAWLER_OPT="$(CRAWLER_OPT)" \
-		docker-compose --project-directory naver -f $(YAML_DIR)/naver.yml up -d
+	CRAWLER_IMAGE="$(CRAWLER_IMAGE)" \
+	CORPUS_PROCESSOR_IMAGE="$(CORPUS_PROCESSOR_IMAGE)" \
+	HTTP_PROXY="$(HTTP_PROXY)" \
+	HTTPS_PROXY="$(HTTPS_PROXY)" \
+	ELASTIC_HOST="$(ELASTIC_HOST)" \
+	RESTART="$(RESTART)" \
+	RABBITMQ_USER="$(RABBITMQ_USER)" \
+	RABBITMQ_PASS="$(RABBITMQ_PASS)" \
+	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) up -d
 
 naver-stop:
-	IMAGE=$(IMAGE):$(IMAGE_TAG) \
-	MQ_HOSTS=$(MQ_HOSTS) \
 	CRAWLER_OPT="$(CRAWLER_OPT)" \
-		docker-compose --project-directory naver -f $(YAML_DIR)/naver.yml down
+	CRAWLER_IMAGE="$(CRAWLER_IMAGE)" \
+	CORPUS_PROCESSOR_IMAGE="$(CORPUS_PROCESSOR_IMAGE)" \
+	HTTP_PROXY="$(HTTP_PROXY)" \
+	HTTPS_PROXY="$(HTTPS_PROXY)" \
+	ELASTIC_HOST="$(ELASTIC_HOST)" \
+	RESTART="$(RESTART)" \
+	RABBITMQ_USER="$(RABBITMQ_USER)" \
+	RABBITMQ_PASS="$(RABBITMQ_PASS)" \
+	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) down
 
 naver-logs:
-	IMAGE=$(IMAGE):$(IMAGE_TAG) \
-	MQ_HOSTS=$(MQ_HOSTS) \
 	CRAWLER_OPT="$(CRAWLER_OPT)" \
-		docker-compose --project-directory naver -f $(YAML_DIR)/naver.yml logs -f
+	CRAWLER_IMAGE="$(CRAWLER_IMAGE)" \
+	CORPUS_PROCESSOR_IMAGE="$(CORPUS_PROCESSOR_IMAGE)" \
+	HTTP_PROXY="$(HTTP_PROXY)" \
+	HTTPS_PROXY="$(HTTPS_PROXY)" \
+	ELASTIC_HOST="$(ELASTIC_HOST)" \
+	RESTART="$(RESTART)" \
+	RABBITMQ_USER="$(RABBITMQ_USER)" \
+	RABBITMQ_PASS="$(RABBITMQ_PASS)" \
+	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) logs -f

@@ -2,217 +2,207 @@ version: '2'
 
 services:
 
-  yonhapnews:
-    image: ${IMAGE}
+  mq:
+    image: rabbitmq:3-management
     restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnews
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+    hostname: mq
+    environment:
+      - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
+      - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
+
+  corpus-processor:
+    image: ${CORPUS_PROCESSOR_IMAGE}
+    restart: always
+    mem_limit: 1G
+    links:
+      - mq
+    depends_on:
+      - mq
+    environment:
+      - "ELASTIC_HOST=http://elasticsearch:9200"
+      - "KMAT_RSC=/www-data/dictionary/rsc"
+      - "NAME_ENTITY_TAGGER_V2=/usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule"
+      - "USE_POST_MQ=1"
+      - "USE_CONSUMER=1"
+      - "CONSUMER_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME}"
+      - "CONSUMER_HOST=mq"
+      - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
+      - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
+    extra_hosts:
+      - "${ELASTIC_HOST}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
   yonhapnewstv:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnewstv
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  spotvnews:
-    image: ${IMAGE}
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id spotvnews
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   khan:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id khan
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   sportskhan:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sportskhan
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   donga:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id donga
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   moneytoday:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id moneytoday
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   starnews:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id starnews
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   newsis:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id newsis
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   chosun:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id chosun
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  sports_chosun:
-    image: ${IMAGE}
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sports_chosun
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  joins_live:
-    image: ${IMAGE}
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins_live
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  osen:
-    image: ${IMAGE}
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id osen
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
-
-  mk:
-    image: ${IMAGE}
-    restart: always
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id mk
-    extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   einfomax:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id einfomax
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   joins:
-    image: ${IMAGE}
-    restart: always
+    image: ${CRAWLER_IMAGE}
+    restart: ${RESTART}
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins
+    links:
+      - "mq:mq-server"
     extra_hosts:
-      - "${MQ_HOSTS}"
-      - "elasticsearch:172.20.79.241"
+      - "${ELASTIC_HOST}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
-
-# 네트워크 인터페이스 정의
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: 190.23.1.0/24

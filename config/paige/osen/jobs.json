@@ -163,7 +163,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler.major_press"
+            "name": "crawler.paige"
           },
           "host": {
             "name": "mq-server",
