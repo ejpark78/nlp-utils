@@ -9,7 +9,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-kbo
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -22,7 +22,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-mlb
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -35,7 +35,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-bullpen
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -48,7 +48,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id lineagem
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

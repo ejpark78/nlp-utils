@@ -9,7 +9,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnews
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -22,7 +22,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id yonhapnewstv
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -35,7 +35,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id spotvnews
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -48,7 +48,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id khan
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -61,7 +61,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sportskhan
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -74,7 +74,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id donga
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -87,7 +87,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id moneytoday
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -100,7 +100,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id starnews
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -113,7 +113,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id newsis
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -126,7 +126,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id chosun
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -139,7 +139,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id sports_chosun
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -152,7 +152,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins_live
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -165,7 +165,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id osen
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -178,7 +178,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id mk
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -191,7 +191,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id einfomax
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -204,7 +204,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category major-press -job_id joins
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

@@ -4,7 +4,7 @@
     "sleep": 1800
   },
   "trace_list": {
-    "host": "http://corpus.ncsoft.com:9200",
+    "host": "http://elasticsearch:9200",
     "index": "crawler-twitter",
     "sleep": 2,
     "url_frame": {

@@ -1,6 +1,6 @@
 {
   "term_list": {
-    "host": "http://corpus.ncsoft.com:9200",
+    "host": "http://elasticsearch:9200",
     "index": "crawler-naver-terms-list",
     "sleep": 10,
     "url_frame": "https://m.terms.naver.com/listAjax.nhn?categoryId={categoryId}&so=st3.asc&index=&page={page}&viewType=list",
@@ -836,7 +836,7 @@
     ]
   },
   "detail": {
-    "host": "http://corpus.ncsoft.com:9200",
+    "host": "http://elasticsearch:9200",
     "list_index": "crawler-naver-terms-list",
     "index": "crawler-naver-terms-detail",
     "sleep": 2

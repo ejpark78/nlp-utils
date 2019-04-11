@@ -6,7 +6,7 @@
   "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
   "trace_list": [
     {
-      "host": "http://corpus.ncsoft.com:9200",
+      "host": "http://elasticsearch:9200",
       "index": "crawler-major_press-chosun",
       "sleep": 2,
       "list": [
@@ -51,7 +51,7 @@
           "payload": {
             "post_mq": false,
             "elastic": {
-              "host": "http://corpus.ncsoft.com:9200",
+              "host": "http://elasticsearch:9200",
               "index": "corpus_process-major_press-chosun"
             },
             "module": [

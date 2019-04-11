@@ -5,7 +5,7 @@
   },
   "trace_list": [
     {
-      "host": "http://corpus.ncsoft.com:9200",
+      "host": "http://elasticsearch:9200",
       "index": "crawler-major_press-mk",
       "sleep": 2,
       "list": [
@@ -43,7 +43,7 @@
           "payload": {
             "post_mq": true,
             "elastic": {
-              "host": "http://corpus.ncsoft.com:9200",
+              "host": "http://elasticsearch:9200",
               "index": "corpus_process-major_press-mk"
             },
             "module": [

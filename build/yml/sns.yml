@@ -9,7 +9,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category sns -job_id twitter
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

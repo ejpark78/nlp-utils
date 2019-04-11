@@ -9,7 +9,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_list
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -21,7 +21,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_detail
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -33,7 +33,7 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_question_list
     extra_hosts:
       - "${MQ_HOSTS}"
-      - "corpus.ncsoft.com:172.20.79.241"
+      - "elasticsearch:172.20.79.241"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
