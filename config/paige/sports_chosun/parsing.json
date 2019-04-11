@@ -131,7 +131,7 @@
       {
         "comment": "이미지",
         "key": "image_list.image",
-        "type": "html",
+        "type": "src",
         "value_type": "unique",
         "tag": [
           {
@@ -149,8 +149,8 @@
         "comment": "이미지 캡션",
         "key": "image_list.caption",
         "type": "text",
-        "value_type": "unique",
         "delete": true,
+        "value_type": "unique",
         "tag": [
           {
             "name": "div",

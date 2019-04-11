@@ -51,7 +51,7 @@ class WebNewsCrawler(CrawlerBase):
         elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
 
         item = {
-            'url': 'https://www.yna.co.kr/view/AKR20181210150200007?section=sports/baseball',
+            'url': 'http://www.spotvnews.co.kr/?mod=news&act=articleView&idxno=207960&sc_code=1384128643&page=521&total=',
         }
 
         doc_id = self.get_doc_id(url=item['url'], job=job, item=item)

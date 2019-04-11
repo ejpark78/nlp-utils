@@ -119,6 +119,36 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "image_list.image",
+        "type": "src",
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "article-img"
+            }
+          },
+          {
+            "name": "img"
+          }
+        ]
+      },
+      {
+        "comment": "이미지 캡션",
+        "key": "image_list.caption",
+        "type": "text",
+        "delete": true,
+        "tag": [
+          {
+            "name": "div",
+            "attribute": {
+              "class": "img-info"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",

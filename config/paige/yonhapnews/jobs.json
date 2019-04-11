@@ -32,7 +32,6 @@
           "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
           "module": "save_s3",
           "path": "yonhapnews_sports",
-          "bucket": "paige-cdn-origin",
           "url_prefix": "http://paige-cdn.plaync.com"
         },
         {

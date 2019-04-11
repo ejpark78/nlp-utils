@@ -274,18 +274,14 @@ class PostProcessUtils(object):
     def save_s3(self, document, info):
         """ S3에 기사 이미지를 저장한다."""
         import boto3
-
-        from bs4 import BeautifulSoup
         from botocore.exceptions import ClientError
 
         # 이미지 목록 추출
         image_list = None
-        if 'photo_list' in document:
-            image_list = self.merge_photo_list(document)
-
-        if image_list is None and 'html_content' in document:
-            soup = BeautifulSoup(document['html_content'], 'lxml')
-            image_list = self.parser.extract_image(soup=soup, base_url=document['url'])
+        if 'image_list' in document:
+            image_list = document['image_list']
+        elif 'photo_list' in document:
+            image_list = document['image_list'] = self.merge_photo_list(document)
 
         # 추출된 이미지 목록이 없을 경우
         if image_list is None:
@@ -297,17 +293,31 @@ class PostProcessUtils(object):
             return
 
         # api 메뉴얼: http://boto3.readthedocs.io/en/latest/reference/services/s3.html
-        bucket_name = info['bucket']
+        bucket_name = os.getenv('S3_BUCKET', 'paige-cdn-origin')
+        region_name = os.getenv('S3_REGION', 'ap-northeast-2')
+
         aws_access_key_id = os.getenv('S3_ACCESS_KEY', 'AKIAI5X5SF6WJK3SFXDA')
         aws_secret_access_key = os.getenv('S3_SECRET_ACCESS_KEY', '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')
 
-        s3 = boto3.resource(
-            's3',
-            aws_access_key_id=aws_access_key_id,
-            aws_secret_access_key=aws_secret_access_key,
-        )
+        try:
+            s3 = boto3.resource(
+                service_name='s3',
+                region_name=region_name,
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+            )
 
-        bucket = s3.Bucket(bucket_name)
+            bucket = s3.Bucket(bucket_name)
+        except Exception as e:
+            log_msg = {
+                'level': 'ERROR',
+                'message': '버캣 연결 오류',
+                'bucket_name': bucket_name,
+                'region_name': region_name,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(log_msg))
+            return document
 
         # 이미지 목록
         count = 0
@@ -329,6 +339,7 @@ class PostProcessUtils(object):
                     'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))
+                return document
 
             upload_file = '{}/{}-{:02d}{}'.format(info['path'], prefix, count, suffix)
             count += 1
@@ -345,7 +356,7 @@ class PostProcessUtils(object):
                     'bucket_name': bucket_name,
                     'exception': str(e),
                 }
-                logger.info(msg=LogMsg(log_msg))
+                logger.error(msg=LogMsg(log_msg))
 
             if file_exists is True:
                 # cdn 이미지 주소 추가
@@ -354,8 +365,15 @@ class PostProcessUtils(object):
 
             # 2. s3에 업로드
             try:
-                response = bucket.put_object(Key=upload_file, Body=r.content, ACL='public-read',
-                                             ContentType=r.headers['content-type'])
+                response = bucket.put_object(
+                    Key=upload_file,
+                    Body=r.content,
+                    ACL='public-read',
+                    ContentType=r.headers['content-type'],
+                )
+
+                # cdn 이미지 주소 추가
+                image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
 
                 log_msg = {
                     'level': 'INFO',
@@ -365,15 +383,13 @@ class PostProcessUtils(object):
                     'response': response,
                 }
                 logger.info(msg=LogMsg(log_msg))
-
-                # cdn 이미지 주소 추가
-                image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
             except Exception as e:
                 log_msg = {
                     'level': 'ERROR',
                     'message': 'AWS S3 이미지 저장 에러',
                     'upload_file': upload_file,
                     'bucket_name': bucket_name,
+                    'region_name': region_name,
                     'image': image,
                     'exception': str(e),
                 }

@@ -17,7 +17,6 @@
             ],
             "db_name": "yonhapnews_sports",
             "s3": {
-                "bucket": "paige-cdn-origin",
                 "url_prefix": "http://paige-cdn.plaync.com"
             }
         },

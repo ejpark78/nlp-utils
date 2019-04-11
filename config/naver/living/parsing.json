@@ -267,7 +267,7 @@
       {
         "comment": "이미지",
         "key": "image_list.image",
-        "type": "html",
+        "type": "src",
         "tag": [
           {
             "name": "span",

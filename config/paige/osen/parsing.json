@@ -105,6 +105,20 @@
         ]
       },
       {
+        "comment": "이미지",
+        "key": "image_list.image",
+        "type": "src",
+        "delete": true,
+        "tag": [
+          {
+            "name": "img",
+            "attribute": {
+              "class": "view_photo up"
+            }
+          }
+        ]
+      },
+      {
         "comment": "텍스트 본문",
         "key": "content",
         "type": "text",
@@ -114,19 +128,6 @@
             "name": "div",
             "attribute": {
               "class": "detailView"
-            }
-          }
-        ]
-      },
-      {
-        "comment": "이미지",
-        "key": "image_list.image",
-        "type": "html",
-        "tag": [
-          {
-            "name": "img",
-            "attribute": {
-              "class": "view_photo up"
             }
           }
         ]
