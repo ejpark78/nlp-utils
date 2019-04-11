@@ -24,6 +24,12 @@
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [
         {
+          "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
+          "module": "save_s3",
+          "path": "sports_chosun",
+          "url_prefix": "http://paige-cdn.plaync.com"
+        },
+        {
           "name": "rabbit mq 에 메세지를 보낸다.",
           "module": "rabbit_mq",
           "exchange": {

@@ -276,6 +276,9 @@ class PostProcessUtils(object):
         import boto3
         from botocore.exceptions import ClientError
 
+        # debug
+        # boto3.set_stream_logger(name='botocore')
+
         # 이미지 목록 추출
         image_list = None
         if 'image_list' in document:
@@ -351,7 +354,7 @@ class PostProcessUtils(object):
                 file_exists = True
             except ClientError as e:
                 log_msg = {
-                    'level': 'INFO',
+                    'level': 'ERROR',
                     'message': 'AWS S3 파일 확인 에러',
                     'bucket_name': bucket_name,
                     'exception': str(e),
@@ -376,13 +379,13 @@ class PostProcessUtils(object):
                 image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
 
                 log_msg = {
-                    'level': 'INFO',
+                    'level': 'MESSAGE',
                     'message': 'AWS S3 이미지 저장 성공',
                     'upload_file': upload_file,
                     'cdn_image': image['cdn_image'],
                     'response': response,
                 }
-                logger.info(msg=LogMsg(log_msg))
+                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
             except Exception as e:
                 log_msg = {
                     'level': 'ERROR',
