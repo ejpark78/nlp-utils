@@ -18,17 +18,17 @@ services:
     restart: always
     mem_limit: 1G
     links:
-      - mq
+      - "mq:mq-server"
     depends_on:
       - mq
     environment:
       - "ELASTIC_HOST=http://elasticsearch:9200"
       - "KMAT_RSC=/www-data/dictionary/rsc"
       - "NAME_ENTITY_TAGGER_V2=/usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule"
-      - "USE_POST_MQ=1"
+      - "USE_POST_MQ=${USE_POST_MQ}"
       - "USE_CONSUMER=1"
       - "CONSUMER_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME}"
-      - "CONSUMER_HOST=mq"
+      - "CONSUMER_HOST=mq-server"
       - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:

@@ -9,6 +9,8 @@ RESTART = always
 RABBITMQ_USER = user
 RABBITMQ_PASS = nlplab!
 
+USE_POST_MQ = 1
+
 # 10lan
 ELASTIC_HOST = elasticsearch:10.242.94.49
 
