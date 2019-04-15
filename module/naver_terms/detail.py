@@ -35,23 +35,34 @@ class TermDetail(CrawlerBase):
         """전체 상세 페이지를 크롤링한다."""
         list_index = self.job_info['list_index']
 
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
-                                           index=self.job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=self.job_info['host'],
+            index=self.job_info['index'],
+            bulk_size=10,
+        )
 
         max_size = 1000
         size = max_size
 
         while size == max_size:
             # 질문 목록 조회
-            doc_list = self.get_doc_list(elastic_utils=elastic_utils, index=list_index,
-                                         match_phrase='{}', size=max_size)
+            doc_list = self.get_doc_list(
+                elastic_utils=elastic_utils,
+                index=list_index,
+                match_phrase='{}',
+                size=max_size,
+            )
 
             count = -1
             size = len(doc_list)
 
             for item in doc_list:
-                self.get_detail(doc=item['_source'], elastic_utils=elastic_utils,
-                                list_index=list_index, list_id=item['_id'])
+                self.get_detail(
+                    doc=item['_source'],
+                    elastic_utils=elastic_utils,
+                    list_index=list_index,
+                    list_id=item['_id'],
+                )
 
                 count += 1
                 sleep(self.sleep_time)
@@ -68,8 +79,11 @@ class TermDetail(CrawlerBase):
         request_url = doc['detail_link']
         q = self.parser.parse_url(request_url)[0]
 
-        doc_id = '{categoryId}-{cid}-{docId}'.format(docId=q['docId'], cid=q['cid'],
-                                                     categoryId=q['categoryId'])
+        doc_id = '{categoryId}-{cid}-{docId}'.format(
+            docId=q['docId'],
+            cid=q['cid'],
+            categoryId=q['categoryId'],
+        )
 
         # 이미 받은 항목인지 검사
         is_skip = elastic_utils.exists(index=self.job_info['index'], list_index=list_index,
@@ -89,18 +103,28 @@ class TermDetail(CrawlerBase):
             return
 
         # 저장
-        self.save_doc(html=resp.content, elastic_utils=elastic_utils,
-                      list_index=list_index, list_doc=doc,
-                      doc_id=doc_id, list_id=list_id)
+        self.save_doc(
+            html=resp.content,
+            elastic_utils=elastic_utils,
+            list_index=list_index,
+            list_doc=doc,
+            doc_id=doc_id,
+            list_id=list_id,
+            base_url=request_url,
+        )
 
         logger.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
 
         # 후처리 작업 실행
-        self.post_process_utils.insert_job(document=doc, post_process_list=self.post_process_list)
+        self.post_process_utils.insert_job(
+            job=None,
+            document=doc,
+            post_process_list=self.post_process_list
+        )
 
         return False
 
-    def save_doc(self, html, elastic_utils, list_index, list_doc, doc_id, list_id):
+    def save_doc(self, html, elastic_utils, list_index, list_doc, doc_id, list_id, base_url):
         """크롤링 문서를 저장한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -120,8 +144,12 @@ class TermDetail(CrawlerBase):
                 item_list = soup.find_all(trace['name'], trace['attribute'])
                 for item in item_list:
                     # html 본문에서 값 추출
-                    unit = self.parser.parse(html=None, soup=item,
-                                             parsing_info=self.parsing_info['values'])
+                    unit = self.parser.parse(
+                        html=None,
+                        soup=item,
+                        parsing_info=self.parsing_info['values'],
+                        base_url=base_url,
+                    )
 
                     html_key = self.parsing_info['trace']['key']
                     unit[html_key] = str(item).replace('\t', '')
@@ -142,10 +170,13 @@ class TermDetail(CrawlerBase):
             logger.info(msg=msg)
 
         # 질문 목록에서 완료 목록으로 이동
-        elastic_utils.move_document(source_index=list_index,
-                                    target_index='{}_done'.format(list_index),
-                                    source_id=list_id, document_id=doc_id,
-                                    merge_column='category')
+        elastic_utils.move_document(
+            source_index=list_index,
+            target_index='{}_done'.format(list_index),
+            source_id=list_id,
+            document_id=doc_id,
+            merge_column='category',
+        )
 
         return
 

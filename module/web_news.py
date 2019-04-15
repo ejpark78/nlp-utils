@@ -114,6 +114,7 @@ class WebNewsCrawler(CrawlerBase):
                     job['post_process'] = None
 
                 self.post_process_utils.insert_job(
+                    job=job,
                     document=article,
                     post_process_list=job['post_process'],
                 )
@@ -246,6 +247,7 @@ class WebNewsCrawler(CrawlerBase):
                 resp=trace,
                 url_info=url_info,
                 parsing_info=self.parsing_info['list'],
+                base_url=base_url,
             )
             if item is None:
                 continue
@@ -280,6 +282,7 @@ class WebNewsCrawler(CrawlerBase):
                 job['post_process'] = None
 
             self.post_process_utils.insert_job(
+                job=job,
                 document=article,
                 post_process_list=job['post_process'],
             )
@@ -317,6 +320,7 @@ class WebNewsCrawler(CrawlerBase):
             resp=resp,
             url_info=article_url,
             parsing_info=self.parsing_info['article'],
+            base_url=item['url'],
         )
 
         article['_id'] = doc_id
@@ -542,9 +546,9 @@ class WebNewsCrawler(CrawlerBase):
 
             self.parser.trace_tag(
                 soup=soup,
-                tag_list=self.parsing_info['trace'],
                 index=0,
                 result=trace_list,
+                tag_list=self.parsing_info['trace'],
             )
 
             str_trace_list = ''
@@ -573,7 +577,7 @@ class WebNewsCrawler(CrawlerBase):
 
         return trace_list
 
-    def parse_tag(self, resp, url_info, parsing_info):
+    def parse_tag(self, resp, url_info, parsing_info, base_url):
         """trace tag 하나를 파싱해서 반환한다."""
         # json 인 경우 맵핑값 매칭
         if 'parser' in url_info and url_info['parser'] == 'json':
@@ -590,6 +594,7 @@ class WebNewsCrawler(CrawlerBase):
                 html=None,
                 soup=resp,
                 parsing_info=parsing_info,
+                base_url=base_url,
             )
 
         # url 추출

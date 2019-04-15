@@ -14,6 +14,7 @@ import pickle
 import queue
 import threading
 from datetime import datetime
+from module.elasticsearch_utils import ElasticSearchUtils
 
 import requests
 
@@ -33,7 +34,7 @@ class PostProcessUtils(object):
         self.parser = HtmlParser()
         self.job_queue = queue.Queue()
 
-    def insert_job(self, document, post_process_list):
+    def insert_job(self, document, post_process_list, job):
         """스레드 큐에 문서와 할일을 저장한다."""
 
         if document is None:
@@ -47,7 +48,8 @@ class PostProcessUtils(object):
             return
 
         # 스래드로 작업 시작
-        job = {
+        thread_job = {
+            'job': job,
             'document': document,
             'post_process_list': post_process_list
         }
@@ -64,9 +66,9 @@ class PostProcessUtils(object):
             }
             logger.info(msg=LogMsg(log_msg))
 
-            self.job_queue.put(job)
+            self.job_queue.put(thread_job)
         else:
-            self.job_queue.put(job)
+            self.job_queue.put(thread_job)
 
         # 스래드 시작
         if start_thread is True:
@@ -93,10 +95,12 @@ class PostProcessUtils(object):
                 # elasticsearch 의 이름을 실제 아이피값으로 변환한다.
                 self.update_hostname2ip(item)
 
-                if item['module'] == 'corpus_process':
+                if item['module'] == 'save_s3':
+                    flag = self.save_s3(document=document, info=item)
+                    if flag is True and job['job'] is not None:
+                        self.update_document(document=document, job=job['job'])
+                elif item['module'] == 'corpus_process':
                     self.corpus_process(document=document, info=item)
-                elif item['module'] == 'save_s3':
-                    self.save_s3(document=document, info=item)
                 elif item['module'] == 'rabbit_mq':
                     self.rabbit_mq(document=document, info=item)
 
@@ -322,7 +326,7 @@ class PostProcessUtils(object):
                 'message': 'AWS S3 추출된 이미지 없음',
             }
             logger.info(msg=LogMsg(log_msg))
-            return
+            return False
 
         # api 메뉴얼: http://boto3.readthedocs.io/en/latest/reference/services/s3.html
         bucket_name = os.getenv('S3_BUCKET', 'paige-cdn-origin')
@@ -349,7 +353,7 @@ class PostProcessUtils(object):
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
-            return document
+            return False
 
         # 이미지 목록
         count = 0
@@ -430,4 +434,32 @@ class PostProcessUtils(object):
         # 이미지 목록 업데이트
         document['image_list'] = image_list
 
-        return document
+        return True
+
+    @staticmethod
+    def update_document(document, job):
+        """이미지 목록 추출 정보를 저장한다."""
+        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+
+        elastic_utils.save_document(document=document)
+        elastic_utils.flush()
+
+        # 로그 표시
+        doc_info = {}
+        for k in ['document_id', 'date', 'title']:
+            if k in document:
+                doc_info[k] = document[k]
+
+        msg = {
+            'level': 'MESSAGE',
+            'message': '이미지 목록 추출 정보 갱신',
+            'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                host=elastic_utils.host,
+                index=elastic_utils.index,
+                id=document['document_id'],
+            ),
+            'doc_info': doc_info,
+        }
+        logger.log(level=MESSAGE, msg=LogMsg(msg))
+
+        return

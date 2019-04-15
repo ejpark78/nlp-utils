@@ -75,8 +75,13 @@ class TermList(CrawlerBase):
                 continue
 
             # 문서 저장
-            is_stop = self.save_doc(html=resp.content, count=count,
-                                    category_name=category['name'], history=history)
+            is_stop = self.save_doc(
+                html=resp.content,
+                count=count,
+                category_name=category['name'],
+                history=history,
+                base_url=url,
+            )
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
@@ -102,12 +107,15 @@ class TermList(CrawlerBase):
 
         return
 
-    def save_doc(self, html, history, category_name, count):
+    def save_doc(self, html, history, category_name, count, base_url):
         """크롤링한 문서를 저장한다."""
         job_info = self.job_info
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'],
-                                           bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=20,
+        )
 
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -120,8 +128,12 @@ class TermList(CrawlerBase):
             item_list = soup.find_all(trace['name'], trace['attribute'])
             for item in item_list:
                 # html 본문에서 값 추출
-                doc = self.parser.parse(html=None, soup=item,
-                                        parsing_info=self.parsing_info['values'])
+                doc = self.parser.parse(
+                    html=None,
+                    soup=item,
+                    parsing_info=self.parsing_info['values'],
+                    base_url=base_url,
+                )
 
                 # url 파싱
                 q = self.parser.parse_url(doc['detail_link'])[0]

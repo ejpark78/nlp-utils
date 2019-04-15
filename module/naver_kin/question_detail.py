@@ -65,29 +65,42 @@ class QuestionDetail(CrawlerBase):
             # 질문 상세 페이지 크롤링
             request_url = self.job_info['url_frame'].format(**q)
 
-            resp = requests.get(url=request_url, headers=self.headers['mobile'],
-                                allow_redirects=True, timeout=60)
+            resp = requests.get(
+                url=request_url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=60,
+            )
 
             logger.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
 
             # 저장
-            self.save_doc(html=resp.content, elastic_utils=elastic_utils,
-                          list_index=list_index,
-                          doc_id=doc_id, list_id=item['_id'])
+            self.save_doc(
+                html=resp.content,
+                elastic_utils=elastic_utils,
+                list_index=list_index,
+                doc_id=doc_id,
+                list_id=item['_id'],
+                base_url=request_url,
+            )
 
             sleep(self.sleep_time)
 
         return
 
-    def save_doc(self, html, elastic_utils, list_index, doc_id, list_id):
+    def save_doc(self, html, elastic_utils, list_index, doc_id, list_id, base_url):
         """크롤링 문서를 저장한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
         # 이미 삭제된 질문일 경우
         if soup is not None:
             # 질문 정보 추출
-            doc = self.parser.parse(html=None, soup=soup,
-                                    parsing_info=self.parsing_info['values'])
+            doc = self.parser.parse(
+                html=None,
+                soup=soup,
+                parsing_info=self.parsing_info['values'],
+                base_url=base_url
+            )
 
             doc['_id'] = doc_id
 
@@ -98,9 +111,12 @@ class QuestionDetail(CrawlerBase):
             logger.info(msg='{} {}'.format(doc_id, doc['question']))
 
         # 질문 목록에서 완료 목록으로 이동
-        elastic_utils.move_document(source_index=list_index,
-                                    target_index='{}_done'.format(list_index),
-                                    source_id=list_id, document_id=doc_id)
+        elastic_utils.move_document(
+            source_index=list_index,
+            target_index='{}_done'.format(list_index),
+            source_id=list_id,
+            document_id=doc_id,
+        )
 
         return
 

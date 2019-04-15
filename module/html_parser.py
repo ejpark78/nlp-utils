@@ -89,7 +89,7 @@ class HtmlParser(object):
 
         return soup
 
-    def parse(self, parsing_info, html=None, soup=None):
+    def parse(self, parsing_info, base_url, html=None, soup=None):
         """ 상세 정보 HTML 을 파싱한다."""
         if html is not None:
             from bs4 import BeautifulSoup
@@ -146,6 +146,10 @@ class HtmlParser(object):
                         value = tag[item['type']]
                     else:
                         value = str(tag.prettify())
+
+                    # url 일 경우: urljoin
+                    if item['type'] == 'src' or item['type'] == 'href':
+                        value = urljoin(base_url, value)
 
                 # 태그 삭제
                 if 'delete' in item and item['delete'] is True:

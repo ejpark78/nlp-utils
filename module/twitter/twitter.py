@@ -167,12 +167,12 @@ class TwitterUtils(CrawlerBase):
 
         # 댓글 저장
         if 'page' in reply:
-            self.save_tweet(tweet, reply['page'])
+            self.save_tweet(tweet, reply['page'], base_url=url)
 
         self.sleep()
         return
 
-    def save_tweet(self, tweet, reply_page):
+    def save_tweet(self, tweet, reply_page, base_url):
         """트윗과 댓글을 저장한다."""
         job_info = self.job_info
         parsing_info = self.parsing_info
@@ -189,8 +189,12 @@ class TwitterUtils(CrawlerBase):
             item_list = soup.find_all(trace['name'], trace['attribute'])
             for item in item_list:
                 # html 본문에서 값 추출
-                values = self.parser.parse(html=None, soup=item,
-                                           parsing_info=parsing_info['values'])
+                values = self.parser.parse(
+                    html=None,
+                    soup=item,
+                    parsing_info=parsing_info['values'],
+                    base_url=base_url,
+                )
 
                 tweet_id = tweet['id']
                 if tweet_id in unique_tweet:
