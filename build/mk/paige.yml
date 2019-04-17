@@ -22,30 +22,34 @@ services:
     depends_on:
       - mq
     environment:
-      - "ELASTIC_HOST=http://elasticsearch:9200"
-      - "KMAT_RSC=/www-data/dictionary/rsc"
-      - "NAME_ENTITY_TAGGER_V2=/usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule"
+      - "ELASTIC_HOST=${ELASTIC_HOST}"
+      - "KMAT_RSC=${KMAT_RSC}"
+      - "NAME_ENTITY_TAGGER_V2=${NAME_ENTITY_TAGGER_V2}"
+      - "NLU_WRAPPER_URL=${NLU_WRAPPER_URL}"
       - "USE_POST_MQ=${USE_POST_MQ}"
-      - "USE_CONSUMER=1"
+      - "POST_MQ_HOST=${POST_MQ_HOST}"
+      - "POST_MQ_USER_NAME=${POST_MQ_USER_NAME}"
+      - "POST_MQ_USER_PASSWD=${POST_MQ_USER_PASSWD}"
+      - "USE_CONSUMER=${USE_CONSUMER}"
       - "CONSUMER_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME}"
       - "CONSUMER_HOST=mq-server"
       - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-  mlbpark-kbo:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+  yonhapnews:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-kbo
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id yonhapnews
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -54,15 +58,15 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  mlbpark-mlb:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+  spotvnews:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-mlb
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id spotvnews
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -71,15 +75,15 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  mlbpark-bullpen:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+  sports_chosun:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id mlbpark-bullpen
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id sports_chosun
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -88,15 +92,49 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  lineagem:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+  joins_live:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id lineagem
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id joins_live
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../status:/usr/local/app/status:rw
+
+  osen:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id osen
+    links:
+      - "mq:mq-server"
+    extra_hosts:
+      - "${ETC_HOSTS}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../status:/usr/local/app/status:rw
+
+  mk:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id mk
+    links:
+      - "mq:mq-server"
+    extra_hosts:
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"

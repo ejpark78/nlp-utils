@@ -88,6 +88,11 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
+    def update_data(self):
+        """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
+
+        return
+
     def re_crawl(self, date_range):
         """elasticsearch의 url 목록을 다시 크롤링한다."""
         from tqdm import tqdm

@@ -201,9 +201,7 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 #10.242.94.50 paige-elk-02
 #10.242.94.51 paige-elk-03
 
-# make CRAWLER_OPT="-re_crawl -date_range 2000-01-01~2018-12-10" major-stop
-# make CRAWLER_OPT="-re_crawl -date_range 2000-01-01~2018-12-10" major-start
-# make CRAWLER_OPT="-re_crawl -date_range 2000-01-01~2018-12-10" major-logs
+# make CRAWLER_OPT="-re_crawl -date_range 2000-01-01~2018-12-10" paige-recrawl
 
 # /usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock --tlsverify --tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert.pem --tlskey=/etc/docker/server-key.pem --dns=8.8.8.8 --dns=172.20.0.87 --dns=172.20.0.88 --bip=192.168.0.1/16 --insecure-registry=corpus:5000
 
@@ -211,3 +209,10 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 
 # public ip
 # curl https://ipinfo.io/ip
+
+
+#$ cat ~/.docker/config.json
+#{
+#	"psFormat": "table {{.Names}}\t{{.Image}}\t{{.Status}}",
+#	"statsFormat": "table {{.Name}}\t{{.CPUPerc}} / {{.MemUsage}} / {{.MemPerc}}\t{{.NetIO}} / {{.BlockIO}}"
+#}

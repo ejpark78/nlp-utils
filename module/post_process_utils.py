@@ -182,23 +182,31 @@ class PostProcessUtils(object):
 
         # 메세지 전달
         try:
-            credentials = pika.PlainCredentials(username=info['host']['user_name'],
-                                                password=info['host']['user_password'])
+            credentials = pika.PlainCredentials(
+                username=info['host']['user_name'],
+                password=info['host']['user_password'],
+            )
 
-            params = pika.ConnectionParameters(host=info['host']['name'],
-                                               port=info['host']['port'],
-                                               credentials=credentials)
+            params = pika.ConnectionParameters(
+                host=info['host']['name'],
+                port=info['host']['port'],
+                credentials=credentials,
+            )
 
             with pika.BlockingConnection(params) as connection:
                 channel = connection.channel()
 
-                channel.exchange_declare(exchange=info['exchange']['name'],
-                                         exchange_type=info['exchange']['type'],
-                                         durable=True)
+                channel.exchange_declare(
+                    exchange=info['exchange']['name'],
+                    exchange_type=info['exchange']['type'],
+                    durable=True,
+                )
 
-                channel.basic_publish(exchange=info['exchange']['name'],
-                                      routing_key='#',
-                                      body=body)
+                channel.basic_publish(
+                    exchange=info['exchange']['name'],
+                    routing_key='#',
+                    body=body,
+                )
 
                 log_msg = {
                     'level': 'MESSAGE',
@@ -246,8 +254,14 @@ class PostProcessUtils(object):
         headers = {'Content-Type': 'application/json'}
         try:
             url = info['host']
-            requests.post(url=url, json=body, headers=headers,
-                          allow_redirects=True, timeout=30, verify=False)
+            requests.post(
+                url=url,
+                json=body,
+                headers=headers,
+                allow_redirects=True,
+                timeout=30,
+                verify=False,
+            )
 
             msg = {
                 'level': 'MESSAGE',
@@ -256,7 +270,6 @@ class PostProcessUtils(object):
                 'id': document['document_id'],
                 'title': document['title'],
             }
-
             logger.log(level=MESSAGE, msg=LogMsg(msg))
         except Exception as e:
             msg = {
@@ -359,6 +372,9 @@ class PostProcessUtils(object):
         count = 0
         prefix = document['document_id']
         for image in image_list:
+            if 'image' not in image:
+                continue
+
             url = image['image']
 
             # 이미지 확장자 추출
@@ -439,7 +455,11 @@ class PostProcessUtils(object):
     @staticmethod
     def update_document(document, job):
         """이미지 목록 추출 정보를 저장한다."""
-        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=job['host'],
+            index=job['index'],
+            bulk_size=20,
+        )
 
         elastic_utils.save_document(document=document)
         elastic_utils.flush()
@@ -452,7 +472,7 @@ class PostProcessUtils(object):
 
         msg = {
             'level': 'MESSAGE',
-            'message': '이미지 목록 추출 정보 갱신',
+            'message': '이미지 추출 정보 갱신',
             'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
                 host=elastic_utils.host,
                 index=elastic_utils.index,

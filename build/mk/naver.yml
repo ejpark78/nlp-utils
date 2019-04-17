@@ -22,47 +22,34 @@ services:
     depends_on:
       - mq
     environment:
-      - "ELASTIC_HOST=http://elasticsearch:9200"
-      - "KMAT_RSC=/www-data/dictionary/rsc"
-      - "NAME_ENTITY_TAGGER_V2=/usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule"
+      - "ELASTIC_HOST=${ELASTIC_HOST}"
+      - "KMAT_RSC=${KMAT_RSC}"
+      - "NAME_ENTITY_TAGGER_V2=${NAME_ENTITY_TAGGER_V2}"
+      - "NLU_WRAPPER_URL=${NLU_WRAPPER_URL}"
       - "USE_POST_MQ=${USE_POST_MQ}"
-      - "USE_CONSUMER=1"
+      - "POST_MQ_HOST=${POST_MQ_HOST}"
+      - "POST_MQ_USER_NAME=${POST_MQ_USER_NAME}"
+      - "POST_MQ_USER_PASSWD=${POST_MQ_USER_PASSWD}"
+      - "USE_CONSUMER=${USE_CONSUMER}"
       - "CONSUMER_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME}"
       - "CONSUMER_HOST=mq-server"
       - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-
-  culture:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id culture
-    links:
-      - "mq:mq-server"
-    extra_hosts:
-      - "${ELASTIC_HOST}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   economy:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id economy
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id economy
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -72,14 +59,14 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   international:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id international
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id international
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -89,14 +76,31 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   it:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id it
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id it
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../status:/usr/local/app/status:rw
+
+  living:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id living
+    links:
+      - "mq:mq-server"
+    extra_hosts:
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -106,14 +110,14 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   opinion:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id opinion
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id opinion
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -123,14 +127,14 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   politics:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id politics
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id politics
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -140,14 +144,14 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   society:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id society
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id society
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"
@@ -157,14 +161,14 @@ services:
       - $PWD/../status:/usr/local/app/status:rw
 
   sports:
-    image: ${CRAWLER_IMAGE}
-    restart: ${RESTART}
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id sports
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id sports
     links:
       - "mq:mq-server"
     extra_hosts:
-      - "${ELASTIC_HOST}"
+      - "${ETC_HOSTS}"
     environment:
       - "${HTTP_PROXY}"
       - "${HTTPS_PROXY}"

@@ -1,11 +1,29 @@
 
+MODE =
+
 # path
 MK_DIR = mk
-YAML_DIR = yml
+YAML_DIR = mk
+
+# 값 고정
+SHELL := /bin/bash
+
+RESTART = always
+CRAWLER_OPT =
+USE_POST_MQ = 1
+
+# etc
+COMPOSE_HOST = "-H unix:///var/run/docker.sock"
+
+# 환경 변수 설정
+ENV_FILE = common.env
+
+ifeq "$(MODE)" "10lan"
+	ENV_FILE = 10lan.env
+endif
 
 .PHONY: *
 
-include $(MK_DIR)/env.mk
 include $(MK_DIR)/build.mk
 
 include $(MK_DIR)/naver.mk
@@ -24,3 +42,8 @@ include $(MK_DIR)/10lan.mk
 all-start: paige-start major-start nate-start naver-start daum-start bbs-start sns-start
 all-stop: paige-stop major-stop nate-stop naver-stop daum-stop bbs-stop sns-stop
 all-logs: paige-logs major-logs nate-logs naver-logs daum-logs bbs-logs sns-logs
+
+.ONESHELL:
+check-env:
+	source $(ENV_FILE)
+	env | sort

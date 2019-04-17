@@ -53,7 +53,7 @@
       },
       "post_process": [
         {
-          "name": "rabbit mq 에 메세지를 보낸다.",
+          "name": "RabbitMQ 메세지 전송",
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
