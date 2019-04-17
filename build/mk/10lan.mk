@@ -164,8 +164,10 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 
 .ONESHELL:
 10lan-save:
-	docker save $(CRAWLER_IMAGE) | gzip > crawler.tar.gz
-#	docker save $(CORPUS_PROCESSOR_IMAGE) | gzip > corpus-processor.tar.gz
+	source $(ENV_FILE)
+
+	docker save $$CRAWLER_IMAGE | gzip > crawler.tar.gz
+	docker save $$CORPUS_PROCESSOR_IMAGE | gzip > corpus-processor.tar.gz
 
 #	docker save $(LOGSTASH_IMAGE) | gzip > logstash.tar.gz
 #	docker save $(FILEBEAT_IMAGE) | gzip > filebeat.tar.gz
@@ -179,7 +181,7 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 .ONESHELL:
 10lan-load:
 	docker load < crawler.tar.gz
-#	docker load < corpus-processor.tar.gz
+	docker load < corpus-processor.tar.gz
 
 #	docker load < logstash.tar.gz
 #	docker load < filebeat.tar.gz
@@ -193,6 +195,11 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 #	docker load < portainer.tar.gz
 #	docker load < rabbitmq.tar.gz
 
+.ONESHELL:
+10lan-setup-file:
+	tar cvf paige-setup-$(shell date -I).tar *.env *.tar.gz Makefile mk
+
+## 메모
 # /etc/hosts 파일에서 paige-elk-01 의 아이피 127.0.1.1 을 주석처리한다.
 #127.0.1.1 paige-elk-01
 #127.0.0.1 localhost
@@ -201,18 +208,19 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 #10.242.94.50 paige-elk-02
 #10.242.94.51 paige-elk-03
 
+# docker 데몬 옵션
+# /usr/bin/dockerd
+#   -H fd:// -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock
+#   --tlsverify --tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert.pem --tlskey=/etc/docker/server-key.pem
+#   --dns=8.8.8.8 --dns=172.20.0.87 --dns=172.20.0.88
+#   --bip=192.168.0.1/16
+#   --insecure-registry=corpus:5000
+
 # make CRAWLER_OPT="-re_crawl -date_range 2000-01-01~2018-12-10" paige-recrawl
-
-# /usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock --tlsverify --tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert.pem --tlskey=/etc/docker/server-key.pem --dns=8.8.8.8 --dns=172.20.0.87 --dns=172.20.0.88 --bip=192.168.0.1/16 --insecure-registry=corpus:5000
-
-# make CRAWLER_OPT="-re_crawl" IMAGE_TAG=latest CRAWLER_RESTART=always PRJ_NAME=recrawl SUBNET="190.23.1.0/24" ELASTIC_HOST=elasticsearch:172.20.79.241 CRAWLER_RESTART=no HTTP_PROXY="http_proxy=" HTTPS_PROXY="https_proxy=" YAML="paige-s3.yml" crawler
-
-# public ip
-# curl https://ipinfo.io/ip
-
 
 #$ cat ~/.docker/config.json
 #{
 #	"psFormat": "table {{.Names}}\t{{.Image}}\t{{.Status}}",
 #	"statsFormat": "table {{.Name}}\t{{.CPUPerc}} / {{.MemUsage}} / {{.MemPerc}}\t{{.NetIO}} / {{.BlockIO}}"
 #}
+

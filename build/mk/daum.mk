@@ -3,6 +3,7 @@ DAUM_PRJ = daum
 DAUM_YAML = $(YAML_DIR)/daum.yml
 DAUM_EX_NAME = crawler.daum
 
+.ONESHELL:
 daum-start:
 	source $(ENV_FILE)
 
@@ -12,6 +13,7 @@ daum-start:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) up -d
 
+.ONESHELL:
 daum-stop:
 	source $(ENV_FILE)
 
@@ -21,6 +23,7 @@ daum-stop:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) down
 
+.ONESHELL:
 daum-logs:
 	source $(ENV_FILE)
 

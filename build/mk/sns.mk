@@ -3,6 +3,7 @@ SNS_PRJ = sns
 SNS_YAML = $(YAML_DIR)/sns.yml
 SNS_EX_NAME = crawler.sns
 
+.ONESHELL:
 sns-start:
 	source $(ENV_FILE)
 
@@ -12,6 +13,7 @@ sns-start:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) up -d
 
+.ONESHELL:
 sns-stop:
 	source $(ENV_FILE)
 
@@ -21,6 +23,7 @@ sns-stop:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) down
 
+.ONESHELL:
 sns-logs:
 	source $(ENV_FILE)
 

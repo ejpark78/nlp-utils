@@ -57,10 +57,17 @@ build:
 
 	rm app.tar.gz
 
+.ONESHELL:
 pull:
 	docker pull $(IMAGE):$(IMAGE_TAG)
 	docker pull $(IMAGE):latest
 
+	source $(ENV_FILE)
+
+	docker pull $$CRAWLER_IMAGE
+	docker pull $$CORPUS_PROCESSOR_IMAGE
+
+.ONESHELL:
 push:
 	docker push $(IMAGE):$(IMAGE_TAG)
 	docker push $(IMAGE):latest

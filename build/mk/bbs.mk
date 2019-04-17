@@ -3,6 +3,7 @@ BBS_PRJ = bbs
 BBS_YAML = $(YAML_DIR)/bbs.yml
 BBS_EX_NAME = crawler.bbs
 
+.ONESHELL:
 bbs-start:
 	source $(ENV_FILE)
 
@@ -12,6 +13,7 @@ bbs-start:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(BBS_PRJ) -f $(BBS_YAML) up -d
 
+.ONESHELL:
 bbs-stop:
 	source $(ENV_FILE)
 
@@ -21,6 +23,7 @@ bbs-stop:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(BBS_PRJ) -f $(BBS_YAML) down
 
+.ONESHELL:
 bbs-logs:
 	source $(ENV_FILE)
 

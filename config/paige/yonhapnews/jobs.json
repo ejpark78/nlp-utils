@@ -29,7 +29,7 @@
       "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": [
         {
-          "name": "기사 본문의 이미지를 AWS S3에 업로드한다.",
+          "name": "AWS S3 이미지 업로드 설정",
           "module": "save_s3",
           "path": "yonhapnews_sports",
           "url_prefix": "http://paige-cdn.plaync.com"
@@ -55,7 +55,7 @@
             },
             "module": [
               {
-                "name": "sp/pos_tagger",
+                "name": "nlu/POS",
                 "domain": "baseball",
                 "column": "html_content",
                 "result": "pos_tagged"
@@ -67,7 +67,7 @@
                 "result": "named_entity"
               },
               {
-                "name": "nc/ne_tagger_v2",
+                "name": "nlu/NER",
                 "domain": "baseball",
                 "column": "html_content",
                 "result": "named_entity_v2"

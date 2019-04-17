@@ -3,6 +3,7 @@ MAJOR_PRESS_PRJ = major
 MAJOR_PRESS_YAML = $(YAML_DIR)/major-press.yml
 MAJOR_PRESS_EX_NAME = crawler.major_press
 
+.ONESHELL:
 major-start:
 	source $(ENV_FILE)
 
@@ -12,6 +13,7 @@ major-start:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(MAJOR_PRESS_PRJ) -f $(MAJOR_PRESS_YAML) up -d
 
+.ONESHELL:
 major-stop:
 	source $(ENV_FILE)
 
@@ -21,6 +23,7 @@ major-stop:
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(MAJOR_PRESS_PRJ) -f $(MAJOR_PRESS_YAML) down
 
+.ONESHELL:
 major-logs:
 	source $(ENV_FILE)
 

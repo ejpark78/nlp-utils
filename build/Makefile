@@ -45,5 +45,13 @@ all-logs: paige-logs major-logs nate-logs naver-logs daum-logs bbs-logs sns-logs
 
 .ONESHELL:
 check-env:
-	source $(ENV_FILE)
-	env | sort
+	@source $(ENV_FILE)
+	@env | sort
+
+.ONESHELL:
+check-ip:
+	@echo "Public IP: "
+	@curl -s https://ipinfo.io/ip
+
+	@echo "Local IP: "
+	@hostname -I
