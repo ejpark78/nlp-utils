@@ -114,7 +114,11 @@ class HtmlParser(object):
             value_list = []
             for tag in tag_list:
                 # 이미 값이 있는 경우
-                if item['key'] in result and len(result[item['key']]) > 0:
+                if item['key'] in result:
+                    val = result[item['key']]
+                    if isinstance(val, str) and len(val) > 0:
+                        continue
+
                     continue
 
                 # 태그 삭제

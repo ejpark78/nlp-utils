@@ -88,8 +88,56 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def update_data(self):
+    def update_parsing_info(self, date_range, query, query_field):
         """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
+        from tqdm import tqdm
+
+        self.update_config()
+
+        for job in self.job_info:
+            elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+
+            doc_list = elastic_utils.get_url_list(
+                query=query,
+                query_field=query_field,
+                index=job['index'],
+                date_range=date_range,
+            )
+
+            for item in tqdm(doc_list):
+                for k in ['photo_list', 'photo_caption', 'edit_date']:
+                    if k in item:
+                        del item[k]
+
+                doc_id = item['document_id']
+
+                # 기사 본문 조회
+                article = self.get_article(
+                    doc_id=doc_id,
+                    item=item,
+                    job=job,
+                    elastic_utils=elastic_utils,
+                    offline=True,
+                )
+
+                # 후처리 작업 실행
+                if 'post_process' not in job:
+                    job['post_process'] = None
+
+                self.post_process_utils.insert_job(
+                    job=job,
+                    document=article,
+                    post_process_list=job['post_process'],
+                )
+
+                msg = {
+                    'level': 'INFO',
+                    'message': '뉴스 본문 크롤링: 슬립',
+                    'sleep_time': self.sleep_time,
+                }
+                logger.info(msg=LogMsg(msg))
+
+                sleep(self.sleep_time)
 
         return
 
@@ -314,16 +362,24 @@ class WebNewsCrawler(CrawlerBase):
 
         return False
 
-    def get_article(self, doc_id, item, job, elastic_utils):
+    def get_article(self, doc_id, item, job, elastic_utils, offline=False):
         """기사 본문을 조회한다."""
         article_url = None
         if 'article' in job:
             article_url = job['article']
             article_url['url'] = item['url']
 
-        resp = self.get_html_page(url_info=article_url)
-        if resp is None:
-            return None
+        if offline is True:
+            if 'raw_html' in item:
+                resp = item['raw_html']
+            elif 'html_content' not in item:
+                return None
+            else:
+                resp = item['html_content']
+        else:
+            resp = self.get_html_page(url_info=article_url)
+            if resp is None:
+                return None
 
         # 문서 저장
         article = self.parse_tag(

@@ -34,6 +34,8 @@ class PostProcessUtils(object):
         self.parser = HtmlParser()
         self.job_queue = queue.Queue()
 
+        self.is_reachable = False
+
     def insert_job(self, document, post_process_list, job):
         """스레드 큐에 문서와 할일을 저장한다."""
 
@@ -132,13 +134,48 @@ class PostProcessUtils(object):
 
         return
 
-    @staticmethod
-    def rabbit_mq(document, info):
+    def wait_mq_init(self, host, port):
+        """mq가 초기화될 때까지 기다린다."""
+        import socket
+
+        from time import sleep
+
+        if self.is_reachable is True:
+            return
+
+        ping_counter = 0
+        while self.is_reachable is False and ping_counter < 5:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.connect((host, port))
+
+                    self.is_reachable = True
+                except socket.error as e:
+                    msg = {
+                        'level': 'INFO',
+                        'message': 'RabbitMQ 접속 대기 {}'.format(ping_counter),
+                        'exception': str(e),
+                    }
+                    logger.info(msg=LogMsg(msg))
+
+                    sleep(2)
+
+                    ping_counter += 1
+
+        return
+
+    def rabbit_mq(self, document, info):
         """ Rabbit MQ로 메세지를 보낸다. """
         import pika
 
         if document is None:
             return False
+
+        # rabbit mq 접속 대기
+        self.wait_mq_init(
+            host=info['host']['name'],
+            port=info['host']['port'],
+        )
 
         payload = {
             'id': datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f'),

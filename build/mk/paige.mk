@@ -67,3 +67,16 @@ paige-recrawl-logs-dump:
 	tar cvf ../logs-$(shell date -I).tar *
 	cd ../
 	rm -rf tmp
+
+.ONESHELL:
+paige-update:
+	source $(ENV_FILE)
+
+	RESTART="no" \
+	USE_POST_MQ="0" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
+		docker-compose $(COMPOSE_HOST) -p update -f $(PAIGE_YAML) up
+
+# make CRAWLER_OPT="-update_parsing_info -date_range=2019-04-01~2019-04-01 -query_field=date" paige-update
+
