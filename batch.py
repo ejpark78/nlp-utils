@@ -54,7 +54,10 @@ def init_arguments():
 
     # 재크롤링
     parser.add_argument('-re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
-    parser.add_argument('-date_range', default='', help='curl_date 날짜 범위: 2000-01-01~2019-04-10')
+
+    parser.add_argument('-query_field', default='curl_date', help='query field')
+    parser.add_argument('-date_range', default='', help='date 날짜 범위: 2000-01-01~2019-04-10')
+    parser.add_argument('-query', default='', help='elasticsearch query')
 
     parser.add_argument('-update_data', action='store_true', default=False, help='데이터 업데이트')
 
@@ -84,7 +87,10 @@ def main():
             return
 
         if args.job_id == 'kin_detail':
-            NaverKinQuestionDetail().batch(list_index=args.index, match_phrase=args.match_phrase)
+            NaverKinQuestionDetail().batch(
+                list_index=args.index,
+                match_phrase=args.match_phrase
+            )
             return
 
     # 트위터
@@ -107,24 +113,46 @@ def main():
 
     # 디버깅 테스트
     if args.test:
-        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').test()
+        WebNewsCrawler(
+            category=args.category,
+            job_id=args.job_id,
+            column='trace_list'
+        ).test()
 
     # 재 크롤링: parsing 정보가 변경되었을 경우
     if args.re_crawl:
-        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').re_crawl(
+        WebNewsCrawler(
+            category=args.category,
+            job_id=args.job_id,
+            column='trace_list'
+        ).re_crawl(
+            query=args.query,
             date_range=args.date_range,
+            query_field=args.query_field,
         )
         return
 
     if args.update_data:
-        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').update_data()
+        WebNewsCrawler(
+            category=args.category,
+            job_id=args.job_id,
+            column='trace_list'
+        ).update_data()
         return
 
     # 웹 신문
     if args.batch:
-        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').batch()
+        WebNewsCrawler(
+            category=args.category,
+            job_id=args.job_id,
+            column='trace_list'
+        ).batch()
     else:
-        WebNewsCrawler(category=args.category, job_id=args.job_id, column='trace_list').daemon()
+        WebNewsCrawler(
+            category=args.category,
+            job_id=args.job_id,
+            column='trace_list'
+        ).daemon()
 
     return
 

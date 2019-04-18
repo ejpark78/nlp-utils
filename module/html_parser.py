@@ -168,6 +168,10 @@ class HtmlParser(object):
                     if item['type_convert'] == 'date':
                         value = self.parse_date(value)
 
+                        # 날짜 파싱이 안된 경우
+                        if isinstance(value, datetime) is False:
+                            continue
+
                 value_list.append(value)
 
             # 타입 제약: 디폴트 목록형
@@ -186,15 +190,17 @@ class HtmlParser(object):
 
             # 값의 개수가 하나인 경우, 스칼라로 변경한다.
             if isinstance(value_list, list):
+                if len(value_list) == 0:
+                    continue
+
                 if len(value_list) == 1:
                     if value_list[0] == '':
                         continue
 
                     result[item['key']] = value_list[0]
                     continue
-
-                if len(value_list) == 0:
-                    continue
+            elif value_list == '':
+                continue
 
             result[item['key']] = value_list
 

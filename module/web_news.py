@@ -93,7 +93,7 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def re_crawl(self, date_range):
+    def re_crawl(self, date_range, query, query_field):
         """elasticsearch의 url 목록을 다시 크롤링한다."""
         from tqdm import tqdm
 
@@ -102,10 +102,15 @@ class WebNewsCrawler(CrawlerBase):
         for job in self.job_info:
             elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
 
-            doc_list = elastic_utils.get_url_list(index=job['index'], date_range=date_range)
+            doc_list = elastic_utils.get_url_list(
+                query=query,
+                query_field=query_field,
+                index=job['index'],
+                date_range=date_range,
+            )
 
             for item in tqdm(doc_list):
-                for k in ['photo_list', 'photo_caption']:
+                for k in ['photo_list', 'photo_caption', 'edit_date']:
                     if k in item:
                         del item[k]
 

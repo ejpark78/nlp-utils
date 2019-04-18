@@ -18,7 +18,7 @@ services:
     restart: always
     mem_limit: 1G
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     depends_on:
       - mq
     environment:
@@ -32,7 +32,7 @@ services:
       - "POST_MQ_USER_PASSWD=${POST_MQ_USER_PASSWD}"
       - "USE_CONSUMER=${USE_CONSUMER}"
       - "CONSUMER_EXCHANGE_NAME=${RABBITMQ_EXCHANGE_NAME}"
-      - "CONSUMER_HOST=mq-server"
+      - "CONSUMER_HOST=${CONSUMER_HOST}"
       - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:
@@ -47,7 +47,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id culture
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -64,7 +64,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id economy
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -81,7 +81,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id international
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -98,7 +98,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id it
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -115,7 +115,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id opinion
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -132,7 +132,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id politics
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -149,7 +149,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id society
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:
@@ -166,7 +166,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category daum -job_id sports
     links:
-      - "mq:mq-server"
+      - "mq:${CONSUMER_HOST}"
     extra_hosts:
       - "${ETC_HOSTS}"
     environment:

@@ -9,7 +9,6 @@ naver-kin-start:
 	RESTART=$(RESTART) \
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
-	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) up -d
 
 .ONESHELL:
@@ -19,7 +18,6 @@ naver-kin-stop:
 	RESTART=$(RESTART) \
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
-	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) down
 
 .ONESHELL:
@@ -29,5 +27,4 @@ naver-kin-logs:
 	RESTART=$(RESTART) \
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
-	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) logs -f

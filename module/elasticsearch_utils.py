@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import logging
 import pickle
 from datetime import datetime
@@ -346,7 +347,7 @@ class ElasticSearchUtils(object):
 
         return result, filename
 
-    def get_url_list(self, index, size=1000, date_range=''):
+    def get_url_list(self, index, size=1000, date_range='', query='', query_field=''):
         """ elastic search 에서 url 목록을 조회한다. """
         result = []
 
@@ -354,17 +355,19 @@ class ElasticSearchUtils(object):
         sum_count = 0
         scroll_id = ''
 
-        query = {}
-        if date_range != '':
+        scroll_query = {}
+        if query != '':
+            scroll_query = json.loads(query)
+        elif date_range != '':
             token = date_range.split('~')
 
-            query = {
+            scroll_query = {
                 'query': {
                     'bool': {
                         'must': [
                             {
                                 'range': {
-                                    'curl_date': {
+                                    query_field: {
                                         'format': 'yyyy-MM-dd',
                                         'gte': token[0],
                                         'lte': token[1]
@@ -377,7 +380,11 @@ class ElasticSearchUtils(object):
             }
 
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+            hits, scroll_id, count, total = self.scroll(
+                size=size,
+                query=scroll_query,
+                scroll_id=scroll_id,
+            )
 
             sum_count += count
 
@@ -534,10 +541,13 @@ class ElasticSearchUtils(object):
         exists_doc = self.elastic.exists(index=index, doc_type='doc', id=doc_id)
 
         if exists_doc is True:
-            self.move_document(source_index=list_index,
-                               target_index='{}_done'.format(list_index),
-                               source_id=list_id, document_id=doc_id,
-                               merge_column=merge_column)
+            self.move_document(
+                source_index=list_index,
+                target_index='{}_done'.format(list_index),
+                source_id=list_id,
+                document_id=doc_id,
+                merge_column=merge_column,
+            )
             return True
 
         return False

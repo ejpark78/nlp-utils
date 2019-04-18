@@ -380,7 +380,35 @@ class PostProcessUtils(object):
             # 이미지 확장자 추출
             suffix = pathlib.Path(url).suffix
 
-            # 1. 이미지 파일 다운로드
+            upload_file = '{}/{}-{:02d}{}'.format(info['path'], prefix, count, suffix)
+            cdn_image_url = '{}/{}'.format(info['url_prefix'], upload_file)
+
+            count += 1
+
+            # 1. 파일 확인
+            file_exists = False
+            try:
+                # s3.Object(bucket_name, upload_file).get()
+                resp = requests.get(cdn_image_url)
+
+                if resp.status_code == 200:
+                    file_exists = True
+            except ClientError as e:
+                log_msg = {
+                    'level': 'ERROR',
+                    'message': 'AWS S3 파일 확인 에러',
+                    'bucket_name': bucket_name,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(log_msg))
+
+            # 이미지가 있는 경우
+            if file_exists is True:
+                # cdn 이미지 주소 추가
+                image['cdn_image'] = cdn_image_url
+                continue
+
+            # 이미지 파일 다운로드
             try:
                 r = requests.get(url)
             except Exception as e:
@@ -393,28 +421,6 @@ class PostProcessUtils(object):
                 logger.error(msg=LogMsg(log_msg))
                 return document
 
-            upload_file = '{}/{}-{:02d}{}'.format(info['path'], prefix, count, suffix)
-            count += 1
-
-            # 파일 확인
-            file_exists = False
-            try:
-                s3.Object(bucket_name, upload_file).get()
-                file_exists = True
-            except ClientError as e:
-                log_msg = {
-                    'level': 'ERROR',
-                    'message': 'AWS S3 파일 확인 에러',
-                    'bucket_name': bucket_name,
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(log_msg))
-
-            if file_exists is True:
-                # cdn 이미지 주소 추가
-                image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
-                continue
-
             # 2. s3에 업로드
             try:
                 response = bucket.put_object(
@@ -425,7 +431,7 @@ class PostProcessUtils(object):
                 )
 
                 # cdn 이미지 주소 추가
-                image['cdn_image'] = '{}/{}'.format(info['url_prefix'], upload_file)
+                image['cdn_image'] = cdn_image_url
 
                 log_msg = {
                     'level': 'MESSAGE',

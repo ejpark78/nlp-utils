@@ -5,7 +5,7 @@ MODE =
 MK_DIR = mk
 YAML_DIR = mk
 
-# 값 고정
+# source $(ENV_FILE) 용 고정값
 SHELL := /bin/bash
 
 RESTART = always
