@@ -434,8 +434,8 @@ class PostProcessUtils(object):
                 log_msg = {
                     'level': 'ERROR',
                     'message': 'AWS S3 파일 확인 에러',
-                    'bucket_name': bucket_name,
                     'exception': str(e),
+                    'bucket_name': bucket_name,
                 }
                 logger.error(msg=LogMsg(log_msg))
 
@@ -450,9 +450,9 @@ class PostProcessUtils(object):
                 r = requests.get(url)
             except Exception as e:
                 log_msg = {
+                    'url': url,
                     'level': 'ERROR',
                     'message': '이미지 파일 다운로드 에러',
-                    'url': url,
                     'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))

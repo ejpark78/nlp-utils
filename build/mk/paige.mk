@@ -37,11 +37,11 @@ paige-logs:
 paige-recrawl:
 	source $(ENV_FILE)
 
-	RESTART="no" \
-	USE_POST_MQ="0" \
-	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	RESTART=$(RESTART) \
+	CRAWLER_OPT=$(CRAWLER_OPT) \
+	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p recrawl -f $(PAIGE_YAML) up
+		docker-compose $(COMPOSE_HOST) -p recrawl_$(PAIGE_PRJ) -f $(PAIGE_YAML) up
 
 # make CRAWLER_OPT="-re_crawl -date_range=2019-04-16~2019-04-16 -query_field=date" paige-recrawl
 
@@ -49,11 +49,11 @@ paige-recrawl:
 paige-recrawl-logs:
 	source $(ENV_FILE)
 
-	RESTART="no" \
-	USE_POST_MQ="0" \
-	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	RESTART=$(RESTART) \
+	CRAWLER_OPT=$(CRAWLER_OPT) \
+	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p recrawl -f $(PAIGE_YAML) logs
+		docker-compose $(COMPOSE_HOST) -p recrawl_$(PAIGE_PRJ) -f $(PAIGE_YAML) logs
 
 .ONESHELL:
 paige-recrawl-logs-dump:
@@ -69,14 +69,14 @@ paige-recrawl-logs-dump:
 	rm -rf tmp
 
 .ONESHELL:
-paige-update:
+paige-up:
 	source $(ENV_FILE)
 
-	RESTART="no" \
-	USE_POST_MQ="0" \
-	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	RESTART=$(RESTART) \
+	CRAWLER_OPT=$(CRAWLER_OPT) \
+	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p update -f $(PAIGE_YAML) up
+		docker-compose $(COMPOSE_HOST) -p update_$(PAIGE_PRJ) -f $(PAIGE_YAML) up
 
-# make CRAWLER_OPT="-update_parsing_info -date_range=2019-04-01~2019-04-01 -query_field=date" paige-update
+# make RESTART=no USE_POST_MQ=0 CRAWLER_OPT="-update_parsing_info -date_range=2019-04-01~2019-04-01 -query_field=date" paige-up
 

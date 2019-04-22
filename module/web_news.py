@@ -376,6 +376,10 @@ class WebNewsCrawler(CrawlerBase):
                 return None
             else:
                 resp = item['html_content']
+
+            # 추출된 html_contents 가 없는 경우: 다시 크롤링
+            if isinstance(resp, list):
+                resp = self.get_html_page(url_info=article_url)
         else:
             resp = self.get_html_page(url_info=article_url)
             if resp is None:
@@ -388,6 +392,9 @@ class WebNewsCrawler(CrawlerBase):
             parsing_info=self.parsing_info['article'],
             base_url=item['url'],
         )
+
+        if article is None:
+            return None
 
         article['_id'] = doc_id
 

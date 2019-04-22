@@ -87,7 +87,13 @@ class CrawlerBase(object):
 
         # 페이지 조회
         try:
-            resp = requests.get(url=url_info['url'], headers=headers, verify=False, allow_redirects=True, timeout=60)
+            resp = requests.get(
+                url=url_info['url'],
+                verify=False,
+                timeout=60,
+                headers=headers,
+                allow_redirects=True,
+            )
         except Exception as e:
             sleep_time = 10
 
@@ -132,8 +138,7 @@ class CrawlerBase(object):
             soup, encoding = self.get_encoding_type(result)
 
         if encoding is not None:
-            content = resp.content
-            result = content.decode(encoding, 'ignore')
+            result = resp.content.decode(encoding, 'ignore')
 
         return result
 
