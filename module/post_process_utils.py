@@ -14,10 +14,10 @@ import pickle
 import queue
 import threading
 from datetime import datetime
-from module.elasticsearch_utils import ElasticSearchUtils
 
 import requests
 
+from module.elasticsearch_utils import ElasticSearchUtils
 from module.html_parser import HtmlParser
 from module.logging_format import LogMessage as LogMsg
 
@@ -357,10 +357,16 @@ class PostProcessUtils(object):
     def save_s3(self, document, info):
         """ S3에 기사 이미지를 저장한다."""
         import boto3
-        from botocore.exceptions import ClientError
+        # from botocore.exceptions import ClientError
 
         # debug
         # boto3.set_stream_logger(name='botocore')
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/70.0.3538.110 Safari/537.36'
+        }
 
         # 이미지 목록 추출
         image_list = None
@@ -424,20 +430,20 @@ class PostProcessUtils(object):
 
             # 1. 파일 확인
             file_exists = False
-            try:
-                # s3.Object(bucket_name, upload_file).get()
-                resp = requests.get(cdn_image_url)
-
-                if resp.status_code == 200:
-                    file_exists = True
-            except ClientError as e:
-                log_msg = {
-                    'level': 'ERROR',
-                    'message': 'AWS S3 파일 확인 에러',
-                    'exception': str(e),
-                    'bucket_name': bucket_name,
-                }
-                logger.error(msg=LogMsg(log_msg))
+            # try:
+            #     s3.Object(bucket_name, upload_file).get()
+            #     # resp = requests.get(cdn_image_url)
+            #
+            #     # if resp.status_code == 200:
+            #     #     file_exists = True
+            # except ClientError as e:
+            #     log_msg = {
+            #         'level': 'ERROR',
+            #         'message': 'AWS S3 파일 확인 에러',
+            #         'exception': str(e),
+            #         'bucket_name': bucket_name,
+            #     }
+            #     logger.error(msg=LogMsg(log_msg))
 
             # 이미지가 있는 경우
             if file_exists is True:
@@ -447,7 +453,17 @@ class PostProcessUtils(object):
 
             # 이미지 파일 다운로드
             try:
-                r = requests.get(url)
+                r = requests.get(url, headers=headers)
+
+                if r.status_code // 100 != 2:
+                    log_msg = {
+                        'url': url,
+                        'level': 'ERROR',
+                        'message': '이미지 파일 다운로드 에러',
+                        'status_code': r.status_code,
+                    }
+                    logger.error(msg=LogMsg(log_msg))
+                    continue
             except Exception as e:
                 log_msg = {
                     'url': url,
@@ -456,7 +472,7 @@ class PostProcessUtils(object):
                     'exception': str(e),
                 }
                 logger.error(msg=LogMsg(log_msg))
-                return document
+                continue
 
             # 2. s3에 업로드
             try:

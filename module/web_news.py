@@ -92,6 +92,8 @@ class WebNewsCrawler(CrawlerBase):
         """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
         from tqdm import tqdm
 
+        image_replace = True
+
         self.update_config()
 
         for job in self.job_info:
@@ -105,6 +107,9 @@ class WebNewsCrawler(CrawlerBase):
             )
 
             for item in tqdm(doc_list):
+                if 'image_list' not in item:
+                    continue
+
                 for k in ['photo_list', 'photo_caption', 'edit_date']:
                     if k in item:
                         del item[k]
@@ -120,15 +125,18 @@ class WebNewsCrawler(CrawlerBase):
                     offline=True,
                 )
 
-                # 후처리 작업 실행
-                if 'post_process' not in job:
-                    job['post_process'] = None
+                if image_replace:
+                    self.post_process_utils.save_s3(document=article, info=job['post_process'][0])
+                else:
+                    # 후처리 작업 실행
+                    if 'post_process' not in job:
+                        job['post_process'] = None
 
-                self.post_process_utils.insert_job(
-                    job=job,
-                    document=article,
-                    post_process_list=job['post_process'],
-                )
+                    self.post_process_utils.insert_job(
+                        job=job,
+                        document=article,
+                        post_process_list=job['post_process'],
+                    )
 
                 msg = {
                     'level': 'INFO',
