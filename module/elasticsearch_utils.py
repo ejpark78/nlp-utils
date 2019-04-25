@@ -177,8 +177,12 @@ class ElasticSearchUtils(object):
         params = {'request_timeout': 2 * 60}
 
         try:
-            response = self.elastic.bulk(index=self.index, body=self.bulk_data[self.host],
-                                         refresh=True, params=params)
+            response = self.elastic.bulk(
+                index=self.index,
+                body=self.bulk_data[self.host],
+                refresh=True,
+                params=params,
+            )
 
             size = len(self.bulk_data[self.host])
             doc_id_list = []
@@ -247,7 +251,12 @@ class ElasticSearchUtils(object):
 
         result = []
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(index=index, scroll_id=scroll_id, size=size, query=query)
+            hits, scroll_id, count, total = self.scroll(
+                index=index,
+                scroll_id=scroll_id,
+                size=size,
+                query=query,
+            )
 
             sum_count += count
 
@@ -286,10 +295,20 @@ class ElasticSearchUtils(object):
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            search_result = self.elastic.search(index=index, doc_type='doc', body=query, scroll='2m',
-                                                size=size, params=params)
+            search_result = self.elastic.search(
+                index=index,
+                doc_type='doc',
+                body=query,
+                scroll='2m',
+                size=size,
+                params=params,
+            )
         else:
-            search_result = self.elastic.scroll(scroll_id=scroll_id, scroll='2m', params=params)
+            search_result = self.elastic.scroll(
+                scroll_id=scroll_id,
+                scroll='2m',
+                params=params,
+            )
 
         # 검색 결과 추출
         scroll_id = search_result['_scroll_id']
@@ -321,7 +340,11 @@ class ElasticSearchUtils(object):
         }
 
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(scroll_id=scroll_id, size=size, query=query)
+            hits, scroll_id, count, total = self.scroll(
+                scroll_id=scroll_id,
+                size=size,
+                query=query,
+            )
 
             sum_count += count
 

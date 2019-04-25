@@ -109,11 +109,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  osen:
+  mk:
     image: "${CRAWLER_IMAGE}"
     restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id osen
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id mk
     links:
       - "mq:${CONSUMER_HOST}"
     extra_hosts:
@@ -126,11 +126,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
-  mk:
+  osen:
     image: "${CRAWLER_IMAGE}"
     restart: "${RESTART}"
     working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id mk
+    command: python3 batch.py ${CRAWLER_OPT} -category paige -job_id osen
     links:
       - "mq:${CONSUMER_HOST}"
     extra_hosts:

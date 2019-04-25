@@ -134,7 +134,7 @@
             "name": "crawler.daum"
           },
           "host": {
-            "name": "mq-server",
+            "name": "mq_server",
             "port": 5672,
             "user_name": "user",
             "user_password": "nlplab!"

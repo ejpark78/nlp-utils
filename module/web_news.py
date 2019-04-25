@@ -7,15 +7,14 @@ from __future__ import print_function
 
 import json
 import logging
-import os
 import re
 from datetime import datetime, timedelta
+from time import sleep
 from urllib.parse import urljoin
 
 import urllib3
 from dateutil.parser import parse as date_parse
 from dateutil.rrule import rrule, DAILY
-from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -92,12 +91,19 @@ class WebNewsCrawler(CrawlerBase):
         """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
         from tqdm import tqdm
 
-        image_replace = True
+        image_replace = False
+
+        # query = '{"query":{"bool":{"must":[{"match":{"url":"G1111128035"}}]}}}'
+        # image_replace = True
 
         self.update_config()
 
         for job in self.job_info:
-            elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+            elastic_utils = ElasticSearchUtils(
+                host=job['host'],
+                index=job['index'],
+                bulk_size=20,
+            )
 
             doc_list = elastic_utils.get_url_list(
                 query=query,
@@ -110,6 +116,7 @@ class WebNewsCrawler(CrawlerBase):
                 if 'image_list' not in item:
                     continue
 
+                # 필드 삭제
                 for k in ['photo_list', 'photo_caption', 'edit_date']:
                     if k in item:
                         del item[k]
@@ -126,7 +133,9 @@ class WebNewsCrawler(CrawlerBase):
                 )
 
                 if image_replace:
-                    self.post_process_utils.save_s3(document=article, info=job['post_process'][0])
+                    flag = self.post_process_utils.save_s3(document=article, info=job['post_process'][0])
+                    if flag is True:
+                        self.post_process_utils.update_document(document=article, job=job)
                 else:
                     # 후처리 작업 실행
                     if 'post_process' not in job:

@@ -7,9 +7,9 @@ PAIGE_EX_NAME = crawler.paige
 paige-start:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(PAIGE_PRJ) -f $(PAIGE_YAML) up -d
 
@@ -17,9 +17,9 @@ paige-start:
 paige-stop:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(PAIGE_PRJ) -f $(PAIGE_YAML) down
 
@@ -27,9 +27,9 @@ paige-stop:
 paige-logs:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p $(PAIGE_PRJ) -f $(PAIGE_YAML) logs -f
 
@@ -37,9 +37,9 @@ paige-logs:
 paige-recrawl:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p recrawl_$(PAIGE_PRJ) -f $(PAIGE_YAML) up
 
@@ -49,9 +49,9 @@ paige-recrawl:
 paige-recrawl-logs:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
 		docker-compose $(COMPOSE_HOST) -p recrawl_$(PAIGE_PRJ) -f $(PAIGE_YAML) logs
 
@@ -68,15 +68,17 @@ paige-recrawl-logs-dump:
 	cd ../
 	rm -rf tmp
 
+SCALE_OPT = --scale osen=0 --scale mk=0 --scale joins_live=0 --scale sports_chosun=0 --scale spotvnews=0 --scale yonhapnews=0
+
 .ONESHELL:
 paige-up:
 	source $(ENV_FILE)
 
-	RESTART=$(RESTART) \
-	CRAWLER_OPT=$(CRAWLER_OPT) \
-	USE_POST_MQ=$(USE_POST_MQ) \
+	RESTART="$(RESTART)" \
+	CRAWLER_OPT="$(CRAWLER_OPT)" \
+	USE_POST_MQ="$(USE_POST_MQ)" \
 	RABBITMQ_EXCHANGE_NAME="$(PAIGE_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p update_$(PAIGE_PRJ) -f $(PAIGE_YAML) up
+		docker-compose $(COMPOSE_HOST) -p update_$(PAIGE_PRJ) -f $(PAIGE_YAML) up $(SCALE_OPT)
 
 # make RESTART=no USE_POST_MQ=0 CRAWLER_OPT="-update_parsing_info -date_range=2019-04-01~2019-04-01 -query_field=date" paige-up
 

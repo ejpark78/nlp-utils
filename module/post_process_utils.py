@@ -357,7 +357,7 @@ class PostProcessUtils(object):
     def save_s3(self, document, info):
         """ S3에 기사 이미지를 저장한다."""
         import boto3
-        # from botocore.exceptions import ClientError
+        from botocore.exceptions import ClientError
 
         # debug
         # boto3.set_stream_logger(name='botocore')
@@ -423,27 +423,27 @@ class PostProcessUtils(object):
             # 이미지 확장자 추출
             suffix = pathlib.Path(url).suffix
 
-            upload_file = '{}/{}-{:02d}{}'.format(info['path'], prefix, count, suffix)
+            upload_file = '{}/{}-{:02d}-1{}'.format(info['path'], prefix, count, suffix)
             cdn_image_url = '{}/{}'.format(info['url_prefix'], upload_file)
 
             count += 1
 
             # 1. 파일 확인
             file_exists = False
-            # try:
-            #     s3.Object(bucket_name, upload_file).get()
-            #     # resp = requests.get(cdn_image_url)
-            #
-            #     # if resp.status_code == 200:
-            #     #     file_exists = True
-            # except ClientError as e:
-            #     log_msg = {
-            #         'level': 'ERROR',
-            #         'message': 'AWS S3 파일 확인 에러',
-            #         'exception': str(e),
-            #         'bucket_name': bucket_name,
-            #     }
-            #     logger.error(msg=LogMsg(log_msg))
+            try:
+                # s3.Object(bucket_name, upload_file).get()
+                resp = requests.get(cdn_image_url)
+
+                if resp.status_code // 100 != 2 and len(resp.content) > 10240:
+                    file_exists = True
+            except ClientError as e:
+                log_msg = {
+                    'level': 'ERROR',
+                    'message': 'AWS S3 파일 확인 에러',
+                    'exception': str(e),
+                    'bucket_name': bucket_name,
+                }
+                logger.error(msg=LogMsg(log_msg))
 
             # 이미지가 있는 경우
             if file_exists is True:
