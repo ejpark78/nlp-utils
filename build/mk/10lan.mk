@@ -197,7 +197,7 @@ RABBIT_MQ_IMAGE = rabbitmq:3-management
 
 .ONESHELL:
 10lan-setup-file:
-	tar cvf paige-setup-$(shell date -I).tar *.env *.tar.gz Makefile mk d.*
+	tar cvf paige-setup-$(shell date -I).tar *.env *.tar.gz Makefile mk 
 
 ## 메모
 # /etc/hosts 파일에서 paige-elk-01 의 아이피 127.0.1.1 을 주석처리한다.
