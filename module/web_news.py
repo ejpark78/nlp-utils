@@ -8,7 +8,7 @@ from __future__ import print_function
 import json
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from time import sleep
 from urllib.parse import urljoin
 
@@ -40,6 +40,8 @@ class WebNewsCrawler(CrawlerBase):
         self.column = column
 
         self.trace_depth = 0
+
+        self.KST = timezone(timedelta(hours=9), 'Asia/Seoul')
 
     def test(self):
         """디버그"""
@@ -222,7 +224,9 @@ class WebNewsCrawler(CrawlerBase):
 
             date_list = list(rrule(DAILY, dtstart=start_date, until=until))
             for dt in date_list:
-                if dt > datetime.now() + timedelta(1):
+                date_now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+
+                if dt > date_now + timedelta(1):
                     break
 
                 # page 단위로 크롤링한다.
@@ -561,7 +565,7 @@ class WebNewsCrawler(CrawlerBase):
         self.remove_date_column(doc=doc, html=html)
 
         # 문서 아이디 추출
-        doc['curl_date'] = datetime.now()
+        doc['curl_date'] = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
 
         # 문서 저장
         elastic_utils.save_document(document=doc)
