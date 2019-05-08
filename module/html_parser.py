@@ -7,7 +7,7 @@ from __future__ import print_function
 
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
@@ -18,6 +18,7 @@ from module.logging_format import LogMessage as LogMsg
 
 logger = logging.getLogger()
 
+KST = timezone(timedelta(hours=9), 'Asia/Seoul')
 
 class HtmlParser(object):
     """HTML 파싱"""
@@ -244,18 +245,22 @@ class HtmlParser(object):
             # 상대 시간 계산
             if '일전' in date:
                 offset = int(date.replace('일전', ''))
-                date = datetime.now()
+                date = datetime.utcnow()
                 date += relativedelta(days=-offset)
+                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif '분전' in date:
                 offset = int(date.replace('분전', ''))
-                date = datetime.now()
+                date = datetime.utcnow()
                 date += relativedelta(minutes=-offset)
+                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif '시간전' in date:
                 offset = int(date.replace('시간전', ''))
-                date = datetime.now()
+                date = datetime.utcnow()
                 date += relativedelta(hours=-offset)
+                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif date != '':
                 date = parse_date(date)
+                date = date.replace(tzinfo=KST)
         except Exception as e:
             msg = {
                 'level': 'ERROR',

@@ -8,7 +8,7 @@ from __future__ import print_function
 import json
 import logging
 import pickle
-from datetime import datetime
+from datetime import datetime, timezone
 from os.path import isfile
 
 from elasticsearch import Elasticsearch
@@ -63,7 +63,7 @@ class ElasticSearchUtils(object):
             item = document[k]
 
             if isinstance(item, datetime):
-                document[k] = item.strftime('%Y-%m-%dT%H:%M:%S')
+                document[k] = item.isoformat()
 
         return document
 
@@ -112,7 +112,7 @@ class ElasticSearchUtils(object):
             # 날짜 변환
             document = self.convert_datetime(document=document)
 
-            document_id = datetime.now().strftime('%Y%m%d_%H%M%S.%f')
+            document_id = datetime.utcnow(timezone.utc).isoformat()
 
             if '_id' in document:
                 document_id = document['_id']

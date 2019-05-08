@@ -13,7 +13,7 @@ import pathlib
 import pickle
 import queue
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -178,7 +178,7 @@ class PostProcessUtils(object):
         )
 
         payload = {
-            'id': datetime.now().strftime('%Y-%m-%d_%H:%M:%S.%f'),
+            'id': datetime.utcnow().replace(tzinfo=timezone.utc).isoformat(),
             'document': document
         }
         try:
@@ -271,7 +271,7 @@ class PostProcessUtils(object):
             item = document[k]
 
             if isinstance(item, datetime):
-                document[k] = item.strftime('%Y-%m-%dT%H:%M:%S')
+                document[k] = item.isoformat()
 
         return document
 
