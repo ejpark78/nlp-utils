@@ -112,7 +112,7 @@ class ElasticSearchUtils(object):
             # 날짜 변환
             document = self.convert_datetime(document=document)
 
-            document_id = datetime.utcnow(timezone.utc).isoformat()
+            document_id = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
 
             if '_id' in document:
                 document_id = document['_id']

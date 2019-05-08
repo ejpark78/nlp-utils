@@ -18,14 +18,13 @@ from module.logging_format import LogMessage as LogMsg
 
 logger = logging.getLogger()
 
-KST = timezone(timedelta(hours=9), 'Asia/Seoul')
 
 class HtmlParser(object):
     """HTML 파싱"""
 
     def __init__(self):
         """ 생성자 """
-        pass
+        self.KST = timezone(timedelta(hours=9), 'Asia/Seoul')
 
     @staticmethod
     def merge_values(item):
@@ -245,22 +244,18 @@ class HtmlParser(object):
             # 상대 시간 계산
             if '일전' in date:
                 offset = int(date.replace('일전', ''))
-                date = datetime.utcnow()
+                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
                 date += relativedelta(days=-offset)
-                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif '분전' in date:
                 offset = int(date.replace('분전', ''))
-                date = datetime.utcnow()
+                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
                 date += relativedelta(minutes=-offset)
-                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif '시간전' in date:
                 offset = int(date.replace('시간전', ''))
-                date = datetime.utcnow()
+                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
                 date += relativedelta(hours=-offset)
-                date.replace(tzinfo=timezone.utc).astimezone(KST)
             elif date != '':
-                date = parse_date(date)
-                date = date.replace(tzinfo=KST)
+                date = parse_date(date).replace(tzinfo=self.KST)
         except Exception as e:
             msg = {
                 'level': 'ERROR',
