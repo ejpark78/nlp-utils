@@ -231,8 +231,7 @@ class HtmlParser(object):
 
         return
 
-    @staticmethod
-    def parse_date(date):
+    def parse_date(self, date):
         """날짜를 변환한다."""
         try:
             if '오전' in date:
