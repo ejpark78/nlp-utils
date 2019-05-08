@@ -224,7 +224,8 @@ class WebNewsCrawler(CrawlerBase):
 
             date_list = list(rrule(DAILY, dtstart=start_date, until=until))
             for dt in date_list:
-                date_now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+                # date_now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+                date_now = datetime.now()
 
                 if dt > date_now + timedelta(1):
                     break
