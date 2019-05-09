@@ -50,6 +50,7 @@ build:
 		--label "version=$(IMAGE_TAG)" \
 		--label "image_name=$(IMAGE)" \
 		--label "build-date=$(shell date +'%Y-%m-%d %H:%M:%S')" \
+		--label "git.commit_id=$(shell git rev-parse HEAD)" \
 		--add-host "corpus.ncsoft.com:172.20.79.241" \
 		.
 
