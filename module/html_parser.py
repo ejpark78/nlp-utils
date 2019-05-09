@@ -7,7 +7,7 @@ from __future__ import print_function
 
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from urllib.parse import urljoin
 
 import pytz
@@ -26,6 +26,7 @@ class HtmlParser(object):
     def __init__(self):
         """ 생성자 """
         self.timezone = pytz.timezone('Asia/Seoul')
+        self.kst_timezone = timezone(timedelta(hours=9))
 
     @staticmethod
     def merge_values(item):
@@ -254,8 +255,7 @@ class HtmlParser(object):
                 offset = int(str_date.replace('시간전', ''))
                 date += relativedelta(hours=-offset)
             elif str_date != '':
-                dt = parse_date(str_date)
-                date = self.timezone.localize(dt)
+                date = parse_date(str_date).replace(tzinfo=self.kst_timezone)
         except Exception as e:
             msg = {
                 'level': 'ERROR',
