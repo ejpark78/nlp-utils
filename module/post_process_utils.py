@@ -13,8 +13,9 @@ import pathlib
 import pickle
 import queue
 import threading
-from datetime import datetime, timezone
+from datetime import datetime
 
+import pytz
 import requests
 
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -35,6 +36,8 @@ class PostProcessUtils(object):
         self.job_queue = queue.Queue()
 
         self.is_reachable = False
+
+        self.timezone = pytz.timezone('Asia/Seoul')
 
     def insert_job(self, document, post_process_list, job):
         """스레드 큐에 문서와 할일을 저장한다."""
@@ -178,7 +181,7 @@ class PostProcessUtils(object):
         )
 
         payload = {
-            'id': datetime.utcnow().replace(tzinfo=timezone.utc).isoformat(),
+            'id': datetime.now(self.timezone).isoformat(),
             'document': document
         }
         try:

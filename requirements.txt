@@ -18,3 +18,4 @@ werkzeug
 botocore
 queues
 pika
+pytz

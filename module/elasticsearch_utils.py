@@ -8,9 +8,10 @@ from __future__ import print_function
 import json
 import logging
 import pickle
-from datetime import datetime, timezone
+from datetime import datetime
 from os.path import isfile
 
+import pytz
 from elasticsearch import Elasticsearch
 
 from module.logging_format import LogMessage as LogMsg
@@ -34,6 +35,8 @@ class ElasticSearchUtils(object):
         self.bulk_size = bulk_size
 
         self.insert = insert
+
+        self.timezone = pytz.timezone('Asia/Seoul')
 
         if self.host is not None:
             self.open()
@@ -112,7 +115,7 @@ class ElasticSearchUtils(object):
             # 날짜 변환
             document = self.convert_datetime(document=document)
 
-            document_id = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+            document_id = datetime.now(self.timezone).isoformat()
 
             if '_id' in document:
                 document_id = document['_id']

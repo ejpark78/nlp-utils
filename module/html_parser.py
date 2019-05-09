@@ -7,9 +7,10 @@ from __future__ import print_function
 
 import logging
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from urllib.parse import urljoin
 
+import pytz
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
@@ -24,7 +25,7 @@ class HtmlParser(object):
 
     def __init__(self):
         """ 생성자 """
-        self.KST = timezone(timedelta(hours=9), 'Asia/Seoul')
+        self.timezone = pytz.timezone('Asia/Seoul')
 
     @staticmethod
     def merge_values(item):
@@ -231,40 +232,40 @@ class HtmlParser(object):
 
         return
 
-    def parse_date(self, date):
+    def parse_date(self, str_date):
         """날짜를 변환한다."""
         try:
-            if '오전' in date:
-                date = date.replace('오전', '') + ' AM'
+            if '오전' in str_date:
+                str_date = str_date.replace('오전', '') + ' AM'
 
-            if '오후' in date:
-                date = date.replace('오후', '') + ' PM'
+            if '오후' in str_date:
+                str_date = str_date.replace('오후', '') + ' PM'
+
+            date = datetime.now(self.timezone)
 
             # 상대 시간 계산
-            if '일전' in date:
-                offset = int(date.replace('일전', ''))
-                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+            if '일전' in str_date:
+                offset = int(str_date.replace('일전', ''))
                 date += relativedelta(days=-offset)
-            elif '분전' in date:
-                offset = int(date.replace('분전', ''))
-                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+            elif '분전' in str_date:
+                offset = int(str_date.replace('분전', ''))
                 date += relativedelta(minutes=-offset)
-            elif '시간전' in date:
-                offset = int(date.replace('시간전', ''))
-                date = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+            elif '시간전' in str_date:
+                offset = int(str_date.replace('시간전', ''))
                 date += relativedelta(hours=-offset)
-            elif date != '':
-                date = parse_date(date).replace(tzinfo=self.KST)
+            elif str_date != '':
+                dt = parse_date(str_date)
+                date = self.timezone.localize(dt)
         except Exception as e:
             msg = {
                 'level': 'ERROR',
                 'message': 'html 날짜 변환 에러',
-                'date': date,
+                'date': str_date,
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(msg))
 
-            return date
+            return str_date
 
         return date
 

@@ -8,12 +8,13 @@ from __future__ import print_function
 import json
 import logging
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from time import sleep
 from urllib.parse import urljoin
 
+import pytz
 import urllib3
-from dateutil.parser import parse as date_parse
+from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
@@ -41,7 +42,7 @@ class WebNewsCrawler(CrawlerBase):
 
         self.trace_depth = 0
 
-        self.KST = timezone(timedelta(hours=9), 'Asia/Seoul')
+        self.timezone = pytz.timezone('Asia/Seoul')
 
     def test(self):
         """디버그"""
@@ -219,13 +220,15 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             # 날짜 지정시
-            start_date = date_parse(self.status['start_date'])
-            until = date_parse(self.status['end_date'])
+            start_date = parse_date(self.status['start_date'])
+            start_date = self.timezone.localize(start_date)
+
+            until = parse_date(self.status['end_date'])
+            until = self.timezone.localize(until)
 
             date_list = list(rrule(DAILY, dtstart=start_date, until=until))
             for dt in date_list:
-                # date_now = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
-                date_now = datetime.now()
+                date_now = datetime.now(self.timezone)
 
                 if dt > date_now + timedelta(1):
                     break
@@ -490,7 +493,7 @@ class WebNewsCrawler(CrawlerBase):
     @staticmethod
     def remove_date_column(doc, html):
         """날짜 필드를 확인해서 날짜 파싱 오류일 경우, 날짜 필드를 삭제한다."""
-        from dateutil.parser import parse as parse_date
+        tz = pytz.timezone('Asia/Seoul')
 
         if 'date' not in doc:
             msg = {
@@ -508,7 +511,8 @@ class WebNewsCrawler(CrawlerBase):
 
         if parsing_error is False and isinstance(doc['date'], str):
             try:
-                parse_date(doc['date'])
+                doc['date'] = parse_date(doc['date'])
+                doc['date'] = tz.localize(doc['date'])
             except Exception as e:
                 parsing_error = True
                 str_e = str(e)
@@ -566,7 +570,7 @@ class WebNewsCrawler(CrawlerBase):
         self.remove_date_column(doc=doc, html=html)
 
         # 문서 아이디 추출
-        doc['curl_date'] = datetime.utcnow().replace(tzinfo=timezone.utc).astimezone(self.KST)
+        doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
         # 문서 저장
         elastic_utils.save_document(document=doc)
