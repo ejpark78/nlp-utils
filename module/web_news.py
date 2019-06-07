@@ -50,7 +50,12 @@ class WebNewsCrawler(CrawlerBase):
 
         job = self.job_info[0]
 
-        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=job['host'],
+            index=job['index'],
+            bulk_size=20,
+            http_auth=job['http_auth'],
+        )
 
         item = {
             'url': 'http://sports.chosun.com/news/news.htm?id=201905150100105140006997&ServiceDate=20190514',
@@ -106,6 +111,7 @@ class WebNewsCrawler(CrawlerBase):
                 host=job['host'],
                 index=job['index'],
                 bulk_size=20,
+                http_auth=job['http_auth'],
             )
 
             doc_list = elastic_utils.get_url_list(
@@ -168,7 +174,12 @@ class WebNewsCrawler(CrawlerBase):
         self.update_config()
 
         for job in self.job_info:
-            elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+            elastic_utils = ElasticSearchUtils(
+                host=job['host'],
+                index=job['index'],
+                bulk_size=20,
+                http_auth=job['http_auth'],
+            )
 
             doc_list = elastic_utils.get_url_list(
                 query=query,
@@ -322,7 +333,12 @@ class WebNewsCrawler(CrawlerBase):
         base_url = self.parser.parse_url(url_info['url'])[1]
 
         # 디비에 연결한다.
-        elastic_utils = ElasticSearchUtils(host=job['host'], index=job['index'], bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=job['host'],
+            index=job['index'],
+            bulk_size=20,
+            http_auth=job['http_auth'],
+        )
 
         # 개별 뉴스를 따라간다.
         for trace in trace_list:

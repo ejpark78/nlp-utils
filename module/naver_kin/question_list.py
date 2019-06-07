@@ -64,8 +64,12 @@ class QuestionList(CrawlerBase):
 
     def get_question_list(self, category, size=20):
         """ 네이버 지식인 경제 분야 질문 목록을 크롤링한다."""
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
-                                           bulk_size=50)
+        elastic_utils = ElasticSearchUtils(
+            host=self.job_info['host'],
+            index=self.job_info['index'],
+            bulk_size=50,
+            http_auth=self.job_info['http_auth'],
+        )
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'], self.status['step']):

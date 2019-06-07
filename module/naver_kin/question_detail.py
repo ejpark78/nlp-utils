@@ -33,8 +33,12 @@ class QuestionDetail(CrawlerBase):
 
     def batch(self, list_index='crawler-naver-kin-question_list', match_phrase='{}'):
         """상세 페이지를 크롤링한다."""
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'],
-                                           index=self.job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=self.job_info['host'],
+            index=self.job_info['index'],
+            bulk_size=10,
+            http_auth=self.job_info['http_auth'],
+        )
 
         # 질문 목록 조회
         doc_list = self.get_doc_list(elastic_utils=elastic_utils, index=list_index,

@@ -115,6 +115,7 @@ class TermList(CrawlerBase):
             host=job_info['host'],
             index=job_info['index'],
             bulk_size=20,
+            http_auth=job_info['http_auth'],
         )
 
         soup = BeautifulSoup(html, 'html5lib')

@@ -22,9 +22,10 @@ logger = logging.getLogger()
 class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
-    def __init__(self, host, index, bulk_size=1000, insert=True, doc_type='doc'):
+    def __init__(self, host, index, http_auth='crawler:crawler2019', bulk_size=1000, insert=True, doc_type='doc'):
         """ 생성자 """
         self.host = host
+        self.http_auth = (http_auth.split(':'))
 
         self.elastic = None
 
@@ -74,7 +75,11 @@ class ElasticSearchUtils(object):
         """서버에 접속한다."""
         # host 접속
         try:
-            self.elastic = Elasticsearch(hosts=self.host, timeout=30)
+            self.elastic = Elasticsearch(
+                hosts=self.host,
+                http_auth=self.http_auth,
+                timeout=30,
+            )
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
@@ -611,7 +616,11 @@ def main():
 
     args = ElasticSearchUtils.init_arguments()
 
-    utils = ElasticSearchUtils(host=args.host, index=args.index)
+    utils = ElasticSearchUtils(
+        host=args.host,
+        index=args.index,
+        http_auth='crawler:crawler2019'
+    )
 
     if args.dump_data:
         doc_list = utils.dump(args.index)

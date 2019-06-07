@@ -521,6 +521,7 @@ class PostProcessUtils(object):
             host=job['host'],
             index=job['index'],
             bulk_size=20,
+            http_auth=job['http_auth'],
         )
 
         elastic_utils.save_document(document=document)

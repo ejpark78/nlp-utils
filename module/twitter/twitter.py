@@ -178,8 +178,12 @@ class TwitterUtils(CrawlerBase):
         parsing_info = self.parsing_info
         trace_tag = parsing_info['trace']['tag']
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'],
-                                           bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=20,
+            http_auth=job_info['http_auth'],
+        )
 
         soup = BeautifulSoup(reply_page, 'html5lib')
 

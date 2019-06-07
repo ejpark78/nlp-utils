@@ -34,8 +34,12 @@ class CorpusUtils(object):
         import re
 
         # 데이터 덤프
-        elastic_utils = ElasticSearchUtils(host=self.job_info['host'], index=self.job_info['index'],
-                                           bulk_size=20)
+        elastic_utils = ElasticSearchUtils(
+            host=self.job_info['host'],
+            index=self.job_info['index'],
+            bulk_size=20,
+            http_auth=self.job_info['http_auth'],
+        )
 
         doc_list = elastic_utils.dump()
 

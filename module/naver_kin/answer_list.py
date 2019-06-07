@@ -33,7 +33,12 @@ class AnswerList(CrawlerBase):
         """지식 파트너 목록을 크롤링한다."""
         job_info = self.cfg.job_info['partner_list']
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=10,
+            http_auth=job_info['http_auth'],
+        )
 
         for page in range(1, 1000):
             request_url = job_info['url_frame'].format(page=page)
@@ -67,7 +72,12 @@ class AnswerList(CrawlerBase):
 
         job_info = self.cfg.job_info['partner_list']
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=10,
+            http_auth=job_info['http_auth'],
+        )
 
         expert_type_list = ['doctor', 'lawyer', 'labor', 'animaldoctor', 'pharmacist', 'taxacc', 'dietitian']
 
@@ -108,7 +118,12 @@ class AnswerList(CrawlerBase):
         month = 0
         for year in range(2012, 2019):
             index = '{}_{}'.format(job_info['index'], year)
-            elastic_utils = ElasticSearchUtils(host=job_info['host'], index=index, bulk_size=10)
+            elastic_utils = ElasticSearchUtils(
+                host=job_info['host'],
+                index=index,
+                bulk_size=10,
+                http_auth=job_info['http_auth'],
+            )
 
             url = job_info['url_list'].format(year=year)
 
@@ -145,7 +160,12 @@ class AnswerList(CrawlerBase):
         """ 분야별 전문가 목록을 추출한다. """
         job_info = self.cfg.job_info['rank_user_list']
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=10,
+            http_auth=job_info['http_auth'],
+        )
 
         category_list = job_info['category_list']
 

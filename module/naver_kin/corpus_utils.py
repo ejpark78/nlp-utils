@@ -113,7 +113,12 @@ class CorpusUtils(object):
             }
         }
 
-        elastic_utils = ElasticSearchUtils(host=job_info['host'], index=job_info['index'], bulk_size=10)
+        elastic_utils = ElasticSearchUtils(
+            host=job_info['host'],
+            index=job_info['index'],
+            bulk_size=10,
+            http_auth=job_info['http_auth'],
+        )
 
         data_list = elastic_utils.dump(index=index, query=query, only_source=False, limit=5000)
 

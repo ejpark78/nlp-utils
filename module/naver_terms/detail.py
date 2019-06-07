@@ -39,6 +39,7 @@ class TermDetail(CrawlerBase):
             host=self.job_info['host'],
             index=self.job_info['index'],
             bulk_size=10,
+            http_auth=self.job_info['http_auth'],
         )
 
         max_size = 1000

@@ -4,7 +4,8 @@
   },
   "question_list": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-question_list",
     "url_frame": "https://m.kin.naver.com/mobile/qna/kinupList.nhn?sortType=writeTime&resultMode=json&dirId={dir_id}&countPerPage={size}&page={page}",
     "category": [
@@ -764,35 +765,39 @@
   },
   "detail": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-detail",
     "url_frame": "https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId}",
     "category": [
-
     ]
   },
   "partner_list": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-partner_list",
     "url_frame": "https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId=0"
   },
   "expert_list": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-expert_user_list",
     "url_frame": "https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0"
   },
   "elite_user_list": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-elite_user_list",
     "url_list": "https://kin.naver.com/hall/eliteUser.nhn?year={year}",
     "url_frame": "https://kin.naver.com/ajax/eliteUserAjax.nhn?year={year}&month={month}&page={page}"
   },
   "rank_user_list": {
     "sleep": 10,
-    "host": "http://elasticsearch:9200",
+    "host": "http://frodo:9200",
+    "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-rank_user_list",
     "url_list": "https://kin.naver.com/qna/directoryExpertList.nhn?dirId={dir_id}",
     "url_frame": [
