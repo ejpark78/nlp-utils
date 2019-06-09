@@ -5,7 +5,7 @@
   },
   "trace_list": [
     {
-      "host": "http://frodo:9200",
+      "host": "http://elasticsearch:9200",
       "http_auth": "crawler:crawler2019",
       "index": "crawler-major_press-mk",
       "sleep": 2,
@@ -44,7 +44,7 @@
           "payload": {
             "post_mq": true,
             "elastic": {
-              "host": "http://frodo:9200",
+              "host": "http://elasticsearch:9200",
               "http_auth": "crawler:crawler2019",
               "index": "corpus_process-major_press-mk"
             },
