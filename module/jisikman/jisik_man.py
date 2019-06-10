@@ -91,13 +91,7 @@ class JisikMan:
 
     @staticmethod
     def parse_time_gap(time_gap, date=None):
-        """
-        타임 갭을 실제 시간 문자열로 변환해서 반환
-
-        :param time_gap:
-        :param date:
-        :return:
-        """
+        """ 타임 갭을 실제 시간 문자열로 변환해서 반환한다. """
         if date is None:
             date = datetime.now()
 
