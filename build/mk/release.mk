@@ -7,7 +7,7 @@ release-g5:
 .ONESHELL:
 release-g6:
 	rsync -avz --delete --exclude=*.tar.gz ./ g6:crawler/build/
-	rsync -avz --delete ../config/ g6:crawler/config/
+#	rsync -avz --delete ../config/ g6:crawler/config/
 
 .ONESHELL:
 release-g7:

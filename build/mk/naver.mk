@@ -11,7 +11,7 @@ naver-start:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) up -d
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) up -d $(SCALE)
 
 .ONESHELL:
 naver-stop:
@@ -21,7 +21,7 @@ naver-stop:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(NAVER_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) down
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_PRJ) -f $(NAVER_YAML) down --remove-orphans
 
 .ONESHELL:
 naver-logs:

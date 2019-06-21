@@ -9,7 +9,7 @@ naver-kin-start:
 	RESTART=$(RESTART) \
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
-		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) up -d
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) up -d $(SCALE)
 
 .ONESHELL:
 naver-kin-stop:
@@ -18,7 +18,7 @@ naver-kin-stop:
 	RESTART=$(RESTART) \
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
-		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) down
+		docker-compose $(COMPOSE_HOST) -p $(NAVER_KIN_PRJ) -f $(NAVER_KIN_YAML) down --remove-orphans
 
 .ONESHELL:
 naver-kin-logs:

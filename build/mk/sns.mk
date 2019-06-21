@@ -11,7 +11,7 @@ sns-start:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(SNS_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) up -d
+		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) up -d $(SCALE)
 
 .ONESHELL:
 sns-stop:
@@ -21,7 +21,7 @@ sns-stop:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(SNS_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) down
+		docker-compose $(COMPOSE_HOST) -p $(SNS_PRJ) -f $(SNS_YAML) down --remove-orphans
 
 .ONESHELL:
 sns-logs:

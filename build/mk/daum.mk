@@ -11,7 +11,7 @@ daum-start:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(DAUM_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) up -d
+		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) up -d $(SCALE)
 
 .ONESHELL:
 daum-stop:
@@ -21,7 +21,7 @@ daum-stop:
 	CRAWLER_OPT=$(CRAWLER_OPT) \
 	USE_POST_MQ=$(USE_POST_MQ) \
 	RABBITMQ_EXCHANGE_NAME="$(DAUM_EX_NAME)" \
-		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) down
+		docker-compose $(COMPOSE_HOST) -p $(DAUM_PRJ) -f $(DAUM_YAML) down --remove-orphans
 
 .ONESHELL:
 daum-logs:

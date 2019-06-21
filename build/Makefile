@@ -12,6 +12,9 @@ RESTART = always
 CRAWLER_OPT =
 USE_POST_MQ = 1
 
+#  --scale mlbpark-kbo=0 --scale mlbpark-mlb=0 --scale mlbpark-bullpen=0 --scale lineagem=0
+SCALE =
+
 # etc
 COMPOSE_HOST = "-H unix:///var/run/docker.sock"
 
@@ -27,12 +30,8 @@ include $(MK_DIR)/nate.mk
 include $(MK_DIR)/daum.mk
 include $(MK_DIR)/bbs.mk
 include $(MK_DIR)/sns.mk
-include $(MK_DIR)/paige.mk
-include $(MK_DIR)/major-press.mk
 
 include $(MK_DIR)/release.mk
-
-include $(MK_DIR)/10lan.mk
 
 # batch
 all-start: nate-start naver-start daum-start bbs-start sns-start
