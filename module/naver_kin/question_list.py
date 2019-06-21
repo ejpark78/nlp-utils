@@ -13,9 +13,12 @@ import urllib3
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
+from module.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
+
+MESSAGE = 25
 
 logger = logging.getLogger()
 
@@ -42,7 +45,13 @@ class QuestionList(CrawlerBase):
             # 시작
             self.batch()
 
-            logger.info('데몬 슬립: {} 초'.format(daemon_info['sleep']))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '데몬 슬립',
+                'sleep_time': daemon_info['sleep'],
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
+
             sleep(daemon_info['sleep'])
 
     def batch(self):
@@ -76,10 +85,21 @@ class QuestionList(CrawlerBase):
             query_url = self.job_info['url_frame'].format(dir_id=category['id'], size=size, page=page)
 
             try:
-                resp = requests.get(url=query_url, headers=self.headers['mobile'],
-                                    allow_redirects=True, timeout=60)
+                resp = requests.get(
+                    url=query_url,
+                    headers=self.headers['mobile'],
+                    allow_redirects=True,
+                    timeout=60,
+                )
             except Exception as e:
-                logger.error(msg='{}'.format(e))
+                msg = {
+                    'level': 'ERROR',
+                    'message': '질문 목록 조회 에러',
+                    'query_url': query_url,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
+
                 sleep(10)
                 continue
 
@@ -88,7 +108,13 @@ class QuestionList(CrawlerBase):
                 if is_stop is True:
                     break
             except Exception as e:
-                logger.error(msg='{}'.format(e))
+                msg = {
+                    'level': 'ERROR',
+                    'message': '질문 목록 저장 에러',
+                    'query_url': query_url,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
                 break
 
             # 현재 상태 저장
@@ -98,7 +124,14 @@ class QuestionList(CrawlerBase):
             self.cfg.save_status()
 
             # 로그 표시
-            logger.info(msg='{} {:,} ~ {:,}'.format(category['name'], page, self.status['end']))
+            msg = {
+                'level': 'INFO',
+                'message': '기사 저장 성공',
+                'category_name': category['name'],
+                'page': page,
+                'end': self.status['end'],
+            }
+            logger.info(msg=LogMsg(msg))
 
             sleep(self.sleep_time)
 
@@ -130,7 +163,17 @@ class QuestionList(CrawlerBase):
             doc['_id'] = doc_id
 
             elastic_utils.save_document(document=doc)
-            logger.info(msg='{} {}'.format(doc_id, doc['title']))
+
+            msg = {
+                'level': 'MESSAGE',
+                'message': '문서 저장 성공',
+                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                    host=elastic_utils.host,
+                    index=elastic_utils.index,
+                    id=doc_id,
+                )
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         elastic_utils.flush()
 

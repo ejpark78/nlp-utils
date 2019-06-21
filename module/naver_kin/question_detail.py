@@ -10,10 +10,17 @@ import logging
 from time import sleep
 
 import requests
+import urllib3
 from bs4 import BeautifulSoup
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
+from module.logging_format import LogMessage as LogMsg
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
+
+MESSAGE = 25
 
 logger = logging.getLogger()
 
@@ -41,8 +48,11 @@ class QuestionDetail(CrawlerBase):
         )
 
         # 질문 목록 조회
-        doc_list = self.get_doc_list(elastic_utils=elastic_utils, index=list_index,
-                                     match_phrase=match_phrase)
+        doc_list = self.get_doc_list(
+            elastic_utils=elastic_utils,
+            index=list_index,
+            match_phrase=match_phrase,
+        )
 
         i = -1
         size = len(doc_list)
@@ -59,11 +69,21 @@ class QuestionDetail(CrawlerBase):
 
             # 이미 받은 항목인지 검사
             if 'question_list' not in list_index:
-                is_skip = elastic_utils.exists(index=self.job_info['index'], list_index=list_index,
-                                               doc_id=doc_id, list_id=item['_id'])
+                is_skip = elastic_utils.exists(
+                    index=self.job_info['index'],
+                    list_index=list_index,
+                    doc_id=doc_id,
+                    list_id=item['_id'],
+                )
 
                 if is_skip is True:
-                    logger.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+                    msg = {
+                        'level': 'INFO',
+                        'message': 'SKIP',
+                        'doc_id': doc_id,
+                        'index': self.job_info['index'],
+                    }
+                    logger.info(msg=LogMsg(msg))
                     continue
 
             # 질문 상세 페이지 크롤링
@@ -76,7 +96,15 @@ class QuestionDetail(CrawlerBase):
                 timeout=60,
             )
 
-            logger.info(msg='상세 질문: {:,}/{:,} {} {}'.format(i, size, doc_id, request_url))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '상세 질문',
+                'i': i,
+                'size': size,
+                'doc_id': doc_id,
+                'request_url': request_url,
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             # 저장
             self.save_doc(
@@ -87,6 +115,13 @@ class QuestionDetail(CrawlerBase):
                 list_id=item['_id'],
                 base_url=request_url,
             )
+
+            msg = {
+                'level': 'MESSAGE',
+                'message': '데몬 슬립',
+                'sleep_time': self.sleep_time,
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             sleep(self.sleep_time)
 
@@ -112,7 +147,13 @@ class QuestionDetail(CrawlerBase):
             elastic_utils.save_document(index=self.job_info['index'], document=doc)
             elastic_utils.flush()
 
-            logger.info(msg='{} {}'.format(doc_id, doc['question']))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '질문 저장',
+                'doc_id': doc_id,
+                'question': doc['question'],
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(
@@ -141,6 +182,10 @@ class QuestionDetail(CrawlerBase):
                 }
             }
 
-        result = elastic_utils.dump(index=index, query=query,
-                                    only_source=False, limit=5000)
+        result = elastic_utils.dump(
+            index=index,
+            query=query,
+            only_source=False,
+            limit=5000,
+        )
         return result

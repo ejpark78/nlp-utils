@@ -10,6 +10,7 @@ import sys
 
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
+from module.naver_kin.answer_list import AnswerList as NaverKinAnswerList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
 from module.naver_terms.detail import TermDetail as NaverTermDetail
 from module.naver_terms.term_list import TermList as NaverTermList
@@ -84,6 +85,10 @@ def main():
 
         if args.job_id == 'kin_question_list':
             NaverKinQuestionList().daemon()
+            return
+
+        if args.job_id == 'kin_answer_list':
+            NaverKinAnswerList().daemon()
             return
 
         if args.job_id == 'kin_detail':

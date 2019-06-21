@@ -87,8 +87,13 @@ class TermDetail(CrawlerBase):
         )
 
         # 이미 받은 항목인지 검사
-        is_skip = elastic_utils.exists(index=self.job_info['index'], list_index=list_index,
-                                       doc_id=doc_id, list_id=list_id, merge_column='category')
+        is_skip = elastic_utils.exists(
+            index=self.job_info['index'],
+            list_index=list_index,
+            doc_id=doc_id,
+            list_id=list_id,
+            merge_column='category',
+        )
 
         if is_skip is True:
             logger.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
@@ -96,8 +101,12 @@ class TermDetail(CrawlerBase):
 
         # 질문 상세 페이지 크롤링
         try:
-            resp = requests.get(url=request_url, headers=self.headers['mobile'],
-                                allow_redirects=True, timeout=60)
+            resp = requests.get(
+                url=request_url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=60,
+            )
         except Exception as e:
             logger.error('{}'.format(e))
             sleep(10)

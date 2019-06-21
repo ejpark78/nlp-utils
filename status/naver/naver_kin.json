@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "103",
-      "name": "컴퓨터통신/운영체제(OS)"
+      "id": "402",
+      "name": "경제/부동산"
     },
     "end": 100,
-    "start": 13,
+    "start": 55,
     "step": 1
   }
 }

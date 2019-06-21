@@ -9,9 +9,16 @@ import logging
 from time import sleep
 
 import requests
+import urllib3
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
+from module.logging_format import LogMessage as LogMsg
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
+
+MESSAGE = 25
 
 logger = logging.getLogger()
 
@@ -29,6 +36,35 @@ class AnswerList(CrawlerBase):
 
         self.update_config()
 
+    def daemon(self):
+        """batch를 무한 반복한다."""
+        while True:
+            # batch 시작전 설정 변경 사항을 업데이트 한다.
+            self.update_config()
+
+            daemon_info = self.cfg.job_info['daemon']
+
+            # 시작
+            self.batch()
+
+            msg = {
+                'level': 'MESSAGE',
+                'message': '데몬 슬립',
+                'sleep_time': daemon_info['sleep'],
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
+
+            sleep(daemon_info['sleep'])
+
+    def batch(self):
+        """ 질문 목록 전부를 가져온다. """
+        self.get_partner_list()
+        self.get_expert_list()
+        self.get_elite_user_list()
+        self.get_rank_user_list()
+
+        return
+
     def get_partner_list(self):
         """지식 파트너 목록을 크롤링한다."""
         job_info = self.cfg.job_info['partner_list']
@@ -43,8 +79,13 @@ class AnswerList(CrawlerBase):
         for page in range(1, 1000):
             request_url = job_info['url_frame'].format(page=page)
 
-            request_result = requests.get(url=request_url, headers=self.headers['mobile'],
-                                          allow_redirects=True, timeout=30, verify=False)
+            request_result = requests.get(
+                url=request_url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=30,
+                verify=False,
+            )
 
             result = request_result.json()
 
@@ -53,7 +94,13 @@ class AnswerList(CrawlerBase):
                 if size == 0:
                     break
 
-                logger.info(msg='{}, {}'.format(size, request_url))
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': '지식 파트너 목록 요청',
+                    'size': size,
+                    'request_url': request_url,
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
 
                 for doc in result['lists']:
                     doc['_id'] = doc['u']
@@ -85,8 +132,13 @@ class AnswerList(CrawlerBase):
             for page in range(1, 1000):
                 request_url = job_info['url_frame'].format(expert_type=expert_type, page=page)
 
-                request_result = requests.get(url=request_url, headers=self.headers['mobile'],
-                                              allow_redirects=True, timeout=30, verify=False)
+                request_result = requests.get(
+                    url=request_url,
+                    headers=self.headers['mobile'],
+                    allow_redirects=True,
+                    timeout=30,
+                    verify=False,
+                )
 
                 result = request_result.json()
 
@@ -95,7 +147,13 @@ class AnswerList(CrawlerBase):
                     if size == 0:
                         break
 
-                    logger.info(msg='{}, {}'.format(size, request_url))
+                    msg = {
+                        'level': 'MESSAGE',
+                        'message': '분야별 전문가 목록 요청',
+                        'size': size,
+                        'request_url': request_url,
+                    }
+                    logger.log(level=MESSAGE, msg=LogMsg(msg))
 
                     for doc in result['result']:
                         doc['expert_type'] = expert_type
@@ -127,23 +185,44 @@ class AnswerList(CrawlerBase):
 
             url = job_info['url_list'].format(year=year)
 
-            result = requests.get(url=url, headers=self.headers['mobile'],
-                                  allow_redirects=True, timeout=30, verify=False)
+            result = requests.get(
+                url=url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=30,
+                verify=False,
+            )
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
-            logger.info(msg='eliteUser cookie: {} {}'.format(result, cookies))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '명예의 전당 쿠키 정보',
+                'cookies': str(cookies),
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             self.headers['mobile']['referer'] = url
             for page in range(1, 6):
                 list_url = job_info['url_frame'].format(year=year, month=month, page=page)
 
-                request_result = requests.get(url=list_url, headers=self.headers['mobile'], cookies=cookies,
-                                              allow_redirects=True, timeout=60)
+                request_result = requests.get(
+                    url=list_url,
+                    headers=self.headers['mobile'],
+                    cookies=cookies,
+                    allow_redirects=True,
+                    timeout=60,
+                )
 
                 result = request_result.json()
 
                 if 'eliteUserList' in result:
-                    logger.info(msg='{}, {}'.format(len(result['eliteUserList']), list_url))
+                    msg = {
+                        'level': 'MESSAGE',
+                        'message': '명예의 전당 목록 요청',
+                        'size': len(result['eliteUserList']),
+                        'list_url': list_url,
+                    }
+                    logger.log(level=MESSAGE, msg=LogMsg(msg))
 
                     for doc in result['eliteUserList']:
                         doc['_id'] = doc['u']
@@ -173,11 +252,21 @@ class AnswerList(CrawlerBase):
             dir_id = category_list[dir_name]
             url = job_info['url_list'].format(dir_id=dir_id)
 
-            result = requests.get(url=url, headers=self.headers['mobile'],
-                                  allow_redirects=True, timeout=30, verify=False)
+            result = requests.get(
+                url=url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=30,
+                verify=False,
+            )
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
-            logger.info(msg='cookie: {} {}'.format(result, cookies))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '분야별 전문가 쿠키 정보',
+                'cookies': str(cookies),
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             self.headers['mobile']['referer'] = url
 
@@ -185,13 +274,24 @@ class AnswerList(CrawlerBase):
                 for page in range(1, 10):
                     list_url = u_frame.format(dir_id=dir_id, page=page)
 
-                    request_result = requests.get(url=list_url, headers=self.headers['mobile'], cookies=cookies,
-                                                  allow_redirects=True, timeout=60)
+                    request_result = requests.get(
+                        url=list_url,
+                        headers=self.headers['mobile'],
+                        cookies=cookies,
+                        allow_redirects=True,
+                        timeout=60,
+                    )
 
                     result = request_result.json()
 
                     if 'result' in result:
-                        logger.info(msg='{}, {}'.format(len(result['result']), list_url))
+                        msg = {
+                            'level': 'MESSAGE',
+                            'message': '분야별 전문가 목록 요청',
+                            'size': len(result['result']),
+                            'list_url': list_url,
+                        }
+                        logger.log(level=MESSAGE, msg=LogMsg(msg))
 
                         for doc in result['result']:
                             doc['_id'] = doc['u']
