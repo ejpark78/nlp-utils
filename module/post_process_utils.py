@@ -126,7 +126,7 @@ class PostProcessUtils(object):
         if 'host' not in item['payload']['elastic']:
             return
 
-        # "host": "http://elasticsearch:9200",
+        # "host": "https://corpus.ncsoft.com:9200",
         url = item['payload']['elastic']['host']
         addr = urlparse(url)
 
@@ -314,7 +314,7 @@ class PostProcessUtils(object):
         except Exception as e:
             msg = {
                 'level': 'ERROR',
-                'message': '코퍼스 전처리 에러',
+                'message': '코퍼스 전처리 에러 (api)',
                 'id': document['document_id'],
                 'exception': str(e),
             }

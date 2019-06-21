@@ -8,13 +8,18 @@ from __future__ import print_function
 import json
 import logging
 import pickle
+import ssl
 from datetime import datetime
 from os.path import isfile
 
 import pytz
+import urllib3
 from elasticsearch import Elasticsearch
+from elasticsearch.connection import create_ssl_context
 
 from module.logging_format import LogMessage as LogMsg
+
+urllib3.disable_warnings()
 
 logger = logging.getLogger()
 
@@ -22,7 +27,15 @@ logger = logging.getLogger()
 class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
-    def __init__(self, host, index, http_auth='crawler:crawler2019', bulk_size=1000, insert=True, doc_type='doc'):
+    def __init__(
+            self,
+            host,
+            index,
+            http_auth='crawler:crawler2019',
+            bulk_size=1000,
+            insert=True,
+            doc_type='doc',
+    ):
         """ 생성자 """
         self.host = host
         self.http_auth = (http_auth.split(':'))
@@ -42,21 +55,33 @@ class ElasticSearchUtils(object):
         if self.host is not None:
             self.open()
 
-    @staticmethod
-    def create_index(elastic, index=None):
+    def create_index(self, elastic, index=None):
         """인덱스를 생성한다."""
         if elastic is None:
             return False
 
-        elastic.indices.create(
-            index=index,
-            body={
-                'settings': {
-                    'number_of_shards': 3,
-                    'number_of_replicas': 3
+        try:
+            elastic.indices.create(
+                index=index,
+                http_auth=self.http_auth,
+                verify_certs=False,
+                body={
+                    'settings': {
+                        'number_of_shards': 3,
+                        'number_of_replicas': 3
+                    }
                 }
+            )
+        except Exception as e:
+            log_msg = {
+                'level': 'ERROR',
+                'message': '인덱스 생성 에러',
+                'host': self.host,
+                'index': self.index,
+                'exception': str(e),
             }
-        )
+            logger.error(msg=LogMsg(log_msg))
+            return
 
         return True
 
@@ -73,12 +98,21 @@ class ElasticSearchUtils(object):
 
     def open(self):
         """서버에 접속한다."""
+        # https://github.com/elastic/elasticsearch-py/issues/712
+        ssl_context = create_ssl_context()
+
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+
         # host 접속
         try:
             self.elastic = Elasticsearch(
                 hosts=self.host,
-                http_auth=self.http_auth,
                 timeout=30,
+                http_auth=self.http_auth,
+                ssl_context=ssl_context,
+                verify_certs=False,
+                ssl_show_warn=False,
             )
         except Exception as e:
             log_msg = {
@@ -91,14 +125,13 @@ class ElasticSearchUtils(object):
             return
 
         try:
-            if self.elastic.indices.exists(self.index) is False:
+            if self.elastic.indices.exists(index=self.index) is False:
                 self.create_index(self.elastic, self.index)
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
-                'message': '인덱스 생성 에러',
+                'message': '인덱스 확인 에러',
                 'host': self.host,
-                'index': self.index,
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))

@@ -15,7 +15,7 @@ base:
 	docker build \
 		-t $(BASE_IMAGE) \
 		-f base/Dockerfile \
-		--add-host "corpus.ncsoft.com:172.20.79.241" \
+		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
 		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
 		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
@@ -51,7 +51,7 @@ build:
 		--label "image_name=$(IMAGE)" \
 		--label "build-date=$(shell date +'%Y-%m-%d %H:%M:%S')" \
 		--label "git.commit_id=$(shell git rev-parse HEAD)" \
-		--add-host "corpus.ncsoft.com:172.20.79.241" \
+		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		.
 
 	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
