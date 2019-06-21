@@ -1,0 +1,340 @@
+{
+  "trace_list": {
+    "parser": "html5lib",
+    "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
+    "trace": [
+      {
+        "select": "table.board_list_table tr.table_body"
+      }
+    ],
+    "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
+    "list": [
+      {
+        "comment": "게시글 아이디",
+        "key": "article_id",
+        "type": "text",
+        "value_type": "single",
+        "tag": [
+          {
+            "select": "td.id"
+          }
+        ]
+      },
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "value_type": "single",
+        "tag": [
+          {
+            "select": "td.subject a.deco"
+          }
+        ]
+      },
+      {
+        "comment": "url",
+        "key": "url",
+        "type": "href",
+        "value_type": "single",
+        "tag": [
+          {
+            "select": "td.subject a.deco"
+          }
+        ]
+      },
+      {
+        "comment": "소분류",
+        "key": "sub_category",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.divsn"
+          }
+        ]
+      },
+      {
+        "comment": "사용자명",
+        "key": "writer",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.writer"
+          }
+        ]
+      },
+      {
+        "comment": "댓글수",
+        "key": "reply_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.subject span.num"
+          }
+        ]
+      },
+      {
+        "comment": "추천수",
+        "key": "recommend_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.recomd"
+          }
+        ]
+      },
+      {
+        "comment": "조회수",
+        "key": "view_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.hit"
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "tag": [
+          {
+            "select": "td.time"
+          }
+        ]
+      }
+    ],
+    "#article": "기사 본문에서 추출해야하는 tag 정보",
+    "article": [
+      {
+        "comment": "소분류",
+        "key": "sub_category",
+        "type": "text",
+        "tag": [
+          {
+            "select": "h4.subject span.subject_text"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[[](.+?)[]].*$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "select": "h4.subject span.subject_text"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[[].+?[]](.+)$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "댓글수",
+        "key": "reply_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "h4.subject strong.reply_count"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[[](.+?)[]].*$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "작성자",
+        "key": "writer",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info strong.nick"
+          }
+        ]
+      },
+      {
+        "comment": "작성자 srl",
+        "key": "member_srl",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info span.member_srl"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[(](.+?)[)].*$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "출석일수",
+        "key": "attend",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info span.attend"
+          }
+        ]
+      },
+      {
+        "comment": "출석일수",
+        "key": "level",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info span.level"
+          }
+        ]
+      },
+      {
+        "comment": "사용자 경험지수",
+        "key": "experience",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info span.exp_text"
+          }
+        ]
+      },
+      {
+        "comment": "추천수",
+        "key": "like_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.user_info span.like"
+          }
+        ]
+      },
+      {
+        "comment": "날짜",
+        "key": "date",
+        "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
+        "tag": [
+          {
+            "select": "div.user_info span.regdate"
+          }
+        ],
+        "replace": [
+          {
+            "from": "[(](.+?)[)]",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "html 본문",
+        "key": "html_content",
+        "type": "html",
+        "value_type": "merge",
+        "tag": [
+          {
+            "select": "div.board_main_view > div.view_content"
+          }
+        ]
+      },
+      {
+        "comment": "텍스트 본문",
+        "key": "content",
+        "type": "text",
+        "value_type": "merge",
+        "tag": [
+          {
+            "select": "div.board_main_view > div.view_content"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 목록",
+        "key": "replay_html_content",
+        "type": "html",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 작성자",
+        "key": "replay_list.writer",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.user div.nick"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 작성자 srl",
+        "key": "replay_list.member_srl",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.user span.member_srl"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[(](.+?)[)].*$",
+            "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 텍스트",
+        "key": "replay_list.text",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.comment span.text"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 작성 시간",
+        "key": "replay_list.date",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper span.time"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 좋아요 수량",
+        "key": "replay_list.like_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper button.btn_like span.num"
+          }
+        ]
+      },
+      {
+        "comment": "댓글 싫어요 수량",
+        "key": "replay_list.dislike_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper button.btn_dislike span.num"
+          }
+        ]
+      }
+    ]
+  }
+}

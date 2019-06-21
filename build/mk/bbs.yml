@@ -116,3 +116,22 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
+
+  ruliweb:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category bbs -job_id ruliweb
+    links:
+      - "mq:mq_server"
+    depends_on:
+      - mq
+    extra_hosts:
+      - "${ETC_HOSTS}"
+    environment:
+      - "${HTTP_PROXY}"
+      - "${HTTPS_PROXY}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/../status:/usr/local/app/status:rw

@@ -63,8 +63,6 @@ class ElasticSearchUtils(object):
         try:
             elastic.indices.create(
                 index=index,
-                http_auth=self.http_auth,
-                verify_certs=False,
                 body={
                     'settings': {
                         'number_of_shards': 3,

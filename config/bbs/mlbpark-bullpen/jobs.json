@@ -13,7 +13,7 @@
         {
           "url_frame": "http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=bullpen&query=&select=&user=",
           "category": "BULLPEN",
-          "check_id": true
+          "check_id": false
         }
       ],
       "article": {

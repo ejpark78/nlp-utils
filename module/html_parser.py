@@ -224,7 +224,12 @@ class HtmlParser(object):
         if 'attribute' not in tag_info:
             tag_info['attribute'] = None
 
-        trace_soup = soup.find_all(tag_info['name'], attrs=tag_info['attribute'])
+        if 'select' in tag_info:
+            # css select 인 경우
+            trace_soup = soup.select(tag_info['select'])
+        else:
+            # 기존 방식
+            trace_soup = soup.find_all(tag_info['name'], attrs=tag_info['attribute'])
 
         if trace_soup is not None:
             for tag in trace_soup:

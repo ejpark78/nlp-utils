@@ -7,19 +7,24 @@
     {
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
-      "index": "crawler-bbs-mlbpark_mlb",
+      "index": "crawler-bbs-ruliweb",
       "sleep": 3,
       "list": [
         {
-          "url_frame": "http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=",
-          "category": "MLB",
+          "url_frame": "https://bbs.ruliweb.com/community/board/300147?page={page}",
+          "category": "고민상담",
           "check_id": false
         }
       ],
       "article": {
         "document_id": {
-          "type": "query",
-          "frame": "{id}"
+          "type": "path",
+          "replace": [
+            {
+              "from": "^.+/board/([0-9]+)/read/([0-9]+).+$",
+              "to": "\\g<1>-\\g<2>"
+            }
+          ]
         }
       },
       "post_process": [

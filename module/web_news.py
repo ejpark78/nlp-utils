@@ -429,9 +429,9 @@ class WebNewsCrawler(CrawlerBase):
         # 문서 저장
         article = self.parse_tag(
             resp=resp,
+            base_url=item['url'],
             url_info=article_url,
             parsing_info=self.parsing_info['article'],
-            base_url=item['url'],
         )
 
         if article is None:
@@ -440,9 +440,9 @@ class WebNewsCrawler(CrawlerBase):
         article['_id'] = doc_id
 
         return self.save_article(
+            doc=item,
             html=resp,
             article=article,
-            doc=item,
             elastic_utils=elastic_utils,
         )
 
@@ -708,8 +708,8 @@ class WebNewsCrawler(CrawlerBase):
             item = self.parser.parse(
                 html=None,
                 soup=resp,
-                parsing_info=parsing_info,
                 base_url=base_url,
+                parsing_info=parsing_info,
             )
 
         # url 추출
