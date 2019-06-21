@@ -18,10 +18,6 @@ COMPOSE_HOST = "-H unix:///var/run/docker.sock"
 # 환경 변수 설정
 ENV_FILE = common.env
 
-ifeq "$(MODE)" "10lan"
-	ENV_FILE = 10lan.env
-endif
-
 .PHONY: *
 
 include $(MK_DIR)/build.mk
