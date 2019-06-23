@@ -225,6 +225,9 @@ class WebNewsCrawler(CrawlerBase):
 
         # url 목록 반복
         for url in job['list']:
+            if url['url_frame'][0] == '#':
+                continue
+
             if url['url_frame'].find('date') < 0:
                 # page 단위로 크롤링한다.
                 self.trace_page_list(url=url, job=job, dt='')
@@ -293,6 +296,12 @@ class WebNewsCrawler(CrawlerBase):
             # 문서 저장
             early_stop = self.trace_news(html=resp, url_info=url, job=job)
             if early_stop is True:
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': '조기 종료',
+                    'url': url['url'],
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
                 break
 
             # 현재 크롤링 위치 저장
@@ -340,6 +349,8 @@ class WebNewsCrawler(CrawlerBase):
             http_auth=job['http_auth'],
         )
 
+        skip_count = 0
+
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
             item = self.parse_tag(
@@ -348,7 +359,8 @@ class WebNewsCrawler(CrawlerBase):
                 parsing_info=self.parsing_info['list'],
                 base_url=base_url,
             )
-            if item is None:
+            if item is None or 'url' not in item:
+                skip_count += 1
                 continue
 
             item['url'] = urljoin(base_url, item['url'])
@@ -357,6 +369,7 @@ class WebNewsCrawler(CrawlerBase):
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
             if doc_id is None:
+                skip_count += 1
                 continue
 
             if self.cfg.debug == 0:
@@ -370,6 +383,7 @@ class WebNewsCrawler(CrawlerBase):
                     )
 
                     if is_skip is True:
+                        skip_count += 1
                         continue
 
             # 기사 본문 조회
@@ -394,6 +408,9 @@ class WebNewsCrawler(CrawlerBase):
             logger.info(msg=LogMsg(msg))
 
             sleep(self.sleep_time)
+
+        if skip_count >= len(trace_list) - 2:
+            return True
 
         # 캐쉬 저장
         self.set_history(value=doc_history, name='doc_history')

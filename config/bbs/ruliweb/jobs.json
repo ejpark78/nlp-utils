@@ -11,19 +11,19 @@
       "sleep": 3,
       "list": [
         {
-          "url_frame": "https://bbs.ruliweb.com/community/board/300147?page={page}",
+          "url_frame": "#https://bbs.ruliweb.com/community/board/300147?page={page}",
           "category": "고민상담",
-          "check_id": false
+          "check_id": true
         },
         {
           "url_frame": "https://bbs.ruliweb.com/community/board/300142?page={page}",
           "category": "질문게시판",
-          "check_id": false
+          "check_id": true
         },
         {
           "url_frame": "https://bbs.ruliweb.com/community/board/300152?page={page}",
           "category": "토론게시판",
-          "check_id": false
+          "check_id": true
         }
       ],
       "article": {
