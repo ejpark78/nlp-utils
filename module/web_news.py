@@ -41,6 +41,7 @@ class WebNewsCrawler(CrawlerBase):
         self.column = column
 
         self.trace_depth = 0
+        self.trace_list_count = -1
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
@@ -261,6 +262,7 @@ class WebNewsCrawler(CrawlerBase):
     def trace_page_list(self, url, job, dt):
         """뉴스 목록을 크롤링한다."""
         self.trace_depth = 0
+        self.trace_list_count = -1
 
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
@@ -349,8 +351,6 @@ class WebNewsCrawler(CrawlerBase):
             http_auth=job['http_auth'],
         )
 
-        skip_count = 0
-
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
             item = self.parse_tag(
@@ -360,7 +360,6 @@ class WebNewsCrawler(CrawlerBase):
                 base_url=base_url,
             )
             if item is None or 'url' not in item:
-                skip_count += 1
                 continue
 
             item['url'] = urljoin(base_url, item['url'])
@@ -369,7 +368,6 @@ class WebNewsCrawler(CrawlerBase):
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
             if doc_id is None:
-                skip_count += 1
                 continue
 
             if self.cfg.debug == 0:
@@ -383,7 +381,6 @@ class WebNewsCrawler(CrawlerBase):
                     )
 
                     if is_skip is True:
-                        skip_count += 1
                         continue
 
             # 기사 본문 조회
@@ -409,7 +406,10 @@ class WebNewsCrawler(CrawlerBase):
 
             sleep(self.sleep_time)
 
-        if skip_count >= len(trace_list) - 2:
+        # 목록 길이 저장
+        if self.trace_list_count < 0:
+            self.trace_list_count = len(trace_list)
+        elif self.trace_list_count > len(trace_list) + 3:
             return True
 
         # 캐쉬 저장
