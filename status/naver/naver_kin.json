@@ -1,11 +1,11 @@
 {
   "question_list": {
     "category": {
-      "id": "402",
-      "name": "경제/부동산"
+      "id": "401",
+      "name": "경제/금융"
     },
     "end": 100,
-    "start": 55,
+    "start": 6,
     "step": 1
   }
 }

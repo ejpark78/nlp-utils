@@ -10,6 +10,7 @@ from time import sleep
 
 import requests
 import urllib3
+from urllib.parse import unquote
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -23,7 +24,7 @@ MESSAGE = 25
 logger = logging.getLogger()
 
 
-class AnswerList(CrawlerBase):
+class UserList(CrawlerBase):
     """답변 목록을 중심으로 크롤링"""
 
     def __init__(self):
@@ -58,9 +59,9 @@ class AnswerList(CrawlerBase):
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
-        self.get_partner_list()
-        self.get_expert_list()
-        self.get_elite_user_list()
+        # self.get_partner_list()
+        # self.get_expert_list()
+        # self.get_elite_user_list()
         self.get_rank_user_list()
 
         return
@@ -76,48 +77,70 @@ class AnswerList(CrawlerBase):
             http_auth=job_info['http_auth'],
         )
 
-        for page in range(1, 1000):
-            request_url = job_info['url_frame'].format(page=page)
+        category_list = job_info['category']
 
-            request_result = requests.get(
-                url=request_url,
-                headers=self.headers['mobile'],
-                allow_redirects=True,
-                timeout=30,
-                verify=False,
-            )
+        for c in category_list:
+            for page in range(1, 1000):
+                request_url = job_info['url_frame'].format(
+                    page=page,
+                    dir_id=c['id'],
+                )
 
-            result = request_result.json()
+                request_result = requests.get(
+                    url=request_url,
+                    headers=self.headers['mobile'],
+                    allow_redirects=True,
+                    timeout=30,
+                    verify=False,
+                )
 
-            if 'lists' in result:
-                size = len(result['lists'])
-                if size == 0:
-                    break
+                result = request_result.json()
 
-                msg = {
-                    'level': 'MESSAGE',
-                    'message': '지식 파트너 목록 요청',
-                    'size': size,
-                    'request_url': request_url,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                if 'lists' in result:
+                    size = len(result['lists'])
+                    if size == 0:
+                        break
 
-                for doc in result['lists']:
-                    doc['_id'] = doc['u']
+                    msg = {
+                        'level': 'MESSAGE',
+                        'message': '지식 파트너 목록 요청',
+                        'size': size,
+                        'request_url': request_url,
+                    }
+                    logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-                    elastic_utils.save_document(index=job_info['index'], document=doc)
+                    for doc in result['lists']:
+                        doc_id = unquote(doc['u'])
 
-                elastic_utils.flush()
+                        doc['_id'] = doc_id
+                        doc['category'] = [c['name']]
 
-            sleep(5)
+                        if elastic_utils.elastic.exists(
+                                index=job_info['index'],
+                                doc_type='doc',
+                                id=doc_id) is True:
+                            elastic_utils.update_document(
+                                index=job_info['index'],
+                                field='category',
+                                value=c['name'],
+                                doc_id=doc_id,
+                                document=doc,
+                            )
+                        else:
+                            elastic_utils.save_document(
+                                index=job_info['index'],
+                                document=doc,
+                            )
+
+                    elastic_utils.flush()
+
+                sleep(5)
 
         return
 
     def get_expert_list(self):
         """분야별 전문가 목록을 크롤링한다."""
-        from urllib.parse import unquote
-
-        job_info = self.cfg.job_info['partner_list']
+        job_info = self.cfg.job_info['expert_list']
 
         elastic_utils = ElasticSearchUtils(
             host=job_info['host'],
@@ -246,11 +269,10 @@ class AnswerList(CrawlerBase):
             http_auth=job_info['http_auth'],
         )
 
-        category_list = job_info['category_list']
+        category_list = job_info['category']
 
-        for dir_name in category_list:
-            dir_id = category_list[dir_name]
-            url = job_info['url_list'].format(dir_id=dir_id)
+        for c in category_list:
+            url = job_info['url_list'].format(dir_id=c['id'])
 
             result = requests.get(
                 url=url,
@@ -260,7 +282,9 @@ class AnswerList(CrawlerBase):
                 verify=False,
             )
 
+            # 쿠키 추출
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
+
             msg = {
                 'level': 'MESSAGE',
                 'message': '분야별 전문가 쿠키 정보',
@@ -272,9 +296,9 @@ class AnswerList(CrawlerBase):
 
             for u_frame in job_info['url_frame']:
                 for page in range(1, 10):
-                    list_url = u_frame.format(dir_id=dir_id, page=page)
+                    list_url = u_frame.format(dir_id=c['id'], page=page)
 
-                    request_result = requests.get(
+                    resp = requests.get(
                         url=list_url,
                         headers=self.headers['mobile'],
                         cookies=cookies,
@@ -282,27 +306,47 @@ class AnswerList(CrawlerBase):
                         timeout=60,
                     )
 
-                    result = request_result.json()
+                    result = resp.json()
 
-                    if 'result' in result:
-                        msg = {
-                            'level': 'MESSAGE',
-                            'message': '분야별 전문가 목록 요청',
-                            'size': len(result['result']),
-                            'list_url': list_url,
-                        }
-                        logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    if 'result' not in result:
+                        sleep(5)
+                        continue
 
-                        for doc in result['result']:
-                            doc['_id'] = doc['u']
-                            doc['rank_type'] = dir_name
+                    msg = {
+                        'level': 'MESSAGE',
+                        'message': '분야별 전문가 목록 요청',
+                        'size': len(result['result']),
+                        'list_url': list_url,
+                    }
+                    logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-                            elastic_utils.save_document(index=job_info['index'], document=doc)
+                    for doc in result['result']:
+                        doc_id = doc['u']
 
-                        elastic_utils.flush()
+                        doc['_id'] = doc_id
+                        doc['category'] = [c['name']]
 
-                        if len(result['result']) != 20:
-                            break
+                        if elastic_utils.elastic.exists(
+                                index=job_info['index'],
+                                doc_type='doc',
+                                id=doc_id) is True:
+                            elastic_utils.update_document(
+                                index=job_info['index'],
+                                field='category',
+                                value=c['name'],
+                                doc_id=doc_id,
+                                document=doc,
+                            )
+                        else:
+                            elastic_utils.save_document(
+                                index=job_info['index'],
+                                document=doc,
+                            )
+
+                    elastic_utils.flush()
+
+                    if len(result['result']) != 20:
+                        break
 
                     sleep(5)
 

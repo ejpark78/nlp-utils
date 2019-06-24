@@ -38,7 +38,7 @@ class QuestionDetail(CrawlerBase):
 
         self.update_config()
 
-    def batch(self, list_index='crawler-naver-kin-question_list', match_phrase='{}'):
+    def batch(self, column, match_phrase='{}'):
         """상세 페이지를 크롤링한다."""
         elastic_utils = ElasticSearchUtils(
             host=self.job_info['host'],
@@ -47,10 +47,15 @@ class QuestionDetail(CrawlerBase):
             http_auth=self.job_info['http_auth'],
         )
 
+        if column == 'question':
+            index = 'crawler-naver-kin-question_list'
+        else:
+            index = 'crawler-naver-kin-answer_list'
+
         # 질문 목록 조회
         doc_list = self.get_doc_list(
+            index=index,
             elastic_utils=elastic_utils,
-            index=list_index,
             match_phrase=match_phrase,
         )
 
@@ -68,10 +73,10 @@ class QuestionDetail(CrawlerBase):
             doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
 
             # 이미 받은 항목인지 검사
-            if 'question_list' not in list_index:
+            if 'question_list' not in index:
                 is_skip = elastic_utils.exists(
                     index=self.job_info['index'],
-                    list_index=list_index,
+                    list_index=index,
                     doc_id=doc_id,
                     list_id=item['_id'],
                 )
@@ -109,11 +114,11 @@ class QuestionDetail(CrawlerBase):
             # 저장
             self.save_doc(
                 html=resp.content,
-                elastic_utils=elastic_utils,
-                list_index=list_index,
+                index=index,
                 doc_id=doc_id,
                 list_id=item['_id'],
                 base_url=request_url,
+                elastic_utils=elastic_utils,
             )
 
             msg = {
@@ -127,7 +132,7 @@ class QuestionDetail(CrawlerBase):
 
         return
 
-    def save_doc(self, html, elastic_utils, list_index, doc_id, list_id, base_url):
+    def save_doc(self, html, elastic_utils, index, doc_id, list_id, base_url):
         """크롤링 문서를 저장한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -149,18 +154,22 @@ class QuestionDetail(CrawlerBase):
 
             msg = {
                 'level': 'MESSAGE',
-                'message': '질문 저장',
-                'doc_id': doc_id,
+                'message': '상세 답변 저장 성공',
                 'question': doc['question'],
+                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                    host=elastic_utils.host,
+                    index=elastic_utils.index,
+                    id=doc_id,
+                )
             }
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(
-            source_index=list_index,
-            target_index='{}_done'.format(list_index),
             source_id=list_id,
             document_id=doc_id,
+            source_index=index,
+            target_index='{}_done'.format(index),
         )
 
         return

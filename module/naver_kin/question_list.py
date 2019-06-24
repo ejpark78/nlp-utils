@@ -34,7 +34,7 @@ class QuestionList(CrawlerBase):
         self.job_id = 'naver_kin'
         self.column = 'question_list'
 
-    def daemon(self):
+    def daemon(self, column):
         """batch를 무한 반복한다."""
         while True:
             # batch 시작전 설정 변경 사항을 업데이트 한다.
@@ -43,7 +43,7 @@ class QuestionList(CrawlerBase):
             daemon_info = self.cfg.job_info['daemon']
 
             # 시작
-            self.batch()
+            self.batch(column=column)
 
             msg = {
                 'level': 'MESSAGE',
@@ -54,7 +54,7 @@ class QuestionList(CrawlerBase):
 
             sleep(daemon_info['sleep'])
 
-    def batch(self):
+    def batch(self, column):
         """ 질문 목록 전부를 가져온다. """
         self.update_config()
 
@@ -67,7 +67,75 @@ class QuestionList(CrawlerBase):
                 continue
 
             category_id = None
-            self.get_question_list(category=c)
+
+            # 답변 목록
+            if column == 'answer':
+                self.column = 'answer_list'
+                self.update_config()
+
+                self.get_answer_list(category=c)
+            else:
+                # 질문 목록
+                self.column = 'question_list'
+                self.update_config()
+
+                self.get_question_list(category=c)
+
+        return
+
+    def get_answer_list(self, category):
+        """ 사용자별 답변 목록를 가져온다. """
+        from urllib.parse import unquote
+        # https://m.kin.naver.com/mobile/user/answerList.nhn?page=3&countPerPage=20&dirId=0&u=LOLmw2nTPw02cmSW5fzHYaVycqNwxX3QNy3VuztCb6c%3D
+
+        elastic_utils = ElasticSearchUtils(
+            host=self.job_info['host'],
+            index=self.job_info['index'],
+            bulk_size=10,
+            http_auth=self.job_info['http_auth'],
+        )
+
+        query = {
+            '_source': ['u', 'name', 'companyName', 'partnerName', 'viewUserId', 'encodedU'],
+            'query': {
+                'match': {
+                    'category': '고민Q&A'
+                }
+            }
+        }
+
+        # crawler-naver-kin-rank_user_list
+        # crawler-naver-kin-partner_list
+        user_list = elastic_utils.dump(
+            index='crawler-naver-kin-rank_user_list,crawler-naver-kin-partner_list',
+            query=query,
+        )
+
+        for doc in user_list:
+            for page in range(self.status['start'], self.status['end'], self.status['step']):
+                if 'encodedU' in doc:
+                    query_url = self.job_info['url_frame'].format(
+                        page=page,
+                        user_id=doc['encodedU'],
+                    )
+                else:
+                    query_url = self.job_info['url_frame'].format(
+                        page=page,
+                        user_id=unquote(doc['u']),
+                    )
+
+                is_stop = self.get_page(url=query_url, elastic_utils=elastic_utils)
+                if is_stop is True:
+                    break
+
+                self.update_state(page=page, category=category)
+
+            # status 초기화
+            self.status['start'] = 1
+            if 'category' in self.status:
+                del self.status['category']
+
+            self.cfg.save_status()
 
         return
 
@@ -80,60 +148,22 @@ class QuestionList(CrawlerBase):
             http_auth=self.job_info['http_auth'],
         )
 
+        # status 초기화
+        self.status['start'] = 1
+
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'], self.status['step']):
-            query_url = self.job_info['url_frame'].format(dir_id=category['id'], size=size, page=page)
+            query_url = self.job_info['url_frame'].format(
+                size=size,
+                page=page,
+                dir_id=category['id'],
+            )
 
-            try:
-                resp = requests.get(
-                    url=query_url,
-                    headers=self.headers['mobile'],
-                    allow_redirects=True,
-                    timeout=60,
-                )
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': '질문 목록 조회 에러',
-                    'query_url': query_url,
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
-
-                sleep(10)
-                continue
-
-            try:
-                is_stop = self.save_doc(result=resp.json(), elastic_utils=elastic_utils)
-                if is_stop is True:
-                    break
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': '질문 목록 저장 에러',
-                    'query_url': query_url,
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+            is_stop = self.get_page(url=query_url, elastic_utils=elastic_utils)
+            if is_stop is True:
                 break
 
-            # 현재 상태 저장
-            self.status['start'] = page
-            self.status['category'] = category
-
-            self.cfg.save_status()
-
-            # 로그 표시
-            msg = {
-                'level': 'INFO',
-                'message': '기사 저장 성공',
-                'category_name': category['name'],
-                'page': page,
-                'end': self.status['end'],
-            }
-            logger.info(msg=LogMsg(msg))
-
-            sleep(self.sleep_time)
+            self.update_state(page=page, category=category)
 
         # status 초기화
         self.status['start'] = 1
@@ -144,9 +174,71 @@ class QuestionList(CrawlerBase):
 
         return
 
+    def get_page(self, url, elastic_utils):
+        """한 페이지를 가져온다."""
+        try:
+            resp = requests.get(
+                url=url,
+                headers=self.headers['mobile'],
+                allow_redirects=True,
+                timeout=60,
+            )
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '질문 목록 조회 에러',
+                'query_url': url,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+            sleep(10)
+            return True
+
+        try:
+            is_stop = self.save_doc(
+                url=url,
+                result=resp.json(),
+                elastic_utils=elastic_utils,
+            )
+            if is_stop is True:
+                return True
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '질문 목록 저장 에러',
+                'query_url': url,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+        return False
+
+    def update_state(self, page, category):
+        """현재 상태를 갱신한다."""
+        self.status['start'] = page
+        self.status['category'] = category
+
+        self.cfg.save_status()
+
+        # 로그 표시
+        msg = {
+            'level': 'INFO',
+            'message': '기사 저장 성공',
+            'category_name': category['name'],
+            'page': page,
+            'end': self.status['end'],
+        }
+        logger.info(msg=LogMsg(msg))
+
+        sleep(self.sleep_time)
+        return
+
     @staticmethod
-    def save_doc(result, elastic_utils):
+    def save_doc(url, result, elastic_utils):
         """크롤링 결과를 저장한다."""
+        from urllib.parse import urljoin
+
         result_list = []
         if 'answerList' in result:
             result_list = result['answerList']
@@ -155,11 +247,32 @@ class QuestionList(CrawlerBase):
             result_list = result['lists']
 
         if len(result_list) == 0:
+            msg = {
+                'level': 'ERROR',
+                'message': '빈 문서 목록 반환',
+                'url': url,
+                'result': result,
+            }
+            logger.error(msg=LogMsg(msg))
             return True
 
         # 결과 저장
         for doc in result_list:
-            doc_id = '{}-{}-{}'.format(doc['d1Id'], doc['dirId'], doc['docId'])
+            if 'd1Id' in doc:
+                doc_id = '{d1}-{dir}-{doc}'.format(
+                    d1=doc['d1Id'],
+                    dir=doc['dirId'],
+                    doc=doc['docId'],
+                )
+            else:
+                doc_id = '{dir}-{doc}'.format(
+                    dir=doc['dirId'],
+                    doc=doc['docId'],
+                )
+
+            if 'detailUrl' in doc:
+                doc['detailUrl'] = urljoin(url, doc['detailUrl'])
+
             doc['_id'] = doc_id
 
             elastic_utils.save_document(document=doc)

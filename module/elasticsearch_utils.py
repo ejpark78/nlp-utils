@@ -137,7 +137,47 @@ class ElasticSearchUtils(object):
 
         return
 
-    def save_document(self, document, index=None):
+    def update_document(self, document, doc_id, field, value, index):
+        """문서를 저장한다."""
+        # 서버 접속
+        if self.elastic is None:
+            self.open()
+
+        if index is not None:
+            self.index = index
+
+        try:
+            condition = "if (!ctx._source.{field}.contains(params.value)) ".format(field=field)
+            condition += "{{ ctx._source.{field}.add(params.value) }}".format(field=field)
+
+            body = {
+                'script': {
+                    'source': condition,
+                    'lang': 'painless',
+                    'params': {
+                        'value': value
+                    }
+                },
+                'upsert': document
+            }
+
+            self.elastic.update(
+                index=index,
+                doc_type='doc',
+                id=doc_id,
+                body=body
+            )
+        except Exception as e:
+            log_msg = {
+                'level': 'ERROR',
+                'message': '업데이트 에러',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(log_msg))
+
+        return True
+
+    def save_document(self, document, index=None, delete=True):
         """문서를 저장한다."""
         # 서버 접속
         if self.elastic is None:
@@ -165,13 +205,14 @@ class ElasticSearchUtils(object):
                 self.bulk_data[self.host] = []
 
             # 기존 정보 삭제
-            self.bulk_data[self.host].append({
-                'delete': {
-                    '_index': self.index,
-                    '_type': self.doc_type,
-                    '_id': document_id
-                }
-            })
+            if delete is True:
+                self.bulk_data[self.host].append({
+                    'delete': {
+                        '_index': self.index,
+                        '_type': self.doc_type,
+                        '_id': document_id
+                    }
+                })
 
             # 저장 정보
             self.bulk_data[self.host].append({

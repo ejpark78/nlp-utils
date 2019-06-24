@@ -10,7 +10,7 @@ import sys
 
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
-from module.naver_kin.answer_list import AnswerList as NaverKinAnswerList
+from module.naver_kin.user_list import UserList as NaverKinUserList
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
 from module.naver_terms.detail import TermDetail as NaverTermDetail
 from module.naver_terms.term_list import TermList as NaverTermList
@@ -47,8 +47,8 @@ def init_arguments():
 
     # 지식인 질문 상세 페이지: elasticsearch 파라메터, job_id가 kin_detail일 경우
     parser.add_argument('-host', default=None, help='호스트')
-    parser.add_argument('-index', default='question_list', help='인덱스명')
-    parser.add_argument('-match_phrase', default='{"fullDirNamePath": "주식"}', help='검색 조건')
+    parser.add_argument('-match_phrase', default='{}', help='검색 조건')
+    # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
 
     # 실행 모드 데몬/배치
     parser.add_argument('-batch', action='store_true', default=False, help='배치 모드로 실행')
@@ -77,24 +77,23 @@ def main():
 
         if args.job_id == 'term_detail':
             NaverTermDetail().batch()
-            return
-
-        if args.job_id == 'dump':
+        elif args.job_id == 'dump':
             NaverCorpusUtils().dump()
-            return
-
-        if args.job_id == 'kin_question_list':
-            NaverKinQuestionList().daemon()
-            return
-
-        if args.job_id == 'kin_answer_list':
-            NaverKinAnswerList().daemon()
-            return
-
-        if args.job_id == 'kin_detail':
+        elif args.job_id == 'kin_question_list':
+            NaverKinQuestionList().daemon(column='question')
+        elif args.job_id == 'kin_answer_list':
+            NaverKinQuestionList().daemon(column='answer')
+        elif args.job_id == 'kin_user_list':
+            NaverKinUserList().daemon()
+        elif args.job_id == 'kin_detail_question':
             NaverKinQuestionDetail().batch(
-                list_index=args.index,
-                match_phrase=args.match_phrase
+                column='question',
+                match_phrase=args.match_phrase,
+            )
+        elif args.job_id == 'kin_detail_answer':
+            NaverKinQuestionDetail().batch(
+                column='answer',
+                match_phrase=args.match_phrase,
             )
             return
 

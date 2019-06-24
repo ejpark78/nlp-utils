@@ -11,7 +11,7 @@
       "sleep": 3,
       "list": [
         {
-          "url_frame": "#https://bbs.ruliweb.com/community/board/300147?page={page}",
+          "url_frame": "https://bbs.ruliweb.com/community/board/300147?page={page}",
           "category": "고민상담",
           "check_id": true
         },
@@ -31,7 +31,7 @@
           "type": "path",
           "replace": [
             {
-              "from": "^.+/board/([0-9]+)/read/([0-9]+).+$",
+              "from": "^.+/board/([0-9]+)/read/([0-9]+)[^0-9]*$",
               "to": "\\g<1>-\\g<2>"
             }
           ]

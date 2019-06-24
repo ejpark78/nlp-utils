@@ -772,12 +772,59 @@
     "category": [
     ]
   },
+  "answer_list": {
+    "sleep": 10,
+    "host": "https://corpus.ncsoft.com:9200",
+    "http_auth": "crawler:crawler2019",
+    "index": "crawler-naver-kin-answer_list",
+    "url_frame": "https://m.kin.naver.com/mobile/user/answerList.nhn?page={page}&countPerPage=20&u={user_id}",
+    "category": [
+      {
+        "name": "전체",
+        "id": "0"
+      }
+    ]
+  },
   "partner_list": {
     "sleep": 10,
     "host": "https://corpus.ncsoft.com:9200",
     "http_auth": "crawler:crawler2019",
     "index": "crawler-naver-kin-partner_list",
-    "url_frame": "https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId=0"
+    "url_frame": "https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId={dir_id}",
+    "category": [
+      {
+        "name": "고민Q&A",
+        "id": "2001"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/외모",
+        "id": "200101"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/성격, 버릇",
+        "id": "200102"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/친구, 우정",
+        "id": "200103"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/이성, 연애 상담",
+        "id": "200104"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/성, 신체변화",
+        "id": "200105"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/학업, 진로",
+        "id": "200106"
+      },
+      {
+        "name": "고민Q&A/아동,미성년 상담/가족, 이웃",
+        "id": "200107"
+      }
+    ]
   },
   "expert_list": {
     "sleep": 10,
@@ -805,6 +852,40 @@
       "https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}"
     ],
     "category": [
+      {
+        "name": "고민Q&A > 아동, 미성년 상담",
+        "id": "2001"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 외모",
+        "id": "200101"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 성격, 버릇",
+        "id": "200102"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 친구, 우정",
+        "id": "200103"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 이성, 연애 상담",
+        "id": "200104"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 성, 신체변화",
+        "id": "200105"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 학업, 진로",
+        "id": "200106"
+      },
+      {
+        "name": "고민Q&A > 아동, 미성년 상담 > 가족, 이웃",
+        "id": "200107"
+      }
+    ],
+    "category_old": [
       {
         "name": "금융",
         "id": "401"
