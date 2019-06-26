@@ -396,6 +396,9 @@ class ElasticSearchUtils(object):
         hits = search_result['hits']
 
         total = hits['total']
+        if isinstance(total, dict) and 'value' in total:
+            total = total['value']
+
         count = len(hits['hits'])
 
         return hits['hits'], scroll_id, count, total

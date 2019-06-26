@@ -135,7 +135,7 @@ class QuestionList(CrawlerBase):
             if 'category' in self.status:
                 del self.status['category']
 
-            self.cfg.save_status()
+            # self.cfg.save_status()
 
         return
 
@@ -170,7 +170,7 @@ class QuestionList(CrawlerBase):
         if 'category' in self.status:
             del self.status['category']
 
-        self.cfg.save_status()
+        # self.cfg.save_status()
 
         return
 
@@ -219,7 +219,7 @@ class QuestionList(CrawlerBase):
         self.status['start'] = page
         self.status['category'] = category
 
-        self.cfg.save_status()
+        # self.cfg.save_status()
 
         # 로그 표시
         msg = {

@@ -146,6 +146,9 @@ class QuestionDetail(CrawlerBase):
                 base_url=base_url
             )
 
+            if 'question' not in doc:
+                return
+
             doc['_id'] = doc_id
 
             # 문서 저장
