@@ -73,7 +73,7 @@ class QuestionDetail(CrawlerBase):
             doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
 
             # 이미 받은 항목인지 검사
-            if 'question_list' not in index:
+            if 'question_list' in index or 'answer_list' in index:
                 is_skip = elastic_utils.exists(
                     index=self.job_info['index'],
                     list_index=index,
@@ -113,7 +113,7 @@ class QuestionDetail(CrawlerBase):
 
             # 저장
             self.save_doc(
-                html=resp.content,
+                resp=resp,
                 index=index,
                 doc_id=doc_id,
                 list_id=item['_id'],
@@ -132,8 +132,14 @@ class QuestionDetail(CrawlerBase):
 
         return
 
-    def save_doc(self, html, elastic_utils, index, doc_id, list_id, base_url):
+    def save_doc(self, resp, elastic_utils, index, doc_id, list_id, base_url):
         """크롤링 문서를 저장한다."""
+        soup, encoding = self.get_encoding_type(resp.text)
+
+        html = resp.text
+        if encoding is not None:
+            html = resp.content.decode(encoding, 'ignore')
+
         soup = BeautifulSoup(html, 'html5lib')
 
         # 이미 삭제된 질문일 경우
@@ -147,12 +153,22 @@ class QuestionDetail(CrawlerBase):
             )
 
             if 'question' not in doc:
+                # 비공계 처리된 경우
+                elastic_utils.move_document(
+                    source_id=list_id,
+                    document_id=doc_id,
+                    source_index=index,
+                    target_index='{}_done'.format(index),
+                )
                 return
 
             doc['_id'] = doc_id
 
             # 문서 저장
-            elastic_utils.save_document(index=self.job_info['index'], document=doc)
+            elastic_utils.save_document(
+                index=self.job_info['index'],
+                document=doc,
+            )
             elastic_utils.flush()
 
             msg = {
@@ -182,7 +198,7 @@ class QuestionDetail(CrawlerBase):
         """질문 목록을 조회한다."""
         query = {
             '_source': 'd1Id,dirId,docId'.split(','),
-            'size': 1000
+            'size': 100000
         }
 
         if match_phrase is not None and isinstance(match_phrase, str) and match_phrase != '{}':

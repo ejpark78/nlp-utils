@@ -644,7 +644,11 @@ class ElasticSearchUtils(object):
 
     def exists(self, index, doc_id, list_index, list_id, merge_column=None):
         """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
-        exists_doc = self.elastic.exists(index=index, doc_type='doc', id=doc_id)
+        exists_doc = self.elastic.exists(
+            id=doc_id,
+            index=index,
+            doc_type='doc',
+        )
 
         if exists_doc is True:
             self.move_document(

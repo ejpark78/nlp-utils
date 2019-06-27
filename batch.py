@@ -73,13 +73,13 @@ def main():
     if args.category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
-            return
-
-        if args.job_id == 'term_detail':
+        elif args.job_id == 'term_detail':
             NaverTermDetail().batch()
-        elif args.job_id == 'dump':
+
+        if args.job_id == 'dump':
             NaverCorpusUtils().dump()
-        elif args.job_id == 'kin_question_list':
+
+        if args.job_id == 'kin_question_list':
             NaverKinQuestionList().daemon(column='question')
         elif args.job_id == 'kin_answer_list':
             NaverKinQuestionList().daemon(column='answer')
@@ -95,7 +95,8 @@ def main():
                 column='answer',
                 match_phrase=args.match_phrase,
             )
-            return
+
+        return
 
     # 트위터
     if args.job_id == 'twitter':
@@ -122,6 +123,8 @@ def main():
             job_id=args.job_id,
             column='trace_list'
         ).test()
+
+        return
 
     # 재 크롤링: parsing 정보가 변경되었을 경우
     if args.re_crawl:

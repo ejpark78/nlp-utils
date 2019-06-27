@@ -71,6 +71,9 @@ class CrawlerBase(object):
             if encoding is None:
                 content = soup.meta.get('content', None)
 
+                if content is None:
+                    content = html_body
+
                 match = re.search('charset=(.*)', content)
                 if match:
                     encoding = match.group(1)
