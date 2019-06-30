@@ -56,11 +56,9 @@ def init_arguments():
     # 재크롤링
     parser.add_argument('-re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
 
-    parser.add_argument('-query_field', default='date', help='query field')
-    parser.add_argument('-date_range', default='', help='date 날짜 범위: 2000-01-01~2019-04-10')
     parser.add_argument('-query', default='', help='elasticsearch query')
-
-    parser.add_argument('-update_parsing_info', action='store_true', default=False, help='데이터 업데이트')
+    parser.add_argument('-date_range', default='', help='date 날짜 범위: 2000-01-01~2019-04-10')
+    parser.add_argument('-query_field', default='date', help='query field')
 
     return parser.parse_args()
 
@@ -86,12 +84,12 @@ def main():
         elif args.job_id == 'kin_user_list':
             NaverKinUserList().daemon()
         elif args.job_id == 'kin_detail_question':
-            NaverKinQuestionDetail().batch(
+            NaverKinQuestionDetail().daemon(
                 column='question',
                 match_phrase=args.match_phrase,
             )
         elif args.job_id == 'kin_detail_answer':
-            NaverKinQuestionDetail().batch(
+            NaverKinQuestionDetail().daemon(
                 column='answer',
                 match_phrase=args.match_phrase,
             )
@@ -133,18 +131,6 @@ def main():
             job_id=args.job_id,
             column='trace_list'
         ).re_crawl(
-            query=args.query,
-            date_range=args.date_range,
-            query_field=args.query_field,
-        )
-        return
-
-    if args.update_parsing_info:
-        WebNewsCrawler(
-            category=args.category,
-            job_id=args.job_id,
-            column='trace_list'
-        ).update_parsing_info(
             query=args.query,
             date_range=args.date_range,
             query_field=args.query_field,

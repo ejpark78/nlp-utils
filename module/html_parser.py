@@ -136,7 +136,17 @@ class HtmlParser(object):
                     value = tag.get_text().strip()
                     value = re.sub('[ ]+', ' ', value)
                 elif item['type'] == 'html':
-                    value = str(tag)
+                    try:
+                        value = str(tag)
+                    except Exception as e:
+                        msg = {
+                            'level': 'ERROR',
+                            'message': 'html 추출 에러',
+                            'exception': str(e),
+                        }
+                        logger.error(msg=LogMsg(msg))
+                        continue
+
                     try:
                         value = str(tag.prettify())
                     except Exception as e:

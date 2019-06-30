@@ -63,7 +63,13 @@ class WebNewsCrawler(CrawlerBase):
         }
 
         doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-        _ = self.get_article(doc_id, item, job, elastic_utils)
+        _ = self.get_article(
+            doc_id=doc_id,
+            item=item,
+            job=job,
+            elastic_utils=elastic_utils,
+            offline=False,
+        )
 
         return
 
@@ -96,78 +102,6 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def update_parsing_info(self, date_range, query, query_field):
-        """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
-        from tqdm import tqdm
-
-        image_replace = False
-
-        # query = '{"query":{"bool":{"must":[{"match":{"url":"G1111128035"}}]}}}'
-        # image_replace = True
-
-        self.update_config()
-
-        for job in self.job_info:
-            elastic_utils = ElasticSearchUtils(
-                host=job['host'],
-                index=job['index'],
-                bulk_size=20,
-                http_auth=job['http_auth'],
-            )
-
-            doc_list = elastic_utils.get_url_list(
-                query=query,
-                query_field=query_field,
-                index=job['index'],
-                date_range=date_range,
-            )
-
-            for item in tqdm(doc_list):
-                if 'image_list' not in item:
-                    continue
-
-                # 필드 삭제
-                for k in ['photo_list', 'photo_caption', 'edit_date']:
-                    if k in item:
-                        del item[k]
-
-                doc_id = item['document_id']
-
-                # 기사 본문 조회
-                article = self.get_article(
-                    doc_id=doc_id,
-                    item=item,
-                    job=job,
-                    elastic_utils=elastic_utils,
-                    offline=True,
-                )
-
-                if image_replace:
-                    flag = self.post_process_utils.save_s3(document=article, info=job['post_process'][0])
-                    if flag is True:
-                        self.post_process_utils.update_document(document=article, job=job)
-                else:
-                    # 후처리 작업 실행
-                    if 'post_process' not in job:
-                        job['post_process'] = None
-
-                    self.post_process_utils.insert_job(
-                        job=job,
-                        document=article,
-                        post_process_list=job['post_process'],
-                    )
-
-                msg = {
-                    'level': 'INFO',
-                    'message': '뉴스 본문 크롤링: 슬립',
-                    'sleep_time': self.sleep_time,
-                }
-                logger.info(msg=LogMsg(msg))
-
-                sleep(self.sleep_time)
-
-        return
-
     def re_crawl(self, date_range, query, query_field):
         """elasticsearch의 url 목록을 다시 크롤링한다."""
         from tqdm import tqdm
@@ -197,7 +131,13 @@ class WebNewsCrawler(CrawlerBase):
                 doc_id = item['document_id']
 
                 # 기사 본문 조회
-                article = self.get_article(doc_id, item, job, elastic_utils)
+                article = self.get_article(
+                    doc_id=doc_id,
+                    item=item,
+                    job=job,
+                    elastic_utils=elastic_utils,
+                    offline=False,
+                )
 
                 # 후처리 작업 실행
                 if 'post_process' not in job:
@@ -384,7 +324,13 @@ class WebNewsCrawler(CrawlerBase):
                         continue
 
             # 기사 본문 조회
-            article = self.get_article(doc_id, item, job, elastic_utils)
+            article = self.get_article(
+                doc_id=doc_id,
+                item=item,
+                job=job,
+                elastic_utils=elastic_utils,
+                offline=False,
+            )
             doc_history[doc_id] = 1
 
             # 후처리 작업 실행
