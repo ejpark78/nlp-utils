@@ -71,30 +71,36 @@ def main():
     if args.category == 'naver':
         if args.job_id == 'term_list':
             NaverTermList().batch()
+            return
         elif args.job_id == 'term_detail':
             NaverTermDetail().batch()
+            return
 
         if args.job_id == 'dump':
             NaverCorpusUtils().dump()
+            return
 
         if args.job_id == 'kin_question_list':
             NaverKinQuestionList().daemon(column='question')
+            return
         elif args.job_id == 'kin_answer_list':
             NaverKinQuestionList().daemon(column='answer')
+            return
         elif args.job_id == 'kin_user_list':
             NaverKinUserList().daemon()
+            return
         elif args.job_id == 'kin_detail_question':
             NaverKinQuestionDetail().daemon(
                 column='question',
                 match_phrase=args.match_phrase,
             )
+            return
         elif args.job_id == 'kin_detail_answer':
             NaverKinQuestionDetail().daemon(
                 column='answer',
                 match_phrase=args.match_phrase,
             )
-
-        return
+            return
 
     # 트위터
     if args.job_id == 'twitter':

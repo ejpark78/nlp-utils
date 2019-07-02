@@ -9,13 +9,15 @@ import bz2
 import json
 import logging
 from io import BufferedReader
+from time import sleep
 
 import urllib3
-from time import sleep
-from tqdm import tqdm
 from dateutil.parser import parse as parse_date
+from tqdm import tqdm
+
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.logging_format import LogMessage as LogMsg
+from module.sqlite_utils import SqliteUtils
 from module.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -34,6 +36,65 @@ class CrawlerCorpus(WebNewsCrawler):
         super().__init__(category=category, job_id=job_id, column=column)
 
     @staticmethod
+    def generate_cmd():
+        """"""
+        from uuid import uuid1
+        from glob import glob
+
+        host_idx = 0
+        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+
+        data_dir = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
+
+        for site in ['naver']:
+            d_list = glob('{data_dir}/{site}_*'.format(data_dir=data_dir, site=site))
+            for d in d_list:
+                d = d.split('_')[-1]
+
+                f_list = glob(
+                    '{data_dir}/{site}_{d}/2*-*.json.bz2'.format(
+                        data_dir=data_dir,
+                        site=site,
+                        d=d,
+                    )
+                )
+
+                for f in f_list:
+                    uid = uuid1()
+                    share = '/home/ejpark/tmp'
+
+                    host = host_list[host_idx]
+                    host_idx += 1
+                    if host_idx >= len(host_list):
+                        host_idx = 0
+
+                    query = {
+                        'f': f,
+                        'host': host,
+                        'uid': uid,
+                        'share': share,
+                        'site': site,
+                        'd': d,
+                    }
+
+                    scp = 'scp {f} {host}:{share}/{uid}.json.bz2'.format(**query)
+
+                    docker = 'docker -H {host}:2376 run ' \
+                             '--label task=crawler_corpus ' \
+                             '-v {share}:/usr/local/app/data:rw ' \
+                             'corpus:5000/crawler:latest'.format(**query)
+
+                    cmd = 'python3 crawler_corpus.py ' \
+                          '-update_corpus ' \
+                          '-category {site} ' \
+                          '-job_id {d} ' \
+                          '-filename data/{uid}.json.bz2'.format(**query)
+
+                    print('{scp} && {docker} {cmd}'.format(scp=scp, docker=docker, cmd=cmd))
+
+        return
+
+    @staticmethod
     def read_corpus(filename):
         """파일을 읽어서 반환한다."""
         result = []
@@ -45,20 +106,41 @@ class CrawlerCorpus(WebNewsCrawler):
 
         return result
 
+    @staticmethod
+    def json_default(value):
+        """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
+        from datetime import datetime
+
+        if isinstance(value, datetime):
+            return value.isoformat()
+
+        raise TypeError('not JSON serializable')
+
     def update_corpus(self, filename):
         """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
         self.update_config()
 
-        for job in self.job_info:
-            job['host'] = 'https://nlp.ncsoft.com:9200'
-            job['http_auth'] = 'elastic:nlplab'
+        if self.parsing_info is None:
+            return
 
-            elastic_utils = ElasticSearchUtils(
-                host=job['host'],
-                index=job['index'],
-                bulk_size=100,
-                http_auth=job['http_auth'],
-            )
+        tbl_info = {
+            'name': 'tbl',
+            'primary': 'raw',
+            'columns': ['id', 'raw'],
+        }
+
+        db = {}
+
+        for job in self.job_info:
+            # job['host'] = 'https://nlp.ncsoft.com:9200'
+            # job['http_auth'] = 'elastic:nlplab'
+
+            # elastic_utils = ElasticSearchUtils(
+            #     host=job['host'],
+            #     index=job['index'],
+            #     bulk_size=100,
+            #     http_auth=job['http_auth'],
+            # )
 
             doc_list = self.read_corpus(filename=filename)
 
@@ -100,14 +182,37 @@ class CrawlerCorpus(WebNewsCrawler):
                     parsing_info=self.parsing_info['article'],
                 )
 
+                # 문서 저장: sqlite
                 if article is not None:
                     doc.update(article)
 
-                # 문서 저장
-                index = '{}-{}'.format(job['index'], doc['date'].year)
-                elastic_utils.save_document(document=doc, index=index, delete=False)
+                if 'date' not in doc or article is None:
+                    index = 'data/{index}-error-{filename}.db'.format(
+                        index=job['index'],
+                        filename=filename.replace('.json.bz2', '').split('/')[-1],
+                    )
+                else:
+                    index = 'data/{index}-{year}-{month}.db'.format(
+                        index=job['index'],
+                        year=doc['date'].year,
+                        month=doc['date'].month,
+                    )
 
-            elastic_utils.flush()
+                if index not in db:
+                    db[index] = SqliteUtils(filename=index)
+                    db[index].create_table(tbl_info=tbl_info)
+
+                d = {
+                    'id': doc['_id'],
+                    'raw': json.dumps(doc, ensure_ascii=False, default=self.json_default),
+                }
+                db[index].save_doc(doc=d, tbl_info=tbl_info)
+
+                # 문서 저장: elasticsearch
+            #     index = '{}-{}'.format(job['index'], doc['date'].year)
+            #     elastic_utils.save_document(document=doc, index=index, delete=False)
+            #
+            # elastic_utils.flush()
 
         return
 
@@ -191,12 +296,18 @@ def init_arguments():
 
     parser.add_argument('-filename', default='', help='코퍼스 파일명')
 
+    parser.add_argument('-generate_cmd', action='store_true', default=False, help='')
+
     return parser.parse_args()
 
 
 def main():
     """메인"""
     args = init_arguments()
+
+    if args.generate_cmd:
+        CrawlerCorpus().generate_cmd()
+        return
 
     if args.update_corpus:
         CrawlerCorpus(
