@@ -4,13 +4,7 @@
     "#trace": "전체 html 에서 추출해야하는 전체 tag 목록",
     "trace": [
       {
-        "name": "table",
-        "attribute": {
-          "class": "tbl_type01"
-        }
-      },
-      {
-        "name": "tr"
+        "select": "table.tbl_type01 tr"
       }
     ],
     "#list": "기사 목록에서 추출해야하는 하나의 기사 정보",
@@ -21,10 +15,7 @@
         "type": "title",
         "tag": [
           {
-            "name": "a",
-            "attribute": {
-              "class": "bullpenbox"
-            }
+            "select": "a.bullpenbox"
           }
         ]
       },
@@ -34,10 +25,7 @@
         "type": "href",
         "tag": [
           {
-            "name": "a",
-            "attribute": {
-              "class": "bullpenbox"
-            }
+            "select": "a.bullpenbox"
           }
         ]
       },
@@ -47,10 +35,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "span",
-            "attribute": {
-              "class": "word_bullpen"
-            }
+            "select": "span.word_bullpen"
           }
         ]
       },
@@ -60,10 +45,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "span",
-            "attribute": {
-              "class": "replycnt"
-            }
+            "select": "span.replycnt"
           }
         ],
         "replace": [
@@ -86,22 +68,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "left_cont"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "titles"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "word"
-            }
+            "select": "div.left_cont div.titles span.word"
           }
         ]
       },
@@ -111,16 +78,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "left_cont"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "titles"
-            }
+            "select": "div.left_cont div.titles"
           }
         ],
         "remove": [
@@ -140,34 +98,7 @@
         "value_type": "single",
         "tag": [
           {
-            "name": "ul",
-            "attribute": {
-              "class": "view_head"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text_right"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text3"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "val"
-            }
+            "select": "ul.view_head div.text div.text_right div.text3 span.val"
           }
         ]
       },
@@ -177,28 +108,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "ul",
-            "attribute": {
-              "class": "view_head"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text_left"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text2"
-            }
+            "select": "ul.view_head div.text div.text_left div.text2"
           }
         ],
         "replace": [
@@ -214,28 +124,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "ul",
-            "attribute": {
-              "class": "view_head"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text_left"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text2"
-            }
+            "select": "ul.view_head div.text div.text_left div.text2"
           }
         ],
         "replace": [
@@ -251,28 +140,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "ul",
-            "attribute": {
-              "class": "view_head"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "text_left"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "nick"
-            }
+            "select": "ul.view_head div.text div.text_left span.nick"
           }
         ],
         "replace": [
@@ -289,16 +157,7 @@
         "value_type": "merge",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "view_context"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "id": "contentDetail"
-            }
+            "select": "div.contents div.left_cont"
           }
         ]
       },
@@ -309,91 +168,38 @@
         "value_type": "merge",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "view_context"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "id": "contentDetail"
-            }
+            "select": "div.view_context div#contentDetail"
           }
         ]
       },
       {
         "comment": "댓글 텍스트",
-        "key": "replay_list.text",
+        "key": "reply_list.text",
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "reply_list"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "txt_box"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "re_txt"
-            }
+            "select": "div.reply_list div.txt_box span.re_txt"
           }
         ]
       },
       {
         "comment": "댓글 사용자",
-        "key": "replay_list.author",
+        "key": "reply_list.author",
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "reply_list"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "txt_box"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "name"
-            }
+            "select": "div.reply_list div.txt_box span.name"
           }
         ]
       },
       {
         "comment": "댓글 시간",
-        "key": "replay_list.date",
+        "key": "reply_list.date",
         "type": "text",
+        "type_convert": "date",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "reply_list"
-            }
-          },
-          {
-            "name": "div",
-            "attribute": {
-              "class": "txt_box"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "date"
-            }
+            "select": "div.reply_list div.txt_box span.date"
           }
         ]
       }

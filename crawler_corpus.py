@@ -46,20 +46,24 @@ class CrawlerCorpus(WebNewsCrawler):
 
         data_dir = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
 
-        for site in ['naver']:
+        for site in ['naver', 'nate', 'daum']:
             d_list = glob('{data_dir}/{site}_*'.format(data_dir=data_dir, site=site))
             for d in d_list:
-                d = d.split('_')[-1]
+                category = d.split('_')[-1]
 
                 f_list = glob(
-                    '{data_dir}/{site}_{d}/2*-*.json.bz2'.format(
-                        data_dir=data_dir,
+                    '{data_dir}/{site}_{category}/*.json.bz2'.format(
                         site=site,
-                        d=d,
+                        data_dir=data_dir,
+                        category=category,
                     )
                 )
 
-                for f in f_list:
+                for filename in f_list:
+                    f_name = filename.split('/')[-1]
+                    if f_name[0] != '2' and f_name[0] != '1':
+                        continue
+
                     uid = uuid1()
                     share = '/home/ejpark/tmp'
 
@@ -69,17 +73,19 @@ class CrawlerCorpus(WebNewsCrawler):
                         host_idx = 0
 
                     query = {
-                        'f': f,
+                        'filename': filename,
                         'host': host,
                         'uid': uid,
                         'share': share,
                         'site': site,
-                        'd': d,
+                        'job_id': category,
+                        'target': 'elastic',
                     }
 
-                    scp = 'scp {f} {host}:{share}/{uid}.json.bz2'.format(**query)
+                    scp = 'scp {filename} {host}:{share}/{uid}.json.bz2'.format(**query)
 
-                    docker = 'docker -H {host}:2376 run ' \
+                    docker = 'docker -H {host}:2376 ' \
+                             'run ' \
                              '--label task=crawler_corpus ' \
                              '-v {share}:/usr/local/app/data:rw ' \
                              'corpus:5000/crawler:latest'.format(**query)
@@ -87,7 +93,8 @@ class CrawlerCorpus(WebNewsCrawler):
                     cmd = 'python3 crawler_corpus.py ' \
                           '-update_corpus ' \
                           '-category {site} ' \
-                          '-job_id {d} ' \
+                          '-job_id {job_id} ' \
+                          '-target {target} ' \
                           '-filename data/{uid}.json.bz2'.format(**query)
 
                     print('{scp} && {docker} {cmd}'.format(scp=scp, docker=docker, cmd=cmd))
@@ -102,7 +109,16 @@ class CrawlerCorpus(WebNewsCrawler):
             bfp = BufferedReader(fp)
 
             for line in tqdm(bfp.readlines()):
-                result.append(json.loads(line))
+                try:
+                    result.append(json.loads(line))
+                except Exception as e:
+                    log_msg = {
+                        'task': 'load json',
+                        'message': 'JSON 변환 오류',
+                        'line': line,
+                        'exception': str(e),
+                    }
+                    logging.error(msg=log_msg)
 
         return result
 
@@ -116,39 +132,57 @@ class CrawlerCorpus(WebNewsCrawler):
 
         raise TypeError('not JSON serializable')
 
-    def update_corpus(self, filename):
+    def update_corpus(
+            self,
+            filename,
+            target='sqlite',
+            target_host='https://172.20.79.243:9200',
+            # target_host='https://nlp.ncsoft.com:9200',
+            auth='elastic:nlplab',
+    ):
         """image_list, cdn_image 필드를 업데이트 한다. html_content 를 재파싱한다."""
         self.update_config()
 
         if self.parsing_info is None:
             return
 
-        tbl_info = {
-            'name': 'tbl',
-            'primary': 'raw',
-            'columns': ['id', 'raw'],
-        }
-
         db = {}
+        tbl_info = {}
+        if target == 'sqlite':
+            tbl_info = {
+                'name': 'tbl',
+                'primary': 'raw',
+                'columns': ['id', 'raw'],
+            }
+
+        id_idx = {}
 
         for job in self.job_info:
-            # job['host'] = 'https://nlp.ncsoft.com:9200'
-            # job['http_auth'] = 'elastic:nlplab'
+            index = job['index']
 
-            # elastic_utils = ElasticSearchUtils(
-            #     host=job['host'],
-            #     index=job['index'],
-            #     bulk_size=100,
-            #     http_auth=job['http_auth'],
-            # )
+            elastic_utils = None
+            if target != 'sqlite':
+                job['host'] = target_host
+                job['http_auth'] = auth
 
+                elastic_utils = ElasticSearchUtils(
+                    host=job['host'],
+                    index=job['index'],
+                    bulk_size=100,
+                    http_auth=job['http_auth'],
+                )
+
+                if index not in id_idx:
+                    id_idx[index] = elastic_utils.get_id_list(index=index)[0]
+
+            # 문서 로딩
             doc_list = self.read_corpus(filename=filename)
 
             for doc in tqdm(doc_list):
                 if isinstance(doc['url'], dict):
                     doc['url'] = doc['url']['full']
 
-                # 필드 삭제
+                # 날짜 변환
                 for k in ['date', 'curl_date']:
                     if k not in doc:
                         continue
@@ -159,10 +193,17 @@ class CrawlerCorpus(WebNewsCrawler):
                     dt = parse_date(doc[k])
                     doc[k] = dt.astimezone(self.timezone)
 
+                # 필드명 변경
+                if 'replay_list' in doc:
+                    doc['reply_list'] = doc['replay_list']
+                    del doc['replay_list']
+
                 if 'document_id' in doc:
                     del doc['document_id']
 
                 doc['_id'] = self.get_doc_id(url=doc['url'], job=job, item=doc)
+                if target != 'sqlite' and doc['_id'] in id_idx[index]:
+                    continue
 
                 article_url = None
                 if 'article' in job:
@@ -174,6 +215,12 @@ class CrawlerCorpus(WebNewsCrawler):
                 else:
                     resp = doc['html_content']
 
+                # mlbpark 의 경우
+                if index.find('mlbpark') >= 0:
+                    if 'reply_list' in doc:
+                        resp += doc['reply_list']
+                        del doc['reply_list']
+
                 # 문서 저장
                 article = self.parse_tag(
                     resp=resp,
@@ -182,37 +229,56 @@ class CrawlerCorpus(WebNewsCrawler):
                     parsing_info=self.parsing_info['article'],
                 )
 
-                # 문서 저장: sqlite
                 if article is not None:
+                    article = self.parser.merge_values(item=article)
+
                     doc.update(article)
 
-                if 'date' not in doc or article is None:
-                    index = 'data/{index}-error-{filename}.db'.format(
-                        index=job['index'],
-                        filename=filename.replace('.json.bz2', '').split('/')[-1],
-                    )
+                # 문서 저장
+                if target == 'sqlite':
+                    # 문서 저장: sqlite
+
+                    if 'date' not in doc or article is None:
+                        index = 'data/{index}-error-{filename}.db'.format(
+                            index=job['index'],
+                            filename=filename.replace('.json.bz2', '').split('/')[-1],
+                        )
+                    else:
+                        index = 'data/{index}-{year}-{month}.db'.format(
+                            index=job['index'],
+                            year=doc['date'].year,
+                            month=doc['date'].month,
+                        )
+
+                    if index not in db:
+                        db[index] = SqliteUtils(filename=index)
+                        db[index].create_table(tbl_info=tbl_info)
+
+                    d = {
+                        'id': doc['_id'],
+                        'raw': json.dumps(doc, ensure_ascii=False, default=self.json_default),
+                    }
+                    db[index].save_doc(doc=d, tbl_info=tbl_info)
                 else:
-                    index = 'data/{index}-{year}-{month}.db'.format(
-                        index=job['index'],
-                        year=doc['date'].year,
-                        month=doc['date'].month,
-                    )
+                    # 문서 저장: elasticsearch
 
-                if index not in db:
-                    db[index] = SqliteUtils(filename=index)
-                    db[index].create_table(tbl_info=tbl_info)
+                    if 'date' not in doc or article is None:
+                        error_index = '{index}-error'.format(index=job['index'])
 
-                d = {
-                    'id': doc['_id'],
-                    'raw': json.dumps(doc, ensure_ascii=False, default=self.json_default),
-                }
-                db[index].save_doc(doc=d, tbl_info=tbl_info)
+                        elastic_utils.save_document(document=doc, index=error_index, delete=False)
+                    else:
+                        index = '{index}-{year}'.format(
+                            year=doc['date'].year,
+                            index=job['index'],
+                        )
 
-                # 문서 저장: elasticsearch
-            #     index = '{}-{}'.format(job['index'], doc['date'].year)
-            #     elastic_utils.save_document(document=doc, index=index, delete=False)
-            #
-            # elastic_utils.flush()
+                        if index not in id_idx:
+                            id_idx[index] = elastic_utils.get_id_list(index=index)[0]
+
+                        elastic_utils.save_document(document=doc, index=index, delete=False)
+
+            if target != 'sqlite':
+                elastic_utils.flush()
 
         return
 
@@ -296,6 +362,8 @@ def init_arguments():
 
     parser.add_argument('-filename', default='', help='코퍼스 파일명')
 
+    parser.add_argument('-target', default='sqlite', help='저장소 타입: sqlite, elastic')
+
     parser.add_argument('-generate_cmd', action='store_true', default=False, help='')
 
     return parser.parse_args()
@@ -315,6 +383,7 @@ def main():
             job_id=args.job_id,
             column='trace_list',
         ).update_corpus(
+            target=args.target,
             filename=args.filename,
         )
         return

@@ -83,14 +83,19 @@ class ElasticSearchUtils(object):
 
         return True
 
-    @staticmethod
-    def convert_datetime(document):
+    def convert_datetime(self, document):
         """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
+        if document is None:
+            return None
+
         for k in document:
             item = document[k]
 
             if isinstance(item, datetime):
                 document[k] = item.isoformat()
+
+            if isinstance(item, dict):
+                self.convert_datetime(document=item)
 
         return document
 
@@ -279,16 +284,25 @@ class ElasticSearchUtils(object):
             }
             logger.error(msg=LogMsg(log_msg))
 
+            return False
+
         try:
             if response['errors'] is True:
-                reason = response['items'][0]['update']['error']['reason']
+                reason_list = []
+                for item in response['items']:
+                    if 'update' not in item:
+                        continue
+
+                    reason_list.append(item['update']['error']['reason'])
 
                 log_msg = {
                     'level': 'ERROR',
                     'message': '저장 에러',
-                    'reason': reason,
+                    'reason': reason_list,
                 }
                 logger.error(msg=LogMsg(log_msg))
+
+                return False
             else:
                 log_msg = {
                     'level': 'INFO',
@@ -318,7 +332,9 @@ class ElasticSearchUtils(object):
             }
             logger.error(msg=LogMsg(log_msg))
 
-        return
+            return False
+
+        return True
 
     def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True):
         """문서를 덤프 받는다."""
@@ -332,10 +348,10 @@ class ElasticSearchUtils(object):
         result = []
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
-                index=index,
-                scroll_id=scroll_id,
                 size=size,
                 query=query,
+                index=index,
+                scroll_id=scroll_id,
             )
 
             sum_count += count
@@ -377,7 +393,6 @@ class ElasticSearchUtils(object):
         if scroll_id == '':
             search_result = self.elastic.search(
                 index=index,
-                doc_type='doc',
                 body=query,
                 scroll='2m',
                 size=size,
@@ -419,14 +434,14 @@ class ElasticSearchUtils(object):
         scroll_id = ''
 
         query = {
-            '_source': '',
+            '_source': ''
         }
 
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
-                scroll_id=scroll_id,
                 size=size,
                 query=query,
+                scroll_id=scroll_id,
             )
 
             sum_count += count

@@ -39,7 +39,7 @@ class HtmlParser(object):
 
             remove_list.append(col)
 
-            # replay_list.text 를 l1, l2로 분리
+            # reply_list.text 를 l1, l2로 분리
             l1, l2 = col.split('.', maxsplit=1)
 
             if l1 not in new_item:

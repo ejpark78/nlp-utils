@@ -215,16 +215,16 @@ class TwitterUtils(CrawlerBase):
                 tweet = self.merge_doc(elastic_utils=elastic_utils, index=job_info['index'], tweet=tweet)
 
                 # 현재 상태 로그 표시
-                replay_list = []
+                reply_list = []
                 if 'reply' in tweet:
-                    replay_list = tweet['reply']
+                    reply_list = tweet['reply']
 
                 msg = {
                     'level': 'MESSAGE',
                     'message': '트윗 저장 성공',
                     'id': tweet['id'],
                     'text': tweet['text'],
-                    'reply': replay_list,
+                    'reply': reply_list,
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
 

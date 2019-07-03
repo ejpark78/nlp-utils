@@ -30,6 +30,7 @@ build:
 		--exclude=.vscode \
 		--exclude=*.jar \
 		--exclude=*.tar.gz \
+		--exclude=*.bz2 \
 		--exclude=*.pycharm* \
 		--exclude=__pycache__ \
 		--exclude=build \

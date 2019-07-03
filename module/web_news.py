@@ -553,25 +553,26 @@ class WebNewsCrawler(CrawlerBase):
 
         # 문서 저장
         elastic_utils.save_document(document=doc)
-        elastic_utils.flush()
+        flag = elastic_utils.flush()
 
-        # 로그 표시
-        doc_info = {}
-        for k in ['document_id', 'date', 'title']:
-            if k in doc:
-                doc_info[k] = doc[k]
+        # 성공 로그 표시
+        if flag is True:
+            doc_info = {}
+            for k in ['document_id', 'date', 'title']:
+                if k in doc:
+                    doc_info[k] = doc[k]
 
-        msg = {
-            'level': 'MESSAGE',
-            'message': '기사 저장 성공',
-            'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
-                host=elastic_utils.host,
-                index=elastic_utils.index,
-                id=doc['document_id'],
-            ),
-            'doc_info': doc_info,
-        }
-        logger.log(level=MESSAGE, msg=LogMsg(msg))
+            msg = {
+                'level': 'MESSAGE',
+                'message': '기사 저장 성공',
+                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                    host=elastic_utils.host,
+                    index=elastic_utils.index,
+                    id=doc['document_id'],
+                ),
+                'doc_info': doc_info,
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         return doc
 
@@ -599,7 +600,17 @@ class WebNewsCrawler(CrawlerBase):
 
                 return None
 
-            result = id_frame['frame'].format(**q)
+            try:
+                result = id_frame['frame'].format(**q)
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'url fame 에러',
+                    'q': q,
+                    'id_frame': id_frame['frame'],
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
         elif id_frame['type'] == 'value':
             result = id_frame['frame'].format(**item)
 
@@ -683,7 +694,7 @@ class WebNewsCrawler(CrawlerBase):
                 msg = {
                     'level': 'ERROR',
                     'message': 'trace tag에서 url 추출 에러',
-                    'resp': resp,
+                    'resp': str(resp)[:200],
                 }
                 logger.error(msg=LogMsg(msg))
                 return None
@@ -691,8 +702,8 @@ class WebNewsCrawler(CrawlerBase):
         if len(item) == 0:
             msg = {
                 'level': 'ERROR',
-                'message': '기사 목록 파싱 에러',
-                'resp': resp,
+                'message': 'HTML 파싱 에러',
+                'resp': str(resp)[:200],
             }
             logger.error(msg=LogMsg(msg))
             return None

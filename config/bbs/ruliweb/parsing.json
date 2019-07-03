@@ -271,7 +271,7 @@
       },
       {
         "comment": "댓글 작성자",
-        "key": "replay_list.writer",
+        "key": "reply_list.writer",
         "type": "text",
         "tag": [
           {
@@ -281,7 +281,7 @@
       },
       {
         "comment": "댓글 작성자 srl",
-        "key": "replay_list.member_srl",
+        "key": "reply_list.member_srl",
         "type": "text",
         "tag": [
           {
@@ -297,7 +297,7 @@
       },
       {
         "comment": "댓글 텍스트",
-        "key": "replay_list.text",
+        "key": "reply_list.text",
         "type": "text",
         "tag": [
           {
@@ -307,7 +307,7 @@
       },
       {
         "comment": "댓글 작성 시간",
-        "key": "replay_list.date",
+        "key": "reply_list.date",
         "type": "text",
         "tag": [
           {
@@ -317,7 +317,7 @@
       },
       {
         "comment": "댓글 좋아요 수량",
-        "key": "replay_list.like_count",
+        "key": "reply_list.like_count",
         "type": "text",
         "tag": [
           {
@@ -327,7 +327,7 @@
       },
       {
         "comment": "댓글 싫어요 수량",
-        "key": "replay_list.dislike_count",
+        "key": "reply_list.dislike_count",
         "type": "text",
         "tag": [
           {
