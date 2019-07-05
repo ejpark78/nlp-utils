@@ -15,6 +15,7 @@ from urllib.parse import urljoin
 import pytz
 import urllib3
 from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
@@ -162,8 +163,6 @@ class WebNewsCrawler(CrawlerBase):
 
     def trace_url_list(self, job):
         """url_frame 목록을 반복한다."""
-        from dateutil.relativedelta import relativedelta
-
         # url 목록 반복
         for url in job['list']:
             if url['url_frame'][0] == '#':
