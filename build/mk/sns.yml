@@ -8,10 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category sns -job_id twitter
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

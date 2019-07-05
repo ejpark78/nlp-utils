@@ -8,10 +8,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_list
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -22,10 +19,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_detail
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -36,10 +30,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_question_list
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -50,10 +41,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_detail
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -64,10 +52,7 @@ services:
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_answer_list
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

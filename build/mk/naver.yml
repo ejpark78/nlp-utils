@@ -36,7 +36,7 @@ services:
       - "CONSUMER_USER_NAME=${RABBITMQ_USER}"
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:
-      - "${ETC_HOSTS}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -51,10 +51,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -70,10 +67,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -89,10 +83,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -108,10 +99,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -127,10 +115,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -146,10 +131,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -165,10 +147,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -184,10 +163,7 @@ services:
     depends_on:
       - mq
     extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
+      - "${CORPUS_HOST_NAME}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
