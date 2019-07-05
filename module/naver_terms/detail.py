@@ -7,15 +7,18 @@ from __future__ import print_function
 
 import json
 import logging
-from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
+from module.logging_format import LogMessage as LogMsg
 
 logger = logging.getLogger()
+
+MESSAGE = 25
 
 
 class TermDetail(CrawlerBase):
@@ -60,9 +63,9 @@ class TermDetail(CrawlerBase):
             for item in doc_list:
                 self.get_detail(
                     doc=item['_source'],
-                    elastic_utils=elastic_utils,
-                    list_index=list_index,
                     list_id=item['_id'],
+                    list_index=list_index,
+                    elastic_utils=elastic_utils,
                 )
 
                 count += 1
@@ -96,7 +99,14 @@ class TermDetail(CrawlerBase):
         )
 
         if is_skip is True:
-            logger.info(msg='skip {} {}'.format(doc_id, self.job_info['index']))
+            msg = {
+                'level': 'INFO',
+                'message': 'skip',
+                'index': self.job_info['index'],
+                'doc_id': doc_id,
+            }
+            logger.info(msg=LogMsg(msg))
+
             return True
 
         # 질문 상세 페이지 크롤링
@@ -108,7 +118,13 @@ class TermDetail(CrawlerBase):
                 timeout=60,
             )
         except Exception as e:
-            logger.error('{}'.format(e))
+            msg = {
+                'level': 'ERROR',
+                'message': '상세 페이지 조회 에러',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
             sleep(10)
             return
 
@@ -123,7 +139,13 @@ class TermDetail(CrawlerBase):
             base_url=request_url,
         )
 
-        logger.info(msg='상세 페이지: {} {}'.format(doc_id, request_url))
+        msg = {
+            'level': 'INFO',
+            'message': '상세 페이지',
+            'doc_id': doc_id,
+            'request_url': request_url,
+        }
+        logger.info(msg=LogMsg(msg))
 
         # 후처리 작업 실행
         self.post_process_utils.insert_job(
@@ -151,7 +173,13 @@ class TermDetail(CrawlerBase):
                 if 'attribute' not in trace:
                     trace['attribute'] = None
 
-                item_list = soup.find_all(trace['name'], trace['attribute'])
+                if 'select' in trace:
+                    # css select 인 경우
+                    item_list = soup.select(trace['select'])
+                else:
+                    # 기존 방식
+                    item_list = soup.find_all(trace['name'], trace['attribute'])
+
                 for item in item_list:
                     # html 본문에서 값 추출
                     unit = self.parser.parse(
@@ -173,11 +201,21 @@ class TermDetail(CrawlerBase):
             elastic_utils.save_document(index=self.job_info['index'], document=doc)
             elastic_utils.flush()
 
-            msg = '{}'.format(doc_id)
-            if 'title' in doc:
-                msg = '{} {}'.format(doc_id, doc['title'])
+            msg = {
+                'level': 'INFO',
+                'message': '문서 저장',
+                'doc_id': doc_id,
+                'url': '{host}/{index}/doc/{id}?pretty'.format(
+                    host=self.job_info['host'],
+                    index=self.job_info['index'],
+                    id=doc_id,
+                ),
+            }
 
-            logger.info(msg=msg)
+            if 'title' in doc:
+                msg['title'] = doc['title']
+
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(
@@ -206,6 +244,10 @@ class TermDetail(CrawlerBase):
                 }
             }
 
-        result = elastic_utils.dump(index=index, query=query,
-                                    only_source=False, limit=5000)
+        result = elastic_utils.dump(
+            index=index,
+            query=query,
+            limit=5000,
+            only_source=False,
+        )
         return result

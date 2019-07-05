@@ -261,7 +261,7 @@
       },
       {
         "comment": "댓글 목록",
-        "key": "replay_html_content",
+        "key": "reply_html_content",
         "type": "html",
         "tag": [
           {

@@ -5,10 +5,7 @@
       "type": "html",
       "tag": [
         {
-          "name": "li",
-          "attribute": {
-            "class": "thumb_list_item"
-          }
+          "select": "li.thumb_list_item"
         }
       ]
     },
@@ -51,10 +48,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "h3",
-            "attribute": {
-              "class": "subject"
-            }
+            "select": "h3.subject"
           }
         ]
       },
@@ -64,10 +58,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "p",
-            "attribute": {
-              "class": "dsc"
-            }
+            "select": "p.dsc"
           }
         ]
       },
@@ -92,7 +83,7 @@
       "type": "html",
       "tag": [
         {
-          "name": "article"
+          "select": "article"
         }
       ]
     },
@@ -103,16 +94,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "title_wrap"
-            }
-          },
-          {
-            "name": "p",
-            "attribute": {
-              "class": "cite"
-            }
+            "select": "div.title_wrap p.cite"
           }
         ]
       },
@@ -122,13 +104,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "title_wrap"
-            }
-          },
-          {
-            "name": "h1"
+            "select": "div.title_wrap h1"
           }
         ]
       },
@@ -138,16 +114,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "title_wrap"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "u_word_dic"
-            }
+            "select": "div.title_wrap span.u_word_dic"
           }
         ]
       },
@@ -157,16 +124,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "option_wrap"
-            }
-          },
-          {
-            "name": "span",
-            "attribute": {
-              "class": "count"
-            }
+            "select": "div.option_wrap span.count"
           }
         ]
       },
@@ -176,10 +134,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "na_abstract"
-            }
+            "select": "div.na_abstract"
           }
         ]
       },
@@ -189,10 +144,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "table",
-            "attribute": {
-              "class": "na_property_table2"
-            }
+            "select": "table.na_property_table2"
           }
         ]
       },
@@ -202,10 +154,7 @@
         "type": "html",
         "tag": [
           {
-            "name": "table",
-            "attribute": {
-              "class": "na_property_table2"
-            }
+            "select": "table.na_property_table2"
           }
         ]
       },
@@ -215,10 +164,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "_SLOG_TERMS_CONTENT"
-            }
+            "select": "div._SLOG_TERMS_CONTENT"
           }
         ]
       },
@@ -228,10 +174,7 @@
         "type": "html",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "_SLOG_TERMS_CONTENT"
-            }
+            "select": "div._SLOG_TERMS_CONTENT"
           }
         ]
       },
@@ -241,10 +184,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "_SLOG_TERMS_RELATED"
-            }
+            "select": "div._SLOG_TERMS_RELATED"
           }
         ]
       },
@@ -254,10 +194,7 @@
         "type": "html",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "_SLOG_TERMS_RELATED"
-            }
+            "select": "div._SLOG_TERMS_RELATED"
           }
         ]
       },
@@ -267,10 +204,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "likeit"
-            }
+            "select": "div.likeit"
           },
           {
             "name": "em",
@@ -286,16 +220,7 @@
         "type": "text",
         "tag": [
           {
-            "name": "div",
-            "attribute": {
-              "class": "relative_dic_wrap"
-            }
-          },
-          {
-            "name": "p",
-            "attribute": {
-              "class": "subject"
-            }
+            "select": "div.relative_dic_wrap p.subject"
           }
         ]
       }

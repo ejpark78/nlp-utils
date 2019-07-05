@@ -27,6 +27,7 @@ include $(MK_DIR)/build.mk
 
 include $(MK_DIR)/naver.mk
 include $(MK_DIR)/naver-kin.mk
+include $(MK_DIR)/naver-terms.mk
 include $(MK_DIR)/nate.mk
 include $(MK_DIR)/daum.mk
 include $(MK_DIR)/bbs.mk
