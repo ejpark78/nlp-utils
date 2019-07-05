@@ -8,11 +8,14 @@ from __future__ import print_function
 import bz2
 import json
 import logging
+from datetime import datetime
+from glob import glob
 from io import BufferedReader
-from time import sleep
+from uuid import uuid1
 
 import urllib3
 from dateutil.parser import parse as parse_date
+from time import sleep
 from tqdm import tqdm
 
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -35,27 +38,121 @@ class CrawlerCorpus(WebNewsCrawler):
         """ 생성자 """
         super().__init__(category=category, job_id=job_id, column=column)
 
-    @staticmethod
-    def generate_cmd():
-        """"""
-        from uuid import uuid1
-        from glob import glob
+    def generate_cmd(self):
+        """실행 스크립트를 생성한다."""
+        self.big3_elastic()
 
+        return
+
+    def bbs(self):
+        """bbs"""
+        host_idx = 0
+        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+
+        home = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
+        data_dir = '{home}/mlbpark_bullpen'.format(home=home)
+
+        category = 'bbs'
+        job_id = 'mlbpark-bullpen'
+
+        f_list = glob('{data_dir}/*.json.bz2'.format(data_dir=data_dir))
+        for filename in f_list:
+            f_name = filename.split('/')[-1]
+            if f_name[0] != '2' and f_name[0] != '1':
+                continue
+
+            uid = uuid1()
+            share = '/home/ejpark/tmp'
+
+            host = host_list[host_idx]
+            host_idx += 1
+            if host_idx >= len(host_list):
+                host_idx = 0
+
+            query = {
+                'filename': filename,
+                'host': host,
+                'uid': uid,
+                'share': share,
+                'category': category,
+                'job_id': job_id,
+                'target': 'elastic',
+            }
+
+            print(self.get_cmd_str(query=query))
+
+        return
+
+    @staticmethod
+    def get_cmd_str(query):
+        """쉘 커멘드를 반환한다."""
+        scp = 'scp {filename} {host}:{share}/{uid}.json.bz2'.format(**query)
+
+        docker = 'docker -H {host}:2376 ' \
+                 'run ' \
+                 '--label task=crawler_corpus ' \
+                 '-v {share}:/usr/local/app/data:rw ' \
+                 'corpus:5000/crawler:latest'.format(**query)
+
+        cmd = 'python3 crawler_corpus.py ' \
+              '-update_corpus ' \
+              '-category {category} ' \
+              '-job_id {job_id} ' \
+              '-target {target} ' \
+              '-filename data/{uid}.json.bz2'.format(**query)
+
+        return '{scp} && {docker} {cmd}'.format(scp=scp, docker=docker, cmd=cmd)
+
+    def big3_elastic(self):
+        """big3 elastic"""
+        host_idx = 0
+        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+
+        data_dir = '/home/ejpark/workspace/data-center/data/2019-06-18'
+
+        for category in ['nate', 'daum']:
+            f_list = glob('{data_dir}/crawler-{category}*'.format(data_dir=data_dir, category=category))
+
+            for filename in f_list:
+                job_id = filename.split('/')[-1].split('.')[0].split('-')[-1]
+
+                uid = uuid1()
+                share = '/home/ejpark/tmp'
+
+                host = host_list[host_idx]
+                host_idx += 1
+                if host_idx >= len(host_list):
+                    host_idx = 0
+
+                query = {
+                    'filename': filename,
+                    'host': host,
+                    'uid': uid,
+                    'share': share,
+                    'category': category,
+                    'job_id': job_id,
+                    'target': 'elastic',
+                }
+
+                print(self.get_cmd_str(query=query))
+
+        return
+
+    def big3(self):
+        """big3"""
         host_idx = 0
         host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
 
         data_dir = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
 
-        for site in ['naver', 'nate', 'daum']:
-            d_list = glob('{data_dir}/{site}_*'.format(data_dir=data_dir, site=site))
-            for d in d_list:
-                category = d.split('_')[-1]
+        for category in ['naver', 'nate', 'daum']:
+            d_list = glob('{data_dir}/{category}*'.format(data_dir=data_dir, category=category))
+            for dir_name in d_list:
+                job_id = dir_name.split('_')[-1]
 
                 f_list = glob(
-                    '{data_dir}/{site}_{category}/*.json.bz2'.format(
-                        site=site,
-                        data_dir=data_dir,
-                        category=category,
+                    '{dir_name}/*.json.bz2'.format(
+                        dir_name=dir_name,
                     )
                 )
 
@@ -77,27 +174,12 @@ class CrawlerCorpus(WebNewsCrawler):
                         'host': host,
                         'uid': uid,
                         'share': share,
-                        'site': site,
-                        'job_id': category,
+                        'category': category,
+                        'job_id': job_id,
                         'target': 'elastic',
                     }
 
-                    scp = 'scp {filename} {host}:{share}/{uid}.json.bz2'.format(**query)
-
-                    docker = 'docker -H {host}:2376 ' \
-                             'run ' \
-                             '--label task=crawler_corpus ' \
-                             '-v {share}:/usr/local/app/data:rw ' \
-                             'corpus:5000/crawler:latest'.format(**query)
-
-                    cmd = 'python3 crawler_corpus.py ' \
-                          '-update_corpus ' \
-                          '-category {site} ' \
-                          '-job_id {job_id} ' \
-                          '-target {target} ' \
-                          '-filename data/{uid}.json.bz2'.format(**query)
-
-                    print('{scp} && {docker} {cmd}'.format(scp=scp, docker=docker, cmd=cmd))
+                    print(self.get_cmd_str(query=query))
 
         return
 
@@ -125,12 +207,17 @@ class CrawlerCorpus(WebNewsCrawler):
     @staticmethod
     def json_default(value):
         """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
-        from datetime import datetime
-
         if isinstance(value, datetime):
             return value.isoformat()
 
         raise TypeError('not JSON serializable')
+
+    def get_url_str(self, url):
+        """url 문자열을 반환한다."""
+        if isinstance(url, dict) and 'full' in url:
+            url = self.get_url_str(url=url['full'])
+
+        return url
 
     def update_corpus(
             self,
@@ -179,8 +266,7 @@ class CrawlerCorpus(WebNewsCrawler):
             doc_list = self.read_corpus(filename=filename)
 
             for doc in tqdm(doc_list):
-                if isinstance(doc['url'], dict):
-                    doc['url'] = doc['url']['full']
+                doc['url'] = self.get_url_str(url=doc['url'])
 
                 # 날짜 변환
                 for k in ['date', 'curl_date']:
@@ -192,6 +278,11 @@ class CrawlerCorpus(WebNewsCrawler):
 
                     dt = parse_date(doc[k])
                     doc[k] = dt.astimezone(self.timezone)
+
+                # 필드 삭제
+                for k in ['photo_list', 'photo_caption']:
+                    if k in doc:
+                        del doc[k]
 
                 # 필드명 변경
                 if 'replay_list' in doc:
@@ -213,11 +304,14 @@ class CrawlerCorpus(WebNewsCrawler):
                 if 'raw_html' in doc:
                     resp = doc['raw_html']
                 else:
+                    if 'html_content' not in doc:
+                        continue
+
                     resp = doc['html_content']
 
                 # mlbpark 의 경우
                 if index.find('mlbpark') >= 0:
-                    if 'reply_list' in doc:
+                    if 'reply_list' in doc and isinstance(doc['reply_list'], str):
                         resp += doc['reply_list']
                         del doc['reply_list']
 

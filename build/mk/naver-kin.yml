@@ -2,34 +2,6 @@ version: '2'
 
 services:
 
-  term-list:
-    image: "${CRAWLER_IMAGE}"
-    restart: "${RESTART}"
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_list
-    extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-
-  term-detail:
-    image: "${CRAWLER_IMAGE}"
-    restart: "${RESTART}"
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id term_detail
-    extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-
   question-list:
     image: "${CRAWLER_IMAGE}"
     restart: "${RESTART}"
@@ -37,23 +9,6 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_question_list
     extra_hosts:
       - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-
-  question-detail:
-    image: "${CRAWLER_IMAGE}"
-    restart: "${RESTART}"
-    working_dir: /usr/local/app
-    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_detail
-    extra_hosts:
-      - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -65,9 +20,29 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_answer_list
     extra_hosts:
       - "${ETC_HOSTS}"
-    environment:
-      - "${HTTP_PROXY}"
-      - "${HTTPS_PROXY}"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+
+  question-detail:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_detail_question
+    extra_hosts:
+      - "${ETC_HOSTS}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+  answer-detail:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id kin_detail_answer
+    extra_hosts:
+      - "${ETC_HOSTS}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
