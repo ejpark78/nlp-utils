@@ -401,6 +401,8 @@ class WebNewsCrawler(CrawlerBase):
 
         article['_id'] = doc_id
 
+        # TODO: 댓글 post process 처리
+
         return self.save_article(
             doc=item,
             html=resp,

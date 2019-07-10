@@ -59,23 +59,13 @@
         ]
       },
       {
-        "comment": "댓글수",
-        "key": "reply_count",
+        "comment": "사용자명",
+        "key": "writer",
         "type": "text",
         "value_type": "single",
         "tag": [
           {
             "select": "td.bbsNick"
-          }
-        ]
-      },
-      {
-        "comment": "사용자명",
-        "key": "writer",
-        "type": "text",
-        "tag": [
-          {
-            "select": "td.writer"
           }
         ]
       },
@@ -118,7 +108,7 @@
         "type": "text",
         "tag": [
           {
-            "select": "h4.subject span.subject_text"
+            "select": "div.articleCategory"
           }
         ],
         "replace": [
@@ -129,100 +119,12 @@
         ]
       },
       {
-        "comment": "제목",
-        "key": "title",
-        "type": "text",
-        "tag": [
-          {
-            "select": "h4.subject span.subject_text"
-          }
-        ],
-        "replace": [
-          {
-            "from": "^.*[[].+?[]](.+)$",
-            "to": "\\g<1>"
-          }
-        ]
-      },
-      {
-        "comment": "댓글수",
-        "key": "reply_count",
-        "type": "text",
-        "tag": [
-          {
-            "select": "h4.subject strong.reply_count"
-          }
-        ],
-        "replace": [
-          {
-            "from": "^.*[[](.+?)[]].*$",
-            "to": "\\g<1>"
-          }
-        ]
-      },
-      {
-        "comment": "작성자",
+        "comment": "사용자명",
         "key": "writer",
         "type": "text",
         "tag": [
           {
-            "select": "div.user_info strong.nick"
-          }
-        ]
-      },
-      {
-        "comment": "작성자 srl",
-        "key": "member_srl",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.user_info span.member_srl"
-          }
-        ],
-        "replace": [
-          {
-            "from": "^.*[(](.+?)[)].*$",
-            "to": "\\g<1>"
-          }
-        ]
-      },
-      {
-        "comment": "출석일수",
-        "key": "attend",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.user_info span.attend"
-          }
-        ]
-      },
-      {
-        "comment": "출석일수",
-        "key": "level",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.user_info span.level"
-          }
-        ]
-      },
-      {
-        "comment": "사용자 경험지수",
-        "key": "experience",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.user_info span.exp_text"
-          }
-        ]
-      },
-      {
-        "comment": "추천수",
-        "key": "like_count",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.user_info span.like"
+            "select": "div.articleWriter"
           }
         ]
       },
@@ -234,13 +136,43 @@
         "value_type": "single",
         "tag": [
           {
-            "select": "div.user_info span.regdate"
+            "select": "div.articleDate"
+          }
+        ]
+      },
+      {
+        "comment": "조회수",
+        "key": "view_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.articleHit"
           }
         ],
         "replace": [
           {
-            "from": "[(](.+?)[)]",
+            "from": "^.*조회:.*([0-9]+).*$",
             "to": "\\g<1>"
+          }
+        ]
+      },
+      {
+        "comment": "추천수",
+        "key": "recommend_count",
+        "type": "text",
+        "tag": [
+          {
+            "select": "span#bbsRecommendNum1"
+          }
+        ]
+      },
+      {
+        "comment": "제목",
+        "key": "title",
+        "type": "text",
+        "tag": [
+          {
+            "select": "div.articleTitle"
           }
         ]
       },
@@ -251,7 +183,7 @@
         "value_type": "merge",
         "tag": [
           {
-            "select": "div.board_main_view > div.view_content"
+            "select": "div#tbArticle"
           }
         ]
       },
@@ -262,7 +194,7 @@
         "value_type": "merge",
         "tag": [
           {
-            "select": "div.board_main_view > div.view_content"
+            "select": "div#powerbbsContent"
           }
         ]
       },
@@ -272,7 +204,7 @@
         "type": "html",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element"
+            "select": "div.cmtMain"
           }
         ]
       },
@@ -282,23 +214,7 @@
         "type": "text",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element td.user div.nick"
-          }
-        ]
-      },
-      {
-        "comment": "댓글 작성자 srl",
-        "key": "reply_list.member_srl",
-        "type": "text",
-        "tag": [
-          {
-            "select": "div.comment_view_wrapper tr.comment_element td.user span.member_srl"
-          }
-        ],
-        "replace": [
-          {
-            "from": "^.*[(](.+?)[)].*$",
-            "to": "\\g<1>"
+            "select": "div.cmtOne span.nickname"
           }
         ]
       },
@@ -308,7 +224,13 @@
         "type": "text",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element td.comment span.text"
+            "select": "div.cmtOne"
+          },
+          {
+            "name": "span",
+            "attribute": {
+              "class": "content cmtContentOne"
+            }
           }
         ]
       },
@@ -316,29 +238,37 @@
         "comment": "댓글 작성 시간",
         "key": "reply_list.date",
         "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper span.time"
+            "select": "div.cmtOne span.date"
+          }
+        ],
+        "replace": [
+          {
+            "from": "^.*[(].*([0-9]+)[)].*$",
+            "to": "\\g<1>"
           }
         ]
       },
       {
-        "comment": "댓글 좋아요 수량",
+        "comment": "공감",
         "key": "reply_list.like_count",
         "type": "text",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper button.btn_like span.num"
+            "select": "div.cmtOne span.likeCmtBttn705597_num"
           }
         ]
       },
       {
-        "comment": "댓글 싫어요 수량",
+        "comment": "비공감",
         "key": "reply_list.dislike_count",
         "type": "text",
         "tag": [
           {
-            "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper button.btn_dislike span.num"
+            "select": "div.cmtOne span.disCmtBttn705597_num"
           }
         ]
       }
