@@ -67,9 +67,16 @@ class Config(object):
                 fp.write('{}')
 
         # 설정 파일이 없는 경우 에러 발생
-        assert isfile(filename) is True
+        if isfile(filename) is False:
+            return {
+                'trace_list': {
+                    'end': 5000,
+                    'start': 1,
+                    'step': 1
+                }
+            }
 
-        # 파일 로딩
+            # 파일 로딩
         with open(filename, 'r') as fp:
             str_doc = ''.join(fp.readlines())
             result = json.loads(str_doc)
