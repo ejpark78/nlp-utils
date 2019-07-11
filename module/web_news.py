@@ -10,9 +10,11 @@ import logging
 import re
 from datetime import datetime, timedelta
 from time import sleep
+from urllib.parse import parse_qs
 from urllib.parse import urljoin
 
 import pytz
+import requests
 import urllib3
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
@@ -401,14 +403,69 @@ class WebNewsCrawler(CrawlerBase):
 
         article['_id'] = doc_id
 
-        # TODO: 댓글 post process 처리
+        from copy import deepcopy
 
+        # 댓글 post process 처리
+        if 'post_request' in job:
+            req_params = deepcopy(item)
+            req_params.update(article)
+
+            for request_info in job['post_request']:
+                self.post_request(req_params=req_params, url_info=request_info, article=article)
+
+        # 기사 저장
         return self.save_article(
             doc=item,
             html=resp,
             article=article,
             elastic_utils=elastic_utils,
         )
+
+    def post_request(self, req_params, url_info, article):
+        """댓글을 요청한다."""
+        headers = self.headers['desktop']
+        if 'headers' in url_info:
+            headers.update(url_info['headers'])
+
+        url = url_info['url_frame'].format(**req_params)
+
+        if url_info['method'] == "POST":
+            try:
+                body = url_info['data'].format(**req_params)
+                body = parse_qs(body)
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'post request 조회 에러',
+                    'url': url,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
+                return article
+
+            resp = requests.post(
+                url=url,
+                data=body,
+                verify=False,
+                timeout=60,
+                headers=headers,
+                allow_redirects=True,
+            )
+
+            if url_info['response_type'] == 'json':
+                req_result = resp.json()
+
+                result = []
+                self.get_dict_value(
+                    data=req_result,
+                    key_list=url_info['field'].split('.'),
+                    result=result,
+                )
+
+                if len(result) > 0:
+                    article[url_info['key']] = result
+
+        return article
 
     def trace_next_page(self, html, url_info, job):
         """다음 페이지를 따라간다."""

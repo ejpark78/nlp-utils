@@ -160,6 +160,25 @@ class CrawlerBase(object):
 
         return value
 
+    def get_dict_value(self, data, key_list, result):
+        """commentlist.list 형태의 키 값을 찾아서 반환한다."""
+        if len(key_list) == 0:
+            if isinstance(data, list):
+                result += data
+            else:
+                result.append(data)
+            return
+
+        if isinstance(data, list):
+            for item in data:
+                self.get_dict_value(data=item, key_list=key_list, result=result)
+        elif isinstance(data, dict):
+            k = key_list[0]
+            if k in data:
+                self.get_dict_value(data=data[k], key_list=key_list[1:], result=result)
+
+        return
+
     @staticmethod
     def check_doc_id(doc_id, elastic_utils, url, index, doc_history):
         """문서 아이디를 이전 기록과 비교한다."""

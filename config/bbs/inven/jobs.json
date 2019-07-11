@@ -16,6 +16,16 @@
           "check_id": true
         }
       ],
+      "post_request": [
+        {
+          "url_frame": "http://www.inven.co.kr/common/board/comment.json.php",
+          "method": "POST",
+          "response_type": "json",
+          "key": "reply_list",
+          "field": "commentlist.list",
+          "data": "articlecode={article_id}&sortorder=date&act=list&out=json&replyidx=0"
+        }
+      ],
       "article": {
         "document_id": {
           "type": "path",

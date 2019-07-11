@@ -1,0 +1,38 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### inven
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+articlecode=170631&sortorder=date&act=list&out=json&replyidx=0
+
+###
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+{
+  "comeidx": 5019,
+  "articlecode": 170631,
+  "sortorder": "date",
+  "act": list,
+  "out": json,
+  "replynick": "",
+  "replyidx": 0,
+  "uploadurl": "",
+  "imageposition": ""
+}
+
+###
+
+
+###
