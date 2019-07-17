@@ -453,7 +453,17 @@ class WebNewsCrawler(CrawlerBase):
             )
 
             if url_info['response_type'] == 'json':
-                req_result = resp.json()
+                try:
+                    req_result = resp.json()
+                except Exception as e:
+                    msg = {
+                        'level': 'ERROR',
+                        'message': 'post request 파싱 에러',
+                        'url': url,
+                        'exception': str(e),
+                    }
+                    logger.error(msg=LogMsg(msg))
+                    return article
 
                 result = []
                 self.get_dict_value(

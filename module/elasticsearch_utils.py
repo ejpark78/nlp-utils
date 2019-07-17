@@ -348,9 +348,9 @@ class ElasticSearchUtils(object):
         result = []
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
+                index=index,
                 size=size,
                 query=query,
-                index=index,
                 scroll_id=scroll_id,
             )
 
@@ -439,6 +439,7 @@ class ElasticSearchUtils(object):
 
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
+                index=index,
                 size=size,
                 query=query,
                 scroll_id=scroll_id,
@@ -502,6 +503,7 @@ class ElasticSearchUtils(object):
 
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
+                index=index,
                 size=size,
                 query=scroll_query,
                 scroll_id=scroll_id,
