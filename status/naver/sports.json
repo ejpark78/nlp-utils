@@ -1,9 +1,9 @@
 {
   "trace_list": {
     "end": 2000,
-    "end_date": "2019-12-31",
-    "start": 16,
     "start_date": "2019-01-22",
+    "end_date": "2019-12-31",
+    "start": 1,
     "step": 1
   }
 }

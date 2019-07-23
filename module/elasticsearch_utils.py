@@ -469,7 +469,7 @@ class ElasticSearchUtils(object):
 
         return result, filename
 
-    def get_url_list(self, index, size=1000, date_range='', query='', query_field=''):
+    def get_url_list(self, index, size=1000, date_range=None, query='', query_field=''):
         """ elastic search 에서 url 목록을 조회한다. """
         result = []
 
@@ -480,7 +480,7 @@ class ElasticSearchUtils(object):
         scroll_query = {}
         if query != '':
             scroll_query = json.loads(query)
-        elif date_range != '':
+        elif date_range is not None:
             token = date_range.split('~')
 
             scroll_query = {

@@ -39,6 +39,7 @@ build:
 		--exclude=wrap \
 		--exclude=venv \
 		--exclude=tmp \
+		--exclude=status \
 		--exclude=module/selenium-data \
 		.
 

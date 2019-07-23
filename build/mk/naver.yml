@@ -55,7 +55,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   international:
     image: "${CRAWLER_IMAGE}"
@@ -71,7 +70,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   it:
     image: "${CRAWLER_IMAGE}"
@@ -87,7 +85,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   living:
     image: "${CRAWLER_IMAGE}"
@@ -103,7 +100,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   opinion:
     image: "${CRAWLER_IMAGE}"
@@ -119,7 +115,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   politics:
     image: "${CRAWLER_IMAGE}"
@@ -135,7 +130,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   society:
     image: "${CRAWLER_IMAGE}"
@@ -151,7 +145,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   sports:
     image: "${CRAWLER_IMAGE}"
@@ -167,4 +160,18 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
+
+  sports-reply:
+    image: "${CRAWLER_IMAGE}"
+    restart: "${RESTART}"
+    working_dir: /usr/local/app
+    command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id sports-reply
+    links:
+      - "mq:mq_server"
+    depends_on:
+      - mq
+    extra_hosts:
+      - "${CORPUS_HOST_NAME}"
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro

@@ -59,22 +59,35 @@ class Config(object):
     @staticmethod
     def open_config(filename, create=False):
         """설정 파일을 읽는다."""
+        import pytz
         from os.path import isfile
+        from datetime import datetime
+        from dateutil.relativedelta import relativedelta
+
+        # 컨테이너 안에서 설정
+        today = datetime.now(pytz.timezone('Asia/Seoul'))
+
+        start_date = today + relativedelta(weeks=-1)
+        end_date = today + relativedelta(years=1)
+
+        default = {
+            'trace_list': {
+                'start_date': start_date.strftime('%Y-%m-%d'),
+                'end_date': end_date.strftime('%Y-%m-%d'),
+                'end': 100,
+                'start': 1,
+                'step': 1
+            }
+        }
 
         # 없을 경우 파일 생성
         if create is True and isfile(filename) is False:
             with open(filename, 'w') as fp:
-                fp.write('{}')
+                fp.write(json.dumps(default))
 
         # 설정 파일이 없는 경우
         if isfile(filename) is False:
-            return {
-                'trace_list': {
-                    'end': 5000,
-                    'start': 1,
-                    'step': 1
-                }
-            }
+            return default
 
             # 파일 로딩
         with open(filename, 'r') as fp:

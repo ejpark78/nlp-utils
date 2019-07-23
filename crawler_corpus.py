@@ -451,7 +451,7 @@ def init_arguments():
     parser.add_argument('-job_id', default='', help='작업 아이디')
 
     parser.add_argument('-query', default='', help='elasticsearch query')
-    parser.add_argument('-date_range', default='', help='date 날짜 범위: 2000-01-01~2019-04-10')
+    parser.add_argument('-date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
     parser.add_argument('-query_field', default='date', help='query field')
 
     parser.add_argument('-filename', default='', help='코퍼스 파일명')

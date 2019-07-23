@@ -55,7 +55,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   international:
     image: "${CRAWLER_IMAGE}"
@@ -71,7 +70,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   entertainment:
     image: "${CRAWLER_IMAGE}"
@@ -87,7 +85,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   it:
     image: "${CRAWLER_IMAGE}"
@@ -103,7 +100,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   politics:
     image: "${CRAWLER_IMAGE}"
@@ -119,7 +115,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   society:
     image: "${CRAWLER_IMAGE}"
@@ -135,7 +130,6 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw
 
   sports:
     image: "${CRAWLER_IMAGE}"
@@ -151,4 +145,3 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      - $PWD/../status:/usr/local/app/status:rw

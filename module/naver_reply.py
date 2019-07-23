@@ -11,6 +11,7 @@ import re
 import sys
 from copy import deepcopy
 from urllib.parse import urljoin
+from datetime import datetime
 
 import requests
 import urllib3
@@ -57,13 +58,19 @@ class NaverNewsReplyCrawler(CrawlerBase):
         """날짜 범위에 있는 댓글을 수집한다."""
         self.update_config()
 
-        start_date, end_date = date_range.split('~')
+        if date_range is None:
+            today = datetime.now(self.timezone.timezone('Asia/Seoul'))
 
-        start_date = parse_date(start_date)
-        start_date = self.timezone.localize(start_date)
+            start_date = today + relativedelta(weeks=-1)
+            end_date = today
+        else:
+            start_date, end_date = date_range.split('~')
 
-        end_date = parse_date(end_date)
-        end_date = self.timezone.localize(end_date)
+            start_date = parse_date(start_date)
+            start_date = self.timezone.localize(start_date)
+
+            end_date = parse_date(end_date)
+            end_date = self.timezone.localize(end_date)
 
         # 역순 진행
         if step < 0:
@@ -76,6 +83,8 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         while True:
             for job in self.job_info:
+                self.sleep_time = job['sleep']
+
                 for url_frame in job['list']:
                     self.trace_news(url_frame=url_frame, job=job, date=date.strftime('%Y%m%d'))
 
@@ -146,7 +155,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-                sleep(5)
+                sleep(self.sleep_time)
 
             query['page'] += 1
 
@@ -179,7 +188,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
             )
             result += reply_list
 
-            sleep(5)
+            sleep(self.sleep_time)
 
         news['reply_list'] = result
 
