@@ -49,6 +49,10 @@ user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Geck
 
 ###
 
+GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=1&date=20190718&isphoto=N&type=latest
+referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=latest&date=20190718&page=1
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
 
 ###
 

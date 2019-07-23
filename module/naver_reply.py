@@ -12,13 +12,13 @@ import sys
 from copy import deepcopy
 from urllib.parse import urljoin
 
-import pytz
 import requests
 import urllib3
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from time import sleep
 
+from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.logging_format import LogMessage as LogMsg
 
@@ -36,26 +36,16 @@ logger.setLevel(MESSAGE)
 logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
-class NaverNewsReplyCrawler(object):
+class NaverNewsReplyCrawler(CrawlerBase):
     """네이버 뉴스 댓글 수집기"""
 
-    def __init__(self):
+    def __init__(self, category='', job_id='', column=''):
         """ 생성자 """
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/75.0.3770.100 Safari/537.36',
-        }
+        super().__init__()
 
-        self.index_url = 'https://sports.news.naver.com/kbaseball/news/index.nhn?' \
-                         'isphoto=N&type=comment&date={date}&page={page}'
-
-        self.list_url = 'https://sports.news.naver.com/kbaseball/news/list.nhn?' \
-                        'isphoto=N&type=comment&page={page}&date={date}'
-
-        self.reply_url = 'https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?' \
-                         'ticket=sports&templateId=view&pool=cbox2&lang=ko&country=KR&' \
-                         'objectId=news{oid},{aid}&categoryId=&pageSize=20&indexSize=10&groupId=&' \
-                         'listType=OBJECT&pageType=more&page={page}&refresh=false&sort=LIKE'
+        self.job_category = category
+        self.job_id = job_id
+        self.column = column
 
         self.stop_columns = [
             'idType', 'lang', 'country', 'idProvider', 'visible', 'containText',
@@ -63,36 +53,49 @@ class NaverNewsReplyCrawler(object):
             'modTimeGmt', 'templateId', 'userProfileImage',
         ]
 
-        self.timezone = pytz.timezone('Asia/Seoul')
-
-        self.sleep_time = 5
-
-    def batch(self, start_date, end_date, step=-1):
+    def batch(self, date_range, step=-1):
         """날짜 범위에 있는 댓글을 수집한다."""
+        self.update_config()
+
+        start_date, end_date = date_range.split('~')
+
         start_date = parse_date(start_date)
         start_date = self.timezone.localize(start_date)
 
         end_date = parse_date(end_date)
         end_date = self.timezone.localize(end_date)
 
+        # 역순 진행
+        if step < 0:
+            date = start_date
+
+            start_date = end_date
+            end_date = date
+
+        date = start_date
+
         while True:
-            self.get_news_by_date(date=start_date.strftime('%Y%m%d'))
-            start_date += relativedelta(days=step)
+            for job in self.job_info:
+                for url_frame in job['list']:
+                    self.trace_news(url_frame=url_frame, job=job, date=date.strftime('%Y%m%d'))
+
+            # 날짜 변경
+            date += relativedelta(days=step)
 
             if step < 0:
-                if end_date > start_date:
+                if end_date > date:
                     break
             else:
-                if end_date < start_date:
+                if end_date < date:
                     break
 
-    def get_news_by_date(self, date):
-        """해당 날자의 모든 기사를 조회한다."""
+    def trace_news(self, url_frame, job, date):
+        """뉴스 하나를 조회한다."""
         elastic_utils = ElasticSearchUtils(
-            host='https://corpus.ncsoft.com:9200',
-            index='crawler-naver-sports-reply',
-            bulk_size=1,
-            http_auth='elastic:nlplab',
+            host=job['host'],
+            index=job['index'],
+            bulk_size=20,
+            http_auth=job['http_auth'],
         )
 
         query = {
@@ -101,11 +104,12 @@ class NaverNewsReplyCrawler(object):
             'total': 500,
         }
 
-        while query['page'] <= query['total']:
-            headers = deepcopy(self.headers)
-            headers['Referer'] = self.index_url.format(**query)
+        headers = deepcopy(self.headers['desktop'])
 
-            url = self.list_url.format(**query)
+        while query['page'] <= query['total']:
+            headers['Referer'] = url_frame['Referer'].format(**query)
+
+            url = url_frame['list'].format(**query)
             news_info = requests.get(url=url, headers=headers).json()
 
             query['total'] = news_info['totalPages']
@@ -118,10 +122,12 @@ class NaverNewsReplyCrawler(object):
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-                news['url'] = urljoin(self.list_url, news['url'])
+                news['url'] = urljoin(url_frame['list'], news['url'])
 
-                news = self.get_reply(news=news)
+                # 댓글 조회
+                news = self.get_reply(news=news, url_frame=url_frame)
 
+                # 문서 저장
                 doc_id = '{oid}-{aid}'.format(**news)
                 news['_id'] = doc_id
 
@@ -146,7 +152,7 @@ class NaverNewsReplyCrawler(object):
 
         return
 
-    def get_reply(self, news):
+    def get_reply(self, news, url_frame):
         """댓글을 가져온다."""
         result = []
 
@@ -166,7 +172,11 @@ class NaverNewsReplyCrawler(object):
             }
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-            reply_list, query['total'] = self.extract_reply_list(base_url=news['url'], query=query)
+            reply_list, query['total'] = self.extract_reply_list(
+                query=query,
+                base_url=news['url'],
+                url_frame=url_frame,
+            )
             result += reply_list
 
             sleep(5)
@@ -175,13 +185,13 @@ class NaverNewsReplyCrawler(object):
 
         return news
 
-    def extract_reply_list(self, base_url, query):
+    def extract_reply_list(self, base_url, query, url_frame):
         """댓글 목록을 추출해서 반환한다."""
-        headers = deepcopy(self.headers)
+        headers = deepcopy(self.headers['desktop'])
 
         headers['Referer'] = base_url
 
-        url = self.reply_url.format(**query)
+        url = url_frame['reply'].format(**query)
         resp = requests.get(url=url, headers=headers)
 
         query['page'] += 1
@@ -206,10 +216,3 @@ class NaverNewsReplyCrawler(object):
             result.append(new_value)
 
         return result, callback['result']['pageModel']['totalPages']
-
-
-if __name__ == '__main__':
-    NaverNewsReplyCrawler().batch(
-        start_date='20190513',
-        end_date='20180101'
-    )

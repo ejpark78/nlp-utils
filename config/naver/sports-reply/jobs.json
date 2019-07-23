@@ -1,0 +1,29 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "https://corpus.ncsoft.com:9200",
+      "http_auth": "crawler:crawler2019",
+      "index": "crawler-naver-sports-reply",
+      "sleep": 10,
+      "list": [
+        {
+          "list": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=N&type=comment&page={page}&date={date}",
+          "reply": "https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=sports&templateId=view&pool=cbox2&lang=ko&country=KR&objectId=news{oid},{aid}&categoryId=&pageSize=20&indexSize=10&groupId=&listType=OBJECT&pageType=more&page={page}&refresh=false&sort=LIKE",
+          "Referer": "https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date={date}&page={page}"
+        }
+      ],
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
+      },
+      "post_process": [
+      ]
+    }
+  ]
+}

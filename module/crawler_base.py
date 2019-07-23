@@ -8,6 +8,7 @@ from __future__ import print_function
 import logging
 import re
 
+import pytz
 import requests
 import urllib3
 from time import sleep
@@ -53,6 +54,8 @@ class CrawlerBase(object):
         # 후처리 정보
         self.post_process_list = None
         self.cache = SimpleCache()
+
+        self.timezone = pytz.timezone('Asia/Seoul')
 
     @staticmethod
     def get_encoding_type(html_body):

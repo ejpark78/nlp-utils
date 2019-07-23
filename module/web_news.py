@@ -9,16 +9,15 @@ import json
 import logging
 import re
 from datetime import datetime, timedelta
-from time import sleep
 from urllib.parse import parse_qs
 from urllib.parse import urljoin
 
-import pytz
 import requests
 import urllib3
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
+from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -33,7 +32,7 @@ logger = logging.getLogger()
 
 
 class WebNewsCrawler(CrawlerBase):
-    """웹 뉴스 크롤러 베이스"""
+    """웹 뉴스 크롤러"""
 
     def __init__(self, category='', job_id='', column=''):
         """ 생성자 """
@@ -45,36 +44,6 @@ class WebNewsCrawler(CrawlerBase):
 
         self.trace_depth = 0
         self.trace_list_count = -1
-
-        self.timezone = pytz.timezone('Asia/Seoul')
-
-    def test(self):
-        """디버그"""
-        self.update_config()
-
-        job = self.job_info[0]
-
-        elastic_utils = ElasticSearchUtils(
-            host=job['host'],
-            index=job['index'],
-            bulk_size=20,
-            http_auth=job['http_auth'],
-        )
-
-        item = {
-            'url': 'http://sports.chosun.com/news/news.htm?id=201905150100105140006997&ServiceDate=20190514',
-        }
-
-        doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-        _ = self.get_article(
-            doc_id=doc_id,
-            item=item,
-            job=job,
-            elastic_utils=elastic_utils,
-            offline=False,
-        )
-
-        return
 
     def daemon(self):
         """데몬으로 실행"""
@@ -102,64 +71,6 @@ class WebNewsCrawler(CrawlerBase):
             self.sleep_time = job['sleep']
 
             self.trace_url_list(job=job)
-
-        return
-
-    def re_crawl(self, date_range, query, query_field):
-        """elasticsearch의 url 목록을 다시 크롤링한다."""
-        from tqdm import tqdm
-
-        self.update_config()
-
-        for job in self.job_info:
-            elastic_utils = ElasticSearchUtils(
-                host=job['host'],
-                index=job['index'],
-                bulk_size=20,
-                http_auth=job['http_auth'],
-            )
-
-            doc_list = elastic_utils.get_url_list(
-                query=query,
-                query_field=query_field,
-                index=job['index'],
-                date_range=date_range,
-            )
-
-            for item in tqdm(doc_list):
-                for k in ['photo_list', 'photo_caption', 'edit_date']:
-                    if k in item:
-                        del item[k]
-
-                doc_id = item['document_id']
-
-                # 기사 본문 조회
-                article = self.get_article(
-                    doc_id=doc_id,
-                    item=item,
-                    job=job,
-                    elastic_utils=elastic_utils,
-                    offline=False,
-                )
-
-                # 후처리 작업 실행
-                if 'post_process' not in job:
-                    job['post_process'] = None
-
-                self.post_process_utils.insert_job(
-                    job=job,
-                    document=article,
-                    post_process_list=job['post_process'],
-                )
-
-                msg = {
-                    'level': 'INFO',
-                    'message': '뉴스 본문 크롤링: 슬립',
-                    'sleep_time': self.sleep_time,
-                }
-                logger.info(msg=LogMsg(msg))
-
-                sleep(self.sleep_time)
 
         return
 
@@ -537,10 +448,9 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    @staticmethod
-    def remove_date_column(doc, html):
+    def remove_date_column(self, doc, html):
         """날짜 필드를 확인해서 날짜 파싱 오류일 경우, 날짜 필드를 삭제한다."""
-        tz = pytz.timezone('Asia/Seoul')
+        tz = self.timezone
 
         if 'date' not in doc:
             msg = {

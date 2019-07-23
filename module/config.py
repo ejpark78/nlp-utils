@@ -30,7 +30,7 @@ class Config(object):
             'desktop': {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                               'AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/70.0.3538.110 Safari/537.36'
+                              'Chrome/75.0.3770.100 Safari/537.36'
             }
         }
 
@@ -66,7 +66,7 @@ class Config(object):
             with open(filename, 'w') as fp:
                 fp.write('{}')
 
-        # 설정 파일이 없는 경우 에러 발생
+        # 설정 파일이 없는 경우
         if isfile(filename) is False:
             return {
                 'trace_list': {

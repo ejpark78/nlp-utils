@@ -18,6 +18,8 @@ from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
+from module.web_news_test import WebNewsCrawlerTest
+from module.naver_reply import NaverNewsReplyCrawler
 
 MESSAGE = 25
 
@@ -69,6 +71,13 @@ def main():
 
     # 네이버 지식인/백과사전
     if args.category == 'naver':
+        if args.job_id == 'sports-reply':
+            NaverNewsReplyCrawler(
+                category=args.category,
+                job_id=args.job_id,
+                column='trace_list'
+            ).batch(date_range=args.date_range)
+
         if args.job_id == 'term_list':
             NaverTermList().batch()
             return
@@ -122,7 +131,7 @@ def main():
 
     # 디버깅 테스트
     if args.test:
-        WebNewsCrawler(
+        WebNewsCrawlerTest(
             category=args.category,
             job_id=args.job_id,
             column='trace_list'
@@ -132,7 +141,7 @@ def main():
 
     # 재 크롤링: parsing 정보가 변경되었을 경우
     if args.re_crawl:
-        WebNewsCrawler(
+        WebNewsCrawlerTest(
             category=args.category,
             job_id=args.job_id,
             column='trace_list'
