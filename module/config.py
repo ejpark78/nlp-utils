@@ -54,7 +54,7 @@ class Config(object):
             category=job_category,
             job_id=job_id,
         )
-        self.status = self.open_config(filename=self.status_filename, create=True)
+        self.status = self.open_config(filename=self.status_filename)
 
     @staticmethod
     def open_config(filename, create=False):
@@ -99,7 +99,7 @@ class Config(object):
     def save_status(self):
         """현재 크롤링 위치를 저장한다."""
         # 최신 status 정보 로딩
-        status = self.open_config(filename=self.status_filename, create=True)
+        status = self.open_config(filename=self.status_filename)
 
         # 병합
         status.update(self.status)

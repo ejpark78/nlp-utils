@@ -125,7 +125,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
             for news in news_info['list']:
                 msg = {
                     'level': 'MESSAGE',
-                    'message': '기사 조회',
+                    'message': '기사 정보',
                     'news': news,
                     'query': query,
                 }
@@ -145,7 +145,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
                 msg = {
                     'level': 'MESSAGE',
-                    'message': '기사 저장 성공',
+                    'message': '문서 저장 성공',
                     'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
                         host=elastic_utils.host,
                         index=elastic_utils.index,

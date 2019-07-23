@@ -166,10 +166,6 @@ services:
     restart: "${RESTART}"
     working_dir: /usr/local/app
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id sports-reply
-    links:
-      - "mq:mq_server"
-    depends_on:
-      - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
