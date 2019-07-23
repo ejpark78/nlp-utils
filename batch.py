@@ -77,6 +77,7 @@ def main():
                 job_id=args.job_id,
                 column='trace_list'
             ).batch(date_range=args.date_range)
+            return
 
         if args.job_id == 'term_list':
             NaverTermList().batch()
