@@ -34,7 +34,7 @@ logger = logging.getLogger()
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러"""
 
-    def __init__(self, category='', job_id='', column=''):
+    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1):
         """ 생성자 """
         super().__init__()
 
@@ -44,6 +44,23 @@ class WebNewsCrawler(CrawlerBase):
 
         self.trace_depth = 0
         self.trace_list_count = -1
+
+        self.date_step = date_step
+
+        if date_range is None:
+            today = datetime.now(self.timezone)
+
+            self.date_range = {
+                'start': today + relativedelta(weeks=-1),
+                'end': today,
+            }
+        else:
+            dt_start, dt_end = date_range.split('~', maxsplit=1)
+
+            self.date_range = {
+                'start': self.timezone.localize(parse_date(dt_start)),
+                'end': self.timezone.localize(parse_date(dt_end)),
+            }
 
     def daemon(self):
         """데몬으로 실행"""
@@ -87,27 +104,18 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             # 날짜 지정시
-            start_date = parse_date(self.status['start_date'])
-            start_date = self.timezone.localize(start_date)
+            date_list = list(rrule(DAILY, dtstart=self.date_range['start'], until=self.date_range['end']))
 
-            until = parse_date(self.status['end_date'])
-            until = self.timezone.localize(until)
+            if self.date_step < 0:
+                date_list = sorted(date_list, reverse=True)
 
-            date_list = list(rrule(DAILY, dtstart=start_date, until=until))
             for dt in date_list:
                 date_now = datetime.now(self.timezone)
-
                 if dt > date_now + timedelta(1):
                     break
 
                 # page 단위로 크롤링한다.
                 self.trace_page_list(url=url, job=job, dt=dt.strftime(url['date_format']))
-
-                # 현재 크롤링 위치 저장
-                now = dt + relativedelta(days=-1)
-                if now > start_date:
-                    self.status['start_date'] = now.strftime('%Y-%m-%d')
-                    self.cfg.save_status()
 
         return
 

@@ -59,8 +59,10 @@ def init_arguments():
     parser.add_argument('-re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
 
     parser.add_argument('-query', default='', help='elasticsearch query')
-    parser.add_argument('-date_range', default='', help='date 날짜 범위: 2000-01-01~2019-04-10')
     parser.add_argument('-query_field', default='date', help='query field')
+
+    parser.add_argument('-date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
+    parser.add_argument('-date_step', default=1, type=int, help='date step')
 
     return parser.parse_args()
 
@@ -158,13 +160,17 @@ def main():
         WebNewsCrawler(
             category=args.category,
             job_id=args.job_id,
-            column='trace_list'
+            column='trace_list',
+            date_range=args.date_range,
+            date_step=args.date_step,
         ).batch()
     else:
         WebNewsCrawler(
             category=args.category,
             job_id=args.job_id,
-            column='trace_list'
+            column='trace_list',
+            date_range=args.date_range,
+            date_step=args.date_step,
         ).daemon()
 
     return

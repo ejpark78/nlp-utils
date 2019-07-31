@@ -12,6 +12,7 @@ import sys
 from copy import deepcopy
 from urllib.parse import urljoin
 from datetime import datetime
+from dateutil.rrule import rrule, DAILY
 
 import requests
 import urllib3
@@ -72,31 +73,16 @@ class NaverNewsReplyCrawler(CrawlerBase):
             end_date = parse_date(end_date)
             end_date = self.timezone.localize(end_date)
 
-        # 역순 진행
+        date_list = list(rrule(DAILY, dtstart=start_date, until=end_date))
         if step < 0:
-            date = start_date
+            date_list = sorted(date_list, reverse=True)
 
-            start_date = end_date
-            end_date = date
-
-        date = start_date
-
-        while True:
+        for dt in date_list:
             for job in self.job_info:
                 self.sleep_time = job['sleep']
 
                 for url_frame in job['list']:
-                    self.trace_news(url_frame=url_frame, job=job, date=date.strftime('%Y%m%d'))
-
-            # 날짜 변경
-            date += relativedelta(days=step)
-
-            if step < 0:
-                if end_date > date:
-                    break
-            else:
-                if end_date < date:
-                    break
+                    self.trace_news(url_frame=url_frame, job=job, date=dt.strftime('%Y%m%d'))
 
     def trace_news(self, url_frame, job, date):
         """뉴스 하나를 조회한다."""
@@ -205,10 +191,14 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         query['page'] += 1
 
-        callback = re.sub(r'_callback\((.+)\);$', r'\g<1>', resp.text)
-        callback = json.loads(callback)
+        try:
+            callback = re.sub(r'_callback\((.+)\);$', r'\g<1>', resp.text)
+            callback = json.loads(callback)
 
-        comment_list = callback['result']['commentList']
+            comment_list = callback['result']['commentList']
+        except Exception as e:
+            print(e)
+            return [], query['total']
 
         result = []
         for item in comment_list:
