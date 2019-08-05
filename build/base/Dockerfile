@@ -25,9 +25,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 		echo "deb ${APT_MIRROR} bionic-updates main restricted universe multiverse"; \
 		echo "deb ${APT_MIRROR} bionic-backports main restricted universe multiverse"; \
 	} > /etc/apt/sources.list \
-    && apt-get update -yq \
-    \
-    && apt-get install -yq --no-install-recommends \
+    && apt update -yq \
+    && apt install -yq --no-install-recommends \
         bridge-utils \
         libdb-dev \
         python3 \
@@ -36,7 +35,11 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3-lxml \
         python3-pip \
         curl \
-    \
+        tzdata \
+    && apt autoremove -yq \
+    && echo && echo "# timezone 설정" \
+    && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 파이썬 라이브러리 설치
@@ -48,7 +51,6 @@ RUN echo && echo "# pip 저장소 설정" \
 		echo "index-url = ${PIP_MIRROR}"; \
 		echo "trusted-host = ${PIP_TRUST_HOST}"; \
 	} > ~/.pip/pip.conf \
-    \
     && echo && echo "# 기본 유틸 설치" \
     && pip3 install --upgrade --no-cache-dir \
         pip \

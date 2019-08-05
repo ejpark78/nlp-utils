@@ -47,7 +47,7 @@ class CrawlerCorpus(WebNewsCrawler):
     def bbs(self):
         """bbs"""
         host_idx = 0
-        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+        host_list = 'nlp-w7,nlp-w8,nlp-w9,nlp-w10,nlp-w11,nlp-w12,nlp-w13'.split(',')
 
         home = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
         data_dir = '{home}/mlbpark_bullpen'.format(home=home)
@@ -106,7 +106,7 @@ class CrawlerCorpus(WebNewsCrawler):
     def big3_elastic(self):
         """big3 elastic"""
         host_idx = 0
-        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+        host_list = 'nlp-w7,nlp-w8,nlp-w9,nlp-w10,nlp-w11,nlp-w12,nlp-w13'.split(',')
 
         data_dir = '/home/ejpark/workspace/data-center/data/2019-06-18'
 
@@ -141,7 +141,7 @@ class CrawlerCorpus(WebNewsCrawler):
     def big3(self):
         """big3"""
         host_idx = 0
-        host_list = 'g1,g2,g3,g4,g5,g7'.split(',')
+        host_list = 'nlp-w7,nlp-w8,nlp-w9,nlp-w10,nlp-w11,nlp-w12,nlp-w13'.split(',')
 
         data_dir = '/home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-03-18'
 
