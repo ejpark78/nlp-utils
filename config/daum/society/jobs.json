@@ -118,10 +118,10 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler.daum"
+            "name": "crawler"
           },
           "host": {
-            "name": "mq_server",
+            "name": "localhost",
             "port": 5672,
             "user_name": "user",
             "user_password": "nlplab!"

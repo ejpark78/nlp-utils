@@ -59,8 +59,9 @@ class NaverNewsReplyCrawler(CrawlerBase):
         """날짜 범위에 있는 댓글을 수집한다."""
         self.update_config()
 
+        # 날짜 범위 추출
         if date_range is None:
-            today = datetime.now(self.timezone.timezone('Asia/Seoul'))
+            today = datetime.now(self.timezone)
 
             start_date = today + relativedelta(weeks=-1)
             end_date = today
@@ -77,12 +78,15 @@ class NaverNewsReplyCrawler(CrawlerBase):
         if step < 0:
             date_list = sorted(date_list, reverse=True)
 
+        # 날짜별 크롤링 시작
         for dt in date_list:
             for job in self.job_info:
                 self.sleep_time = job['sleep']
 
                 for url_frame in job['list']:
                     self.trace_news(url_frame=url_frame, job=job, date=dt.strftime('%Y%m%d'))
+
+        return
 
     def trace_news(self, url_frame, job, date):
         """뉴스 하나를 조회한다."""

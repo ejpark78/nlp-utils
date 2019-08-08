@@ -10,8 +10,6 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-mlb:
@@ -22,8 +20,6 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   mlbpark-bullpen:
@@ -34,8 +30,6 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   lineagem:
@@ -46,8 +40,6 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   ruliweb:
@@ -58,8 +50,6 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw
 
   inven-lineagem:
@@ -70,6 +60,4 @@ services:
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
     volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
       - $PWD/../status:/usr/local/app/status:rw

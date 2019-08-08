@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-crawler
+  labels:
+    app: crawler
+    site: daum
+spec:
+  restartPolicy: Always
+  containers:
+    - name: mq
+      image: rabbitmq:3-management
+      ports:
+        - containerPort: 5672
+      env:
+        - name: RABBITMQ_DEFAULT_PASS
+          value: nlplab!
+        - name: RABBITMQ_DEFAULT_USER
+          value: user
+      resources: {}
+    - name: corpus-processor
+      image: corpus:5000/crawler/corpus_processor:latest
+      env:
+        - name: CONSUMER_EXCHANGE_NAME
+          value: crawler
+        - name: CONSUMER_HOST
+          value: localhost
+        - name: CONSUMER_USER_NAME
+          value: user
+        - name: CONSUMER_USER_PASSWD
+          value: nlplab!
+        - name: ELASTIC_HOST
+          value: https://corpus.ncsoft.com:9200
+        - name: KMAT_RSC
+          value: /www-data/dictionary/rsc
+        - name: NAME_ENTITY_TAGGER_V2
+          value: /usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule
+        - name: NLU_WRAPPER_URL
+          value: http://172.20.92.43:32280
+        - name: USE_CONSUMER
+          value: "1"
+      resources:
+        limits:
+          memory: "1073741824"
+    - name: culture
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "culture"]
+      resources: {}
+    - name: economy
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "economy"]
+      resources: {}
+    - name: international
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "international"]
+      resources: {}
+    - name: it
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "it"]
+      resources: {}
+    - name: opinion
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "opinion"]
+      resources: {}
+    - name: politics
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "politics"]
+      resources: {}
+    - name: society
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "society"]
+      resources: {}
+    - name: sports
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "daum", "-job_id", "sports"]
+      resources: {}
+status: {}

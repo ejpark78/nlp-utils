@@ -6,31 +6,25 @@ services:
     image: corpus:5000/crawler:latest
     restart: "no"
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id sports -date_range 2018-01-01~2018-07-01 -date_step=-1
+    command: python3 batch.py -category naver -job_id sports -date_range 2018-01-01~2018-05-29 -date_step=-1
     links:
       - "mq:mq_server"
     depends_on:
       - mq
     extra_hosts:
       - corpus.ncsoft.com:172.20.93.112
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   naver_sports_2018_07:
     image: corpus:5000/crawler:latest
     restart: "no"
     working_dir: /usr/local/app
-    command: python3 batch.py -category naver -job_id sports -date_range 2018-07-01~2018-11-01 -date_step=-1
+    command: python3 batch.py -category naver -job_id sports -date_range 2018-07-01~2018-10-12 -date_step=-1
     links:
       - "mq:mq_server"
     depends_on:
       - mq
     extra_hosts:
       - corpus.ncsoft.com:172.20.93.112
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   mq:
     image: rabbitmq:3-management
@@ -39,9 +33,6 @@ services:
     environment:
       - "RABBITMQ_DEFAULT_USER=user"
       - "RABBITMQ_DEFAULT_PASS=nlplab!"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   corpus-processor:
     image: corpus:5000/crawler/corpus_processor:latest
@@ -63,9 +54,6 @@ services:
       - "CONSUMER_USER_PASSWD=nlplab!"
     extra_hosts:
       - corpus.ncsoft.com:172.20.93.112
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
 # docker-compose -p naver-reply -f naver-sports.yml up -d
 # docker-compose -p naver-reply -f naver-sports.yml logs -f

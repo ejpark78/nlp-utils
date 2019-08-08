@@ -9,9 +9,6 @@ services:
     environment:
       - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
       - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   corpus-processor:
     image: ${CORPUS_PROCESSOR_IMAGE}
@@ -37,9 +34,6 @@ services:
       - "CONSUMER_USER_PASSWD=${RABBITMQ_PASS}"
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   economy:
     image: "${CRAWLER_IMAGE}"
@@ -52,9 +46,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   international:
     image: "${CRAWLER_IMAGE}"
@@ -67,9 +58,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   it:
     image: "${CRAWLER_IMAGE}"
@@ -82,9 +70,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   living:
     image: "${CRAWLER_IMAGE}"
@@ -97,9 +82,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   opinion:
     image: "${CRAWLER_IMAGE}"
@@ -112,9 +94,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   politics:
     image: "${CRAWLER_IMAGE}"
@@ -127,9 +106,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   society:
     image: "${CRAWLER_IMAGE}"
@@ -142,9 +118,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   sports:
     image: "${CRAWLER_IMAGE}"
@@ -157,9 +130,6 @@ services:
       - mq
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
 
   sports-reply:
     image: "${CRAWLER_IMAGE}"
@@ -168,6 +138,3 @@ services:
     command: python3 batch.py ${CRAWLER_OPT} -category naver -job_id sports-reply
     extra_hosts:
       - "${CORPUS_HOST_NAME}"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro

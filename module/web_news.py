@@ -46,14 +46,11 @@ class WebNewsCrawler(CrawlerBase):
         self.trace_list_count = -1
 
         self.date_step = date_step
+        self.update_date = False
 
         if date_range is None:
-            today = datetime.now(self.timezone)
-
-            self.date_range = {
-                'start': today + relativedelta(weeks=-1),
-                'end': today,
-            }
+            self.update_date = True
+            self.update_date_range()
         else:
             dt_start, dt_end = date_range.split('~', maxsplit=1)
 
@@ -61,6 +58,16 @@ class WebNewsCrawler(CrawlerBase):
                 'start': self.timezone.localize(parse_date(dt_start)),
                 'end': self.timezone.localize(parse_date(dt_end)),
             }
+
+    def update_date_range(self):
+        """날짜를 갱신한다."""
+        today = datetime.now(self.timezone)
+
+        self.date_range = {
+            'start': today + relativedelta(weeks=-1),
+            'end': today,
+        }
+        return
 
     def daemon(self):
         """데몬으로 실행"""
@@ -71,6 +78,10 @@ class WebNewsCrawler(CrawlerBase):
 
             # 시작
             self.batch()
+
+            # 날짜 갱신
+            if self.update_date is True:
+                self.update_date_range()
 
             msg = {
                 'level': 'MESSAGE',
@@ -108,6 +119,12 @@ class WebNewsCrawler(CrawlerBase):
 
             if self.date_step < 0:
                 date_list = sorted(date_list, reverse=True)
+
+            logger.log(level=MESSAGE, msg=LogMsg({
+                'date_list': date_list,
+                'date_step': self.date_step,
+                'date_range': self.date_range,
+            }))
 
             for dt in date_list:
                 date_now = datetime.now(self.timezone)
