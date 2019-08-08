@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nate
+  namespace: crawler
   labels:
     app: crawler
     site: nate

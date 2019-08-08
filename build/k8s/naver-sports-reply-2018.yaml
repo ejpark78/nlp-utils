@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: naver-sport-reply-2018
+  namespace: crawler
   labels:
     app: crawler
     site: naver
