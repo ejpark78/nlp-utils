@@ -58,16 +58,7 @@ class QuestionList(CrawlerBase):
         """ 질문 목록 전부를 가져온다. """
         self.update_config()
 
-        category_id = None
-        if 'category' in self.status:
-            category_id = self.status['category']['id']
-
         for c in self.job_info['category']:
-            if category_id is not None and c['id'] != category_id:
-                continue
-
-            category_id = None
-
             # 답변 목록
             if column == 'answer':
                 self.column = 'answer_list'
@@ -104,38 +95,41 @@ class QuestionList(CrawlerBase):
             }
         }
 
-        # crawler-naver-kin-rank_user_list
-        # crawler-naver-kin-partner_list
         user_list = elastic_utils.dump(
             index='crawler-naver-kin-rank_user_list,crawler-naver-kin-partner_list',
             query=query,
         )
 
         for doc in user_list:
-            for page in range(self.status['start'], self.status['end'], self.status['step']):
+            query = {
+                'page': 1,
+                'total': 500,
+            }
+
+            while query['page'] <= query['total']:
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': '질문 조회',
+                    'query': query,
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
+
                 if 'encodedU' in doc:
                     query_url = self.job_info['url_frame'].format(
-                        page=page,
+                        page=query['page'],
                         user_id=doc['encodedU'],
                     )
                 else:
                     query_url = self.job_info['url_frame'].format(
-                        page=page,
+                        page=query['page'],
                         user_id=unquote(doc['u']),
                     )
 
-                is_stop = self.get_page(url=query_url, elastic_utils=elastic_utils)
+                is_stop, query['total'] = self.get_page(url=query_url, elastic_utils=elastic_utils)
                 if is_stop is True:
                     break
 
-                self.update_state(page=page, category=category)
-
-            # status 초기화
-            self.status['start'] = 1
-            if 'category' in self.status:
-                del self.status['category']
-
-            # self.cfg.save_status()
+                sleep(self.sleep_time)
 
         return
 
@@ -148,34 +142,39 @@ class QuestionList(CrawlerBase):
             http_auth=self.job_info['http_auth'],
         )
 
-        # status 초기화
-        self.status['start'] = 1
+        query = {
+            'page': 1,
+            'total': 500,
+        }
 
-        # start 부터 end 까지 반복한다.
-        for page in range(self.status['start'], self.status['end'], self.status['step']):
+        while query['page'] <= query['total']:
+            msg = {
+                'level': 'MESSAGE',
+                'message': '질문 조회',
+                'query': query,
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
+
             query_url = self.job_info['url_frame'].format(
                 size=size,
-                page=page,
+                page=query['page'],
                 dir_id=category['id'],
             )
 
-            is_stop = self.get_page(url=query_url, elastic_utils=elastic_utils)
+            is_stop, query['total'] = self.get_page(url=query_url, elastic_utils=elastic_utils)
             if is_stop is True:
                 break
 
-            self.update_state(page=page, category=category)
+            query['page'] += 1
 
-        # status 초기화
-        self.status['start'] = 1
-        if 'category' in self.status:
-            del self.status['category']
-
-        # self.cfg.save_status()
+            sleep(self.sleep_time)
 
         return
 
     def get_page(self, url, elastic_utils):
         """한 페이지를 가져온다."""
+        total_page = -1
+
         try:
             resp = requests.get(
                 url=url,
@@ -193,46 +192,38 @@ class QuestionList(CrawlerBase):
             logger.error(msg=LogMsg(msg))
 
             sleep(10)
-            return True
+            return True, total_page
 
+        resp_info = None
         try:
+            resp_info = resp.json()
+
             is_stop = self.save_doc(
                 url=url,
-                result=resp.json(),
+                result=resp_info,
                 elastic_utils=elastic_utils,
             )
+
+            if 'countPerPage' in resp_info:
+                if 'totalCount' in resp_info:
+                    total_page = int(resp_info['totalCount'] / resp_info['countPerPage']) + 1
+
+                if 'answerCount' in resp_info:
+                    total_page = int(resp_info['answerCount'] / resp_info['countPerPage']) + 1
+
             if is_stop is True:
-                return True
+                return True, total_page
         except Exception as e:
             msg = {
                 'level': 'ERROR',
                 'message': '질문 목록 저장 에러',
                 'query_url': url,
+                'resp_info': resp_info,
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(msg))
 
-        return False
-
-    def update_state(self, page, category):
-        """현재 상태를 갱신한다."""
-        self.status['start'] = page
-        self.status['category'] = category
-
-        # self.cfg.save_status()
-
-        # 로그 표시
-        msg = {
-            'level': 'INFO',
-            'message': '기사 저장 성공',
-            'category_name': category['name'],
-            'page': page,
-            'end': self.status['end'],
-        }
-        logger.info(msg=LogMsg(msg))
-
-        sleep(self.sleep_time)
-        return
+        return False, total_page
 
     @staticmethod
     def save_doc(url, result, elastic_utils):

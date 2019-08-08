@@ -36,11 +36,11 @@ class QuestionDetail(CrawlerBase):
         self.job_id = 'naver_kin'
         self.column = 'detail'
 
-        self.update_config()
-
     def daemon(self, column, match_phrase='{}'):
         """데몬으로 실행"""
         while True:
+            self.update_config()
+
             self.batch(column=column, match_phrase=match_phrase)
 
             msg = {
@@ -87,7 +87,7 @@ class QuestionDetail(CrawlerBase):
             doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
 
             # 이미 받은 항목인지 검사
-            if 'question_list' in index or 'answer_list' in index:
+            if index.find('question_list') > 0 or index.find('answer_list') > 0:
                 is_skip = elastic_utils.exists(
                     index=self.job_info['index'],
                     list_index=index,

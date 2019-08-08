@@ -59,8 +59,8 @@ class UserList(CrawlerBase):
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
-        # self.get_partner_list()
-        # self.get_expert_list()
+        self.get_partner_list()
+        self.get_expert_list()
         # self.get_elite_user_list()
         self.get_rank_user_list()
 
@@ -104,6 +104,7 @@ class UserList(CrawlerBase):
                     msg = {
                         'level': 'MESSAGE',
                         'message': '지식 파트너 목록 요청',
+                        'category': c,
                         'size': size,
                         'request_url': request_url,
                     }
@@ -173,6 +174,7 @@ class UserList(CrawlerBase):
                     msg = {
                         'level': 'MESSAGE',
                         'message': '분야별 전문가 목록 요청',
+                        'expert_type': expert_type,
                         'size': size,
                         'request_url': request_url,
                     }
@@ -194,10 +196,10 @@ class UserList(CrawlerBase):
 
     def get_elite_user_list(self):
         """ 명예의 전당 채택과 년도별 사용자 목록을 가져온다. """
-        job_info = self.cfg.job_info['partner_list']
+        job_info = self.cfg.job_info['elite_user_list']
 
         month = 0
-        for year in range(2012, 2019):
+        for year in range(2019, 2012, -1):
             index = '{}_{}'.format(job_info['index'], year)
             elastic_utils = ElasticSearchUtils(
                 host=job_info['host'],
@@ -225,8 +227,23 @@ class UserList(CrawlerBase):
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             self.headers['mobile']['referer'] = url
-            for page in range(1, 6):
-                list_url = job_info['url_frame'].format(year=year, month=month, page=page)
+
+            query = {
+                'page': 1,
+                'total': 20,
+            }
+
+            while query['page'] <= query['total']:
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': '사용자 목록 조회 조회',
+                    'year': year,
+                    'query': query,
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
+
+                list_url = job_info['url_frame'].format(year=year, month=month, page=query['page'])
+                query['page'] += 1
 
                 request_result = requests.get(
                     url=list_url,
@@ -238,21 +255,26 @@ class UserList(CrawlerBase):
 
                 result = request_result.json()
 
-                if 'eliteUserList' in result:
-                    msg = {
-                        'level': 'MESSAGE',
-                        'message': '명예의 전당 목록 요청',
-                        'size': len(result['eliteUserList']),
-                        'list_url': list_url,
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                if 'eliteUserList' not in result:
+                    break
 
-                    for doc in result['eliteUserList']:
-                        doc['_id'] = doc['u']
+                if len(result['eliteUserList']) == 0:
+                    break
 
-                        elastic_utils.save_document(index=index, document=doc)
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': '명예의 전당 목록 요청',
+                    'size': len(result['eliteUserList']),
+                    'list_url': list_url,
+                }
+                logger.log(level=MESSAGE, msg=LogMsg(msg))
 
-                    elastic_utils.flush()
+                for doc in result['eliteUserList']:
+                    doc['_id'] = doc['u']
+
+                    elastic_utils.save_document(index=index, document=doc)
+
+                elastic_utils.flush()
 
                 sleep(5)
 
@@ -295,8 +317,22 @@ class UserList(CrawlerBase):
             self.headers['mobile']['referer'] = url
 
             for u_frame in job_info['url_frame']:
-                for page in range(1, 10):
-                    list_url = u_frame.format(dir_id=c['id'], page=page)
+                query = {
+                    'page': 1,
+                    'total': 500,
+                }
+
+                while query['page'] <= query['total']:
+                    msg = {
+                        'level': 'MESSAGE',
+                        'message': '사용자 목록 조회 조회',
+                        'query': query,
+                        'u_frame': u_frame,
+                    }
+                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+
+                    list_url = u_frame.format(dir_id=c['id'], page=query['page'])
+                    query['page'] += 1
 
                     resp = requests.get(
                         url=list_url,
@@ -312,9 +348,12 @@ class UserList(CrawlerBase):
                         sleep(5)
                         continue
 
+                    if 'currentTotalCount' in result:
+                        query['total'] = int(result['currentTotalCount'] / result['totalCount']) + 1
+
                     msg = {
                         'level': 'MESSAGE',
-                        'message': '분야별 전문가 목록 요청',
+                        'message': '랭크 전문가 목록 요청',
                         'size': len(result['result']),
                         'list_url': list_url,
                     }
