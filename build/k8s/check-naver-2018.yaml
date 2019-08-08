@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-crawler-check-2018
+  name: naver-check-2018
   labels:
     app: crawler
     site: naver
@@ -47,11 +47,11 @@ spec:
     - name: sports-0106
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports", "-date_range", "2018-01-01~2018-05-29"]
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports", "-date_range", "2018-01-01~2018-05-09"]
       resources: {}
     - name: sports-0712
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports", "-date_range", "2018-07-01~2018-10-12"]
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports", "-date_range", "2018-07-01~2018-09-18"]
       resources: {}
 status: {}

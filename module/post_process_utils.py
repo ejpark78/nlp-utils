@@ -98,7 +98,7 @@ class PostProcessUtils(object):
 
             for item in post_process_list:
                 # elasticsearch 의 이름을 실제 아이피값으로 변환한다.
-                self.update_hostname2ip(item)
+                # self.update_hostname2ip(item)
 
                 if item['module'] == 'save_s3':
                     flag = self.save_s3(document=document, info=item)

@@ -32,6 +32,7 @@ include $(MK_DIR)/nate.mk
 include $(MK_DIR)/daum.mk
 include $(MK_DIR)/bbs.mk
 include $(MK_DIR)/sns.mk
+include k8s/k8s.mk
 
 include $(MK_DIR)/release.mk
 

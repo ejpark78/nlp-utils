@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-crawler-sport-reply
+  name: naver-sport-reply
   labels:
     app: crawler
     site: naver
@@ -14,11 +14,6 @@ spec:
     - name: sports-2019-08
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: [
-        "python3", "batch.py",
-        "-category", "naver",
-        "-job_id", "sports-reply",
-        "-date_range", "2019-08-05~2019-08-08"
-      ]
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply"]
       resources: {}
 status: {}

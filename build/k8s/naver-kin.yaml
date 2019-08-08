@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-kin-crawler
+  name: naver-kin
   labels:
     app: crawler
     site: naver-kin
