@@ -84,7 +84,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 self.sleep_time = job['sleep']
 
                 for url_frame in job['list']:
-                    self.trace_news(url_frame=url_frame, job=job, date=dt.strftime('%Y%m%d'))
+                    self.trace_news(url_frame=url_frame, job=job, date=dt)
 
         return
 
@@ -98,7 +98,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
         )
 
         query = {
-            'date': date,
+            'date': date.strftime('%Y%m%d'),
             'page': 1,
             'total': 500,
         }
@@ -129,6 +129,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 # 문서 저장
                 doc_id = '{oid}-{aid}'.format(**news)
                 news['_id'] = doc_id
+                news['date'] = date
 
                 elastic_utils.save_document(document=news)
                 elastic_utils.flush()
@@ -141,7 +142,6 @@ class NaverNewsReplyCrawler(CrawlerBase):
                         index=elastic_utils.index,
                         id=doc_id,
                     ),
-                    'news': news,
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
 

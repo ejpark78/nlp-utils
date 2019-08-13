@@ -59,10 +59,10 @@ class UserList(CrawlerBase):
 
     def batch(self):
         """ 질문 목록 전부를 가져온다. """
+        self.get_rank_user_list()
+        self.get_elite_user_list()
         self.get_partner_list()
         self.get_expert_list()
-        # self.get_elite_user_list()
-        self.get_rank_user_list()
 
         return
 
@@ -349,7 +349,11 @@ class UserList(CrawlerBase):
                         continue
 
                     if 'currentTotalCount' in result:
-                        query['total'] = int(result['currentTotalCount'] / result['totalCount']) + 1
+                        try:
+                            query['total'] = int(result['currentTotalCount'] / result['totalCount']) + 1
+                        except Exception as e:
+                            print(e)
+                            break
 
                     msg = {
                         'level': 'MESSAGE',

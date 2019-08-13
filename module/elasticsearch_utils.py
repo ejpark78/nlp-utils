@@ -420,6 +420,8 @@ class ElasticSearchUtils(object):
 
     def get_id_list(self, index, use_cache=False, size=5000):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
+        from tqdm import tqdm
+
         filename = 'data/{}.plk'.format(index)
         if use_cache is True:
             result = self.load_cache(filename)
@@ -437,6 +439,8 @@ class ElasticSearchUtils(object):
             '_source': ''
         }
 
+        p_bar = None
+
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
                 index=index,
@@ -444,6 +448,14 @@ class ElasticSearchUtils(object):
                 query=query,
                 scroll_id=scroll_id,
             )
+
+            if p_bar is None:
+                p_bar = tqdm(
+                    total=total,
+                    desc='dump doc id list {index}'.format(index=index),
+                    dynamic_ncols=True
+                )
+            p_bar.update(count)
 
             sum_count += count
 
