@@ -372,13 +372,21 @@ class CrawlerCorpus(WebNewsCrawler):
                 doc_id = item['document_id']
 
                 # 기사 본문 조회
-                article = self.get_article(
+                article, article_html = self.get_article(
                     job=job,
                     item=item,
                     doc_id=doc_id,
                     offline=True,
-                    elastic_utils=elastic_utils,
                 )
+
+                # 기사 저장
+                if article is not None:
+                    self.save_article(
+                        doc=item,
+                        html=article_html,
+                        article=article,
+                        elastic_utils=elastic_utils,
+                    )
 
                 # 후처리 작업 실행
                 if 'post_process' not in job:

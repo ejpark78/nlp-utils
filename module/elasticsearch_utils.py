@@ -31,10 +31,11 @@ class ElasticSearchUtils(object):
             self,
             host,
             index,
+            insert=True,
             http_auth='crawler:crawler2019',
             bulk_size=1000,
-            insert=True,
-            doc_type='doc',
+            tag=None,
+            split_index=False,
     ):
         """ 생성자 """
         self.host = host
@@ -42,7 +43,11 @@ class ElasticSearchUtils(object):
 
         self.elastic = None
 
-        self.index = index
+        self.index = self.get_target_index(
+            tag=tag,
+            index=index,
+            split_index=split_index,
+        )
 
         self.bulk_data = {}
         self.bulk_size = bulk_size
@@ -98,13 +103,31 @@ class ElasticSearchUtils(object):
 
         return document
 
-    def open(self):
-        """서버에 접속한다."""
+    @staticmethod
+    def get_target_index(index, split_index=False, tag=None):
+        """복사 대상의 인덱스를 반환한다."""
+        if split_index is False or tag is None:
+            return index
+
+        # 인덱스에서 crawler-naver-sports-2018 연도를 삭제한다.
+        token = index.rsplit('-', maxsplit=1)
+        if len(token) >= 2 and token[-1].isdecimal() is True:
+            index = token[0]
+
+        return '{index}-{tag}'.format(index=index, tag=tag)
+
+    @staticmethod
+    def get_ssl_verify_mode():
         # https://github.com/elastic/elasticsearch-py/issues/712
         ssl_context = create_ssl_context()
 
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
+
+        return ssl_context
+
+    def open(self):
+        """서버에 접속한다."""
 
         # host 접속
         try:
@@ -112,7 +135,7 @@ class ElasticSearchUtils(object):
                 hosts=self.host,
                 timeout=30,
                 http_auth=self.http_auth,
-                ssl_context=ssl_context,
+                ssl_context=self.get_ssl_verify_mode(),
                 verify_certs=False,
                 ssl_show_warn=False,
             )

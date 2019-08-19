@@ -1,0 +1,80 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "https://nlp.ncsoft.com:9200",
+      "http_auth": "crawler:crawler2019",
+      "index": "crawler-naver-living",
+      "split_index": true,
+      "sleep": 10,
+      "list": [
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=241&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/건강정보"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=239&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/자동차시승기"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=240&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/도로교통"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=237&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/여행/레저"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=238&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/음식맛집"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=376&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/패션뷰티"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=242&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/공연전시"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=243&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/책"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=244&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/종교"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=248&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/날씨"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=245&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "생활/일반"
+        }
+      ],
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
+      },
+      "post_process": [
+      ]
+    }
+  ]
+}

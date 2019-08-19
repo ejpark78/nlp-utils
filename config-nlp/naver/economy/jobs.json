@@ -1,0 +1,65 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "https://nlp.ncsoft.com:9200",
+      "http_auth": "crawler:crawler2019",
+      "index": "crawler-naver-economy",
+      "split_index": true,
+      "sleep": 10,
+      "list": [
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=258&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/증권"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=259&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/금융"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=260&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/부동산"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=261&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/산업/재계"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=262&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/글로벌 경제"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=263&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/경제 일반"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=310&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/생활경제"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=771&listType=titledate={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "경제/중기/벤처"
+        }
+      ],
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
+      },
+      "post_process": [
+      ]
+    }
+  ]
+}

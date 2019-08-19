@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from time import sleep
 from urllib.parse import parse_qs
 from urllib.parse import urljoin
+from copy import deepcopy
 
 import requests
 import urllib3
@@ -106,7 +107,7 @@ class WebNewsCrawler(CrawlerBase):
 
             if url['url_frame'].find('date') < 0:
                 # page 단위로 크롤링한다.
-                self.trace_page_list(url=url, job=job, dt='')
+                self.trace_page_list(url=url, job=job, dt=None)
                 continue
 
             # 날짜 지정시
@@ -115,11 +116,11 @@ class WebNewsCrawler(CrawlerBase):
             if self.date_step < 0:
                 date_list = sorted(date_list, reverse=True)
 
-            logger.log(level=MESSAGE, msg=LogMsg({
-                'date_list': date_list,
-                'date_step': self.date_step,
-                'date_range': self.date_range,
-            }))
+            # logger.log(level=MESSAGE, msg=LogMsg({
+            #     'date_list': date_list,
+            #     'date_step': self.date_step,
+            #     'date_range': self.date_range,
+            # }))
 
             for dt in date_list:
                 date_now = datetime.now(self.timezone)
@@ -127,7 +128,7 @@ class WebNewsCrawler(CrawlerBase):
                     break
 
                 # page 단위로 크롤링한다.
-                self.trace_page_list(url=url, job=job, dt=dt.strftime(url['date_format']))
+                self.trace_page_list(url=url, job=job, dt=dt)
 
         return
 
@@ -139,10 +140,10 @@ class WebNewsCrawler(CrawlerBase):
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
             # 쿼리 url 생성
-            q = {
-                'page': page,
-                'date': dt
-            }
+            q = dict(page=page)
+            if dt is not None:
+                q['date'] = dt.strftime(url['date_format'])
+
             url['url'] = url['url_frame'].format(**q)
 
             msg = {
@@ -168,7 +169,7 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             # 문서 저장
-            early_stop = self.trace_news(html=resp, url_info=url, job=job)
+            early_stop = self.trace_news(html=resp, url_info=url, job=job, date=dt)
             if early_stop is True:
                 msg = {
                     'level': 'MESSAGE',
@@ -202,7 +203,7 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def trace_news(self, html, url_info, job):
+    def trace_news(self, html, url_info, job, date):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
@@ -216,11 +217,17 @@ class WebNewsCrawler(CrawlerBase):
         base_url = self.parser.parse_url(url_info['url'])[1]
 
         # 디비에 연결한다.
+        index_tag = None
+        if date is not None:
+            index_tag = date.year
+
         elastic_utils = ElasticSearchUtils(
+            tag=index_tag,
             host=job['host'],
             index=job['index'],
             bulk_size=20,
             http_auth=job['http_auth'],
+            split_index=job['split_index'],
         )
 
         # 개별 뉴스를 따라간다.
@@ -228,8 +235,8 @@ class WebNewsCrawler(CrawlerBase):
             item = self.parse_tag(
                 resp=trace,
                 url_info=url_info,
-                parsing_info=self.parsing_info['list'],
                 base_url=base_url,
+                parsing_info=self.parsing_info['list'],
             )
             if item is None or 'url' not in item:
                 continue
@@ -246,7 +253,7 @@ class WebNewsCrawler(CrawlerBase):
                 if 'check_id' not in url_info or url_info['check_id'] is True:
                     is_skip = self.check_doc_id(
                         url=item['url'],
-                        index=job['index'],
+                        index=elastic_utils.index,
                         doc_id=doc_id,
                         doc_history=doc_history,
                         elastic_utils=elastic_utils,
@@ -256,13 +263,25 @@ class WebNewsCrawler(CrawlerBase):
                         continue
 
             # 기사 본문 조회
-            article = self.get_article(
+            article, article_html = self.get_article(
                 job=job,
                 item=item,
                 doc_id=doc_id,
                 offline=False,
-                elastic_utils=elastic_utils,
             )
+
+            # 기사 저장
+            if article is None:
+                # TODO: 에러난 url 기록
+                pass
+            else:
+                self.save_article(
+                    doc=item,
+                    html=article_html,
+                    article=article,
+                    elastic_utils=elastic_utils,
+                )
+
             doc_history[doc_id] = 1
 
             # 후처리 작업 실행
@@ -294,11 +313,11 @@ class WebNewsCrawler(CrawlerBase):
         self.set_history(value=doc_history, name='doc_history')
 
         # 다음 페이지 정보가 있는 경우
-        self.trace_next_page(html=html, url_info=url_info, job=job)
+        self.trace_next_page(html=html, url_info=url_info, job=job, date=date)
 
         return False
 
-    def get_article(self, doc_id, item, job, elastic_utils, offline=False):
+    def get_article(self, doc_id, item, job, offline=False):
         """기사 본문을 조회한다."""
         article_url = None
         if 'article' in job:
@@ -309,7 +328,7 @@ class WebNewsCrawler(CrawlerBase):
             if 'raw_html' in item:
                 resp = item['raw_html']
             elif 'html_content' not in item:
-                return None
+                return None, ''
             else:
                 resp = item['html_content']
 
@@ -319,7 +338,7 @@ class WebNewsCrawler(CrawlerBase):
         else:
             resp = self.get_html_page(url_info=article_url)
             if resp is None:
-                return None
+                return None, ''
 
         # 문서 저장
         article = self.parse_tag(
@@ -330,15 +349,13 @@ class WebNewsCrawler(CrawlerBase):
         )
 
         if article is None:
-            return None
+            return None, ''
 
         if len(article) == 0:
             # 삭제된 기사
-            return None
+            return None, ''
 
         article['_id'] = doc_id
-
-        from copy import deepcopy
 
         # 댓글 post process 처리
         if 'post_request' in job:
@@ -352,13 +369,7 @@ class WebNewsCrawler(CrawlerBase):
                     req_params=req_params,
                 )
 
-        # 기사 저장
-        return self.save_article(
-            doc=item,
-            html=resp,
-            article=article,
-            elastic_utils=elastic_utils,
-        )
+        return article, resp
 
     def post_request(self, req_params, url_info, article):
         """댓글을 요청한다."""
@@ -416,7 +427,7 @@ class WebNewsCrawler(CrawlerBase):
 
         return article
 
-    def trace_next_page(self, html, url_info, job):
+    def trace_next_page(self, html, url_info, job, date):
         """다음 페이지를 따라간다."""
         if 'trace_next_page' not in self.parsing_info:
             return
@@ -472,7 +483,7 @@ class WebNewsCrawler(CrawlerBase):
 
             sleep(self.sleep_time)
 
-            self.trace_news(html=resp, url_info=url_info, job=job)
+            self.trace_news(html=resp, url_info=url_info, job=job, date=date)
 
         return
 

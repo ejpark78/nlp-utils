@@ -215,7 +215,7 @@ class CrawlerBase(object):
             return True
 
         # 문서가 있는지 조회
-        is_exists = elastic_utils.elastic.exists(index=index, doc_type='doc', id=doc_id)
+        is_exists = elastic_utils.elastic.exists(index=index, doc_type='_doc', id=doc_id)
         if is_exists is True:
             doc_history[doc_id] = 1
 

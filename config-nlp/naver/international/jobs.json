@@ -1,0 +1,50 @@
+{
+  "daemon": {
+    "sleep": 1800
+  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "https://nlp.ncsoft.com:9200",
+      "http_auth": "crawler:crawler2019",
+      "index": "crawler-naver-international",
+      "split_index": true,
+      "sleep": 10,
+      "list": [
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=231&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/아시아호주"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=232&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/미국중남미"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=233&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/유럽"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=234&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/중동아프리카"
+        },
+        {
+          "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=322&listType=title&date={date}&page={page}",
+          "date_format": "%Y%m%d",
+          "category": "세계/일반"
+        }
+      ],
+      "article": {
+        "document_id": {
+          "type": "query",
+          "frame": "{oid}-{aid}"
+        }
+      },
+      "post_process": [
+      ]
+    }
+  ]
+}

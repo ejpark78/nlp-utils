@@ -28,6 +28,7 @@ build:
 		--exclude=.git \
 		--exclude=.idea \
 		--exclude=.vscode \
+		--exclude=.ipynb_checkpoints \
 		--exclude=*.jar \
 		--exclude=*.tar.gz \
 		--exclude=*.bz2 \
@@ -41,6 +42,7 @@ build:
 		--exclude=tmp \
 		--exclude=status \
 		--exclude=module/selenium-data \
+		--exclude=selenium-data \
 		.
 
 	cd build/

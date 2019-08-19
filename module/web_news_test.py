@@ -47,13 +47,21 @@ class WebNewsCrawlerTest(WebNewsCrawler):
         }
 
         doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-        _ = self.get_article(
-            doc_id=doc_id,
-            item=item,
+        article, article_html = self.get_article(
             job=job,
-            elastic_utils=elastic_utils,
+            item=item,
+            doc_id=doc_id,
             offline=False,
         )
+
+        # 기사 저장
+        if article is not None:
+            self.save_article(
+                doc=item,
+                html=article_html,
+                article=article,
+                elastic_utils=elastic_utils,
+            )
 
         return
 
@@ -86,13 +94,21 @@ class WebNewsCrawlerTest(WebNewsCrawler):
                 doc_id = item['document_id']
 
                 # 기사 본문 조회
-                article = self.get_article(
+                article, article_html = self.get_article(
                     doc_id=doc_id,
                     item=item,
                     job=job,
-                    elastic_utils=elastic_utils,
                     offline=False,
                 )
+
+                # 기사 저장
+                if article is not None:
+                    self.save_article(
+                        doc=item,
+                        html=article_html,
+                        article=article,
+                        elastic_utils=elastic_utils,
+                    )
 
                 # 후처리 작업 실행
                 if 'post_process' not in job:
