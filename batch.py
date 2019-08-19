@@ -38,8 +38,6 @@ def init_arguments():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-test', action='store_true', default=False, help='디버그')
-
     # 작업 아이디
     parser.add_argument('-category', default='', help='작업 카테고리')
     parser.add_argument('-job_id', default='', help='작업 아이디')
@@ -48,7 +46,7 @@ def init_arguments():
     parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     # 지식인 질문 상세 페이지: elasticsearch 파라메터, job_id가 kin_detail일 경우
-    parser.add_argument('-host', default=None, help='호스트')
+    parser.add_argument('-host', default=None, help='Elasticsearch 호스트')
     parser.add_argument('-match_phrase', default='{}', help='검색 조건')
     # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
 
@@ -64,6 +62,9 @@ def init_arguments():
     parser.add_argument('-date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
     parser.add_argument('-date_step', default=-1, type=int, help='date step')
 
+    # 설정파일
+    parser.add_argument('-config', default=None, help='설정 파일 정보')
+
     return parser.parse_args()
 
 
@@ -78,7 +79,9 @@ def main():
                 category=args.category,
                 job_id=args.job_id,
                 column='trace_list'
-            ).batch(date_range=args.date_range)
+            ).batch(
+                date_range=args.date_range,
+            )
             return
 
         if args.job_id == 'term_list':
@@ -132,22 +135,12 @@ def main():
         UdemyUtils().batch()
         return
 
-    # 디버깅 테스트
-    if args.test:
-        WebNewsCrawlerTest(
-            category=args.category,
-            job_id=args.job_id,
-            column='trace_list'
-        ).test()
-
-        return
-
     # 재 크롤링: parsing 정보가 변경되었을 경우
     if args.re_crawl:
         WebNewsCrawlerTest(
             category=args.category,
             job_id=args.job_id,
-            column='trace_list'
+            column='trace_list',
         ).re_crawl(
             query=args.query,
             date_range=args.date_range,
@@ -158,17 +151,19 @@ def main():
     # 웹 신문
     if args.batch:
         WebNewsCrawler(
-            category=args.category,
             job_id=args.job_id,
             column='trace_list',
+            config=args.config,
+            category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
         ).batch()
     else:
         WebNewsCrawler(
-            category=args.category,
             job_id=args.job_id,
             column='trace_list',
+            config=args.config,
+            category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
         ).daemon()

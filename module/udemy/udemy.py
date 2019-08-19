@@ -7,13 +7,11 @@ from __future__ import print_function
 
 import json
 import logging
-import math
 import os
-from os.path import isdir
-from os.path import isfile
-from os.path import splitext
+from os.path import isdir, isfile, splitext
 from time import sleep
 
+import math
 import requests
 from tqdm import tqdm
 

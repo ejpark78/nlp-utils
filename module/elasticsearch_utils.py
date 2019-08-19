@@ -43,7 +43,6 @@ class ElasticSearchUtils(object):
         self.elastic = None
 
         self.index = index
-        self.doc_type = doc_type
 
         self.bulk_data = {}
         self.bulk_size = bulk_size
@@ -213,25 +212,23 @@ class ElasticSearchUtils(object):
             if delete is True:
                 self.bulk_data[self.host].append({
                     'delete': {
+                        '_id': document_id,
                         '_index': self.index,
-                        '_type': self.doc_type,
-                        '_id': document_id
                     }
                 })
 
             # 저장 정보
             self.bulk_data[self.host].append({
                 'update': {
+                    '_id': document_id,
                     '_index': self.index,
-                    '_type': self.doc_type,
-                    '_id': document_id
                 }
             })
 
             # 저장 문서
             self.bulk_data[self.host].append({
                 'doc': document,
-                'doc_as_upsert': self.insert
+                'doc_as_upsert': self.insert,
             })
 
             # 버퍼링
@@ -255,10 +252,6 @@ class ElasticSearchUtils(object):
         if self.host not in self.bulk_data or len(self.bulk_data[self.host]) == 0:
             return None
 
-        size = -1
-        response = None
-        doc_id_list = []
-
         params = {'request_timeout': 2 * 60}
 
         try:
@@ -279,7 +272,7 @@ class ElasticSearchUtils(object):
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
-                'message': '저장 에러',
+                'message': '저장 에러 (bulk)',
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
@@ -297,7 +290,7 @@ class ElasticSearchUtils(object):
 
                 log_msg = {
                     'level': 'ERROR',
-                    'message': '저장 에러',
+                    'message': '저장 에러 (msg)',
                     'reason': reason_list,
                 }
                 logger.error(msg=LogMsg(log_msg))
@@ -316,10 +309,9 @@ class ElasticSearchUtils(object):
                         log_msg = {
                             'level': 'INFO',
                             'message': '저장 성공',
-                            'url': '{host}/{index}/{doc_type}/{id}?pretty'.format(
+                            'url': '{host}/{index}/_doc/{id}?pretty'.format(
                                 host=self.host,
                                 index=self.index,
-                                doc_type=self.doc_type,
                                 id=doc_id,
                             ),
                         }

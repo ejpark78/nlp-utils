@@ -7,11 +7,13 @@ from __future__ import print_function
 
 import logging
 import re
+from datetime import datetime
+from time import sleep
 
 import pytz
 import requests
 import urllib3
-from time import sleep
+from dateutil.relativedelta import relativedelta
 from werkzeug.contrib.cache import SimpleCache
 
 from module.config import Config
@@ -36,6 +38,8 @@ class CrawlerBase(object):
         self.job_id = ''
         self.column = ''
 
+        self.config = None
+
         self.parser = HtmlParser()
         self.post_process_utils = PostProcessUtils()
 
@@ -55,7 +59,21 @@ class CrawlerBase(object):
         self.post_process_list = None
         self.cache = SimpleCache()
 
+        # 로컬 시간 정보
         self.timezone = pytz.timezone('Asia/Seoul')
+
+        # 날짜 범위
+        self.date_range = None
+
+    def update_date_range(self):
+        """날짜를 갱신한다."""
+        today = datetime.now(self.timezone)
+
+        self.date_range = {
+            'end': today,
+            'start': today + relativedelta(weeks=-1),
+        }
+        return
 
     @staticmethod
     def get_encoding_type(html_body):
@@ -214,7 +232,11 @@ class CrawlerBase(object):
 
     def update_config(self):
         """설정 정보를 읽어 드린다."""
-        self.cfg = Config(job_category=self.job_category, job_id=self.job_id)
+        self.cfg = Config(
+            config=self.config,
+            job_id=self.job_id,
+            job_category=self.job_category,
+        )
 
         # request 헤더 정보
         self.headers = self.cfg.headers

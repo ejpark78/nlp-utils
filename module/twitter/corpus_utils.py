@@ -8,8 +8,8 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 
-from module.crawler_base import CrawlerBase
 from module.config import Config
+from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
@@ -25,8 +25,10 @@ class CorpusUtils(CrawlerBase):
 
     def __init__(self):
         """ 생성자 """
+        self.__init__()
+
         self.job_id = 'twitter'
-        self.cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_category='', job_id=self.job_id)
 
         self.job_info = self.cfg.job_info['twitter_list']
 

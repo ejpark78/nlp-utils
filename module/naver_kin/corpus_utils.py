@@ -30,7 +30,7 @@ class CorpusUtils(object):
     def __init__(self):
         """ 생성자 """
         self.job_id = 'naver_kin'
-        self.cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_category='naver', job_id=self.job_id)
 
         self.common_utils = CommonUtils()
 

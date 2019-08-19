@@ -305,6 +305,10 @@ class CrawlerCorpus(WebNewsCrawler):
                     is_error = True
                     continue
 
+                if len(article) == 0:
+                    # 삭제된 기사
+                    continue
+
                 article = self.parser.merge_values(item=article)
                 doc.update(article)
 
@@ -351,9 +355,9 @@ class CrawlerCorpus(WebNewsCrawler):
 
             doc_list = elastic_utils.get_url_list(
                 query=query,
-                query_field=query_field,
                 index=job['index'],
                 date_range=date_range,
+                query_field=query_field,
             )
 
             for item in tqdm(doc_list):
@@ -369,11 +373,11 @@ class CrawlerCorpus(WebNewsCrawler):
 
                 # 기사 본문 조회
                 article = self.get_article(
-                    doc_id=doc_id,
-                    item=item,
                     job=job,
-                    elastic_utils=elastic_utils,
+                    item=item,
+                    doc_id=doc_id,
                     offline=True,
+                    elastic_utils=elastic_utils,
                 )
 
                 # 후처리 작업 실행

@@ -25,7 +25,7 @@ class CorpusUtils(object):
     def __init__(self):
         """ 생성자 """
         self.job_id = 'naver_terms'
-        self.cfg = Config(job_id=self.job_id)
+        self.cfg = Config(job_category='naver', job_id=self.job_id)
 
         self.job_info = self.cfg.job_info['term_list']
 

@@ -6,20 +6,22 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import os
-from os import makedirs
-from os.path import dirname, abspath, isdir
-from os.path import isfile
+from datetime import datetime
+from os import makedirs, getenv
+from os.path import dirname, abspath, isdir, isfile
+
+import pytz
+from dateutil.relativedelta import relativedelta
 
 
 class Config(object):
     """크롤러 설정"""
 
-    def __init__(self, job_category, job_id):
+    def __init__(self, job_category, job_id, config=None):
         """ 생성자 """
-        status_dir = os.getenv('STATUS_DIR', 'status')
+        status_dir = getenv('STATUS_DIR', 'status')
 
-        self.debug = int(os.getenv('DEBUG', 0))
+        self.debug = int(getenv('DEBUG', 0))
 
         self.headers = {
             'mobile': {
@@ -34,36 +36,36 @@ class Config(object):
             }
         }
 
-        job_info_filename = 'config/{category}/{job_id}/jobs.json'.format(
-            category=job_category,
-            job_id=job_id,
-        )
+        # config 파일
+        if config is None:
+            config = 'config/{category}/{job_id}'.format(
+                job_id=job_id,
+                category=job_category,
+            )
+
+        # 정보
+        job_info_filename = '{config}/jobs.json'.format(config=config)
         self.job_info = self.open_config(filename=job_info_filename)
 
         self.parsing_info = None
 
-        parsing_info_filename = 'config/{category}/{job_id}/parsing.json'.format(
-            category=job_category,
-            job_id=job_id,
-        )
+        parsing_info_filename = '{config}/parsing.json'.format(config=config)
         if isfile(parsing_info_filename):
             self.parsing_info = self.open_config(filename=parsing_info_filename)
 
+        # 상태 저장 파일
         self.status_filename = '{status_dir}/{category}/{job_id}.json'.format(
-            status_dir=status_dir,
-            category=job_category,
             job_id=job_id,
+            category=job_category,
+            status_dir=status_dir,
         )
         self.status = self.open_config(filename=self.status_filename)
+
+        return
 
     @staticmethod
     def open_config(filename, create=False):
         """설정 파일을 읽는다."""
-        import pytz
-        from os.path import isfile
-        from datetime import datetime
-        from dateutil.relativedelta import relativedelta
-
         # 컨테이너 안에서 설정
         today = datetime.now(pytz.timezone('Asia/Seoul'))
 

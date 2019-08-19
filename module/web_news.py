@@ -9,15 +9,14 @@ import json
 import logging
 import re
 from datetime import datetime, timedelta
+from time import sleep
 from urllib.parse import parse_qs
 from urllib.parse import urljoin
 
 import requests
 import urllib3
 from dateutil.parser import parse as parse_date
-from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
-from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.elasticsearch_utils import ElasticSearchUtils
@@ -34,18 +33,22 @@ logger = logging.getLogger()
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러"""
 
-    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1):
+    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1, config=None):
         """ 생성자 """
         super().__init__()
 
+        self.config = config
+
         self.job_category = category
         self.job_id = job_id
+
         self.column = column
 
         self.trace_depth = 0
         self.trace_list_count = -1
 
         self.date_step = date_step
+
         self.update_date = False
 
         if date_range is None:
@@ -55,18 +58,10 @@ class WebNewsCrawler(CrawlerBase):
             dt_start, dt_end = date_range.split('~', maxsplit=1)
 
             self.date_range = {
-                'start': self.timezone.localize(parse_date(dt_start)),
                 'end': self.timezone.localize(parse_date(dt_end)),
+                'start': self.timezone.localize(parse_date(dt_start)),
             }
 
-    def update_date_range(self):
-        """날짜를 갱신한다."""
-        today = datetime.now(self.timezone)
-
-        self.date_range = {
-            'start': today + relativedelta(weeks=-1),
-            'end': today,
-        }
         return
 
     def daemon(self):
@@ -250,11 +245,11 @@ class WebNewsCrawler(CrawlerBase):
             if self.cfg.debug == 0:
                 if 'check_id' not in url_info or url_info['check_id'] is True:
                     is_skip = self.check_doc_id(
-                        doc_id=doc_id,
-                        elastic_utils=elastic_utils,
                         url=item['url'],
                         index=job['index'],
+                        doc_id=doc_id,
                         doc_history=doc_history,
+                        elastic_utils=elastic_utils,
                     )
 
                     if is_skip is True:
@@ -262,11 +257,11 @@ class WebNewsCrawler(CrawlerBase):
 
             # 기사 본문 조회
             article = self.get_article(
-                doc_id=doc_id,
-                item=item,
                 job=job,
-                elastic_utils=elastic_utils,
+                item=item,
+                doc_id=doc_id,
                 offline=False,
+                elastic_utils=elastic_utils,
             )
             doc_history[doc_id] = 1
 
@@ -337,6 +332,10 @@ class WebNewsCrawler(CrawlerBase):
         if article is None:
             return None
 
+        if len(article) == 0:
+            # 삭제된 기사
+            return None
+
         article['_id'] = doc_id
 
         from copy import deepcopy
@@ -347,7 +346,11 @@ class WebNewsCrawler(CrawlerBase):
             req_params.update(article)
 
             for request_info in job['post_request']:
-                self.post_request(req_params=req_params, url_info=request_info, article=article)
+                self.post_request(
+                    article=article,
+                    url_info=request_info,
+                    req_params=req_params,
+                )
 
         # 기사 저장
         return self.save_article(
@@ -404,8 +407,8 @@ class WebNewsCrawler(CrawlerBase):
                 result = []
                 self.get_dict_value(
                     data=req_result,
-                    key_list=url_info['field'].split('.'),
                     result=result,
+                    key_list=url_info['field'].split('.'),
                 )
 
                 if len(result) > 0:
@@ -439,9 +442,9 @@ class WebNewsCrawler(CrawlerBase):
         )
         self.parser.trace_tag(
             soup=soup,
-            tag_list=trace_tag['tag'],
             index=0,
             result=trace_list,
+            tag_list=trace_tag['tag'],
         )
 
         for tag in trace_list:
@@ -569,9 +572,9 @@ class WebNewsCrawler(CrawlerBase):
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
                 'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                    id=doc['document_id'],
                     host=elastic_utils.host,
                     index=elastic_utils.index,
-                    id=doc['document_id'],
                 ),
                 'doc_info': doc_info,
             }
@@ -663,14 +666,16 @@ class WebNewsCrawler(CrawlerBase):
                 return None
 
         self.set_history(
-            value=str_trace_list,
             name='trace_list',
+            value=str_trace_list,
         )
 
         return trace_list
 
     def parse_tag(self, resp, url_info, parsing_info, base_url):
         """trace tag 하나를 파싱해서 반환한다."""
+        from bs4 import BeautifulSoup
+
         # json 인 경우 맵핑값 매칭
         if 'parser' in url_info and url_info['parser'] == 'json':
             item = self.parser.parse_json(resp=resp, url_info=url_info)
@@ -703,12 +708,34 @@ class WebNewsCrawler(CrawlerBase):
                 return None
 
         if len(item) == 0:
+            text = ''
+            if isinstance(resp, BeautifulSoup):
+                text = resp.get_text()
+            elif isinstance(resp, str):
+                text = BeautifulSoup(resp, 'html5lib').get_text()
+
+            # 삭제된 페이지
+            empty = [
+                '페이지를 찾을 수 없습니다',
+                '언론사 요청에 의해 삭제된 기사입니다.',
+                '노출 중단 된 기사입니다.',
+                'Service Unavailable',
+                'Service Temporarily Unavailable'
+            ]
+            for m in empty:
+                if text.find(m) > 0:
+                    return {}
+
+            # 에러 메세지 출력
             msg = {
                 'level': 'ERROR',
                 'message': 'HTML 파싱 에러',
                 'resp': str(resp)[:200],
+                'text': text,
+                'url': url_info['url'],
             }
             logger.error(msg=LogMsg(msg))
+
             return None
 
         return item

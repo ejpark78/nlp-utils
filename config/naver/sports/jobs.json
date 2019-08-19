@@ -8,6 +8,7 @@
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-sports",
+      "index_split": true,
       "sleep": 10,
       "list": [
         {
