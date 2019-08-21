@@ -221,6 +221,9 @@ class WebNewsCrawler(CrawlerBase):
         if date is not None:
             index_tag = date.year
 
+        if 'split_index' not in job:
+            job['split_index'] = False
+
         elastic_utils = ElasticSearchUtils(
             tag=index_tag,
             host=job['host'],
