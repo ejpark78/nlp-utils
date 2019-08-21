@@ -582,7 +582,7 @@ class WebNewsCrawler(CrawlerBase):
             msg = {
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
-                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
                     id=doc['document_id'],
                     host=elastic_utils.host,
                     index=elastic_utils.index,
@@ -631,9 +631,7 @@ class WebNewsCrawler(CrawlerBase):
         elif id_frame['type'] == 'value':
             result = id_frame['frame'].format(**item)
 
-        result = result.strip()
-
-        return result
+        return result.strip()
 
     def get_trace_list(self, html, url_info):
         """trace tag 목록을 추출해서 반환한다."""

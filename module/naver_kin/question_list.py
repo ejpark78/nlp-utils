@@ -271,7 +271,7 @@ class QuestionList(CrawlerBase):
             msg = {
                 'level': 'MESSAGE',
                 'message': '문서 저장 성공',
-                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
                     host=elastic_utils.host,
                     index=elastic_utils.index,
                     id=doc_id,

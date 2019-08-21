@@ -536,7 +536,7 @@ class PostProcessUtils(object):
         msg = {
             'level': 'MESSAGE',
             'message': '이미지 추출 정보 갱신',
-            'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+            'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
                 host=elastic_utils.host,
                 index=elastic_utils.index,
                 id=document['document_id'],

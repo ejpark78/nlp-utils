@@ -205,7 +205,7 @@ class TermDetail(CrawlerBase):
                 'level': 'INFO',
                 'message': '문서 저장',
                 'doc_id': doc_id,
-                'url': '{host}/{index}/doc/{id}?pretty'.format(
+                'url': '{host}/{index}/_doc/{id}?pretty'.format(
                     host=self.job_info['host'],
                     index=self.job_info['index'],
                     id=doc_id,

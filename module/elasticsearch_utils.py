@@ -19,7 +19,8 @@ from elasticsearch.connection import create_ssl_context
 
 from module.logging_format import LogMessage as LogMsg
 
-urllib3.disable_warnings()
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 logger = logging.getLogger()
 

@@ -47,6 +47,10 @@ class SeleniumCrawler(object):
         """브라우저를 실행한다."""
         options = webdriver.ChromeOptions()
 
+        options.add_argument('headless')
+        options.add_argument('window-size=1920x1080')
+        options.add_argument("disable-gpu")
+
         options.add_argument('--dns-prefetch-disable')
         options.add_argument('disable-infobars')
         options.add_argument('user-data-dir=selenium-data')
@@ -81,7 +85,7 @@ class SeleniumCrawler(object):
 
         return
 
-    def scroll(self, count):
+    def scroll(self, count, page_name):
         """스크롤한다."""
 
         def check_height(prev_height):
@@ -92,7 +96,7 @@ class SeleniumCrawler(object):
         scroll_time = 5
         last_height = -1
 
-        for _ in tqdm(range(count), desc='scroll', dynamic_ncols=True):
+        for _ in tqdm(range(count), desc='scroll: ' + page_name, dynamic_ncols=True):
             try:
                 height = self.driver.execute_script("return document.body.scrollHeight")
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -116,17 +120,6 @@ class SeleniumCrawler(object):
     def parse_contents(self, url, html):
         """포스트 내용을 추출한다."""
         soup = BeautifulSoup(html, 'html5lib')
-
-        # css_list = [
-        #     {
-        #         'type': '그룹',
-        #         'attr': {'class': '_5pcr userContentWrapper'}
-        #     }
-        # ]
-        #
-        # tag_list = []
-        # for css in css_list:
-        #     tag_list += soup.find_all('div', css['attr'])
 
         tag_list = soup.find_all('article')
 
@@ -212,7 +205,7 @@ class SeleniumCrawler(object):
         self.driver.implicitly_wait(10)
 
         for i in tqdm(range(50000)):
-            stop = self.scroll(5)
+            stop = self.scroll(count=5, page_name=page['name'])
             self.driver.implicitly_wait(5)
 
             try:
@@ -253,6 +246,8 @@ if __name__ == '__main__':
 
     utils = SeleniumCrawler()
 
-    # utils.fb_login(user='ejpark78@gmail.com', password='ajswl@2019@')
+    # user = ''
+    # password = ''
+    # utils.fb_login(user=user, password=password)
 
     utils.batch()

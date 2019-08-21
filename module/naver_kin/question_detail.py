@@ -189,7 +189,7 @@ class QuestionDetail(CrawlerBase):
                 'level': 'MESSAGE',
                 'message': '상세 답변 저장 성공',
                 'question': doc['question'],
-                'doc_url': '{host}/{index}/doc/{id}?pretty'.format(
+                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
                     host=elastic_utils.host,
                     index=elastic_utils.index,
                     id=doc_id,
