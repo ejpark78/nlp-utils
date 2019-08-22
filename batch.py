@@ -7,10 +7,12 @@ from __future__ import print_function
 
 import logging
 import sys
+from os import getenv
 
 from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver_kin.user_list import UserList as NaverKinUserList
+from module.naver_reply import NaverNewsReplyCrawler
 from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
 from module.naver_terms.detail import TermDetail as NaverTermDetail
 from module.naver_terms.term_list import TermList as NaverTermList
@@ -19,7 +21,6 @@ from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
 from module.web_news_test import WebNewsCrawlerTest
-from module.naver_reply import NaverNewsReplyCrawler
 
 MESSAGE = 25
 
@@ -28,7 +29,13 @@ logging.basicConfig(format='%(message)s')
 
 root_logger = logging.getLogger()
 
-root_logger.setLevel(MESSAGE)
+# 로그 레벨 설정
+log_level = int(getenv('LOG_LEVEL', MESSAGE))
+if log_level != MESSAGE:
+    root_logger.setLevel(log_level)
+else:
+    root_logger.setLevel(MESSAGE)
+
 root_logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
