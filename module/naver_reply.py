@@ -25,7 +25,6 @@ from module.elasticsearch_utils import ElasticSearchUtils
 from module.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-urllib3.disable_warnings(UserWarning)
 
 MESSAGE = 25
 
@@ -90,11 +89,20 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
     def trace_news(self, url_frame, job, date):
         """뉴스 하나를 조회한다."""
+        index_tag = None
+        if date is not None:
+            index_tag = date.year
+
+        if 'split_index' not in job:
+            job['split_index'] = False
+
         elastic_utils = ElasticSearchUtils(
+            tag=index_tag,
             host=job['host'],
             index=job['index'],
             bulk_size=20,
             http_auth=job['http_auth'],
+            split_index=job['split_index'],
         )
 
         query = {
