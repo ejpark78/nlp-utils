@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: naver-sport-reply-2016
+  namespace: crawler
+  labels:
+    app: crawler
+    site: naver
+    section: sports
+    type: reply
+spec:
+  restartPolicy: Always
+  containers:
+    - name: 2016-01
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2016-01-01~2016-03-01"]
+      resources: {}
+    - name: 2016-03
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2016-03-01~2016-06-01"]
+      resources: {}
+    - name: 2016-06
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2016-06-01~2016-09-01"]
+      resources: {}
+    - name: 2016-09
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2016-09-01~2016-12-31"]
+      resources: {}
+status: {}
