@@ -8,22 +8,23 @@
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
       "index": "crawler-bbs-ruliweb",
+      "split_index": true,
       "sleep": 3,
       "list": [
         {
           "url_frame": "https://bbs.ruliweb.com/community/board/300147?page={page}",
           "category": "고민상담",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "https://bbs.ruliweb.com/community/board/300142?page={page}",
           "category": "질문게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "https://bbs.ruliweb.com/community/board/300152?page={page}",
           "category": "토론게시판",
-          "check_id": true
+          "check_id": false
         }
       ],
       "article": {

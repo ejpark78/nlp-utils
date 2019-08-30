@@ -430,6 +430,22 @@ class WebNewsCrawler(CrawlerBase):
 
         return article
 
+    def set_timezone_at_reply_date(self, doc):
+        """댓글 날짜에 timezone 정보를 설정한다."""
+
+        for k in ['reply_list']:
+            if k not in doc or isinstance(doc[k], list) is False:
+                continue
+
+            for item in doc[k]:
+                if 'date' not in item:
+                    continue
+
+                if isinstance(item['date'], str):
+                    item['date'] = parse_date(item['date']).astimezone(self.timezone)
+
+        return doc
+
     def trace_next_page(self, html, url_info, job, date):
         """다음 페이지를 따라간다."""
         if 'trace_next_page' not in self.parsing_info:
@@ -572,6 +588,13 @@ class WebNewsCrawler(CrawlerBase):
         doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
         # 문서 저장
+        if 'date' in doc and elastic_utils.split_index is True:
+            elastic_utils.index = elastic_utils.get_target_index(
+                tag=elastic_utils.get_index_year_tag(date=doc['date']),
+                index=elastic_utils.index,
+                split_index=elastic_utils.split_index,
+            )
+
         elastic_utils.save_document(document=doc)
         flag = elastic_utils.flush()
 

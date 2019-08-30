@@ -8,82 +8,83 @@
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
       "index": "crawler-bbs-inven",
+      "split_index": true,
       "sleep": 3,
       "list": [
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5019?sort=PID&p={page}",
           "category": "자유게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5059?sort=PID&p={page}",
           "category": "아이템 거래 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5057?sort=PID&p={page}",
           "category": "사건사고 서버현황 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5030?sort=PID&p={page}",
           "category": "혈맹 모집 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5031?sort=PID&p={page}",
           "category": "서버 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5056?sort=PID&p={page}",
           "category": "팀과 노하우 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5073?sort=PID&p={page}",
           "category": "이슈&토론 게시판",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5409?sort=PID&p={page}",
           "category": "클래스 - 암흑기사",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5063?sort=PID&p={page}",
           "category": "클래스 - 군주",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5029?sort=PID&p={page}",
           "category": "클래스 - 기사",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5062?sort=PID&p={page}",
           "category": "클래스 - 요정",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5064?sort=PID&p={page}",
           "category": "클래스 - 마법사",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5164?sort=PID&p={page}",
           "category": "클래스 - 다크엘프",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5267?sort=PID&p={page}",
           "category": "클래스 - 총사",
-          "check_id": true
+          "check_id": false
         },
         {
           "url_frame": "http://www.inven.co.kr/board/lineagem/5315?sort=PID&p={page}",
           "category": "클래스 - 투사",
-          "check_id": true
+          "check_id": false
         }
       ],
       "post_request": [

@@ -309,6 +309,8 @@
         "comment": "댓글 작성 시간",
         "key": "reply_list.date",
         "type": "text",
+        "type_convert": "date",
+        "value_type": "single",
         "tag": [
           {
             "select": "div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper span.time"

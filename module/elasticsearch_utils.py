@@ -43,6 +43,7 @@ class ElasticSearchUtils(object):
         self.http_auth = (http_auth.split(':'))
 
         self.elastic = None
+        self.split_index = split_index
 
         self.index = self.get_target_index(
             tag=tag,
@@ -104,6 +105,16 @@ class ElasticSearchUtils(object):
 
         return document
 
+    def get_index_year_tag(self, date):
+        """인덱스의 년도 태그를 반환한다."""
+        from dateutil.parser import parse as parse_date
+
+        if isinstance(date, str):
+            date = parse_date(date)
+            if date.tzinfo is None:
+                date = self.timezone.localize(date)
+        return date.year
+
     @staticmethod
     def get_target_index(index, split_index=False, tag=None):
         """복사 대상의 인덱스를 반환한다."""
@@ -112,7 +123,7 @@ class ElasticSearchUtils(object):
 
         # 인덱스에서 crawler-naver-sports-2018 연도를 삭제한다.
         token = index.rsplit('-', maxsplit=1)
-        if len(token) >= 2 and token[-1].isdecimal() is True:
+        if len(token) == 2 and token[-1].isdecimal() is True:
             index = token[0]
 
         return '{index}-{tag}'.format(index=index, tag=tag)
@@ -150,6 +161,10 @@ class ElasticSearchUtils(object):
             logger.error(msg=LogMsg(log_msg))
             return
 
+        if self.split_index is True:
+            return
+
+        # 인덱스가 없는 경우, 생성함
         try:
             if self.elastic.indices.exists(index=self.index) is False:
                 self.create_index(self.elastic, self.index)
