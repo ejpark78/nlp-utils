@@ -165,27 +165,25 @@
           "payload": {
             "elastic": {
               "host": "https://corpus.ncsoft.com:9200",
+              "index": "corpus_process-naver-sports",
               "http_auth": "crawler:crawler2019",
-              "index": "corpus_process-naver-sports"
+              "split_index": true
             },
+            "doc_type": "web_news",
             "module": [
               {
-                "name": "sp/pos_tagger",
-                "domain": "baseball",
+                "name": "nlu_wrapper",
+                "option": {
+                  "domain": "baseball",
+                  "style": "literary",
+                  "module": [
+                    "SBD_crf",
+                    "POS",
+                    "NER"
+                  ]
+                },
                 "column": "html_content",
-                "result": "pos_tagged"
-              },
-              {
-                "name": "sp/ne_tagger",
-                "domain": "baseball",
-                "column": "html_content",
-                "result": "named_entity"
-              },
-              {
-                "name": "nc/ne_tagger_v2",
-                "domain": "baseball",
-                "column": "html_content",
-                "result": "named_entity_v2"
+                "result": "nlu_wrapper"
               }
             ]
           }

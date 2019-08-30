@@ -38,7 +38,7 @@ spec:
         - name: NAME_ENTITY_TAGGER_V2
           value: /usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule
         - name: NLU_WRAPPER_URL
-          value: http://172.20.92.43:32280
+          value: http://172.20.78.250:30000
         - name: USE_CONSUMER
           value: "1"
       resources:

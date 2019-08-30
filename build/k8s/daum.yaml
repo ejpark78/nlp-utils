@@ -10,40 +10,6 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: mq
-      image: rabbitmq:3-management
-      ports:
-        - containerPort: 5672
-      env:
-        - name: RABBITMQ_DEFAULT_PASS
-          value: nlplab!
-        - name: RABBITMQ_DEFAULT_USER
-          value: user
-      resources: {}
-    - name: corpus-processor
-      image: corpus:5000/crawler/corpus_processor:latest
-      env:
-        - name: CONSUMER_EXCHANGE_NAME
-          value: crawler
-        - name: CONSUMER_HOST
-          value: localhost
-        - name: CONSUMER_USER_NAME
-          value: user
-        - name: CONSUMER_USER_PASSWD
-          value: nlplab!
-        - name: ELASTIC_HOST
-          value: https://corpus.ncsoft.com:9200
-        - name: KMAT_RSC
-          value: /www-data/dictionary/rsc
-        - name: NAME_ENTITY_TAGGER_V2
-          value: /usr/local/app/nlu_utils/nc_utils/ne_tagger_v2/rsc/ner_rule
-        - name: NLU_WRAPPER_URL
-          value: http://172.20.92.43:32280
-        - name: USE_CONSUMER
-          value: "1"
-      resources:
-        limits:
-          memory: "1073741824"
     - name: culture
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
