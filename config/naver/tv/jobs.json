@@ -24,47 +24,6 @@
         }
       },
       "post_process": [
-        {
-          "name": "RabbitMQ 메세지 전송",
-          "module": "rabbit_mq",
-          "exchange": {
-            "type": "topic",
-            "name": "crawler"
-          },
-          "host": {
-            "name": "localhost",
-            "port": 5672,
-            "user_name": "user",
-            "user_password": "nlplab!"
-          },
-          "payload": {
-            "elastic": {
-              "host": "https://corpus.ncsoft.com:9200",
-              "http_auth": "crawler:crawler2019",
-              "index": "corpus_process-naver-tv"
-            },
-            "module": [
-              {
-                "name": "sp/pos_tagger",
-                "domain": "economy",
-                "column": "html_content",
-                "result": "pos_tagged"
-              },
-              {
-                "name": "sp/ne_tagger",
-                "domain": "economy",
-                "column": "html_content",
-                "result": "named_entity"
-              },
-              {
-                "name": "nc/ne_tagger_v2",
-                "domain": "economy",
-                "column": "html_content",
-                "result": "named_entity_v2"
-              }
-            ]
-          }
-        }
       ]
     }
   ]
