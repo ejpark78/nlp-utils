@@ -154,7 +154,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler"
+            "name": "corpus_pipeline"
           },
           "host": {
             "name": "localhost",
@@ -182,7 +182,7 @@
                     "NER"
                   ]
                 },
-                "column": "html_content",
+                "column": "content",
                 "result": "nlu_wrapper"
               }
             ]

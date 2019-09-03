@@ -283,7 +283,7 @@ class CrawlerCorpus(WebNewsCrawler):
             )
 
             if index not in id_idx:
-                id_idx[index] = elastic_utils.get_id_list(index=index)[0]
+                id_idx[index] = elastic_utils.get_id_list(index=index)
 
             # 문서 로딩
             doc_list = self.read_corpus(filename=filename)
@@ -323,7 +323,7 @@ class CrawlerCorpus(WebNewsCrawler):
                 )
 
                 if index not in id_idx:
-                    id_idx[index] = elastic_utils.get_id_list(index=index)[0]
+                    id_idx[index] = elastic_utils.get_id_list(index=index)
 
                 elastic_utils.save_document(document=doc, index=index, delete=False)
 

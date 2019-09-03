@@ -449,18 +449,34 @@ class ElasticSearchUtils(object):
 
         return hits['hits'], scroll_id, count, total
 
+    def get_by_ids(self, id_list, index, source, result):
+        """ 문서 아이디로 문서를 가져온다."""
+        if len(id_list) == 0:
+            return
+
+        news = self.elastic.mget(
+            body={
+                'docs': [{'_id': x} for x in id_list]
+            },
+            index=index,
+            _source=source,
+        )
+
+        for n in news['docs']:
+            if '_source' not in n:
+                continue
+
+            result.append(n['_source'])
+
+        return
+
     def get_id_list(self, index, use_cache=False, size=5000):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
-        from tqdm import tqdm
-
-        filename = 'data/{}.plk'.format(index)
-        if use_cache is True:
-            result = self.load_cache(filename)
-
-            if len(result) > 0:
-                return result, filename
+        from tqdm.autonotebook import tqdm
 
         result = {}
+        if self.elastic.indices.exists(index) is False:
+            return result
 
         count = 1
         sum_count = 0
@@ -507,10 +523,7 @@ class ElasticSearchUtils(object):
             if count < size:
                 break
 
-        if use_cache is True:
-            self.save_cache(cache_data=result, filename=filename)
-
-        return result, filename
+        return result
 
     def get_url_list(self, index, size=1000, date_range=None, query='', query_field=''):
         """ elastic search 에서 url 목록을 조회한다. """

@@ -64,7 +64,7 @@
           "module": "rabbit_mq",
           "exchange": {
             "type": "topic",
-            "name": "crawler"
+            "name": "corpus_pipeline"
           },
           "host": {
             "name": "localhost",
@@ -86,9 +86,13 @@
                 "option": {
                   "domain": "economy",
                   "style": "literary",
-                  "module": ["SBD_crf", "POS", "NER"]
+                  "module": [
+                    "SBD_crf",
+                    "POS",
+                    "NER"
+                  ]
                 },
-                "column": "html_content",
+                "column": "content",
                 "result": "nlu_wrapper"
               }
             ]
