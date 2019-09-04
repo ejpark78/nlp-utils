@@ -81,7 +81,7 @@ def main():
 
     # 네이버 지식인/백과사전
     if args.category == 'naver':
-        if args.job_id == 'sports-reply':
+        if args.job_id.find('-reply') > 0:
             NaverNewsReplyCrawler(
                 category=args.category,
                 job_id=args.job_id,

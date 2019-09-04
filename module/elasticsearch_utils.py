@@ -470,7 +470,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_id_list(self, index, use_cache=False, size=5000):
+    def get_id_list(self, index, use_cache=False, size=5000, query_cond=None):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         from tqdm.autonotebook import tqdm
 
@@ -485,6 +485,8 @@ class ElasticSearchUtils(object):
         query = {
             '_source': ''
         }
+        if query_cond is not None:
+            query.update(query_cond)
 
         p_bar = None
 
@@ -634,7 +636,7 @@ class ElasticSearchUtils(object):
 
         # 원본 문서 읽기
         try:
-            document = self.elastic.get(index=source_index, doc_type='doc', id=source_id)
+            document = self.elastic.get(index=source_index, doc_type='_doc', id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
@@ -677,12 +679,12 @@ class ElasticSearchUtils(object):
         """이전에 수집한 문서와 병합"""
         doc_id = doc['_id']
 
-        exists = self.elastic.exists(index=index, doc_type='doc', id=doc_id)
+        exists = self.elastic.exists(index=index, doc_type='_doc', id=doc_id)
         if exists is False:
             return doc
 
         try:
-            resp = self.elastic.get(index=index, doc_type='doc', id=doc_id)
+            resp = self.elastic.get(index=index, doc_type='_doc', id=doc_id)
         except Exception as e:
             log_msg = {
                 'level': 'ERROR',
