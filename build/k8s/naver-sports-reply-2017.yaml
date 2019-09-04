@@ -10,7 +10,7 @@ metadata:
     section: sports
     type: reply
 spec:
-  restartPolicy: Always
+  restartPolicy: OnFailure
   containers:
     - name: 2017-01
       image: corpus:5000/crawler:latest

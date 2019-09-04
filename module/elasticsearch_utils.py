@@ -226,8 +226,8 @@ class ElasticSearchUtils(object):
         if self.elastic is None:
             self.open()
 
-        if index is not None:
-            self.index = index
+        if index is None:
+            index = self.index
 
         # 버퍼링
         if document is not None:
@@ -252,7 +252,7 @@ class ElasticSearchUtils(object):
                 self.bulk_data[self.host].append({
                     'delete': {
                         '_id': document_id,
-                        '_index': self.index,
+                        '_index': index,
                     }
                 })
 
@@ -260,7 +260,7 @@ class ElasticSearchUtils(object):
             self.bulk_data[self.host].append({
                 'update': {
                     '_id': document_id,
-                    '_index': self.index,
+                    '_index': index,
                 }
             })
 

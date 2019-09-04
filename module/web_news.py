@@ -63,6 +63,10 @@ class WebNewsCrawler(CrawlerBase):
                 'start': self.timezone.localize(parse_date(dt_start)),
             }
 
+            today = datetime.now(self.timezone)
+            if self.date_range['end'] > today:
+                self.date_range['end'] = today
+
         return
 
     def daemon(self):
@@ -90,6 +94,8 @@ class WebNewsCrawler(CrawlerBase):
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
+        self.update_config()
+
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.job_info:
             self.sleep_time = job['sleep']
@@ -275,10 +281,15 @@ class WebNewsCrawler(CrawlerBase):
 
             # 기사 저장
             if article is None:
-                # TODO: 에러난 url 기록
-                pass
+                # 에러난 url 기록
+                item['_id'] = doc_id
+                item['raw_html'] = article_html
+
+                elastic_utils.save_document(document=item, index=job['index'] + '-error')
+                elastic_utils.flush()
             else:
                 self.save_article(
+                    job=job,
                     doc=item,
                     html=article_html,
                     article=article,
@@ -352,11 +363,11 @@ class WebNewsCrawler(CrawlerBase):
         )
 
         if article is None:
-            return None, ''
+            return None, str(resp)
 
         if len(article) == 0:
             # 삭제된 기사
-            return None, ''
+            return None, str(resp)
 
         article['_id'] = doc_id
 
@@ -549,11 +560,13 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def save_article(self, html, doc, article, elastic_utils):
+    def save_article(self, html, doc, article, elastic_utils, job):
         """크롤링한 문서를 저장한다."""
         # 후처리
         doc = self.parser.merge_values(item=doc)
         article = self.parser.merge_values(item=article)
+
+        error = False
 
         # 파싱 에러 처리
         if 'html_content' in article and len(article['html_content']) != 0:
@@ -586,6 +599,14 @@ class WebNewsCrawler(CrawlerBase):
 
         # 문서 아이디 추출
         doc['curl_date'] = datetime.now(self.timezone).isoformat()
+
+        # 에러인 경우
+        if error is True:
+            doc['raw_html'] = str(html)
+
+            elastic_utils.save_document(document=doc, index=job['index'] + '-error')
+            elastic_utils.flush()
+            return doc
 
         # 문서 저장
         if 'date' in doc and elastic_utils.split_index is True:
