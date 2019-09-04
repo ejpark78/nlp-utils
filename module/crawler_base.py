@@ -201,7 +201,7 @@ class CrawlerBase(object):
         return
 
     @staticmethod
-    def check_doc_id(doc_id, elastic_utils, url, index, doc_history):
+    def check_doc_id(doc_id, elastic_utils, url, index, doc_history, reply_info=None):
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
@@ -216,19 +216,36 @@ class CrawlerBase(object):
 
         # 문서가 있는지 조회
         is_exists = elastic_utils.elastic.exists(index=index, doc_type='_doc', id=doc_id)
-        if is_exists is True:
-            doc_history[doc_id] = 1
+        if is_exists is False:
+            return False
 
-            msg = {
-                'level': 'INFO',
-                'message': 'elasticsearch 에 존재함, 건너뜀',
-                'doc_id': doc_id,
-                'url': url,
-            }
-            logger.info(msg=LogMsg(msg))
-            return True
+        # 댓글 정보 추가 확인
+        if reply_info is not None:
+            field_name = reply_info['source']
+            doc = elastic_utils.elastic.get(
+                id=doc_id,
+                index=index,
+                _source=[field_name],
+                doc_type='_doc',
+            )['_source']
 
-        return False
+            if field_name not in doc:
+                return False
+
+            if doc[field_name] != reply_info['count']:
+                return False
+
+        doc_history[doc_id] = 1
+
+        msg = {
+            'level': 'INFO',
+            'message': 'elasticsearch 에 존재함, 건너뜀',
+            'doc_id': doc_id,
+            'url': url,
+        }
+        logger.info(msg=LogMsg(msg))
+
+        return True
 
     def update_config(self):
         """설정 정보를 읽어 드린다."""

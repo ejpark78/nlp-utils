@@ -111,6 +111,9 @@ class NaverNewsReplyCrawler(CrawlerBase):
             'total': 500,
         }
 
+        # url 저장 이력 조회
+        doc_history = self.get_history(name='doc_history', default={})
+
         headers = deepcopy(self.headers['desktop'])
 
         while query['page'] <= query['total']:
@@ -131,11 +134,34 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
                 news['url'] = urljoin(url_frame['list'], news['url'])
 
+                doc_id = '{oid}-{aid}'.format(**news)
+
+                # 중복 확인
+                if self.cfg.debug == 0:
+                    if 'check_id' not in url_frame or url_frame['check_id'] is True:
+                        reply_info = None
+                        if 'totalCount' in news:
+                            reply_info = {
+                                'count': news['totalCount'],
+                                'source': 'totalCount',
+                            }
+
+                        is_skip = self.check_doc_id(
+                            url=news['url'],
+                            index=elastic_utils.index,
+                            doc_id=doc_id,
+                            doc_history=doc_history,
+                            reply_info=reply_info,
+                            elastic_utils=elastic_utils,
+                        )
+
+                        if is_skip is True:
+                            continue
+
                 # 댓글 조회
                 news = self.get_reply(news=news, url_frame=url_frame)
 
                 # 문서 저장
-                doc_id = '{oid}-{aid}'.format(**news)
                 news['_id'] = doc_id
                 news['date'] = date
 
