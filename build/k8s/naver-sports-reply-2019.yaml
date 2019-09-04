@@ -15,7 +15,7 @@ spec:
     - name: 2019-08
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2019-07-01~2019-08-25"]
+      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2019-01-01~2019-09-04"]
       resources: {}
 #    - name: 2018-01
 #      image: corpus:5000/crawler:latest
