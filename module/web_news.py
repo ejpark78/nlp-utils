@@ -34,7 +34,8 @@ logger = logging.getLogger()
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러"""
 
-    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1, config=None):
+    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1,
+                 config=None, update_category_only=False):
         """ 생성자 """
         super().__init__()
 
@@ -51,6 +52,8 @@ class WebNewsCrawler(CrawlerBase):
         self.date_step = date_step
 
         self.update_date = False
+
+        self.update_category_only = update_category_only
 
         if date_range is None:
             self.update_date = True
@@ -155,6 +158,7 @@ class WebNewsCrawler(CrawlerBase):
             msg = {
                 'level': 'INFO',
                 'message': '뉴스 목록 크롤링',
+                'date': dt.strftime('%Y-%m-%d'),
                 'url': url,
                 'query': q,
             }
@@ -169,9 +173,19 @@ class WebNewsCrawler(CrawlerBase):
                 msg = {
                     'level': 'ERROR',
                     'message': '뉴스 목록 조회 에러',
+                    'date': dt.strftime('%Y-%m-%d'),
                     'url': url,
                 }
                 logger.error(msg=LogMsg(msg))
+                continue
+
+            # category 만 업데이트할 경우
+            if self.update_category_only is True:
+                early_stop = self.update_category(html=resp, url_info=url, job=job, date=dt)
+                if early_stop is True:
+                    break
+
+                sleep(self.sleep_time)
                 continue
 
             # 문서 저장
@@ -180,7 +194,9 @@ class WebNewsCrawler(CrawlerBase):
                 msg = {
                     'level': 'MESSAGE',
                     'message': '조기 종료',
+                    'date': dt.strftime('%Y-%m-%d'),
                     'url': url['url'],
+                    'category': job['category'],
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
                 break
@@ -193,6 +209,7 @@ class WebNewsCrawler(CrawlerBase):
             msg = {
                 'level': 'MESSAGE',
                 'message': '기사 목록 조회',
+                'date': dt.strftime('%Y-%m-%d'),
                 'category': job['category'],
                 'url': url['url'],
             }
@@ -209,20 +226,50 @@ class WebNewsCrawler(CrawlerBase):
 
         return
 
-    def trace_news(self, html, url_info, job, date):
+    def update_category(self, html, url_info, job, date):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
             return True
 
-        # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default={})
-
-        # 베이스 url 추출
-        base_url = self.parser.parse_url(url_info['url'])[1]
-
         # 디비에 연결한다.
+        elastic_utils = self.open_elasticsearch(date=date, job=job)
+
+        # 개별 뉴스를 따라간다.
+        for trace in trace_list:
+            item = self.parse_tag(
+                resp=trace,
+                url_info=url_info,
+                base_url=url_info['url'],
+                parsing_info=self.parsing_info['list'],
+            )
+            if item is None or 'url' not in item:
+                continue
+
+            item['url'] = urljoin(url_info['url'], item['url'])
+
+            # 카테고리 업데이트
+            item['category'] = job['category']
+
+            elastic_utils.save_document(document=item, delete=False)
+
+        elastic_utils.flush()
+
+        msg = {
+            'level': 'MESSAGE',
+            'message': '카테고리 업데이트',
+            'date': date.strftime('%Y-%m-%d'),
+            'length': len(trace_list),
+            'category': job['category'],
+        }
+        logger.log(level=MESSAGE, msg=LogMsg(msg))
+
+        return False
+
+    @staticmethod
+    def open_elasticsearch(date, job):
+        """디비에 연결한다."""
         index_tag = None
         if date is not None:
             index_tag = date.year
@@ -239,6 +286,24 @@ class WebNewsCrawler(CrawlerBase):
             split_index=job['split_index'],
         )
 
+        return elastic_utils
+
+    def trace_news(self, html, url_info, job, date):
+        """개별 뉴스를 따라간다."""
+        # 기사 목록을 추출한다.
+        trace_list = self.get_trace_list(html=html, url_info=url_info)
+        if trace_list is None:
+            return True
+
+        # url 저장 이력 조회
+        doc_history = self.get_history(name='doc_history', default={})
+
+        # 베이스 url 추출
+        base_url = self.parser.parse_url(url_info['url'])[1]
+
+        # 디비에 연결한다.
+        elastic_utils = self.open_elasticsearch(date=date, job=job)
+
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
             item = self.parse_tag(
@@ -251,6 +316,8 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             item['url'] = urljoin(base_url, item['url'])
+
+            # 카테고리 업데이트
             item['category'] = job['category']
 
             # 기존 크롤링된 문서를 확인한다.
@@ -443,7 +510,6 @@ class WebNewsCrawler(CrawlerBase):
 
     def set_timezone_at_reply_date(self, doc):
         """댓글 날짜에 timezone 정보를 설정한다."""
-
         for k in ['reply_list']:
             if k not in doc or isinstance(doc[k], list) is False:
                 continue

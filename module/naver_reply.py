@@ -40,9 +40,11 @@ logger.handlers = [logging.StreamHandler(sys.stderr)]
 class NaverNewsReplyCrawler(CrawlerBase):
     """네이버 뉴스 댓글 수집기"""
 
-    def __init__(self, category='', job_id='', column=''):
+    def __init__(self, category='', job_id='', column='', config=None):
         """ 생성자 """
         super().__init__()
+
+        self.config = config
 
         self.job_category = category
         self.job_id = job_id
@@ -86,37 +88,17 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 self.sleep_time = job['sleep']
 
                 for url_frame in job['list']:
+                    elastic = self.open_elasticsearch(date=dt, job=job, url_frame=url_frame)
+
                     if url_frame['list'] == 'elasticsearch':
-                        self.trace_elasticsearch(url_frame=url_frame, job=job, date=dt)
+                        self.trace_elasticsearch(url_frame=url_frame, date=dt, elastic=elastic)
                     else:
-                        self.trace_reply_list(url_frame=url_frame, job=job, date=dt)
+                        self.trace_reply_list(url_frame=url_frame, date=dt, elastic=elastic)
 
         return
 
-    def trace_elasticsearch(self, url_frame, job, date):
+    def trace_elasticsearch(self, url_frame, date, elastic):
         """특정 날짜의 뉴스 목록을 따라간다."""
-        index_tag = None
-        if date is not None:
-            index_tag = date.year
-
-        elastic_news_list = ElasticSearchUtils(
-            tag=index_tag,
-            host=job['host'],
-            index=url_frame['list_index'],
-            bulk_size=20,
-            http_auth=job['http_auth'],
-            split_index=job['split_index'],
-        )
-
-        elastic_reply = ElasticSearchUtils(
-            tag=index_tag,
-            host=job['host'],
-            index=job['index'],
-            bulk_size=20,
-            http_auth=job['http_auth'],
-            split_index=job['split_index'],
-        )
-
         query_cond = {
             'query': {
                 'bool': {
@@ -133,9 +115,9 @@ class NaverNewsReplyCrawler(CrawlerBase):
             }
         }
 
-        id_list = elastic_news_list.get_id_list(
+        id_list = elastic['news'].get_id_list(
             size=1000,
-            index=elastic_news_list.index,
+            index=elastic['news'].index,
             query_cond=query_cond,
         )
 
@@ -146,20 +128,18 @@ class NaverNewsReplyCrawler(CrawlerBase):
             # 중복 확인
             if self.is_dup_reply(
                     news={'url': ''},
-                    index=elastic_reply.index,
+                    index=elastic['reply'].index,
                     doc_id=doc_id,
                     url_frame=url_frame,
                     doc_history=doc_history,
-                    elastic_utils=elastic_reply,
+                    elastic_utils=elastic['reply'],
             ) is True:
                 continue
 
-            doc = elastic_news_list.elastic.get(
-                id=doc_id,
-                index=elastic_news_list.index,
-                _source=['url'],
-                doc_type='_doc',
-            )['_source']
+            # 원본 기사를 가져온다.
+            doc = self.get_news(elastic=elastic['news'], doc_id=doc_id)
+            if len(doc) == 0:
+                continue
 
             url_info = self.get_query(doc['url'])
             doc.update(url_info)
@@ -171,7 +151,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 news=news,
                 date=date,
                 doc_id=doc_id,
-                elastic_utils=elastic_reply,
+                elastic_utils=elastic['reply'],
             )
 
         return
@@ -209,13 +189,14 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         return False
 
-    def trace_reply_list(self, url_frame, job, date):
-        """특정 날짜의 뉴스 목록을 따라간다."""
+    @staticmethod
+    def open_elasticsearch(date, job, url_frame):
+        """elasticsearch 연결"""
         index_tag = None
         if date is not None:
             index_tag = date.year
 
-        elastic_utils = ElasticSearchUtils(
+        elastic_reply = ElasticSearchUtils(
             tag=index_tag,
             host=job['host'],
             index=job['index'],
@@ -224,6 +205,42 @@ class NaverNewsReplyCrawler(CrawlerBase):
             split_index=job['split_index'],
         )
 
+        elastic_news_list = ElasticSearchUtils(
+            tag=index_tag,
+            host=job['host'],
+            index=url_frame['list_index'],
+            bulk_size=20,
+            http_auth=job['http_auth'],
+            split_index=job['split_index'],
+        )
+
+        return {
+            'reply': elastic_reply,
+            'news': elastic_news_list
+        }
+
+    @staticmethod
+    def get_news(elastic, doc_id):
+        """원문 기사를 가져온다."""
+        try:
+            return elastic.elastic.get(
+                id=doc_id,
+                index=elastic.index,
+                _source=['url', 'title', 'date'],
+                doc_type='_doc',
+            )['_source']
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '원문 기사 조회 에러',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+        return {}
+
+    def trace_reply_list(self, url_frame, date, elastic):
+        """특정 날짜의 뉴스 목록을 따라간다."""
         # url 저장 이력 조회
         doc_history = self.get_history(name='doc_history', default={})
 
@@ -252,6 +269,10 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 }
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
 
+                # 예외 처리
+                if news['url'][:2] == '//':
+                    news['url'] = '/kbo/' + news['url'][2:]
+
                 news['url'] = urljoin(url_frame['list'], news['url'])
 
                 doc_id = '{oid}-{aid}'.format(**news)
@@ -259,13 +280,18 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 # 중복 확인
                 if self.is_dup_reply(
                         news=news,
-                        index=elastic_utils.index,
+                        index=elastic['reply'].index,
                         doc_id=doc_id,
                         url_frame=url_frame,
                         doc_history=doc_history,
-                        elastic_utils=elastic_utils,
+                        elastic_utils=elastic['reply'],
                 ) is True:
                     continue
+
+                # 원본 기사를 가져온다.
+                doc = self.get_news(elastic=elastic['news'], doc_id=doc_id)
+                if len(doc) > 0:
+                    news.update(doc)
 
                 # 댓글 조회
                 news = self.get_reply(news=news, url_frame=url_frame)
@@ -275,7 +301,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                     news=news,
                     date=date,
                     doc_id=doc_id,
-                    elastic_utils=elastic_utils,
+                    elastic_utils=elastic['reply'],
                 )
 
                 sleep(self.sleep_time)
@@ -351,14 +377,22 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         query['page'] += 1
 
+        callback = {}
         try:
             callback = re.sub(r'_callback\((.+)\);$', r'\g<1>', resp.text)
             callback = json.loads(callback)
 
             comment_list = callback['result']['commentList']
         except Exception as e:
-            print(e)
-            return [], query['total']
+            msg = {
+                'level': 'ERROR',
+                'message': '댓글 조회 에러',
+                'callback': callback,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+            return [], 0
 
         result = []
         for item in comment_list:

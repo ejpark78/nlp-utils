@@ -72,6 +72,8 @@ def init_arguments():
     # 설정파일
     parser.add_argument('-config', default=None, help='설정 파일 정보')
 
+    parser.add_argument('-update_category_only', action='store_true', default=False, help='category 정보만 업데이트')
+
     return parser.parse_args()
 
 
@@ -83,6 +85,7 @@ def main():
     if args.category == 'naver':
         if args.job_id.find('-reply') > 0:
             NaverNewsReplyCrawler(
+                config=args.config,
                 category=args.category,
                 job_id=args.job_id,
                 column='trace_list'
@@ -164,6 +167,7 @@ def main():
             category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
+            update_category_only=args.update_category_only,
         ).batch()
     else:
         WebNewsCrawler(
@@ -173,6 +177,7 @@ def main():
             category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
+            update_category_only=args.update_category_only,
         ).daemon()
 
     return
