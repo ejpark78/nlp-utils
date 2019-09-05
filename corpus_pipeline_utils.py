@@ -34,13 +34,13 @@ class CorpusPipelineUtils(object):
         return result
 
     @staticmethod
-    def call_corpus_pipeline(doc_list, target_index, url, domain, timeout):
+    def call_corpus_pipeline(doc_list, target_host, http_auth, target_index, url, domain, timeout):
         """ """
         post_data = {
             "elastic": {
-                "host": "https://corpus.ncsoft.com:9200",
+                "host": target_host,
+                "http_auth": http_auth,
                 "index": target_index,
-                "http_auth": "crawler:crawler2019",
                 "split_index": True
             },
             "module": [
@@ -67,13 +67,18 @@ class CorpusPipelineUtils(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-domain', default='sports', help='')
-        parser.add_argument('-year', default='2019', help='')
+        parser.add_argument('-source_host', default='https://nlp.ncsoft.com:9200', help='')
+        parser.add_argument('-target_host', default='https://corpus.ncsoft.com:9200', help='')
+
+        parser.add_argument('-source_index', default='crawler-naver-economy-2017', help='')
+        parser.add_argument('-target_index', default='corpus_process-naver-economy-2017', help='')
+        parser.add_argument('-http_auth', default='crawler:crawler2019', help='')
+
         parser.add_argument('-nlu_domain', default='baseball', help='')
-        parser.add_argument('-max_doc', default=50, type=int, help='')
-        parser.add_argument('-max_core', default=32, type=int, help='')
-        parser.add_argument('-timeout', default=120, type=int, help='')
-        parser.add_argument('-join', default=240, type=int, help='')
+        parser.add_argument('-max_doc', default=20, type=int, help='')
+        parser.add_argument('-max_core', default=24, type=int, help='')
+        parser.add_argument('-timeout', default=320, type=int, help='')
+        parser.add_argument('-join', default=320, type=int, help='')
 
         return parser.parse_args()
 
@@ -81,25 +86,19 @@ class CorpusPipelineUtils(object):
         """ """
         args = self.init_arguments()
 
-        host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
+        print(args.source_host, '->', args.target_host)
+        print(args.source_index, '->', args.target_index)
 
         corpus_pipeline_url = 'http://172.20.78.250:20000/v1.0/batch'
 
-        domain = args.domain
-        year = args.year
-
-        nlu_domain = args.nlu_domain
-
-        source_index = 'crawler-naver-{}-{}'.format(domain, year)
-        target_index = 'corpus_process-naver-{}-{}'.format(domain, year)
-
-        elastic_utils = ElasticSearchUtils(host=host, index=source_index)
+        elastic_source = ElasticSearchUtils(host=args.source_host, http_auth=args.http_auth, index=args.source_index)
+        elastic_target = ElasticSearchUtils(host=args.target_host, http_auth=args.http_auth, index=args.target_index)
 
         # crawler-naver-economy-2019 문서 목록 덤프
-        source_ids = elastic_utils.get_id_list(index=source_index)
+        source_ids = elastic_source.get_id_list(index=args.source_index)
 
         # corpus_process-naver-economy-2019 문서 목록 덤프
-        target_ids = elastic_utils.get_id_list(index=target_index)
+        target_ids = elastic_target.get_id_list(index=args.target_index)
 
         # missing docs 목록 생성
         missing_ids = self.get_missing_ids(
@@ -130,16 +129,24 @@ class CorpusPipelineUtils(object):
                 en = size + 1
 
             doc_list = []
-            elastic_utils.get_by_ids(
+            elastic_source.get_by_ids(
                 id_list=missing_ids[st:en],
-                index=source_index,
+                index=args.source_index,
                 source=None,
                 result=doc_list,
             )
 
             proc = Process(
                 target=self.call_corpus_pipeline,
-                args=(doc_list, target_index, corpus_pipeline_url, nlu_domain, args.timeout, )
+                args=(
+                    doc_list,
+                    args.target_host,
+                    args.http_auth,
+                    args.target_index,
+                    corpus_pipeline_url,
+                    args.nlu_domain,
+                    args.timeout,
+                )
             )
             proc_list.append(proc)
             proc.start()
