@@ -158,10 +158,12 @@ class WebNewsCrawler(CrawlerBase):
             msg = {
                 'level': 'INFO',
                 'message': '뉴스 목록 크롤링',
-                'date': dt.strftime('%Y-%m-%d'),
                 'url': url,
                 'query': q,
             }
+            if dt is not None:
+                msg['date'] = dt.strftime('%Y-%m-%d')
+
             logger.info(msg=LogMsg(msg))
 
             if 'category' in url:
@@ -173,9 +175,12 @@ class WebNewsCrawler(CrawlerBase):
                 msg = {
                     'level': 'ERROR',
                     'message': '뉴스 목록 조회 에러',
-                    'date': dt.strftime('%Y-%m-%d'),
                     'url': url,
                 }
+
+                if dt is not None:
+                    msg['date'] = dt.strftime('%Y-%m-%d')
+
                 logger.error(msg=LogMsg(msg))
                 continue
 
@@ -194,10 +199,13 @@ class WebNewsCrawler(CrawlerBase):
                 msg = {
                     'level': 'MESSAGE',
                     'message': '조기 종료',
-                    'date': dt.strftime('%Y-%m-%d'),
                     'url': url['url'],
                     'category': job['category'],
                 }
+
+                if dt is not None:
+                    msg['date'] = dt.strftime('%Y-%m-%d')
+
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
                 break
 
@@ -209,10 +217,13 @@ class WebNewsCrawler(CrawlerBase):
             msg = {
                 'level': 'MESSAGE',
                 'message': '기사 목록 조회',
-                'date': dt.strftime('%Y-%m-%d'),
                 'category': job['category'],
                 'url': url['url'],
             }
+
+            if dt is not None:
+                msg['date'] = dt.strftime('%Y-%m-%d')
+
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             sleep(self.sleep_time)
@@ -259,10 +270,13 @@ class WebNewsCrawler(CrawlerBase):
         msg = {
             'level': 'MESSAGE',
             'message': '카테고리 업데이트',
-            'date': date.strftime('%Y-%m-%d'),
             'length': len(trace_list),
             'category': job['category'],
         }
+
+        if date is not None:
+            msg['date'] = date.strftime('%Y-%m-%d')
+
         logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         return False

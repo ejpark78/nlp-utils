@@ -47,8 +47,8 @@ class CorpusPipelineUtils(object):
                 {
                     "name": "nlu_wrapper",
                     "option": {
-                        "domain": domain,
                         "style": "literary",
+                        "domain": domain,
                         "module": ["SBD_crf", "POS", "NER"]
                     },
                     "column": "content",
@@ -121,7 +121,7 @@ class CorpusPipelineUtils(object):
         count = 0
         max_core = args.max_core
 
-        proc_list = []
+        pool = Pool(processes=max_core)
 
         for i in trange(0, size, step, dynamic_ncols=True):
             st, en = (i, i + step - 1)
@@ -130,14 +130,14 @@ class CorpusPipelineUtils(object):
 
             doc_list = []
             elastic_source.get_by_ids(
-                id_list=missing_ids[st:en],
                 index=args.source_index,
                 source=None,
                 result=doc_list,
+                id_list=missing_ids[st:en],
             )
 
-            proc = Process(
-                target=self.call_corpus_pipeline,
+            pool.apply_async(
+                self.call_corpus_pipeline,
                 args=(
                     doc_list,
                     args.target_host,
@@ -148,15 +148,18 @@ class CorpusPipelineUtils(object):
                     args.timeout,
                 )
             )
-            proc_list.append(proc)
-            proc.start()
 
             count += 1
-            if count > max_core:
+            if count >= max_core:
                 count = 0
 
-                for proc in proc_list:
-                    proc.join(args.join)
+                pool.close()
+                pool.join()
+
+                pool = Pool(processes=max_core)
+
+        pool.close()
+        pool.join()
 
         return
 
