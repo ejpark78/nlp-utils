@@ -234,13 +234,13 @@ class ElasticSearchUtils(object):
             # 날짜 변환
             document = self.convert_datetime(document=document)
 
-            document_id = datetime.now(self.timezone).isoformat()
-
             if '_id' in document:
                 document_id = document['_id']
                 del document['_id']
             elif 'document_id' in document:
                 document_id = document['document_id']
+            else:
+                document_id = datetime.now(self.timezone).isoformat()
 
             document['document_id'] = document_id
 
@@ -470,7 +470,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_id_list(self, index, use_cache=False, size=5000, query_cond=None):
+    def get_id_list(self, index, size=5000, query_cond=None):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         from tqdm.autonotebook import tqdm
 
@@ -519,7 +519,11 @@ class ElasticSearchUtils(object):
 
             for item in hits:
                 document_id = item['_id']
-                result[document_id] = document_id
+
+                if len(item['_source']) == 0:
+                    result[document_id] = document_id
+                else:
+                    result[document_id] = item['_source']
 
             # 종료 조건
             if count < size:

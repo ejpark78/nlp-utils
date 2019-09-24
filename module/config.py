@@ -30,9 +30,8 @@ class Config(object):
                               'Version/11.0 Mobile/15A372 Safari/604.1'
             },
             'desktop': {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
-                              'AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/75.0.3770.100 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/77.0.3865.90 Safari/537.36'
             }
         }
 

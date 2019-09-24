@@ -19,3 +19,4 @@ botocore
 queues
 pika
 pytz
+pandas
