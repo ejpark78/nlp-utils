@@ -34,7 +34,7 @@ spec:
         - name: ELASTIC_HOST
           value: https://corpus.ncsoft.com:9200
         - name: NLU_WRAPPER_URL
-          value: http://172.20.78.250:30000
+          value: http://172.20.78.250:30000/
         - name: USE_CONSUMER
           value: "1"
     - name: economy

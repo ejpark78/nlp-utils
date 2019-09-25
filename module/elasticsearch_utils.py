@@ -16,6 +16,7 @@ import pytz
 import urllib3
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
+from tqdm.autonotebook import tqdm
 
 from module.logging_format import LogMessage as LogMsg
 
@@ -376,6 +377,8 @@ class ElasticSearchUtils(object):
         sum_count = 0
         scroll_id = ''
 
+        p_bar = None
+
         result = []
         while count > 0:
             hits, scroll_id, count, total = self.scroll(
@@ -384,6 +387,14 @@ class ElasticSearchUtils(object):
                 query=query,
                 scroll_id=scroll_id,
             )
+
+            if p_bar is None:
+                p_bar = tqdm(
+                    total=total,
+                    desc='dump doc id list {index}'.format(index=index),
+                    dynamic_ncols=True
+                )
+            p_bar.update(count)
 
             sum_count += count
 
@@ -472,8 +483,6 @@ class ElasticSearchUtils(object):
 
     def get_id_list(self, index, size=5000, query_cond=None):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
-        from tqdm.autonotebook import tqdm
-
         result = {}
         if self.elastic.indices.exists(index) is False:
             return result

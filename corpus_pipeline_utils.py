@@ -49,7 +49,7 @@ class CorpusPipelineUtils(object):
                     "option": {
                         "style": "literary",
                         "domain": domain,
-                        "module": ["SBD_crf", "POS", "NER"]
+                        "module": ["SBD_crf", "POS", "NER", "DP", "TIME_python"]
                     },
                     "column": "content",
                     "result": "nlu_wrapper"
@@ -58,7 +58,9 @@ class CorpusPipelineUtils(object):
             "document": doc_list
         }
 
-        return requests.post(url=url, json=post_data, timeout=timeout)
+        resp = requests.post(url=url, json=post_data, timeout=timeout)
+
+        return resp
 
     @staticmethod
     def init_arguments():
@@ -95,9 +97,23 @@ class CorpusPipelineUtils(object):
         elastic_target = ElasticSearchUtils(host=args.target_host, http_auth=args.http_auth, index=args.target_index)
 
         # crawler-naver-economy-2019 문서 목록 덤프
-        source_ids = elastic_source.get_id_list(index=args.source_index)
+        source_query = {
+            '_source': '',
+            "query": {
+                "bool": {
+                    "must": {
+                        "match": {
+                            "category": "야구"
+                        }
+                    }
+                }
+            }
+        }
+
+        source_ids = elastic_source.get_id_list(index=args.source_index, query_cond=source_query)
 
         # corpus_process-naver-economy-2019 문서 목록 덤프
+        target_ids = {}
         target_ids = elastic_target.get_id_list(index=args.target_index)
 
         # missing docs 목록 생성
@@ -135,6 +151,17 @@ class CorpusPipelineUtils(object):
                 result=doc_list,
                 id_list=missing_ids[st:en],
             )
+
+            # debug
+            # self.call_corpus_pipeline(
+            #     doc_list,
+            #     args.target_host,
+            #     args.http_auth,
+            #     args.target_index,
+            #     corpus_pipeline_url,
+            #     args.nlu_domain,
+            #     args.timeout,
+            # )
 
             pool.apply_async(
                 self.call_corpus_pipeline,

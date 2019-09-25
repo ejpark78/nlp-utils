@@ -5,12 +5,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import bz2
 import json
 import logging
 from datetime import datetime
 from os.path import isfile
 from time import sleep
 
+import pandas as pd
 import pytz
 import requests
 import urllib3
@@ -30,24 +32,32 @@ class NaverKBOGameCenterUtils(object):
 
     def __init__(self):
         """ """
-        host = 'https://corpus.ncsoft.com:9200'
-        index = {
+        self.host = 'https://corpus.ncsoft.com:9200'
+        self.index = {
             'comments': 'crawler-naver-kbo_game_center_comments',
             'game_info': 'crawler-naver-kbo_game_center_game_info',
             'relay_text': 'crawler-naver-kbo_game_center_relay_text',
         }
 
-        self.es = {
-            'comments': ElasticSearchUtils(host=host, index=index['comments'], split_index=True, tag='2019'),
-            'game_info': ElasticSearchUtils(host=host, index=index['game_info'], split_index=False),
-            'relay_text': ElasticSearchUtils(host=host, index=index['relay_text'], split_index=False),
-        }
-
+        self.timeout = 30
         self.sleep_time = 2
 
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/77.0.3865.90 Safari/537.36'
+        }
+
+        self.es = {}
+        self.open_elasticsearch()
+
+        return
+
+    def open_elasticsearch(self):
+        """ 엘라스틱서치에 연결한다."""
+        self.es = {
+            'comments': ElasticSearchUtils(host=self.host, index=self.index['comments'], split_index=True, tag='2019'),
+            'game_info': ElasticSearchUtils(host=self.host, index=self.index['game_info'], split_index=False),
+            'relay_text': ElasticSearchUtils(host=self.host, index=self.index['relay_text'], split_index=False),
         }
 
         return
@@ -61,7 +71,7 @@ class NaverKBOGameCenterUtils(object):
         }
         headers.update(self.headers)
 
-        result = requests.get(url, headers=headers).json()
+        result = requests.get(url, headers=headers, timeout=self.timeout).json()
 
         # 저장
         self.save_game_info(game_list=result['games'])
@@ -78,7 +88,7 @@ class NaverKBOGameCenterUtils(object):
         headers.update(self.headers)
 
         try:
-            return requests.get(url, headers=headers).json()
+            return requests.get(url, headers=headers, timeout=self.timeout).json()
         except Exception as e:
             print(e)
 
@@ -99,7 +109,7 @@ class NaverKBOGameCenterUtils(object):
         }
         headers.update(self.headers)
 
-        resp = requests.get(url, headers=headers)
+        resp = requests.get(url, headers=headers, timeout=self.timeout)
 
         content = resp.content
 
@@ -108,6 +118,7 @@ class NaverKBOGameCenterUtils(object):
                 content = content.decode('utf-8')
 
             content = content.replace(r"\'", r"\\'")
+            content = content.replace(r"\>", r'>')
             content = content.replace(u'\\x3C', ' ')
 
             return json.loads(content)
@@ -377,11 +388,8 @@ class NaverKBOGameCenterUtils(object):
 
         return
 
-    def exports(self):
-        """ 코퍼스를 덤프한다. """
-        import pandas as pd
-
-        # 게임 정보
+    def exports_game_info(self):
+        """ 게임 정보를 덤프한다. """
         game_info = self.es['game_info'].dump()
 
         game_info_df = pd.DataFrame(game_info)
@@ -389,26 +397,97 @@ class NaverKBOGameCenterUtils(object):
         game_info_df['aScore'] = game_info_df['score'].apply(lambda x: x['aScore'])
         game_info_df['hScore'] = game_info_df['score'].apply(lambda x: x['hScore'])
 
-        game_info_df.drop(columns='score', inplace=True)
+        game_info_df.drop(columns=['score', 'baseInfo'], inplace=True)
 
-        game_info_df.to_excel('naver-game-center-game_info-kbo.xlsx', index=False)
+        return game_info_df.fillna('')
 
-        # 댓글
-        comments = self.es['comments'].dump()
-
-        comments_df = pd.DataFrame(comments)
-
-        comments_df.to_excel('naver-game-center-comments.xlsx', index=False)
-
+    def exports_relay_text(self):
+        """ 문자 중계를 덤프한다. """
         # 문자 중계
         relay_text = self.es['relay_text'].dump()
 
         data_list = [k for x in relay_text for v in x['relayTexts'].values() for k in v if isinstance(k, dict)]
-        relay_text_df = pd.DataFrame(data_list)
 
-        relay_text_df.fillna('', inplace=True)
+        return {
+            'df': pd.DataFrame(data_list).fillna(''),
+            'raw': relay_text,
+        }
 
+    def exports_comments(self, game_id_list=None, data_path=None):
+        """ 응원글을 덤프한다. """
+        # 전체 데이터 덤프
+        if game_id_list is None:
+            comments = self.es['comments'].dump()
+
+            return pd.DataFrame(comments)
+
+        count = []
+        result = []
+        for game_id in tqdm(game_id_list):
+            query = {
+                'query': {
+                    'bool': {
+                        'must': [
+                            {
+                                'match': {
+                                    'object_id': game_id
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+
+            data = self.es['comments'].dump(
+                query=query,
+            )
+
+            count.append({
+                'game_id': data[0]['object_id'],
+                'date': data[0]['game_date'],
+                'home_team': data[0]['home_team'],
+                'away_team': data[0]['away_team'],
+                'count': len(data),
+            })
+
+            # 결과 저장
+            if data_path is not None:
+                with bz2.open(data_path + '/' + game_id + '.json.bz2', 'wb') as fp:
+                    line = json.dumps(data, ensure_ascii=False, indent=4)
+                    fp.write(line.encode('utf-8'))
+            else:
+                result.append(data)
+
+        count_df = pd.DataFrame(count)
+
+        return {
+            'sum': count_df.groupby(by=['home_team', 'away_team']).sum(),
+            'count': count_df,
+            'result': result,
+        }
+
+    @staticmethod
+    def to_json(df, filename):
+        """파일로 저장한다."""
+        df.reset_index().to_json(
+            filename,
+            force_ascii=False,
+            compression='bz2',
+            orient='records',
+            lines=True,
+        )
         return
+
+    @staticmethod
+    def read_json(filename):
+        """파일로 저장한다."""
+        df = pd.read_json(
+            filename,
+            compression='bz2',
+            orient='records',
+            lines=True,
+        )
+        return df
 
     @staticmethod
     def init_arguments():
@@ -420,7 +499,6 @@ class NaverKBOGameCenterUtils(object):
         parser.add_argument('-trace_comments', action='store_true', default=False, help='응원글 조회')
         parser.add_argument('-trace_relay_texts', action='store_true', default=False, help='문자 중계')
         parser.add_argument('-get_game_info', action='store_true', default=False, help='게임 정보')
-        parser.add_argument('-exports', action='store_true', default=False, help='코퍼스 덤프')
         parser.add_argument('-set_state', action='store_true', default=False, help='게임 상태 변경')
 
         parser.add_argument('-date', default=None, help='게임 날짜')
@@ -450,10 +528,6 @@ def main():
 
     if args.get_game_info:
         utils.get_game_info(game_date=args.date)
-        return
-
-    if args.exports:
-        utils.exports()
         return
 
     if args.set_state:
