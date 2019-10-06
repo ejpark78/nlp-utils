@@ -9,18 +9,23 @@ import bz2
 import json
 import logging
 from datetime import datetime
-from os.path import isfile
-from time import sleep
+from os import makedirs
+from os.path import isfile, dirname, isdir
 
 import pandas as pd
 import pytz
 import requests
 import urllib3
+from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta
+from dateutil.rrule import rrule, DAILY
+from time import sleep
 from tqdm.autonotebook import tqdm
 
 from module.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 MESSAGE = 25
 
@@ -71,7 +76,11 @@ class NaverKBOGameCenterUtils(object):
         }
         headers.update(self.headers)
 
-        result = requests.get(url, headers=headers, timeout=self.timeout).json()
+        resp = requests.get(url, headers=headers, timeout=self.timeout)
+        if resp.content == b'':
+            return None
+
+        result = resp.json()
 
         # 저장
         self.save_game_info(game_list=result['games'])
@@ -295,6 +304,9 @@ class NaverKBOGameCenterUtils(object):
             print(game_date)
 
             game_info = self.get_game_info(game_date=game_date, game_id=game_id)
+            if game_info is None:
+                continue
+
             game_date = game_info['dates']['prevGameDate']
 
             game_id = game_info['games'][0]['gameId']
@@ -329,20 +341,25 @@ class NaverKBOGameCenterUtils(object):
         """ 응원글 전체를 조회한다. """
         game_list = self.get_game_list()
 
-        for game_id in tqdm(
-                sorted(game_list.keys(), reverse=True),
-                desc='{:,}'.format(len(game_list))
-        ):
-            if game_id[:2] != '20':
-                continue
-
-            page = 1
-
+        g_date_list = {}
+        for game_id in game_list:
             game_info = game_list[game_id]
+
             if 'state' in game_info:
                 if game_info['state'] == 'done':
                     continue
 
+            k = '{}-{}'.format(game_info['gdate'], game_id)
+            g_date_list[k] = game_info
+
+        for d_id in tqdm(
+                sorted(g_date_list.keys(), reverse=True),
+                desc='{:,}'.format(len(g_date_list))
+        ):
+            page = 1
+
+            game_info = g_date_list[d_id]
+            if 'state' in game_info:
                 page = int(game_info['state'])
 
             if 'cancelFlag' in game_info and game_info['cancelFlag'] != 'N':
@@ -353,13 +370,13 @@ class NaverKBOGameCenterUtils(object):
 
             self.trace_comment_list(
                 page=page,
-                game_id=game_id,
+                game_id=game_info['gameId'],
                 a_code=game_info['aCode'],
                 h_code=game_info['hCode'],
                 g_date=str(game_info['gdate']),
             )
 
-            self.set_state(game_id=game_id, state='done')
+            self.set_state(game_id=game_info['gameId'], state='done')
 
         return
 
@@ -406,12 +423,14 @@ class NaverKBOGameCenterUtils(object):
         # 문자 중계
         relay_text = self.es['relay_text'].dump()
 
-        data_list = [k for x in relay_text for v in x['relayTexts'].values() for k in v if isinstance(k, dict)]
+        # data_list = [k for x in relay_text for v in x['relayTexts'].values() for k in v if isinstance(k, dict)]
 
-        return {
-            'df': pd.DataFrame(data_list).fillna(''),
-            'raw': relay_text,
-        }
+        # return {
+        #     'df': pd.DataFrame(data_list).fillna(''),
+        #     'raw': relay_text,
+        # }
+
+        return relay_text
 
     def exports_comments(self, game_id_list=None, data_path=None):
         """ 응원글을 덤프한다. """
@@ -424,6 +443,16 @@ class NaverKBOGameCenterUtils(object):
         count = []
         result = []
         for game_id in tqdm(game_id_list):
+            # 파일 이름
+            filename = '{}/{}-{}/{}.json.bz2'.format(data_path, game_id[:4], game_id[4:6], game_id)
+            if data_path is not None:
+                if isfile(filename) is True:
+                    continue
+
+                # 경로 생성
+                if isdir(dirname(filename)) is False:
+                    makedirs(dirname(filename))
+
             query = {
                 'query': {
                     'bool': {
@@ -452,7 +481,7 @@ class NaverKBOGameCenterUtils(object):
 
             # 결과 저장
             if data_path is not None:
-                with bz2.open(data_path + '/' + game_id + '.json.bz2', 'wb') as fp:
+                with bz2.open(filename, 'wb') as fp:
                     line = json.dumps(data, ensure_ascii=False, indent=4)
                     fp.write(line.encode('utf-8'))
             else:
@@ -465,6 +494,30 @@ class NaverKBOGameCenterUtils(object):
             'count': count_df,
             'result': result,
         }
+
+    def get_yesterday_info(self, date_range=None):
+        """ 어제 경기 정보와 문자 중계를 조회한다. """
+        date_list = []
+        if date_range is None:
+            timezone = pytz.timezone('Asia/Seoul')
+            game_date = datetime.now(timezone) + relativedelta(days=-1)
+
+            date_list.append(game_date)
+        else:
+            dt_start, dt_end = date_range.split('~', maxsplit=1)
+
+            date_list = list(rrule(DAILY, dtstart=parse_date(dt_start), until=parse_date(dt_end)))
+
+        for dt in date_list:
+            game_date = dt.strftime('%Y%m%d')
+            print('game_date: ', game_date)
+
+            self.get_game_info(game_date=game_date)
+            sleep(self.sleep_time)
+
+        self.trace_relay_texts()
+
+        return
 
     @staticmethod
     def to_json(df, filename):

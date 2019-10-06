@@ -21,7 +21,6 @@ from tqdm.autonotebook import tqdm
 from module.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-urllib3.disable_warnings(UserWarning)
 
 logger = logging.getLogger()
 
@@ -131,6 +130,7 @@ class ElasticSearchUtils(object):
 
     @staticmethod
     def get_ssl_verify_mode():
+        """ssl 모드 설정을 반환한다."""
         # https://github.com/elastic/elasticsearch-py/issues/712
         ssl_context = create_ssl_context()
 
@@ -368,7 +368,7 @@ class ElasticSearchUtils(object):
 
         return True
 
-    def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True):
+    def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True, stdout=False):
         """문서를 덤프 받는다."""
         if index is None:
             index = self.index
@@ -408,6 +408,10 @@ class ElasticSearchUtils(object):
             logger.info(msg=LogMsg(log_msg))
 
             for item in hits:
+                if stdout is True:
+                    str_doc = json.dumps(item['_source'], ensure_ascii=False)
+                    print(str_doc, flush=True)
+
                 if only_source is True:
                     result.append(item['_source'])
                 else:
@@ -769,7 +773,7 @@ class ElasticSearchUtils(object):
 
         parser = argparse.ArgumentParser(description='')
 
-        parser.add_argument('-dump_data', action='store_true', default=False, help='')
+        parser.add_argument('-export', action='store_true', default=False, help='')
 
         parser.add_argument('-host', default='http://corpus.ncsoft.com:9200', help='elastic search 주소')
         parser.add_argument('-index', default=None, help='인덱스명')
@@ -779,8 +783,6 @@ class ElasticSearchUtils(object):
 
 def main():
     """메인"""
-    import json
-
     args = ElasticSearchUtils.init_arguments()
 
     utils = ElasticSearchUtils(
@@ -789,11 +791,8 @@ def main():
         http_auth='crawler:crawler2019'
     )
 
-    if args.dump_data:
-        doc_list = utils.dump(args.index)
-        for doc in doc_list:
-            document = json.dumps(doc, ensure_ascii=False, sort_keys=True)
-            print(document, flush=True)
+    if args.export:
+        utils.dump(index=args.index, stdout=True)
 
     return
 

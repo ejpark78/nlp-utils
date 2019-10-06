@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from multiprocessing import Pool, Process
+from multiprocessing import Pool
 from pprint import pprint
 
 import requests
