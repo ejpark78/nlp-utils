@@ -20,3 +20,6 @@ queues
 pika
 pytz
 pandas
+webdav
+pycurl
+jwt

@@ -432,19 +432,22 @@ class NaverKBOGameCenterUtils(object):
 
         return relay_text
 
-    def exports_comments(self, game_id_list=None, data_path=None):
+    def exports_comments(self, done_df=None, data_path=None):
         """ 응원글을 덤프한다. """
         # 전체 데이터 덤프
-        if game_id_list is None:
+        if done_df is None:
             comments = self.es['comments'].dump()
 
             return pd.DataFrame(comments)
 
         count = []
         result = []
-        for game_id in tqdm(game_id_list):
+        for i, row in tqdm(done_df.iterrows(), total=len(done_df)):
+            game_id = row['gameId']
+            g_date = str(row['gdate'])
+
             # 파일 이름
-            filename = '{}/{}-{}/{}.json.bz2'.format(data_path, game_id[:4], game_id[4:6], game_id)
+            filename = '{}/{}-{}/{}.json.bz2'.format(data_path, g_date[:4], g_date[4:6], game_id)
             if data_path is not None:
                 if isfile(filename) is True:
                     continue
@@ -467,9 +470,18 @@ class NaverKBOGameCenterUtils(object):
                 }
             }
 
+            self.es['comments'].index = self.es['comments'].get_target_index(
+                tag=g_date[:4],
+                index=self.es['comments'].index,
+                split_index=True,
+            )
+
             data = self.es['comments'].dump(
                 query=query,
             )
+
+            if len(data) == 0:
+                continue
 
             count.append({
                 'game_id': data[0]['object_id'],
@@ -490,7 +502,7 @@ class NaverKBOGameCenterUtils(object):
         count_df = pd.DataFrame(count)
 
         return {
-            'sum': count_df.groupby(by=['home_team', 'away_team']).sum(),
+            # 'sum': count_df.groupby(by=['home_team', 'away_team']).sum(),
             'count': count_df,
             'result': result,
         }
