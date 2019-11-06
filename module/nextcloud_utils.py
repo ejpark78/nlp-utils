@@ -5,19 +5,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import logging
-import os
 import sys
+from os import getenv
 
-import pycurl
+import jwt
 import pytz
 import urllib3
 import webdav.client as dav_client
-from webdav.exceptions import NotConnection
-from webdav.urn import Urn
-from os import getenv
-import jwt
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
