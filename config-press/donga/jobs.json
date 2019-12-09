@@ -12,8 +12,8 @@
       "split_index": true,
       "sleep": 2,
       "step": 20,
-      "end": 2001,
-      "start": 241,
+      "end": 3000,
+      "start": 1,
       "list": [
         {
           "url_frame": "http://www.donga.com/news/List/Society/Weather?prod=news&ymd=&m=&p={page}",
