@@ -22,4 +22,4 @@ pytz
 pandas
 webdav
 pycurl
-jwt
+pyjwt

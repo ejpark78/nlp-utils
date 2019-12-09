@@ -58,12 +58,12 @@ class Config(object):
             category=job_category,
             status_dir=status_dir,
         )
-        self.status = self.open_config(filename=self.status_filename)
+        self.status = self.open_config(filename=self.status_filename, job_info=self.job_info)
 
         return
 
     @staticmethod
-    def open_config(filename, create=False):
+    def open_config(filename, create=False, job_info=None):
         """설정 파일을 읽는다."""
         # 컨테이너 안에서 설정
         today = datetime.now(pytz.timezone('Asia/Seoul'))
@@ -80,6 +80,15 @@ class Config(object):
                 'step': 1
             }
         }
+
+        if job_info is not None:
+            trace_list = job_info['trace_list'][0]
+
+            for k in default['trace_list']:
+                if k not in trace_list:
+                    continue
+
+                default['trace_list'][k] = trace_list[k]
 
         # 없을 경우 파일 생성
         if create is True and isfile(filename) is False:

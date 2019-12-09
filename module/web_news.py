@@ -263,6 +263,8 @@ class WebNewsCrawler(CrawlerBase):
             # 카테고리 업데이트
             item['category'] = job['category']
 
+            item['_id'] = self.get_doc_id(url=item['url'], job=job, item=item)
+
             elastic_utils.save_document(document=item, delete=False)
 
         elastic_utils.flush()
