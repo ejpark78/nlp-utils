@@ -6,6 +6,7 @@ lxml
 numpy
 pymongo
 requests
+requests[socks]
 requests[security]
 selenium
 html5lib
@@ -23,3 +24,4 @@ pandas
 webdav
 pycurl
 pyjwt
+PySocks

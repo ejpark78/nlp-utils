@@ -417,7 +417,7 @@ class ElasticSearchUtils(object):
                 else:
                     result.append(item)
 
-            if limit > 0 and sum_count < limit:
+            if 0 < limit < sum_count:
                 break
 
             # 종료 조건
