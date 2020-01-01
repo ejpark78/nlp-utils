@@ -36,6 +36,11 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3-pip \
         curl \
         tzdata \
+        chromium-chromedriver \
+        chromium-browser \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        build-essential \
     && apt autoremove -yq \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \

@@ -5,20 +5,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import logging
-import os
+from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
 from urllib.parse import urlparse, parse_qs
-from datetime import datetime
 
 import pytz
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
-from selenium import webdriver
 from tqdm import tqdm
 
+from module.bbs.selenium_utils import SeleniumUtils
 from module.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
@@ -31,7 +29,7 @@ logging.basicConfig(
 )
 
 
-class SeleniumCrawler(object):
+class SeleniumCrawler(SeleniumUtils):
     """웹 뉴스 크롤러 베이스"""
 
     def __init__(self):
@@ -40,9 +38,6 @@ class SeleniumCrawler(object):
 
         self.driver = None
 
-        path = os.path.dirname(os.path.realpath(__file__))
-        self.driver_path = '{pwd}/../chromedriver'.format(pwd=path)
-
         host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
         index = 'crawler-bbs-naver'
 
@@ -50,57 +45,7 @@ class SeleniumCrawler(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-    def open_driver(self):
-        """브라우저를 실행한다."""
-        options = webdriver.ChromeOptions()
-
-        options.add_argument('headless')
-        options.add_argument('window-size=1000x800')
-        options.add_argument("disable-gpu")
-
-        options.add_argument('--dns-prefetch-disable')
-        options.add_argument('disable-infobars')
-        options.add_argument('user-data-dir=selenium-data')
-
-        options.add_experimental_option('prefs', {
-            'disk-cache-size': 4096,
-            'profile.managed_default_content_settings.images': 2,
-        })
-
-        return webdriver.Chrome(self.driver_path, chrome_options=options)
-
-    def scroll(self, count):
-        """스크롤한다."""
-        from selenium.webdriver.support.ui import WebDriverWait
-
-        def check_height(prev_height):
-            """현재 위치를 확인한다."""
-            h = self.driver.execute_script("return document.body.scrollHeight")
-            return h != prev_height
-
-        scroll_time = 5
-        last_height = -1
-
-        for _ in range(count):
-            try:
-                height = self.driver.execute_script("return document.body.scrollHeight")
-                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                self.driver.implicitly_wait(5)
-
-                WebDriverWait(self.driver, scroll_time, 0.1).until(lambda x: check_height(height))
-            except Exception as e:
-                print('scroll error: ', e)
-                break
-
-            if last_height == height:
-                return True
-
-            last_height = height
-            sleep(5)
-
-        return False
-
-    def save_list(self, page_list, cafe_name):
+    def save_list(self, page_list, cafe_name, blog_id):
         """추출한 정보를 저장한다."""
         for doc in page_list:
             url = self.parse_url(url=doc['url'])
@@ -110,6 +55,7 @@ class SeleniumCrawler(object):
                 doc['_id'] = '{blogId}-{logNo}'.format(**url)
 
             doc['blog_name'] = cafe_name
+            doc['blog_id'] = blog_id
             doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
             self.elastic.save_document(document=doc, delete=False)
@@ -149,7 +95,6 @@ class SeleniumCrawler(object):
             self.driver.execute_script(script)
         except Exception as e:
             print(e, flush=True)
-            return None
 
         self.driver.implicitly_wait(10)
 
@@ -168,28 +113,14 @@ class SeleniumCrawler(object):
 
             post['title'] = ''.join([v.get_text().strip() for v in box.select('div.area_text strong.title.ell')])
 
-            post['replay_count'] = ''.join([v.get_text().strip() for v in box.select('div.meta_foot span.reply')]).replace('댓글', '').strip()
+            post['replay_count'] = ''.join(
+                [v.get_text().strip() for v in box.select('div.meta_foot span.reply')]).replace('댓글', '').strip()
 
             post['url'] = urljoin(url, [v['href'] for v in box.select('a.link') if v.has_attr('href')][0])
 
             result.append(post)
 
         return result
-
-    @staticmethod
-    def replace_tag(html_tag, tag_list, replacement='', attribute=None):
-        """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ... """
-        if html_tag is None:
-            return False
-
-        for tag_name in tag_list:
-            for tag in html_tag.find_all(tag_name, attrs=attribute):
-                if replacement == '':
-                    tag.extract()
-                else:
-                    tag.replace_with(replacement)
-
-        return True
 
     def get_contents(self, item):
         """컨텐츠 하나를 조회한다."""
@@ -239,11 +170,11 @@ class SeleniumCrawler(object):
                             'blog_name': bbs_info['name']
                         }
                     },
-                    # 'must_not': {
-                    #     'exists': {
-                    #         'field': 'html_content'
-                    #     }
-                    # }
+                    'must_not': {
+                        'exists': {
+                            'field': 'html_content'
+                        }
+                    }
                 }
             }
         }
@@ -262,12 +193,9 @@ class SeleniumCrawler(object):
             self.save_contents(doc=item, cafe_name=bbs_info['name'])
             sleep(5)
 
-        self.driver.quit()
-        self.driver = None
-
         return
 
-    def get_contents_list(self, bbs_info, max_iter=2):
+    def get_contents_list(self, bbs_info, max_iter=2, continue_list=False):
         """하나의 계정을 모두 읽어드린다."""
         if self.driver is None:
             self.driver = self.open_driver()
@@ -275,12 +203,21 @@ class SeleniumCrawler(object):
         self.driver.get(bbs_info['url'])
         self.driver.implicitly_wait(10)
 
+        self.wait(css='div.item')
+
+        btn = self.driver.find_element_by_css_selector('button.btn_list')
+        if btn is not None:
+            btn.click()
+            self.driver.implicitly_wait(10)
+
         for _ in tqdm(range(max_iter)):
             self.scroll(count=2)
             self.driver.implicitly_wait(5)
 
+            html = self.driver.page_source
+
             try:
-                page_list = self.get_page_list(url=bbs_info['url'], html=self.driver.page_source)
+                page_list = self.get_page_list(url=bbs_info['url'], html=html)
             except Exception as e:
                 print('get page error: ', e)
                 continue
@@ -288,38 +225,12 @@ class SeleniumCrawler(object):
             if page_list is None or len(page_list) == 0:
                 break
 
-            self.save_list(page_list=page_list, cafe_name=bbs_info['name'])
+            self.save_list(page_list=page_list, cafe_name=bbs_info['name'], blog_id=bbs_info['blogId'])
 
             # 태그 삭제
             self.delete_post()
 
-        self.driver.quit()
-        self.driver = None
-
         return
-
-    @staticmethod
-    def read_config(filename='./naver.bbs.list.json'):
-        """설정파일을 읽어드린다."""
-        result = []
-
-        with open(filename, 'r') as fp:
-            buf = ''
-            for line in fp.readlines():
-                line = line.strip()
-                if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
-                    continue
-
-                buf += line
-                if line != '}':
-                    continue
-
-                doc = json.loads(buf)
-                buf = ''
-
-                result.append(doc)
-
-        return result
 
     @staticmethod
     def init_arguments():
@@ -332,8 +243,11 @@ class SeleniumCrawler(object):
 
         parser.add_argument('-list', action='store_true', default=False, help='')
         parser.add_argument('-contents', action='store_true', default=False, help='')
+        parser.add_argument('-c', action='store_true', default=False, help='')
 
-        parser.add_argument('-name', default=None, help='')
+        parser.add_argument('-use_head', action='store_false', default=True, help='')
+
+        parser.add_argument('-blogid', default=None, help='')
 
         return parser.parse_args()
 
@@ -347,20 +261,34 @@ def main():
 
     bbs_list = utils.read_config(filename=args.config)
 
+    if utils.driver is None:
+        utils.driver = utils.open_driver(use_headless=args.use_head)
+
     pbar = tqdm(bbs_list)
     for bbs in pbar:
-        if args.name is not None and args.name != bbs['name']:
+        if args.blogid is not None and args.blogid != bbs['blogId']:
             continue
+
+        bbs['page'] = 1
+        bbs['url'] = bbs['url'].format(**bbs)
 
         if args.list:
             pbar.set_description(bbs['name'] + ' list')
 
-            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'])
+            bbs['max_page'] = 10
+            if args.c is True:
+                bbs['max_page'] = 5000
+
+            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'], continue_list=args.c)
 
         if args.contents:
             pbar.set_description(bbs['name'] + ' contents')
 
             utils.trace_contents(bbs_info=bbs)
+
+    if utils.driver is not None:
+        utils.driver.quit()
+        utils.driver = None
 
     return
 

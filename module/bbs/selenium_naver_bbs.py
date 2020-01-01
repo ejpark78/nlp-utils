@@ -19,6 +19,7 @@ from dateutil.parser import parse as parse_date
 from selenium import webdriver
 from tqdm import tqdm
 
+from module.bbs.selenium_utils import SeleniumUtils
 from module.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
@@ -31,17 +32,12 @@ logging.basicConfig(
 )
 
 
-class SeleniumCrawler(object):
+class SeleniumCrawler(SeleniumUtils):
     """웹 뉴스 크롤러 베이스"""
 
     def __init__(self):
         """ 생성자 """
         super().__init__()
-
-        self.driver = None
-
-        path = os.path.dirname(os.path.realpath(__file__))
-        self.driver_path = '{pwd}/../chromedriver'.format(pwd=path)
 
         host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
         index = 'crawler-bbs-naver'
@@ -49,27 +45,6 @@ class SeleniumCrawler(object):
         self.elastic = ElasticSearchUtils(host=host, index=index, split_index=True)
 
         self.timezone = pytz.timezone('Asia/Seoul')
-
-    def open_driver(self, use_headless=True):
-        """브라우저를 실행한다."""
-        options = webdriver.ChromeOptions()
-
-        if use_headless is True:
-            options.add_argument('headless')
-
-        options.add_argument('window-size=1920x1080')
-        options.add_argument("disable-gpu")
-
-        options.add_argument('--dns-prefetch-disable')
-        options.add_argument('disable-infobars')
-        options.add_argument('user-data-dir=selenium-data')
-
-        options.add_experimental_option('prefs', {
-            'disk-cache-size': 4096,
-            'profile.managed_default_content_settings.images': 2,
-        })
-
-        return webdriver.Chrome(self.driver_path, chrome_options=options)
 
     def scroll(self, count, start_article):
         """스크롤한다."""
@@ -370,6 +345,9 @@ class SeleniumCrawler(object):
 
         pbar = tqdm(doc_list, desc=bbs_info['name'])
         for doc in pbar:
+            if 'html_content' in doc and doc['html_content'] == '':
+                continue
+
             url = self.parse_url(url=doc['url'])
 
             if 'clubid' not in url and 'articleid' not in url:
@@ -413,7 +391,7 @@ class SeleniumCrawler(object):
 
         return doc
 
-    def get_contents_list(self, bbs_info, latest=False, max_iter=2):
+    def get_contents_list(self, bbs_info, continue_list=False, max_iter=2):
         """하나의 계정을 모두 읽어드린다."""
         if self.driver is None:
             self.driver = self.open_driver()
@@ -422,7 +400,7 @@ class SeleniumCrawler(object):
         self.driver.implicitly_wait(10)
 
         start_article = None
-        if latest is False:
+        if continue_list is True:
             start_article = self.get_min_article_id(club_id=bbs_info['clubid'])
 
         pbar = tqdm(range(max_iter))
@@ -455,29 +433,6 @@ class SeleniumCrawler(object):
         return
 
     @staticmethod
-    def read_config(filename='./naver.bbs.list.json'):
-        """설정파일을 읽어드린다."""
-        result = []
-
-        with open(filename, 'r') as fp:
-            buf = ''
-            for line in fp.readlines():
-                line = line.strip()
-                if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
-                    continue
-
-                buf += line
-                if line != '}':
-                    continue
-
-                doc = json.loads(buf)
-                buf = ''
-
-                result.append(doc)
-
-        return result
-
-    @staticmethod
     def init_arguments():
         """ 옵션 설정 """
         import argparse
@@ -489,11 +444,10 @@ class SeleniumCrawler(object):
         parser.add_argument('-list', action='store_true', default=False, help='')
         parser.add_argument('-contents', action='store_true', default=False, help='')
         parser.add_argument('-rename_doc_id', action='store_true', default=False, help='')
-        parser.add_argument('-latest', action='store_true', default=False, help='')
+        parser.add_argument('-c', action='store_true', default=False, help='')
 
         parser.add_argument('-use_head', action='store_false', default=True, help='')
 
-        parser.add_argument('-name', default=None, help='')
         parser.add_argument('-clubid', default=None, help='', type=int)
 
         return parser.parse_args()
@@ -513,9 +467,6 @@ def main():
 
     pbar = tqdm(bbs_list)
     for bbs in pbar:
-        if args.name is not None and args.name != bbs['name']:
-            continue
-
         if args.clubid is not None and args.clubid != bbs['clubid']:
             continue
 
@@ -524,7 +475,11 @@ def main():
         if args.list:
             pbar.set_description(bbs['name'] + ' list')
 
-            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'], latest=args.latest)
+            bbs['max_page'] = 10
+            if args.c is True:
+                bbs['max_page'] = 5000
+
+            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'], continue_list=args.c)
 
         if args.contents:
             pbar.set_description('contents')

@@ -36,12 +36,15 @@ build:
 		--exclude=__pycache__ \
 		--exclude=build \
 		--exclude=data \
+		--exclude=down \
 		--exclude=notebook \
 		--exclude=wrap \
 		--exclude=venv \
 		--exclude=tmp \
 		--exclude=log \
 		--exclude=status \
+		--exclude=selenium-data \
+		--exclude=selenium-data2 \
 		--exclude=module/selenium-data \
 		--exclude=selenium-data \
 		.
