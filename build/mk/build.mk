@@ -43,10 +43,7 @@ build:
 		--exclude=tmp \
 		--exclude=log \
 		--exclude=status \
-		--exclude=selenium-data \
-		--exclude=selenium-data2 \
-		--exclude=module/selenium-data \
-		--exclude=selenium-data \
+		--exclude=cache \
 		.
 
 	cd build/

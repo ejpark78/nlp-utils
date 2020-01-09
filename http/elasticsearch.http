@@ -1,0 +1,698 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### inven
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+articlecode=170631&sortorder=date&act=list&out=json&replyidx=0
+
+###
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+{
+  "comeidx": 5019,
+  "articlecode": 170631,
+  "sortorder": "date",
+  "act": list,
+  "out": json,
+  "replynick": "",
+  "replyidx": 0,
+  "uploadurl": "",
+  "imageposition": ""
+}
+
+###
+
+
+###
+
+GET https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=sports&templateId=&pool=cbox2&lang=ko&country=KR&categoryId=&pageSize=10&indexSize=10&groupId=&listType=OBJECT&pageType=more&page=1&initialize=true&userType=&useAltSort=true&replyPageSize=20&moveTo=&sort=&objectId=news076,0003444177
+Referer: https://sports.news.naver.com/kbaseball/news/read.nhn?oid=076&aid=0003444177
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=6&date=20190718&isphoto=N&type=comment
+referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date=20190718&page=6
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=1&date=20190718&isphoto=N&type=latest
+referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=latest&date=20190718&page=1
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+
+###
+
+DELETE {{host}}/.monitoring-*
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-news-mk-2019/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "title",
+    "url"
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "[날씨]"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "title",
+    "blog_name",
+    "date",
+    "content"
+  ],
+  "sort": [
+    {
+      "date": "desc"
+    }
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "blog_name": "쿠치레 블로그"
+          }
+        },
+        {
+          "exists": {
+            "field": "html_content"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "title",
+    "blog_name",
+    "date",
+    "content"
+  ],
+  "sort": [
+    {
+      "date": "desc"
+    }
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "cafe_name": "쿠치레레더"
+          }
+        },
+        {
+          "exists": {
+            "field": "html_content"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "title",
+    "content",
+    "reply_list"
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "cafe_name": "굿엔레더"
+          }
+        },
+        {
+          "match": {
+            "title": "재봉틀"
+          }
+        },
+        {
+          "match": {
+            "content": "재봉틀"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "title",
+    "content",
+    "reply_list"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "cafe_name": "굿엔레더"
+          }
+        },
+        {
+          "match": {
+            "title": "재봉틀"
+          }
+        },
+        {
+          "match": {
+            "content": "재봉틀"
+          }
+        },
+        {
+          "match": {
+            "title": "미싱"
+          }
+        },
+        {
+          "match": {
+            "content": "미싱"
+          }
+        },
+        {
+          "match": {
+            "reply_list.text": "재봉틀"
+          }
+        },
+        {
+          "match": {
+            "reply_list.text": "미싱"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "title",
+    "content",
+    "reply_list"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "cafe_name": "굿엔레더"
+          }
+        },
+        {
+          "match": {
+            "content": "사절미싱"
+          }
+        },
+        {
+          "match": {
+            "reply_list.text": "사절미싱"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "title",
+    "content",
+    "reply_list"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "cafe_name": "리공카"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "match": {
+      "cafe_name": "리공카"
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "range": {
+      "date": {
+        "gte": "2018-01-01",
+        "lte": "2018-10-04",
+        "format": "yyyy-MM-dd"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "리공카"
+        }
+      },
+      "filter": {
+        "range": {
+          "date": {
+            "gte": "2018-06-01",
+            "lte": "2018-06-30",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "document_id"
+  ],
+  "query": {
+    "wildcard": {
+      "document_id": {
+        "value": "201912*",
+        "boost": 1.0,
+        "rewrite": "constant_score"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must_not": {
+        "exists": {
+          "field": "articleid"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match": {
+      "cafe_name": "고민상담카페"
+    }
+  }
+}
+
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "고민상담카페"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-facebook/_search
+Content-Type: application/json
+Accept: application/json
+
+###
+
+#DELETE {{host}}/crawler-facebook
+#Content-Type: application/json
+#Accept: application/json
+
+###
+
+GET {{host}}/crawler-facebook/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "exists": {
+          "field": "reply_list"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "고민상담카페"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-youtube-live-chat/_search
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/crawler-bbs-naver/_mapping
+Content-Type: application/json
+Accept: application/json
+
+###
+
+PUT {{host}}/crawler-bbs-naver
+Content-Type: application/json
+Accept: application/json
+
+{
+  "mappings": {
+    "properties": {
+      "articleid": {
+        "type": "long"
+      },
+      "bbs_name": {
+        "type": "text"
+      },
+      "blog_name": {
+        "type": "text"
+      },
+      "cafe_name": {
+        "type": "text"
+      },
+      "category": {
+        "type": "text"
+      },
+      "clubid": {
+        "type": "long"
+      },
+      "content": {
+        "type": "text"
+      },
+      "curl_date": {
+        "type": "date"
+      },
+      "date": {
+        "type": "date"
+      },
+      "document_id": {
+        "type": "text"
+      },
+      "html_content": {
+        "type": "text"
+      },
+      "image": {
+        "type": "text"
+      },
+      "nick": {
+        "type": "text"
+      },
+      "reply_count": {
+        "type": "long"
+      },
+      "reply_list": {
+        "properties": {
+          "class": {
+            "type": "text"
+          },
+          "date": {
+            "type": "date"
+          },
+          "image": {
+            "type": "text"
+          },
+          "nick": {
+            "type": "text"
+          },
+          "reply_to": {
+            "type": "text"
+          },
+          "text": {
+            "type": "text"
+          }
+        }
+      },
+      "title": {
+        "type": "text"
+      },
+      "url": {
+        "type": "text"
+      },
+      "view_count": {
+        "type": "long"
+      }
+    }
+  }
+}
+
+###
+
+#DELETE {{host}}/crawler-facebook
+
+###
+
+POST {{host}}/_reindex
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "crawler-facebook"
+  },
+  "dest": {
+    "index": "crawler-facebook-old"
+  }
+}
+
+###
+#PUT {{host}}/crawler-facebook/_settings
+
+PUT {{host}}/_settings
+Content-Type: application/json
+Accept: application/json
+
+{
+  "index.mapping.total_fields.limit": 20000
+}
+
+###
+
+GET {{host}}/_tasks?detailed=true&actions=*reindex
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-facebook/_doc/562128621033889-563735750873176
+Content-Type: application/json
+Accept: application/text
+
+###
+
+POST {{host}}/_reindex
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "crawler-facebook"
+  },
+  "dest": {
+    "index": "crawler-facebook-old"
+  }
+}
+
+###
+
+#DELETE {{host}}/crawler-facebook
+
+###
