@@ -11,6 +11,7 @@ from urllib.parse import urljoin
 import requests
 from tqdm.autonotebook import tqdm
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.selenium.proxy_utils import SeleniumProxyUtils
@@ -31,8 +32,93 @@ class YahooTWCrawler(SeleniumProxyUtils):
 
         self.elastic = ElasticSearchUtils(host=host, index=index, split_index=True)
 
+    def get_contents(self, doc):
+        """ """
+        if doc['url'][0] == '/':
+            url = 'https://tw.news.yahoo.com/'
+            doc['url'] = urljoin(url, doc['url'])
+
+        self.driver.get(doc['url'].strip())
+        self.driver.implicitly_wait(30)
+
+        sleep(3)
+
+        try:
+            html = self.driver.page_source
+
+            soup = BeautifulSoup(html, 'html5lib')
+
+            tag_list = soup.find_all('article')
+            if len(tag_list) > 0:
+                doc['html_content'] = '\n'.join([v.prettify() for v in tag_list])
+                doc['content'] = '\n'.join([v.get_text(separator='\n').strip() for v in tag_list])
+
+                self.elastic.save_document(document=doc, delete=False)
+                self.elastic.flush()
+        except Exception as e:
+            print({'error at get_contents', e})
+
+        # self.page_down(count=30)
+        # self.trace_networks()
+        return
+
+    def trace_contents(self):
+        """모든 컨텐츠를 수집한다."""
+        query = {
+            'query': {
+                'bool': {
+                    'must_not': {
+                        'exists': {
+                            'field': 'html_content'
+                        }
+                    }
+                }
+            }
+        }
+
+        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
+        id_list = list(id_list)
+
+        if len(id_list) == 0:
+            return
+
+        size = 1000
+
+        start = 0
+        end = size
+
+        self.open_driver()
+        self.driver.implicitly_wait(10)
+
+        while start < len(id_list):
+            doc_list = []
+            self.elastic.get_by_ids(id_list=id_list[start:end], index=self.elastic.index, source=None, result=doc_list)
+
+            if start >= len(id_list):
+                break
+
+            start = end
+            end += size
+
+            if end > len(id_list):
+                end = len(id_list)
+
+            pbar = tqdm(doc_list, desc='{:,}~{:,}'.format(start, end))
+            for doc in pbar:
+                if 'html_content' in doc and doc['html_content'] == '':
+                    continue
+
+                self.get_contents(doc=doc)
+                sleep(5)
+
+        self.close_driver()
+
+        return
+
     def get_url_list(self, url_list):
         """ """
+        doc_list = []
+
         pbar = tqdm(url_list)
         for url in pbar:
             if url in self.url_buf:
@@ -66,6 +152,9 @@ class YahooTWCrawler(SeleniumProxyUtils):
             if len(new_list) > 0:
                 item_list = new_list
 
+            if isinstance(item_list, list) is not True:
+                continue
+
             try:
                 for item in item_list:
                     if 'rows' in item:
@@ -85,19 +174,33 @@ class YahooTWCrawler(SeleniumProxyUtils):
                     if 'id' in item:
                         doc['_id'] = item['id']
 
+                    if 'url' not in doc:
+                        continue
+
                     doc['url'] = urljoin(url, item['url'])
                     doc['curl_date'] = datetime.now(self.timezone).isoformat()
+
+                    if doc['url'].find('bit.ly') > 0:
+                        doc['url'] = requests.head(doc['url']).headers['location']
+
+                    if doc['url'].find('-') > 0:
+                        doc['_id'] += '-' + doc['url'].replace('.html', '').rsplit('-', maxsplit=1)[-1]
+                    elif doc['url'].find('/vod/') > 0:
+                        url_info = self.parse_url(doc['url'])
+                        if 'id' in url_info:
+                            doc['_id'] += '-' + url_info['id']
+
+                    doc_list.append(doc)
 
                     self.elastic.save_document(document=doc, delete=False)
 
                 self.elastic.flush()
             except Exception as e:
-                print('get url error', e)
-                pass
+                print({'get url error', e})
 
             sleep(5)
 
-        return
+        return doc_list
 
     def trace_networks(self):
         """ """
@@ -122,11 +225,57 @@ class YahooTWCrawler(SeleniumProxyUtils):
             return True
 
         try:
-            self.get_url_list(url_list=url_list)
+            _ = self.get_url_list(url_list=url_list)
         except Exception as e:
-            print('error trace networks', e)
+            print({'error trace networks', e})
 
         return False
+
+    def trace_list(self):
+        """ """
+        self.open_driver()
+        self.driver.implicitly_wait(10)
+
+        self.home_path = 'data/yahoo-tw'
+        url_list = '''
+            https://tw.news.yahoo.com/tv-radio
+            https://tw.news.yahoo.com/video
+            https://tw.news.yahoo.com/weather/
+            https://tw.news.yahoo.com/world        
+            https://tw.news.yahoo.com/archive
+            https://tw.news.yahoo.com/blogs
+            https://tw.news.yahoo.com/celebrity
+            https://tw.news.yahoo.com/entertainment
+            https://tw.news.yahoo.com/finance
+            https://tw.news.yahoo.com/health
+            https://tw.news.yahoo.com/jp-kr
+            https://tw.news.yahoo.com/lifestyle
+            https://tw.news.yahoo.com/music
+            https://tw.news.yahoo.com/myfollow
+            https://tw.news.yahoo.com/politics
+            https://tw.news.yahoo.com/society
+            https://tw.news.yahoo.com/sports
+            https://tw.news.yahoo.com/technology
+        '''.strip().split('\n')
+
+        for url in url_list:
+            for i in range(100):
+                self.driver.get(url.strip())
+                self.driver.implicitly_wait(60)
+
+                stop = self.page_down(count=10)
+                if stop is True:
+                    break
+
+                stop = self.trace_networks()
+                if stop is True:
+                    break
+
+            sleep(60 * 1)
+
+        self.close_driver()
+
+        return
 
     @staticmethod
     def init_arguments():
@@ -138,54 +287,23 @@ class YahooTWCrawler(SeleniumProxyUtils):
         parser.add_argument('-user_data', default=None, help='')
         parser.add_argument('-use_head', action='store_false', default=True, help='')
 
+        parser.add_argument('-list', action='store_true', default=False, help='')
+        parser.add_argument('-contents', action='store_true', default=False, help='')
+
         return parser.parse_args()
 
     def batch(self):
         """ """
         self.args = self.init_arguments()
 
-        self.open_driver()
+        for _ in range(10000):
+            if self.args.list is True:
+                self.trace_list()
 
-        self.home_path = 'data/yahoo-tw'
-        url_list = '''
-https://tw.news.yahoo.com/topic
-https://tw.news.yahoo.com/tv-radio
-https://tw.news.yahoo.com/video
-https://tw.news.yahoo.com/weather/
-https://tw.news.yahoo.com/world        
-https://tw.news.yahoo.com/archive
-https://tw.buy.yahoo.com/shopdaily/
-https://tw.news.yahoo.com/blogs
-https://tw.news.yahoo.com/celebrity
-https://tw.news.yahoo.com/entertainment
-https://tw.news.yahoo.com/finance
-https://tw.news.yahoo.com/health
-https://tw.news.yahoo.com/jp-kr
-https://tw.news.yahoo.com/lifestyle
-https://tw.news.yahoo.com/music
-https://tw.news.yahoo.com/myfollow
-https://tw.news.yahoo.com/politics
-https://tw.news.yahoo.com/society
-https://tw.news.yahoo.com/sports
-https://tw.news.yahoo.com/technology
-        '''.strip().split('\n')
+            if self.args.contents is True:
+                self.trace_contents()
 
-        for url in url_list:
-            for i in range(100):
-                self.driver.get(url)
-                self.driver.implicitly_wait(60)
-
-                stop = self.page_down(count=5)
-                if stop is True:
-                    break
-
-                stop = self.trace_networks()
-                if stop is True:
-                    break
-
-            sleep(60 * 1)
-
-        self.close_driver()
+            sleep(60 * 10)
 
         return
 

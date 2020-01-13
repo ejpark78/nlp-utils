@@ -107,7 +107,7 @@ class SeleniumCrawler(SeleniumUtils):
 
     def delete_post(self):
         """태그 삭제"""
-        script = 'document.querySelectorAll("ul.list_area").forEach(function(ele) {ele.remove();})'
+        script = 'document.querySelectorAll("li.board_box").forEach(function(ele) {ele.remove();})'
 
         try:
             self.driver.execute_script(script)
@@ -139,16 +139,16 @@ class SeleniumCrawler(SeleniumUtils):
                     post[k] = eval(post[k].replace('만', '*10000'))
                     continue
 
-                post[k] = int(post[k].replace(',', '').replace('+', ''))
+                post[k] = int(post[k].replace(',', '').replace('+', '').replace('조회', '').strip())
 
             post['url'] = urljoin(url, [v['href'] for v in box.find_all('a') if v.has_attr('href')][0])
 
-            dt = ''.join([v.get_text().strip() for v in box.select('div.user_area span.time')])
-            if dt != '':
-                try:
+            try:
+                dt = ''.join([v.get_text().strip() for v in box.select('div.user_area span.time')])
+                if dt != '':
                     post['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
-                except Exception as e:
-                    print(e)
+            except Exception as e:
+                print(e)
 
             query_info = self.parse_url(url=post['url'])
             for k in query_info:
@@ -175,6 +175,7 @@ class SeleniumCrawler(SeleniumUtils):
         item['bbs_name'] = ''.join([v.get_text().strip() for v in soup.select('div.tit_menu a span.ellip')])
 
         dt = ''.join([v.get_text().strip() for v in soup.select('div.info > span.date.font_l')])
+        dt = dt.replace('작성일', '').strip()
 
         if dt == '':
             tags = [v.get_text().strip() for v in soup.select('div.post_info > span.board_time > span')]
@@ -185,7 +186,7 @@ class SeleniumCrawler(SeleniumUtils):
             try:
                 item['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
             except Exception as e:
-                print('date parse error', dt, e)
+                print({'date parse error', dt, e})
 
         item['image'] = []
         item['content'] = ''
@@ -216,7 +217,7 @@ class SeleniumCrawler(SeleniumUtils):
                 try:
                     reply_item['date'] = parse_date(reply_item['date']).astimezone(self.timezone).isoformat()
                 except Exception as e:
-                    print('date parse error', reply_item['date'], e)
+                    print({'date parse error', reply_item['date'], e})
                     del reply_item['date']
             else:
                 del reply_item['date']
@@ -374,6 +375,7 @@ class SeleniumCrawler(SeleniumUtils):
         return
 
     def get_min_article_id(self, club_id):
+        """ """
         query = {
             '_source': ['articleid', 'cafe_name', 'date'],
             'size': 1,
@@ -426,7 +428,7 @@ class SeleniumCrawler(SeleniumUtils):
             try:
                 page_list = self.get_page_list(url=bbs_info['url'], html=self.driver.page_source)
             except Exception as e:
-                print('get page error: ', e)
+                print({'get page error', e})
                 continue
 
             if page_list is None or len(page_list) == 0:
@@ -441,6 +443,40 @@ class SeleniumCrawler(SeleniumUtils):
             self.delete_post()
 
         self.close_driver()
+
+        return
+
+    def batch(self):
+        """"""
+        self.args = self.init_arguments()
+
+        bbs_list = self.read_config(filename=self.args.config)
+
+        pbar = tqdm(bbs_list)
+        for bbs in pbar:
+            if self.args.clubid is not None and self.args.clubid != bbs['clubid']:
+                continue
+
+            bbs['url'] = bbs['url'].format(**bbs)
+
+            if self.args.list:
+                pbar.set_description(bbs['name'] + ' list')
+
+                bbs['max_page'] = self.args.max_page
+                if self.args.c is True:
+                    bbs['max_page'] = 5000
+
+                self.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'], continue_list=self.args.c)
+
+            if self.args.contents:
+                pbar.set_description(bbs['name'] + 'contents')
+
+                self.trace_contents(bbs_info=bbs)
+
+        if self.args.rename_doc_id:
+            pbar.set_description('rename_id')
+
+            self.rename_doc_id()
 
         return
 
@@ -462,47 +498,11 @@ class SeleniumCrawler(SeleniumUtils):
         parser.add_argument('-use_head', action='store_false', default=True, help='')
 
         parser.add_argument('-clubid', default=None, help='', type=int)
+        parser.add_argument('-max_page', default=10, help='', type=int)
 
         return parser.parse_args()
 
 
-def main():
-    """"""
-    # https://stackabuse.com/getting-started-with-selenium-and-python/
-    utils = SeleniumCrawler()
-
-    utils.args = utils.init_arguments()
-
-    bbs_list = utils.read_config(filename=utils.args.config)
-
-    pbar = tqdm(bbs_list)
-    for bbs in pbar:
-        if utils.args.clubid is not None and utils.args.clubid != bbs['clubid']:
-            continue
-
-        bbs['url'] = bbs['url'].format(**bbs)
-
-        if utils.args.list:
-            pbar.set_description(bbs['name'] + ' list')
-
-            bbs['max_page'] = 10
-            if utils.args.c is True:
-                bbs['max_page'] = 5000
-
-            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'], continue_list=utils.args.c)
-
-        if utils.args.contents:
-            pbar.set_description(bbs['name'] + 'contents')
-
-            utils.trace_contents(bbs_info=bbs)
-
-    if utils.args.rename_doc_id:
-        pbar.set_description('rename_id')
-
-        utils.rename_doc_id()
-
-    return
-
-
 if __name__ == '__main__':
-    main()
+    # https://stackabuse.com/getting-started-with-selenium-and-python/
+    SeleniumCrawler().batch()

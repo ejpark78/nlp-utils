@@ -91,7 +91,7 @@ class SeleniumCrawler(SeleniumUtils):
         try:
             self.driver.execute_script(script)
         except Exception as e:
-            print(e)
+            print({'delete_post', e})
             return None
 
         self.driver.implicitly_wait(10)
@@ -183,7 +183,8 @@ class SeleniumCrawler(SeleniumUtils):
 
             item['data-uniqueid'] = tag['data-uniqueid']
 
-            replies = [self.parse_reply_body(v) for v in tag.find_all('div', {'data-sigil': 'comment-body'})]
+            comment_list = tag.find_all('div', {'data-sigil': 'comment-body'})
+            replies = [self.parse_reply_body(v) for v in comment_list]
             if len(replies) > 0:
                 item.update(replies[0])
                 del replies[0]
@@ -216,10 +217,9 @@ class SeleniumCrawler(SeleniumUtils):
                 self.driver.implicitly_wait(15)
                 sleep(2)
         except Exception as e:
-            print('more reply error: ', e)
+            print({'more reply error: ', e})
 
         sleep(2)
-
         return
 
     def see_prev_reply(self):
@@ -246,7 +246,7 @@ class SeleniumCrawler(SeleniumUtils):
         except NoSuchElementException:
             return
         except Exception as e:
-            print('see prev reply error: ', e)
+            print({'see prev reply error: ', e})
             return
 
         if stop is True:

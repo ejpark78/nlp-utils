@@ -672,27 +672,8 @@ Accept: application/text
 
 ###
 
-GET {{host}}/crawler-facebook/_doc/562128621033889-563735750873176
+GET {{host}}/crawler-facebook/_doc/562128621033889-565786914001393
 Content-Type: application/json
 Accept: application/text
-
-###
-
-POST {{host}}/_reindex
-Content-Type: application/json
-Accept: application/json
-
-{
-  "source": {
-    "index": "crawler-facebook"
-  },
-  "dest": {
-    "index": "crawler-facebook-old"
-  }
-}
-
-###
-
-#DELETE {{host}}/crawler-facebook
 
 ###
