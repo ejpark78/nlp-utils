@@ -630,24 +630,25 @@ Accept: application/json
 
 ###
 
-#DELETE {{host}}/crawler-facebook
-
-###
-
 POST {{host}}/_reindex
 Content-Type: application/json
 Accept: application/json
 
 {
   "source": {
-    "index": "crawler-facebook"
+    "index": "crawler-bbs-game-lineagem-eng"
   },
   "dest": {
-    "index": "crawler-facebook-old"
+    "index": "crawler-bbs-game-lineage2-eng"
   }
 }
 
 ###
+
+#DELETE {{host}}/crawler-bbs-game-lineagem-eng
+
+###
+
 #PUT {{host}}/crawler-facebook/_settings
 
 PUT {{host}}/_settings
@@ -672,7 +673,7 @@ Accept: application/text
 
 ###
 
-GET {{host}}/crawler-facebook/_doc/562128621033889-565786914001393
+GET {{host}}/crawler-facebook/_doc/288879321662318-479997692550479
 Content-Type: application/json
 Accept: application/text
 

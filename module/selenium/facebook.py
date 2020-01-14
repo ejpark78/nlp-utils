@@ -303,6 +303,9 @@ class SeleniumCrawler(SeleniumUtils):
 
             pbar = tqdm(doc_list, desc='{} {:,}~{:,}'.format(group_info['name'], start, end))
             for doc in pbar:
+                if 'reply_list' in doc:
+                    continue
+
                 pbar.set_description(group_info['name'] + ' ' + str(doc['top_level_post_id']))
 
                 self.get_reply(doc=doc)
@@ -325,7 +328,7 @@ class SeleniumCrawler(SeleniumUtils):
         self.driver.get(url)
         self.driver.implicitly_wait(10)
 
-        for _ in tqdm(range(50000)):
+        for _ in tqdm(range(self.args.max_page)):
             stop = self.page_down(count=10)
             self.driver.implicitly_wait(25)
 
@@ -364,6 +367,7 @@ class SeleniumCrawler(SeleniumUtils):
         parser.add_argument('-user_data', default='./cache/selenium/facebook', help='')
 
         parser.add_argument('-use_head', action='store_false', default=True, help='')
+        parser.add_argument('-max_page', default=100, help='', type=int)
 
         return parser.parse_args()
 

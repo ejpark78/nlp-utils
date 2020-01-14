@@ -238,24 +238,24 @@ class YahooTWCrawler(SeleniumProxyUtils):
 
         self.home_path = 'data/yahoo-tw'
         url_list = '''
-            https://tw.news.yahoo.com/tv-radio
-            https://tw.news.yahoo.com/video
-            https://tw.news.yahoo.com/weather/
-            https://tw.news.yahoo.com/world        
-            https://tw.news.yahoo.com/archive
-            https://tw.news.yahoo.com/blogs
-            https://tw.news.yahoo.com/celebrity
-            https://tw.news.yahoo.com/entertainment
-            https://tw.news.yahoo.com/finance
-            https://tw.news.yahoo.com/health
-            https://tw.news.yahoo.com/jp-kr
-            https://tw.news.yahoo.com/lifestyle
-            https://tw.news.yahoo.com/music
-            https://tw.news.yahoo.com/myfollow
             https://tw.news.yahoo.com/politics
             https://tw.news.yahoo.com/society
             https://tw.news.yahoo.com/sports
             https://tw.news.yahoo.com/technology
+            https://tw.news.yahoo.com/finance
+            https://tw.news.yahoo.com/archive
+            https://tw.news.yahoo.com/world        
+            https://tw.news.yahoo.com/health
+            https://tw.news.yahoo.com/entertainment
+            https://tw.news.yahoo.com/lifestyle
+            https://tw.news.yahoo.com/tv-radio
+            https://tw.news.yahoo.com/video
+            https://tw.news.yahoo.com/weather/
+            https://tw.news.yahoo.com/blogs
+            https://tw.news.yahoo.com/celebrity
+            https://tw.news.yahoo.com/jp-kr
+            https://tw.news.yahoo.com/music
+            https://tw.news.yahoo.com/myfollow
         '''.strip().split('\n')
 
         for url in url_list:

@@ -1,44 +1,44 @@
 // 게임
-//{
-//    "clubid": 27434888,
-//    "name": "리니지2M 대표 공략 카페 ♦ LINEAGE 2 M ♦",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 11992273,
-//    "name": "★ [블소 모바일] 블레이드앤소울 레볼루션 대표 공략 카페",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 29408321,
-//    "name": "리니지2M 대표 공략 카페 ★ [리공카]",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 19494347,
-//    "name": "♦리니지2M 대표 공략카페♦ 모바일 리니지2 m",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 10104140,
-//    "name": "리니지2M 대표 공략 카페 [리공카]",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 12109688,
-//    "name": "리니지M 공식카페 [군주/기사/마법사/요정/리니지M 아이템 거래]",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 28487036,
-//    "name": "리니지2 레볼루션 공식카페",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
-//{
-//    "clubid": 13396623,
-//    "name": "리니지M 트레이드-계정/캐릭터/아이템/다이아/거래/인벤/PC버전",
-//    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-//}
+{
+    "clubid": 27434888,
+    "name": "리니지2M 대표 공략 카페 ♦ LINEAGE 2 M ♦",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 11992273,
+    "name": "★ [블소 모바일] 블레이드앤소울 레볼루션 대표 공략 카페",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 29408321,
+    "name": "리니지2M 대표 공략 카페 ★ [리공카]",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 19494347,
+    "name": "♦리니지2M 대표 공략카페♦ 모바일 리니지2 m",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 10104140,
+    "name": "리니지2M 대표 공략 카페 [리공카]",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 12109688,
+    "name": "리니지M 공식카페 [군주/기사/마법사/요정/리니지M 아이템 거래]",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 28487036,
+    "name": "리니지2 레볼루션 공식카페",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
+{
+    "clubid": 13396623,
+    "name": "리니지M 트레이드-계정/캐릭터/아이템/다이아/거래/인벤/PC버전",
+    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+}
 {
     "clubid": 26203446,
     "name": "모두의마블 모바일 for kakao",

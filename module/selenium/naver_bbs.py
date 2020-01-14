@@ -165,7 +165,12 @@ class SeleniumCrawler(SeleniumUtils):
         """컨텐츠 하나를 조회한다."""
         self.open_driver()
 
-        self.driver.get(item['url'])
+        try:
+            self.driver.get(item['url'])
+        except Exception as e:
+            print({'error at get_contents', e})
+            return
+
         self.driver.implicitly_wait(3)
 
         html = self.driver.page_source
@@ -359,15 +364,17 @@ class SeleniumCrawler(SeleniumUtils):
                     continue
 
                 url = self.parse_url(url=doc['url'])
-
                 if 'clubid' not in url and 'articleid' not in url:
                     continue
 
                 pbar.set_description(bbs_info['name'] + ' ' + str(url['articleid']))
 
                 self.get_contents(item=doc)
+                if 'html_content' not in doc:
+                    doc['html_content'] = ''
 
-                self.save_contents(doc=doc)
+                    self.save_contents(doc=doc)
+
                 sleep(5)
 
             self.close_driver()
