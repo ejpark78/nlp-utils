@@ -12,9 +12,14 @@ import logging
 from bs4 import BeautifulSoup
 from xlsxwriter.workbook import Workbook
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': logging.INFO,
+
+}
+
+logging.basicConfig(**logging_opt)
 
 
 class LineageMConverter:

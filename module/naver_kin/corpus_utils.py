@@ -16,12 +16,16 @@ from module.config import Config
 from module.common_utils import CommonUtils
 from module.elasticsearch_utils import ElasticSearchUtils
 
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
 MESSAGE = 25
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
+
+}
+
 logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(**logging_opt)
 
 
 class CorpusUtils(object):

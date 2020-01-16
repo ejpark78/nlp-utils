@@ -1,0 +1,793 @@
+// 뉴스
+{
+  "site": "https://m.facebook.com",
+  "name": "JTBC 뉴스",
+  "page": "jtbcnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "JTBC 이규연의 스포트라이트",
+  "page": "jtbcspotlight",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "KBS 스포츠",
+  "page": "kbssports",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "KBS뉴스",
+  "page": "kbsnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "MBC News",
+  "page": "MBCnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "MBC 스포츠플러스",
+  "page": "mbcsportsplus",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS Onair Sports",
+  "page": "sbsallsports",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS Plus",
+  "page": "sbsplus",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS Sports",
+  "page": "sbssportsnow",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS 뉴스",
+  "page": "SBS8news",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS 라디오",
+  "page": "sbsradioOfficial",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBS",
+  "page": "sbsnow",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "SBSCNBC",
+  "page": "SBSCNBC",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "tvN(티비엔)",
+  "page": "cjtvngo",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "손석희",
+  "page": "손석희-208694602527341",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "손석희와 함께하는 사람들",
+  "page": "togetherson",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "엠빅뉴스",
+  "page": "mbicnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "채널A",
+  "page": "tv.chA",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "채널A 뉴스",
+  "page": "channelanews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "채널A 라이프",
+  "page": "tvcha.life",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴시스",
+  "page": "newsis.news",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "연합뉴스 그래픽뉴스팀",
+  "page": "연합뉴스-그래픽뉴스팀-762362527154939",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "연합뉴스 미디어랩",
+  "page": "ymedialabs",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "연합뉴스",
+  "page": "yonhap",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴스1",
+  "page": "news1kr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "NSP통신",
+  "page": "nspna",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "오마이뉴스",
+  "page": "OhmyNewsKorea",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "프레시안",
+  "page": "pressian.news",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴데일리",
+  "page": "newdailybiz",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "데일리안 스포츠",
+  "page": "dailiansports",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "데일리안뉴스",
+  "page": "dailiannews1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "미디어오늘",
+  "page": "mediatodaynews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "미디어오늘내일",
+  "page": "mediatonul2",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "코리아옵저버",
+  "page": "koreaobserver",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "딴지일보",
+  "page": "ddanziilbo",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "테크 조선",
+  "page": "techchosun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "경향비즈",
+  "page": "biznlife",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "경향신문",
+  "page": "kyunghyangshinmun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "국민일보",
+  "page": "kukmindaily",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴욕타임즈",
+  "page": "nytimes",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "데이터랩 - Datalab",
+  "page": "DataroomKBS",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "동아비즈니스리뷰",
+  "page": "dbrinsight",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "동아일보",
+  "page": "dongamedia",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "동아일보논설위원실",
+  "page": "dongaoped",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "매거진 D",
+  "page": "magazinedonga",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "문화일보",
+  "page": "munhwailbo",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "서울신문 TV&EN",
+  "page": "seoultv",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "서울신문",
+  "page": "TheSeoulShinmun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "세계일보",
+  "page": "segyetimes",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "영화-좋아",
+  "page": "movielikekorea",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "조선경제아이",
+  "page": "조선경제아이-370027806348731",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "조선일보",
+  "page": "chosun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "조이뉴스24 - JoyNews24",
+  "page": "JoyNews.TV",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "주간경향",
+  "page": "wkyunghyang",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "주간조선",
+  "page": "weeklychosun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한겨레 사회부",
+  "page": "hanisocialnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한겨레",
+  "page": "hankyoreh",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한겨레21",
+  "page": "hankyoreh21",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한겨레스페셜",
+  "page": "hanispecialpage",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한국일보",
+  "page": "hkilbo",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "환경일보",
+  "page": "www.hkbs.co.kr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "매일경제 Biz Times",
+  "page": "weeklymkmba",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "매일경제",
+  "page": "maekyungsns",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "서울경제 썸",
+  "page": "sedailythumb",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "서울경제신문",
+  "page": "seouleconomydaily",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한국경제신문 사설·칼럼",
+  "page": "hankyung.editorial",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한국경제신문",
+  "page": "hankyungmedia",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "헤럴드경제",
+  "page": "TheHeraldBusiness",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠서울",
+  "page": "sportsseoul1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "일간스포츠 야구뉴스",
+  "page": "is.baseballnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "일간스포츠",
+  "page": "isplus1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠조선",
+  "page": "sportschosun",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠경향",
+  "page": "sportkh",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠한국",
+  "page": "sportshankooki",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠동아",
+  "page": "sportsdonga",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포츠월드",
+  "page": "sportsworldsns",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "디지털타임스",
+  "page": "Digitaltimesnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "전자신문",
+  "page": "etnews.kr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "전자신문엔터테인먼트",
+  "page": "ETenterN",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "시사인",
+  "page": "sisain",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "레이디경향",
+  "page": "ladykyunghyang",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "IT동아-게임동아",
+  "page": "itdonga",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "우먼 동아일보",
+  "page": "thewomandonga",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "과학동아",
+  "page": "sciencedonga",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "시사저널",
+  "page": "sisajournal",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "마이크로소프트웨어",
+  "page": "dailymaso",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포티비 뉴스",
+  "page": "spotvnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스포티비",
+  "page": "spotv",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "그놈의디지털",
+  "page": "whatisdigital",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴스퀘어 - Newsquare",
+  "page": "newsquare.kr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴스타운",
+  "page": "newstown1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "뉴스타운",
+  "page": "뉴스타운-286039791506536",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "디스패치",
+  "page": "koreadispatch",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "디지털 저널리즘 혁신",
+  "page": "Journalismpage",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "신촌타임즈",
+  "page": "theshinchontimes2015",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "아시아투데이",
+  "page": "Asiatoday.online",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "아이뉴스24 - INews24",
+  "page": "inews24",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "애플경제",
+  "page": "applennews7",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "에스비즈뉴스",
+  "page": "sbiznewskr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "월요신문",
+  "page": "wolyonews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "이슈갤러리",
+  "page": "issuegall",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "이슈컷",
+  "page": "issuecut",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "이슈픽 Issue Pic",
+  "page": "issuepic1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "재경일보",
+  "page": "jknewscorp",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "아띠참신문",
+  "page": "attichamnews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "팟캐스트 디스팩트",
+  "page": "disfact",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "프레스센터",
+  "page": "press7651",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한국스포츠경제 비즈앤피플",
+  "page": "biznpeople",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "위키트리",
+  "page": "wikitree.page",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "넥스트데일리",
+  "page": "nextdailykr",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "메디게이트뉴스",
+  "page": "medigatenews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "미디어썰",
+  "page": "mediassul",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "미디어펜",
+  "page": "mediapen",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "민중의소리",
+  "page": "newsvop",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "비디오머그 - VIDEO MUG",
+  "page": "videomug",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "비즈니스워치",
+  "page": "businesswatch",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "스브스뉴스",
+  "page": "subusunews",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "시사위크",
+  "page": "sisaweek",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "엔씨소프트",
+  "page": "ncsoft",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "코딩한잔",
+  "page": "acupofcode",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "코딩이 알고싶다",
+  "page": "iwannaknowcoding",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "리더스북",
+  "page": "leadersbook",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "서울경기케이블tv",
+  "page": "dlivech1",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "어반어스",
+  "page": "urbanearth.face",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "엠톡",
+  "page": "mtalkmagazine",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "열린사람들",
+  "page": "peopleopener",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "영화공장",
+  "page": "moviecapture",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "오래된 문장의 위로",
+  "page": "humanplus100",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "웅진북클럽",
+  "page": "woongjinthinkbig",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "피키무비",
+  "page": "pikimovie",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "피키캐스트",
+  "page": "allnewpiki",
+  "category": "언론"
+}
+{
+  "site": "https://m.facebook.com",
+  "name": "한국기자협회",
+  "page": "journalistskorea",
+  "category": "언론"
+}

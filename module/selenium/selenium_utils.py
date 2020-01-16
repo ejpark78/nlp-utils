@@ -7,6 +7,8 @@ from __future__ import print_function
 
 import json
 import logging
+from glob import glob
+from os.path import isdir
 from time import sleep
 
 from selenium import webdriver
@@ -15,13 +17,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
 
-logging.basicConfig(
-    level=MESSAGE,
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-)
+}
+
+logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(**logging_opt)
 
 
 class SeleniumUtils(object):
@@ -142,23 +146,30 @@ class SeleniumUtils(object):
     @staticmethod
     def read_config(filename):
         """설정파일을 읽어드린다."""
+        file_list = [filename]
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob('{}/*.json'.format(filename)):
+                file_list.append(f_name)
+
         result = []
 
-        with open(filename, 'r') as fp:
-            buf = ''
-            for line in fp.readlines():
-                line = line.strip()
-                if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
-                    continue
-
-                buf += line
-                if line != '}':
-                    continue
-
-                doc = json.loads(buf)
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
                 buf = ''
+                for line in fp.readlines():
+                    line = line.strip()
+                    if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
+                        continue
 
-                result.append(doc)
+                    buf += line
+                    if line != '}':
+                        continue
+
+                    doc = json.loads(buf)
+                    buf = ''
+
+                    result.append(doc)
 
         return result
 

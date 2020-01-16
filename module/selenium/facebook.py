@@ -8,24 +8,27 @@ from __future__ import print_function
 import json
 import logging
 from datetime import datetime
-from urllib.parse import urljoin
 from time import sleep
+from urllib.parse import urljoin
+
 import pytz
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from dateutil.parser import parse as parse_date
 
 from module.elasticsearch_utils import ElasticSearchUtils
 from module.selenium.selenium_utils import SeleniumUtils
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
 
-logging.basicConfig(
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-    level=MESSAGE,
-)
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
+
+}
+
+logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(**logging_opt)
 
 
 class SeleniumCrawler(SeleniumUtils):
@@ -69,12 +72,14 @@ class SeleniumCrawler(SeleniumUtils):
             # 메세지 추출
             post['html_content'] = '\n'.join([v.prettify() for v in tag.find_all('span', {'data-sigil': 'expose'})])
 
-            post['content'] = '\n'.join([v.get_text(separator='\n') for v in tag.find_all('span', {'data-sigil': 'expose'})])
+            post['content'] = '\n'.join(
+                [v.get_text(separator='\n') for v in tag.find_all('span', {'data-sigil': 'expose'})])
 
             # 공감 정보
             post['reactions'] = [str(v) for v in tag.find_all('div', {'data-sigil': 'reactions-sentence-container'})]
 
-            post['url'] = [urljoin(url, v['href']) for v in tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'}) if v.has_attr('href')]
+            post['url'] = [urljoin(url, v['href']) for v in tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'}) if
+                           v.has_attr('href')]
             if len(post['url']) > 0:
                 post['url'] = post['url'][0]
             else:
@@ -363,7 +368,7 @@ class SeleniumCrawler(SeleniumUtils):
         parser.add_argument('-list', action='store_true', default=False, help='')
         parser.add_argument('-reply', action='store_true', default=False, help='')
 
-        parser.add_argument('-config', default='./config/fb.page.list.json', help='')
+        parser.add_argument('-config', default='./config/facebook/커뮤니티.json', help='')
         parser.add_argument('-user_data', default='./cache/selenium/facebook', help='')
 
         parser.add_argument('-use_head', action='store_false', default=True, help='')

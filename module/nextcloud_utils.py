@@ -18,12 +18,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 MESSAGE = 25
 
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
+
+}
+
 logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(
-    level=MESSAGE,
-    format='%(message)s',
-    handlers=[logging.StreamHandler(sys.stderr)],
-)
+logging.basicConfig(**logging_opt)
 
 logger = logging.getLogger()
 

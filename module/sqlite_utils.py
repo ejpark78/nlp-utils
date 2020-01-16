@@ -12,13 +12,15 @@ import sqlite3
 import sys
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
 
-logging.basicConfig(
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-    level=MESSAGE,
-)
+}
+
+logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(**logging_opt)
 
 
 class SqliteUtils(object):

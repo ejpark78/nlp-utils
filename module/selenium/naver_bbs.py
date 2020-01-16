@@ -20,13 +20,15 @@ from module.elasticsearch_utils import ElasticSearchUtils
 from module.selenium.selenium_utils import SeleniumUtils
 
 MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+logging_opt = {
+    'format': '[%(levelname)-s] %(message)s',
+    'handlers': [logging.StreamHandler()],
+    'level': MESSAGE,
 
-logging.basicConfig(
-    level=MESSAGE,
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-)
+}
+
+logging.addLevelName(MESSAGE, 'MESSAGE')
+logging.basicConfig(**logging_opt)
 
 
 class SeleniumCrawler(SeleniumUtils):
