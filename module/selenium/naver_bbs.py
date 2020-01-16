@@ -167,15 +167,14 @@ class SeleniumCrawler(SeleniumUtils):
 
         try:
             self.driver.get(item['url'])
+            self.driver.implicitly_wait(3)
+
+            html = self.driver.page_source
+
+            soup = BeautifulSoup(html, 'html5lib')
         except Exception as e:
             print({'error at get_contents', e})
             return
-
-        self.driver.implicitly_wait(3)
-
-        html = self.driver.page_source
-
-        soup = BeautifulSoup(html, 'html5lib')
 
         item['bbs_name'] = ''.join([v.get_text().strip() for v in soup.select('div.tit_menu a span.ellip')])
 

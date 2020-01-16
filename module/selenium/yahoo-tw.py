@@ -38,10 +38,14 @@ class YahooTWCrawler(SeleniumProxyUtils):
             url = 'https://tw.news.yahoo.com/'
             doc['url'] = urljoin(url, doc['url'])
 
-        self.driver.get(doc['url'].strip())
-        self.driver.implicitly_wait(30)
+        try:
+            self.driver.get(doc['url'].strip())
+            self.driver.implicitly_wait(30)
 
-        sleep(3)
+            sleep(3)
+        except Exception as e:
+            print({'error at get_contents', e})
+            return
 
         try:
             html = self.driver.page_source
