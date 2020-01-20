@@ -25,3 +25,4 @@ webdav
 pycurl
 pyjwt
 PySocks
+browsermob-proxy

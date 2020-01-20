@@ -55,7 +55,7 @@ class SeleniumProxyUtils(object):
         if self.driver is not None:
             return
 
-        self.proxy_server = Server('venv/bin/browsermob-proxy-2.1.4/bin/browsermob-proxy')
+        self.proxy_server = Server(self.args.proxy_server)
 
         self.proxy_server.start()
 

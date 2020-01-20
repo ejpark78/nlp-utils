@@ -9,13 +9,13 @@ import logging
 import sys
 from os import getenv
 
-from module.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
-from module.naver_kin.question_list import QuestionList as NaverKinQuestionList
-from module.naver_kin.user_list import UserList as NaverKinUserList
-from module.naver_reply import NaverNewsReplyCrawler
-from module.naver_terms.corpus_utils import CorpusUtils as NaverCorpusUtils
-from module.naver_terms.detail import TermDetail as NaverTermDetail
-from module.naver_terms.term_list import TermList as NaverTermList
+from module.naver.kin.question_detail import QuestionDetail as NaverKinQuestionDetail
+from module.naver.kin.question_list import QuestionList as NaverKinQuestionList
+from module.naver.kin.user_list import UserList as NaverKinUserList
+from module.naver.reply import NaverNewsReplyCrawler
+from module.naver.terms.corpus_utils import CorpusUtils as NaverCorpusUtils
+from module.naver.terms.detail import TermDetail as NaverTermDetail
+from module.naver.terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
 from module.udemy.udemy import UdemyUtils

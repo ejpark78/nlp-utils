@@ -35,6 +35,7 @@ include $(MK_DIR)/sns.mk
 include k8s/k8s.mk
 
 include $(MK_DIR)/release.mk
+include $(MK_DIR)/debug.mk
 
 # batch
 all-start: nate-start naver-start daum-start bbs-start sns-start

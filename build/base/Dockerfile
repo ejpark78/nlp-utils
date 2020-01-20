@@ -27,20 +27,21 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	} > /etc/apt/sources.list \
     && apt update -yq \
     && apt install -yq --no-install-recommends \
+		default-jdk-headless \
         bridge-utils \
+        build-essential \
+        chromium-browser \
+        chromium-chromedriver \
+        curl \
+        libcurl4-openssl-dev \
         libdb-dev \
+        libssl-dev \
         python3 \
         python3-dateutil \
         python3-dev \
         python3-lxml \
         python3-pip \
-        curl \
         tzdata \
-        chromium-chromedriver \
-        chromium-browser \
-        libcurl4-openssl-dev \
-        libssl-dev \
-        build-essential \
     && apt autoremove -yq \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \

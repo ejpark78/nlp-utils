@@ -656,7 +656,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "index.mapping.total_fields.limit": 20000
+  "index.mapping.total_fields.limit": 50000
 }
 
 ###

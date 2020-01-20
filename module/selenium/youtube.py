@@ -177,8 +177,8 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
         self.open_driver()
 
-        self.home_path = 'data/youtube-live-chat/[똘끼 풀영상]모음'
-        start_url = 'https://www.youtube.com/watch?v=VnAqVULPcAA&list=PLmF_CDUVuBvj9Ir00ueSMrHNDyDeeVmdq'
+        self.home_path = 'data/youtube-live-chat/태산군주TV-리니지 생방송 다시보기 REC🔴'
+        start_url = 'https://www.youtube.com/playlist?list=PLWeqEDf8g_W_Yh2iqHGA8tYiGZcESvQ-s'
 
         self.driver.get(start_url)
         self.driver.implicitly_wait(60)
@@ -195,11 +195,15 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
     def init_arguments():
         """ 옵션 설정 """
         import argparse
+        from uuid import uuid1
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-user_data', default=None, help='')
-        parser.add_argument('-use_head', action='store_false', default=True, help='')
+        # parser.add_argument('--user_data', default='cache/youtube/{}'.format(uuid1()), help='')
+        parser.add_argument('--user_data', default=None, help='')
+        parser.add_argument('--use_head', action='store_false', default=True, help='')
+
+        parser.add_argument('--proxy_server', default='module/browsermob-proxy/bin/browsermob-proxy', help='')
 
         return parser.parse_args()
 

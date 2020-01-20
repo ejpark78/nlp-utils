@@ -263,8 +263,12 @@ class YahooTWCrawler(SeleniumProxyUtils):
         '''.strip().split('\n')
 
         for url in url_list:
-            for i in range(100):
-                self.driver.get(url.strip())
+            url = url.strip()
+
+            for i in range(20):
+                print({'url': url})
+
+                self.driver.get(url)
                 self.driver.implicitly_wait(60)
 
                 stop = self.page_down(count=10)
@@ -288,11 +292,13 @@ class YahooTWCrawler(SeleniumProxyUtils):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-user_data', default=None, help='')
-        parser.add_argument('-use_head', action='store_false', default=True, help='')
+        parser.add_argument('--user_data', default=None, help='')
+        parser.add_argument('--use_head', action='store_false', default=True, help='')
 
-        parser.add_argument('-list', action='store_true', default=False, help='')
-        parser.add_argument('-contents', action='store_true', default=False, help='')
+        parser.add_argument('--list', action='store_true', default=False, help='')
+        parser.add_argument('--contents', action='store_true', default=False, help='')
+
+        parser.add_argument('--proxy_server', default='module/browsermob-proxy/bin/browsermob-proxy', help='')
 
         return parser.parse_args()
 

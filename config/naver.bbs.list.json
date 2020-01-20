@@ -46,11 +46,11 @@
 //}
 
 // 모바일
-{
-    "clubid": 27738104,
-    "name": "샤오미스토리",
-    "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+// {
+//     "clubid": 27738104,
+//     "name": "샤오미스토리",
+//     "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={clubid}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+// }
 {
     "clubid": 24507451,
     "name": "SBC 커뮤니티",

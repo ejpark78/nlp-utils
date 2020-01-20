@@ -44,6 +44,8 @@ build:
 		--exclude=log \
 		--exclude=status \
 		--exclude=cache \
+		--exclude=.cache \
+		--exclude=.pki \
 		.
 
 	cd build/
