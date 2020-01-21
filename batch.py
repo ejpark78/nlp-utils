@@ -46,33 +46,33 @@ def init_arguments():
     parser = argparse.ArgumentParser()
 
     # 작업 아이디
-    parser.add_argument('-category', default='', help='작업 카테고리')
-    parser.add_argument('-job_id', default='', help='작업 아이디')
+    parser.add_argument('--category', default='', help='작업 카테고리')
+    parser.add_argument('--job_id', default='', help='작업 아이디')
 
     # 데이터 덤프
-    parser.add_argument('-dump', action='store_true', default=False, help='크롤링 결과 덤프')
+    parser.add_argument('--dump', action='store_true', default=False, help='크롤링 결과 덤프')
 
     # 지식인 질문 상세 페이지: elasticsearch 파라메터, job_id가 kin_detail일 경우
-    parser.add_argument('-host', default=None, help='Elasticsearch 호스트')
-    parser.add_argument('-match_phrase', default='{}', help='검색 조건')
+    parser.add_argument('--host', default=None, help='Elasticsearch 호스트')
+    parser.add_argument('--match_phrase', default='{}', help='검색 조건')
     # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
 
     # 실행 모드 데몬/배치
-    parser.add_argument('-batch', action='store_true', default=False, help='배치 모드로 실행')
+    parser.add_argument('--batch', action='store_true', default=False, help='배치 모드로 실행')
 
     # 재크롤링
-    parser.add_argument('-re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
+    parser.add_argument('--re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
 
-    parser.add_argument('-query', default='', help='elasticsearch query')
-    parser.add_argument('-query_field', default='date', help='query field')
+    parser.add_argument('--query', default='', help='elasticsearch query')
+    parser.add_argument('--query_field', default='date', help='query field')
 
-    parser.add_argument('-date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
-    parser.add_argument('-date_step', default=-1, type=int, help='date step')
+    parser.add_argument('--date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
+    parser.add_argument('--date_step', default=-1, type=int, help='date step')
 
     # 설정파일
-    parser.add_argument('-config', default=None, help='설정 파일 정보')
+    parser.add_argument('--config', default=None, help='설정 파일 정보')
 
-    parser.add_argument('-update_category_only', action='store_true', default=False, help='category 정보만 업데이트')
+    parser.add_argument('--update_category_only', action='store_true', default=False, help='category 정보만 업데이트')
 
     return parser.parse_args()
 

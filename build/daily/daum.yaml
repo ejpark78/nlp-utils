@@ -13,41 +13,41 @@ spec:
     - name: culture
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "culture"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "culture"]
       resources: {}
     - name: economy
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "economy"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "economy"]
       resources: {}
     - name: international
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "international"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "international"]
       resources: {}
     - name: it
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "it"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "it"]
       resources: {}
     - name: opinion
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "opinion"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "opinion"]
       resources: {}
     - name: politics
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "politics"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "politics"]
       resources: {}
     - name: society
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "society"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "society"]
       resources: {}
     - name: sports
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "daum", "-job_id", "sports"]
+      args: ["python3", "batch.py", "--category", "daum", "--job_id", "sports"]
       resources: {}
 status: {}

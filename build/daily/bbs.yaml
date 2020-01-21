@@ -13,31 +13,31 @@ spec:
     - name: mlbpark-kbo
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "mlbpark-kbo"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-kbo"]
       resources: {}
     - name: mlbpark-mlb
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "mlbpark-mlb"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-mlb"]
       resources: {}
     - name: mlbpark-bullpen
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "mlbpark-bullpen"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-bullpen"]
       resources: {}
     - name: lineagem
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "lineagem"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "lineagem"]
       resources: {}
     - name: ruliweb
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "ruliweb"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "ruliweb"]
       resources: {}
     - name: inven-lineagem
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "bbs", "-job_id", "inven-lineagem"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "inven-lineagem"]
       resources: {}
 status: {}

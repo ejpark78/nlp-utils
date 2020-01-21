@@ -255,7 +255,6 @@ class YahooTWCrawler(SeleniumProxyUtils):
             https://tw.news.yahoo.com/tv-radio
             https://tw.news.yahoo.com/video
             https://tw.news.yahoo.com/weather/
-            https://tw.news.yahoo.com/blogs
             https://tw.news.yahoo.com/celebrity
             https://tw.news.yahoo.com/jp-kr
             https://tw.news.yahoo.com/music

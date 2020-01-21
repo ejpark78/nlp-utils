@@ -14,41 +14,41 @@ spec:
     - name: economy
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "economy-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply"]
       resources: {}
     - name: international
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "international-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply"]
       resources: {}
     - name: it
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "it-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply"]
       resources: {}
     - name: living
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "living-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply"]
       resources: {}
     - name: opinion
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "opinion-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply"]
       resources: {}
     - name: politics
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "politics-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply"]
       resources: {}
     - name: society
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "society-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply"]
       resources: {}
     - name: tv
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "tv-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply"]
       resources: {}
 status: {}

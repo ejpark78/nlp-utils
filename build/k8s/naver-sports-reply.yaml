@@ -15,6 +15,6 @@ spec:
     - name: sports-2019-08
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "naver", "-job_id", "sports-reply"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply"]
       resources: {}
 status: {}

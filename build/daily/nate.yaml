@@ -13,51 +13,51 @@ spec:
     - name: economy
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "economy"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
       resources: {}
     - name: entertainment
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "entertainment"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
       resources: {}
     - name: international
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "international"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
       resources: {}
     - name: it
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "it"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
       resources: {}
 #    - name: opinion
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "-category", "nate", "-job_id", "opinion"]
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
 #      resources: {}
     - name: politics
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "politics"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
       resources: {}
 #    - name: radio
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "-category", "nate", "-job_id", "radio"]
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
 #      resources: {}
     - name: society
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "society"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
       resources: {}
     - name: sports
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-category", "nate", "-job_id", "sports"]
+      args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
       resources: {}
 #    - name: tv
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "-category", "nate", "-job_id", "tv"]
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]
 #      resources: {}
 status: {}

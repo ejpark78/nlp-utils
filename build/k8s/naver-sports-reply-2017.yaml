@@ -10,51 +10,51 @@ metadata:
     section: sports
     type: reply
 spec:
-  restartPolicy: OnFailure
+  restartPolicy: Never
   containers:
     - name: "2017"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2017-01-01~2017-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2017-01-01~2017-12-31"]
       resources: {}
     - name: "2016"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2016-01-01~2016-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2016-01-01~2016-12-31"]
       resources: {}
     - name: "2015"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2015-01-01~2015-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2015-01-01~2015-12-31"]
       resources: {}
     - name: "2014"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2014-01-01~2014-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2014-01-01~2014-12-31"]
       resources: {}
     - name: "2013"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2013-01-01~2013-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2013-01-01~2013-12-31"]
       resources: {}
     - name: "2012"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2012-01-01~2012-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2012-01-01~2012-12-31"]
       resources: {}
     - name: "2011"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2011-01-01~2011-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2011-01-01~2011-12-31"]
       resources: {}
     - name: "2010"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2010-01-01~2010-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2010-01-01~2010-12-31"]
       resources: {}
     - name: "2009"
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "-config", "config-nlp/naver/sports-reply-index", "-category", "naver", "-job_id", "sports-reply", "-date_range", "2009-01-01~2009-12-31"]
+      args: ["python3", "batch.py", "--config", "config-nlp/naver/sports-reply-index", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2009-01-01~2009-12-31"]
       resources: {}
 status: {}

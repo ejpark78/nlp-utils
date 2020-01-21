@@ -81,7 +81,7 @@ class Config(object):
             }
         }
 
-        if job_info is not None:
+        if job_info is not None and 'trace_list' in job_info:
             trace_list = job_info['trace_list'][0]
 
             for k in default['trace_list']:
