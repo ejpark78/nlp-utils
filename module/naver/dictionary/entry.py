@@ -219,15 +219,14 @@ class DictionaryEntryCrawler(DictionaryUtils):
         """"""
         self.args = self.init_arguments()
 
-        query_list = self.read_config(self.args.config)
+        self.open_db(index=self.args.index)
 
-        index = 'crawler-naver-dictionary'
-        self.open_db(index=index)
+        query_list = self.read_config(self.args.config)
 
         for query in tqdm(query_list):
             self.trace_entry_list(
-                index=index,
                 query=query,
+                index=self.args.index,
                 sleep_time=10,
             )
 
@@ -240,8 +239,10 @@ class DictionaryEntryCrawler(DictionaryUtils):
 
         parser = argparse.ArgumentParser()
 
-        # parser.add_argument('--config', default='config/naver/dictionary/zh-ko.json', help='')
-        parser.add_argument('--config', default='config/naver/dictionary/en-ko.json', help='')
+        parser.add_argument('--index', default='crawler-naver-dictionary', help='')
+
+        parser.add_argument('--config', default='config/naver/dictionary/zh-ko.json', help='')
+        # parser.add_argument('--config', default='config/naver/dictionary/en-ko.json', help='')
 
         return parser.parse_args()
 

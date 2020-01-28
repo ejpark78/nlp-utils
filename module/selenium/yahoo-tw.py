@@ -13,8 +13,8 @@ from tqdm.autonotebook import tqdm
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from module.elasticsearch_utils import ElasticSearchUtils
-from module.selenium.proxy_utils import SeleniumProxyUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.proxy_utils import SeleniumProxyUtils
 
 
 class YahooTWCrawler(SeleniumProxyUtils):

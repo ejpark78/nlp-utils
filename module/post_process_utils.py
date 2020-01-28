@@ -8,8 +8,6 @@ from __future__ import print_function
 import bz2
 import json
 import logging
-import os
-import pathlib
 import pickle
 import queue
 import threading
@@ -18,9 +16,8 @@ from datetime import datetime
 import pytz
 import requests
 
-from module.elasticsearch_utils import ElasticSearchUtils
-from module.html_parser import HtmlParser
-from module.logging_format import LogMessage as LogMsg
+from module.utils.html_parser import HtmlParser
+from module.utils.logging_format import LogMessage as LogMsg
 
 MESSAGE = 25
 

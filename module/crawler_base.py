@@ -17,8 +17,8 @@ from dateutil.relativedelta import relativedelta
 from werkzeug.contrib.cache import SimpleCache
 
 from module.config import Config
-from module.html_parser import HtmlParser
-from module.logging_format import LogMessage as LogMsg
+from module.utils.html_parser import HtmlParser
+from module.utils.logging_format import LogMessage as LogMsg
 from module.post_process_utils import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

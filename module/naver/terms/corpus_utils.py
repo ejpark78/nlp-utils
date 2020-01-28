@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 
 from module.config import Config
-from module.elasticsearch_utils import ElasticSearchUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

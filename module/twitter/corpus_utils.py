@@ -10,7 +10,7 @@ from datetime import datetime
 
 from module.config import Config
 from module.crawler_base import CrawlerBase
-from module.elasticsearch_utils import ElasticSearchUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 logging.basicConfig(format="[%(levelname)-s] %(message)s",
                     handlers=[logging.StreamHandler()],

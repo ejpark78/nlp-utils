@@ -677,4 +677,17 @@ GET {{host}}/crawler-facebook/_doc/288879321662318-479997692550479
 Content-Type: application/json
 Accept: application/text
 
+
+###
+
+GET {{host}}/corpus_process-naver-economy-2019/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "nlu_wrapper.*.moph_str"
+  ]
+}
+
 ###

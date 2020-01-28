@@ -22,7 +22,7 @@ from dateutil.rrule import rrule, DAILY
 from time import sleep
 from tqdm.autonotebook import tqdm
 
-from module.elasticsearch_utils import ElasticSearchUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -561,16 +561,16 @@ class NaverKBOGameCenterUtils(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-trace_comments', action='store_true', default=False, help='응원글 조회')
-        parser.add_argument('-trace_relay_texts', action='store_true', default=False, help='문자 중계')
-        parser.add_argument('-get_game_info', action='store_true', default=False, help='게임 정보')
-        parser.add_argument('-set_state', action='store_true', default=False, help='게임 상태 변경')
+        parser.add_argument('--trace_comments', action='store_true', default=False, help='응원글 조회')
+        parser.add_argument('--trace_relay_texts', action='store_true', default=False, help='문자 중계')
+        parser.add_argument('--get_game_info', action='store_true', default=False, help='게임 정보')
+        parser.add_argument('--set_state', action='store_true', default=False, help='게임 상태 변경')
 
-        parser.add_argument('-date', default=None, help='게임 날짜')
-        parser.add_argument('-game_id', default=None, help='게임 아이디')
-        parser.add_argument('-state', default=None, help='상태 정보')
+        parser.add_argument('--date', default=None, help='게임 날짜')
+        parser.add_argument('--game_id', default=None, help='게임 아이디')
+        parser.add_argument('--state', default=None, help='상태 정보')
 
-        parser.add_argument('-sleep', default=2, type=int, help='슬립 시간')
+        parser.add_argument('--sleep', default=2, type=int, help='슬립 시간')
 
         return parser.parse_args()
 

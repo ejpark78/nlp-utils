@@ -18,7 +18,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
 
-from module.logging_format import LogMessage as LogMsg
+from module.utils.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

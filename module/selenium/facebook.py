@@ -15,8 +15,8 @@ import pytz
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from module.elasticsearch_utils import ElasticSearchUtils
-from module.selenium.selenium_utils import SeleniumUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.selenium_utils import SeleniumUtils
 
 MESSAGE = 25
 
@@ -365,14 +365,14 @@ class SeleniumCrawler(SeleniumUtils):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-list', action='store_true', default=False, help='')
-        parser.add_argument('-reply', action='store_true', default=False, help='')
+        parser.add_argument('--list', action='store_true', default=False, help='')
+        parser.add_argument('--reply', action='store_true', default=False, help='')
 
-        parser.add_argument('-config', default='./config/facebook/커뮤니티.json', help='')
-        parser.add_argument('-user_data', default='./cache/selenium/facebook', help='')
+        parser.add_argument('--config', default='./config/facebook/커뮤니티.json', help='')
+        parser.add_argument('--user_data', default='./cache/selenium/facebook', help='')
 
-        parser.add_argument('-use_head', action='store_false', default=True, help='')
-        parser.add_argument('-max_page', default=100, help='', type=int)
+        parser.add_argument('--use_head', action='store_false', default=True, help='')
+        parser.add_argument('--max_page', default=100, help='', type=int)
 
         return parser.parse_args()
 

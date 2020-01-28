@@ -15,8 +15,8 @@ from urllib.parse import unquote
 import requests
 from tqdm.autonotebook import tqdm
 
-from module.elasticsearch_utils import ElasticSearchUtils
-from module.selenium.proxy_utils import SeleniumProxyUtils
+from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.proxy_utils import SeleniumProxyUtils
 
 
 class YoutubeLiveChatCrawler(SeleniumProxyUtils):
@@ -195,12 +195,10 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
     def init_arguments():
         """ 옵션 설정 """
         import argparse
-        from uuid import uuid1
 
         parser = argparse.ArgumentParser()
 
-        # parser.add_argument('--user_data', default='cache/youtube/{}'.format(uuid1()), help='')
-        parser.add_argument('--user_data', default=None, help='')
+        parser.add_argument('--user_data', default='cache/selenium/youtube', help='')
         parser.add_argument('--use_head', action='store_false', default=True, help='')
 
         parser.add_argument('--proxy_server', default='module/browsermob-proxy/bin/browsermob-proxy', help='')

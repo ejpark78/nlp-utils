@@ -17,7 +17,6 @@ import urllib3
 from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
 
-from module.elasticsearch_utils import ElasticSearchUtils
 from module.naver.dictionary.utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

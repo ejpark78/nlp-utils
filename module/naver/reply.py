@@ -21,8 +21,8 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
-from module.elasticsearch_utils import ElasticSearchUtils
-from module.logging_format import LogMessage as LogMsg
+from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -372,8 +372,21 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         headers['Referer'] = base_url
 
-        url = url_frame['reply'].format(**query)
-        resp = requests.get(url=url, headers=headers)
+        try:
+            url = url_frame['reply'].format(**query)
+            resp = requests.get(url=url, headers=headers)
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '댓글 조회 에러',
+                'url': url,
+                'query': query,
+                'url_frame': url_frame,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+
+            return [], 0
 
         query['page'] += 1
 
