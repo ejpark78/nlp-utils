@@ -5,55 +5,6 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
-
-### inven
-POST http://www.inven.co.kr/common/board/comment.json.php
-Accept: application/json, text/javascript, */*; q=0.01
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-
-articlecode=170631&sortorder=date&act=list&out=json&replyidx=0
-
-###
-POST http://www.inven.co.kr/common/board/comment.json.php
-Accept: application/json, text/javascript, */*; q=0.01
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-
-{
-  "comeidx": 5019,
-  "articlecode": 170631,
-  "sortorder": "date",
-  "act": list,
-  "out": json,
-  "replynick": "",
-  "replyidx": 0,
-  "uploadurl": "",
-  "imageposition": ""
-}
-
-###
-
-
-###
-
-GET https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=sports&templateId=&pool=cbox2&lang=ko&country=KR&categoryId=&pageSize=10&indexSize=10&groupId=&listType=OBJECT&pageType=more&page=1&initialize=true&userType=&useAltSort=true&replyPageSize=20&moveTo=&sort=&objectId=news076,0003444177
-Referer: https://sports.news.naver.com/kbaseball/news/read.nhn?oid=076&aid=0003444177
-User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-
-###
-
-GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=6&date=20190718&isphoto=N&type=comment
-referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date=20190718&page=6
-user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-
-###
-
-GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=1&date=20190718&isphoto=N&type=latest
-referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=latest&date=20190718&page=1
-user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-
-
 ###
 
 DELETE {{host}}/.monitoring-*
@@ -688,6 +639,36 @@ Accept: application/json
   "_source": [
     "nlu_wrapper.*.moph_str"
   ]
+}
+
+###
+
+GET {{host}}/crawler-naver-dictionary/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "category": "중한"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "exists": {
+            "field": "entry"
+          }
+        }
+      ]
+    }
+  }
 }
 
 ###

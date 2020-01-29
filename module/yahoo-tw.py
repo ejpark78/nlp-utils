@@ -267,8 +267,12 @@ class YahooTWCrawler(SeleniumProxyUtils):
             for i in range(20):
                 print({'url': url})
 
-                self.driver.get(url)
-                self.driver.implicitly_wait(60)
+                try:
+                    self.driver.get(url)
+                    self.driver.implicitly_wait(60)
+                except Exception as e:
+                    print({'error', url, e})
+                    break
 
                 stop = self.page_down(count=10)
                 if stop is True:

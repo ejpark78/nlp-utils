@@ -8,15 +8,16 @@ from __future__ import print_function
 import logging
 import re
 import sys
+from datetime import datetime
 from math import ceil
 from time import sleep
+from urllib.parse import urljoin, urlencode
 from uuid import uuid4
 
 import requests
 import urllib3
 from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
-from urllib.parse import urljoin, urlencode
 
 from module.naver.dictionary.utils import DictionaryUtils
 
@@ -103,15 +104,17 @@ class DictionaryEntryCrawler(DictionaryUtils):
     @staticmethod
     def parse_zh_word_list(url, soup, result):
         """ """
-        item = {}
         for tag in soup.select('li'):
-            link = [x['href'] for x in tag.find_all('a') if x.has_attr('href')]
-            item['link'] = urljoin(url, link[0])
+            item = {}
+
+            link = [x for x in tag.find_all('a') if x.has_attr('href')]
+            if len(link) == 0:
+                continue
+
+            item['link'] = urljoin(url, link[0]['href'])
+            item['entry'] = link[0].get_text().strip()
 
             item['sound'] = ''.join([x.get_text() for x in tag.find_all('span')])
-
-            if len(item) == 0:
-                continue
 
             result.append(item)
 
@@ -203,6 +206,8 @@ class DictionaryEntryCrawler(DictionaryUtils):
                 if 'category' in query:
                     doc['category'] = query['category']
 
+                doc['curl_date'] = datetime.now(self.timezone).isoformat()
+
                 self.elastic.save_document(index=index, document=doc, delete=False)
 
             self.elastic.flush()
@@ -223,7 +228,8 @@ class DictionaryEntryCrawler(DictionaryUtils):
 
         query_list = self.read_config(self.args.config)
 
-        for query in tqdm(query_list):
+        p_bar = tqdm(query_list)
+        for query in p_bar:
             self.trace_entry_list(
                 query=query,
                 index=self.args.index,

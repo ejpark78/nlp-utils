@@ -11,6 +11,70 @@
     "category": "중한",
     "query": {
         "m": "strokeCntSearch",
+        "currentStrokeCnt": "2"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "3"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "4"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "5"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "6"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "7"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "8"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
+        "currentStrokeCnt": "9"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/yupian.nhn",
+    "category": "중한",
+    "query": {
+        "m": "strokeCntSearch",
         "currentStrokeCnt": "10"
     }
 }
@@ -91,14 +155,6 @@
     "category": "중한",
     "query": {
         "m": "strokeCntSearch",
-        "currentStrokeCnt": "2"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
         "currentStrokeCnt": "20"
     }
 }
@@ -155,65 +211,11 @@
     "category": "중한",
     "query": {
         "m": "strokeCntSearch",
-        "currentStrokeCnt": "3"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
         "currentStrokeCnt": "30"
     }
 }
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "4"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "5"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "6"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "7"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "8"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/yupian.nhn",
-    "category": "중한",
-    "query": {
-        "m": "strokeCntSearch",
-        "currentStrokeCnt": "9"
-    }
-}
+
+// hsk 등급별
 {
     "site": "https://zh.dict.naver.com/CnEntry.nhn",
     "category": "중한",
@@ -270,27 +272,7 @@
     "query": {
         "m": "hskInfo",
         "hskParam": "1",
-        "parts": "10",
-        "sortByLetter": "ALL"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/CnEntry.nhn",
-    "category": "중한",
-    "query": {
-        "m": "hskInfo",
-        "hskParam": "1",
         "parts": "2",
-        "sortByLetter": "ALL"
-    }
-}
-{
-    "site": "https://zh.dict.naver.com/CnEntry.nhn",
-    "category": "중한",
-    "query": {
-        "m": "hskInfo",
-        "hskParam": "1",
-        "parts": "25",
         "sortByLetter": "ALL"
     }
 }
@@ -361,6 +343,26 @@
         "m": "hskInfo",
         "hskParam": "1",
         "parts": "9",
+        "sortByLetter": "ALL"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/CnEntry.nhn",
+    "category": "중한",
+    "query": {
+        "m": "hskInfo",
+        "hskParam": "1",
+        "parts": "10",
+        "sortByLetter": "ALL"
+    }
+}
+{
+    "site": "https://zh.dict.naver.com/CnEntry.nhn",
+    "category": "중한",
+    "query": {
+        "m": "hskInfo",
+        "hskParam": "1",
+        "parts": "25",
         "sortByLetter": "ALL"
     }
 }
