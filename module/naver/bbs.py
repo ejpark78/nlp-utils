@@ -167,6 +167,10 @@ class SeleniumCrawler(SeleniumUtils):
         """컨텐츠 하나를 조회한다."""
         self.open_driver()
 
+        item['image'] = []
+        item['content'] = ''
+        item['html_content'] = ''
+
         try:
             self.driver.get(item['url'])
             self.driver.implicitly_wait(3)
@@ -193,10 +197,6 @@ class SeleniumCrawler(SeleniumUtils):
                 item['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
             except Exception as e:
                 print({'date parse error', dt, e})
-
-        item['image'] = []
-        item['content'] = ''
-        item['html_content'] = ''
 
         for content in soup.select('div#postContent'):
             item['image'] += [v['src'] for v in content.find_all('img') if v.has_attr('src')]
@@ -371,11 +371,8 @@ class SeleniumCrawler(SeleniumUtils):
                 pbar.set_description(bbs_info['name'] + ' ' + str(url['articleid']))
 
                 self.get_contents(item=doc)
-                if 'html_content' not in doc:
-                    doc['html_content'] = ''
 
-                    self.save_contents(doc=doc)
-
+                self.save_contents(doc=doc)
                 sleep(5)
 
             self.close_driver()
