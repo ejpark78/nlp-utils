@@ -486,7 +486,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_id_list(self, index, size=5000, query_cond=None):
+    def get_id_list(self, index, size=5000, query_cond=None, limit=-1):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         result = {}
         if self.elastic.indices.exists(index) is False:
@@ -540,6 +540,9 @@ class ElasticSearchUtils(object):
                     result[document_id] = item['_source']
 
             # 종료 조건
+            if 0 < limit < sum_count:
+                break
+
             if count < size:
                 break
 

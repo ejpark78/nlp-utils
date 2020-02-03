@@ -672,3 +672,27 @@ Accept: application/json
 }
 
 ###
+
+GET {{host}}/crawler-naver-kbo_game_center_comments-2011/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "object_id": "20110728SSHT0"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+

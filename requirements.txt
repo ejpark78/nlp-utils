@@ -8,12 +8,12 @@ pymongo
 requests
 requests[socks]
 requests[security]
+requests-oauthlib
 selenium
 html5lib
 openpyxl
 jsonlines
 urllib3
-requests-oauthlib
 tqdm
 werkzeug
 botocore
@@ -26,3 +26,4 @@ pycurl
 pyjwt
 PySocks
 browsermob-proxy
+certifi

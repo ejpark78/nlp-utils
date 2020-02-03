@@ -177,8 +177,8 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
         self.open_driver()
 
-        self.home_path = 'data/youtube-live-chat/태산군주TV-리니지 생방송 다시보기 REC🔴'
-        start_url = 'https://www.youtube.com/playlist?list=PLWeqEDf8g_W_Yh2iqHGA8tYiGZcESvQ-s'
+        self.home_path = 'data/youtube-live-chat'
+        start_url = 'https://www.youtube.com'
 
         self.driver.get(start_url)
         self.driver.implicitly_wait(60)

@@ -29,7 +29,7 @@ build:
 		--exclude=.idea \
 		--exclude=.vscode \
 		--exclude=.ipynb_checkpoints \
-		--exclude=*.jar \
+		--exclude=*.log \
 		--exclude=*.tar.gz \
 		--exclude=*.bz2 \
 		--exclude=*.pycharm* \

@@ -8,9 +8,11 @@ from __future__ import print_function
 import bz2
 import json
 import logging
+import ssl
 from datetime import datetime
 from os import makedirs
 from os.path import isfile, dirname, isdir
+from time import sleep
 
 import pandas as pd
 import pytz
@@ -19,7 +21,6 @@ import urllib3
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
-from time import sleep
 from tqdm.autonotebook import tqdm
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils

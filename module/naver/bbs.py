@@ -173,7 +173,10 @@ class SeleniumCrawler(SeleniumUtils):
 
         try:
             self.driver.get(item['url'])
-            self.driver.implicitly_wait(3)
+            self.driver.implicitly_wait(20)
+
+            # TODO: proxy 에서 아래 API 후킹
+            # https://apis.naver.com/cafe-web/cafe-articleapi/cafes/27434888/articles/855590?boardtype=L&useCafeId=true
 
             html = self.driver.page_source
 
@@ -197,6 +200,10 @@ class SeleniumCrawler(SeleniumUtils):
                 item['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
             except Exception as e:
                 print({'date parse error', dt, e})
+
+        level = soup.select_one('div.EmptyMessageBox__content')
+        if level is not None and level.get_text().find('등급') > 0:
+            return
 
         for content in soup.select('div#postContent'):
             item['image'] += [v['src'] for v in content.find_all('img') if v.has_attr('src')]
@@ -336,7 +343,7 @@ class SeleniumCrawler(SeleniumUtils):
             }
         }
 
-        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
+        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query, limit=5000)
         id_list = list(id_list)
 
         size = 1000
@@ -361,7 +368,7 @@ class SeleniumCrawler(SeleniumUtils):
 
             pbar = tqdm(doc_list, desc='{} {:,}~{:,}'.format(bbs_info['name'], start, end))
             for doc in pbar:
-                if 'html_content' in doc and doc['html_content'] == '':
+                if 'html_content' in doc:
                     continue
 
                 url = self.parse_url(url=doc['url'])

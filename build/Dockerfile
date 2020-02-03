@@ -18,6 +18,13 @@ RUN echo "사용자 생성: ${USER}..." \
 
 ADD app.tar.gz ${APP_HOME}
 
+ADD ssl/*.crt /usr/share/ca-certificates/
+
+RUN echo "" >> /etc/ca-certificates.conf \
+    && echo "SSLVACERT.crt" >> /etc/ca-certificates.conf \
+    && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
+    && update-ca-certificates
+
 RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
 WORKDIR ${APP_HOME}
