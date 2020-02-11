@@ -12,7 +12,6 @@ RESTART = always
 CRAWLER_OPT =
 USE_POST_MQ = 1
 
-#  --scale mlbpark-kbo=0 --scale mlbpark-mlb=0 --scale mlbpark-bullpen=0 --scale lineagem=0
 SCALE =
 
 # etc
@@ -23,19 +22,9 @@ ENV_FILE = common.env
 
 .PHONY: *
 
-include $(MK_DIR)/build.mk
-
-include $(MK_DIR)/naver.mk
-include $(MK_DIR)/naver-kin.mk
-include $(MK_DIR)/naver-terms.mk
-include $(MK_DIR)/nate.mk
-include $(MK_DIR)/daum.mk
-include $(MK_DIR)/bbs.mk
-include $(MK_DIR)/sns.mk
-include k8s/k8s.mk
-
-include $(MK_DIR)/release.mk
-include $(MK_DIR)/debug.mk
+include k8s.mk
+include debug.mk
+include build.mk
 
 # batch
 all-start: nate-start naver-start daum-start bbs-start sns-start

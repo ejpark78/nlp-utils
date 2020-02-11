@@ -1,14 +1,71 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-reply
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-2019
-  namespace: crawler
+  name: politics
+  namespace: crawler-naver-reply
   labels:
-    app: crawler
-    site: naver
-    year: "2019"
-    type: reply
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
+    - name: politics
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply", "--date_range", "2019-01-01~2019-12-31"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: society
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
+    - name: society
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply", "--date_range", "2019-01-01~2019-12-31"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tv
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
+    - name: tv
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply", "--date_range", "2019-01-01~2019-12-31"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: economy
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
 spec:
   restartPolicy: Never
   containers:
@@ -17,39 +74,94 @@ spec:
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: international
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
     - name: international
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: it
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
     - name: it
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: living
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
     - name: living
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: opinion
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
     - name: opinion
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
-    - name: politics
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sports
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  restartPolicy: Never
+  containers:
+    - name: sports
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-    - name: society
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-    - name: tv
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply", "--date_range", "2019-01-01~2019-12-31"]
+      args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2019-01-01~2019-12-31"]
       resources: {}
 status: {}

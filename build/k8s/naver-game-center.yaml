@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-kbo-game-center
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: game-center
+  namespace: crawler-naver-kbo-game-center
+  labels:
+    app: crawler-naver-kbo-game-center
+    site: naver-kbo-game-center
+spec:
+  restartPolicy: Always
+  containers:
+    - name: trace-comments
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/kbo_game_center_utils.py", "--trace_comments"]
+      resources: {}
+status: {}

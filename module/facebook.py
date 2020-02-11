@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 import pytz
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from module.utils.logging_format import LogMessage as LogMsg
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.selenium_utils import SeleniumUtils
@@ -29,6 +30,8 @@ logging_opt = {
 
 logging.addLevelName(MESSAGE, 'MESSAGE')
 logging.basicConfig(**logging_opt)
+
+logger = logging.getLogger()
 
 
 class SeleniumCrawler(SeleniumUtils):
@@ -70,16 +73,22 @@ class SeleniumCrawler(SeleniumUtils):
             post['raw_html'] = tag.prettify()
 
             # 메세지 추출
-            post['html_content'] = '\n'.join([v.prettify() for v in tag.find_all('span', {'data-sigil': 'expose'})])
+            span_list = tag.find_all('span', {'data-sigil': 'more'})
+            if len(span_list) > 0:
+                post['content'] = '\n'.join([v.get_text(separator='\n') for v in span_list])
+                post['html_content'] = '\n'.join([v.prettify() for v in span_list])
+            else:
+                post['content'] = '\n'.join([v.get_text(separator='\n') for v in tag.find_all('p')])
 
-            post['content'] = '\n'.join(
-                [v.get_text(separator='\n') for v in tag.find_all('span', {'data-sigil': 'expose'})])
+                story_body = tag.find_all('div', {'class': 'story_body_container'})
+                post['html_content'] = '\n'.join([v.prettify() for v in story_body])
 
             # 공감 정보
-            post['reactions'] = [str(v) for v in tag.find_all('div', {'data-sigil': 'reactions-sentence-container'})]
+            div_list = tag.find_all('div', {'data-sigil': 'reactions-sentence-container'})
+            post['reactions'] = [str(v) for v in div_list]
 
-            post['url'] = [urljoin(url, v['href']) for v in tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'}) if
-                           v.has_attr('href')]
+            a_list = tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'})
+            post['url'] = [urljoin(url, v['href']) for v in a_list if v.has_attr('href')]
             if len(post['url']) > 0:
                 post['url'] = post['url'][0]
             else:
@@ -96,7 +105,12 @@ class SeleniumCrawler(SeleniumUtils):
         try:
             self.driver.execute_script(script)
         except Exception as e:
-            print({'delete_post', e})
+            msg = {
+                'level': 'ERROR',
+                'message': 'delete post',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
             return None
 
         self.driver.implicitly_wait(10)
@@ -119,6 +133,15 @@ class SeleniumCrawler(SeleniumUtils):
 
             self.elastic.save_document(document=doc, delete=False)
 
+            msg = {
+                'level': 'MESSAGE',
+                'message': '기사 저장 성공',
+                'group_name': doc['group_name'],
+                'document_id': doc['document_id'],
+                'content': doc['content'],
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
+
         self.elastic.flush()
 
         return
@@ -132,6 +155,15 @@ class SeleniumCrawler(SeleniumUtils):
         self.elastic.save_document(document=doc, delete=False)
         if flush is True:
             self.elastic.flush()
+
+        msg = {
+            'level': 'MESSAGE',
+            'message': '기사 저장 성공',
+            'group_name': doc['group_name'],
+            'document_id': doc['document_id'],
+            'content': doc['content'],
+        }
+        logger.log(level=MESSAGE, msg=LogMsg(msg))
 
         return
 
@@ -200,10 +232,10 @@ class SeleniumCrawler(SeleniumUtils):
 
         doc['reply_list'] = reply_list
 
-        story_body = soup.find_all('div', {'class': 'story_body_container'})
-
-        doc['html_content'] = '\n'.join([v.prettify() for v in story_body])
         doc['content'] = '\n'.join([v.get_text(separator='\n') for v in soup.find_all('p')])
+
+        story_body = soup.find_all('div', {'class': 'story_body_container'})
+        doc['html_content'] = '\n'.join([v.prettify() for v in story_body])
 
         return
 
@@ -222,7 +254,12 @@ class SeleniumCrawler(SeleniumUtils):
                 self.driver.implicitly_wait(15)
                 sleep(2)
         except Exception as e:
-            print({'more reply error: ', e})
+            msg = {
+                'level': 'ERROR',
+                'message': 'more reply error',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
 
         sleep(2)
         return
@@ -251,7 +288,12 @@ class SeleniumCrawler(SeleniumUtils):
         except NoSuchElementException:
             return
         except Exception as e:
-            print({'see prev reply error: ', e})
+            msg = {
+                'level': 'ERROR',
+                'message': 'see prev reply error',
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
             return
 
         if stop is True:
@@ -293,7 +335,12 @@ class SeleniumCrawler(SeleniumUtils):
 
         while start < len(id_list):
             doc_list = []
-            self.elastic.get_by_ids(id_list=id_list[start:end], index=self.elastic.index, source=None, result=doc_list)
+            self.elastic.get_by_ids(
+                index=self.elastic.index,
+                source=None,
+                result=doc_list,
+                id_list=id_list[start:end],
+            )
 
             if start >= len(id_list):
                 break
@@ -333,15 +380,31 @@ class SeleniumCrawler(SeleniumUtils):
         self.driver.get(url)
         self.driver.implicitly_wait(10)
 
-        for _ in tqdm(range(self.args.max_page)):
+        i = 0
+        for _ in range(self.args.max_page):
             stop = self.page_down(count=10)
             self.driver.implicitly_wait(25)
+
+            i += 1
 
             try:
                 post_list = self.parse_post(url=url, html=self.driver.page_source)
             except Exception as e:
-                print('get page error: ', e)
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'post 목록 조회 에러',
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
                 continue
+
+            msg = {
+                'level': 'MESSAGE',
+                'message': 'trace post list',
+                'page': '{:,}/{:,}'.format(i, self.args.max_page),
+                'count_post_list': len(post_list),
+            }
+            logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             if post_list is None or len(post_list) == 0:
                 break

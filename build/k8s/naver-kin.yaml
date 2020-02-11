@@ -1,9 +1,15 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-kin
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-kin
-  namespace: crawler
+  name: question-list
+  namespace: crawler-naver-kin
   labels:
     app: crawler
     site: naver-kin
@@ -15,16 +21,58 @@ spec:
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_question_list"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: answer-list
+  namespace: crawler-naver-kin
+  labels:
+    app: crawler
+    site: naver-kin
+spec:
+  restartPolicy: Always
+  containers:
     - name: answer-list
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_answer_list"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: detail-question
+  namespace: crawler-naver-kin
+  labels:
+    app: crawler
+    site: naver-kin
+spec:
+  restartPolicy: Always
+  containers:
     - name: detail-question
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_detail_question"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: detail-answer
+  namespace: crawler-naver-kin
+  labels:
+    app: crawler
+    site: naver-kin
+spec:
+  restartPolicy: Always
+  containers:
     - name: detail-answer
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app

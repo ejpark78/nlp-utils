@@ -28,3 +28,6 @@ RUN echo "" >> /etc/ca-certificates.conf \
 RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
 WORKDIR ${APP_HOME}
+
+ENV CURL_CA_BUNDLE=""
+ENV PYTHONPATH=${APP_HOME}

@@ -1,9 +1,15 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-nate
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: nate
-  namespace: crawler
+  name: economy
+  namespace: crawler-nate
   labels:
     app: crawler
     site: nate
@@ -15,49 +21,134 @@ spec:
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: entertainment
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: entertainment
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: international
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: international
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: it
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: it
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
       resources: {}
-#    - name: opinion
-#      image: corpus:5000/crawler:latest
-#      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
-#      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: politics
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: politics
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
       resources: {}
-#    - name: radio
-#      image: corpus:5000/crawler:latest
-#      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
-#      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: society
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: society
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sports
+  namespace: crawler-nate
+  labels:
+    app: crawler
+    site: nate
+spec:
+  restartPolicy: Always
+  containers:
     - name: sports
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
       resources: {}
+status: {}
+
+#    - name: radio
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
+#      resources: {}
+#    - name: opinion
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
+#      resources: {}
 #    - name: tv
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]
 #      resources: {}
-status: {}

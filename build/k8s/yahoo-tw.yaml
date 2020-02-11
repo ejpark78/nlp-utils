@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-yahoo-tw
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: news-list
+  namespace: crawler-yahoo-tw
+  labels:
+    app: crawler-yahoo-tw
+    site: yahoo-tw
+spec:
+  restartPolicy: Always
+  containers:
+    - name: list
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/yahoo-tw.py", "--list"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: news-contents
+  namespace: crawler-yahoo-tw
+  labels:
+    app: crawler-yahoo-tw
+    site: yahoo-tw
+spec:
+  restartPolicy: Always
+  containers:
+    - name: contents
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/yahoo-tw.py", "--contents"]
+      resources: {}
+status: {}

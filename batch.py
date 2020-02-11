@@ -18,7 +18,7 @@ from module.naver.terms.detail import TermDetail as NaverTermDetail
 from module.naver.terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
-from module.udemy.udemy import UdemyUtils
+from module.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
 from module.web_news_test import WebNewsCrawlerTest
 

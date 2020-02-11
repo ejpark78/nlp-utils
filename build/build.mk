@@ -26,7 +26,9 @@ build:
 	cd ../
 	tar cvfz ./build/app.tar.gz \
 		--exclude=.git \
+		--exclude=.pki \
 		--exclude=.idea \
+		--exclude=.cache \
 		--exclude=.vscode \
 		--exclude=.ipynb_checkpoints \
 		--exclude=*.log \
@@ -34,18 +36,16 @@ build:
 		--exclude=*.bz2 \
 		--exclude=*.pycharm* \
 		--exclude=__pycache__ \
-		--exclude=build \
-		--exclude=data \
-		--exclude=down \
-		--exclude=notebook \
-		--exclude=wrap \
-		--exclude=venv \
 		--exclude=tmp \
 		--exclude=log \
+		--exclude=wrap \
+		--exclude=venv \
+		--exclude=data \
+		--exclude=down \
+		--exclude=build \
 		--exclude=status \
+		--exclude=notebook \
 		--exclude=cache \
-		--exclude=.cache \
-		--exclude=.pki \
 		.
 
 	cd build/

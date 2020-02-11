@@ -81,6 +81,13 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         # 날짜별 크롤링 시작
         for dt in date_list:
+            msg = {
+                'level': 'ERROR',
+                'message': '날짜',
+                'date': str(dt)
+            }
+            logger.error(msg=LogMsg(msg))
+
             for job in self.job_info:
                 if 'split_index' not in job:
                     job['split_index'] = False
@@ -399,7 +406,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
         except Exception as e:
             msg = {
                 'level': 'ERROR',
-                'message': '댓글 조회 에러',
+                'message': '댓글 파싱 에러',
                 'callback': callback,
                 'exception': str(e),
             }

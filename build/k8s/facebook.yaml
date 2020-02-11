@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-facebook
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: amity-list
+#  namespace: crawler-facebook
+#  labels:
+#    app: crawler-facebook-amity-list
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: amity
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/친목.json", "--max_page", "50"]
+#      resources: {}
+#status: {}
+
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: community-list
+#   namespace: crawler-facebook
+#   labels:
+#     app: crawler-facebook-community-list
+# spec:
+#   restartPolicy: Always
+#   containers:
+#     - name: community
+#       image: corpus:5000/crawler:latest
+#       workingDir: /usr/local/app
+#       args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/커뮤니티.json", "--max_page", "50"]
+#       resources: {}
+# status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: media-list
+  namespace: crawler-facebook
+  labels:
+    app: crawler-facebook-media-list
+spec:
+  restartPolicy: Always
+  containers:
+    - name: media
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/언론.json", "--max_page", "50"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: school-chat-list
+  namespace: crawler-facebook
+  labels:
+    app: crawler-facebook-school-chat-list
+spec:
+  restartPolicy: Always
+  containers:
+    - name: school-chat
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/대나무숲.json", "--max_page", "50"]
+      resources: {}
+status: {}

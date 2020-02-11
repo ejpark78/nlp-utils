@@ -1,9 +1,15 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-bbs
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: bbs
-  namespace: crawler
+  name: mlbpark-kbo
+  namespace: crawler-bbs
   labels:
     app: crawler
     site: bbs
@@ -15,26 +21,96 @@ spec:
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-kbo"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mlbpark-mlb
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
     - name: mlbpark-mlb
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-mlb"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mlbpark-bullpen
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
     - name: mlbpark-bullpen
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "bbs", "--job_id", "mlbpark-bullpen"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lineagem
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
     - name: lineagem
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "bbs", "--job_id", "lineagem"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ruliweb
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
     - name: ruliweb
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "bbs", "--job_id", "ruliweb"]
       resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inven-lineagem
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
     - name: inven-lineagem
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app

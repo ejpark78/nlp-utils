@@ -10,6 +10,7 @@ import logging
 from glob import glob
 from os.path import isdir
 from time import sleep
+from module.utils.logging_format import LogMessage as LogMsg
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -26,6 +27,8 @@ logging_opt = {
 
 logging.addLevelName(MESSAGE, 'MESSAGE')
 logging.basicConfig(**logging_opt)
+
+logger = logging.getLogger()
 
 
 class SeleniumUtils(object):
@@ -84,7 +87,12 @@ class SeleniumUtils(object):
                 html.send_keys(Keys.PAGE_DOWN)
                 self.driver.implicitly_wait(10)
             except Exception as e:
-                print('page down error: ', e)
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'page down error',
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
                 break
 
             sleep(2)
@@ -112,7 +120,12 @@ class SeleniumUtils(object):
 
                 WebDriverWait(self.driver, scroll_time, 10).until(lambda x: check_height(height))
             except Exception as e:
-                print('scroll error: ', e)
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'scroll error',
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
                 break
 
             if last_height == height:

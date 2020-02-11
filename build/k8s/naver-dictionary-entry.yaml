@@ -1,0 +1,309 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-dictionary
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: korean
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: korean
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "한국어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: thailand
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: thailand
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chinese
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: chinese
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "중국어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: indonesian
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: indonesian
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vietnamese
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: vietnamese
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: russian
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: russian
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: german
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: german
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "독일어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spanish
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: spanish
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "스페인어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: japanese
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: japanese
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "일본어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: turkish
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: turkish
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: french
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: french
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "프랑스어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ukrainian
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: ukrainian
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: polish
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: polish
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: italian
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: italian
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rumanian
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: rumanian
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: english
+  namespace: crawler-naver-dictionary
+  labels:
+    app: crawler-naver-dictionary
+    site: naver-dictionary
+spec:
+  restartPolicy: Always
+  containers:
+    - name: english
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "영어"]
+      resources: {}
+status: {}
