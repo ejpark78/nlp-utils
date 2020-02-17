@@ -14,7 +14,7 @@ import pytz
 import requests
 import urllib3
 from dateutil.relativedelta import relativedelta
-from werkzeug.contrib.cache import SimpleCache
+from cachelib import SimpleCache
 
 from module.config import Config
 from module.utils.html_parser import HtmlParser

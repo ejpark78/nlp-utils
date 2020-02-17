@@ -213,43 +213,43 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ukrainian
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: ukrainian
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: ukrainian
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: ukrainian
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
+#      resources: {}
+#status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: polish
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: polish
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: polish
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: polish
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
+#      resources: {}
+#status: {}
 
 ---
 apiVersion: v1
@@ -270,24 +270,24 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: rumanian
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: rumanian
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
-      resources: {}
-status: {}
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: rumanian
+#   namespace: crawler-naver-dictionary
+#   labels:
+#     app: crawler-naver-dictionary
+#     site: naver-dictionary
+# spec:
+#   restartPolicy: Always
+#   containers:
+#     - name: rumanian
+#       image: corpus:5000/crawler:latest
+#       workingDir: /usr/local/app
+#       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
+#       resources: {}
+# status: {}
 
 ---
 apiVersion: v1

@@ -15,7 +15,6 @@ openpyxl
 jsonlines
 urllib3
 tqdm
-werkzeug
 botocore
 queues
 pika
@@ -27,3 +26,4 @@ pyjwt
 PySocks
 browsermob-proxy
 certifi
+cachelib
