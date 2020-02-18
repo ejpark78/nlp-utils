@@ -587,12 +587,18 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-bbs-game-lineagem-eng"
+    "index": "text-bbs-lineagem"
   },
   "dest": {
-    "index": "crawler-bbs-game-lineage2-eng"
+    "index": "corpus-bbs-lineagem"
   }
 }
+
+###
+
+GET {{host}}/_tasks/MS0jDjZ7QcWp5Wr6n_PFJg:529125153
+Content-Type: application/json
+Accept: application/text
 
 ###
 
@@ -696,3 +702,8 @@ Accept: application/json
 
 ###
 
+GET {{host}}/crawler-youtube-live-chat/_doc/CkUKGkNQZmQtWXY0a2VZQ0ZhbkV3UW9kTC1ZQk5REidDUHYxME5YM2tlWUNGYlhCVEFJZDFWRU5hZzE1NzUxMTcwMDMxMzI=
+Content-Type: application/json
+Accept: application/json
+
+###

@@ -5,14 +5,16 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
+import uuid
 from os import makedirs
 from os.path import isdir
+from time import sleep
+from module.utils.logging_format import LogMessage as LogMsg
 
 import pytz
 from browsermobproxy import Server
 from selenium import webdriver
-from time import sleep
-import uuid
 
 
 class SeleniumProxyUtils(object):
@@ -38,6 +40,13 @@ class SeleniumProxyUtils(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
+        self.MESSAGE = 25
+
+        logging.addLevelName(self.MESSAGE, 'MESSAGE')
+        logging.basicConfig(format='%(message)s')
+
+        self.logger = logging.getLogger()
+
     @staticmethod
     def parse_url(url):
         """url 에서 쿼리문을 반환한다."""
@@ -60,7 +69,14 @@ class SeleniumProxyUtils(object):
         self.proxy_server.start()
 
         self.proxy = self.proxy_server.create_proxy()
-        self.proxy.new_har(uuid.uuid1())
+        self.proxy.new_har(
+            uuid.uuid1(),
+            options={
+                'captureHeaders': True,
+                'captureContent': True,
+                'captureBinaryContent': True
+            }
+        )
 
         options = webdriver.ChromeOptions()
 
@@ -121,7 +137,13 @@ class SeleniumProxyUtils(object):
                 html.send_keys(Keys.PAGE_DOWN)
                 self.driver.implicitly_wait(10)
             except Exception as e:
-                print('page down error: ', e)
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'page down 에러',
+                    'exception': str(e),
+                }
+
+                self.logger.error(msg=LogMsg(msg))
                 break
 
             sleep(2)

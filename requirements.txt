@@ -27,3 +27,4 @@ PySocks
 browsermob-proxy
 certifi
 cachelib
+brotlipy
