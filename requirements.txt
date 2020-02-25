@@ -28,3 +28,4 @@ browsermob-proxy
 certifi
 cachelib
 brotlipy
+psutil

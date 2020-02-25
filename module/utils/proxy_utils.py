@@ -6,19 +6,23 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
-import uuid
 from os import makedirs
 from os.path import isdir
 from time import sleep
-from module.utils.logging_format import LogMessage as LogMsg
+from uuid import uuid1
 
 import pytz
 from browsermobproxy import Server
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+from module.utils.logging_format import LogMessage as LogMsg
 
 
 class SeleniumProxyUtils(object):
-    """유튜브 라이브 채팅 크롤러"""
+    """프락시 크롤러"""
 
     def __init__(self):
         """ 생성자 """
@@ -31,6 +35,8 @@ class SeleniumProxyUtils(object):
 
         self.driver = None
 
+        self.current_url = None
+
         self.url_buf = {}
 
         self.headers = {
@@ -41,11 +47,18 @@ class SeleniumProxyUtils(object):
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.MESSAGE = 25
-
         logging.addLevelName(self.MESSAGE, 'MESSAGE')
-        logging.basicConfig(format='%(message)s')
+
+        logging_opt = {
+            'format': '[%(levelname)-s] %(message)s',
+            'handlers': [logging.StreamHandler()],
+            'level': self.MESSAGE,
+
+        }
+        logging.basicConfig(**logging_opt)
 
         self.logger = logging.getLogger()
+        self.logger.setLevel(self.MESSAGE)
 
     @staticmethod
     def parse_url(url):
@@ -64,13 +77,16 @@ class SeleniumProxyUtils(object):
         if self.driver is not None:
             return
 
-        self.proxy_server = Server(self.args.proxy_server)
+        options = {
+            'port': 8080
+        }
+        self.proxy_server = Server(self.args.proxy_server, options=options)
 
         self.proxy_server.start()
 
         self.proxy = self.proxy_server.create_proxy()
         self.proxy.new_har(
-            uuid.uuid1(),
+            uuid1(),
             options={
                 'captureHeaders': True,
                 'captureContent': True,
@@ -105,16 +121,48 @@ class SeleniumProxyUtils(object):
 
         return self.driver
 
+    def kill(self, proc_pid):
+        """ """
+        import psutil
+
+        try:
+            process = psutil.Process(proc_pid)
+            for proc in process.children(recursive=True):
+                proc.kill()
+
+            process.kill()
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '프로세서 킬 에러',
+                'exception': str(e),
+            }
+            self.logger.error(msg=LogMsg(msg))
+
+        return
+
     def close_driver(self):
+        """ """
+        self.kill(self.proxy_server.process.pid)
+
+        try:
+            self.proxy_server.stop()
+            self.proxy.close()
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '프락시 종료 에러',
+                'exception': str(e),
+            }
+            self.logger.error(msg=LogMsg(msg))
+
+        self.proxy_server = None
+
+        self.proxy = None
+
         if self.driver is not None:
             self.driver.quit()
             self.driver = None
-
-        self.proxy.close()
-        self.proxy = None
-
-        self.proxy_server.stop()
-        self.proxy_server = None
 
         return
 
@@ -149,3 +197,139 @@ class SeleniumProxyUtils(object):
             sleep(2)
 
         return False
+
+    def is_valid_path(self, path_list, url):
+        """ """
+        if url in self.url_buf:
+            return False
+
+        for path in path_list:
+            if url.find(path) < 0:
+                continue
+
+            return True
+
+        return False
+
+    def trace_networks(self, path_list):
+        """ """
+        try:
+            entry_list = self.proxy.har['log']['entries']
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': 'proxy entry 추출 에러',
+                'exception': str(e),
+            }
+            self.logger.error(msg=LogMsg(msg))
+
+            return []
+
+        result = []
+        for ent in entry_list:
+            url = ent['request']['url']
+            if self.is_valid_path(path_list=path_list, url=url) is False:
+                continue
+
+            try:
+                result.append({
+                    'url': url,
+                    'content': ent['response']['content']
+                })
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'response content 추출 에러',
+                    'exception': str(e),
+                }
+                self.logger.error(msg=LogMsg(msg))
+
+        return result
+
+    def decode_response(self, content_list):
+        """ """
+        import json
+        import brotli
+        from base64 import b64decode
+
+        result = []
+        for content in content_list:
+            mime_type = content['content']['mimeType']
+            if mime_type.find('json') < 0:
+                continue
+
+            try:
+                text = content['content']['text']
+                decoded_text = brotli.decompress(b64decode(text)).decode()
+
+                doc = json.loads(decoded_text)
+                if isinstance(doc, list):
+                    for d in doc:
+                        d['url'] = content['url']
+
+                    result += doc
+                else:
+                    doc['url'] = content['url']
+                    result.append(doc)
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'decode response 에러',
+                    'exception': str(e),
+                }
+
+                self.logger.error(msg=LogMsg(msg))
+
+        return result
+
+    def check_history(self, url):
+        """ """
+        if url in self.url_buf:
+            return True
+
+        self.url_buf[url] = 1
+
+        return False
+
+    def wait(self, css):
+        """ """
+        wait = WebDriverWait(self.driver, 120)
+
+        wait.until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css))
+        )
+
+        return
+
+    @staticmethod
+    def read_config(filename):
+        """설정파일을 읽어드린다."""
+        import json
+        from glob import glob
+
+        file_list = [filename]
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob('{}/*.json'.format(filename)):
+                file_list.append(f_name)
+
+        result = []
+
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                buf = ''
+                for line in fp.readlines():
+                    line = line.strip()
+                    if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
+                        continue
+
+                    buf += line
+                    if line != '}':
+                        continue
+
+                    doc = json.loads(buf)
+                    buf = ''
+
+                    result.append(doc)
+
+        return result

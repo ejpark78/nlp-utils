@@ -23,24 +23,24 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: thailand
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: thailand
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: thailand
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: thailand
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
+#      resources: {}
+#status: {}
 
 ---
 apiVersion: v1

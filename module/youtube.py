@@ -7,7 +7,8 @@ from __future__ import print_function
 
 import json
 from datetime import datetime
-from os.path import isfile
+from os import makedirs
+from os.path import isdir, dirname
 from time import sleep
 from urllib.parse import unquote
 
@@ -28,10 +29,14 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         self.home_path = 'data/youtube-live-chat'
         self.data_path = self.home_path
 
-        host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
+        host = 'https://corpus.ncsoft.com:9200'
         index = 'crawler-youtube-live-chat'
 
-        self.elastic = ElasticSearchUtils(host=host, index=index, split_index=True)
+        self.elastic = ElasticSearchUtils(
+            host=host,
+            index=index,
+            split_index=True
+        )
 
     def simplify(self, doc):
         """ """
@@ -54,12 +59,18 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
             for act in act_item['replayChatItemAction']['actions']:
                 try:
-                    chat_text = act['addChatItemAction']['item']['liveChatTextMessageRenderer']
+                    chat_item = act['addChatItemAction']['item']
+
+                    if 'liveChatTextMessageRenderer' not in chat_item:
+                        continue
+
+                    chat_text = chat_item['liveChatTextMessageRenderer']
                 except Exception as e:
                     msg = {
                         'level': 'ERROR',
                         'message': 'simplify chat text 추출 에러',
                         'exception': str(e),
+                        'act': act,
                     }
 
                     self.logger.error(msg=LogMsg(msg))
@@ -95,9 +106,21 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
     def save_live_chat(self, doc, meta):
         """ """
-        try:
-            doc_list = self.simplify(doc=doc)
+        doc_list = self.simplify(doc=doc)
 
+        try:
+            msg = {
+                'level': 'MESSAGE',
+                'message': 'live chat 저장',
+                'length': len(doc),
+                'meta': meta,
+                'text': [doc['text'] for doc in doc_list],
+            }
+            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+        except Exception as e:
+            self.logger.error(e)
+
+        try:
             for doc in doc_list:
                 doc.update(meta)
 
@@ -146,35 +169,22 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             'streamer': streamer,
         }
 
-    def check_history(self, url):
-        """ """
-        if url in self.url_buf:
-            return True
-
-        self.url_buf[url] = 1
-
-        return False
-
-    def get_live_chat(self, url_list):
+    def get_live_chat(self, resp_list):
         """ """
         i = 0
-        for url in url_list:
+        for url in resp_list:
             if self.check_history(url=url) is True:
                 continue
 
             msg = {
                 'level': 'MESSAGE',
                 'message': 'get live chat',
-                'i': '{}/{}'.format(i, len(url_list)),
+                'i': '{}/{}'.format(i, len(resp_list)),
                 'url': url,
             }
             self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
 
             meta = self.get_meta(url=url)
-            if isfile(meta['filename']) is True:
-                i += 1
-                continue
-
             try:
                 resp = requests.get(url, headers=self.headers)
                 doc = resp.json()
@@ -191,55 +201,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             i += 1
             sleep(5)
 
-        return
-
-    def is_valid_path(self, path_list, url):
-        """ """
-        if url in self.url_buf:
-            return False
-
-        for path in path_list:
-            if url.find(path) < 0:
-                continue
-
-            return True
-
-        return False
-
-    def trace_networks(self, path_list):
-        """ """
-        self.make_path(self.data_path)
-
-        url_list = []
-        content_list = []
-        for ent in self.proxy.har['log']['entries']:
-            url = ent['request']['url']
-            if self.is_valid_path(path_list=path_list, url=url) is False:
-                continue
-
-            url_list.append(url)
-
-            try:
-                content_list.append({
-                    'url': url,
-                    'content': ent['response']['content']
-                })
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': 'trace networks 에러',
-                    'exception': str(e),
-                }
-
-                self.logger.error(msg=LogMsg(msg))
-
-        if len(content_list) == 0:
-            return
-
-        doc_list = self.decode_response(content_list=content_list)
-        self.save_response(doc_list=doc_list)
-
-        self.dump_response(doc_list=doc_list)
         return
 
     def save_response(self, doc_list):
@@ -264,47 +225,53 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             return
 
         filename = '{}/{}.json'.format(self.home_path, str(uuid4()))
+
+        dir_path = dirname(filename)
+        if isdir(dir_path) is False:
+            makedirs(dir_path)
+
         with open(filename, 'w') as fp:
             for doc in doc_list:
                 fp.write(json.dumps(doc, indent=4, ensure_ascii=False) + '\n')
 
         return
 
-    def decode_response(self, content_list):
+    def prepare(self):
         """ """
-        import json
-        import brotli
-        from base64 import b64decode
 
-        result = []
-        for content in content_list:
-            mime_type = content['content']['mimeType']
-            if mime_type.find('json') < 0:
-                continue
+        try:
+            css = 'div.trigger paper-button#label'
+            ele = self.driver.find_element_by_css_selector(css)
+            if ele is not None:
+                ele.click()
 
-            try:
-                text = content['content']['text']
-                decoded_text = brotli.decompress(b64decode(text)).decode()
+            xpath = '//*[@id="menu"]/a[2]'
+            ele = self.driver.find_element_by_xpath(xpath)
+            if ele is not None:
+                ele.click()
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '실시간 채팅 다시보기 클릭 에러',
+                'exception': str(e),
+            }
+            self.logger.error(msg=LogMsg(msg))
 
-                doc = json.loads(decoded_text)
-                if isinstance(doc, list):
-                    for d in doc:
-                        d['url'] = content['url']
+        try:
+            xpath = '//*[@id="ytp-id-21"]/div/div[2]/div[8]/div'
 
-                    result += doc
-                else:
-                    doc['url'] = content['url']
-                    result.append(doc)
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': 'decode response 에러',
-                    'exception': str(e),
-                }
+            ele = self.driver.find_element_by_xpath(xpath)
+            if ele is not None:
+                ele.click()
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': '2배속 클릭 에러',
+                'exception': str(e),
+            }
+            self.logger.error(msg=LogMsg(msg))
 
-                self.logger.error(msg=LogMsg(msg))
-
-        return result
+        return
 
     def batch(self):
         """ """
@@ -312,20 +279,46 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
         self.open_driver()
 
-        self.home_path = 'data/youtube-live-chat'
-        start_url = 'https://www.youtube.com'
+        self.home_path = self.args.log_path
+
         start_url = 'https://www.youtube.com/playlist?list=PLmF_CDUVuBvjyepFjz-rDurq4Plnmh6zA'
         start_url = 'https://www.youtube.com/channel/UCymheuyZLem9B6XEAn0Iflg'
+        start_url = 'https://www.youtube.com'
+        start_url = 'https://www.youtube.com/watch?v=OmO1leAW-NU&list=PLb3XLk5iWovdtEntnFtiVpcnpA9POnlWg&index=13'
 
         self.driver.get(start_url)
         self.driver.implicitly_wait(60)
+        sleep(10)
+        # self.prepare()
+
+        self.current_url = self.driver.current_url
 
         for i in range(100000):
             if self.args.trace_list is True:
                 # self.page_down(10)
-                self.trace_networks(path_list=['/playlist?', '/browse_ajax?'])
+                resp_list = self.trace_networks(path_list=['/playlist?', '/browse_ajax?'])
             else:
-                self.trace_networks(path_list=['/get_live_chat'])
+                resp_list = self.trace_networks(path_list=['/get_live_chat'])
+                self.get_live_chat(resp_list=[x['url'] for x in resp_list])
+            #
+            # doc_list = self.decode_response(content_list=resp_list)
+            #
+            # self.save_response(doc_list=doc_list)
+            # self.dump_response(doc_list=doc_list)
+            #
+            # if self.current_url != self.driver.current_url:
+            #     self.current_url = self.driver.current_url
+            #
+            #     self.close_driver()
+            #     self.open_driver()
+            #
+            #     self.driver.get(self.current_url)
+            #     self.driver.implicitly_wait(60)
+            #     sleep(10)
+            #
+            #     # self.prepare()
+            #
+            # self.current_url = self.driver.current_url
 
             sleep(60 * 1)
 
@@ -341,9 +334,10 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         parser = argparse.ArgumentParser()
 
         parser.add_argument('--trace_list', action='store_true', default=False, help='')
+        parser.add_argument('--use_head', action='store_false', default=True, help='')
 
         parser.add_argument('--user_data', default='cache/selenium/youtube', help='')
-        parser.add_argument('--use_head', action='store_false', default=True, help='')
+        parser.add_argument('--log_path', default='data/youtube-live-chat', help='')
 
         parser.add_argument('--proxy_server', default='module/browsermob-proxy/bin/browsermob-proxy', help='')
 

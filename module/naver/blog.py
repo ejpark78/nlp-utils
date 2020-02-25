@@ -41,7 +41,7 @@ class SeleniumCrawler(SeleniumUtils):
         self.driver = None
 
         host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
-        index = 'crawler-bbs-naver'
+        index = 'crawler-naver-blog'
 
         self.elastic = ElasticSearchUtils(host=host, index=index, split_index=True)
 

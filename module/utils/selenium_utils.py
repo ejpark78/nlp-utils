@@ -18,14 +18,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 MESSAGE = 25
+logging.addLevelName(MESSAGE, 'MESSAGE')
+
 logging_opt = {
     'format': '[%(levelname)-s] %(message)s',
     'handlers': [logging.StreamHandler()],
     'level': MESSAGE,
 
 }
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
 logging.basicConfig(**logging_opt)
 
 logger = logging.getLogger()

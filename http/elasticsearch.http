@@ -441,7 +441,7 @@ Accept: application/json
 
 ###
 
-#DELETE {{host}}/crawler-facebook
+#DELETE {{host}}/crawler-bbs-naver
 #Content-Type: application/json
 #Accept: application/json
 
@@ -587,16 +587,16 @@ Accept: application/json
 
 {
   "source": {
-    "index": "text-bbs-lineagem"
+    "index": "crawler-bbs-naver"
   },
   "dest": {
-    "index": "corpus-bbs-lineagem"
+    "index": "crawler-naver-cafe"
   }
 }
 
 ###
 
-GET {{host}}/_tasks/MS0jDjZ7QcWp5Wr6n_PFJg:529125153
+GET {{host}}/_tasks/8kaypq9RQgCyoDjpSdTLRA:480539536
 Content-Type: application/json
 Accept: application/text
 

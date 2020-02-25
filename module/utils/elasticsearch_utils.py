@@ -135,8 +135,8 @@ class ElasticSearchUtils(object):
         # https://github.com/elastic/elasticsearch-py/issues/712
         ssl_context = create_ssl_context()
 
-        ssl_context.check_hostname = True
-        ssl_context.verify_mode = ssl.CERT_OPTIONAL
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
 
         return ssl_context
 
@@ -151,7 +151,8 @@ class ElasticSearchUtils(object):
                 http_auth=self.http_auth,
                 verify_certs=False,
                 ssl_show_warn=False,
-                # ssl_context=self.get_ssl_verify_mode(),
+                ssl_context=self.get_ssl_verify_mode(),
+                http_compress=True,
             )
         except Exception as e:
             log_msg = {
@@ -317,6 +318,8 @@ class ElasticSearchUtils(object):
                 'exception': str(e),
             }
             logger.error(msg=LogMsg(log_msg))
+
+            self.bulk_data[self.host] = []
 
             return False
 
