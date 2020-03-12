@@ -1,0 +1,25 @@
+{
+	"ID": "C_001",
+	"명칭": "네이버 야구 응원한마디, 문자중계",
+	"언어": "한국어",
+	"소스": "네이버 야구 응원한마디, 문자중계",
+	"코퍼스 유형": "SNS글/댓글",
+	"도메인": "스포츠-야구",
+	"스타일": "준구어체",
+	"공개 레벨": "미정",
+	"수량": "$_$",
+	"저장 포맷": "JSON",
+	"구축 방법": "크롤링",
+	"구축 일시": "$_$",
+	"구축자": "박은진",
+	"요청자": "",
+	"구축 목적": "",
+	"관련 프로젝트": "",
+	"주석 층위": {
+		"야구 게임 정보": ["gameId", "isSdTvEnable", "aFullName", "isTvOnAirSd", "ognGameId", "inn", "hCode", "hName", "cancelFlag", "gdate", "isEnable", "suspendedInfo", "isTvOnAir", "gtime", "isTvEnable", "aName", "gweek", "hFullName", "aCode", "isVod", "statusCode", "document_id", "aScore", "hScore"],
+		"문자 중계": ["homeBallFour", "pitchId", "base3", "base1", "base2", "awayScore", "homeHit", "awayHit", "btop", "awayBallFour", "b", "homeScore", "seqno", "inn", "ballcount", "awayError", "batorder", "o", "ilsun", "s", "batstartorder", "liveText", "awayInningScore", "homeError", "textStyle", "homeInningScore", "stuff", "eventType"],
+		"응원 한마디": ["is_me2day", "parent_comment_no", "is_facebook", "contents", "group_no", "status", "is_me2day_posted", "is_yozm", "modified_ymdt", "writer_id", "enc_writer_id", "reply_level", "object_id", "is_twitter", "registered_ymdt", "altr_contents", "category_id", "mobile_yn", "comment_no", "writer_ip", "ticket", "deleted_yn", "visible_yn", "object_url", "is_mine", "is_reply", "is_author_comment", "date", "team_name", "game_date", "away_team", "home_team"]
+	},
+	"연관 코퍼스 ID": "",
+	"기타 Note": ""
+}

@@ -258,6 +258,9 @@ class SeleniumCrawler(SeleniumProxyUtils):
             if self.check_history(url=content['url']) is True:
                 continue
 
+            if 'text' not in content['content']:
+                continue
+
             item = json.loads(content['content']['text'])
             if 'menu' in item or 'message' in item:
                 continue
@@ -490,10 +493,15 @@ class SeleniumCrawler(SeleniumProxyUtils):
                             }
                         },
                         {
-                            'match': {
-                                'status': 'error'
+                            'exists': {
+                                'field': 'status'
                             }
-                        }
+                        },
+                        # {
+                        #     'match': {
+                        #         'status': 'error'
+                        #     }
+                        # }
                     ]
                 }
             }

@@ -61,24 +61,24 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: indonesian
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: indonesian
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: indonesian
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: indonesian
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
+#      resources: {}
+#status: {}
 
 ---
 apiVersion: v1
@@ -99,24 +99,24 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: russian
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: russian
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: russian
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: russian
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
+#      resources: {}
+#status: {}
 
 ---
 apiVersion: v1
@@ -251,24 +251,24 @@ status: {}
 #      resources: {}
 #status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: italian
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: italian
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: italian
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: italian
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
+#      resources: {}
+#status: {}
 
 # ---
 # apiVersion: v1
