@@ -35,7 +35,7 @@ class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러"""
 
     def __init__(self, category='', job_id='', column='', date_range=None, date_step=1,
-                 config=None, update_category_only=False):
+                 page_range=None, page_step=1, config=None, update_category_only=False):
         """ 생성자 """
         super().__init__()
 
@@ -69,6 +69,15 @@ class WebNewsCrawler(CrawlerBase):
             today = datetime.now(self.timezone)
             if self.date_range['end'] > today:
                 self.date_range['end'] = today
+
+        if page_range is not None:
+            pg_start, pg_end = page_range.split('~', maxsplit=1)
+
+            self.page_range = {
+                'start': int(pg_start),
+                'end': int(pg_end),
+                'step': page_step
+            }
 
         return
 
@@ -125,12 +134,6 @@ class WebNewsCrawler(CrawlerBase):
             if self.date_step < 0:
                 date_list = sorted(date_list, reverse=True)
 
-            # logger.log(level=MESSAGE, msg=LogMsg({
-            #     'date_list': date_list,
-            #     'date_step': self.date_step,
-            #     'date_range': self.date_range,
-            # }))
-
             for dt in date_list:
                 date_now = datetime.now(self.timezone)
                 if dt > date_now + timedelta(1):
@@ -146,6 +149,10 @@ class WebNewsCrawler(CrawlerBase):
         self.trace_depth = 0
         self.trace_list_count = -1
 
+        last_content = None
+        if 'last_content' in url:
+            last_content = url['last_content']
+
         # start 부터 end 까지 반복한다.
         for page in range(self.status['start'], self.status['end'] + 1, self.status['step']):
             # 쿼리 url 생성
@@ -153,7 +160,11 @@ class WebNewsCrawler(CrawlerBase):
             if dt is not None:
                 q['date'] = dt.strftime(url['date_format'])
 
-            url['url'] = url['url_frame'].format(**q)
+            if url['url_frame'].find('{page}') > 0:
+                url['url'] = url['url_frame'].format(**q)
+
+            if last_content is not None:
+                url['url'] = url['url_frame'].format(**last_content)
 
             msg = {
                 'level': 'INFO',
@@ -194,7 +205,7 @@ class WebNewsCrawler(CrawlerBase):
                 continue
 
             # 문서 저장
-            early_stop = self.trace_news(html=resp, url_info=url, job=job, date=dt)
+            early_stop, trace_list = self.trace_news(html=resp, url_info=url, job=job, date=dt)
             if early_stop is True:
                 msg = {
                     'level': 'MESSAGE',
@@ -208,6 +219,10 @@ class WebNewsCrawler(CrawlerBase):
 
                 logger.log(level=MESSAGE, msg=LogMsg(msg))
                 break
+
+            # 마지막 content 저장
+            if last_content is not None and trace_list is not None:
+                last_content = trace_list[-1]
 
             # 현재 크롤링 위치 저장
             self.status['start'] = page
@@ -309,7 +324,7 @@ class WebNewsCrawler(CrawlerBase):
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
-            return True
+            return True, trace_list
 
         # url 저장 이력 조회
         doc_history = self.get_history(name='doc_history', default={})
@@ -404,7 +419,7 @@ class WebNewsCrawler(CrawlerBase):
         if self.trace_list_count < 0:
             self.trace_list_count = len(trace_list)
         elif self.trace_list_count > len(trace_list) + 3:
-            return True
+            return True, trace_list
 
         # 캐쉬 저장
         self.set_history(value=doc_history, name='doc_history')
@@ -412,7 +427,7 @@ class WebNewsCrawler(CrawlerBase):
         # 다음 페이지 정보가 있는 경우
         self.trace_next_page(html=html, url_info=url_info, job=job, date=date)
 
-        return False
+        return False, trace_list
 
     def get_article(self, doc_id, item, job, offline=False):
         """기사 본문을 조회한다."""
@@ -476,7 +491,15 @@ class WebNewsCrawler(CrawlerBase):
 
         url = url_info['url_frame'].format(**req_params)
 
-        if url_info['method'] == "POST":
+        if url_info['method'] != "POST":
+            resp = requests.get(
+                url=url,
+                verify=False,
+                timeout=60,
+                headers=headers,
+                allow_redirects=True,
+            )
+        else:
             try:
                 body = url_info['data'].format(**req_params)
                 body = parse_qs(body)
@@ -499,28 +522,28 @@ class WebNewsCrawler(CrawlerBase):
                 allow_redirects=True,
             )
 
-            if url_info['response_type'] == 'json':
-                try:
-                    req_result = resp.json()
-                except Exception as e:
-                    msg = {
-                        'level': 'ERROR',
-                        'message': 'post request 파싱 에러',
-                        'url': url,
-                        'exception': str(e),
-                    }
-                    logger.error(msg=LogMsg(msg))
-                    return article
+        if url_info['response_type'] == 'json':
+            try:
+                req_result = resp.json()
+            except Exception as e:
+                msg = {
+                    'level': 'ERROR',
+                    'message': 'post request 파싱 에러',
+                    'url': url,
+                    'exception': str(e),
+                }
+                logger.error(msg=LogMsg(msg))
+                return article
 
-                result = []
-                self.get_dict_value(
-                    data=req_result,
-                    result=result,
-                    key_list=url_info['field'].split('.'),
-                )
+            result = []
+            self.get_dict_value(
+                data=req_result,
+                result=result,
+                key_list=url_info['field'].split('.'),
+            )
 
-                if len(result) > 0:
-                    article[url_info['key']] = result
+            if len(result) > 0:
+                article[url_info['key']] = result
 
         return article
 
@@ -620,7 +643,7 @@ class WebNewsCrawler(CrawlerBase):
         if parsing_error is False and isinstance(doc['date'], str):
             try:
                 doc['date'] = parse_date(doc['date'])
-                doc['date'] = tz.localize(doc['date'])
+                doc['date'] = doc['date'].astimezone(tz)
             except Exception as e:
                 parsing_error = True
                 str_e = str(e)

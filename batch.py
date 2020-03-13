@@ -69,6 +69,9 @@ def init_arguments():
     parser.add_argument('--date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
     parser.add_argument('--date_step', default=-1, type=int, help='date step')
 
+    parser.add_argument('--page_range', default=None, help='page 범위: 1~100')
+    parser.add_argument('--page_step', default=1, type=int, help='page step')
+
     # 설정파일
     parser.add_argument('--config', default=None, help='설정 파일 정보')
 
@@ -167,6 +170,8 @@ def main():
             category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
+            page_step=args.page_step,
+            page_range=args.page_range,
             update_category_only=args.update_category_only,
         ).batch()
     else:
@@ -177,6 +182,8 @@ def main():
             category=args.category,
             date_step=args.date_step,
             date_range=args.date_range,
+            page_step=args.page_step,
+            page_range=args.page_range,
             update_category_only=args.update_category_only,
         ).daemon()
 

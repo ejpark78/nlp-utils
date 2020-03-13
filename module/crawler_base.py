@@ -64,6 +64,7 @@ class CrawlerBase(object):
 
         # 날짜 범위
         self.date_range = None
+        self.page_range = None
 
     def update_date_range(self):
         """날짜를 갱신한다."""
@@ -271,6 +272,9 @@ class CrawlerBase(object):
         # 크롤링 상태 정보
         if self.column in self.cfg.status:
             self.status = self.cfg.status[self.column]
+
+        if self.page_range is not None and 'trace_list' in self.cfg.status:
+            self.cfg.status['trace_list'].update(self.page_range)
 
         # 후처리 정보
         if 'post_process' in self.job_info:

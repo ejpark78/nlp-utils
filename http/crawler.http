@@ -58,3 +58,14 @@ user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Geck
 
 ###
 
+GET https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId=0&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json
+
+###
+
+GET https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId=169046&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json
+
+###

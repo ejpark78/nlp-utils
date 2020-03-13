@@ -7,11 +7,14 @@
     {
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
-      "index": "crawler-bbs-lineagem",
+      "index": "crawler-bbs-lineage2m",
       "sleep": 3,
       "list": [
         {
-          "url_frame": "https://lineagem.plaync.com/board/all/articles.json?page={page}&isReferer=false&isVote=true&size=20&query=&searchType=&categoryId=&summary=true",
+          "last_content": {
+            "articleId": 0
+          },
+          "url_frame": "https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId={articleId}&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=",
           "parser": "json",
           "category": "all",
           "check_id": true,
@@ -20,7 +23,7 @@
           },
           "trace": "articleList",
           "mapping": {
-            "url": "https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}.json",
+            "url": "https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}.json",
             "date": "{postDate}",
             "reserved1": "",
             "reserved2": "",
@@ -65,7 +68,7 @@
       },
       "post_request": [
         {
-          "url_frame": "https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good",
+          "url_frame": "https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good",
           "method": "GET",
           "response_type": "json",
           "key": "reply_list",
