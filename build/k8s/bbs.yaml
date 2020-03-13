@@ -114,6 +114,25 @@ spec:
     - name: inven-lineagem
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "inven-lineagem"]
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "inven-lineagem", "--page_range", "1~20", "--page_step", "1"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lineage2m
+  namespace: crawler-bbs
+  labels:
+    app: crawler
+    site: bbs
+spec:
+  restartPolicy: Always
+  containers:
+    - name: lineage2m
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "batch.py", "--category", "bbs", "--job_id", "lineage2m", "--page_range", "1~20", "--page_step", "1"]
       resources: {}
 status: {}
