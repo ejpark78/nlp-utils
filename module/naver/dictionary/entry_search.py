@@ -15,7 +15,7 @@ import requests
 import urllib3
 from tqdm import tqdm
 
-from module.naver.dictionary.utils import DictionaryUtils
+from module.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

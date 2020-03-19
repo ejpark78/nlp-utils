@@ -5,8 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-import sys
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
@@ -15,19 +13,9 @@ from uuid import uuid4
 import urllib3
 from tqdm.autonotebook import tqdm
 
-from module.naver.dictionary.utils import DictionaryUtils
+from module.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 class ExampleSearchCrawler(DictionaryUtils):
@@ -36,19 +24,6 @@ class ExampleSearchCrawler(DictionaryUtils):
     def __init__(self):
         """ 생성자 """
         super().__init__()
-
-    @staticmethod
-    def get_values(tag, css, value_type='text'):
-        values = tag.select(css)
-        if len(values) == 0:
-            return ''
-
-        if value_type == 'text':
-            return values[0].get_text()
-        elif values[0].has_attr('href'):
-            return values[0]['href']
-
-        return ''
 
     def extract_values(self, soup):
         result = []
@@ -154,8 +129,6 @@ class ExampleSearchCrawler(DictionaryUtils):
             '예술/연예': '7',
             '원서': '13',
         }
-
-        # query_list = 'a about afraid all and annoy are arrest as at be become bring but by can catch come could couldn do doesn ever fall feel fetch find for from give go got have he her here him his how i i\'d i\'m in into is it just keep l leave let make may might must my never no none of on or out over see shall she should so take that the then there they this thought to under was we what which will with would you your'.split(' ')
 
         query_list = 'then there they this thought to under was we what which will with would you your'.split(' ')
 

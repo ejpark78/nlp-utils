@@ -707,3 +707,32 @@ Content-Type: application/json
 Accept: application/json
 
 ###
+
+POST {{host}}/crawler-bbs-lineage2m/_search?size=0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggs": {
+    "min_articleId": {
+      "min": {
+        "field": "articleId"
+      }
+    }
+  }
+}
+
+###
+
+GET http://172.20.92.41:9200/_cat/indices
+Content-Type: application/json
+Accept: application/text
+
+###
+###
+
+GET http://172.20.92.41:9200/ko_tm01/_search
+Content-Type: application/json
+Accept: application/json
+
+###

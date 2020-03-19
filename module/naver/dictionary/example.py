@@ -5,9 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 import re
-import sys
 from time import sleep
 
 import pandas as pd
@@ -15,19 +13,9 @@ import requests
 import urllib3
 from tqdm.autonotebook import tqdm
 
-from module.naver.dictionary.utils import DictionaryUtils
+from module.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 class ExampleCrawler(DictionaryUtils):

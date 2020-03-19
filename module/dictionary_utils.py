@@ -20,16 +20,6 @@ from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
-
 
 class DictionaryUtils(object):
     """사전 예문 수집기"""
@@ -47,11 +37,39 @@ class DictionaryUtils(object):
         }
 
         self.host = 'https://corpus.ncsoft.com:9200'
-        self.http_auth = 'elastic:nlplab'
+        self.http_auth = 'crawler:crawler2019'
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.elastic = None
+
+        self.MESSAGE = 25
+        self.logger = None
+
+    @staticmethod
+    def get_values(tag, css, value_type='text'):
+        values = tag.select(css)
+        if len(values) == 0:
+            return ''
+
+        if value_type == 'text':
+            return values[0].get_text()
+        elif values[0].has_attr('href'):
+            return values[0]['href']
+
+        return ''
+
+    def get_logger(self):
+        """ """
+        logging.addLevelName(self.MESSAGE, 'MESSAGE')
+        logging.basicConfig(format='%(message)s')
+
+        self.logger = logging.getLogger()
+
+        self.logger.setLevel(self.MESSAGE)
+        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
+
+        return self.logger
 
     def open_db(self, index):
         """ """

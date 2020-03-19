@@ -17,19 +17,9 @@ import urllib3
 from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
 
-from module.naver.dictionary.utils import DictionaryUtils
+from module.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 class UserTranslationExampleCrawler(DictionaryUtils):

@@ -485,65 +485,68 @@ class WebNewsCrawler(CrawlerBase):
 
     def post_request(self, req_params, url_info, article):
         """댓글을 요청한다."""
+        if url_info['response_type'] != 'json':
+            return article
+
         headers = self.headers['desktop']
         if 'headers' in url_info:
             headers.update(url_info['headers'])
 
         url = url_info['url_frame'].format(**req_params)
 
-        if url_info['method'] != "POST":
-            resp = requests.get(
-                url=url,
-                verify=False,
-                timeout=60,
-                headers=headers,
-                allow_redirects=True,
-            )
-        else:
-            try:
+        try:
+            if url_info['method'] != "POST":
+                resp = requests.get(
+                    url=url,
+                    verify=False,
+                    timeout=60,
+                    headers=headers,
+                    allow_redirects=True,
+                )
+            else:
                 body = url_info['data'].format(**req_params)
                 body = parse_qs(body)
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': 'post request 조회 에러',
-                    'url': url,
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
-                return article
 
-            resp = requests.post(
-                url=url,
-                data=body,
-                verify=False,
-                timeout=60,
-                headers=headers,
-                allow_redirects=True,
-            )
+                resp = requests.post(
+                    url=url,
+                    data=body,
+                    verify=False,
+                    timeout=60,
+                    headers=headers,
+                    allow_redirects=True,
+                )
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': 'post request 조회 에러',
+                'url': url,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+            return article
 
-        if url_info['response_type'] == 'json':
-            try:
-                req_result = resp.json()
-            except Exception as e:
-                msg = {
-                    'level': 'ERROR',
-                    'message': 'post request 파싱 에러',
-                    'url': url,
-                    'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
-                return article
+        # 결과 파싱
+        try:
+            req_result = resp.json()
+        except Exception as e:
+            msg = {
+                'level': 'ERROR',
+                'message': 'post request 파싱 에러',
+                'url': url,
+                'exception': str(e),
+            }
+            logger.error(msg=LogMsg(msg))
+            return article
 
-            result = []
-            self.get_dict_value(
-                data=req_result,
-                result=result,
-                key_list=url_info['field'].split('.'),
-            )
+        result = []
+        self.get_dict_value(
+            data=req_result,
+            result=result,
+            key_list=url_info['field'].split('.'),
+        )
 
-            if len(result) > 0:
-                article[url_info['key']] = result
+        if len(result) > 0:
+            article[url_info['key']] = result
 
         return article
 
