@@ -163,9 +163,9 @@ class DictionaryUtils(object):
                 if set(doc.keys()).intersection(columns) is False:
                     continue
 
-                text = '\t'.join([doc[k] for k in columns])
+                text = '\t'.join([doc[k] for k in columns if k in doc])
 
-                if text in index:
+                if text == '\t' or text in index:
                     self.elastic.elastic.delete(
                         id=doc['document_id'],
                         index=self.args.index,
