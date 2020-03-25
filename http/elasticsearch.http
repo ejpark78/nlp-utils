@@ -729,10 +729,75 @@ Content-Type: application/json
 Accept: application/text
 
 ###
-###
 
 GET http://172.20.92.41:9200/ko_tm01/_search
 Content-Type: application/json
 Accept: application/json
+
+###
+
+#POST {{host}}/crawler-dictionary-example/_delete_by_query
+#Content-Type: application/json
+#Accept: application/json
+#
+#{
+#  "query": {
+#    "bool": {
+#      "must": {
+#        "match": {
+#          "entry": "cartoon"
+#        }
+#      }
+#    }
+#  }
+#}
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-list
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/_reindex
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "crawler-dictionary-example"
+  },
+  "dest": {
+    "index": "crawler-dictionary-example-eudic"
+  }
+}
+
+###
+
+POST {{host}}/_reindex
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "crawler-dictionary-example-list"
+  },
+  "dest": {
+    "index": "crawler-dictionary-example-eudic-list"
+  }
+}
+
+###
+
+GET {{host}}/_cat/indices?s=index
+Content-Type: application/json
+Accept: application/text
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-linedict
+Content-Type: application/json
+Accept: application/text
 
 ###

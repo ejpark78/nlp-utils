@@ -80,24 +80,24 @@ status: {}
 #      resources: {}
 #status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: vietnamese
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: vietnamese
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: vietnamese
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: vietnamese
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
+#      resources: {}
+#status: {}
 
 #---
 #apiVersion: v1
@@ -175,24 +175,24 @@ spec:
       resources: {}
 status: {}
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: turkish
-  namespace: crawler-naver-dictionary
-  labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
-spec:
-  restartPolicy: Always
-  containers:
-    - name: turkish
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: turkish
+#  namespace: crawler-naver-dictionary
+#  labels:
+#    app: crawler-naver-dictionary
+#    site: naver-dictionary
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: turkish
+#      image: corpus:5000/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
+#      resources: {}
+#status: {}
 
 ---
 apiVersion: v1

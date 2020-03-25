@@ -5,29 +5,17 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-import sys
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin, urlencode
 
 import requests
 import urllib3
-from tqdm import tqdm
 
 from module.dictionary_utils import DictionaryUtils
+from module.utils.logging_format import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 class DictionaryEntrySearchCrawler(DictionaryUtils):
@@ -87,7 +75,6 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
         page = 1
         max_page = 10
-        p_bar = None
 
         while page < max_page:
             url = '{site}?{query}&page={page}'.format(
@@ -95,17 +82,20 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
                 site=url_info['site'],
                 query=urlencode(query),
             )
-            page += 1
-
             resp = requests.get(url, headers=headers, timeout=60).json()
-
-            if p_bar is None:
+            if page == 1:
                 max_page = resp['pagerInfo']['totalPages'] + 1
-                p_bar = tqdm(total=max_page, dynamic_ncols=True, desc=entry)
-
-            p_bar.update(1)
 
             item_list = resp['searchResultMap']['searchResultListMap']['WORD']['items']
+
+            self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                'message': 'extend entry',
+                'entry': entry,
+                'length': len(item_list),
+                'current': '{:,}/{:,}'.format(page, max_page),
+            }))
+
+            page += 1
             for item in item_list:
                 doc = {}
                 doc.update(meta)
@@ -326,9 +316,12 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
         i = 0
 
-        p_bar = tqdm(entry_list)
-        for entry in p_bar:
-            p_bar.set_description_str('({:,}/{:,}) {}'.format(i, len(entry_list), entry['entry']))
+        for entry in entry_list:
+            self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                'entry': entry['entry'],
+                'current': '{:,}/{:,}'.format(i, len(entry_list)),
+            }))
+
             i += 1
 
             self.extend_entry(
@@ -340,14 +333,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
             if 'document_id' not in entry:
                 continue
 
-            entry['_id'] = entry['document_id']
-            del entry['document_id']
-
-            entry['curl_date'] = datetime.now(self.timezone).isoformat()
-            entry['entry_search'] = 'done'
-
-            self.elastic.save_document(index=self.args.index, document=entry, delete=False)
-            self.elastic.flush()
+            self.set_as_done(doc=entry)
 
             sleep(self.sleep_time)
 

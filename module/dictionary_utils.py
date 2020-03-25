@@ -8,6 +8,7 @@ from __future__ import print_function
 import json
 import logging
 import sys
+from datetime import datetime
 from glob import glob
 from os.path import isdir
 
@@ -44,7 +45,10 @@ class DictionaryUtils(object):
         self.elastic = None
 
         self.MESSAGE = 25
-        self.logger = None
+        self.logger = self.get_logger()
+
+        self.skip = 0
+        self.cache = set()
 
     @staticmethod
     def get_values(tag, css, value_type='text'):
@@ -129,3 +133,139 @@ class DictionaryUtils(object):
                     result.append(doc)
 
         return result
+
+    def remove_same_example(self):
+        """ """
+        self.open_db(index=self.args.index)
+
+        id_list = self.elastic.get_id_list(index=self.args.index)
+        id_list = list(id_list)
+
+        size = 1000
+
+        start = 0
+        end = size
+
+        index = set()
+
+        columns = self.args.columns.split(',')
+
+        while start < len(id_list):
+            doc_list = []
+            self.elastic.get_by_ids(
+                id_list=id_list[start:end],
+                index=self.elastic.index,
+                source=['document_id'] + columns,
+                result=doc_list
+            )
+
+            for i, doc in enumerate(doc_list):
+                if set(doc.keys()).intersection(columns) is False:
+                    continue
+
+                text = '\t'.join([doc[k] for k in columns])
+
+                if text in index:
+                    self.elastic.elastic.delete(
+                        id=doc['document_id'],
+                        index=self.args.index,
+                    )
+                    print(doc)
+
+                index.add(text)
+
+            if start >= len(id_list):
+                break
+
+            start = end
+            end += size
+
+            if end > len(id_list):
+                end = len(id_list)
+
+        return
+
+    def reset_list(self):
+        """ """
+        self.open_db(self.args.list_index)
+
+        query = {
+            '_source': ['state', 'document_id'],
+            'query': {
+                'bool': {
+                    'must': [
+                        {
+                            'match': {
+                                'state': 'done'
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        doc_list = self.elastic.dump(query=query)
+
+        for doc in doc_list:
+            doc['_id'] = doc['document_id']
+            del doc['document_id']
+
+            doc['state'] = ''
+            self.elastic.save_document(document=doc, index=self.args.list_index)
+
+        self.elastic.flush()
+
+        return
+
+    def set_as_done(self, doc):
+        """ """
+        doc['_id'] = doc['document_id']
+        del doc['document_id']
+
+        doc['state'] = 'done'
+        doc['curl_date'] = datetime.now(self.timezone).isoformat()
+
+        self.elastic.save_document(index=self.args.list_index, document=doc, delete=False)
+        self.elastic.flush()
+        return
+
+    def read_entry_list(self):
+        """설정파일을 읽어드린다."""
+        self.open_db(self.args.list_index)
+
+        query = {
+            'query': {
+                'bool': {
+                    'must_not': [
+                        {
+                            'match': {
+                                'state': 'done'
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        if 'lang' in self.args and self.args.lang != '':
+            query['query']['bool']['must'] = [
+                {
+                    'match': {
+                        'lang': self.args.lang
+                    }
+                }
+            ]
+
+        doc_list = self.elastic.dump(query=query)
+
+        return list(doc_list)
+
+    def is_skip(self, doc, columns):
+        """ """
+        text = '\t'.join([doc[col] for col in columns])
+        if text in self.cache:
+            self.skip += 1
+            return True
+
+        self.cache.add(text)
+        return False

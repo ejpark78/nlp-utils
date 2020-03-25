@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 from time import sleep
+from urllib.parse import unquote
 from uuid import uuid4
 
 import requests
@@ -25,24 +26,7 @@ class ExampleSearchCrawler(DictionaryUtils):
         """ 생성자 """
         super().__init__()
 
-    @staticmethod
-    def read_entry_list(filename):
-        """설정파일을 읽어드린다."""
-        import json
-
-        result = []
-        with open(filename, 'r') as fp:
-            for line in fp.readlines():
-                line = line.rstrip()
-                if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
-                    continue
-
-                result.append(json.loads(line))
-
-        return result
-
-    @staticmethod
-    def get_status_code(query, url_frame):
+    def get_status_code(self, query, url_frame):
         """ """
         url = url_frame.format(query=query)
 
@@ -51,13 +35,17 @@ class ExampleSearchCrawler(DictionaryUtils):
         soup = BeautifulSoup(resp.content, 'lxml')
 
         status_code = soup.select_one('input#page-status')
+        if status_code is None or status_code.has_attr('value') is False:
+            self.logger.error(msg=LogMsg({
+                'message': 'status 조회 에러',
+                'url': url,
+            }))
+            return None
 
         return status_code['value']
 
     def trace_examples(self, url, post_data):
         """ """
-        from urllib.parse import unquote
-
         resp = requests.post(url=url, data=post_data)
 
         soup = BeautifulSoup(resp.content, 'lxml')
@@ -89,16 +77,10 @@ class ExampleSearchCrawler(DictionaryUtils):
 
         return result
 
-    def batch(self):
-        """"""
-        logger = self.get_logger()
-
-        index = 'crawler-dictionary-example'
-        self.open_db(index=index)
-
-        entry_list = self.read_entry_list('config/dict_example/eng-entry.list.json')
-
-        url_frame_info = {
+    @staticmethod
+    def get_url_frame_info():
+        """ """
+        return {
             'status': 'http://dict.eudic.net/liju/en/{query}',
             'examples': [
                 {
@@ -120,15 +102,25 @@ class ExampleSearchCrawler(DictionaryUtils):
             ]
         }
 
+    def trace_entry_list(self):
+        """ """
+        entry_list = self.read_entry_list()
+
+        self.open_db(index=self.args.index)
+        url_frame_info = self.get_url_frame_info()
+
         for entry in entry_list:
             status = self.get_status_code(query=entry['entry'], url_frame=url_frame_info['status'])
             sleep(5)
+
+            if status is None:
+                continue
 
             for url_info in url_frame_info['examples']:
                 post_data = url_info['post_data']
 
                 for start in range(0, 100000, 20):
-                    logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
                         'message': 'request',
                         'entry': entry['entry'],
                         'start': start,
@@ -143,7 +135,7 @@ class ExampleSearchCrawler(DictionaryUtils):
                         post_data=post_data,
                     )
 
-                    logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
                         'message': 'saved',
                         'entry': entry['entry'],
                         'start': start,
@@ -157,7 +149,39 @@ class ExampleSearchCrawler(DictionaryUtils):
 
                     sleep(5)
 
+            self.set_as_done(doc=entry)
+
         return
+
+    def batch(self):
+        """"""
+        self.args = self.init_arguments()
+
+        self.logger = self.get_logger()
+
+        if self.args.remove_same_example is True:
+            self.remove_same_example()
+        else:
+            self.trace_entry_list()
+
+        return
+
+    @staticmethod
+    def init_arguments():
+        """ 옵션 설정 """
+        import argparse
+
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--lang', default='en', help='')
+        parser.add_argument('--columns', default='english,chinese', help='')
+
+        parser.add_argument('--index', default='crawler-dictionary-example-eudic', help='')
+        parser.add_argument('--list_index', default='crawler-dictionary-example-eudic-list', help='')
+
+        parser.add_argument('--remove_same_example', action='store_true', default=False, help='')
+
+        return parser.parse_args()
 
 
 if __name__ == '__main__':
