@@ -4,6 +4,7 @@ kind: Namespace
 metadata:
   name: crawler-naver-kin
 
+
 ---
 apiVersion: batch/v1beta1
 kind: CronJob

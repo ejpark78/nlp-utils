@@ -106,22 +106,22 @@ def main():
             return
 
         if args.job_id == 'kin_question_list':
-            NaverKinQuestionList().daemon(column='question')
+            NaverKinQuestionList().batch(column='question')
             return
         elif args.job_id == 'kin_answer_list':
-            NaverKinQuestionList().daemon(column='answer')
+            NaverKinQuestionList().batch(column='answer')
             return
         elif args.job_id == 'kin_user_list':
-            NaverKinUserList().daemon()
+            NaverKinUserList().batch()
             return
         elif args.job_id == 'kin_detail_question':
-            NaverKinQuestionDetail().daemon(
+            NaverKinQuestionDetail().batch(
                 column='question',
                 match_phrase=args.match_phrase,
             )
             return
         elif args.job_id == 'kin_detail_answer':
-            NaverKinQuestionDetail().daemon(
+            NaverKinQuestionDetail().batch(
                 column='answer',
                 match_phrase=args.match_phrase,
             )
@@ -133,10 +133,10 @@ def main():
             TwitterCorpusUtils().dump()
             return
 
-        if args.batch:
-            TwitterUtils().batch()
-        else:
+        if args.daemon:
             TwitterUtils().daemon()
+        else:
+            TwitterUtils().batch()
 
         return
 
