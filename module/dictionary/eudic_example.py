@@ -19,7 +19,7 @@ from module.utils.logging_format import LogMessage as LogMsg
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class ExampleSearchCrawler(DictionaryUtils):
+class EudicExampleSearch(DictionaryUtils):
     """사전 예문 수집기"""
 
     def __init__(self):
@@ -161,6 +161,8 @@ class ExampleSearchCrawler(DictionaryUtils):
 
         if self.args.remove_same_example is True:
             self.remove_same_example()
+        elif 'reset_list' in self.args and self.args.reset_list is True:
+            self.reset_list()
         else:
             self.trace_entry_list()
 
@@ -173,16 +175,18 @@ class ExampleSearchCrawler(DictionaryUtils):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--lang', default='en', help='')
+        parser.add_argument('--lang', default='', help='')
+
         parser.add_argument('--columns', default='english,chinese', help='')
 
         parser.add_argument('--index', default='crawler-dictionary-example-eudic', help='')
         parser.add_argument('--list_index', default='crawler-dictionary-example-eudic-list', help='')
 
+        parser.add_argument('--reset_list', action='store_true', default=False, help='')
         parser.add_argument('--remove_same_example', action='store_true', default=False, help='')
 
         return parser.parse_args()
 
 
 if __name__ == '__main__':
-    ExampleSearchCrawler().batch()
+    EudicExampleSearch().batch()

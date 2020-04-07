@@ -5,153 +5,193 @@ metadata:
   name: crawler-daum
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: culture
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: culture
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "culture"]
-      resources: {}
-status: {}
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "culture"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: economy
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: economy
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "economy"]
-      resources: {}
-status: {}
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "economy"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: international
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: international
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "international"]
-      resources: {}
-status: {}
+  schedule: "10,40 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "international"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: it
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: it
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "it"]
-      resources: {}
-status: {}
+  schedule: "15,45 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "it"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: opinion
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: opinion
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "opinion"]
-      resources: {}
-status: {}
+  schedule: "20,50 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "opinion"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: politics
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: politics
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "politics"]
-      resources: {}
-status: {}
+  schedule: "25,55 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "politics"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: society
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: society
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "society"]
-      resources: {}
-status: {}
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "society"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: sports
   namespace: crawler-daum
   labels:
-    app: crawler
-    site: daum
+    app: crawler-daum
 spec:
-  restartPolicy: Always
-  containers:
-    - name: sports
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "daum", "--job_id", "sports"]
-      resources: {}
-status: {}
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "daum", "--job_id", "sports"]

@@ -5,39 +5,49 @@ metadata:
   name: crawler-yahoo-tw
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: news-list
   namespace: crawler-yahoo-tw
   labels:
     app: crawler-yahoo-tw
-    site: yahoo-tw
 spec:
-  restartPolicy: Always
-  containers:
-    - name: list
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/yahoo-tw.py", "--list"]
-      resources: {}
-status: {}
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "module/yahoo-tw.py", "--list"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: news-contents
   namespace: crawler-yahoo-tw
   labels:
     app: crawler-yahoo-tw
-    site: yahoo-tw
 spec:
-  restartPolicy: Always
-  containers:
-    - name: contents
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/yahoo-tw.py", "--contents"]
-      resources: {}
-status: {}
+  schedule: "10,40 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "module/yahoo-tw.py", "--contents"]

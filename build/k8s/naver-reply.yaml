@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: crawler-bbs
+  name: crawler-naver-reply
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: mlbpark-kbo
-  namespace: crawler-bbs
+  name: politics
+  namespace: crawler-naver-reply
   labels:
-    app: crawler-bbs
+    app: crawler-naver-reply
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -26,16 +26,40 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-kbo"]
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply"]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: mlbpark-mlb
-  namespace: crawler-bbs
+  name: society
+  namespace: crawler-naver-reply
   labels:
-    app: crawler-bbs
+    app: crawler-naver-reply
+spec:
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: tv
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -50,112 +74,16 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-mlb"]
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply"]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: mlbpark-bullpen
-  namespace: crawler-bbs
+  name: economy
+  namespace: crawler-naver-reply
   labels:
-    app: crawler-bbs
-spec:
-  schedule: "20,50 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-bullpen"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: ruliweb
-  namespace: crawler-bbs
-  labels:
-    app: crawler-bbs
-spec:
-  schedule: "0,30 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "ruliweb"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: inven-lineagem
-  namespace: crawler-bbs
-  labels:
-    app: crawler-bbs
-spec:
-  schedule: "0,30 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "inven-lineagem", "--page_range", "1~20", "--page_step", "1"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: lineagem
-  namespace: crawler-bbs
-  labels:
-    app: crawler-bbs
-spec:
-  schedule: "0,30 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineagem", "--page_range", "1~100", "--page_step", "1"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: lineage2m
-  namespace: crawler-bbs
-  labels:
-    app: crawler-bbs
+    app: crawler-naver-reply
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
@@ -170,4 +98,124 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineage2m", "--page_range", "1~100", "--page_step", "1"]
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: international
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  schedule: "20,50 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: it
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  schedule: "25,55 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: living
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: opinion
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sports
+  namespace: crawler-naver-reply
+  labels:
+    app: crawler-naver-reply
+spec:
+  schedule: "10,40 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply"]

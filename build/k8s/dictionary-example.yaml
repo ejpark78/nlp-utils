@@ -1,27 +1,8 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: crawler-dictionary-example
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: eudict
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler-dictionary-example
-    site: eudict
-spec:
-  restartPolicy: Always
-  containers:
-    - name: eudict
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "module/dictionary/example_search.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
-      resources: {}
-status: {}
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: crawler-dictionary-example
 
 ---
 apiVersion: v1
@@ -35,10 +16,47 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: linedict
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/linedict.py", "--index", "crawler-dictionary-example-linedict", "--list_index", "crawler-dictionary-example-linedict-list", "--columns", "example,translationText"]
       resources: {}
 status: {}
 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: eudict
+  namespace: crawler-dictionary-example
+  labels:
+    app: crawler-dictionary-example
+    site: eudict
+spec:
+  restartPolicy: Always
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/dictionary/eudic_example.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
+      resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: youdao
+  namespace: crawler-dictionary-example
+  labels:
+    app: crawler-dictionary-example
+    site: youdao
+spec:
+  restartPolicy: Always
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      workingDir: /usr/local/app
+      args: ["python3", "module/dictionary/youdao_example.py", "--index", "crawler-dictionary-example-youdao", "--list_index", "crawler-dictionary-example-youdao-list", "--columns", "english,chinese"]
+      resources: {}
+status: {}

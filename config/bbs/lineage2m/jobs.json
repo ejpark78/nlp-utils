@@ -12,7 +12,7 @@
       "list": [
         {
           "last_content": {
-            "articleId": 80473
+            "articleId": 0
           },
           "url_frame": "https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId={articleId}&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=",
           "parser": "json",

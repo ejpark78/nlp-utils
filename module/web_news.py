@@ -34,32 +34,34 @@ logger = logging.getLogger()
 class WebNewsCrawler(CrawlerBase):
     """웹 뉴스 크롤러"""
 
-    def __init__(self, category='', job_id='', column='', date_range=None, date_step=1,
-                 page_range=None, page_step=1, config=None, update_category_only=False):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
-        self.config = config
+        self.args = args
 
-        self.job_category = category
-        self.job_id = job_id
+        self.overwrite = args.overwrite
 
-        self.column = column
+        self.config = args.config
+
+        self.job_id = args.job_id
+        self.job_category = args.category
+
+        self.column = args.column
 
         self.trace_depth = 0
         self.trace_list_count = -1
 
-        self.date_step = date_step
+        self.date_step = args.date_step
 
         self.update_date = False
+        self.update_category_only = args.update_category_only
 
-        self.update_category_only = update_category_only
-
-        if date_range is None:
+        if args.date_range is None:
             self.update_date = True
             self.update_date_range()
         else:
-            dt_start, dt_end = date_range.split('~', maxsplit=1)
+            dt_start, dt_end = args.date_range.split('~', maxsplit=1)
 
             self.date_range = {
                 'end': self.timezone.localize(parse_date(dt_end)),
@@ -70,13 +72,13 @@ class WebNewsCrawler(CrawlerBase):
             if self.date_range['end'] > today:
                 self.date_range['end'] = today
 
-        if page_range is not None:
-            pg_start, pg_end = page_range.split('~', maxsplit=1)
+        if args.page_range is not None:
+            pg_start, pg_end = args.page_range.split('~', maxsplit=1)
 
             self.page_range = {
                 'start': int(pg_start),
                 'end': int(pg_end),
-                'step': page_step
+                'step': args.page_step
             }
 
         return
@@ -356,7 +358,7 @@ class WebNewsCrawler(CrawlerBase):
             if doc_id is None:
                 continue
 
-            if self.cfg.debug == 0:
+            if self.overwrite is False:
                 if 'check_id' not in url_info or url_info['check_id'] is True:
                     is_skip = self.check_doc_id(
                         url=item['url'],
@@ -762,7 +764,7 @@ class WebNewsCrawler(CrawlerBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
-            if self.cfg.debug == 0 and len(q) == 0:
+            if self.overwrite is False and len(q) == 0:
                 msg = {
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',

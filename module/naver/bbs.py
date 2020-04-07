@@ -497,11 +497,16 @@ class SeleniumCrawler(SeleniumProxyUtils):
                                 'field': 'status'
                             }
                         },
-                        # {
-                        #     'match': {
-                        #         'status': 'error'
-                        #     }
-                        # }
+                        {
+                            'term': {
+                                'subject': '벨나잇'
+                            }
+                        },
+                        {
+                            'term': {
+                                'subject': '벨맛'
+                            }
+                        }
                     ]
                 }
             }

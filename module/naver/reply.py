@@ -40,15 +40,16 @@ logger.handlers = [logging.StreamHandler(sys.stderr)]
 class NaverNewsReplyCrawler(CrawlerBase):
     """네이버 뉴스 댓글 수집기"""
 
-    def __init__(self, category='', job_id='', column='', config=None):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
-        self.config = config
+        self.config = args.config
+        self.overwrite = args.overwrite
 
-        self.job_category = category
-        self.job_id = job_id
-        self.column = column
+        self.job_category = args.category
+        self.job_id = args.job_id
+        self.column = args.column
 
         self.stop_columns = [
             'idType', 'lang', 'country', 'idProvider', 'visible', 'containText',
@@ -165,7 +166,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
     def is_dup_reply(self, url_frame, news, elastic_utils, index, doc_id, doc_history):
         """특정 날짜의 뉴스 목록을 따라간다."""
-        if self.cfg.debug == 1:
+        if self.overwrite is True:
             return False
 
         if 'check_id' in url_frame and url_frame['check_id'] is False:

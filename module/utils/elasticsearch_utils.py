@@ -28,16 +28,8 @@ logger = logging.getLogger()
 class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
-    def __init__(
-            self,
-            host,
-            index,
-            insert=True,
-            http_auth='crawler:crawler2019',
-            bulk_size=1000,
-            tag=None,
-            split_index=False,
-    ):
+    def __init__(self, host, index, insert=True, http_auth='crawler:crawler2019', bulk_size=1000,
+                 tag=None, split_index=False):
         """ 생성자 """
         self.host = host
         self.http_auth = (http_auth.split(':'))

@@ -5,150 +5,182 @@ metadata:
   name: crawler-nate
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: economy
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: economy
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
-      resources: {}
-status: {}
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: entertainment
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: entertainment
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
-      resources: {}
-status: {}
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: international
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: international
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
-      resources: {}
-status: {}
+  schedule: "10,40 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: it
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: it
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
-      resources: {}
-status: {}
+  schedule: "15,45 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: politics
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: politics
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
-      resources: {}
-status: {}
+  schedule: "20,50 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: society
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: society
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
-      resources: {}
-status: {}
+  schedule: "25,55 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
 
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1beta1
+kind: CronJob
 metadata:
   name: sports
   namespace: crawler-nate
   labels:
-    app: crawler
-    site: nate
+    app: crawler-nate
 spec:
-  restartPolicy: Always
-  containers:
-    - name: sports
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
-      resources: {}
-status: {}
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 20
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              workingDir: /usr/local/app
+              args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
 
 #    - name: radio
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
-#      resources: {}
 #    - name: opinion
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
-#      resources: {}
 #    - name: tv
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]
-#      resources: {}

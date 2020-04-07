@@ -136,6 +136,8 @@ class DictionaryUtils(object):
 
     def remove_same_example(self):
         """ """
+        from tqdm import tqdm
+
         self.open_db(index=self.args.index)
 
         id_list = self.elastic.get_id_list(index=self.args.index)
@@ -148,7 +150,16 @@ class DictionaryUtils(object):
 
         index = set()
 
+        bulk_data = []
+        params = {'request_timeout': 2 * 60}
         columns = self.args.columns.split(',')
+
+        count = {c: 0 for c in columns}
+
+        count['total'] = 0
+        count['missing_column'] = 0
+
+        p_bar = tqdm(total=len(id_list), dynamic_ncols=True)
 
         while start < len(id_list):
             doc_list = []
@@ -159,18 +170,40 @@ class DictionaryUtils(object):
                 result=doc_list
             )
 
-            for i, doc in enumerate(doc_list):
+            for doc in doc_list:
+                p_bar.update()
+
+                count['total'] += 1
                 if set(doc.keys()).intersection(columns) is False:
+                    count['missing_column'] += 1
                     continue
 
                 text = '\t'.join([doc[k] for k in columns if k in doc])
 
+                for k in columns:
+                    if k in doc and doc[k].strip() != '':
+                        continue
+
+                    count[k] += 1
+
                 if text == '\t' or text in index:
-                    self.elastic.elastic.delete(
-                        id=doc['document_id'],
-                        index=self.args.index,
-                    )
-                    print(doc)
+                    bulk_data.append({
+                        'delete': {
+                            '_id': doc['document_id'],
+                            '_index': self.args.index,
+                        }
+                    })
+
+                    if len(bulk_data) > 1000:
+                        resp = self.elastic.elastic.bulk(
+                            index=self.args.index,
+                            body=bulk_data,
+                            refresh=True,
+                            params=params,
+                        )
+                        print(resp)
+
+                        bulk_data = []
 
                 index.add(text)
 
@@ -182,6 +215,17 @@ class DictionaryUtils(object):
 
             if end > len(id_list):
                 end = len(id_list)
+
+        if len(bulk_data) > 0:
+            resp = self.elastic.elastic.bulk(
+                index=self.args.index,
+                body=bulk_data,
+                refresh=True,
+                params=params,
+            )
+            print(resp)
+
+        print(count)
 
         return
 

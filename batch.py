@@ -45,6 +45,8 @@ def init_arguments():
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
+
     # 작업 아이디
     parser.add_argument('--category', default='', help='작업 카테고리')
     parser.add_argument('--job_id', default='', help='작업 아이디')
@@ -58,7 +60,7 @@ def init_arguments():
     # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
 
     # 실행 모드 데몬/배치
-    parser.add_argument('--batch', action='store_true', default=False, help='배치 모드로 실행')
+    parser.add_argument('--daemon', action='store_true', default=False, help='데몬 모드로 실행')
 
     # 재크롤링
     parser.add_argument('--re_crawl', action='store_true', default=False, help='전체를 다시 크롤링')
@@ -71,6 +73,8 @@ def init_arguments():
 
     parser.add_argument('--page_range', default=None, help='page 범위: 1~100')
     parser.add_argument('--page_step', default=1, type=int, help='page step')
+
+    parser.add_argument('--column', default='trace_list', help='config 컬럼이름 (trace_list)')
 
     # 설정파일
     parser.add_argument('--config', default=None, help='설정 파일 정보')
@@ -87,14 +91,7 @@ def main():
     # 네이버 지식인/백과사전
     if args.category == 'naver':
         if args.job_id.find('-reply') > 0:
-            NaverNewsReplyCrawler(
-                config=args.config,
-                category=args.category,
-                job_id=args.job_id,
-                column='trace_list'
-            ).batch(
-                date_range=args.date_range,
-            )
+            NaverNewsReplyCrawler(args=args).batch(date_range=args.date_range)
             return
 
         if args.job_id == 'term_list':
@@ -162,30 +159,10 @@ def main():
         return
 
     # 웹 신문
-    if args.batch:
-        WebNewsCrawler(
-            job_id=args.job_id,
-            column='trace_list',
-            config=args.config,
-            category=args.category,
-            date_step=args.date_step,
-            date_range=args.date_range,
-            page_step=args.page_step,
-            page_range=args.page_range,
-            update_category_only=args.update_category_only,
-        ).batch()
+    if args.daemon:
+        WebNewsCrawler(args=args).daemon()
     else:
-        WebNewsCrawler(
-            job_id=args.job_id,
-            column='trace_list',
-            config=args.config,
-            category=args.category,
-            date_step=args.date_step,
-            date_range=args.date_range,
-            page_step=args.page_step,
-            page_range=args.page_range,
-            update_category_only=args.update_category_only,
-        ).daemon()
+        WebNewsCrawler(args=args).batch()
 
     return
 

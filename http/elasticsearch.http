@@ -766,10 +766,10 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example"
+    "index": "crawler-naver-dictionary-example"
   },
   "dest": {
-    "index": "crawler-dictionary-example-eudic"
+    "index": "crawler-dictionary-example-naver"
   }
 }
 
@@ -781,10 +781,10 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example-list"
+    "index": "crawler-dictionary-example-eudic-list"
   },
   "dest": {
-    "index": "crawler-dictionary-example-eudic-list"
+    "index": "crawler-dictionary-example-youdao-list"
   }
 }
 
@@ -796,8 +796,8 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-dictionary-example-linedict
-Content-Type: application/json
-Accept: application/text
+#DELETE {{host}}/crawler-naver-dictionary-example
+#Content-Type: application/json
+#Accept: application/text
 
 ###
