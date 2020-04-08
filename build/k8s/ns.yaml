@@ -1,0 +1,95 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-batch
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-bbs
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-daum
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-dictionary-example
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-facebook
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-nate
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-dictionary
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-kin
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-reply
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-reply
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-reply-2020
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-naver-update-category
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crawler-yahoo-tw
+
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: crawler-naver-kbo-game-center
+
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: crawler-naver-2019

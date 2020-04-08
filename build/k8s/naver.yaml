@@ -1,10 +1,4 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: crawler-naver
-
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -15,8 +9,8 @@ metadata:
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -66,8 +60,8 @@ metadata:
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -117,8 +111,8 @@ metadata:
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -168,8 +162,8 @@ metadata:
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -219,8 +213,8 @@ metadata:
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -270,8 +264,8 @@ metadata:
 spec:
   schedule: "25,55 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -321,8 +315,8 @@ metadata:
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -372,8 +366,8 @@ metadata:
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -423,8 +417,8 @@ metadata:
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 20
-  successfulJobsHistoryLimit: 20
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
