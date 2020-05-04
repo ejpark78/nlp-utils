@@ -117,6 +117,9 @@ class YoudaoExampleSearch(DictionaryUtils):
 
         for entry in entry_list:
             for url_info in url_list:
+                if 'entry' not in entry:
+                    continue
+
                 url = url_info['url_frame'].format(query=entry['entry'])
 
                 ex_list = self.trace_examples(url=url, meta=url_info['meta'])

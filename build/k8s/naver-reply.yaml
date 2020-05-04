@@ -19,6 +19,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply"]
 
@@ -43,6 +44,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply"]
 
@@ -67,6 +69,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply"]
 
@@ -91,6 +94,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply"]
 
@@ -115,6 +119,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply"]
 
@@ -139,6 +144,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply"]
 
@@ -163,6 +169,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply"]
 
@@ -187,6 +194,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply"]
 
@@ -211,5 +219,6 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply"]

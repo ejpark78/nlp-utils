@@ -10,9 +10,8 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: trace-comments
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/kbo_game_center_utils.py", "--trace_comments"]
-      resources: {}
-status: {}

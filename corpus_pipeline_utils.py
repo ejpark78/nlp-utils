@@ -49,7 +49,7 @@ class CorpusPipelineUtils(object):
                     "option": {
                         "style": "literary",
                         "domain": domain,
-                        "module": ["SBD_crf", "POS", "NER", "DP", "TIME_python"]
+                        "module": ["SBD_crf", "POS", "NER"]
                     },
                     "column": "content",
                     "result": "nlu_wrapper"
@@ -58,7 +58,8 @@ class CorpusPipelineUtils(object):
             "document": doc_list
         }
 
-        resp = requests.post(url=url, json=post_data, timeout=timeout)
+        headers = {"Content-Type": "application/json"}
+        resp = requests.post(url=url, json=post_data, headers=headers, timeout=timeout)
 
         return resp
 
@@ -69,11 +70,11 @@ class CorpusPipelineUtils(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('-source_host', default='https://nlp.ncsoft.com:9200', help='')
+        parser.add_argument('-source_host', default='https://corpus.ncsoft.com:9200', help='')
         parser.add_argument('-target_host', default='https://corpus.ncsoft.com:9200', help='')
 
-        parser.add_argument('-source_index', default='crawler-naver-economy-2017', help='')
-        parser.add_argument('-target_index', default='corpus_process-naver-economy-2017', help='')
+        parser.add_argument('-source_index', default='crawler-naver-economy-2020', help='')
+        parser.add_argument('-target_index', default='corpus_process-naver-economy-2020', help='')
         parser.add_argument('-http_auth', default='crawler:crawler2019', help='')
 
         parser.add_argument('-nlu_domain', default='baseball', help='')
@@ -92,6 +93,7 @@ class CorpusPipelineUtils(object):
         print(args.source_index, '->', args.target_index)
 
         corpus_pipeline_url = 'http://172.20.78.250:20000/v1.0/batch'
+        corpus_pipeline_url = 'http://localhost:20000/v1.0/batch'
 
         elastic_source = ElasticSearchUtils(host=args.source_host, http_auth=args.http_auth, index=args.source_index)
         elastic_target = ElasticSearchUtils(host=args.target_host, http_auth=args.http_auth, index=args.target_index)
@@ -100,21 +102,17 @@ class CorpusPipelineUtils(object):
         source_query = {
             '_source': '',
             "query": {
-                "bool": {
-                    "must": {
-                        "match": {
-                            "category": "야구"
-                        }
+                "range": {
+                    "date": {
+                        "gte": "2020-01-01T00:00:00",
+                        "lte": "2020-04-20T00:00:00",
                     }
                 }
             }
         }
 
         source_ids = elastic_source.get_id_list(index=args.source_index, query_cond=source_query)
-
-        # corpus_process-naver-economy-2019 문서 목록 덤프
-        target_ids = {}
-        target_ids = elastic_target.get_id_list(index=args.target_index)
+        target_ids = elastic_target.get_id_list(index=args.target_index, query_cond=source_query)
 
         # missing docs 목록 생성
         missing_ids = self.get_missing_ids(
@@ -153,28 +151,28 @@ class CorpusPipelineUtils(object):
             )
 
             # debug
-            # self.call_corpus_pipeline(
-            #     doc_list,
-            #     args.target_host,
-            #     args.http_auth,
-            #     args.target_index,
-            #     corpus_pipeline_url,
-            #     args.nlu_domain,
-            #     args.timeout,
-            # )
-
-            pool.apply_async(
-                self.call_corpus_pipeline,
-                args=(
-                    doc_list,
-                    args.target_host,
-                    args.http_auth,
-                    args.target_index,
-                    corpus_pipeline_url,
-                    args.nlu_domain,
-                    args.timeout,
-                )
+            self.call_corpus_pipeline(
+                doc_list,
+                args.target_host,
+                args.http_auth,
+                args.target_index,
+                corpus_pipeline_url,
+                args.nlu_domain,
+                args.timeout,
             )
+
+            # pool.apply_async(
+            #     self.call_corpus_pipeline,
+            #     args=(
+            #         doc_list,
+            #         args.target_host,
+            #         args.http_auth,
+            #         args.target_index,
+            #         corpus_pipeline_url,
+            #         args.nlu_domain,
+            #         args.timeout,
+            #     )
+            # )
 
             count += 1
             if count >= max_core:
@@ -195,4 +193,3 @@ if __name__ == '__main__':
     utils = CorpusPipelineUtils()
 
     utils.batch()
-

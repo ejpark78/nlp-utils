@@ -801,3 +801,31 @@ Accept: application/text
 #Accept: application/text
 
 ###
+
+GET http://yonhap01:30006/_cat/indices?s=index
+Content-Type: application/json
+Accept: application/text
+
+
+###
+
+GET {{host}}/crawler-naver-economy-2020/_search?size=0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "aggregations": {
+    "by_day": {
+      "date_histogram": {
+        "field": "date",
+        "keyed": false,
+        "format" : "yyyy-MM-dd",
+        "time_zone": "+09:00",
+        "calendar_interval": "day"
+      }
+    }
+  }
+}
+
+###

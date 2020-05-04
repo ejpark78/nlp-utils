@@ -12,14 +12,9 @@ spec:
   containers:
     - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineage2m", "--page_range", "1~500", "--page_step", "1"]
-      env:
-        - name: DEBUG
-          value: "1"
-      resources: {}
-status: {}
-
 
 ---
 apiVersion: v1
@@ -35,11 +30,6 @@ spec:
   containers:
     - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineagem", "--page_range", "1~9000000", "--page_step", "1"]
-      env:
-        - name: DEBUG
-          value: "1"
-      resources: {}
-status: {}
-

@@ -25,7 +25,15 @@ RUN echo "" >> /etc/ca-certificates.conf \
     && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
     && update-ca-certificates
 
-RUN pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
+RUN echo && echo "# pip 저장소 설정" \
+    && mkdir -p ~/.pip \
+    && { \
+		echo "[global]"; \
+		echo "timeout = 60"; \
+		echo "index-url = ${PIP_MIRROR}"; \
+		echo "trusted-host = ${PIP_TRUST_HOST}"; \
+	} > ~/.pip/pip.conf \
+    && pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
 
 WORKDIR ${APP_HOME}
 

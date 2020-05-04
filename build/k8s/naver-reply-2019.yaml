@@ -9,12 +9,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: politics
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -27,12 +25,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: society
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -45,12 +41,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: tv
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -63,12 +57,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: economy
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -81,12 +73,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: international
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -99,12 +89,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: it
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -117,12 +105,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: living
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -135,12 +121,10 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: opinion
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -153,9 +137,7 @@ metadata:
 spec:
   restartPolicy: Never
   containers:
-    - name: sports
+    - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
       args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2019-01-01~2019-12-31"]
-      resources: {}
-status: {}

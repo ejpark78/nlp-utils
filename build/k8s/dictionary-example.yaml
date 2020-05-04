@@ -12,10 +12,9 @@ spec:
   containers:
     - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/linedict.py", "--index", "crawler-dictionary-example-linedict", "--list_index", "crawler-dictionary-example-linedict-list", "--columns", "example,translationText"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -31,10 +30,9 @@ spec:
   containers:
     - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/dictionary/eudic_example.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -50,7 +48,6 @@ spec:
   containers:
     - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/dictionary/youdao_example.py", "--index", "crawler-dictionary-example-youdao", "--list_index", "crawler-dictionary-example-youdao-list", "--columns", "english,chinese"]
-      resources: {}
-status: {}

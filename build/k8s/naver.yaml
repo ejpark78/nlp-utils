@@ -1,4 +1,71 @@
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corpus-pipeline
+  namespace: crawler-naver
+  labels:
+    app: corpus-pipeline
+spec:
+  selector:
+    matchLabels:
+      app: corpus-pipeline
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: corpus-pipeline
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: mq
+          image: rabbitmq:3-management
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5672
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              value: nlplab!
+            - name: RABBITMQ_DEFAULT_USER
+              value: user
+        - name: corpus-pipeline
+          image: corpus:5000/crawler/corpus_pipeline:latest
+          imagePullPolicy: Always
+          env:
+            - name: CONSUMER_EXCHANGE_NAME
+              value: corpus_pipeline
+            - name: CONSUMER_HOST
+              value: localhost
+            - name: CONSUMER_USER_NAME
+              value: user
+            - name: CONSUMER_USER_PASSWD
+              value: nlplab!
+            - name: ELASTIC_HOST
+              value: https://corpus.ncsoft.com:9200
+            - name: NLU_WRAPPER_URL
+              value: http://172.20.78.250:30000/
+            - name: USE_CONSUMER
+              value: "1"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: corpus-pipeline
+  namespace: crawler-naver
+  labels:
+    app: corpus-pipeline
+spec:
+  type: LoadBalancer
+  selector:
+    app: corpus-pipeline
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 35672
+      targetPort: 5672
+
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -16,36 +83,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy"]
 
@@ -67,36 +112,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "international"]
 
@@ -118,36 +141,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "it"]
 
@@ -169,36 +170,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "living"]
 
@@ -220,36 +199,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion"]
 
@@ -271,36 +228,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: politics
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics"]
 
@@ -322,36 +257,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "society"]
 
@@ -373,36 +286,14 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports"]
 
@@ -424,35 +315,13 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.78.250"
+              hostnames:
+              - "mq.local"
           containers:
-            - name: mq
-              image: rabbitmq:3-management
-              ports:
-                - containerPort: 5672
-              env:
-                - name: RABBITMQ_DEFAULT_PASS
-                  value: nlplab!
-                - name: RABBITMQ_DEFAULT_USER
-                  value: user
-              resources: {}
-            - name: corpus-pipeline
-              image: corpus:5000/crawler/corpus_pipeline:latest
-              env:
-                - name: CONSUMER_EXCHANGE_NAME
-                  value: corpus_pipeline
-                - name: CONSUMER_HOST
-                  value: localhost
-                - name: CONSUMER_USER_NAME
-                  value: user
-                - name: CONSUMER_USER_PASSWD
-                  value: nlplab!
-                - name: ELASTIC_HOST
-                  value: https://corpus.ncsoft.com:9200
-                - name: NLU_WRAPPER_URL
-                  value: http://172.20.78.250:30000/
-                - name: USE_CONSUMER
-                  value: "1"
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv"]

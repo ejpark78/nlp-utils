@@ -19,6 +19,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-kbo"]
 
@@ -43,6 +44,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-mlb"]
 
@@ -67,6 +69,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-bullpen"]
 
@@ -91,6 +94,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "ruliweb"]
 
@@ -115,6 +119,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "inven-lineagem", "--page_range", "1~20", "--page_step", "1"]
 
@@ -139,6 +144,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineagem", "--page_range", "1~100", "--page_step", "1"]
 
@@ -163,5 +169,6 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineage2m", "--page_range", "1~100", "--page_step", "1"]

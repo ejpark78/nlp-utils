@@ -10,6 +10,10 @@ APT_MIRROR = http://corpus.ncsoft.com:8081/repository/ubuntu/
 PIP_MIRROR = http://corpus.ncsoft.com:8081/repository/pypi/simple
 PIP_TRUST_HOST = corpus.ncsoft.com
 
+#APT_MIRROR = http://hq-lx-repo.korea.ncsoft.corp/ubuntu/
+#PIP_MIRROR = http://mirror.kakao.com/pypi/simple
+#PIP_TRUST_HOST = mirror.kakao.com
+
 .ONESHELL:
 base:
 	docker build \
@@ -53,6 +57,9 @@ build:
 		-t $(IMAGE):$(IMAGE_TAG) \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
+		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
+		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
+		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		--label "app=crawler" \
 		--label "version=$(IMAGE_TAG)" \
 		--label "image_name=$(IMAGE)" \

@@ -19,6 +19,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
 
@@ -43,6 +44,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
 
@@ -67,6 +69,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
 
@@ -91,6 +94,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
 
@@ -115,6 +119,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
 
@@ -139,6 +144,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
 
@@ -163,6 +169,7 @@ spec:
           containers:
             - name: default
               image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
 

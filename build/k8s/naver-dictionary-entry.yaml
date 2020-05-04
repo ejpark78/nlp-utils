@@ -10,12 +10,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: korean
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "한국어"]
-      resources: {}
-status: {}
 
 #---
 #apiVersion: v1
@@ -29,12 +28,11 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: thailand
+#    - name: default
 #      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
-#      resources: {}
-#status: {}
 
 ---
 apiVersion: v1
@@ -48,12 +46,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: chinese
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "중국어"]
-      resources: {}
-status: {}
 
 #---
 #apiVersion: v1
@@ -67,12 +64,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: indonesian
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
-#      resources: {}
-#status: {}
 
 #---
 #apiVersion: v1
@@ -86,12 +81,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: vietnamese
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
-#      resources: {}
-#status: {}
 
 #---
 #apiVersion: v1
@@ -105,12 +98,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: russian
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
-#      resources: {}
-#status: {}
 
 ---
 apiVersion: v1
@@ -124,12 +115,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: german
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "독일어"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -143,12 +133,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: spanish
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "스페인어"]
-      resources: {}
-status: {}
 
 ---
 apiVersion: v1
@@ -162,12 +151,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: japanese
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "일본어"]
-      resources: {}
-status: {}
 
 #---
 #apiVersion: v1
@@ -181,12 +169,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: turkish
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
-#      resources: {}
-#status: {}
 
 ---
 apiVersion: v1
@@ -200,12 +186,11 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: french
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "프랑스어"]
-      resources: {}
-status: {}
 
 #---
 #apiVersion: v1
@@ -219,12 +204,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: ukrainian
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
-#      resources: {}
-#status: {}
 
 #---
 #apiVersion: v1
@@ -238,12 +221,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: polish
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
-#      resources: {}
-#status: {}
 
 #---
 #apiVersion: v1
@@ -257,12 +238,10 @@ status: {}
 #spec:
 #  restartPolicy: Always
 #  containers:
-#    - name: italian
+#    - name: default
 #      image: corpus:5000/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
-#      resources: {}
-#status: {}
 
 # ---
 # apiVersion: v1
@@ -276,12 +255,10 @@ status: {}
 # spec:
 #   restartPolicy: Always
 #   containers:
-#     - name: rumanian
+#     - name: default
 #       image: corpus:5000/crawler:latest
 #       workingDir: /usr/local/app
 #       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
-#       resources: {}
-# status: {}
 
 ---
 apiVersion: v1
@@ -295,9 +272,8 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-    - name: english
+    - name: default
       image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "영어"]
-      resources: {}
-status: {}
