@@ -333,7 +333,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
             if 'document_id' not in entry:
                 continue
 
-            self.set_as_done(doc=entry)
+            self.set_as_done(doc=entry, column='state')
 
             sleep(self.sleep_time)
 

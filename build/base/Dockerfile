@@ -72,9 +72,13 @@ RUN echo && echo "# 의존성 라이브러리 설치" \
         lxml \
         numpy \
         requests \
+        requests[socks] \
         requests[security] \
         selenium \
         html5lib \
         openpyxl \
         jsonlines \
-        urllib3
+        urllib3 \
+        pandas \
+        pycurl \
+        cachelib

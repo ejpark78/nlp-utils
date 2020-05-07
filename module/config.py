@@ -27,11 +27,15 @@ class Config(object):
             'mobile': {
                 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
                               'AppleWebKit/604.1.38 (KHTML, like Gecko) '
-                              'Version/11.0 Mobile/15A372 Safari/604.1'
+                              'Version/11.0 '
+                              'Mobile/15A372 '
+                              'Safari/604.1'
             },
             'desktop': {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/77.0.3865.90 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/81.0.4044.113 '
+                              'Safari/537.36'
             }
         }
 

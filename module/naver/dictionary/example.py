@@ -72,8 +72,8 @@ class ExampleCrawler(DictionaryUtils):
             for doc in items:
                 doc['query'] = keyword
 
-                doc['expExample1'] = re.sub('<strong>(.+?)</strong>', '\g<1>', doc['expExample1'])
-                doc['expExample2'] = re.sub('<strong>(.+?)</strong>', '\g<1>', doc['expExample2'])
+                doc['expExample1'] = re.sub('<strong>(.+?)</strong>', r'\g<1>', doc['expExample1'])
+                doc['expExample2'] = re.sub('<strong>(.+?)</strong>', r'\g<1>', doc['expExample2'])
 
                 self.elastic.save_document(index=index, document=doc, delete=False)
 

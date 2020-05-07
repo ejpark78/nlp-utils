@@ -110,7 +110,7 @@ class YoudaoExampleSearch(DictionaryUtils):
 
     def trace_entry_list(self):
         """ """
-        entry_list = self.read_entry_list()
+        entry_list = self.read_entry_list(lang=self.args.lang, column='state')
 
         self.open_db(index=self.args.index)
         url_list = self.get_url_frame_info()
@@ -136,7 +136,7 @@ class YoudaoExampleSearch(DictionaryUtils):
 
                 sleep(5)
 
-            self.set_as_done(doc=entry)
+            self.set_as_done(doc=entry, column='state')
 
         return
 
@@ -149,18 +149,15 @@ class YoudaoExampleSearch(DictionaryUtils):
         if self.args.remove_same_example is True:
             self.remove_same_example()
         elif 'reset_list' in self.args and self.args.reset_list is True:
-            self.reset_list()
+            self.reset_list(column='state')
         else:
             self.trace_entry_list()
 
         return
 
-    @staticmethod
-    def init_arguments():
+    def init_arguments(self):
         """ 옵션 설정 """
-        import argparse
-
-        parser = argparse.ArgumentParser()
+        parser = super().init_arguments()
 
         parser.add_argument('--lang', default='', help='')
 
@@ -168,9 +165,6 @@ class YoudaoExampleSearch(DictionaryUtils):
 
         parser.add_argument('--index', default='crawler-dictionary-example-youdao', help='')
         parser.add_argument('--list_index', default='crawler-dictionary-example-youdao-list', help='')
-
-        parser.add_argument('--reset_list', action='store_true', default=False, help='')
-        parser.add_argument('--remove_same_example', action='store_true', default=False, help='')
 
         return parser.parse_args()
 

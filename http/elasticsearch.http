@@ -581,31 +581,6 @@ Accept: application/json
 
 ###
 
-POST {{host}}/_reindex
-Content-Type: application/json
-Accept: application/json
-
-{
-  "source": {
-    "index": "crawler-bbs-naver"
-  },
-  "dest": {
-    "index": "crawler-naver-cafe"
-  }
-}
-
-###
-
-GET {{host}}/_tasks/8kaypq9RQgCyoDjpSdTLRA:480539536
-Content-Type: application/json
-Accept: application/text
-
-###
-
-#DELETE {{host}}/crawler-bbs-game-lineagem-eng
-
-###
-
 #PUT {{host}}/crawler-facebook/_settings
 
 PUT {{host}}/_settings
@@ -760,33 +735,30 @@ Accept: application/json
 
 ###
 
-POST {{host}}/_reindex
+POST {{host}}/_reindex?wait_for_completion=false
 Content-Type: application/json
 Accept: application/json
 
 {
   "source": {
-    "index": "crawler-naver-dictionary-example"
+    "index": "crawler-dictionary-example-naver2-list"
   },
   "dest": {
-    "index": "crawler-dictionary-example-naver"
+    "index": "crawler-dictionary-example-naver-list"
   }
 }
 
 ###
 
-POST {{host}}/_reindex
+GET {{host}}/_tasks/QLnqKErAQxuOteVoPZAtBg:889824290
 Content-Type: application/json
-Accept: application/json
+Accept: application/text
 
-{
-  "source": {
-    "index": "crawler-dictionary-example-eudic-list"
-  },
-  "dest": {
-    "index": "crawler-dictionary-example-youdao-list"
-  }
-}
+###
+
+DELETE {{host}}/crawler-dictionary-example-naver-th
+Content-Type: application/json
+Accept: application/text
 
 ###
 
@@ -820,10 +792,100 @@ Accept: application/json
       "date_histogram": {
         "field": "date",
         "keyed": false,
-        "format" : "yyyy-MM-dd",
+        "format": "yyyy-MM-dd",
         "time_zone": "+09:00",
         "calendar_interval": "day"
       }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "match": {
+            "state": "done"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-dictionary-example-linedict-list/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "exists": {
+            "field": "entry"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/crawler-dictionary-example-youdao-list/_delete_by_query
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "exists": {
+            "field": "entry"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "gdate": "20200506"
+          }
+        }
+      ]
     }
   }
 }

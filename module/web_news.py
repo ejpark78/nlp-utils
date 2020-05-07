@@ -816,6 +816,18 @@ class WebNewsCrawler(CrawlerBase):
             for item in trace_list:
                 str_trace_list += str(item)
 
+        if len(trace_list) == 0:
+            msg = {
+                'level': 'ERROR',
+                'message': 'trace_list 가 없음',
+                'trace_size': len(trace_list),
+                'sleep_time': self.sleep_time,
+            }
+            logger.error(msg=LogMsg(msg))
+
+            sleep(self.sleep_time)
+            return None
+
         # trace_list 이력 조회
         trace_list_history = self.get_history(name='trace_list', default='')
         if isinstance(trace_list_history, str) is True:

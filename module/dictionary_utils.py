@@ -33,8 +33,9 @@ class DictionaryUtils(object):
 
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
-                          + 'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          + 'Chrome/77.0.3865.90 Safari/537.36',
+                          'AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/81.0.4044.113 '
+                          'Safari/537.36',
         }
 
         self.host = 'https://corpus.ncsoft.com:9200'
@@ -80,13 +81,16 @@ class DictionaryUtils(object):
         self.elastic = ElasticSearchUtils(host=self.host, http_auth=self.http_auth, index=index)
         return self.elastic
 
-    def get_html(self, url):
+    def get_html(self, url, resp_type='html'):
         """ """
         headers = self.headers
 
         headers['Referer'] = url
 
-        resp = requests.get(url, headers=headers, timeout=60)
+        resp = requests.get(url, headers=headers, timeout=60, verify=False)
+        if resp_type == 'json':
+            return resp.json()
+
         soup = BeautifulSoup(resp.content, 'html5lib')
 
         return soup
@@ -229,7 +233,7 @@ class DictionaryUtils(object):
 
         return
 
-    def reset_list(self):
+    def reset_list(self, column):
         """ """
         self.open_db(self.args.list_index)
 
@@ -240,7 +244,7 @@ class DictionaryUtils(object):
                     'must': [
                         {
                             'match': {
-                                'state': 'done'
+                                column: 'done'
                             }
                         }
                     ]
@@ -254,36 +258,43 @@ class DictionaryUtils(object):
             doc['_id'] = doc['document_id']
             del doc['document_id']
 
-            doc['state'] = ''
+            doc[column] = ''
             self.elastic.save_document(document=doc, index=self.args.list_index)
 
         self.elastic.flush()
 
         return
 
-    def set_as_done(self, doc):
+    def set_as_done(self, doc, column):
         """ """
         doc['_id'] = doc['document_id']
         del doc['document_id']
 
-        doc['state'] = 'done'
+        doc[column] = 'done'
         doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
         self.elastic.save_document(index=self.args.list_index, document=doc, delete=False)
         self.elastic.flush()
         return
 
-    def read_entry_list(self):
+    def read_entry_list(self, lang, column, state_done=True):
         """설정파일을 읽어드린다."""
         self.open_db(self.args.list_index)
 
         query = {
             'query': {
                 'bool': {
+                    'must': [
+                        {
+                            'match': {
+                                'lang': lang
+                            }
+                        }
+                    ],
                     'must_not': [
                         {
                             'match': {
-                                'state': 'done'
+                                column: 'done'
                             }
                         }
                     ]
@@ -291,18 +302,67 @@ class DictionaryUtils(object):
             }
         }
 
-        if 'lang' in self.args and self.args.lang != '':
-            query['query']['bool']['must'] = [
-                {
-                    'match': {
-                        'lang': self.args.lang
-                    }
-                }
-            ]
+        if state_done is False:
+            query = {}
 
         doc_list = self.elastic.dump(query=query)
 
         return list(doc_list)
+
+    def upload_entry_list(self):
+        """설정파일을 업로드한다."""
+        from glob import glob
+        from uuid import uuid4
+
+        entry_list = self.read_entry_list(lang=self.args.lang, column='state')
+
+        entry_index = {}
+        for item in entry_list:
+            if 'entry' not in item or 'lang' not in item:
+                continue
+
+            k = '{}_{}'.format(item['entry'], item['lang'])
+            entry_index[k] = item
+
+        for f in glob('config/dict_example/*.txt'):
+            f_name = f.replace('.txt', '').rsplit('/')[-1].replace('_', ' ').replace('.', ' ')
+            lang = f_name.split(' ')[0].lower()
+
+            with open(f, 'r') as fp:
+                for w in fp.readlines():
+                    w = w.strip()
+
+                    if w == '':
+                        continue
+
+                    k = '{}_{}'.format(w, lang)
+
+                    item = {
+                        'entry': w,
+                        'lang': lang,
+                        'category': f_name,
+                    }
+
+                    if k not in entry_index:
+                        entry_index[k] = item
+                    else:
+                        entry_index[k]['category'] = ','.join(set([entry_index[k]['category'], f_name]))
+
+        index = 'crawler-dictionary-example-naver2-list'
+        self.open_db(index)
+
+        for doc in entry_index.values():
+            doc['_id'] = str(uuid4())
+            if 'document_id' in doc:
+                doc['_id'] = doc['document_id']
+                del doc['document_id']
+
+            doc['state'] = ''
+            self.elastic.save_document(document=doc, index=index)
+
+        self.elastic.flush()
+
+        return
 
     def is_skip(self, doc, columns):
         """ """
@@ -313,3 +373,17 @@ class DictionaryUtils(object):
 
         self.cache.add(text)
         return False
+
+    @staticmethod
+    def init_arguments():
+        """ 옵션 설정 """
+        import argparse
+
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--reset_list', action='store_true', default=False, help='')
+        parser.add_argument('--remove_same_example', action='store_true', default=False, help='')
+
+        parser.add_argument('--upload_entry_list', action='store_true', default=False, help='')
+
+        return parser
