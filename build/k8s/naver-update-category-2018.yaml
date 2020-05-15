@@ -5,9 +5,11 @@ metadata:
   name: economy
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -21,9 +23,11 @@ metadata:
   name: international
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -37,9 +41,11 @@ metadata:
   name: it
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -53,9 +59,11 @@ metadata:
   name: living
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -69,9 +77,11 @@ metadata:
   name: opinion
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -85,9 +95,11 @@ metadata:
   name: politics
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -101,9 +113,11 @@ metadata:
   name: society
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -117,9 +131,11 @@ metadata:
   name: sports
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -133,9 +149,11 @@ metadata:
   name: tv
   namespace: crawler-naver-update-category
   labels:
-    app: crawler-naver-update-category
+    app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest

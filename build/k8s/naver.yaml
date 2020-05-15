@@ -72,12 +72,12 @@ metadata:
   name: economy
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -87,6 +87,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -101,12 +103,12 @@ metadata:
   name: international
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -116,6 +118,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -130,12 +134,12 @@ metadata:
   name: it
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -145,6 +149,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -159,12 +165,12 @@ metadata:
   name: living
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -174,6 +180,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -188,12 +196,12 @@ metadata:
   name: opinion
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -203,6 +211,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -217,12 +227,12 @@ metadata:
   name: politics
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "25,55 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -246,12 +256,12 @@ metadata:
   name: society
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -261,6 +271,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -275,12 +287,12 @@ metadata:
   name: sports
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -290,6 +302,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -304,12 +318,12 @@ metadata:
   name: tv
   namespace: crawler-naver
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
@@ -319,6 +333,8 @@ spec:
             - ip: "172.20.78.250"
               hostnames:
               - "mq.local"
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest

@@ -741,22 +741,22 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example-naver2-list"
+    "index": "crawler-naver-kbo_game_center_rely_text"
   },
   "dest": {
-    "index": "crawler-dictionary-example-naver-list"
+    "index": "crawler-naver-kbo_game_center_relay_text"
   }
 }
 
 ###
 
-GET {{host}}/_tasks/QLnqKErAQxuOteVoPZAtBg:889824290
+GET {{host}}/_tasks/8kaypq9RQgCyoDjpSdTLRA:716178
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-dictionary-example-naver-th
+DELETE {{host}}/crawler-naver-kbo_game_center_rely_text
 Content-Type: application/json
 Accept: application/text
 
@@ -891,3 +891,24 @@ Accept: application/json
 }
 
 ###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "gameId": "20200512SKLG02020"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+

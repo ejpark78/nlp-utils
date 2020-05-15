@@ -5,17 +5,19 @@ metadata:
   name: question-list
   namespace: crawler-naver-kin
   labels:
-    app: crawler-naver-kin
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -30,17 +32,19 @@ metadata:
   name: answer-list
   namespace: crawler-naver-kin
   labels:
-    app: crawler-naver-kin
+    app: crawler
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -55,17 +59,19 @@ metadata:
   name: detail-question
   namespace: crawler-naver-kin
   labels:
-    app: crawler-naver-kin
+    app: crawler
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -79,17 +85,19 @@ kind: CronJob
 metadata:
   name: detail-answer
   namespace: crawler-naver-kin
-    app: crawler-naver-kin
+    app: crawler
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest

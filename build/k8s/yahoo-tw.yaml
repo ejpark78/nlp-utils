@@ -5,17 +5,19 @@ metadata:
   name: news-list
   namespace: crawler-yahoo-tw
   labels:
-    app: crawler-yahoo-tw
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -30,17 +32,19 @@ metadata:
   name: news-contents
   namespace: crawler-yahoo-tw
   labels:
-    app: crawler-yahoo-tw
+    app: crawler
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest

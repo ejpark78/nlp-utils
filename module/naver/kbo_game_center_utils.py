@@ -397,7 +397,7 @@ class NaverKBOGameCenterUtils(object):
                 game_info = game_list[game_id]
 
                 page = 1
-                if 'state' in game_info and game_info['state'].isdecimal():
+                if 'state' in game_info and isinstance(game_info['state'], str) and game_info['state'].isdecimal():
                     page = int(game_info['state'])
 
                 self.trace_comment_list(
@@ -481,6 +481,9 @@ class NaverKBOGameCenterUtils(object):
             logger.log(level=MESSAGE, msg=LogMsg(msg))
 
             info = self.get_game_info_by_date(game_date=game_date)
+            if info is None:
+                continue
+
             for g in info['games']:
                 game_list[g['gameId']] = g
 

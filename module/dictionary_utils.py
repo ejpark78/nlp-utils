@@ -140,96 +140,96 @@ class DictionaryUtils(object):
 
     def remove_same_example(self):
         """ """
-        from tqdm import tqdm
-
-        self.open_db(index=self.args.index)
-
-        id_list = self.elastic.get_id_list(index=self.args.index)
-        id_list = list(id_list)
-
-        size = 1000
-
-        start = 0
-        end = size
-
-        index = set()
-
-        bulk_data = []
-        params = {'request_timeout': 2 * 60}
-        columns = self.args.columns.split(',')
-
-        count = {c: 0 for c in columns}
-
-        count['total'] = 0
-        count['missing_column'] = 0
-
-        p_bar = tqdm(total=len(id_list), dynamic_ncols=True)
-
-        while start < len(id_list):
-            doc_list = []
-            self.elastic.get_by_ids(
-                id_list=id_list[start:end],
-                index=self.elastic.index,
-                source=['document_id'] + columns,
-                result=doc_list
-            )
-
-            for doc in doc_list:
-                p_bar.update()
-
-                count['total'] += 1
-                if set(doc.keys()).intersection(columns) is False:
-                    count['missing_column'] += 1
-                    continue
-
-                text = '\t'.join([doc[k] for k in columns if k in doc])
-
-                for k in columns:
-                    if k in doc and doc[k].strip() != '':
-                        continue
-
-                    count[k] += 1
-
-                if text == '\t' or text in index:
-                    bulk_data.append({
-                        'delete': {
-                            '_id': doc['document_id'],
-                            '_index': self.args.index,
-                        }
-                    })
-
-                    if len(bulk_data) > 1000:
-                        resp = self.elastic.elastic.bulk(
-                            index=self.args.index,
-                            body=bulk_data,
-                            refresh=True,
-                            params=params,
-                        )
-                        print(resp)
-
-                        bulk_data = []
-
-                index.add(text)
-
-            if start >= len(id_list):
-                break
-
-            start = end
-            end += size
-
-            if end > len(id_list):
-                end = len(id_list)
-
-        if len(bulk_data) > 0:
-            resp = self.elastic.elastic.bulk(
-                index=self.args.index,
-                body=bulk_data,
-                refresh=True,
-                params=params,
-            )
-            print(resp)
-
-        print(count)
+        # from tqdm import tqdm
+        #
+        # self.open_db(index=self.args.index)
+        #
+        # id_list = self.elastic.get_id_list(index=self.args.index)
+        # id_list = list(id_list)
+        #
+        # size = 1000
+        #
+        # start = 0
+        # end = size
+        #
+        # index = set()
+        #
+        # bulk_data = []
+        # params = {'request_timeout': 2 * 60}
+        # columns = self.args.columns.split(',')
+        #
+        # count = {c: 0 for c in columns}
+        #
+        # count['total'] = 0
+        # count['missing_column'] = 0
+        #
+        # p_bar = tqdm(total=len(id_list), dynamic_ncols=True)
+        #
+        # while start < len(id_list):
+        #     doc_list = []
+        #     self.elastic.get_by_ids(
+        #         id_list=id_list[start:end],
+        #         index=self.elastic.index,
+        #         source=['document_id'] + columns,
+        #         result=doc_list
+        #     )
+        #
+        #     for doc in doc_list:
+        #         p_bar.update()
+        #
+        #         count['total'] += 1
+        #         if set(doc.keys()).intersection(columns) is False:
+        #             count['missing_column'] += 1
+        #             continue
+        #
+        #         text = '\t'.join([doc[k] for k in columns if k in doc])
+        #
+        #         for k in columns:
+        #             if k in doc and doc[k].strip() != '':
+        #                 continue
+        #
+        #             count[k] += 1
+        #
+        #         if text == '\t' or text in index:
+        #             bulk_data.append({
+        #                 'delete': {
+        #                     '_id': doc['document_id'],
+        #                     '_index': self.args.index,
+        #                 }
+        #             })
+        #
+        #             if len(bulk_data) > 1000:
+        #                 resp = self.elastic.elastic.bulk(
+        #                     index=self.args.index,
+        #                     body=bulk_data,
+        #                     refresh=True,
+        #                     params=params,
+        #                 )
+        #                 print(resp)
+        #
+        #                 bulk_data = []
+        #
+        #         index.add(text)
+        #
+        #     if start >= len(id_list):
+        #         break
+        #
+        #     start = end
+        #     end += size
+        #
+        #     if end > len(id_list):
+        #         end = len(id_list)
+        #
+        # if len(bulk_data) > 0:
+        #     resp = self.elastic.elastic.bulk(
+        #         index=self.args.index,
+        #         body=bulk_data,
+        #         refresh=True,
+        #         params=params,
+        #     )
+        #     print(resp)
+        #
+        # print(count)
 
         return
 

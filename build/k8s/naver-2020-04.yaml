@@ -5,7 +5,7 @@ metadata:
   name: economy
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -48,7 +48,7 @@ metadata:
   name: international
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -91,7 +91,7 @@ metadata:
   name: it
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -134,7 +134,7 @@ metadata:
   name: living
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -180,7 +180,7 @@ metadata:
   name: opinion
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -226,7 +226,7 @@ metadata:
   name: politics
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -272,7 +272,7 @@ metadata:
   name: society
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -318,7 +318,7 @@ metadata:
   name: sports
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:
@@ -364,7 +364,7 @@ metadata:
   name: tv
   namespace: crawler-naver-2020-04
   labels:
-    app: crawler-naver
+    app: crawler
 spec:
   restartPolicy: Never
   containers:

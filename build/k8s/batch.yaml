@@ -6,9 +6,10 @@ metadata:
   namespace: crawler-batch
   labels:
     app: crawler
-    site: bbs
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -24,9 +25,10 @@ metadata:
   namespace: crawler-batch
   labels:
     app: crawler
-    site: bbs
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest

@@ -4,19 +4,21 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: game-info
-  namespace: crawler-naver-kbo-game-center
+  namespace: crawler-naver-kbo
   labels:
-    app: crawler-naver-kbo-game-center
+    app: crawler
 spec:
   schedule: "* 18,19,20,21,22,23,24 * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -29,19 +31,21 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: trace-comments
-  namespace: crawler-naver-kbo-game-center
+  namespace: crawler-naver-kbo
   labels:
-    app: crawler-naver-kbo-game-center
+    app: crawler
 spec:
   schedule: "* 18,19,20,21,22,23,24 * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest

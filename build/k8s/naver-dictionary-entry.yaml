@@ -5,10 +5,11 @@ metadata:
   name: korean
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
       image: corpus:5000/crawler:latest
@@ -23,8 +24,7 @@ spec:
 #  name: thailand
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -41,8 +41,7 @@ metadata:
   name: chinese
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:
@@ -59,8 +58,7 @@ spec:
 #  name: indonesian
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -76,8 +74,7 @@ spec:
 #  name: vietnamese
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -93,8 +90,7 @@ spec:
 #  name: russian
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -110,8 +106,7 @@ metadata:
   name: german
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:
@@ -128,8 +123,7 @@ metadata:
   name: spanish
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:
@@ -146,8 +140,7 @@ metadata:
   name: japanese
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:
@@ -164,8 +157,7 @@ spec:
 #  name: turkish
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -181,8 +173,7 @@ metadata:
   name: french
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:
@@ -199,8 +190,7 @@ spec:
 #  name: ukrainian
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -216,8 +206,7 @@ spec:
 #  name: polish
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -233,8 +222,7 @@ spec:
 #  name: italian
 #  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler-naver-dictionary
-#    site: naver-dictionary
+#    app: crawler
 #spec:
 #  restartPolicy: Always
 #  containers:
@@ -250,8 +238,7 @@ spec:
 #   name: rumanian
 #   namespace: crawler-naver-dictionary
 #   labels:
-#     app: crawler-naver-dictionary
-#     site: naver-dictionary
+#     app: crawler
 # spec:
 #   restartPolicy: Always
 #   containers:
@@ -267,8 +254,7 @@ metadata:
   name: english
   namespace: crawler-naver-dictionary
   labels:
-    app: crawler-naver-dictionary
-    site: naver-dictionary
+    app: crawler
 spec:
   restartPolicy: Always
   containers:

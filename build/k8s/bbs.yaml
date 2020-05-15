@@ -5,17 +5,19 @@ metadata:
   name: mlbpark-kbo
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -30,17 +32,19 @@ metadata:
   name: mlbpark-mlb
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -55,17 +59,19 @@ metadata:
   name: mlbpark-bullpen
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -80,17 +86,19 @@ metadata:
   name: ruliweb
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -105,17 +113,19 @@ metadata:
   name: inven-lineagem
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -130,17 +140,19 @@ metadata:
   name: lineagem
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
@@ -155,17 +167,19 @@ metadata:
   name: lineage2m
   namespace: crawler-bbs
   labels:
-    app: crawler-bbs
+    app: crawler
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
   jobTemplate:
     spec:
       template:
         spec:
           restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
           containers:
             - name: default
               image: corpus:5000/crawler:latest
