@@ -8,7 +8,7 @@ metadata:
   labels:
     app: crawler
 spec:
-  schedule: "* 18,19,20,21,22,23,24 * * *"
+  schedule: "0 05 * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 0
@@ -24,31 +24,4 @@ spec:
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
               workingDir: /usr/local/app
-              args: ["python3", "module/naver/kbo_game_center_utils.py", "--game_info"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: trace-comments
-  namespace: crawler-naver-kbo
-  labels:
-    app: crawler
-spec:
-  schedule: "* 18,19,20,21,22,23,24 * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              imagePullPolicy: Always
-              workingDir: /usr/local/app
-              args: ["python3", "module/naver/kbo_game_center_utils.py", "--trace_comments"]
+              args: ["python3", "module/naver/kbo_game_center_utils.py", "--game_info", "--trace_comments"]

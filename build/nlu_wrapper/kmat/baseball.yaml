@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kmat-baseball
+  namespace: nlu-wrapper
+  labels:
+    app: kmat-baseball
+    domain: economy
+spec:
+  selector:
+    matchLabels:
+      app: kmat-baseball
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kmat-baseball
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
+          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: DOMAIN
+              value: "baseball"
+          ports:
+            - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kmat-baseball
+  namespace: nlu-wrapper
+  labels:
+    app: kmat-baseball
+spec:
+  type: LoadBalancer
+  selector:
+    app: kmat-baseball
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 30012
+      targetPort: 80
+

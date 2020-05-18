@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ner-economy
+  namespace: nlu-wrapper
+  labels:
+    app: ner-economy
+    domain: economy
+spec:
+  selector:
+    matchLabels:
+      app: ner-economy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ner-economy
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
+          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: DOMAIN
+              value: "economy"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ner-economy
+  namespace: nlu-wrapper
+  labels:
+    app: ner-economy
+spec:
+  type: LoadBalancer
+  selector:
+    app: ner-economy
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 30021
+      targetPort: 80
+

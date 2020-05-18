@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbd-literary
+  namespace: nlu-wrapper
+  labels:
+    app: sbd-literary
+    domain: literary
+spec:
+  selector:
+    matchLabels:
+      app: sbd-literary
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sbd-literary
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
+          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: STYLE
+              value: "literary"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbd-literary
+  namespace: nlu-wrapper
+  labels:
+    app: sbd-literary
+spec:
+  type: LoadBalancer
+  selector:
+    app: sbd-literary
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 30031
+      targetPort: 80
+

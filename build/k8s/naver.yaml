@@ -1,24 +1,42 @@
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mq
+  namespace: crawler-naver
+  labels:
+    app: mq
+spec:
+  type: LoadBalancer
+  selector:
+    app: mq
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 35672
+      targetPort: 5672
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: corpus-pipeline
+  name: mq
   namespace: crawler-naver
   labels:
-    app: corpus-pipeline
+    app: mq
 spec:
   selector:
     matchLabels:
-      app: corpus-pipeline
+      app: mq
   replicas: 1
   template:
     metadata:
       labels:
-        app: corpus-pipeline
+        app: mq
     spec:
       restartPolicy: Always
       containers:
-        - name: mq
+        - name: default
           image: rabbitmq:3-management
           imagePullPolicy: Always
           ports:
@@ -28,14 +46,37 @@ spec:
               value: nlplab!
             - name: RABBITMQ_DEFAULT_USER
               value: user
-        - name: corpus-pipeline
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline
+  namespace: crawler-naver
+  labels:
+    app: pipeline
+spec:
+  selector:
+    matchLabels:
+      app: pipeline
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pipeline
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
           image: corpus:5000/crawler/corpus_pipeline:latest
           imagePullPolicy: Always
           env:
             - name: CONSUMER_EXCHANGE_NAME
               value: corpus_pipeline
             - name: CONSUMER_HOST
-              value: localhost
+              value: mq.crawler-naver.svc.cluster.local
+            - name: CONSUMER_PORT
+              value: "35672"
             - name: CONSUMER_USER_NAME
               value: user
             - name: CONSUMER_USER_PASSWD
@@ -43,27 +84,9 @@ spec:
             - name: ELASTIC_HOST
               value: https://corpus.ncsoft.com:9200
             - name: NLU_WRAPPER_URL
-              value: http://172.20.78.250:30000/
+              value: http://nluwrapper.nlu-wrapper.svc.cluster.local:30000/
             - name: USE_CONSUMER
               value: "1"
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: corpus-pipeline
-  namespace: crawler-naver
-  labels:
-    app: corpus-pipeline
-spec:
-  type: LoadBalancer
-  selector:
-    app: corpus-pipeline
-  externalIPs:
-    - 172.20.78.250
-  ports:
-    - port: 35672
-      targetPort: 5672
 
 ---
 apiVersion: batch/v1beta1
@@ -83,10 +106,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -114,10 +133,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -145,10 +160,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -176,10 +187,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -207,10 +214,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -238,12 +241,8 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           containers:
-            - name: politics
+            - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
               workingDir: /usr/local/app
@@ -267,10 +266,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -298,10 +293,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:
@@ -329,10 +320,6 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.78.250"
-              hostnames:
-              - "mq.local"
           nodeSelector:
             group: "crawler"
           containers:

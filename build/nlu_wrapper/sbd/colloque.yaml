@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbd-colloque
+  namespace: nlu-wrapper
+  labels:
+    app: sbd-colloque
+    domain: colloque
+spec:
+  selector:
+    matchLabels:
+      app: sbd-colloque
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sbd-colloque
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
+          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: STYLE
+              value: "colloque"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbd-colloque
+  namespace: nlu-wrapper
+  labels:
+    app: sbd-colloque
+spec:
+  type: LoadBalancer
+  selector:
+    app: sbd-colloque
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 30030
+      targetPort: 80
+

@@ -52,7 +52,7 @@
             "name": "corpus_pipeline"
           },
           "host": {
-            "name": "mq.local",
+            "name": "mq.crawler-naver.svc.cluster.local",
             "port": 35672,
             "user_name": "user",
             "user_password": "nlplab!"

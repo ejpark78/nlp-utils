@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nluwrapper
+  namespace: nlu-wrapper
+  labels:
+    app: nluwrapper
+spec:
+  selector:
+    matchLabels:
+      app: nluwrapper
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nluwrapper
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: default
+          image: galadriel02.korea.ncsoft.corp:5000/nlu_wrapper:latest
+          env:
+            - name: VERSION
+              value: "latest"
+            - name: SERV_PORT
+              value: "80"
+            - name: POS_IP_ADDR_common
+              value: "http://kmat-common.nlu-wrapper.svc.cluster.local:30010"
+            - name: POS_IP_ADDR_economy
+              value: "http://kmat-economy.nlu-wrapper.svc.cluster.local:30011"
+            - name: POS_IP_ADDR_baseball
+              value: "http://kmat-baseball.nlu-wrapper.svc.cluster.local:30012"
+            - name: POS_IP_ADDR_lineageM
+              value: "http://kmat-lineagem.nlu-wrapper.svc.cluster.local:30013"
+            - name: NER_IP_ADDR_economy
+              value: "http://ner-economy.nlu-wrapper.svc.cluster.local:30021"
+            - name: NER_IP_ADDR_baseball
+              value: "http://ner-baseball.nlu-wrapper.svc.cluster.local:30022"
+            - name: NER_IP_ADDR_lineageM
+              value: "http://ner-lineagem.nlu-wrapper.svc.cluster.local:30023"
+            - name: SBD_CRF_IP_ADDR_colloque
+              value: "http://sbd-colloque.nlu-wrapper.svc.cluster.local:30030"
+            - name: SBD_CRF_IP_ADDR_literary
+              value: "http://sbd-literary.nlu-wrapper.svc.cluster.local:30031"
+            - name: DP_IP_ADDR
+              value: "http://parser-common.nlu-wrapper.svc.cluster.local:30040"
+            - name: TIME_PYTHON_IP_ADDR
+              value: "http://time-common.nlu-wrapper.svc.cluster.local:30050/nctime"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nluwrapper
+  namespace: nlu-wrapper
+  labels:
+    app: nluwrapper
+spec:
+  type: LoadBalancer
+  selector:
+    app: nluwrapper
+  externalIPs:
+    - 172.20.78.250
+  ports:
+    - port: 30000
+      targetPort: 80
+
