@@ -54,25 +54,41 @@ class ExampleSearchCrawler(DictionaryUtils):
     def get_url_frame_info():
         """ """
         return {
-            'cn-en': {
+            # 'cn-en': {
+            #     'method': 'GET',
+            #     'url_frame': 'https://dict.naver.com/linedict/cnen/example/search.dict',
+            #     'query': {
+            #         'query': '',
+            #         'page': 1,
+            #         'page_size': 100,
+            #         'examType': 'normal',
+            #         'fieldType': '',
+            #         'author': '',
+            #         'country': '',
+            #         'ql': 'default',
+            #         'format': 'json',
+            #         'platform': 'isPC',
+            #     }
+            # },
+            # 'en-cn': {
+            #     'method': 'GET',
+            #     'url_frame': 'https://dict.naver.com/linedict/encn/example/search.dict',
+            #     'query': {
+            #         'query': '',
+            #         'page': 1,
+            #         'page_size': 100,
+            #         'examType': 'normal',
+            #         'fieldType': '',
+            #         'author': '',
+            #         'country': '',
+            #         'ql': 'default',
+            #         'format': 'json',
+            #         'platform': 'isPC',
+            #     }
+            # },
+            'en-th': {
                 'method': 'GET',
-                'url_frame': 'https://dict.naver.com/linedict/cnen/example/search.dict',
-                'query': {
-                    'query': '',
-                    'page': 1,
-                    'page_size': 100,
-                    'examType': 'normal',
-                    'fieldType': '',
-                    'author': '',
-                    'country': '',
-                    'ql': 'default',
-                    'format': 'json',
-                    'platform': 'isPC',
-                }
-            },
-            'en-cn': {
-                'method': 'GET',
-                'url_frame': 'https://dict.naver.com/linedict/encn/example/search.dict',
+                'url_frame': 'https://dict.naver.com/linedict/enth/example/search.dict',
                 'query': {
                     'query': '',
                     'page': 1,
@@ -159,8 +175,10 @@ class ExampleSearchCrawler(DictionaryUtils):
         """ 옵션 설정 """
         parser = super().init_arguments()
 
-        parser.add_argument('--index', default='crawler-dictionary-example-linedict', help='')
-        parser.add_argument('--list_index', default='crawler-dictionary-example-linedict-list', help='')
+        parser.add_argument('--lang', default='', help='')
+
+        parser.add_argument('--index', default='crawler-dictionary-example-linedict-enth', help='')
+        parser.add_argument('--list_index', default='crawler-dictionary-example-linedict-enth-list', help='')
 
         parser.add_argument('--columns', default='example,translationText', help='')
 

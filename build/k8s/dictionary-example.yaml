@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: linedict
-  namespace: crawler-dictionary-example
+  namespace: crawler-naver-dictionary-example
   labels:
     app: crawler
 spec:
@@ -15,14 +15,147 @@ spec:
       image: corpus:5000/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/linedict.py", "--index", "crawler-dictionary-example-linedict", "--list_index", "crawler-dictionary-example-linedict-list", "--columns", "example,translationText"]
+      args: ["python3", "module/naver/dictionary/linedict.py", "--lang", "en", "--index", "crawler-dictionary-example-linedict-enth", "--list_index", "crawler-dictionary-example-linedict-enth-list", "--columns", "example,translationText"]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: linedict
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/linedict.py", "--index", "crawler-dictionary-example-linedict", "--list_index", "crawler-dictionary-example-linedict-list", "--columns", "example,translationText"]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: eudict
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/dictionary/eudic_example.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: youdao
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/dictionary/youdao_example.py", "--index", "crawler-dictionary-example-youdao", "--list_index", "crawler-dictionary-example-youdao-list", "--columns", "english,chinese"]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: id
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "id"]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: ru
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "ru"]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: th
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "th"]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: ja
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "ja"]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: eudict
-  namespace: crawler-dictionary-example
+  name: vi
+  namespace: crawler-naver-dictionary-example
   labels:
     app: crawler
 spec:
@@ -34,14 +167,14 @@ spec:
       image: corpus:5000/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
-      args: ["python3", "module/dictionary/eudic_example.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
+      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "vi"]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: youdao
-  namespace: crawler-dictionary-example
+  name: zh
+  namespace: crawler-naver-dictionary-example
   labels:
     app: crawler
 spec:
@@ -53,4 +186,4 @@ spec:
       image: corpus:5000/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
-      args: ["python3", "module/dictionary/youdao_example.py", "--index", "crawler-dictionary-example-youdao", "--list_index", "crawler-dictionary-example-youdao-list", "--columns", "english,chinese"]
+      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "zh"]

@@ -741,22 +741,22 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-naver-kbo_game_center_rely_text"
+    "index": "crawler-dictionary-example-linedict-list"
   },
   "dest": {
-    "index": "crawler-naver-kbo_game_center_relay_text"
+    "index": "crawler-dictionary-example-linedict-enth-list"
   }
 }
 
 ###
 
-GET {{host}}/_tasks/8kaypq9RQgCyoDjpSdTLRA:716178
+GET {{host}}/_tasks/QLnqKErAQxuOteVoPZAtBg:21000162
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-naver-kbo_game_center_rely_text
+DELETE {{host}}/crawler-dictionary-example-linedict-enth-list
 Content-Type: application/json
 Accept: application/text
 
