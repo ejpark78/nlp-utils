@@ -495,6 +495,12 @@ Accept: application/json
 
 ###
 
+GET {{host}}/text-bbs-lineagem/_settings
+Content-Type: application/json
+Accept: application/json
+
+###
+
 PUT {{host}}/crawler-bbs-naver
 Content-Type: application/json
 Accept: application/json
@@ -741,22 +747,22 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example-linedict-list"
+    "index": "crawler-dictionary-example-glosbe"
   },
   "dest": {
-    "index": "crawler-dictionary-example-linedict-enth-list"
+    "index": "crawler-dictionary-example-glosbe-koen"
   }
 }
 
 ###
 
-GET {{host}}/_tasks/QLnqKErAQxuOteVoPZAtBg:21000162
+GET {{host}}/_tasks/CrKvFiFeT3KUC-pqNHuW4Q:76895575
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-dictionary-example-linedict-enth-list
+DELETE {{host}}/crawler-dictionary-example-glosbe-word-list
 Content-Type: application/json
 Accept: application/text
 
@@ -768,7 +774,7 @@ Accept: application/text
 
 ###
 
-#DELETE {{host}}/crawler-naver-dictionary-example
+#DELETE {{host}}/crawler-dictionary-example-glosbe-koen-word-list
 #Content-Type: application/json
 #Accept: application/text
 
@@ -912,3 +918,26 @@ Accept: application/json
 
 ###
 
+GET {{host}}/crawler-dictionary-example-glosbe-koen-word-list/_search
+Content-Type: application/json
+Accept: application/json
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-glosbe-koen-article/_doc/362cb241-3630-4176-a1a6-79e1edcfd151
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/crawler-dictionary-example-glosbe-koen-word-list/_doc/start
+Content-Type: application/json
+Accept: application/json
+
+{
+  "url": "https://glosbe.com/ko/en/-",
+  "entry": "-",
+  "document_id": "start"
+}
+
+###

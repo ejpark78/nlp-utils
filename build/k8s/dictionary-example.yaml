@@ -1,21 +1,21 @@
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: linedict
-  namespace: crawler-naver-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      imagePullPolicy: Always
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/linedict.py", "--lang", "en", "--index", "crawler-dictionary-example-linedict-enth", "--list_index", "crawler-dictionary-example-linedict-enth-list", "--columns", "example,translationText"]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: linedict
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/linedict.py", "--lang", "en", "--index", "crawler-dictionary-example-linedict-enth", "--list_index", "crawler-dictionary-example-linedict-enth-list", "--columns", "example,translationText"]
 
 #---
 #apiVersion: v1
@@ -150,24 +150,24 @@ spec:
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "ja"]
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: vi
-  namespace: crawler-naver-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      imagePullPolicy: Always
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "vi"]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: vi
+#  namespace: crawler-naver-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "vi"]
 
 ---
 apiVersion: v1
@@ -187,3 +187,31 @@ spec:
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "zh"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/naver/dictionary/glosbe.py",
+        "--username", "ejpark78@gmail.com",
+        "--password", "nlplab",
+        "--sleep", "60",
+        "--example", "crawler-dictionary-example-glosbe-koen",
+        "--article", "crawler-dictionary-example-glosbe-koen-article",
+        "--word_list", "crawler-dictionary-example-glosbe-koen-word-list"
+      ]
