@@ -19,7 +19,7 @@ Accept: application/text
 
 ###
 
-PUT {{host}}/_ingest/pipeline/character_kr
+PUT {{host}}/_ingest/pipeline/text_char_pipeline
 Content-Type: application/json
 Accept: application/json
 
@@ -79,6 +79,7 @@ Accept: application/json
 {
   "settings": {
     "index": {
+      "default_pipeline": "text_char_pipeline",
       "max_ngram_diff": 10,
       "mapping.total_fields.limit": 5000
     },
@@ -139,6 +140,11 @@ Accept: application/json
 
 ###
 
+DELETE {{host}}/text-bbs-lineagem
+Content-Type: application/json
+Accept: application/json
+
+###
 
 GET {{host}}/text-bbs-lineagem/_doc/bbs-comment-1251679-2429087?pipeline=character_kr
 Content-Type: application/json

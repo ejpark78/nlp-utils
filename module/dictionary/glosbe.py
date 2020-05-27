@@ -316,7 +316,11 @@ class GlosbeCrawler(object):
 
     def batch(self):
         """"""
+        from random import randint
+
         self.env = self.init_arguments()
+
+        sleep(randint(0, self.env.sleep * 2))
 
         self.login_info['username'] = self.env.username
         self.login_info['password'] = self.env.password
