@@ -179,6 +179,9 @@ class GlosbeCrawler(object):
         example_list = self.parse_example_list(soup=soup)
         article = self.parse_article(soup=soup)
 
+        if article is None:
+            return {'error': 'empty article'}
+
         next_btn = soup.select_one('#translationExamples div.pagination a')
 
         next_url = ''
@@ -200,13 +203,16 @@ class GlosbeCrawler(object):
         while resp['next_url'] != '':
             resp = self.get_example(page=page, url=url)
             if 'error' in resp:
-                max_try -= 1
-                if max_try < 0:
-                    break
+                if resp['error'] == 'connection':
+                    max_try -= 1
+                    if max_try < 0:
+                        break
 
-                resp = {'next_url': 'retry'}
-                sleep(100)
-                continue
+                    resp = {'next_url': 'retry'}
+                    sleep(100)
+                    continue
+                else:
+                    return resp
 
             page += 1
             max_try = 5
@@ -262,7 +268,7 @@ class GlosbeCrawler(object):
 
             sleep(self.env.sleep)
 
-        return
+        return {'status': 'ok'}
 
     def save_as_done(self, document_id):
         """ """
@@ -302,7 +308,9 @@ class GlosbeCrawler(object):
             word_info = self.word_list[url]
 
             count += 1
-            self.trace_example_list(entry=word_info['entry'], url=url)
+            resp = self.trace_example_list(entry=word_info['entry'], url=url)
+            if 'error' in resp:
+                break
 
             self.history.add(url)
             self.save_as_done(document_id=word_info['document_id'])
@@ -320,7 +328,7 @@ class GlosbeCrawler(object):
 
         self.env = self.init_arguments()
 
-        sleep(randint(0, self.env.sleep * 2))
+        sleep(randint(0, self.env.sleep))
 
         self.login_info['username'] = self.env.username
         self.login_info['password'] = self.env.password

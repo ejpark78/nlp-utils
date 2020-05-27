@@ -745,9 +745,52 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "url": "https://glosbe.com/ko/id/-",
-    "entry": "-",
-    "document_id": "start"
+  "url": "https://glosbe.com/ko/id/-",
+  "entry": "-",
+  "document_id": "start"
+}
+
+###
+
+GET {{host}}/crawler-dictionary-example-glosbe-envi-word-list/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2020-05-27T14:50:00+09:00"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+POST {{host}}/crawler-dictionary-example-glosbe-*-word-list/_update_by_query
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2020-05-27T14:50:00+09:00"
+          }
+        }
+      }
+    }
+  },
+  "script": {
+    "source": "ctx._source['state'] = ''"
+  }
 }
 
 ###
