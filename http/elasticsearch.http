@@ -80,182 +80,7 @@ Accept: application/json
   }
 }
 
-
 ###
-
-GET {{host}}/crawler-bbs-naver/_search
-Content-Type: application/json
-Accept: application/json
-
-{
-  "track_total_hits": true,
-  "_source": [
-    "title",
-    "blog_name",
-    "date",
-    "content"
-  ],
-  "sort": [
-    {
-      "date": "desc"
-    }
-  ],
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "match": {
-            "cafe_name": "쿠치레레더"
-          }
-        },
-        {
-          "exists": {
-            "field": "html_content"
-          }
-        }
-      ]
-    }
-  }
-}
-
-###
-
-GET {{host}}/crawler-bbs-naver/_search
-Content-Type: application/json
-Accept: application/json
-
-{
-  "track_total_hits": true,
-  "_source": [
-    "date",
-    "title",
-    "content",
-    "reply_list"
-  ],
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "match": {
-            "cafe_name": "굿엔레더"
-          }
-        },
-        {
-          "match": {
-            "title": "재봉틀"
-          }
-        },
-        {
-          "match": {
-            "content": "재봉틀"
-          }
-        }
-      ]
-    }
-  }
-}
-
-
-###
-
-
-GET {{host}}/crawler-bbs-naver/_search
-Content-Type: application/json
-Accept: application/json
-
-{
-  "track_total_hits": true,
-  "_source": [
-    "date",
-    "title",
-    "content",
-    "reply_list"
-  ],
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "match": {
-            "cafe_name": "굿엔레더"
-          }
-        },
-        {
-          "match": {
-            "title": "재봉틀"
-          }
-        },
-        {
-          "match": {
-            "content": "재봉틀"
-          }
-        },
-        {
-          "match": {
-            "title": "미싱"
-          }
-        },
-        {
-          "match": {
-            "content": "미싱"
-          }
-        },
-        {
-          "match": {
-            "reply_list.text": "재봉틀"
-          }
-        },
-        {
-          "match": {
-            "reply_list.text": "미싱"
-          }
-        }
-      ]
-    }
-  }
-}
-
-
-###
-
-
-GET {{host}}/crawler-bbs-naver/_search
-Content-Type: application/json
-Accept: application/json
-
-{
-  "track_total_hits": true,
-  "_source": [
-    "date",
-    "title",
-    "content",
-    "reply_list"
-  ],
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "match": {
-            "cafe_name": "굿엔레더"
-          }
-        },
-        {
-          "match": {
-            "content": "사절미싱"
-          }
-        },
-        {
-          "match": {
-            "reply_list.text": "사절미싱"
-          }
-        }
-      ]
-    }
-  }
-}
-
-
-###
-
 
 GET {{host}}/crawler-bbs-naver/_search
 Content-Type: application/json
@@ -399,21 +224,6 @@ Accept: application/json
     }
   }
 }
-
-###
-
-GET {{host}}/crawler-bbs-naver/_search
-Content-Type: application/json
-Accept: application/json
-
-{
-  "query": {
-    "match": {
-      "cafe_name": "고민상담카페"
-    }
-  }
-}
-
 
 ###
 
@@ -918,7 +728,7 @@ Accept: application/json
 
 ###
 
-GET {{host}}/crawler-dictionary-example-glosbe-koen-word-list/_search
+GET {{host}}/crawler-dictionary-example-glosbe-en*-word-list/_search
 Content-Type: application/json
 Accept: application/json
 
@@ -930,14 +740,14 @@ Accept: application/json
 
 ###
 
-POST {{host}}/crawler-dictionary-example-glosbe-koen-word-list/_doc/start
+POST {{host}}/crawler-dictionary-example-glosbe-koid-word-list/_doc/start
 Content-Type: application/json
 Accept: application/json
 
 {
-  "url": "https://glosbe.com/ko/en/-",
-  "entry": "-",
-  "document_id": "start"
+    "url": "https://glosbe.com/ko/id/-",
+    "entry": "-",
+    "document_id": "start"
 }
 
 ###

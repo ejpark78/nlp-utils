@@ -75,6 +75,10 @@ class ExampleSearchCrawler(DictionaryUtils):
 
         while page < max_page + 1:
             resp = self.get_html(url=url, resp_type=url_info['resp_type'])
+            if resp is None:
+                page += 1
+                sleep(sleep_time)
+                continue
 
             if url_info['resp_type'] == 'json':
                 ex_list = resp['searchResultMap']['searchResultListMap']['EXAMPLE']['items']
@@ -130,6 +134,23 @@ class ExampleSearchCrawler(DictionaryUtils):
     def get_url_info():
         """ """
         return [
+            {
+                'resp_type': 'json',
+                'lang': 'enid',
+                'query_lang': ['id', 'en'],
+                'url_info': {
+                    'page': 'page',
+                    'site': 'https://dict.naver.com/api3/enid/search',
+                    'query': {
+                        'shouldSearchVlive': 'true',
+                        'lang': 'en',
+                        'm': 'pc',
+                        'range': 'example',
+                        'page': 1,
+                        'query': ''
+                    },
+                }
+            },
             {
                 'resp_type': 'json',
                 'lang': 'id',

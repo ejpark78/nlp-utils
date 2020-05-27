@@ -192,7 +192,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: glosbe
+  name: glosbe-koen
   namespace: crawler-naver-dictionary-example
   labels:
     app: crawler
@@ -207,11 +207,291 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3",
-        "module/naver/dictionary/glosbe.py",
+        "module/dictionary/glosbe.py",
         "--username", "ejpark78@gmail.com",
         "--password", "nlplab",
-        "--sleep", "60",
+        "--sleep", "120",
         "--example", "crawler-dictionary-example-glosbe-koen",
         "--article", "crawler-dictionary-example-glosbe-koen-article",
         "--word_list", "crawler-dictionary-example-glosbe-koen-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-envi
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "korjhwang@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-envi",
+        "--article", "crawler-dictionary-example-glosbe-envi-article",
+        "--word_list", "crawler-dictionary-example-glosbe-envi-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-enth
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "sjlee927@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-enth",
+        "--article", "crawler-dictionary-example-glosbe-enth-article",
+        "--word_list", "crawler-dictionary-example-glosbe-enth-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-enid
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "bichanh@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-enid",
+        "--article", "crawler-dictionary-example-glosbe-enid-article",
+        "--word_list", "crawler-dictionary-example-glosbe-enid-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-enzh
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "h211150@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-enzh",
+        "--article", "crawler-dictionary-example-glosbe-enzh-article",
+        "--word_list", "crawler-dictionary-example-glosbe-enzh-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-enja
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "suciati@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-enja",
+        "--article", "crawler-dictionary-example-glosbe-enja-article",
+        "--word_list", "crawler-dictionary-example-glosbe-enja-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-kovi
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "peiyuan@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-kovi",
+        "--article", "crawler-dictionary-example-glosbe-kovi-article",
+        "--word_list", "crawler-dictionary-example-glosbe-kovi-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-kozh
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "yskim29@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-kozh",
+        "--article", "crawler-dictionary-example-glosbe-kozh-article",
+        "--word_list", "crawler-dictionary-example-glosbe-kozh-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-koja
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "smaseba@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-koja",
+        "--article", "crawler-dictionary-example-glosbe-koja-article",
+        "--word_list", "crawler-dictionary-example-glosbe-koja-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-koth
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "sub92lee@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-koth",
+        "--article", "crawler-dictionary-example-glosbe-koth-article",
+        "--word_list", "crawler-dictionary-example-glosbe-koth-word-list"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: glosbe-koid
+  namespace: crawler-naver-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      workingDir: /usr/local/app
+      args: [
+        "python3",
+        "module/dictionary/glosbe.py",
+        "--username", "	wingyi@ncsoft.com",
+        "--password", "nlplab",
+        "--sleep", "120",
+        "--example", "crawler-dictionary-example-glosbe-koid",
+        "--article", "crawler-dictionary-example-glosbe-koid-article",
+        "--word_list", "crawler-dictionary-example-glosbe-koid-word-list"
       ]

@@ -11,6 +11,8 @@ import sys
 from datetime import datetime
 from glob import glob
 from os.path import isdir
+from uuid import uuid4
+from module.utils.logging_format import LogMessage as LogMsg
 
 import pytz
 import requests
@@ -89,7 +91,16 @@ class DictionaryUtils(object):
 
         resp = requests.get(url, headers=headers, timeout=60, verify=False)
         if resp_type == 'json':
-            return resp.json()
+            try:
+                return resp.json()
+            except Exception as e:
+                self.logger.error(msg=LogMsg({
+                    'message': 'ERROR resp not json',
+                    'exception': str(e),
+                    'entry': resp.content,
+                }))
+
+                return None
 
         soup = BeautifulSoup(resp.content, 'html5lib')
 
@@ -311,9 +322,6 @@ class DictionaryUtils(object):
 
     def upload_entry_list(self):
         """설정파일을 업로드한다."""
-        from glob import glob
-        from uuid import uuid4
-
         entry_list = self.read_entry_list(lang=self.args.lang, column='state')
 
         entry_index = {}
