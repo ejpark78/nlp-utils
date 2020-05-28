@@ -1,0 +1,255 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### indices 목록
+GET {{host}}/_cat/indices?v&s=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+
+###
+GET {{host}}/crawler-lineagem-free/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+###
+GET {{host}}/crawler-lineagem-free/doc/board.free.1140134
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+
+###
+GET {{host}}/crawler-naver-kin-answer_list/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+
+###
+GET {{host}}/corpus-baseball-game-log-2015/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-11-01 00:00:00",
+            "lte": "2015-04-17 00:00:00",
+            "format": "yyyy-MM-dd HH:mm:ss"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+GET {{host}}/crawler-naver-kin-question_list/doc/4-4010502-309851013
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+POST {{host}}/bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "postDate": {
+            "gte": "2018-08-01",
+            "lte": "2018-08-31",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+###
+POST {{host}}/bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 10,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": {
+            "range": {
+              "postDate": {
+                "gte": "2018-08-01",
+                "lte": "2018-08-31",
+                "format": "yyyy-MM-dd"
+              }
+            }
+          }
+        }
+      },
+      "boost": "5",
+      "random_score": {},
+      "boost_mode": "multiply"
+    }
+  }
+}
+
+
+###
+POST {{host}}/bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents",
+    "comment_list"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "기사"
+          }
+        },
+        {
+          "match_phrase": {
+            "contents": "기사"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+POST {{host}}/corpus_processor-naver-economy/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "삼성전자"
+          }
+        },
+        {
+          "match_phrase": {
+            "content": "삼성전자"
+          }
+        },
+        {
+          "range": {
+            "date": {
+              "gte": "2018-01-01",
+              "lte": "2018-10-04",
+              "format": "yyyy-MM-dd"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###
+POST {{host}}/corpus_processor-naver-economy/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "multi_match": {
+      "query": "삼성전자",
+      "type": "phrase",
+      "fields": [
+        "title",
+        "content"
+      ]
+    },
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-01-01",
+            "lte": "2018-10-04",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+

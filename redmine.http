@@ -1,0 +1,8 @@
+
+###
+
+GET {{host}}/issues.json?limit=50&project_id=11&tracker_id=4&sort=id:desc
+Content-Type: application/json
+Accept: application/text
+
+###

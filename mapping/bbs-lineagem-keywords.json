@@ -1,0 +1,52 @@
+{
+  "settings": {
+    "index": {
+      "max_ngram_diff": 10,
+      "mapping.total_fields.limit": 5000
+    },
+    "number_of_shards": 3,
+    "number_of_replicas": 2,
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 1,
+          "max_gram": 9,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "articleId": {
+        "type": "text"
+      },
+      "category": {
+        "type": "text"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "document_id": {
+        "type": "text"
+      },
+      "postDate": {
+        "type": "date"
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+###
+
+DELETE {{host}}/.monitoring-*
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Content-Type: application/json
+Accept: application/text
+
+###
+
+PUT {{host}}/_ingest/pipeline/text_char_pipeline
+Content-Type: application/json
+Accept: application/json
+
+{
+  "processors": [
+    {
+      "character_kr": {
+        "field": "text",
+        "columns": [
+          "uchar_text",
+          "ujaso_text",
+          "ucho_text"
+        ],
+        "preprocess_stages": [
+          "sym_to_kor",
+          "sym_to_space"
+        ]
+      }
+    }
+  ]
+}
+
+###
+
+GET {{host}}/_ingest/pipeline/character_kr
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/character-kr-test1-try1/_search
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/character-kr-test1-try1/_doc/1?pipeline=character_kr_test
+Content-Type: application/json
+Accept: application/text
+
+{
+  "msg": "“지난해 금융권 펀드 투자자보호 수준 악화”"
+}
+
+###
+
+GET {{host}}/character-kr-test1-try1/_termvectors/1?fields=ujaso_msg
+Content-Type: application/json
+Accept: application/text
+
+### 인덱스 매핑 설정
+
+PUT {{host}}/text-chatting-lineagem
+Content-Type: application/json
+Accept: application/json
+
+{
+  "settings": {
+    "index": {
+      "default_pipeline": "text_char_pipeline",
+      "max_ngram_diff": 10,
+      "mapping.total_fields.limit": 5000
+    },
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        },
+        "space_analyzer": {
+          "tokenizer": "space_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 1,
+          "max_gram": 9,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+        "space_tokenizer": {
+          "type": "whitespace",
+          "max_token_length": 4096
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "date": {
+        "type": "date"
+      },
+      "document_id": {
+        "type": "text"
+      },
+      "source": {
+        "type": "text"
+      },
+      "text": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "keywords": {
+        "type": "text",
+        "analyzer": "space_analyzer"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/text-bbs-lineagem/_search
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/text-bbs-lineagem/_doc/bbs-comment-1251679-2429087?pipeline=character_kr
+Content-Type: application/json
+Accept: application/text
+
+###
+

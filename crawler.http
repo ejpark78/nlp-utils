@@ -1,0 +1,77 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### inven
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+articlecode=170631&sortorder=date&act=list&out=json&replyidx=0
+
+###
+POST http://www.inven.co.kr/common/board/comment.json.php
+Accept: application/json, text/javascript, */*; q=0.01
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+{
+  "comeidx": 5019,
+  "articlecode": 170631,
+  "sortorder": "date",
+  "act": list,
+  "out": json,
+  "replynick": "",
+  "replyidx": 0,
+  "uploadurl": "",
+  "imageposition": ""
+}
+
+###
+
+GET https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=sports&templateId=&pool=cbox2&lang=ko&country=KR&categoryId=&pageSize=10&indexSize=10&groupId=&listType=OBJECT&pageType=more&page=1&initialize=true&userType=&useAltSort=true&replyPageSize=20&moveTo=&sort=&objectId=news076,0003444177
+Referer: https://sports.news.naver.com/kbaseball/news/read.nhn?oid=076&aid=0003444177
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=6&date=20190718&isphoto=N&type=comment
+referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date=20190718&page=6
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://sports.news.naver.com/kbaseball/news/list.nhn?page=1&date=20190718&isphoto=N&type=latest
+referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=latest&date=20190718&page=1
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://zh.dict.naver.com/api3/zhko/search?query=%E5%8F%A4&m=pc&range=word&page=1&lang=ko&articleAnalyzer=false
+referer: https://zh.dict.naver.com
+user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+
+###
+
+GET https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId=0&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json
+
+###
+
+GET https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId=169046&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json
+
+###
+
+GET https://dict.naver.com/linedict/cnen/example/search.dict?query=work&page=1&page_size=100&examType=normal&fieldType=&author=&country=&ql=default&format=json&platform=isPC
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36
+Content-Type: application/json
+
+###

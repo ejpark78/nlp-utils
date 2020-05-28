@@ -1,0 +1,159 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+### indices 목록
+GET {{host}}/_cat/indices?v&s=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+DELETE {{host}}/.monitoring-*
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+DELETE {{host}}/.kibana_*
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+DELETE {{host}}/text-bbs-lineagem
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+DELETE {{host}}/text-chatting-lineagem
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/corpus_process-naver-opinion/_mappings
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/corpus_process-naver-living/_mappings
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/text-bbs-lineagem/_analyze
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "analyzer": "space_analyzer",
+  "text": "동서남북 민주주의 문제 이한수 문화부 차장 촛불 민심 탄생 자행 민주주의 파괴 야만 항쟁 독점 대학 학년 서울시청 학생회 지도부 구호 통일 호헌 철폐 독재 타도 직선제 민주 쟁취 일부 제헌 의회 학교 가투 불안 그때 평소 도서관 친구 최루탄 추방 회현 고가 근처 최루탄 머리 축대 가루 대통령 민주주의 정착 제도 거리 목청 생각 촛불 민심 탄생 정부 전부 사실 미국 요즘 민주주의 위기 하버드대 정치학과 스티븐 레비츠키 교수 대니얼 지블렛 교수 트럼프 정부 출범 민주주의 문장 오늘날 민주주의 위험 질문 상상 학자 민주적 사회 선출 독재자 포퓰리즘 동원 합법적 민주주의 파괴 지적 헌법 제도 민주주의 상대 인정 상호 관용 법적 권한 사용 제도적 자제 민주주의 지탱 강조 얘기 정치적 반대자 적폐 규정 먼지 임명 권한 측근 인사 사법부 고위직 장관 따위 자리 민주주의 핵심 하버드대 교수 성찰 동양 고전 가르침 맹자 정치 정치 명예 생명 장성 모욕 죽음 권력 조직 내부 문제 세상 인격 모독 검찰 고발 따위 목적 내부 제보자 공격 여당 의원 목포 지역 문화재 거리 등록 친척 지인 명의 해당 지역 건물 최소 사실 최근 투기 주장 보통 사람 조짐 자신 불법 위장 전입 위장 전입 피의자 징역형 판사 자신 위장 전입자 정권 장관 후보자 위장 전입 사실 공격 인사 정권 대법관 장관 자리 따위 인사 임명권자 청문회 제도 조롱 사람 마음 맹자 성선 맹자 거래 기술 트럼프 정부 항쟁 정신 계승 정부 민주주의 위기 상상 덕분 교훈 민주주의 좌우 문제 사실 권력 좌든 우든 민주주의 파괴 야만 항쟁 민주주의 독점 행태"
+}
+
+###
+GET {{host}}/text-bbs-lineagem/_analyze
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "analyzer": "ngram_analyzer",
+  "text": "동서남북 민주주의 문제 이한수 문화부 차장 촛불 민심 탄생 자행 민주주의 파괴 야만 항쟁 독점 대학 학년 서울시청 학생회 지도부 구호 통일 호헌 철폐 독재 타도 직선제 민주 쟁취 일부 제헌 의회 학교 가투 불안 그때 평소 도서관 친구 최루탄 추방 회현 고가 근처 최루탄 머리 축대 가루 대통령 민주주의 정착 제도 거리 목청 생각 촛불 민심 탄생 정부 전부 사실 미국 요즘 민주주의 위기 하버드대 정치학과 스티븐 레비츠키 교수 대니얼 지블렛 교수 트럼프 정부 출범 민주주의 문장 오늘날 민주주의 위험 질문 상상 학자 민주적 사회 선출 독재자 포퓰리즘 동원 합법적 민주주의 파괴 지적 헌법 제도 민주주의 상대 인정 상호 관용 법적 권한 사용 제도적 자제 민주주의 지탱 강조 얘기 정치적 반대자 적폐 규정 먼지 임명 권한 측근 인사 사법부 고위직 장관 따위 자리 민주주의 핵심 하버드대 교수 성찰 동양 고전 가르침 맹자 정치 정치 명예 생명 장성 모욕 죽음 권력 조직 내부 문제 세상 인격 모독 검찰 고발 따위 목적 내부 제보자 공격 여당 의원 목포 지역 문화재 거리 등록 친척 지인 명의 해당 지역 건물 최소 사실 최근 투기 주장 보통 사람 조짐 자신 불법 위장 전입 위장 전입 피의자 징역형 판사 자신 위장 전입자 정권 장관 후보자 위장 전입 사실 공격 인사 정권 대법관 장관 자리 따위 인사 임명권자 청문회 제도 조롱 사람 마음 맹자 성선 맹자 거래 기술 트럼프 정부 항쟁 정신 계승 정부 민주주의 위기 상상 덕분 교훈 민주주의 좌우 문제 사실 권력 좌든 우든 민주주의 파괴 야만 항쟁 민주주의 독점 행태"
+}
+
+### 인덱스 매핑 설정
+PUT {{host}}/text-bbs-lineagem
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mapping/text-lineagem.json
+
+###
+PUT {{host}}/text-chatting-lineagem
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mapping/text-lineagem.json
+
+###
+GET {{host}}/crawler-bbs-mlbpark_kbo/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2017-02-01",
+            "lte": "2017-02-28",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+###
+GET {{host}}/bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-10-01",
+            "lte": "2018-10-28",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+###
+POST {{host}}/docker-logs-crawler-2019.03.04/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "message"
+  ],
+  "from": 0,
+  "size": 500
+}
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-naver-user-translation
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
