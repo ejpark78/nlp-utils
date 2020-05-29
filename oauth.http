@@ -43,25 +43,29 @@ Accept: application/json
 
 ###
 
-DELETE https://elastic:nlplab@corpus.ncsoft.com:9200/oauth_log
+DELETE {{host}}/oauth_log
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-GET https://elastic:nlplab@corpus.ncsoft.com:9200/oauth_cache/_search?pretty
+GET {{host}}/oauth_cache/_search?pretty
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-DELETE https://elastic:nlplab@corpus.ncsoft.com:9200/oauth_cache
+DELETE {{host}}/oauth_cache
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-DELETE https://elastic:nlplab@corpus.ncsoft.com:9200/oauth_cache/_doc/ejpark-nlp-dev.ncsoft.com
+DELETE {{host}}/oauth_cache/_doc/ejpark-nlp-dev.ncsoft.com
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 

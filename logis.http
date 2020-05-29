@@ -1,18 +1,3 @@
-
-###
-
-GET {{host}}/_cat/indices?s=index
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-###
-
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
 ###
 
 GET {{host}}/log_gamechatglobal_*/_search
@@ -45,7 +30,6 @@ Accept: application/text
     }
   }
 }
-
 
 ###
 
@@ -122,6 +106,7 @@ Content-Type: application/json
 Accept: application/text
 
 {
+
 }
 
 ###

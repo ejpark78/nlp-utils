@@ -1,25 +1,7 @@
-# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
-#
-# Following HTTP Request Live Templates are available:
-# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
-# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
-# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-
-###
-
-DELETE {{host}}/.monitoring-*
-Content-Type: application/json
-Accept: application/json
-
-###
-
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
-Content-Type: application/json
-Accept: application/text
-
 ###
 
 GET {{host}}/crawler-news-mk-2019/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -42,10 +24,10 @@ Accept: application/json
   }
 }
 
-
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -83,6 +65,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -111,6 +94,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -131,6 +115,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -155,6 +140,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -188,6 +174,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -210,6 +197,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -228,6 +216,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -246,18 +235,14 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-facebook/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-#DELETE {{host}}/crawler-bbs-naver
-#Content-Type: application/json
-#Accept: application/json
-
-###
-
 GET {{host}}/crawler-facebook/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -276,6 +261,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -294,24 +280,28 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-youtube-live-chat/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/crawler-bbs-naver/_mapping
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/text-bbs-lineagem/_settings
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 PUT {{host}}/crawler-bbs-naver
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -400,6 +390,7 @@ Accept: application/json
 #PUT {{host}}/crawler-facebook/_settings
 
 PUT {{host}}/_settings
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -410,18 +401,21 @@ Accept: application/json
 ###
 
 GET {{host}}/_tasks?detailed=true&actions=*reindex
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
 GET {{host}}/crawler-facebook/_doc/288879321662318-479997692550479
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
@@ -429,6 +423,7 @@ Accept: application/text
 ###
 
 GET {{host}}/corpus_process-naver-economy-2019/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -441,6 +436,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-naver-dictionary/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -471,6 +467,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-naver-kbo_game_center_comments-2011/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -494,12 +491,14 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-youtube-live-chat/_doc/CkUKGkNQZmQtWXY0a2VZQ0ZhbkV3UW9kTC1ZQk5REidDUHYxME5YM2tlWUNGYlhCVEFJZDFWRU5hZzE1NzUxMTcwMDMxMzI=
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 POST {{host}}/crawler-bbs-lineage2m/_search?size=0
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -516,12 +515,14 @@ Accept: application/json
 ###
 
 GET http://172.20.92.41:9200/_cat/indices
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
 GET http://172.20.92.41:9200/ko_tm01/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -546,12 +547,14 @@ Accept: application/json
 ###
 
 DELETE {{host}}/crawler-dictionary-example-list
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 POST {{host}}/_reindex?wait_for_completion=false
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -567,18 +570,21 @@ Accept: application/json
 ###
 
 GET {{host}}/_tasks/CrKvFiFeT3KUC-pqNHuW4Q:76895575
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
 DELETE {{host}}/crawler-dictionary-example-glosbe-word-list
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
 GET {{host}}/_cat/indices?s=index
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
@@ -591,13 +597,14 @@ Accept: application/text
 ###
 
 GET http://yonhap01:30006/_cat/indices?s=index
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
-
 
 ###
 
 GET {{host}}/crawler-naver-economy-2020/_search?size=0
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -619,6 +626,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -640,6 +648,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-dictionary-example-linedict-list/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -663,6 +672,7 @@ Accept: application/json
 ###
 
 POST {{host}}/crawler-dictionary-example-youdao-list/_delete_by_query
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -686,6 +696,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -709,6 +720,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -729,18 +741,21 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-dictionary-example-glosbe-en*-word-list/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 DELETE {{host}}/crawler-dictionary-example-glosbe-koen-article/_doc/362cb241-3630-4176-a1a6-79e1edcfd151
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 POST {{host}}/crawler-dictionary-example-glosbe-koid-word-list/_doc/start
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -753,6 +768,7 @@ Accept: application/json
 ###
 
 GET {{host}}/crawler-dictionary-example-glosbe-envi-word-list/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -773,6 +789,7 @@ Accept: application/json
 ###
 
 POST {{host}}/crawler-dictionary-example-glosbe-*-word-list/_update_by_query
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 

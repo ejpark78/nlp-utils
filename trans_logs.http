@@ -1,19 +1,21 @@
-
 ###
 
-GET http://yonhap01:30006/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET http://yonhap01:30006/log_mtdemo_*/_search
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET http://yonhap01:30006/log_mtdemo_*/_search
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
@@ -55,7 +57,8 @@ Accept: application/text
 
 ###
 
-GET http://yonhap01:30006/log_mtdemo_*/_mapping
+GET {{host}}/log_mtdemo_*/_mapping
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 

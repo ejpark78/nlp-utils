@@ -1,57 +1,29 @@
-# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
-#
-# Following HTTP Request Live Templates are available:
-# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
-# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
-# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-
-
-### indices 목록
-GET {{host}}/_cat/indices?v&s=index
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
-
 ###
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
 
-###
-DELETE {{host}}/.monitoring-*
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
-
-###
-DELETE {{host}}/.kibana_*
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
-
-###
 DELETE {{host}}/text-bbs-lineagem
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
 
 ###
-DELETE {{host}}/text-chatting-lineagem
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
 
-###
 GET {{host}}/bbs-lineagem/_search
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
 
 ###
+
 GET {{host}}/corpus_process-naver-opinion/_mappings
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
 
 ###
+
 GET {{host}}/corpus_process-naver-living/_mappings
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
 
 ###
+
 GET {{host}}/text-bbs-lineagem/_analyze
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -63,6 +35,7 @@ Accept: application/json
 }
 
 ###
+
 GET {{host}}/text-bbs-lineagem/_analyze
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -74,6 +47,7 @@ Accept: application/json
 }
 
 ### 인덱스 매핑 설정
+
 PUT {{host}}/text-bbs-lineagem
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -82,6 +56,7 @@ Accept: application/json
 < mapping/text-lineagem.json
 
 ###
+
 PUT {{host}}/text-chatting-lineagem
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -90,6 +65,7 @@ Accept: application/json
 < mapping/text-lineagem.json
 
 ###
+
 GET {{host}}/crawler-bbs-mlbpark_kbo/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -113,6 +89,7 @@ Accept: application/json
 
 
 ###
+
 GET {{host}}/bbs-lineagem/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -136,6 +113,7 @@ Accept: application/json
 
 
 ###
+
 POST {{host}}/docker-logs-crawler-2019.03.04/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json

@@ -1,25 +1,19 @@
-# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
-#
-# Following HTTP Request Live Templates are available:
-# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
-# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
-# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-
 ###
+
 GET {{host}}/_cluster/settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
-
 ###
+
 GET {{host}}/_cluster/allocation/explain?pretty
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/text
 
-
 ###
+
 POST {{host}}/_cluster/reroute
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -27,11 +21,11 @@ Accept: application/json
 
 
 ###
+
 GET {{host}}/_cluster/allocation/explain?pretty
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/text
-
 
 ###
 # 재시작 : https://www.elastic.co/guide/en/elasticsearch/reference/current/restart-upgrade.html
@@ -48,6 +42,7 @@ Accept: application/text
 }
 
 ###
+
 PUT {{host}}/_cluster/settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -55,16 +50,15 @@ Accept: application/text
 
 {
   "transient": {
+    "cluster.routing.rebalance.enable": "all",
     "cluster.routing.allocation.enable": "all",
-    "cluster.routing.allocation.node_concurrent_recoveries": 3,
     "cluster.routing.allocation.allow_rebalance": "always",
-    "cluster.routing.rebalance.enable": "all"
+    "cluster.routing.allocation.node_concurrent_recoveries": 3
   }
 }
 
+### shut down 절차
 
-###
-# shut down 절차
 PUT {{host}}/_cluster/settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -76,8 +70,8 @@ Accept: application/text
   }
 }
 
-
 ###
+
 PUT {{host}}/_cluster/settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -90,12 +84,14 @@ Accept: application/text
 }
 
 ###
+
 GET {{host}}/_cluster/state?pretty
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
+
 GET {{host}}/_cluster/health?wait_for_status=yellow&timeout=50s
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json

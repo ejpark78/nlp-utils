@@ -1,7 +1,7 @@
-
 ###
 
 GET {{host}}/issues.json?limit=50&project_id=11&tracker_id=4&sort=id:desc
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 

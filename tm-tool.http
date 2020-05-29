@@ -1,13 +1,7 @@
-
-###
-
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
-Content-Type: application/json
-Accept: application/text
-
 ###
 
 GET {{host}}/ko_tm01/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 

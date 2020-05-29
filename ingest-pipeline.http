@@ -1,25 +1,7 @@
-# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
-#
-# Following HTTP Request Live Templates are available:
-# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
-# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
-# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-
-###
-
-DELETE {{host}}/.monitoring-*
-Content-Type: application/json
-Accept: application/json
-
-###
-
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
-Content-Type: application/json
-Accept: application/text
-
 ###
 
 PUT {{host}}/_ingest/pipeline/text_char_pipeline
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -45,18 +27,21 @@ Accept: application/json
 ###
 
 GET {{host}}/_ingest/pipeline/character_kr
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/character-kr-test1-try1/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/character-kr-test1-try1/_doc/1?pipeline=character_kr_test
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
@@ -67,12 +52,14 @@ Accept: application/text
 ###
 
 GET {{host}}/character-kr-test1-try1/_termvectors/1?fields=ujaso_msg
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ### 인덱스 매핑 설정
 
 PUT {{host}}/text-chatting-lineagem
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
@@ -135,12 +122,14 @@ Accept: application/json
 ###
 
 GET {{host}}/text-bbs-lineagem/_search
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
 GET {{host}}/text-bbs-lineagem/_doc/bbs-comment-1251679-2429087?pipeline=character_kr
+Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 

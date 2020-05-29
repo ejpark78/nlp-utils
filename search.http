@@ -1,18 +1,5 @@
-# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
-#
-# Following HTTP Request Live Templates are available:
-# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
-# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
-# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
-
-
-### indices 목록
-GET {{host}}/_cat/indices?v&s=index
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
-
-
 ###
+
 GET {{host}}/crawler-lineagem-free/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -24,8 +11,8 @@ Accept: application/json
   }
 }
 
-
 ###
+
 GET {{host}}/crawler-lineagem-free/doc/board.free.1140134
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -33,6 +20,7 @@ Accept: application/json
 
 
 ###
+
 GET {{host}}/crawler-naver-kin-answer_list/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
@@ -40,6 +28,7 @@ Accept: application/text
 
 
 ###
+
 GET {{host}}/corpus-baseball-game-log-2015/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -62,12 +51,14 @@ Accept: application/json
 }
 
 ###
+
 GET {{host}}/crawler-naver-kin-question_list/doc/4-4010502-309851013
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
+
 POST {{host}}/bbs-lineagem/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -96,8 +87,8 @@ Accept: application/json
   }
 }
 
-
 ###
+
 POST {{host}}/bbs-lineagem/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -133,8 +124,8 @@ Accept: application/json
   }
 }
 
-
 ###
+
 POST {{host}}/bbs-lineagem/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -167,8 +158,8 @@ Accept: application/json
   }
 }
 
-
 ###
+
 POST {{host}}/corpus_processor-naver-economy/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -211,8 +202,8 @@ Accept: application/json
   }
 }
 
-
 ###
+
 POST {{host}}/corpus_processor-naver-economy/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -252,4 +243,3 @@ Accept: application/json
 }
 
 ###
-
