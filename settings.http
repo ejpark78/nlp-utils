@@ -1,0 +1,19 @@
+### 설정 정보 조회
+
+GET {{host}}/{{index}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+PUT {{host}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "index.mapping.total_fields.limit": 50000
+}
+
+###

@@ -1,0 +1,15 @@
+###
+
+GET {{host}}/_tasks?detailed=true&actions=*reindex
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_tasks/CrKvFiFeT3KUC-pqNHuW4Q:76895575
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###

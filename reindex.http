@@ -1,0 +1,17 @@
+###
+
+POST {{host}}/_reindex?wait_for_completion=false
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "crawler-dictionary-example-glosbe"
+  },
+  "dest": {
+    "index": "crawler-dictionary-example-glosbe-koen"
+  }
+}
+
+###

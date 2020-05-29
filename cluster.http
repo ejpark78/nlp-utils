@@ -19,7 +19,6 @@ Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
-
 ###
 
 GET {{host}}/_cluster/allocation/explain?pretty

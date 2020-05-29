@@ -33,14 +33,14 @@ Accept: application/json
 
 ###
 
-GET {{host}}/character-kr-test1-try1/_search
+GET {{host}}/{{index}}/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-GET {{host}}/character-kr-test1-try1/_doc/1?pipeline=character_kr_test
+GET {{host}}/{{index}}/_doc/1?pipeline=character_kr_test
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
@@ -51,14 +51,14 @@ Accept: application/text
 
 ###
 
-GET {{host}}/character-kr-test1-try1/_termvectors/1?fields=ujaso_msg
+GET {{host}}/{{index}}/_termvectors/1?fields=ujaso_msg
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
-### 인덱스 매핑 설정
+###
 
-PUT {{host}}/text-chatting-lineagem
+PUT {{host}}/{{index}}
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
@@ -121,17 +121,16 @@ Accept: application/json
 
 ###
 
-GET {{host}}/text-bbs-lineagem/_search
+GET {{host}}/{{index}}/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 ###
 
-GET {{host}}/text-bbs-lineagem/_doc/bbs-comment-1251679-2429087?pipeline=character_kr
+GET {{host}}/{{index}}/_doc/bbs-comment-1251679-2429087?pipeline=character_kr
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
-

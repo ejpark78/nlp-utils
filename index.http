@@ -31,7 +31,7 @@ Accept: application/text
 
 ###
 
-PUT {{host}}/crawler-bbs-ruliweb-*/_settings
+PUT {{host}}/{{index}}/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
@@ -44,14 +44,7 @@ Accept: application/text
 
 ###
 
-GET {{host}}/crawler-bbs-mlbpark_kbo/_settings
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/text
-Accept: application/text
-
-###
-
-GET {{host}}/crawler-bbs-mlbpark_kbo/_mapping
+GET {{host}}/{{index}}/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/text
@@ -71,7 +64,6 @@ Accept: application/text
   }
 }
 
-
 ###
 
 PUT {{host}}/_settings
@@ -87,28 +79,9 @@ Accept: application/text
   }
 }
 
-
-###
-# _reindex
-
-POST {{host}}/_reindex?wait_for_completion=false
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-{
-  "source": {
-    "index": "naver-kin-answer_list_done"
-  },
-  "dest": {
-    "index": "crawler-naver-kin-answer_list_done"
-  }
-}
-
-
 ###
 
-PUT {{host}}/crawler-*/_settings
+PUT {{host}}/{{index}}/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
@@ -121,7 +94,7 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-major_press-khan
+DELETE {{host}}/{{index}}
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text

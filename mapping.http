@@ -1,37 +1,9 @@
-### 설정 정보 조회
-
-GET {{host}}/{{index}}/_settings
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/text
-Accept: application/text
-
-### 인덱스 삭제
-
-DELETE {{host}}/{{index}}
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-
-### 분석 테스트
-
-POST {{host}}/{{index}}/_analyze
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "analyzer": "my_analyzer",
-  "text": "매번 오리발 내밀길래 스샷 찍어야지 믹어야지 하다가 막상 상황 닥치면 깜빡하다 이번에 적발했습니다망자의무덤 보스 작업장이 못 가저가게끔 라인에 시간 넘겨드리고 저도 두기적으로 순찰 도는데 한두 번이 아니네요 허허주봉=밤에암살자=드래곤활=장미칼태리=애리 님 스샷도 조만간 찍어드리겠습니다 허허보스 잡으실 거면 중립 코스프레 말고 본캐로 당당히 찾고 당당히 잡읍시다부캐로 간들 보지 마시구요 허허"
-}
-
 ### 인덱스 매핑 정보 조회
 
 GET {{host}}/{{index}}/_mappings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/json
-
 
 ### 인덱스 매핑 설정
 
@@ -42,111 +14,89 @@ Accept: application/json
 
 < mapping/text-lineagem.json
 
+###
 
-### 검색 테스트
-
-POST {{host}}/{{index}}/_search
+PUT {{host}}/{{index}}
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 {
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "match_phrase": {
-            "contents": "믹어야지"
-          }
-        },
-        {
-          "match_phrase": {
-            "title": "믹어야지"
-          }
-        }
-      ]
-    }
-  }
-}
-
-### 검색 테스트
-
-POST {{host}}/{{index}}/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "match": {
-            "contents": "믹어야"
-          }
-        }
-      ]
-    }
-  }
-}
-
-### 검색 테스트
-
-POST {{host}}/{{index}}/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "query": {
-    "query_string": {
-      "query": "(믹어야)",
-      "fields": [
-        "contents"
-      ]
-    }
-  }
-}
-
-### 검색 테스트
-
-POST {{host}}/{{index}}/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "_source": [
-    "title",
-    "contents"
-  ],
-  "query": {
-    "bool": {
-      "should": [
-        {
-          "multi_match": {
-            "query": "모리사냥",
-            "type": "phrase",
-            "analyzer": "standard",
-            "fields": [
-              "title"
-            ],
-            "operator": "and",
-            "tie_breaker": 0.8
+  "mappings": {
+    "properties": {
+      "articleid": {
+        "type": "long"
+      },
+      "bbs_name": {
+        "type": "text"
+      },
+      "blog_name": {
+        "type": "text"
+      },
+      "cafe_name": {
+        "type": "text"
+      },
+      "category": {
+        "type": "text"
+      },
+      "clubid": {
+        "type": "long"
+      },
+      "content": {
+        "type": "text"
+      },
+      "curl_date": {
+        "type": "date"
+      },
+      "date": {
+        "type": "date"
+      },
+      "document_id": {
+        "type": "text"
+      },
+      "html_content": {
+        "type": "text"
+      },
+      "image": {
+        "type": "text"
+      },
+      "nick": {
+        "type": "text"
+      },
+      "reply_count": {
+        "type": "long"
+      },
+      "reply_list": {
+        "properties": {
+          "class": {
+            "type": "text"
+          },
+          "date": {
+            "type": "date"
+          },
+          "image": {
+            "type": "text"
+          },
+          "nick": {
+            "type": "text"
+          },
+          "reply_to": {
+            "type": "text"
+          },
+          "text": {
+            "type": "text"
           }
         }
-      ],
-      "must": [
-        {
-          "range": {
-            "postDate": {
-              "gte": "2018-08-01",
-              "lte": "2018-08-31",
-              "format": "yyyy-MM-dd"
-            }
-          }
-        }
-      ]
+      },
+      "title": {
+        "type": "text"
+      },
+      "url": {
+        "type": "text"
+      },
+      "view_count": {
+        "type": "long"
+      }
     }
   }
 }
