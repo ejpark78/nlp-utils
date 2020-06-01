@@ -1028,7 +1028,9 @@ Accept: application/text
 
 {
   "track_total_hits": true,
-  "_source": ["localDateTime"],
+  "_source": [
+    "localDateTime"
+  ],
   "query": {
     "bool": {
       "filter": {
@@ -1046,15 +1048,133 @@ Accept: application/text
     }
   },
   "aggregations": {
-      "by_date": {
-          "date_histogram": {
-              "field": "localDateTime",
-              "keyed": false,
-              "calendar_interval": "1m"
-          }
+    "by_date": {
+      "date_histogram": {
+        "field": "localDateTime",
+        "keyed": false,
+        "calendar_interval": "1m"
       }
+    }
   }
 }
 
 ### 2020-05-31T13:03:41
 ### 2020-05-31T04:02:13+09:00
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "range": {
+                "localDateTime": {
+                  "gte": "2020-05-31T00:00:00+09:00",
+                  "lte": "2020-06-01T00:00:00+09:00"
+                }
+              }
+            },
+            {
+              "match": {
+                "uchar_msg": {
+                  "query": "미안해요 안할게요 이제"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "size": 100,
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "uchar_msg"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "uchar_msg": {
+            "query": "미안해요 안할게요 이제"
+          }
+        }
+      }
+    }
+  },
+  "size": 100,
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "range": {
+                "localDateTime": {
+                  "gte": "2020-05-30T00:00:00+09:00",
+                  "lte": "2020-06-01T00:00:00+09:00"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "size": 100,
+  "sort": [
+    {
+      "localDateTime": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
