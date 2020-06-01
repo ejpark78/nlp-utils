@@ -40,7 +40,7 @@ Accept: application/json
   }
 }
 
-###
+### 특정 시간 이후의 컬럼을 변경한다.
 
 POST {{host}}/{{index}}/_update_by_query
 Authorization: Basic {{username}} {{password}}
@@ -61,6 +61,38 @@ Accept: application/json
   },
   "script": {
     "source": "ctx._source['state'] = ''"
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_update_by_query
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source['state'] = ''"
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_update_by_query
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source.remove('link')"
   }
 }
 

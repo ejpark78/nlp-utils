@@ -7,11 +7,18 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example-glosbe"
+    "index": "crawler-dictionary-example-youdao"
   },
   "dest": {
-    "index": "crawler-dictionary-example-glosbe-koen"
+    "index": "crawler-dictionary-example-youdao-zhen"
   }
 }
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-youdao
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
 
 ###

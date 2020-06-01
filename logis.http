@@ -65,394 +65,117 @@ Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_search
+GET {{host}}/log_gamechat_cache/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_doc/date_range
+GET {{host}}/log_gamechat_cache/_doc/date_range
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_doc/server_info
+GET {{host}}/log_gamechat_cache/_doc/server_info
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-DELETE {{host}}/log_gamechat_cache_new/_doc/room_list
+DELETE {{host}}/log_gamechat_cache/_doc/room_list
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_doc/date_range.l2-tw
+GET {{host}}/log_gamechat_cache/_doc/date_range.l2-tw
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-POST {{host}}/log_gamechat_cache_new/_doc/date_range.l2m-ko
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-{
-
-}
-
-###
-
-GET {{host}}/log_gamechat_cache_new/_doc/server_info
+GET {{host}}/log_gamechat_cache/_doc/server_info
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_doc/room_list.l2-tw
+GET {{host}}/log_gamechat_cache/_doc/date_range.l2-en
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-POST {{host}}/log_gamechat_cache_new/_doc/date_range.l2-en
+POST {{host}}/log_gamechat_cache/_doc/date_range.l2-en
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
-Accept: application/text
+Accept: application/json
 
-{
-  "w15": {
-    "max_date": "2019-09-13T08:59:59.687000",
-    "min_date": "2018-10-02T02:39:29.169000",
-    "start_date": "2019-09-07T14:00:00+0900"
-  },
-  "w16": {
-    "max_date": "2019-09-13T08:59:59.687000",
-    "min_date": "2018-10-02T02:39:29.169000",
-    "start_date": "2019-09-07T14:00:00+0900"
-  },
-  "w24": {
-    "max_date": "2019-09-13T08:59:59.687000",
-    "min_date": "2018-10-02T02:39:29.169000",
-    "start_date": "2018-11-24T00:00:00+0900"
-  }
-}
+< mchat/date_range.l2-en.json
 
 ###
 
-POST {{host}}/log_gamechat_cache_new/_doc/date_range.l2-tw
+POST {{host}}/log_gamechat_cache/_doc/date_range.l2-tw
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
-Accept: application/text
+Accept: application/json
 
-{
-  "NCT EP 01": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT EP 03": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT 經典1": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT 經典3": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT 經典5": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT 亞丁1": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "NCT 亞丁2": {
-    "min_date": "2019-12-09T00:00:00+0900",
-    "max_date": "2019-12-12T00:00:00+0900",
-    "start_date": "2019-12-10T14:00:00+0900"
-  },
-  "Aden 死亡騎士": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "Aden 亞丁": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "Classic 1": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "Classic 3": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "Classic 5": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "EP 01": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  },
-  "EP 10": {
-    "min_date": "2020-01-13T00:00:00+0900",
-    "max_date": "2020-01-16T00:00:00+0900",
-    "start_date": "2020-01-14T14:00:00+0900"
-  }
-}
+< mchat/date_range.l2-tw.json
 
 ###
 
-POST {{host}}/log_gamechat_cache_new/_doc/server_info
+POST {{host}}/log_gamechat_cache/_doc/room_list.l2-en
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
-Accept: application/text
+Accept: application/json
 
-{
-  "l2-en": {},
-  "l2-tw": {
-    "0": "NCT EP 01",
-    "1": "NCT EP 03",
-    "2": "NCT 經典1",
-    "3": "NCT 經典3",
-    "4": "NCT 經典5",
-    "5": "NCT 亞丁1",
-    "6": "NCT 亞丁2",
-    "7": "Aden 死亡騎士",
-    "8": "Aden 亞丁",
-    "9": "Classic 1",
-    "10": "Classic 3",
-    "11": "Classic 5",
-    "12": "EP 01",
-    "13": "EP 10"
-  },
-  "l2m-ko": {
-    "1": "바츠01",
-    "2": "바츠02",
-    "3": "바츠03",
-    "4": "바츠04",
-    "5": "바츠05",
-    "6": "바츠06",
-    "7": "바츠07",
-    "8": "바츠08",
-    "9": "바츠09",
-    "10": "바츠10",
-    "11": "지그하르트01",
-    "12": "지그하르트02",
-    "13": "지그하르트03",
-    "14": "지그하르트04",
-    "15": "지그하르트05",
-    "16": "지그하르트06",
-    "17": "지그하르트07",
-    "18": "지그하르트08",
-    "19": "지그하르트09",
-    "20": "지그하르트10",
-    "21": "카인01",
-    "22": "카인02",
-    "23": "카인03",
-    "24": "카인04",
-    "25": "카인05",
-    "26": "카인06",
-    "27": "카인07",
-    "28": "카인08",
-    "29": "카인09",
-    "30": "카인10",
-    "31": "리오나01",
-    "32": "리오나02",
-    "33": "리오나03",
-    "34": "리오나04",
-    "35": "리오나05",
-    "36": "리오나06",
-    "37": "리오나07",
-    "38": "리오나08",
-    "39": "리오나09",
-    "40": "리오나10",
-    "41": "에리카01",
-    "42": "에리카02",
-    "43": "에리카03",
-    "44": "에리카04",
-    "45": "에리카05",
-    "46": "에리카06",
-    "47": "에리카07",
-    "48": "에리카08",
-    "49": "에리카09",
-    "50": "에리카10",
-    "51": "거스틴01",
-    "52": "거스틴02",
-    "53": "거스틴03",
-    "54": "거스틴04",
-    "55": "거스틴05",
-    "56": "거스틴06",
-    "57": "거스틴07",
-    "58": "거스틴08",
-    "59": "거스틴09",
-    "60": "거스틴10",
-    "61": "카스티엔01",
-    "62": "카스티엔02",
-    "63": "카스티엔03",
-    "64": "카스티엔04",
-    "65": "카스티엔05",
-    "66": "카스티엔06",
-    "67": "카스티엔07",
-    "68": "카스티엔08",
-    "69": "카스티엔09",
-    "70": "카스티엔10",
-    "71": "아리아01",
-    "72": "아리아02",
-    "73": "아리아03",
-    "74": "아리아04",
-    "75": "아리아05",
-    "76": "아리아06",
-    "77": "아리아07",
-    "78": "아리아08",
-    "79": "아리아09",
-    "80": "아리아10",
-    "81": "드비안느01",
-    "82": "드비안느02",
-    "83": "드비안느03",
-    "84": "드비안느04",
-    "85": "드비안느05",
-    "86": "드비안느06",
-    "87": "드비안느07",
-    "88": "드비안느08",
-    "89": "드비안느09",
-    "90": "드비안느10",
-    "91": "테온01",
-    "92": "테온02",
-    "93": "테온03",
-    "94": "테온04",
-    "95": "테온05",
-    "96": "테온06",
-    "97": "테온07",
-    "98": "테온08",
-    "99": "테온09",
-    "100": "테온10",
-    "101": "에르휘나01",
-    "102": "에르휘나02",
-    "103": "에르휘나03",
-    "104": "에르휘나04",
-    "105": "에르휘나05",
-    "106": "에르휘나06",
-    "107": "에르휘나07",
-    "108": "에르휘나08",
-    "109": "에르휘나09",
-    "110": "에르휘나10",
-    "111": "아이린01",
-    "112": "아이린02",
-    "113": "아이린03",
-    "114": "아이린04",
-    "115": "아이린05",
-    "116": "아이린06",
-    "117": "아이린07",
-    "118": "아이린08",
-    "119": "아이린09",
-    "120": "아이린10",
-    "121": "오필리아01",
-    "122": "오필리아02",
-    "123": "오필리아03",
-    "124": "오필리아04",
-    "125": "오필리아05",
-    "126": "오필리아06",
-    "127": "오필리아07",
-    "128": "오필리아08",
-    "129": "오필리아09",
-    "130": "오필리아10"
-  }
-}
+< mchat/room_list.l2-en.json
 
 ###
 
-POST {{host}}/log_gamechat_cache_new/_doc/room_list.l2-tw
+POST {{host}}/log_gamechat_cache/_doc/room_list.l2-tw
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
-Accept: application/text
+Accept: application/json
 
-{
-  "room_list": [
-    {
-      "name": "Aden 亞丁",
-      "count": 96142
-    },
-    {
-      "name": "Aden 死亡騎士",
-      "count": 85878
-    },
-    {
-      "name": "EP 01",
-      "count": 170785
-    },
-    {
-      "name": "EP 10",
-      "count": 923934
-    },
-    {
-      "name": "NCT EP 01",
-      "count": 262775
-    },
-    {
-      "name": "NCT EP 03",
-      "count": 893734
-    },
-    {
-      "name": "NCT 亞丁1",
-      "count": 143588
-    },
-    {
-      "name": "NCT 亞丁2",
-      "count": 135070
-    },
-    {
-      "name": "NCT 經典1",
-      "count": 565085
-    },
-    {
-      "name": "NCT 經典3",
-      "count": 340685
-    },
-    {
-      "name": "NCT 經典5",
-      "count": 676533
-    }
-  ]
-}
+< mchat/room_list.l2-tw.json
 
 ###
 
-GET {{host}}/log_gamechat_cache_new/_doc/room_list
+POST {{host}}/log_gamechat_cache/_doc/room_list.l2m-ko
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mchat/room_list.l2m-ko.json
+
+###
+
+POST {{host}}/log_gamechat_cache/_doc/server_info
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mchat/server_info.json
+
+###
+
+GET {{host}}/log_gamechat_cache/_doc/room_list
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_mtdemo_202005/_search
+GET {{host}}/log_gamechat_cache/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text

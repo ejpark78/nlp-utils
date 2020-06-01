@@ -6,6 +6,12 @@ Accept: application/text
 
 ###
 
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
 GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
