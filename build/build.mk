@@ -4,7 +4,8 @@ BASE_IMAGE = corpus:5000/base/crawler:latest
 
 IMAGE = corpus:5000/crawler
 #IMAGE_TAG = $(shell date +%F.%H)
-IMAGE_TAG = $(shell git rev-parse --short HEAD)
+#IMAGE_TAG = $(shell git rev-parse --short HEAD)
+IMAGE_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.')
 
 # Mirror
 APT_CODE_NAME = focal
