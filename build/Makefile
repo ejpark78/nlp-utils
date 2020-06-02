@@ -26,11 +26,6 @@ include k8s.mk
 include debug.mk
 include build.mk
 
-# batch
-all-start: nate-start naver-start daum-start bbs-start sns-start
-all-stop: nate-stop naver-stop daum-stop bbs-stop sns-stop
-all-logs: nate-logs naver-logs daum-logs bbs-logs sns-logs
-
 .ONESHELL:
 check-env:
 	@source $(ENV_FILE)

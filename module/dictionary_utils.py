@@ -31,7 +31,7 @@ class DictionaryUtils(object):
         """ 생성자 """
         super().__init__()
 
-        self.args = None
+        self.env = None
 
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
@@ -153,9 +153,9 @@ class DictionaryUtils(object):
         """ """
         # from tqdm import tqdm
         #
-        # self.open_db(index=self.args.index)
+        # self.open_db(index=self.env.index)
         #
-        # id_list = self.elastic.get_id_list(index=self.args.index)
+        # id_list = self.elastic.get_id_list(index=self.env.index)
         # id_list = list(id_list)
         #
         # size = 1000
@@ -167,7 +167,7 @@ class DictionaryUtils(object):
         #
         # bulk_data = []
         # params = {'request_timeout': 2 * 60}
-        # columns = self.args.columns.split(',')
+        # columns = self.env.columns.split(',')
         #
         # count = {c: 0 for c in columns}
         #
@@ -205,13 +205,13 @@ class DictionaryUtils(object):
         #             bulk_data.append({
         #                 'delete': {
         #                     '_id': doc['document_id'],
-        #                     '_index': self.args.index,
+        #                     '_index': self.env.index,
         #                 }
         #             })
         #
         #             if len(bulk_data) > 1000:
         #                 resp = self.elastic.elastic.bulk(
-        #                     index=self.args.index,
+        #                     index=self.env.index,
         #                     body=bulk_data,
         #                     refresh=True,
         #                     params=params,
@@ -233,7 +233,7 @@ class DictionaryUtils(object):
         #
         # if len(bulk_data) > 0:
         #     resp = self.elastic.elastic.bulk(
-        #         index=self.args.index,
+        #         index=self.env.index,
         #         body=bulk_data,
         #         refresh=True,
         #         params=params,
@@ -246,7 +246,7 @@ class DictionaryUtils(object):
 
     def reset_list(self, column):
         """ """
-        self.open_db(self.args.list_index)
+        self.open_db(self.env.list_index)
 
         query = {
             '_source': ['state', 'document_id'],
@@ -270,7 +270,7 @@ class DictionaryUtils(object):
             del doc['document_id']
 
             doc[column] = ''
-            self.elastic.save_document(document=doc, index=self.args.list_index)
+            self.elastic.save_document(document=doc, index=self.env.list_index)
 
         self.elastic.flush()
 
@@ -284,13 +284,13 @@ class DictionaryUtils(object):
         doc[column] = 'done'
         doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
-        self.elastic.save_document(index=self.args.list_index, document=doc, delete=False)
+        self.elastic.save_document(index=self.env.list_index, document=doc, delete=False)
         self.elastic.flush()
         return
 
     def read_entry_list(self, lang, column, state_done=True):
         """설정파일을 읽어드린다."""
-        self.open_db(self.args.list_index)
+        self.open_db(self.env.list_index)
 
         query = {
             'query': {
@@ -322,7 +322,7 @@ class DictionaryUtils(object):
 
     def upload_entry_list(self):
         """설정파일을 업로드한다."""
-        entry_list = self.read_entry_list(lang=self.args.lang, column='state')
+        entry_list = self.read_entry_list(lang=self.env.lang, column='state')
 
         entry_index = {}
         for item in entry_list:

@@ -56,7 +56,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
             }
         }
 
-        return self.elastic.dump(index=self.args.index, query=query)
+        return self.elastic.dump(index=self.env.index, query=query)
 
     def extend_entry(self, entry, meta, url_info):
         """ """
@@ -123,7 +123,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
                 doc['curl_date'] = datetime.now(self.timezone).isoformat()
                 doc['destinationLink'] = urljoin(headers['Referer'], doc['destinationLink'])
 
-                self.elastic.save_document(index=self.args.index, document=doc, delete=False)
+                self.elastic.save_document(index=self.env.index, document=doc, delete=False)
 
             self.elastic.flush()
             sleep(self.sleep_time)
@@ -303,14 +303,14 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
     def batch(self):
         """"""
-        self.args = self.init_arguments()
+        self.env = self.init_arguments()
 
-        self.open_db(index=self.args.index)
+        self.open_db(index=self.env.index)
 
-        url_info, lang_pairs = self.read_config(category=self.args.category)
+        url_info, lang_pairs = self.read_config(category=self.env.category)
 
-        if self.args.char_set is False or 'char_set' not in url_info:
-            entry_list = self.get_entry_list(category=self.args.category)
+        if self.env.char_set is False or 'char_set' not in url_info:
+            entry_list = self.get_entry_list(category=self.env.category)
         else:
             entry_list = [{'entry': c.strip()} for c in url_info['char_set'].split(' ') if c.strip() != '']
 
@@ -326,7 +326,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
             self.extend_entry(
                 entry=entry['entry'],
-                meta={'category': self.args.category},
+                meta={'category': self.env.category},
                 url_info=url_info,
             )
 

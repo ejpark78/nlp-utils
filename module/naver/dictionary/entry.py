@@ -212,17 +212,17 @@ class DictionaryEntryCrawler(DictionaryUtils):
 
     def batch(self):
         """"""
-        self.args = self.init_arguments()
+        self.env = self.init_arguments()
 
-        self.open_db(index=self.args.index)
+        self.open_db(index=self.env.index)
 
-        query_list = self.read_config(self.args.config)
+        query_list = self.read_config(self.env.config)
 
         p_bar = tqdm(query_list)
         for query in p_bar:
             self.trace_entry_list(
                 query=query,
-                index=self.args.index,
+                index=self.env.index,
                 sleep_time=10,
             )
 

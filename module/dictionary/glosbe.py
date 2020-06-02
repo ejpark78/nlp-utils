@@ -328,8 +328,6 @@ class GlosbeCrawler(object):
 
         self.env = self.init_arguments()
 
-        sleep(randint(0, self.env.sleep))
-
         self.login_info['username'] = self.env.username
         self.login_info['password'] = self.env.password
 

@@ -313,16 +313,16 @@ class ExampleSearchCrawler(DictionaryUtils):
         """ """
         url_list = self.get_url_info()
 
-        self.open_db(index=self.args.index)
+        self.open_db(index=self.env.index)
 
         for url_info in url_list:
             lang = url_info['lang']
-            if lang != self.args.lang:
+            if lang != self.env.lang:
                 continue
 
             state_column = 'state_{}'.format(lang)
 
-            index = '{}-{}'.format(self.args.index, lang)
+            index = '{}-{}'.format(self.env.index, lang)
 
             for q_lang in url_info['query_lang']:
                 entry_list = self.read_entry_list(lang=q_lang, column=state_column)
@@ -363,15 +363,15 @@ class ExampleSearchCrawler(DictionaryUtils):
 
     def batch(self):
         """"""
-        self.args = self.init_arguments()
+        self.env = self.init_arguments()
 
         self.logger = self.get_logger()
 
-        if 'remove_same_example' in self.args and self.args.remove_same_example is True:
+        if 'remove_same_example' in self.env and self.env.remove_same_example is True:
             self.remove_same_example()
-        elif 'reset_list' in self.args and self.args.reset_list is True:
-            self.reset_list(column='state_{}'.format(self.args.lang))
-        elif 'upload_entry_list' in self.args and self.args.upload_entry_list is True:
+        elif 'reset_list' in self.env and self.env.reset_list is True:
+            self.reset_list(column='state_{}'.format(self.env.lang))
+        elif 'upload_entry_list' in self.env and self.env.upload_entry_list is True:
             self.upload_entry_list()
         else:
             self.trace_entry_list()

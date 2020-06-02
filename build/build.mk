@@ -3,10 +3,12 @@
 BASE_IMAGE = corpus:5000/base/crawler:latest
 
 IMAGE = corpus:5000/crawler
-IMAGE_TAG = $(shell date +%F.%H)
+#IMAGE_TAG = $(shell date +%F.%H)
+IMAGE_TAG = 1.0
 
 # Mirror
-APT_MIRROR = http://corpus.ncsoft.com:8081/repository/ubuntu/
+APT_CODE_NAME = focal
+APT_MIRROR = http://corpus.ncsoft.com:8081/repository/$(APT_CODE_NAME)/
 PIP_MIRROR = http://corpus.ncsoft.com:8081/repository/pypi/simple
 PIP_TRUST_HOST = corpus.ncsoft.com
 
@@ -21,6 +23,7 @@ base:
 		-f base/Dockerfile \
 		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
+		--build-arg "APT_CODE_NAME=$(APT_CODE_NAME)" \
 		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
 		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		.
@@ -58,6 +61,7 @@ build:
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE) \
 		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
+		--build-arg "APT_CODE_NAME=$(APT_CODE_NAME)" \
 		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
 		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		--label "app=crawler" \

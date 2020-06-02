@@ -6,8 +6,9 @@ from __future__ import division
 from __future__ import print_function
 
 from time import sleep
-from urllib.parse import unquote
 from uuid import uuid4
+
+import re
 
 import requests
 import urllib3
@@ -19,12 +20,65 @@ from module.utils.logging_format import LogMessage as LogMsg
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class YoudaoExampleSearch(DictionaryUtils):
+class YoudaoSearch(DictionaryUtils):
     """사전 예문 수집기"""
 
     def __init__(self):
         """ 생성자 """
         super().__init__()
+
+        self.url_frame_info = {
+            'zhfr': [
+                {
+                    'url_frame': 'http://www.youdao.com/example/blng/fr/{query}/',
+                    'meta': {
+                        'category': 'all'
+                    },
+                }
+            ],
+            'zhja': [
+                {
+                    'url_frame': 'http://www.youdao.com/example/blng/jap/{query}/',
+                    'meta': {
+                        'category': 'all'
+                    },
+                }
+            ],
+            'zhko': [
+                {
+                    'url_frame': 'http://www.youdao.com/example/blng/ko/{query}/',
+                    'meta': {
+                        'category': 'all'
+                    },
+                }
+            ],
+            'enzh': [
+                {
+                    'url_frame': 'http://www.youdao.com/example/{query}/',
+                    'meta': {
+                        'category': 'all'
+                    },
+                },
+                {
+                    'url_frame': 'http://www.youdao.com/example/oral/{query}/',
+                    'meta': {
+                        'category': 'oral'
+                    },
+                },
+                {
+                    'url_frame': 'http://www.youdao.com/example/written/{query}/',
+                    'meta': {
+                        'category': 'written'
+                    },
+                },
+                {
+                    'url_frame': 'http://www.youdao.com/example/paper/{query}/',
+                    'meta': {
+                        'category': 'paper'
+                    },
+                }
+            ]
+        }
 
     def get_status_code(self, query, url_frame):
         """ """
@@ -46,7 +100,10 @@ class YoudaoExampleSearch(DictionaryUtils):
 
     def trace_examples(self, url, meta):
         """ """
-        import re
+        column = {
+            'source': self.env.source_column,
+            'target': self.env.target_column,
+        }
 
         resp = requests.get(url=url)
 
@@ -61,15 +118,16 @@ class YoudaoExampleSearch(DictionaryUtils):
             doc = {
                 '_id': str(uuid4()),
                 'source': example[2],
-                'english': example[0],
-                'chinese': example[1],
+                column['source']: example[0],
+                column['target']: example[1],
             }
             doc.update(meta)
 
-            flag = re.findall(r'[\u4e00-\u9fff]+', doc['english'])
-            if len(flag) != 0:
-                doc['chinese'] = example[0]
-                doc['english'] = example[1]
+            if column['source'] == 'english':
+                flag = re.findall(r'[\u4e00-\u9fff]+', doc[column['source']])
+                if len(flag) != 0:
+                    doc[column['target']] = example[0]
+                    doc[column['source']] = example[1]
 
             self.elastic.save_document(document=doc, delete=False)
             result.append(doc)
@@ -78,45 +136,14 @@ class YoudaoExampleSearch(DictionaryUtils):
 
         return result
 
-    @staticmethod
-    def get_url_frame_info():
-        """ """
-        return [
-            {
-                'url_frame': 'http://www.youdao.com/example/{query}/',
-                'meta': {
-                    'category': 'all'
-                },
-            },
-            {
-                'url_frame': 'http://www.youdao.com/example/oral/{query}/',
-                'meta': {
-                    'category': 'oral'
-                },
-            },
-            {
-                'url_frame': 'http://www.youdao.com/example/written/{query}/',
-                'meta': {
-                    'category': 'written'
-                },
-            },
-            {
-                'url_frame': 'http://www.youdao.com/example/paper/{query}/',
-                'meta': {
-                    'category': 'paper'
-                },
-            },
-        ]
-
     def trace_entry_list(self):
         """ """
-        entry_list = self.read_entry_list(lang=self.args.lang, column='state')
+        entry_list = self.read_entry_list(lang=self.env.search_lang, column=self.env.state_column)
 
-        self.open_db(index=self.args.index)
-        url_list = self.get_url_frame_info()
+        self.open_db(index=self.env.index)
 
         for entry in entry_list:
-            for url_info in url_list:
+            for url_info in self.url_frame_info[self.env.lang]:
                 if 'entry' not in entry:
                     continue
 
@@ -136,19 +163,19 @@ class YoudaoExampleSearch(DictionaryUtils):
 
                 sleep(5)
 
-            self.set_as_done(doc=entry, column='state')
+            self.set_as_done(doc=entry, column=self.env.state_column)
 
         return
 
     def batch(self):
         """"""
-        self.args = self.init_arguments()
+        self.env = self.init_arguments()
 
         self.logger = self.get_logger()
 
-        if self.args.remove_same_example is True:
+        if self.env.remove_same_example is True:
             self.remove_same_example()
-        elif 'reset_list' in self.args and self.args.reset_list is True:
+        elif 'reset_list' in self.env and self.env.reset_list is True:
             self.reset_list(column='state')
         else:
             self.trace_entry_list()
@@ -160,8 +187,12 @@ class YoudaoExampleSearch(DictionaryUtils):
         parser = super().init_arguments()
 
         parser.add_argument('--lang', default='', help='')
+        parser.add_argument('--search_lang', default='', help='')
 
         parser.add_argument('--columns', default='english,chinese', help='')
+        parser.add_argument('--source_column', default='english', help='')
+        parser.add_argument('--target_column', default='chinese', help='')
+        parser.add_argument('--state_column', default='state_youdao', help='')
 
         parser.add_argument('--index', default='crawler-dictionary-example-youdao', help='')
         parser.add_argument('--list_index', default='crawler-dictionary-example-youdao-list', help='')
@@ -170,4 +201,4 @@ class YoudaoExampleSearch(DictionaryUtils):
 
 
 if __name__ == '__main__':
-    YoudaoExampleSearch().batch()
+    YoudaoSearch().batch()

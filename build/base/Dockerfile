@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
@@ -14,24 +14,23 @@ ENV APP_HOME=/usr/local/app
 # 1. 설치시 사용할 경로 설정
 WORKDIR $HOME
 
-ARG APT_MIRROR=http://corpus.ncsoft.com:8081/repository/ubuntu/
+ARG APT_CODE_NAME=focal
+ARG APT_MIRROR=http://corpus.ncsoft.com:8081/repository/${APT_CODE_NAME}/
 
 ARG PIP_TRUST_HOST=corpus.ncsoft.com
 ARG PIP_MIRROR=http://${PIP_TRUST_HOST}:8081/repository/pypi/simple
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
-		echo "deb ${APT_MIRROR} bionic main restricted universe multiverse"; \
-		echo "deb ${APT_MIRROR} bionic-updates main restricted universe multiverse"; \
-		echo "deb ${APT_MIRROR} bionic-backports main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME} main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-updates main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-backports main restricted universe multiverse"; \
 	} > /etc/apt/sources.list \
     && apt update -yq \
     && apt install -yq --no-install-recommends \
 		default-jdk-headless \
         bridge-utils \
         build-essential \
-        chromium-browser \
-        chromium-chromedriver \
         curl \
         libcurl4-openssl-dev \
         libdb-dev \
@@ -41,11 +40,20 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3-dev \
         python3-lxml \
         python3-pip \
+        software-properties-common \
         tzdata \
     && apt autoremove -yq \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo && echo "# install chrome" \
+    && add-apt-repository -y ppa:saiarcot895/chromium-dev \
+    && apt update -yq \
+    && apt install -yq --no-install-recommends \
+        chromium-browser \
+        chromium-chromedriver \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 파이썬 라이브러리 설치

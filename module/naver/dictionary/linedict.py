@@ -106,9 +106,9 @@ class ExampleSearchCrawler(DictionaryUtils):
 
     def trace_entry_list(self):
         """ """
-        entry_list = self.read_entry_list(lang=self.args.lang, column='state')
+        entry_list = self.read_entry_list(lang=self.env.lang, column='state')
 
-        self.open_db(index=self.args.index)
+        self.open_db(index=self.env.index)
         url_frame = self.get_url_frame_info()
 
         for entry in entry_list:
@@ -158,13 +158,13 @@ class ExampleSearchCrawler(DictionaryUtils):
 
     def batch(self):
         """"""
-        self.args = self.init_arguments()
+        self.env = self.init_arguments()
 
         self.logger = self.get_logger()
 
-        if 'remove_same_example' in self.args and self.args.remove_same_example is True:
+        if 'remove_same_example' in self.env and self.env.remove_same_example is True:
             self.remove_same_example()
-        elif 'reset_list' in self.args and self.args.reset_list is True:
+        elif 'reset_list' in self.env and self.env.reset_list is True:
             self.reset_list(column='state')
         else:
             self.trace_entry_list()
