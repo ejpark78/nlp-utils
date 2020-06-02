@@ -1235,6 +1235,7 @@ Content-Type: application/json
 Accept: application/text
 
 {
+  "size": 0,
   "aggregations": {
     "group_by": {
       "terms": {
@@ -1242,8 +1243,7 @@ Accept: application/text
         "size": 200
       }
     }
-  },
-  "size": 0
+  }
 }
 
 ###
