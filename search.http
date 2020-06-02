@@ -915,6 +915,13 @@ Accept: application/json
 
 ###
 
+GET {{host}}/log_gamechat_world_cn_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
 GET {{host}}/crawler-dictionary-example-glosbe-envi-word-list/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -1218,6 +1225,25 @@ Accept: application/text
     }
   ],
   "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world_cn_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "gameServer",
+        "size": 200
+      }
+    }
+  },
+  "size": 0
 }
 
 ###
