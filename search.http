@@ -1041,7 +1041,7 @@ Accept: application/text
       "must": {
         "range": {
           "localDateTime": {
-            "gte": "2020-05-31T22:09:17+09:00"
+            "gte": "2020-05-31T00:00:00+09:00"
           }
         }
       }
