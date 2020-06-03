@@ -132,13 +132,6 @@ Accept: application/json
 
 ###
 
-DELETE {{host}}/log_gamechat_cache/_doc/date_range.l2-zh
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-###
-
 POST {{host}}/log_gamechat_cache/_doc/date_range.l2-zh
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
