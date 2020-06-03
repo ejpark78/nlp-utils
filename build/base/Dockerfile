@@ -43,9 +43,11 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         software-properties-common \
         tzdata \
     && apt autoremove -yq \
+    \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
+    \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo && echo "# install chrome" \

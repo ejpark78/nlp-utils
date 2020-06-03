@@ -5,7 +5,7 @@ BASE_IMAGE = corpus:5000/base/crawler:latest
 IMAGE = corpus:5000/crawler
 #IMAGE_TAG = $(shell date +%F.%H)
 #IMAGE_TAG = $(shell git rev-parse --short HEAD)
-IMAGE_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.')
+IMAGE_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.').$(shell git rev-list --count HEAD)
 
 # Mirror
 APT_CODE_NAME = focal
@@ -70,7 +70,9 @@ build:
 		--label "image_name=$(IMAGE)" \
 		--label "build-date=$(shell date +'%Y-%m-%d %H:%M:%S')" \
 		--label "git.branch=$(shell git rev-parse --abbrev-ref HEAD)" \
-		--label "git.commit_id=$(shell git rev-parse --short HEAD)" \
+		--label "git.tag=$(shell git describe --tags --long)" \
+		--label "git.commit.id=$(shell git rev-parse --short HEAD)" \
+		--label "git.commit.count=$(shell git rev-list --count HEAD)" \
 		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		.
 
