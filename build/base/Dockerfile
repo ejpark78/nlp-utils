@@ -18,7 +18,7 @@ ARG APT_CODE_NAME=focal
 ARG APT_MIRROR=http://corpus.ncsoft.com:8081/repository/${APT_CODE_NAME}/
 
 ARG PIP_TRUST_HOST=corpus.ncsoft.com
-ARG PIP_MIRROR=http://${PIP_TRUST_HOST}:8081/repository/pypi/simple
+ARG PIP_MIRROR=http://pip:nlplab@${PIP_TRUST_HOST}:8081/repository/pypi/simple
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \

@@ -10,7 +10,7 @@ IMAGE_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.').$
 # Mirror
 APT_CODE_NAME = focal
 APT_MIRROR = http://corpus.ncsoft.com:8081/repository/$(APT_CODE_NAME)/
-PIP_MIRROR = http://corpus.ncsoft.com:8081/repository/pypi/simple
+PIP_MIRROR = http://pip:nlplab@corpus.ncsoft.com:8081/repository/pypi/simple
 PIP_TRUST_HOST = corpus.ncsoft.com
 
 #APT_MIRROR = http://hq-lx-repo.korea.ncsoft.corp/ubuntu/
