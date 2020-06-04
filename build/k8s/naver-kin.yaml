@@ -22,6 +22,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_question_list"]
 
@@ -49,6 +56,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_answer_list"]
 
@@ -76,6 +90,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_detail_question"]
 
@@ -85,6 +106,7 @@ kind: CronJob
 metadata:
   name: detail-answer
   namespace: crawler-naver-kin
+  labels:
     app: crawler
 spec:
   schedule: "5,35 * * * *"
@@ -102,5 +124,12 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_detail_answer"]

@@ -112,6 +112,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy"]
 
@@ -139,6 +146,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "international"]
 
@@ -166,6 +180,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "it"]
 
@@ -193,6 +214,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "living"]
 
@@ -220,6 +248,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion"]
 
@@ -245,6 +280,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics"]
 
@@ -272,6 +314,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "society"]
 
@@ -299,6 +348,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports"]
 
@@ -326,5 +382,12 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv"]

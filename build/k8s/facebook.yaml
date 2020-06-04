@@ -55,6 +55,13 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/언론.json", "--max_page", "50"]
 
@@ -82,5 +89,12 @@ spec:
             - name: default
               image: corpus:5000/crawler:latest
               imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
               workingDir: /usr/local/app
               args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/대나무숲.json", "--max_page", "50"]
