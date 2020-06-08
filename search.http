@@ -1247,3 +1247,10 @@ Accept: application/text
 }
 
 ###
+
+DELETE {{host}}/crawler-bbs-game-lineage-vi
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
