@@ -50,6 +50,7 @@ class LineageMBBSJap(object):
 
     @staticmethod
     def get_article_list(page):
+        """ """
         url = 'https://www.ncsoft.jp/lineage2/community/lineage2Board/list?currentPage={page}'.format(page=page)
 
         resp = requests.get(url)
@@ -76,6 +77,7 @@ class LineageMBBSJap(object):
         return result
 
     def get_article(self, url):
+        """ """
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
@@ -118,6 +120,7 @@ class LineageMBBSJap(object):
         return result
 
     def batch(self):
+        """ """
         pbar = tqdm(range(1, 1539))
 
         for page in pbar:
@@ -139,13 +142,5 @@ class LineageMBBSJap(object):
         return
 
 
-def main():
-    """"""
-    utils = LineageMBBSJap()
-    utils.batch()
-
-    return
-
-
 if __name__ == '__main__':
-    main()
+    LineageMBBSJap().batch()

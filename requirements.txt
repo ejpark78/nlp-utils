@@ -30,3 +30,4 @@ certifi
 cachelib
 brotlipy
 psutil
+xmltodict

@@ -95,18 +95,6 @@ class LineageMBBSEng(object):
         return 1
 
     @staticmethod
-    def init_arguments():
-        """ 옵션 설정 """
-        import argparse
-
-        parser = argparse.ArgumentParser()
-
-        parser.add_argument('-config', default='./naver.bbs.list.json', help='')
-        parser.add_argument('-contents', action='store_true', default=False, help='')
-
-        return parser.parse_args()
-
-    @staticmethod
     def get_articles(url):
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html5lib')
@@ -199,80 +187,88 @@ class LineageMBBSEng(object):
 
         return
 
+    def batch(self):
+        """"""
+        forum_info = [
+            #     {'category': 'Lineage II',
+            #      'forum_title': 'General Live Discussion',
+            #      'forum_url': 'https://forums.lineage2.com/forum/4-general-live-discussion/'},
+            # {'category': 'Lineage II',
+            #  'forum_title': 'Game Questions',
+            #  'forum_url': 'https://forums.lineage2.com/forum/5-game-questions/'},
+            # {'category': 'Lineage II',
+            #  'forum_title': 'Future Updates Discussion',
+            #  'forum_url': 'https://forums.lineage2.com/forum/33-future-updates-discussion/'},
+            # {'category': 'Lineage II',
+            #  'forum_title': 'Server Discussions',
+            #  'forum_url': 'https://forums.lineage2.com/forum/6-server-discussions/'},
+            # {'category': 'Lineage II',
+            #  'forum_title': 'Classes Discussion',
+            #  'forum_url': 'https://forums.lineage2.com/forum/16-classes-discussion/'},
+            {'category': 'Lineage II',
+             'forum_title': 'Player to Player Support',
+             'forum_url': 'https://forums.lineage2.com/forum/24-player-to-player-support/'},
+            {'category': 'Lineage II',
+             'forum_title': 'Report A Bug',
+             'forum_url': 'https://forums.lineage2.com/forum/27-report-a-bug/'},
+            {'category': 'Lineage II',
+             'forum_title': 'Fan Creation',
+             'forum_url': 'https://forums.lineage2.com/forum/25-fan-creation/'},
+            {'category': 'Lineage II',
+             'forum_title': 'Suggestion Box',
+             'forum_url': 'https://forums.lineage2.com/forum/29-suggestion-box/'},
+            {'category': 'Lineage II',
+             'forum_title': 'Archive',
+             'forum_url': 'https://forums.lineage2.com/forum/30-archive/'},
+            {'category': 'Classic',
+             'forum_title': 'General Classic Discussion',
+             'forum_url': 'https://forums.lineage2.com/forum/35-general-classic-discussion/'},
+            {'category': 'Classic',
+             'forum_title': 'Game Questions',
+             'forum_url': 'https://forums.lineage2.com/forum/49-game-questions/'},
+            {'category': 'Classic',
+             'forum_title': 'Fan Creations',
+             'forum_url': 'https://forums.lineage2.com/forum/53-fan-creations/'},
+            {'category': 'Classic',
+             'forum_title': 'Server Discussions',
+             'forum_url': 'https://forums.lineage2.com/forum/41-server-discussions/'},
+            {'category': 'Classic',
+             'forum_title': 'Race & Classes Discussion',
+             'forum_url': 'https://forums.lineage2.com/forum/40-race-classes-discussion/'},
+            {'category': 'Classic',
+             'forum_title': 'Clan Recruitment',
+             'forum_url': 'https://forums.lineage2.com/forum/39-clan-recruitment/'},
+            {'category': 'Classic',
+             'forum_title': 'Player to Player Support',
+             'forum_url': 'https://forums.lineage2.com/forum/36-player-to-player-support/'},
+            {'category': 'Classic',
+             'forum_title': 'Report A Bug',
+             'forum_url': 'https://forums.lineage2.com/forum/37-report-a-bug/'},
+            {'category': 'Classic',
+             'forum_title': 'Archive',
+             'forum_url': 'https://forums.lineage2.com/forum/38-archive/'}
+        ]
 
-def main():
-    """"""
-    utils = LineageMBBSEng()
+        pbar = tqdm(forum_info)
 
-    # forum_info = get_forum_info()
-    forum_info = [
-        #     {'category': 'Lineage II',
-        #      'forum_title': 'General Live Discussion',
-        #      'forum_url': 'https://forums.lineage2.com/forum/4-general-live-discussion/'},
-        # {'category': 'Lineage II',
-        #  'forum_title': 'Game Questions',
-        #  'forum_url': 'https://forums.lineage2.com/forum/5-game-questions/'},
-        # {'category': 'Lineage II',
-        #  'forum_title': 'Future Updates Discussion',
-        #  'forum_url': 'https://forums.lineage2.com/forum/33-future-updates-discussion/'},
-        # {'category': 'Lineage II',
-        #  'forum_title': 'Server Discussions',
-        #  'forum_url': 'https://forums.lineage2.com/forum/6-server-discussions/'},
-        # {'category': 'Lineage II',
-        #  'forum_title': 'Classes Discussion',
-        #  'forum_url': 'https://forums.lineage2.com/forum/16-classes-discussion/'},
-        {'category': 'Lineage II',
-         'forum_title': 'Player to Player Support',
-         'forum_url': 'https://forums.lineage2.com/forum/24-player-to-player-support/'},
-        {'category': 'Lineage II',
-         'forum_title': 'Report A Bug',
-         'forum_url': 'https://forums.lineage2.com/forum/27-report-a-bug/'},
-        {'category': 'Lineage II',
-         'forum_title': 'Fan Creation',
-         'forum_url': 'https://forums.lineage2.com/forum/25-fan-creation/'},
-        {'category': 'Lineage II',
-         'forum_title': 'Suggestion Box',
-         'forum_url': 'https://forums.lineage2.com/forum/29-suggestion-box/'},
-        {'category': 'Lineage II',
-         'forum_title': 'Archive',
-         'forum_url': 'https://forums.lineage2.com/forum/30-archive/'},
-        {'category': 'Classic',
-         'forum_title': 'General Classic Discussion',
-         'forum_url': 'https://forums.lineage2.com/forum/35-general-classic-discussion/'},
-        {'category': 'Classic',
-         'forum_title': 'Game Questions',
-         'forum_url': 'https://forums.lineage2.com/forum/49-game-questions/'},
-        {'category': 'Classic',
-         'forum_title': 'Fan Creations',
-         'forum_url': 'https://forums.lineage2.com/forum/53-fan-creations/'},
-        {'category': 'Classic',
-         'forum_title': 'Server Discussions',
-         'forum_url': 'https://forums.lineage2.com/forum/41-server-discussions/'},
-        {'category': 'Classic',
-         'forum_title': 'Race & Classes Discussion',
-         'forum_url': 'https://forums.lineage2.com/forum/40-race-classes-discussion/'},
-        {'category': 'Classic',
-         'forum_title': 'Clan Recruitment',
-         'forum_url': 'https://forums.lineage2.com/forum/39-clan-recruitment/'},
-        {'category': 'Classic',
-         'forum_title': 'Player to Player Support',
-         'forum_url': 'https://forums.lineage2.com/forum/36-player-to-player-support/'},
-        {'category': 'Classic',
-         'forum_title': 'Report A Bug',
-         'forum_url': 'https://forums.lineage2.com/forum/37-report-a-bug/'},
-        {'category': 'Classic',
-         'forum_title': 'Archive',
-         'forum_url': 'https://forums.lineage2.com/forum/38-archive/'}
-    ]
+        for forum in pbar:
+            pbar.set_description(forum['forum_title'])
+            self.trace_forum(forum=forum)
 
-    pbar = tqdm(forum_info)
+        return
 
-    for forum in pbar:
-        pbar.set_description(forum['forum_title'])
-        utils.trace_forum(forum=forum)
+    @staticmethod
+    def init_arguments():
+        """ 옵션 설정 """
+        import argparse
 
-    return
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('-config', default='./naver.bbs.list.json', help='')
+        parser.add_argument('-contents', action='store_true', default=False, help='')
+
+        return parser.parse_args()
 
 
 if __name__ == '__main__':
-    main()
+    LineageMBBSEng().batch()

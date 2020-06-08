@@ -1,0 +1,479 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-culture
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "culture",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-economy
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "economy",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-international
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "international",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-it
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "it",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-opinion
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "opinion",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-politics
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "politics",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-society
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "society",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-sports
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "daum",
+        "--job_id", "sports",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-economy
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "economy",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-entertainment
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "entertainment",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-international
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "international",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-it
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "it",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-politics
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "politics",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-society
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "society",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nate-sports
+  namespace: crawler-batch-2019
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "batch.py",
+        "--overwrite",
+        "--category", "nate",
+        "--job_id", "sports",
+        "--date_range", "2019-01-01~2020-12-31"
+      ]

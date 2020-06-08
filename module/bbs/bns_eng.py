@@ -89,18 +89,6 @@ class LineageMBBSEng(object):
         return 1
 
     @staticmethod
-    def init_arguments():
-        """ 옵션 설정 """
-        import argparse
-
-        parser = argparse.ArgumentParser()
-
-        parser.add_argument('-config', default='./naver.bbs.list.json', help='')
-        parser.add_argument('-contents', action='store_true', default=False, help='')
-
-        return parser.parse_args()
-
-    @staticmethod
     def get_articles(url):
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html5lib')
@@ -197,45 +185,53 @@ class LineageMBBSEng(object):
 
         return
 
+    def batch(self):
+        """"""
+        forum_info = [
+            {'forum_title': 'News and Announcements',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/412-news-and-announcements/'},
+            {'forum_title': 'General Discussion',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/421-general-discussion/'},
+            {'forum_title': 'PvE',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/423-pve/'},
+            {'forum_title': 'PvP',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/430-pvp/'},
+            {'forum_title': 'Fall Comic Contest Submissions',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/692-fall-comic-contest-submissions/'},
+            {'forum_title': 'Esports',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/662-esports/'},
+            {'forum_title': 'Player to Player Support',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/419-player-to-player-support/'},
+            {'forum_title': 'Fan Creations',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/438-fan-creations/'},
+            {'forum_title': 'Bug Reports',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/439-bug-reports/'},
+            {'forum_title': 'Classes',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/631-classes/'},
+            {'forum_title': 'Servers',
+             'forum_url': 'https://forums.bladeandsoul.com/forum/440-servers/'}
+        ]
 
-def main():
-    """"""
-    utils = LineageMBBSEng()
+        pbar = tqdm(forum_info)
 
-    # forum_info = get_forum_info()
-    forum_info = [
-        {'forum_title': 'News and Announcements',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/412-news-and-announcements/'},
-        {'forum_title': 'General Discussion',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/421-general-discussion/'},
-        {'forum_title': 'PvE',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/423-pve/'},
-        {'forum_title': 'PvP',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/430-pvp/'},
-        {'forum_title': 'Fall Comic Contest Submissions',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/692-fall-comic-contest-submissions/'},
-        {'forum_title': 'Esports',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/662-esports/'},
-        {'forum_title': 'Player to Player Support',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/419-player-to-player-support/'},
-        {'forum_title': 'Fan Creations',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/438-fan-creations/'},
-        {'forum_title': 'Bug Reports',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/439-bug-reports/'},
-        {'forum_title': 'Classes',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/631-classes/'},
-        {'forum_title': 'Servers',
-         'forum_url': 'https://forums.bladeandsoul.com/forum/440-servers/'}
-    ]
+        for forum in pbar:
+            pbar.set_description(forum['forum_title'])
+            self.trace_forum(forum=forum)
 
-    pbar = tqdm(forum_info)
+        return
 
-    for forum in pbar:
-        pbar.set_description(forum['forum_title'])
-        utils.trace_forum(forum=forum)
+    @staticmethod
+    def init_arguments():
+        """ 옵션 설정 """
+        import argparse
 
-    return
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('-config', default='./naver.bbs.list.json', help='')
+        parser.add_argument('-contents', action='store_true', default=False, help='')
+
+        return parser.parse_args()
 
 
 if __name__ == '__main__':
-    main()
+    LineageMBBSEng().batch()
