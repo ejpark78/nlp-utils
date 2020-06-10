@@ -6,6 +6,8 @@ from __future__ import division
 from __future__ import print_function
 
 import logging
+import os
+import sys
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
@@ -13,22 +15,9 @@ from urllib.parse import urljoin
 import pytz
 import requests
 from bs4 import BeautifulSoup
-from dateutil.parser import parse as parse_date
-from tqdm.autonotebook import tqdm
-import xmltodict
-import json
+
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-
-MESSAGE = 25
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
+from module.utils.logging_format import LogMessage as LogMsg
 
 
 class ForumUtils(object):
@@ -37,37 +26,91 @@ class ForumUtils(object):
         """ 생성자 """
         super().__init__()
 
-    @staticmethod
-    def get_max_page(url, css, soup=None):
-        """ """
-        if soup is None:
+        self.MESSAGE = 25
+
+        self.logger = self.get_logger()
+
+        self.try_count = 0
+        self.max_try = 3
+
+    def request_html(self, url):
+        """url에 대한 문서를 조회한다."""
+        from requests.exceptions import ConnectionError
+
+        resp = None
+        try:
             resp = requests.get(url)
-            soup = BeautifulSoup(resp.text, 'html5lib')
+        except ConnectionError:
+            msg = {
+                'level': 'ERROR',
+                'message': 'ConnectionError',
+                'url': url,
+            }
+            self.logger.error(msg=LogMsg(msg))
+
+            if self.try_count < self.max_try:
+                self.try_count += 1
+
+                sleep(30)
+                self.request_html(url=url)
+
+        self.try_count = 0
+
+        return resp
+
+    def get_logger(self):
+        """로거를 반환한다."""
+        logging.addLevelName(self.MESSAGE, 'MESSAGE')
+        logging.basicConfig(format='%(message)s')
+
+        self.logger = logging.getLogger()
+
+        self.logger.setLevel(self.MESSAGE)
+        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
+
+        return self.logger
+
+    def get_max_page(self, url, css, soup=None):
+        """페이지네이션에서 최대 페이지수를 반환한다."""
+        if soup is None:
+            resp = self.request_html(url=url)
+            if resp is None:
+                return 1, None
+
+            soup = BeautifulSoup(resp.content, 'html5lib')
 
         tags = [int(x.get_text()) for x in soup.select(css) if x.get_text().isdigit()]
+        if len(tags) == 0:
+            return 1, soup
 
-        return max(tags)
+        return max(tags), soup
 
-    @staticmethod
-    def get_topic_list(url, css):
+    def get_topic_list(self, url, css):
         """ """
-        resp = requests.get(url)
-        soup = BeautifulSoup(resp.text, 'html5lib')
+        resp = self.request_html(url=url)
+        if resp is None:
+            return []
+
+        soup = BeautifulSoup(resp.content, 'html5lib')
 
         result = [urljoin(url, '/' + x['href']) for x in soup.select(css) if x.has_attr('href')]
 
         return result
 
-    def trace_topic(self, url_list, css):
+    @staticmethod
+    def get_html(soup, css):
         """ """
-        for url in url_list:
-            max_page = self.get_max_page(url=url, css=css['page_nav'])
+        return '\n'.join([str(x) for x in soup.select(css)]).strip()
 
-            for page in range(max_page + 1):
+    @staticmethod
+    def get_text(soup, css):
+        """soup 태그에서 텍스트를 추출한다."""
+        return ''.join([x.get_text('\n') for x in soup.select(css)]).strip()
 
-                pass
-
-        return
+    @staticmethod
+    def get_attr(soup, css, attr):
+        """soup 태그에서 속성을 반환한다."""
+        return ''.join([x[attr] for x in soup.select(css) if x.has_attr(attr)])
 
 
 class GameVn(ForumUtils):
@@ -76,50 +119,99 @@ class GameVn(ForumUtils):
         """ 생성자 """
         super().__init__()
 
-        host_info = {
-            'host': 'https://corpus.ncsoft.com:9200',
+        self.sleep = 5
+
+        self.host_info = {
+            'host': os.getenv('ELASTIC_SEARCH_HOST', 'https://corpus.ncsoft.com:9200'),
             'index': 'crawler-bbs-game-lineage-vi',
             'http_auth': 'crawler:crawler2019',
             'split_index': True,
         }
 
-        self.elastic = ElasticSearchUtils(**host_info)
-
+        self.elastic = ElasticSearchUtils(**self.host_info)
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.sleep = 3
+    def trace_topic(self, url_list, css_info):
+        """ """
+        for url_frame in url_list:
+            max_page, soup = self.get_max_page(url=url_frame, css=css_info['page_nav'])
+
+            topic = self.get_text(soup=soup, css='div.titleBar h1')
+
+            for page in range(1, max_page + 1):
+                url = url_frame + 'page-{}'.format(page)
+
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': 'trace_topic',
+                    'url': url,
+                    'page': page,
+                    'max_page': max_page,
+                }
+                self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+
+                resp = self.request_html(url=url)
+                if resp is None:
+                    continue
+
+                soup = BeautifulSoup(resp.content, 'html5lib')
+
+                for item in soup.select('ol.messageList li'):
+                    if item.has_attr('id') is False:
+                        msg = {
+                            'level': 'ERROR',
+                            'message': 'missing doc id',
+                            'url': url,
+                            'item': str(item),
+                        }
+                        self.logger.error(msg=LogMsg(msg))
+                        continue
+
+                    doc = {
+                        '_id': item['id'],
+                        'topic': topic,
+                        'date': self.get_attr(soup=item, css='div.messageMeta span.DateTime', attr='title'),
+                        'username': self.get_text(soup=item, css='div.messageMeta a.username'),
+                        'user_title': self.get_text(soup=item, css='em.userTitle'),
+                        'contents': self.get_text(soup=item, css='article'),
+                        'curl_date': datetime.now(self.timezone).isoformat(),
+                        'html_content': str(item),
+                    }
+
+                    self.elastic.save_document(document=doc, delete=False)
+
+                self.elastic.flush()
+
+                sleep(self.sleep)
+
+        return
 
     def trace_forum(self, forum):
         """ """
-        css = {
+        css_info = {
             'page_nav': '#content div.PageNav nav a',
-            'topic_list': 'ol li h3.title a'
+            'topic_list': 'ol li h3.title a',
         }
 
-        max_page = self.get_max_page(url=forum['url'].format(page=1), css=css['page_nav'])
+        max_page, _ = self.get_max_page(url=forum['url'].format(page=1), css=css_info['page_nav'])
         sleep(self.sleep)
+
+        msg = {
+            'level': 'MESSAGE',
+            'message': 'trace_forum',
+            'max_page': max_page,
+            'forum': forum
+        }
+        self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
 
         for page in range(max_page + 1):
             url = forum['url'].format(page=page)
 
-            url_list = self.get_topic_list(url=url, css=css['topic_list'])
+            url_list = self.get_topic_list(url=url, css=css_info['topic_list'])
 
-            self.trace_topic(url_list=url_list, css=css)
+            self.trace_topic(url_list=url_list, css_info=css_info)
 
-            # for doc in url_list:
-            #     doc['curl_date'] = datetime.now(self.timezone).isoformat()
-            #     self.elastic.save_document(document=doc, delete=False)
-
-        #     self.elastic.flush()
-        #
-        #     for doc in tqdm(doc_list, desc='trace article'):
-        #         doc = self.trace_articles(doc=doc)
-        #
-        #         doc['curl_date'] = datetime.now(self.timezone).isoformat()
-        #         self.elastic.save_document(document=doc, delete=False)
-        #         self.elastic.flush()
-        #
-        #     sleep(self.sleep)
+            sleep(self.sleep)
 
         return
 
@@ -127,19 +219,25 @@ class GameVn(ForumUtils):
         """"""
         forum_info = [
             {
-                'category': 'Lineage 2',
-                'title': 'Lineage 2',
-                'url': 'http://forum.gamevn.com/forums/lineage-2.217/page-{page}'
+                'url': 'http://forum.gamevn.com/forums/lineage-2.217/page-{page}',
+                'meta': {
+                    'category': 'Lineage 2',
+                    'title': 'Lineage 2',
+                }
             },
             {
-                'category': 'Lineage 2',
-                'title': 'Mua bán',
-                'url': 'http://forum.gamevn.com/forums/mua-ban.233/page-{page}'
+                'url': 'http://forum.gamevn.com/forums/mua-ban.233/page-{page}',
+                'meta': {
+                    'category': 'Lineage 2',
+                    'title': 'Mua bán',
+                }
             },
             {
-                'category': 'Lineage 2',
-                'title': 'L2\'s Third Party',
-                'url': 'http://forum.gamevn.com/forums/l2s-third-party.234/page-{page}'
+                'url': 'http://forum.gamevn.com/forums/l2s-third-party.234/page-{page}',
+                'meta': {
+                    'category': 'Lineage 2',
+                    'title': 'L2\'s Third Party',
+                }
             }
         ]
 
@@ -149,13 +247,5 @@ class GameVn(ForumUtils):
         return
 
 
-def main():
-    """"""
-    utils = GameVn()
-    utils.batch()
-
-    return
-
-
 if __name__ == '__main__':
-    main()
+    GameVn().batch()
