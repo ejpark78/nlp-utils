@@ -220,3 +220,42 @@ Accept: application/text
 }
 
 ###
+
+GET {{host}}/log_gamechat_world2_kr_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "aggregations": {
+    "max_date": {
+      "max": {
+        "field": "localDateTime"
+      }
+    },
+    "min_date": {
+      "min": {
+        "field": "localDateTime"
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {
+          "gameServer": "53"
+        }
+      },
+      "must": {
+        "range": {
+          "localDateTime": {
+            "gte": "2020-05-31T23:24:17.000"
+          }
+        }
+      }
+    }
+  },
+  "size": 0
+}
+
+###
