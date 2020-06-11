@@ -14,7 +14,7 @@ from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 logger = logging.getLogger()
 

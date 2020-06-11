@@ -12,7 +12,7 @@ from datetime import datetime
 from glob import glob
 from os.path import isdir
 from uuid import uuid4
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 import pytz
 import requests

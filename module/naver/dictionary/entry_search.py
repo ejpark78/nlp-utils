@@ -13,7 +13,7 @@ import requests
 import urllib3
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -1,0 +1,54 @@
+{
+  "list": [
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/vsak20132015",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "주한 베트남 유학생 공식 커뮤니케이션",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/1144574718892361",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "주한 베트남인 커뮤니케이션",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/vn.korea",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "주한 한국 거주비자 소유자 커뮤니케이션",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/Lienminhesports",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "League of Legends (MOBA) 게임",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/225752004292675",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "서머너 워 게임 - 베트남 커뮤니티",
+        "category": "게임"
+      }
+    }
+  ]
+}

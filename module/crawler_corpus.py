@@ -19,7 +19,7 @@ from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 from module.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

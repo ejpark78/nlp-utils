@@ -19,7 +19,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

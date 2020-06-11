@@ -1,0 +1,74 @@
+{
+  "list": [
+    {
+      "site": "https://m.facebook.com",
+      "page": "Lineage2RevID",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "Lineage2 Revolution Indonesia",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "Lineage-2-DayMajor-110974747208957",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "Lineage 2 DayMajor",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "RagnarokForeverLove",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "Ragnarok Online 커뮤니티",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/RagnarokMobileIDNOfficial",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "Ragnarok OFFICIAL 커뮤니티 및 멈버 게시판",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "ciciipertiwi",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "PBUG Mobile",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "bangalexLIVE",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "PBUG Mobile",
+        "category": "게임"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "rafi.metalbox",
+      "index": "crawler-facebook-id",
+      "meta": {
+        "lang_code": "id",
+        "name": "GOD OF WAR 4",
+        "category": "게임"
+      }
+    }
+  ]
+}

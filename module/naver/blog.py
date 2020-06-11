@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
@@ -19,20 +18,9 @@ from tqdm import tqdm
 from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.selenium_utils import SeleniumUtils
 
-MESSAGE = 25
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
-
 
 class SeleniumCrawler(SeleniumUtils):
-    """웹 뉴스 크롤러 베이스"""
+    """네이버 블로그 크롤러"""
 
     def __init__(self):
         """ 생성자 """
@@ -244,6 +232,35 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
+    def batch(self):
+        """"""
+        # https://stackabuse.com/getting-started-with-selenium-and-python/
+        self.env = self.init_arguments()
+
+        bbs_list = self.read_config(filename=self.env.config)
+
+        pbar = tqdm(bbs_list)
+        for bbs in pbar:
+            if self.env.blogid is not None and self.env.blogid != bbs['blogId']:
+                continue
+
+            bbs['page'] = 1
+            bbs['url'] = bbs['url'].format(**bbs)
+
+            if self.env.list:
+                pbar.set_description(bbs['name'] + ' list')
+
+                bbs['max_page'] = 5000
+
+                self.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'])
+
+            if self.env.contents:
+                pbar.set_description(bbs['name'] + ' contents')
+
+                self.trace_contents(bbs_info=bbs)
+
+        return
+
     @staticmethod
     def init_arguments():
         """ 옵션 설정 """
@@ -265,37 +282,5 @@ class SeleniumCrawler(SeleniumUtils):
         return parser.parse_args()
 
 
-def main():
-    """"""
-    # https://stackabuse.com/getting-started-with-selenium-and-python/
-    utils = SeleniumCrawler()
-
-    utils.args = utils.init_arguments()
-
-    bbs_list = utils.read_config(filename=utils.args.config)
-
-    pbar = tqdm(bbs_list)
-    for bbs in pbar:
-        if utils.args.blogid is not None and utils.args.blogid != bbs['blogId']:
-            continue
-
-        bbs['page'] = 1
-        bbs['url'] = bbs['url'].format(**bbs)
-
-        if utils.args.list:
-            pbar.set_description(bbs['name'] + ' list')
-
-            bbs['max_page'] = 5000
-
-            utils.get_contents_list(bbs_info=bbs, max_iter=bbs['max_page'])
-
-        if utils.args.contents:
-            pbar.set_description(bbs['name'] + ' contents')
-
-            utils.trace_contents(bbs_info=bbs)
-
-    return
-
-
 if __name__ == '__main__':
-    main()
+    SeleniumCrawler().batch()

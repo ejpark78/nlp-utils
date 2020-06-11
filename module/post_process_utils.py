@@ -17,7 +17,7 @@ import pytz
 import requests
 
 from module.utils.html_parser import HtmlParser
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 MESSAGE = 25
 

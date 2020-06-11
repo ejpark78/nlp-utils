@@ -63,7 +63,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/언론.json", "--max_page", "50"]
+              args: [
+                "python3", "module/facebook.py",
+                "--list", "--reply",
+                "--config", "config/facebook/언론.json",
+                "--max_page", "50"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -97,4 +102,10 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/대나무숲.json", "--max_page", "50"]
+              args: [
+                "python3", "module/facebook.py",
+                "--list",
+                "--reply",
+                "--config", "config/facebook/대나무숲.json",
+                "--max_page", "50"
+              ]

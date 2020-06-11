@@ -22,7 +22,7 @@ from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

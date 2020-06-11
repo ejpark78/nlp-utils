@@ -1,7 +1,13 @@
-// 개인
 {
-  "site": "https://m.facebook.com",
-  "name": "박은진",
-  "page": "ejpark78",
-  "category": "개인"
+  "list": [
+    {
+      "site": "https://m.facebook.com",
+      "meta": {
+        "lang_code": "ko",
+        "name": "박은진",
+        "page": "ejpark78",
+        "category": "개인"
+      }
+    }
+  ]
 }

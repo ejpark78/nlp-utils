@@ -6,29 +6,16 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 from glob import glob
 from os.path import isdir
 from time import sleep
-from module.utils.logging_format import LogMessage as LogMsg
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
-
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-logging.basicConfig(**logging_opt)
-
-logger = logging.getLogger()
+from module.utils.logger import Logger
 
 
 class SeleniumUtils(object):
@@ -38,8 +25,10 @@ class SeleniumUtils(object):
         """ 생성자 """
         super().__init__()
 
-        self.args = None
+        self.env = None
         self.driver = None
+
+        self.logger = Logger()
 
     def open_driver(self):
         """브라우저를 실행한다."""
@@ -48,7 +37,7 @@ class SeleniumUtils(object):
 
         options = webdriver.ChromeOptions()
 
-        if self.args.use_head is True:
+        if self.env.use_head is True:
             options.add_argument('headless')
 
         options.add_argument('window-size=1920x1080')
@@ -58,15 +47,16 @@ class SeleniumUtils(object):
         options.add_argument('--dns-prefetch-disable')
         options.add_argument('--disable-dev-shm-usage')
 
-        if self.args.user_data is not None:
-            options.add_argument('user-data-dir={}'.format(self.args.user_data))
+        if self.env.user_data is not None:
+            options.add_argument('user-data-dir={}'.format(self.env.user_data))
 
         options.add_experimental_option('prefs', {
             'disk-cache-size': 4096,
             'profile.managed_default_content_settings.images': 2,
         })
 
-        self.driver = webdriver.Chrome(chrome_options=options)
+        chrome_driver = self.env.driver
+        self.driver = webdriver.Chrome(executable_path=chrome_driver, chrome_options=options)
 
         return
 
@@ -87,12 +77,11 @@ class SeleniumUtils(object):
                 html.send_keys(Keys.PAGE_DOWN)
                 self.driver.implicitly_wait(10)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'page down error',
                     'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                })
                 break
 
             sleep(2)
@@ -120,12 +109,11 @@ class SeleniumUtils(object):
 
                 WebDriverWait(self.driver, scroll_time, 10).until(lambda x: check_height(height))
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'scroll error',
                     'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                })
                 break
 
             if last_height == height:
@@ -166,23 +154,10 @@ class SeleniumUtils(object):
                 file_list.append(f_name)
 
         result = []
-
         for f_name in file_list:
             with open(f_name, 'r') as fp:
-                buf = ''
-                for line in fp.readlines():
-                    line = line.strip()
-                    if line.strip() == '' or line[0:2] == '//' or line[0] == '#':
-                        continue
-
-                    buf += line
-                    if line != '}':
-                        continue
-
-                    doc = json.loads(buf)
-                    buf = ''
-
-                    result.append(doc)
+                doc = json.load(fp)
+                result += doc['list']
 
         return result
 

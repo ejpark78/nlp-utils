@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import pickle
 import ssl
 from datetime import datetime
@@ -18,11 +17,9 @@ from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
 
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-logger = logging.getLogger()
 
 
 class ElasticSearchUtils(object):
@@ -49,6 +46,8 @@ class ElasticSearchUtils(object):
         self.insert = insert
 
         self.timezone = pytz.timezone('Asia/Seoul')
+        
+        self.logger = Logger()
 
         if self.host is not None:
             self.open()
@@ -70,14 +69,13 @@ class ElasticSearchUtils(object):
                 }
             )
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '인덱스 생성 에러',
                 'host': self.host,
                 'index': self.index,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         return True
@@ -111,6 +109,9 @@ class ElasticSearchUtils(object):
     @staticmethod
     def get_target_index(index, split_index=False, tag=None):
         """복사 대상의 인덱스를 반환한다."""
+        if index is None:
+            return None
+
         if split_index is False or tag is None:
             return index
 
@@ -147,13 +148,12 @@ class ElasticSearchUtils(object):
                 http_compress=True,
             )
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '서버 접속 에러',
                 'host': self.host,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         if self.split_index is True:
@@ -164,13 +164,12 @@ class ElasticSearchUtils(object):
             if self.elastic.indices.exists(index=self.index) is False:
                 self.create_index(self.elastic, self.index)
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '인덱스 확인 에러',
                 'host': self.host,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         return
@@ -206,12 +205,11 @@ class ElasticSearchUtils(object):
                 body=body
             )
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '업데이트 에러',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
 
         return True
 
@@ -304,12 +302,11 @@ class ElasticSearchUtils(object):
 
             self.bulk_data[self.host] = []
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '저장 에러 (bulk)',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
 
             self.bulk_data[self.host] = []
 
@@ -324,25 +321,23 @@ class ElasticSearchUtils(object):
 
                     reason_list.append(item['update']['error']['reason'])
 
-                log_msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': '저장 에러 (msg)',
                     'reason': reason_list,
-                }
-                logger.error(msg=LogMsg(log_msg))
+                })
 
                 return False
             else:
-                log_msg = {
+                self.logger.info(msg={
                     'level': 'INFO',
                     'message': '저장 성공',
                     'count': int(size / 2),
-                }
-                logger.info(msg=LogMsg(log_msg))
+                })
 
                 if len(doc_id_list) > 0:
                     for doc_id in doc_id_list[:10]:
-                        log_msg = {
+                        self.logger.info(msg={
                             'level': 'INFO',
                             'message': '저장 성공',
                             'url': '{host}/{index}/_doc/{id}?pretty'.format(
@@ -350,15 +345,13 @@ class ElasticSearchUtils(object):
                                 index=self.index,
                                 id=doc_id,
                             ),
-                        }
-                        logger.info(msg=LogMsg(log_msg))
+                        })
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '로깅 에러',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
 
             return False
 
@@ -394,14 +387,13 @@ class ElasticSearchUtils(object):
 
             sum_count += count
 
-            log_msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'index': index,
                 'count': count,
                 'sum_count': sum_count,
                 'total': total,
-            }
-            logger.info(msg=LogMsg(log_msg))
+            })
 
             for item in hits:
                 if stdout is True:
@@ -524,7 +516,7 @@ class ElasticSearchUtils(object):
                 'sum_count': sum_count,
                 'total': total,
             }
-            logger.info(msg=LogMsg(log_msg))
+            self.logger.info(msg=log_msg)
 
             for item in hits:
                 document_id = item['_id']
@@ -585,14 +577,13 @@ class ElasticSearchUtils(object):
 
             sum_count += count
 
-            log_msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'index': index,
                 'count': count,
                 'sum_count': sum_count,
                 'total': total,
-            }
-            logger.info(msg=LogMsg(log_msg))
+            })
 
             for item in hits:
                 result.append(item['_source'])
@@ -630,24 +621,22 @@ class ElasticSearchUtils(object):
         try:
             exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
             if exists is False:
-                log_msg = {
+                self.logger.info(msg={
                     'level': 'INFO',
                     'message': 'move document 문서 없음',
                     'source_index': source_index,
                     'source_id': source_id,
                     'document_id': document_id,
-                }
-                logger.info(msg=LogMsg(log_msg))
+                })
                 return
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'move document 문서 찾기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         # 원본 문서 읽기
@@ -657,14 +646,13 @@ class ElasticSearchUtils(object):
             if source_id != document_id:
                 document['_source']['_id'] = document_id
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'move document 문서 읽기 오류',
                 'source_id': source_id,
                 'document_id': document_id,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         # 문서 병합
@@ -679,14 +667,13 @@ class ElasticSearchUtils(object):
         try:
             self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'move document 문서 삭제 오류',
                 'source_index': source_index,
                 'source_id': source_id,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return
 
         return
@@ -702,15 +689,14 @@ class ElasticSearchUtils(object):
         try:
             resp = self.elastic.get(index=index, doc_type='_doc', id=doc_id)
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '문서 병합 에러',
                 'index': index,
                 'column': column,
                 'doc_id': doc_id,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
             return doc
 
         if '_source' not in resp:
@@ -755,14 +741,17 @@ class ElasticSearchUtils(object):
 
     def batch(self):
         """ 배치 작업을 수행한다."""
-        # doc_list = self.dump()
-        #
-        # for doc in doc_list:
-        #     doc['category'] = '스포츠'
-        #
-        #     self.save_document(document=doc)
-        #
-        # self.flush()
+        args = self.init_arguments()
+
+        self.host = args.host
+        self.index = args.index
+        self.http_auth = 'crawler:crawler2019'
+
+        self.open()
+
+        if args.export:
+            self.dump(index=args.index, stdout=True)
+
         return
 
     @staticmethod
@@ -780,21 +769,5 @@ class ElasticSearchUtils(object):
         return parser.parse_args()
 
 
-def main():
-    """메인"""
-    args = ElasticSearchUtils.init_arguments()
-
-    utils = ElasticSearchUtils(
-        host=args.host,
-        index=args.index,
-        http_auth='crawler:crawler2019'
-    )
-
-    if args.export:
-        utils.dump(index=args.index, stdout=True)
-
-    return
-
-
 if __name__ == '__main__':
-    main()
+    ElasticSearchUtils(host=None, index=None).batch()

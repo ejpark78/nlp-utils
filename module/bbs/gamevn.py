@@ -5,9 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 import os
-import sys
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
@@ -17,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 
 class ForumUtils(object):
@@ -26,9 +24,7 @@ class ForumUtils(object):
         """ 생성자 """
         super().__init__()
 
-        self.MESSAGE = 25
-
-        self.logger = self.get_logger()
+        self.logger = Logger()
 
         self.try_count = 0
         self.max_try = 3
@@ -46,7 +42,7 @@ class ForumUtils(object):
                 'message': 'ConnectionError',
                 'url': url,
             }
-            self.logger.error(msg=LogMsg(msg))
+            self.logger.error(msg=msg)
 
             if self.try_count < self.max_try:
                 self.try_count += 1
@@ -57,18 +53,6 @@ class ForumUtils(object):
         self.try_count = 0
 
         return resp
-
-    def get_logger(self):
-        """로거를 반환한다."""
-        logging.addLevelName(self.MESSAGE, 'MESSAGE')
-        logging.basicConfig(format='%(message)s')
-
-        self.logger = logging.getLogger()
-
-        self.logger.setLevel(self.MESSAGE)
-        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
-
-        return self.logger
 
     def get_max_page(self, url, css, soup=None):
         """페이지네이션에서 최대 페이지수를 반환한다."""
@@ -148,7 +132,7 @@ class GameVn(ForumUtils):
                     'page': page,
                     'max_page': max_page,
                 }
-                self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+                self.logger.log(msg=msg)
 
                 resp = self.request_html(url=url)
                 if resp is None:
@@ -164,7 +148,7 @@ class GameVn(ForumUtils):
                             'url': url,
                             'item': str(item),
                         }
-                        self.logger.error(msg=LogMsg(msg))
+                        self.logger.error(msg=msg)
                         continue
 
                     doc = {
@@ -202,7 +186,7 @@ class GameVn(ForumUtils):
             'max_page': max_page,
             'forum': forum
         }
-        self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+        self.logger.log(msg=msg)
 
         for page in range(max_page + 1):
             url = forum['url'].format(page=page)

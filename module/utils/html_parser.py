@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 
 logger = logging.getLogger()
 

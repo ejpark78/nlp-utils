@@ -6,36 +6,20 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
 
 import pytz
 from bs4 import BeautifulSoup
-from tqdm import tqdm
-from module.utils.logging_format import LogMessage as LogMsg
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.logger import Logger
 from module.utils.selenium_utils import SeleniumUtils
-
-MESSAGE = 25
-
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
-
-logger = logging.getLogger()
 
 
 class SeleniumCrawler(SeleniumUtils):
-    """웹 뉴스 크롤러 베이스"""
+    """페이스북 크롤러"""
 
     def __init__(self):
         """ 생성자 """
@@ -43,14 +27,23 @@ class SeleniumCrawler(SeleniumUtils):
 
         self.max_try = 20
 
-        host = 'https://crawler:crawler2019@corpus.ncsoft.com:9200'
-        index = 'crawler-facebook'
-
-        self.elastic = ElasticSearchUtils(host=host, index=index, split_index=True)
+        self.elastic = None
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.use_see_more_link = True
+
+        self.logger = Logger()
+        
+    def open_db(self):
+        """ """
+        self.elastic = ElasticSearchUtils(
+            host=self.env.host,
+            index=self.env.index, 
+            http_auth=self.env.auth,
+            split_index=True,
+        )
+        return
 
     @staticmethod
     def parse_post(url, html):
@@ -105,12 +98,11 @@ class SeleniumCrawler(SeleniumUtils):
         try:
             self.driver.execute_script(script)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'delete post',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return None
 
         self.driver.implicitly_wait(10)
@@ -126,21 +118,23 @@ class SeleniumCrawler(SeleniumUtils):
 
             doc['_id'] = '{page}-{top_level_post_id}'.format(**doc)
 
-            doc['category'] = group_info['category']
-            doc['group_name'] = group_info['name']
+            if 'meta' in group_info:
+                doc.update(group_info['meta'])
 
             doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
-            self.elastic.save_document(document=doc, delete=False)
+            if 'index' in group_info:
+                self.elastic.save_document(document=doc, delete=False, index=group_info['index'])
+            else:
+                self.elastic.save_document(document=doc, delete=False)
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
-                'group_name': doc['group_name'],
+                'meta': doc['meta'],
                 'document_id': doc['document_id'],
                 'content': doc['content'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
         self.elastic.flush()
 
@@ -156,14 +150,13 @@ class SeleniumCrawler(SeleniumUtils):
         if flush is True:
             self.elastic.flush()
 
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '기사 저장 성공',
-            'group_name': doc['group_name'],
+            'meta': doc['meta'],
             'document_id': doc['document_id'],
             'content': doc['content'],
-        }
-        logger.log(level=MESSAGE, msg=LogMsg(msg))
+        })
 
         return
 
@@ -254,12 +247,11 @@ class SeleniumCrawler(SeleniumUtils):
                 self.driver.implicitly_wait(15)
                 sleep(2)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'more reply error',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         sleep(2)
         return
@@ -288,12 +280,11 @@ class SeleniumCrawler(SeleniumUtils):
         except NoSuchElementException:
             return
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'see prev reply error',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return
 
         if stop is True:
@@ -333,6 +324,10 @@ class SeleniumCrawler(SeleniumUtils):
         start = 0
         end = size
 
+        if 'index' in group_info:
+            self.env.index = group_info['index']
+            self.elastic.index = group_info['index']
+
         while start < len(id_list):
             doc_list = []
             self.elastic.get_by_ids(
@@ -353,12 +348,19 @@ class SeleniumCrawler(SeleniumUtils):
 
             self.open_driver()
 
-            pbar = tqdm(doc_list, desc='{} {:,}~{:,}'.format(group_info['name'], start, end))
-            for doc in pbar:
+            for i, doc in enumerate(doc_list):
                 if 'reply_list' in doc:
                     continue
 
-                pbar.set_description(group_info['name'] + ' ' + str(doc['top_level_post_id']))
+                self.logger.log({
+                    'level': 'MESSAGE',
+                    'message': 'trace_reply_list',
+                    'name': group_info['meta']['name'],
+                    'start': start,
+                    'end': end,
+                    'i': i,
+                    'top_level_post_id': doc['top_level_post_id']
+                })
 
                 self.get_reply(doc=doc)
 
@@ -375,13 +377,11 @@ class SeleniumCrawler(SeleniumUtils):
 
         url = '{site}/{page}'.format(**group_info)
 
-        self.use_see_more_link = False
-
         self.driver.get(url)
         self.driver.implicitly_wait(10)
 
         i = 0
-        for _ in range(self.args.max_page):
+        for _ in range(self.env.max_page):
             stop = self.page_down(count=10)
             self.driver.implicitly_wait(25)
 
@@ -390,21 +390,19 @@ class SeleniumCrawler(SeleniumUtils):
             try:
                 post_list = self.parse_post(url=url, html=self.driver.page_source)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'post 목록 조회 에러',
                     'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                })
                 continue
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'trace post list',
-                'page': '{:,}/{:,}'.format(i, self.args.max_page),
+                'page': '{:,}/{:,}'.format(i, self.env.max_page),
                 'count_post_list': len(post_list),
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             if post_list is None or len(post_list) == 0:
                 break
@@ -421,6 +419,26 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
+    def batch(self):
+        """ """
+        # https://stackabuse.com/getting-started-with-selenium-and-python/
+
+        self.env = self.init_arguments()
+        
+        self.open_db()
+
+        group_list = self.read_config(filename=self.env.config)
+
+        for group in group_list:
+            if self.env.list:
+                self.trace_post_list(group_info=group)
+
+        for group in group_list:
+            if self.env.reply:
+                self.trace_reply_list(group_info=group)
+
+        return
+
     @staticmethod
     def init_arguments():
         """ 옵션 설정 """
@@ -428,31 +446,24 @@ class SeleniumCrawler(SeleniumUtils):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--list', action='store_true', default=False, help='')
-        parser.add_argument('--reply', action='store_true', default=False, help='')
+        parser.add_argument('--list', action='store_true', default=False)
+        parser.add_argument('--reply', action='store_true', default=False)
 
-        parser.add_argument('--config', default='./config/facebook/커뮤니티.json', help='')
-        parser.add_argument('--user_data', default='./cache/selenium/facebook', help='')
+        parser.add_argument('--config', default='./config/facebook/커뮤니티.json')
+        # parser.add_argument('--user_data', default='./cache/selenium/facebook')
+        parser.add_argument('--user_data', default=None)
 
-        parser.add_argument('--use_head', action='store_false', default=True, help='')
-        parser.add_argument('--max_page', default=100, help='', type=int)
+        parser.add_argument('--use_head', action='store_false', default=True)
+        parser.add_argument('--max_page', default=100, type=int)
+
+        parser.add_argument('--driver', default='/usr/lib/chromium-browser/chromedriver')
+
+        parser.add_argument('--host', default='https://corpus.ncsoft.com:9200')
+        parser.add_argument('--auth', default='crawler:crawler2019')
+        parser.add_argument('--index', default='crawler-facebook')
 
         return parser.parse_args()
 
 
 if __name__ == '__main__':
-    # https://stackabuse.com/getting-started-with-selenium-and-python/
-
-    utils = SeleniumCrawler()
-
-    utils.args = utils.init_arguments()
-
-    group_list = utils.read_config(filename=utils.args.config)
-
-    for group in group_list:
-        if utils.args.list:
-            utils.trace_post_list(group_info=group)
-
-    for group in group_list:
-        if utils.args.reply:
-            utils.trace_reply_list(group_info=group)
+    SeleniumCrawler().batch()

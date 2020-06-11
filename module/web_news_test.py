@@ -11,7 +11,7 @@ import urllib3
 from time import sleep
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 from module.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

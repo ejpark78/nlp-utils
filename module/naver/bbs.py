@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logging_format import LogMessage as LogMsg
+from module.utils.logger import LogMessage as LogMsg
 from module.utils.proxy_utils import SeleniumProxyUtils
 
 
