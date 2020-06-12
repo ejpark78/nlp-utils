@@ -34,12 +34,12 @@ class SeleniumCrawler(SeleniumUtils):
         self.use_see_more_link = True
 
         self.logger = Logger()
-        
+
     def open_db(self):
         """ """
         self.elastic = ElasticSearchUtils(
             host=self.env.host,
-            index=self.env.index, 
+            index=self.env.index,
             http_auth=self.env.auth,
             split_index=True,
         )
@@ -109,54 +109,59 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
-    def save_post_list(self, post_list, group_info):
+    def save_post(self, doc, group_info):
         """추출한 정보를 저장한다."""
-        for doc in post_list:
-            doc.update(group_info)
-            if 'page' not in doc or 'top_level_post_id' not in doc:
-                continue
+        doc['page'] = group_info['page']
+        if 'page' not in doc or 'top_level_post_id' not in doc:
+            return
 
-            doc['_id'] = '{page}-{top_level_post_id}'.format(**doc)
-
-            if 'meta' in group_info:
-                doc.update(group_info['meta'])
-
-            doc['curl_date'] = datetime.now(self.timezone).isoformat()
-
-            if 'index' in group_info:
-                self.elastic.save_document(document=doc, delete=False, index=group_info['index'])
-            else:
-                self.elastic.save_document(document=doc, delete=False)
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '기사 저장 성공',
-                'meta': doc['meta'],
-                'document_id': doc['document_id'],
-                'content': doc['content'],
-            })
-
-        self.elastic.flush()
-
-        return
-
-    def save_reply(self, doc, flush=True):
-        """추출한 정보를 저장한다."""
         doc['_id'] = '{page}-{top_level_post_id}'.format(**doc)
+
+        if 'meta' in group_info:
+            doc.update(group_info['meta'])
 
         doc['curl_date'] = datetime.now(self.timezone).isoformat()
 
-        self.elastic.save_document(document=doc, delete=False)
-        if flush is True:
-            self.elastic.flush()
+        index = None
+        if 'index' in group_info:
+            index = group_info['index']
+        self.elastic.save_document(document=doc, delete=False, index=index)
 
         self.logger.log(msg={
             'level': 'MESSAGE',
-            'message': '기사 저장 성공',
-            'meta': doc['meta'],
+            'message': '문서 저장 성공',
             'document_id': doc['document_id'],
             'content': doc['content'],
         })
+
+        return
+
+    def save_reply(self, reply_list, post_id):
+        """추출한 정보를 저장한다."""
+        if len(reply_list) == 0:
+            return
+
+        dt = datetime.now(self.timezone).isoformat()
+
+        for reply in reply_list:
+            doc = json.loads(json.dumps(reply))
+
+            if 'token' in doc:
+                del doc['token']
+
+            if 'reply_list' in doc:
+                del doc['reply_list']
+
+            doc['_id'] = '{reply_id}'.format(**doc)
+            doc['post_id'] = post_id
+            doc['curl_date'] = dt
+
+            self.elastic.save_document(document=doc, delete=False, index=self.env.reply_index)
+
+            if 'reply_list' in reply:
+                self.save_reply(reply_list=reply['reply_list'], post_id=post_id)
+
+        self.elastic.flush()
 
         return
 
@@ -240,7 +245,12 @@ class SeleniumCrawler(SeleniumUtils):
         try:
             ele_list = self.driver.find_elements_by_tag_name('a')
             for ele in ele_list:
-                if ele.text.find('답글') < 0 or ele.text.find('개') < 0:
+                href = ele.get_attribute('href')
+                if href is None or href.find('/comment/replies/') < 0:
+                    continue
+
+                sigil = ele.get_attribute('data-sigil')
+                if sigil != 'ajaxify':
                     continue
 
                 ele.click()
@@ -269,7 +279,13 @@ class SeleniumCrawler(SeleniumUtils):
         try:
             ele_list = self.driver.find_elements_by_tag_name('a')
             for ele in ele_list:
-                if ele.text.find('이전 댓글 보기') < 0:
+                href = ele.get_attribute('href')
+
+                if href is None or href.find('/story.php?story_fbid=') < 0:
+                    continue
+
+                sigil = ele.get_attribute('data-sigil')
+                if sigil != 'ajaxify':
                     continue
 
                 stop = False
@@ -303,15 +319,17 @@ class SeleniumCrawler(SeleniumUtils):
                         'match': {
                             'page': group_info['page']
                         }
-                    },
-                    'must_not': {
-                        'exists': {
-                            'field': 'reply_list'
-                        }
                     }
                 }
             }
         }
+
+        if self.env.overwrite is False:
+            query['query']['bool']['must_not'] = {
+                'match': {
+                    'state': 'done'
+                }
+            }
 
         id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
         id_list = list(id_list)
@@ -349,7 +367,7 @@ class SeleniumCrawler(SeleniumUtils):
             self.open_driver()
 
             for i, doc in enumerate(doc_list):
-                if 'reply_list' in doc:
+                if self.env.overwrite is False and 'reply_list' in doc:
                     continue
 
                 self.logger.log({
@@ -364,7 +382,15 @@ class SeleniumCrawler(SeleniumUtils):
 
                 self.get_reply(doc=doc)
 
-                self.save_reply(doc=doc)
+                if 'reply_list' in doc:
+                    post_id = '{page}-{top_level_post_id}'.format(**doc)
+                    self.save_reply(reply_list=doc['reply_list'], post_id=post_id)
+
+                    del doc['reply_list']
+
+                    doc['state'] = 'done'
+                    self.save_post(doc=doc, group_info=group_info)
+
                 sleep(5)
 
             self.close_driver()
@@ -407,7 +433,9 @@ class SeleniumCrawler(SeleniumUtils):
             if post_list is None or len(post_list) == 0:
                 break
 
-            self.save_post_list(post_list=post_list, group_info=group_info)
+            for doc in post_list:
+                self.save_post(doc=doc, group_info=group_info)
+            self.elastic.flush()
 
             # 태그 삭제
             self.delete_post()
@@ -419,15 +447,29 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
+    def sleep_to_login(self):
+        """ """
+        self.open_driver()
+
+        self.driver.get('https://m.facebook.com')
+        self.driver.implicitly_wait(10)
+
+        sleep(3200)
+
+        return
+
     def batch(self):
         """ """
         # https://stackabuse.com/getting-started-with-selenium-and-python/
 
         self.env = self.init_arguments()
-        
+
         self.open_db()
 
         group_list = self.read_config(filename=self.env.config)
+
+        if self.env.login:
+            self.sleep_to_login()
 
         for group in group_list:
             if self.env.list:
@@ -446,21 +488,26 @@ class SeleniumCrawler(SeleniumUtils):
 
         parser = argparse.ArgumentParser()
 
+        parser.add_argument('--login', action='store_true', default=False)
+
         parser.add_argument('--list', action='store_true', default=False)
         parser.add_argument('--reply', action='store_true', default=False)
+
+        parser.add_argument('--overwrite', action='store_true', default=False)
 
         parser.add_argument('--config', default='./config/facebook/커뮤니티.json')
         # parser.add_argument('--user_data', default='./cache/selenium/facebook')
         parser.add_argument('--user_data', default=None)
 
         parser.add_argument('--use_head', action='store_false', default=True)
-        parser.add_argument('--max_page', default=100, type=int)
+        parser.add_argument('--max_page', default=10000, type=int)
 
         parser.add_argument('--driver', default='/usr/lib/chromium-browser/chromedriver')
 
         parser.add_argument('--host', default='https://corpus.ncsoft.com:9200')
         parser.add_argument('--auth', default='crawler:crawler2019')
         parser.add_argument('--index', default='crawler-facebook')
+        parser.add_argument('--reply_index', default='crawler-facebook-reply')
 
         return parser.parse_args()
 
