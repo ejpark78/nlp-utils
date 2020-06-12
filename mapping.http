@@ -102,3 +102,10 @@ Accept: application/json
 }
 
 ###
+
+GET {{host}}/crawler-facebook-id/_mappings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
