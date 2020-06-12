@@ -18,7 +18,7 @@ Accept: application/json
 
 ###
 
-PUT {{host}}/crawler-facebook-id/_settings
+PUT {{host}}/crawler-facebook-*/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
