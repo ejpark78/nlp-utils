@@ -106,7 +106,7 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/{{index}}
+DELETE {{host}}/crawler-facebook_reply
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
