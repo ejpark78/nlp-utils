@@ -136,7 +136,7 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
-    def save_reply(self, reply_list, post_id):
+    def save_reply(self, reply_list, post_id, index):
         """추출한 정보를 저장한다."""
         if len(reply_list) == 0:
             return
@@ -156,10 +156,10 @@ class SeleniumCrawler(SeleniumUtils):
             doc['post_id'] = post_id
             doc['curl_date'] = dt
 
-            self.elastic.save_document(document=doc, delete=False, index=self.env.reply_index)
+            self.elastic.save_document(document=doc, delete=False, index=index)
 
             if 'reply_list' in reply:
-                self.save_reply(reply_list=reply['reply_list'], post_id=post_id)
+                self.save_reply(reply_list=reply['reply_list'], post_id=post_id, index=index)
 
         self.elastic.flush()
 
@@ -346,6 +346,10 @@ class SeleniumCrawler(SeleniumUtils):
             self.env.index = group_info['index']
             self.elastic.index = group_info['index']
 
+        reply_index = self.env.reply_index
+        if 'reply_index' in group_info:
+            self.env.reply_index = group_info['reply_index']
+
         while start < len(id_list):
             doc_list = []
             self.elastic.get_by_ids(
@@ -384,7 +388,7 @@ class SeleniumCrawler(SeleniumUtils):
 
                 if 'reply_list' in doc:
                     post_id = '{page}-{top_level_post_id}'.format(**doc)
-                    self.save_reply(reply_list=doc['reply_list'], post_id=post_id)
+                    self.save_reply(reply_list=doc['reply_list'], post_id=post_id, index=reply_index)
 
                     del doc['reply_list']
 
@@ -496,7 +500,6 @@ class SeleniumCrawler(SeleniumUtils):
         parser.add_argument('--overwrite', action='store_true', default=False)
 
         parser.add_argument('--config', default='./config/facebook/커뮤니티.json')
-        # parser.add_argument('--user_data', default='./cache/selenium/facebook')
         parser.add_argument('--user_data', default=None)
 
         parser.add_argument('--use_head', action='store_false', default=True)

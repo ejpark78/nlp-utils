@@ -2,11 +2,21 @@
   "list": [
     {
       "site": "https://m.facebook.com",
+      "page": "groups/vietnamquora",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 쿼라 커뮤니티",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
       "page": "groups/vsak20132015",
       "index": "crawler-facebook-vi",
       "meta": {
         "lang_code": "vi",
-        "name": "주한 베트남 유학생 공식 커뮤니케이션",
+        "name": "주한 베트남 유학생 공식 커뮤니티",
         "category": "커뮤니티"
       }
     },
@@ -16,7 +26,7 @@
       "index": "crawler-facebook-vi",
       "meta": {
         "lang_code": "vi",
-        "name": "주한 베트남인 커뮤니케이션",
+        "name": "주한 베트남인 커뮤니티",
         "category": "커뮤니티"
       }
     },
@@ -26,7 +36,137 @@
       "index": "crawler-facebook-vi",
       "meta": {
         "lang_code": "vi",
-        "name": "주한 한국 거주비자 소유자 커뮤니케이션",
+        "name": "주한 거주 베트남인 커뮤니티",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/hoif2",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "주한 거주권 소유 베트남인 커뮤니티",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/285813691514773",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "한-베 통역사 커뮤니티",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "congdongvnexpress",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 1위 온라인 뉴스",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "baotuoitre",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 청춘 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "thanhnien",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 젊은이 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "laodongonline",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 근로 노동자 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "www.tienphong.vn",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 개척자 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "vneconomy.vn",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 경제 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "nhandandientutiengviet",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 국민 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "saigongiaiphongnews",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 사이공 신문사",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "K14vn",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "14 채널 뉴스",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "yeah1tv",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "예원 뉴스",
+        "category": "뉴스"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "RDVNReborn",
+      "index": "crawler-facebook-vi",
+      "meta": {
+        "lang_code": "vi",
+        "name": "베트남 레딧",
         "category": "커뮤니티"
       }
     },

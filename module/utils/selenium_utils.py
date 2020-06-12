@@ -147,7 +147,7 @@ class SeleniumUtils(object):
     @staticmethod
     def read_config(filename):
         """설정파일을 읽어드린다."""
-        file_list = [filename]
+        file_list = filename.split(',')
         if isdir(filename) is True:
             file_list = []
             for f_name in glob('{}/*.json'.format(filename)):

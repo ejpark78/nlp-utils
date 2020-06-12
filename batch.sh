@@ -3,7 +3,7 @@
 PYTHONPATH=. python3 module/facebook.py \
     --use_head \
     --list --reply \
-    --config config/facebook/커뮤니티.json \
+    --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json" \
     --max_page 1000000 \
     --index crawler-facebook-ko \
     --reply_index crawler-facebook-ko-reply \

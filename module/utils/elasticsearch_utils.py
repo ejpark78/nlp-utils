@@ -312,23 +312,16 @@ class ElasticSearchUtils(object):
 
             return False
 
+        if 'errors' not in response:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'error 필드가 없음',
+                'response': response,
+            })
+            return True
+
         try:
-            if response['errors'] is True:
-                reason_list = []
-                for item in response['items']:
-                    if 'update' not in item:
-                        continue
-
-                    reason_list.append(item['update']['error']['reason'])
-
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': '저장 에러 (msg)',
-                    'reason': reason_list,
-                })
-
-                return False
-            else:
+            if response['errors'] is False:
                 self.logger.info(msg={
                     'level': 'INFO',
                     'message': '저장 성공',
@@ -349,7 +342,38 @@ class ElasticSearchUtils(object):
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
-                'message': '로깅 에러',
+                'message': '저장 성공 로깅 에러',
+                'exception': str(e),
+            })
+
+            return False
+
+        try:
+            if response['errors'] is True:
+                reason_list = []
+                for item in response['items']:
+                    if 'update' not in item:
+                        continue
+
+                    if 'error' not in item['update']:
+                        continue
+
+                    if 'reason' not in item['update']['error']:
+                        continue
+
+                    reason_list.append(item['update']['error']['reason'])
+
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '저장 에러 (msg)',
+                    'reason': reason_list,
+                })
+
+                return False
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': '저장 에러 로깅 에러',
                 'exception': str(e),
             })
 

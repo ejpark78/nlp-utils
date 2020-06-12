@@ -1,0 +1,2633 @@
+{
+  "list": [
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "웹/모바일 기획자 그룹 (wMPGs)"
+      },
+      "page": "groups/WMPGS"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DLUG - 지방 리눅스 사용자 그룹"
+      },
+      "page": "groups/dlugkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "미국 이야기"
+      },
+      "page": "groups/usastory"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MariaDB 한국사용자모임"
+      },
+      "page": "groups/mariadbkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "G suite for Education Korea"
+      },
+      "page": "groups/gsuiteedu"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "한국 아두이노 사용자 모임"
+      },
+      "page": "groups/easyarduino"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes & Docker Container"
+      },
+      "page": "groups/dockerkubernetes"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "대한민국 IT개발자 프로그래머 이야기 (진로, 연봉, 회사 생활, 취업, 이직, 자기 개발)"
+      },
+      "page": "groups/devlife"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Mathematics Group"
+      },
+      "page": "groups/1497810200314692"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "NLP KR"
+      },
+      "page": "groups/533965133884173"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kotlin Korea"
+      },
+      "page": "groups/kotlinkr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Apache Spark Users"
+      },
+      "page": "groups/apache.spark.users"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "클라우드 컴퓨팅 구현 기술"
+      },
+      "page": "groups/cloudtech"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "주식,채권,펀드...투자의 모든것"
+      },
+      "page": "groups/smartkyobo"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AI팩토리 허브"
+      },
+      "page": "groups/afhub"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "모두의 재테크 - 주식, 미국주식, 채권, 부동산 종합 토론방"
+      },
+      "page": "groups/1701924743429014"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "커뮤니티에서 길을 찾은 사람들 (커뮤니티 길찾사)"
+      },
+      "page": "groups/CommunityGCS"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "OpenShift"
+      },
+      "page": "groups/427954924648535"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "fast.ai KR"
+      },
+      "page": "groups/fastaikr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Jenkins DevOps"
+      },
+      "page": "groups/474244050036379"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Bigdata Machine Learning"
+      },
+      "page": "groups/bigdataanalysis"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "웃긴걸 찾는 사람들 (유머, 개그, 짤, 드립)"
+      },
+      "page": "groups/findLoL"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Software Developer"
+      },
+      "page": "groups/5198909724"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "얼또 - Early 또라이 - 일찍 일어나는 또라이가 세상을 바꾼다"
+      },
+      "page": "groups/earlyddorai"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Azure Cloud"
+      },
+      "page": "groups/AzureCloud"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Jenkins DevOps"
+      },
+      "page": "groups/jenkins.discussions"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "광화문 AI"
+      },
+      "page": "groups/GwangAI"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TensorFlow Group"
+      },
+      "page": "groups/tensorflowdevelopers"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes Certified"
+      },
+      "page": "groups/613289319033559"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TensorFlow Developers"
+      },
+      "page": "groups/1256027964456371"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Google Cloud Platform & Kubernetes"
+      },
+      "page": "groups/153996481787947"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Google Cloud Certified Korea"
+      },
+      "page": "groups/1129292383932010"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "성실(성공 위한 실패담 공유)캠프"
+      },
+      "page": "groups/1054203361337718"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "D²: Developer Square"
+      },
+      "page": "groups/550561588856217"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MLOps KR"
+      },
+      "page": "groups/MLOpsKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "한국데이터사이언스학회(Korean Association of Data Science)"
+      },
+      "page": "groups/datasci"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Text Analytics Research Group for Korean"
+      },
+      "page": "groups/TAR4KOR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Helm - Kubernetes"
+      },
+      "page": "groups/566059140479601"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TED Translators"
+      },
+      "page": "groups/ITranslateTEDTalks"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "열려라 공공데이터"
+      },
+      "page": "groups/OpenGov20"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "실리콘 밸리를 꿈꾸는 판교 사람들"
+      },
+      "page": "groups/pantechtalk"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "나는개발자다"
+      },
+      "page": "groups/waglnet"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "안드로이드 개발 팁팁팁!"
+      },
+      "page": "groups/junsle"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "생활코딩 스터디"
+      },
+      "page": "groups/490410887693322"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Little Big Data: 다양한 사람들의 데이터 사이언스 이야기"
+      },
+      "page": "groups/littlebigdata"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "라즈베리파이"
+      },
+      "page": "groups/raspberrypikorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "CircleCI Korea User Group"
+      },
+      "page": "groups/2287352564816256"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea Azure User Group"
+      },
+      "page": "groups/krazure"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "빅데이터&스몰데이터"
+      },
+      "page": "groups/BigdataSmalldata"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Data Science Community"
+      },
+      "page": "groups/datatalk"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "BASIC PHYSICS"
+      },
+      "page": "groups/284686778813571"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "FREE Online Courses with Coupon"
+      },
+      "page": "groups/FreeOnlineCoursesWithCoupon"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GitLab Korea"
+      },
+      "page": "groups/gitlab.korea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "React developers"
+      },
+      "page": "groups/1989815967951521"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Machine Learning & Artificial Intelligence Group"
+      },
+      "page": "groups/425884301190037"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Big Data for Experts"
+      },
+      "page": "groups/hadoopil"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes"
+      },
+      "page": "groups/kubernetes.il"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "ReactJS, React Native, GraphQL, Relay"
+      },
+      "page": "groups/reactjs.co"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Beginning Data Science, Analytics, Machine Learning, Data Mining, R,\n                        Python"
+      },
+      "page": "groups/995474220466742"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "React Native Community Q&A"
+      },
+      "page": "groups/1525443277786007"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Artificial intelligence, Machine learning, Deep learning"
+      },
+      "page": "groups/2059467967664033"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Data Mining / Machine Learning / Artificial Intelligence"
+      },
+      "page": "groups/machinelearningforum"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Python Developers"
+      },
+      "page": "groups/251560641854558"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Machine Learning, Artificial Intelligence and Data Analytics"
+      },
+      "page": "groups/data.analytics"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Artificial Intelligence"
+      },
+      "page": "groups/213717218645110"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "IT토론"
+      },
+      "page": "groups/2198030776979780"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps"
+      },
+      "page": "groups/309127176413693"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MSA and DDD Software modeling - 마이크로서비스와 도메인 주도 SW 모델링"
+      },
+      "page": "groups/cloudswmoding"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "리액트 네이티브[React Native] 한국 사용자 그룹"
+      },
+      "page": "groups/reactapp"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "React Korea"
+      },
+      "page": "groups/react.ko"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Data Science"
+      },
+      "page": "groups/DataScienceGroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "지대넓얕"
+      },
+      "page": "groups/jdny2014"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Artificial Intelligence Group"
+      },
+      "page": "groups/AILabPage"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Deep Learning / AI"
+      },
+      "page": "groups/1738168866424224"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes DevOps"
+      },
+      "page": "groups/256621231871985"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea IT Engineer"
+      },
+      "page": "groups/koreaitengineer"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Deep Learning and Machine Learning"
+      },
+      "page": "groups/1854021431561644"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes"
+      },
+      "page": "groups/kubernetes.discussions"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "OpenLab.AI"
+      },
+      "page": "groups/175773536599947"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Swift Korea"
+      },
+      "page": "groups/swiftkor"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Seoul School of AI"
+      },
+      "page": "groups/seoulschoolofai"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "딥러닝 과학 기술 (Deep Learning for Science & Technology)"
+      },
+      "page": "groups/726202694419379"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "컨테이너연구소 - DevOps Korea branch"
+      },
+      "page": "groups/ContainersLab"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Pangyo"
+      },
+      "page": "groups/gdgpangyo"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "WriteTheDocsSeoul"
+      },
+      "page": "groups/writethedocsseoul"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TimeSeries KR"
+      },
+      "page": "groups/1213899735475135"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "딥러닝 자연어처리 연구그룹 - AI NLP KOREA"
+      },
+      "page": "groups/ainlp"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AI 프렌즈"
+      },
+      "page": "groups/aifriend"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "IT관리자 그룹-쉐어드IT"
+      },
+      "page": "groups/koreaitpro"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "IT 인프라 엔지니어 그룹"
+      },
+      "page": "groups/InfraEngineer"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GAN KR - 딥러닝 생성 모델"
+      },
+      "page": "groups/847991005393886"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea OpenShift User Group"
+      },
+      "page": "groups/669679673116792"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "바리스타샵 baristashop 커피,카페,로스팅 barista coffee"
+      },
+      "page": "groups/241256602595442"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps-Docker-Kubernetes"
+      },
+      "page": "groups/1814248882217534"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "덴마크 세상 살이 - Korean life in Denmark"
+      },
+      "page": "groups/1394588243900995"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Devops/ Aws/Linux/Ubuntu/Windows/Azure/GoogleCloud"
+      },
+      "page": "groups/767840286937594"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps | DevSecOps"
+      },
+      "page": "groups/180328672457321"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Udemy Free Courses - SmartyBro"
+      },
+      "page": "groups/YouProgrammer"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "OpenShift User Group"
+      },
+      "page": "groups/openshift"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "자바카페 커뮤니티"
+      },
+      "page": "groups/javacafe"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "JBoss User Group"
+      },
+      "page": "groups/jbossusergroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps Online Training"
+      },
+      "page": "groups/DevOpOnlineTraininghyderabad"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Docker - Build, Ship, Run & Share"
+      },
+      "page": "groups/1585441721723792"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Deep Machine Learning Data Science Blockchain Artificial Intelligence"
+      },
+      "page": "groups/263812040812544"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "공감세미나(共感)"
+      },
+      "page": "groups/259972190680391"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Artificial Intelligence & Deep Learning"
+      },
+      "page": "groups/DeepNetGroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "I am Programmer,I have no life."
+      },
+      "page": "groups/ProgramersCreateLife"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Learning DevOps and Level Up"
+      },
+      "page": "groups/1911219079195863"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Dialogflow Korea User Group"
+      },
+      "page": "groups/dialogflowkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "UI Developers (HTML5, CSS3,Javascript , Jquery,AngularJS,ES6, Reactjs)"
+      },
+      "page": "groups/1747086275532482"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Python Machine Learning & Deep Learning"
+      },
+      "page": "groups/mcalglobal"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AngularJS 4"
+      },
+      "page": "groups/629572973900538"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "UI LAB"
+      },
+      "page": "groups/uidesignLab"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Reinforcement Learning KR"
+      },
+      "page": "groups/ReinforcementLearningKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "인공지능 개발자 모임 (딥러닝, 머신러닝, 로봇)"
+      },
+      "page": "groups/AIDevKr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "사이킷런 코리아"
+      },
+      "page": "groups/ScikitLearnKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps Jobs"
+      },
+      "page": "groups/DevOpsJobsinhyderabd"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AWS and DevOps Learning Community"
+      },
+      "page": "groups/200998063799003"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Ansible IT Automation Tool"
+      },
+      "page": "groups/ansible.ittool"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Golang Korea"
+      },
+      "page": "groups/golangko"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular 9.0 Developers"
+      },
+      "page": "groups/808205929388989"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "오픈소스 데이터센터 포럼"
+      },
+      "page": "groups/opensourcedatacenterforum"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes Users"
+      },
+      "page": "groups/kubernetes.users"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Docker and Kubernetes user group"
+      },
+      "page": "groups/291794834890578"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "실무코딩"
+      },
+      "page": "groups/smcoding"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps Engineers"
+      },
+      "page": "groups/devops.engineers"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps Engineer's"
+      },
+      "page": "groups/231722280505373"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Ansible"
+      },
+      "page": "groups/277316715996786"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "데이터 분석 스터디"
+      },
+      "page": "groups/dastudy"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps"
+      },
+      "page": "groups/DevOpsIndia"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Docker"
+      },
+      "page": "groups/devopsdocker"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "node.js"
+      },
+      "page": "groups/125499867491756"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TypeScript Korea"
+      },
+      "page": "groups/TSKorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Docker DevOps"
+      },
+      "page": "groups/906698136116341"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Seoul"
+      },
+      "page": "groups/gdgseoul"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "OSS 개발자 포럼"
+      },
+      "page": "groups/ossdevforum"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "코드스피츠"
+      },
+      "page": "groups/codespitz"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "C++ Korea"
+      },
+      "page": "groups/cppkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MXNet Korea User Group"
+      },
+      "page": "groups/mxnetkr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular 9.0"
+      },
+      "page": "groups/100629347147514"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "커피홀리데이 (커피찌꺼기그림.커피.로스팅.바리스타뱃지.바리스타모자.바리스타앞치마.바리스타용품)"
+      },
+      "page": "groups/1174085149377319"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Nginx Korea"
+      },
+      "page": "groups/nginx"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Jenkins korea"
+      },
+      "page": "groups/jenkinskorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "클라우드 아키텍트(Cloud Architect)"
+      },
+      "page": "groups/1963638103652580"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "오픈테크넷 포럼"
+      },
+      "page": "groups/355642681151339"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "리눅스 시스템에서 프로그래밍까지"
+      },
+      "page": "groups/902488053175342"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "우분투한국사용자모임"
+      },
+      "page": "groups/ubuntu.ko"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Linux"
+      },
+      "page": "groups/GNUAndLinux"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "리눅스 데스크탑 커뮤니티"
+      },
+      "page": "groups/LinuxDesktop.Korea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Atlassian User Group (Seoul)"
+      },
+      "page": "groups/atlassiankorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "PyData Korea"
+      },
+      "page": "groups/pydatakorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "시스템 트레이딩(주식과 머신러닝의 만남)"
+      },
+      "page": "groups/StudyTrading"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "C++ OpenSource"
+      },
+      "page": "groups/OpenCPP"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "클라우데라"
+      },
+      "page": "groups/1446013985717499"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "개발자매일영어"
+      },
+      "page": "groups/tedtech"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "캐글 코리아 (Kaggle Korea)"
+      },
+      "page": "groups/KaggleKoreaOpenGroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "3분 딥러닝 케라스맛"
+      },
+      "page": "groups/keras.py"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "KAFKA 한국 사용자 모임"
+      },
+      "page": "groups/kafka.kru"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes & Docker 스터디 그룹"
+      },
+      "page": "groups/k8skorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Korea Android"
+      },
+      "page": "groups/gdg.korea.android"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "추천시스템 연구소(Recommender Systems Labs)"
+      },
+      "page": "groups/recolabs"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "음향 음성 오디오 언어 처리 그룹 Soundly"
+      },
+      "page": "groups/soundly"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Apache Mesos"
+      },
+      "page": "groups/apache.mesos"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "developerWorks 사용자 그룹"
+      },
+      "page": "groups/developerWorksKRUG"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "챗봇 코리아 (인공지능 스피커, 자연어처리)"
+      },
+      "page": "groups/ChatbotDevKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Redis Korean User Group"
+      },
+      "page": "groups/rediskorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Big Data, Data Science, ML/DL, AI, Analytics, IOT, Hadoop, Spark, Python,\n                        R"
+      },
+      "page": "groups/1494766037503065"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Code Coast TV"
+      },
+      "page": "groups/codecoast"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "구글 Flutter 한국 사용자 그룹"
+      },
+      "page": "groups/flutterkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "한인 IT 연합 그룹 (Korean American IT Association - KAITA)"
+      },
+      "page": "groups/kaita"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DronePlay"
+      },
+      "page": "groups/droneplay"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "뉴질랜드 이야기"
+      },
+      "page": "groups/nzstory"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Korea Cloud"
+      },
+      "page": "groups/appenginekorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DC/OS Korea"
+      },
+      "page": "groups/dcoskorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MesosUserGroup"
+      },
+      "page": "groups/915637715142396"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "함께하는 딥러닝"
+      },
+      "page": "groups/withdl"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "코딩이랑 무관합니다만,"
+      },
+      "page": "groups/System.out.Coding"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "IT독서실"
+      },
+      "page": "groups/itbook4u"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "챗봇, 추천, 검색, 머신러닝, 데이터사이언스 (챗추검머데)"
+      },
+      "page": "groups/415870141938068"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "모여서 각자 코딩하는 모임."
+      },
+      "page": "groups/mogaco"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Node.js Korea"
+      },
+      "page": "groups/nodejskr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "책 읽는 프로그래머"
+      },
+      "page": "groups/hanbitreaders"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Kubernetes Korea Group"
+      },
+      "page": "groups/k8skr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Ansible Korea User Group"
+      },
+      "page": "groups/ansiblekoreausergroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "자바스크립트 개발자 포럼"
+      },
+      "page": "groups/jsdev.kr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "PyTorch KR"
+      },
+      "page": "groups/PyTorchKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "케라스 코리아 (Keras Korea)"
+      },
+      "page": "groups/KerasKorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular Korea"
+      },
+      "page": "groups/ngkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "SW아키텍처 실무자 포럼"
+      },
+      "page": "groups/SWarchitecture"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "파이썬 라이브러리를 활용한 데이터 분석"
+      },
+      "page": "groups/205108996327195"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "JetBrains Korea User Group"
+      },
+      "page": "groups/1821879151380372"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular2 Korea"
+      },
+      "page": "groups/1601958446783841"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea Git User Group"
+      },
+      "page": "groups/kgugs"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "MongoDB Korea"
+      },
+      "page": "groups/krmug"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular Typescript"
+      },
+      "page": "groups/angular2typescript"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "프론트엔드 스터디 그룹"
+      },
+      "page": "groups/714671295358301"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "실시간 빅데이터 처리 기술 커뮤니티"
+      },
+      "page": "groups/open.realtimecep"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "심플랙스 컴플랙서티"
+      },
+      "page": "groups/631032050388643"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Korea WebTech"
+      },
+      "page": "groups/webTechKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AWSKRUG- AWS한국사용자모임"
+      },
+      "page": "groups/awskrug"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "인공지능 스터디"
+      },
+      "page": "groups/ArtificialIntelligenceGroup"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "GDG Campus Korea"
+      },
+      "page": "groups/gdg.campus"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Machine Learning & Big Data in Healthcare | 헬스케어 빅데이터 기계학습"
+      },
+      "page": "groups/592367194230920"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea Docker User Group"
+      },
+      "page": "groups/korea.docker.user.group"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "R Korea - KRUG(Korean R User Group)"
+      },
+      "page": "groups/KoreaRUsers"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "챗봇 (Chatbotory)"
+      },
+      "page": "groups/chatbotory"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "한국 리눅스 사용자 그룹"
+      },
+      "page": "groups/korelnxuser"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DevOps Korea"
+      },
+      "page": "groups/TeAnE"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "OpenStack Korea Group"
+      },
+      "page": "groups/openstack.kr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "책쓰는 프로그래머 협회"
+      },
+      "page": "groups/techbookwriting"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "프론트엔드개발그룹"
+      },
+      "page": "groups/webfrontend"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "DeepDrive"
+      },
+      "page": "groups/deepdrive"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "라스칼라 코딩단, 프로그래밍 언어 스칼라"
+      },
+      "page": "groups/lascalacoders"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AzureML"
+      },
+      "page": "groups/634363263421303"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "개발자의 책방"
+      },
+      "page": "groups/454361001410451"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "일본에서 일하는 한국인 개발자 모임(Kodeveloper)"
+      },
+      "page": "groups/kodeveloper"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "코딩클럽 Coding Club"
+      },
+      "page": "groups/CodingClubKorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "AI Deep"
+      },
+      "page": "groups/DeepAI"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "스사모 (한국 스파크 사용자 모임) - 인메모리 컴퓨팅"
+      },
+      "page": "groups/sparkkoreauser"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Angular Korea User Group"
+      },
+      "page": "groups/angularkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "제플린과 친구들 - 빅데이터 비행단"
+      },
+      "page": "groups/AapacheZeppelinFanKorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "모두의연구소 커뮤니티"
+      },
+      "page": "groups/modulabs"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "통계마당 (Statistical Ground)"
+      },
+      "page": "groups/632755063474501"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Korea Elasticsearch User Group"
+      },
+      "page": "groups/elasticsearch.kr"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "오픈소스 포럼"
+      },
+      "page": "groups/ossforum"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "거인의 서재"
+      },
+      "page": "groups/gshoulder"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Google Cloud Platform Korea User Group"
+      },
+      "page": "groups/googlecloudkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "TensorFlow KR"
+      },
+      "page": "groups/TensorFlowKR"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Python Korea"
+      },
+      "page": "groups/pythonkorea"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "개발자영어"
+      },
+      "page": "groups/engfordev"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "(Smart Bean forum 2) IoT, Deep Learning, Smart Factory, Smart City"
+      },
+      "page": "groups/smartbean2"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "통계분석연구회(Statistics Analysis Study)"
+      },
+      "page": "groups/statsas"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "We are divers!!"
+      },
+      "page": "groups/343736519111781"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "생활코딩"
+      },
+      "page": "groups/codingeverybody"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "독서클럽"
+      },
+      "page": "groups/liveinbook"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Solo Tango [솔땅]"
+      },
+      "page": "groups/solotango"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "Tango Leader Courses, Institute of Continuing Education, Incheon Nat'l\n                        Univ"
+      },
+      "page": "groups/PILATango"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "커피클럽 ( 커피 커피프린스 바리스타 에스프레소 아메리카나"
+      },
+      "page": "groups/cofeclub"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-ko",
+      "reply_index": "crawler-facebook-ko-reply",
+      "meta": {
+        "lang_code": "ko",
+        "category": "그룹",
+        "name": "위클리비즈클럽"
+      },
+      "page": "groups/webiclub"
+    }
+  ]
+}
