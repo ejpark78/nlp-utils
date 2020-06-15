@@ -30,12 +30,12 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-jisikman-2009",
     "remote": {
       "host": "https://corpus.ncsoft.com:9200",
       "username": "elastic",
       "password": "nlplab"
-    }
+    },
+    "index": "crawler-jisikman-2009"
   },
   "dest": {
     "index": "crawler-jisikman-2009"
