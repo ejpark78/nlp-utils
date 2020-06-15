@@ -7,7 +7,22 @@ Accept: application/json
 
 ###
 
-GET {{host}}/_tasks/QLnqKErAQxuOteVoPZAtBg:78344755
+GET {{host}}/_tasks?detailed=false&actions=*reindex
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+
+GET {{host}}/_tasks/I4ilMpJNShiucDbeuOtYNA:20162
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+POST {{host}}/_tasks/_cancel?nodes=aqJqiAyUQdSx7Wak72LGBA&actions=*reindex
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
