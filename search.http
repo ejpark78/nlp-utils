@@ -1248,9 +1248,21 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-bbs-game-lineage-vi
+GET {{host}}/crawler-facebook-ko/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
+
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "document_id": "groups/5198909724-10152821809174725"
+        }
+      }
+    }
+  }
+}
 
 ###

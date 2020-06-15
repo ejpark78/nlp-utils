@@ -22,3 +22,34 @@ Content-Type: application/json
 Accept: application/json
 
 ###
+
+POST {{host}}/_reindex?wait_for_completion=true
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "remote": {
+      "host": "https://elastic:nlplab@corpus.ncsoft.com:9200"
+    },
+    "index": "crawler-news-donga-2019"
+  },
+  "dest": {
+    "index": "reindex-test"
+  }
+}
+
+###
+
+
+
+###
+
+
+
+###
+
+
+
+###
