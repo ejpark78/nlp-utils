@@ -28,3 +28,10 @@ Content-Type: application/json
 Accept: application/text
 
 ###
+
+#DELETE {{host}}/crawler-jisikman-app
+#Authorization: Basic {{username}} {{password}}
+#Content-Type: application/json
+#Accept: application/text
+
+###

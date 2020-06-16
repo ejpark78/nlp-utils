@@ -35,10 +35,10 @@ Accept: application/json
       "username": "elastic",
       "password": "nlplab"
     },
-    "index": "crawler-jisikman-2009"
+    "index": "crawler-jisikman-2018"
   },
   "dest": {
-    "index": "crawler-jisikman-2009"
+    "index": "crawler-jisikman-2018"
   }
 }
 
