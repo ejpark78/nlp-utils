@@ -12,7 +12,6 @@ from datetime import datetime
 from glob import glob
 from os.path import isdir
 from uuid import uuid4
-from module.utils.logger import LogMessage as LogMsg
 
 import pytz
 import requests
@@ -20,6 +19,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
+from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -295,12 +295,7 @@ class DictionaryUtils(object):
         query = {
             'query': {
                 'bool': {
-                    'must': [
-                        {
-                            'match': {
-                                'lang': lang
-                            }
-                        }
+                    'should': [
                     ],
                     'must_not': [
                         {
@@ -313,6 +308,13 @@ class DictionaryUtils(object):
             }
         }
 
+        for l in lang.split(','):
+            query['query']['bool']['should'].append({
+                'match': {
+                    'lang': l
+                }
+            })
+
         if state_done is False:
             query = {}
 
@@ -322,7 +324,10 @@ class DictionaryUtils(object):
 
     def upload_entry_list(self):
         """설정파일을 업로드한다."""
-        entry_list = self.read_entry_list(lang=self.env.lang, column='state')
+        index = 'crawler-dictionary-example-word-list'
+        self.open_db(index)
+
+        entry_list = self.elastic.dump(query={})
 
         entry_index = {}
         for item in entry_list:
@@ -332,7 +337,7 @@ class DictionaryUtils(object):
             k = '{}_{}'.format(item['entry'], item['lang'])
             entry_index[k] = item
 
-        for f in glob('config/dict_example/*.txt'):
+        for f in glob('data/word-list/*.txt'):
             f_name = f.replace('.txt', '').rsplit('/')[-1].replace('_', ' ').replace('.', ' ')
             lang = f_name.split(' ')[0].lower()
 
@@ -348,24 +353,24 @@ class DictionaryUtils(object):
                     item = {
                         'entry': w,
                         'lang': lang,
+                        'rank': 'Lv2',
                         'category': f_name,
                     }
 
                     if k not in entry_index:
                         entry_index[k] = item
-                    else:
-                        entry_index[k]['category'] = ','.join(set([entry_index[k]['category'], f_name]))
-
-        index = 'crawler-dictionary-example-naver2-list'
-        self.open_db(index)
+                    # else:
+                    #     entry_index[k]['category'] = ','.join(set([entry_index[k]['category'], f_name]))
 
         for doc in entry_index.values():
+            if doc['rank'] == 'Lv1':
+                continue
+
             doc['_id'] = str(uuid4())
             if 'document_id' in doc:
                 doc['_id'] = doc['document_id']
                 del doc['document_id']
 
-            doc['state'] = ''
             self.elastic.save_document(document=doc, index=index)
 
         self.elastic.flush()
@@ -395,3 +400,6 @@ class DictionaryUtils(object):
         parser.add_argument('--upload_entry_list', action='store_true', default=False, help='')
 
         return parser
+
+# if __name__ == '__main__':
+#     DictionaryUtils().upload_entry_list()

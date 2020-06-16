@@ -2,20 +2,22 @@
 # image
 BASE_IMAGE = corpus:5000/base/crawler:latest
 
+GIT_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.')
+GIT_URL = $(shell git config --get remote.origin.url)
+GIT_COMMIT = $(shell git rev-list --count HEAD)
+GIT_COMMIT_ID = $(shell git rev-parse --short HEAD)
+GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
+
+BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
+
 IMAGE = corpus:5000/crawler
-#IMAGE_TAG = $(shell date +%F.%H)
-#IMAGE_TAG = $(shell git rev-parse --short HEAD)
-IMAGE_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.').$(shell git rev-list --count HEAD)
+IMAGE_TAG = $(GIT_TAG).$(GIT_COMMIT)
 
 # Mirror
 APT_CODE_NAME = focal
 APT_MIRROR = http://corpus.ncsoft.com:8081/repository/$(APT_CODE_NAME)/
 PIP_MIRROR = http://pip:nlplab@corpus.ncsoft.com:8081/repository/pypi/simple
 PIP_TRUST_HOST = corpus.ncsoft.com
-
-#APT_MIRROR = http://hq-lx-repo.korea.ncsoft.corp/ubuntu/
-#PIP_MIRROR = http://mirror.kakao.com/pypi/simple
-#PIP_TRUST_HOST = mirror.kakao.com
 
 .ONESHELL:
 base:
@@ -65,14 +67,23 @@ build:
 		--build-arg "APT_CODE_NAME=$(APT_CODE_NAME)" \
 		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
 		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
+		--build-arg "docker_image=$(IMAGE):$(IMAGE_TAG)" \
+		--build-arg "docker_tag=$(IMAGE_TAG)" \
+		--build-arg "build_date='$(BUILD_DATE)'" \
+		--build-arg "git_url=$(GIT_URL)" \
+		--build-arg "git_branch=$(GIT_BRANCH)" \
+		--build-arg "git_tag=$(GIT_TAG)" \
+		--build-arg "git_commit_id=$(GIT_COMMIT_ID)" \
+		--build-arg "git_commit_count=$(GIT_COMMIT)" \
 		--label "app=crawler" \
 		--label "version=$(IMAGE_TAG)" \
 		--label "image_name=$(IMAGE)" \
-		--label "build-date=$(shell date +'%Y-%m-%d %H:%M:%S')" \
-		--label "git.branch=$(shell git rev-parse --abbrev-ref HEAD)" \
-		--label "git.tag=$(shell git describe --tags --long)" \
-		--label "git.commit.id=$(shell git rev-parse --short HEAD)" \
-		--label "git.commit.count=$(shell git rev-list --count HEAD)" \
+		--label "build-date=$(BUILD_DATE)" \
+		--label "git.url=$(GIT_URL)" \
+		--label "git.branch=$(GIT_BRANCH)" \
+		--label "git.tag=$(GIT_TAG)" \
+		--label "git.commit.id=$(GIT_COMMIT_ID)" \
+		--label "git.commit.count=$(GIT_COMMIT)" \
 		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		.
 

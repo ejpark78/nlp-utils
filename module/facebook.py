@@ -412,7 +412,7 @@ class SeleniumCrawler(SeleniumUtils):
 
         i = 0
         for _ in range(self.env.max_page):
-            stop = self.page_down(count=10)
+            stop = self.page_down(count=10, multi=10)
             self.driver.implicitly_wait(25)
 
             i += 1

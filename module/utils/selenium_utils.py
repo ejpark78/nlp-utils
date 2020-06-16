@@ -67,14 +67,18 @@ class SeleniumUtils(object):
 
         return
 
-    def page_down(self, count):
+    def page_down(self, count, multi=1):
         """스크롤한다."""
         from selenium.webdriver.common.keys import Keys
 
         for _ in range(count):
             try:
                 html = self.driver.find_element_by_tag_name('html')
-                html.send_keys(Keys.PAGE_DOWN)
+
+                for _ in range(multi+1):
+                    html.send_keys(Keys.PAGE_DOWN)
+                    self.driver.implicitly_wait(2)
+
                 self.driver.implicitly_wait(10)
             except Exception as e:
                 self.logger.error(msg={
@@ -85,6 +89,8 @@ class SeleniumUtils(object):
                 break
 
             sleep(2)
+
+        sleep(5)
 
         return False
 
@@ -156,7 +162,8 @@ class SeleniumUtils(object):
         result = []
         for f_name in file_list:
             with open(f_name, 'r') as fp:
-                doc = json.load(fp)
+                buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+                doc = json.loads(buf)
                 result += doc['list']
 
         return result

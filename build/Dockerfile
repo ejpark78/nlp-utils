@@ -7,6 +7,24 @@ ARG UID=1000
 ARG GID=1000
 ARG USER=crawler
 
+ARG docker_image
+ARG docker_tag
+ARG build_date
+ARG git_url
+ARG git_branch
+ARG git_tag
+ARG git_commit_id
+ARG git_commit_count
+
+ENV docker_image=${docker_image}
+ENV docker_tag=${docker_tag}
+ENV build_date=${build_date}
+ENV git_url=${git_url}
+ENV git_branch=${git_branch}
+ENV git_tag=${git_tag}
+ENV git_commit_id=${git_commit_id}
+ENV git_commit_count=${git_commit_count}
+
 RUN echo "사용자 생성: ${USER}..." \
     && mkdir -p ${APP_HOME} \
 	&& echo "사용자 생성..." \

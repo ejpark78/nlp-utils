@@ -273,3 +273,75 @@ spec:
         "--target_column", "japanese",
         "--state_column", "state_youdao_zhja",
       ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sealang-vi
+  namespace: crawler-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "module/dictionary/sealang.py",
+        "--lang", "vien",
+        "--search_lang", "vi,en",
+        "--index", "crawler-dictionary-example-sealang-vien",
+        "--list_index", "crawler-dictionary-example-word-list",
+        "--columns", "vietnamese,english",
+        "--source_column", "vietnamese",
+        "--target_column", "english",
+        "--state_column", "state_sealang_vien",
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sealang-id
+  namespace: crawler-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "module/dictionary/sealang.py",
+        "--lang", "iden",
+        "--search_lang", "id,en",
+        "--index", "crawler-dictionary-example-sealang-iden",
+        "--list_index", "crawler-dictionary-example-word-list",
+        "--columns", "indonesia,english",
+        "--source_column", "indonesia",
+        "--target_column", "english",
+        "--state_column", "state_sealang_iden",
+      ]
