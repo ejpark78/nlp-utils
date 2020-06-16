@@ -29,7 +29,7 @@ Accept: application/text
 
 ###
 
-#DELETE {{host}}/crawler-jisikman-app
+#DELETE {{host}}/crawler-dictionary-example-sealang-vi
 #Authorization: Basic {{username}} {{password}}
 #Content-Type: application/json
 #Accept: application/text
