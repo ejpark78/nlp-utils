@@ -19,6 +19,8 @@ APT_MIRROR = http://corpus.ncsoft.com:8081/repository/$(APT_CODE_NAME)/
 PIP_MIRROR = http://pip:nlplab@corpus.ncsoft.com:8081/repository/pypi/simple
 PIP_TRUST_HOST = corpus.ncsoft.com
 
+batch: build push
+
 .ONESHELL:
 base:
 	docker build \

@@ -150,31 +150,31 @@
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "vi"]
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: enid
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "enid"]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: enid
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "enid"]
 
 ---
 apiVersion: v1
@@ -238,47 +238,47 @@ spec:
 #        "--state_column", "state_youdao_zhko",
 #      ]
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: youdao-zhja
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      workingDir: /usr/local/app
-      args: [
-        "python3", "module/dictionary/youdao.py",
-        "--lang", "zhja",
-        "--search_lang", "cn,ja",
-        "--index", "crawler-dictionary-example-youdao-zhja",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "japanese,chinese",
-        "--source_column", "chinese",
-        "--target_column", "japanese",
-        "--state_column", "state_youdao_zhja",
-      ]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: youdao-zhja
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      workingDir: /usr/local/app
+#      args: [
+#        "python3", "module/dictionary/youdao.py",
+#        "--lang", "zhja",
+#        "--search_lang", "cn,ja",
+#        "--index", "crawler-dictionary-example-youdao-zhja",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "japanese,chinese",
+#        "--source_column", "chinese",
+#        "--target_column", "japanese",
+#        "--state_column", "state_youdao_zhja",
+#      ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sealang-vi
+  name: sealang-vien
   namespace: crawler-dictionary-example
   labels:
     app: crawler
@@ -292,11 +292,11 @@ spec:
       imagePullPolicy: Always
       resources:
         requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 300Mi
+        limits:
+          cpu: 300m
+          memory: 400Mi
       workingDir: /usr/local/app
       args: [
         "python3", "module/dictionary/sealang.py",
@@ -314,7 +314,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sealang-id
+  name: sealang-iden
   namespace: crawler-dictionary-example
   labels:
     app: crawler
@@ -328,11 +328,11 @@ spec:
       imagePullPolicy: Always
       resources:
         requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 300Mi
+        limits:
+          cpu: 300m
+          memory: 400Mi
       workingDir: /usr/local/app
       args: [
         "python3", "module/dictionary/sealang.py",
@@ -344,4 +344,40 @@ spec:
         "--source_column", "indonesia",
         "--target_column", "english",
         "--state_column", "state_sealang_iden",
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sealang-then
+  namespace: crawler-dictionary-example
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Always
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: corpus:5000/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 200m
+          memory: 300Mi
+        limits:
+          cpu: 300m
+          memory: 400Mi
+      workingDir: /usr/local/app
+      args: [
+        "python3", "module/dictionary/sealang.py",
+        "--lang", "then",
+        "--search_lang", "th,en",
+        "--index", "crawler-dictionary-example-sealang-then",
+        "--list_index", "crawler-dictionary-example-word-list",
+        "--columns", "thai,english",
+        "--source_column", "thai",
+        "--target_column", "english",
+        "--state_column", "state_sealang_then",
       ]

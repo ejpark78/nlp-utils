@@ -60,6 +60,23 @@ class SealangExampleSearch(DictionaryUtils):
                         'westernLanguage': 'english',
                     }
                 }
+            ],
+            'then': [
+                {
+                    'url': 'http://sealang.net/pm/bitext.pl',
+                    'post_data': {
+                        'type': 'bitext',
+                        'seaLanguage': 'thai',
+                        'return': 'html',
+                        'seaTarget': '',
+                        'switcher': 'OFF',
+                        'westernTarget': '',
+                        'near': '10',
+                        'bitextMatch': 'or',
+                        'approx': 'W',
+                        'westernLanguage': 'english',
+                    }
+                }
             ]
         }
 
@@ -138,7 +155,7 @@ class SealangExampleSearch(DictionaryUtils):
                 if len(ex_list) == 0:
                     break
 
-                sleep(20)
+                sleep(self.env.sleep)
 
             self.set_as_done(doc=entry, column=self.env.state_column)
 
@@ -163,16 +180,18 @@ class SealangExampleSearch(DictionaryUtils):
         """ 옵션 설정 """
         parser = super().init_arguments()
 
-        parser.add_argument('--lang', default='vien', help='')
-        parser.add_argument('--search_lang', default='en,vi', help='')
+        parser.add_argument('--lang', default='vien')
+        parser.add_argument('--search_lang', default='en,vi')
 
-        parser.add_argument('--columns', default='vietnamese,english', help='')
-        parser.add_argument('--source_column', default='vietnamese', help='')
-        parser.add_argument('--target_column', default='english', help='')
-        parser.add_argument('--state_column', default='state_sealang_vi', help='')
+        parser.add_argument('--columns', default='vietnamese,english')
+        parser.add_argument('--source_column', default='vietnamese')
+        parser.add_argument('--target_column', default='english')
+        parser.add_argument('--state_column', default='state_sealang_vien')
 
-        parser.add_argument('--index', default='crawler-dictionary-example-sealang-vi', help='')
-        parser.add_argument('--list_index', default='crawler-dictionary-example-word-list', help='')
+        parser.add_argument('--index', default='crawler-dictionary-example-sealang-vien')
+        parser.add_argument('--list_index', default='crawler-dictionary-example-word-list')
+
+        parser.add_argument('--sleep', default=25, type=int)
 
         return parser.parse_args()
 
