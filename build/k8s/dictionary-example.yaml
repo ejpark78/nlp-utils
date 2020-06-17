@@ -300,6 +300,7 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3", "module/dictionary/sealang.py",
+        "--sleep", "25",
         "--lang", "vien",
         "--search_lang", "vi,en",
         "--index", "crawler-dictionary-example-sealang-vien",
@@ -336,6 +337,7 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3", "module/dictionary/sealang.py",
+        "--sleep", "25",
         "--lang", "iden",
         "--search_lang", "id,en",
         "--index", "crawler-dictionary-example-sealang-iden",
@@ -372,6 +374,7 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3", "module/dictionary/sealang.py",
+        "--sleep", "25",
         "--lang", "then",
         "--search_lang", "th,en",
         "--index", "crawler-dictionary-example-sealang-then",

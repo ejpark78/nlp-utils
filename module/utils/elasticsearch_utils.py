@@ -9,7 +9,8 @@ import json
 import pickle
 import ssl
 from datetime import datetime
-from os.path import isfile
+from os import makedirs
+from os.path import isfile, isdir
 
 import pytz
 import urllib3
@@ -26,7 +27,7 @@ class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
     def __init__(self, host, index, insert=True, http_auth='crawler:crawler2019', bulk_size=1000,
-                 tag=None, split_index=False):
+                 tag=None, split_index=False, log_path='log'):
         """ 생성자 """
         self.host = host
         self.http_auth = (http_auth.split(':'))
@@ -46,7 +47,9 @@ class ElasticSearchUtils(object):
         self.insert = insert
 
         self.timezone = pytz.timezone('Asia/Seoul')
-        
+
+        self.log_path = log_path
+
         self.logger = Logger()
 
         if self.host is not None:
@@ -308,6 +311,8 @@ class ElasticSearchUtils(object):
                 'exception': str(e),
             })
 
+            self.save_logs(doc_list=self.bulk_data[self.host], error_msg=str(e))
+
             self.bulk_data[self.host] = []
 
             return False
@@ -380,6 +385,27 @@ class ElasticSearchUtils(object):
             return False
 
         return True
+
+    def save_logs(self, doc_list, error_msg=''):
+        """ 저장 에러나는 문서를 로컬에 저장한다."""
+        if isdir(self.log_path) is False:
+            makedirs(self.log_path)
+
+        dt = datetime.now(self.timezone)
+
+        contents = {
+            'host': self.host,
+            'index': self.index,
+            'date': dt.isoformat(),
+            'error_msg': error_msg,
+            'doc_list': doc_list,
+        }
+
+        filename = '{}/{}-{}.json'.format(self.log_path, self.index, dt.strftime('%Y%m%d-%H%M%S'))
+        with open(filename, 'w') as fp:
+            fp.write(json.dumps(contents, ensure_ascii=False, indent=2))
+
+        return
 
     def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True, stdout=False):
         """문서를 덤프 받는다."""

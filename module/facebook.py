@@ -18,32 +18,12 @@ from module.utils.logger import Logger
 from module.utils.selenium_utils import SeleniumUtils
 
 
-class SeleniumCrawler(SeleniumUtils):
-    """페이스북 크롤러"""
+class FBParser(SeleniumUtils):
+    """페이스북 파서"""
 
     def __init__(self):
         """ 생성자 """
         super().__init__()
-
-        self.max_try = 20
-
-        self.elastic = None
-
-        self.timezone = pytz.timezone('Asia/Seoul')
-
-        self.use_see_more_link = True
-
-        self.logger = Logger()
-
-    def open_db(self):
-        """ """
-        self.elastic = ElasticSearchUtils(
-            host=self.env.host,
-            index=self.env.index,
-            http_auth=self.env.auth,
-            split_index=True,
-        )
-        return
 
     @staticmethod
     def parse_post(url, html):
@@ -91,8 +71,69 @@ class SeleniumCrawler(SeleniumUtils):
 
         return result
 
+    @staticmethod
+    def parse_reply_body(tag):
+        """ """
+        raw_html = tag.prettify()
+
+        user_name = ''
+        for v in tag.parent.find_all('a'):
+            if v['href'].find('/profile') is False:
+                continue
+
+            user_name = v.get_text()
+            break
+
+        reply_to = ''
+        for v in tag.find_all('a'):
+            if v['href'].find('/profile') is False:
+                continue
+
+            reply_to = v.get_text()
+            v.extract()
+            break
+
+        result = {
+            'user_name': user_name,
+            'reply_to': reply_to,
+            'reply_id': tag['data-commentid'],
+            'text': tag.get_text(separator='\n'),
+            'raw_html': raw_html,
+        }
+
+        return result
+
+
+class FBCrawler(FBParser):
+    """페이스북 크롤러"""
+
+    def __init__(self):
+        """ 생성자 """
+        super().__init__()
+
+        self.max_try = 20
+
+        self.elastic = None
+
+        self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.use_see_more_link = True
+
+        self.logger = Logger()
+
+    def open_db(self):
+        """ 디비를 연결한다."""
+        self.elastic = ElasticSearchUtils(
+            host=self.env.host,
+            index=self.env.index,
+            log_path=self.env.log_path,
+            http_auth=self.env.auth,
+            split_index=True,
+        )
+        return
+
     def delete_post(self):
-        """태그 삭제"""
+        """이전 포스트를 삭제한다."""
         script = 'document.querySelectorAll("article").forEach(function(ele) {ele.remove();})'
 
         try:
@@ -164,38 +205,6 @@ class SeleniumCrawler(SeleniumUtils):
         self.elastic.flush()
 
         return
-
-    @staticmethod
-    def parse_reply_body(tag):
-        """ """
-        raw_html = tag.prettify()
-
-        user_name = ''
-        for v in tag.parent.find_all('a'):
-            if v['href'].find('/profile') is False:
-                continue
-
-            user_name = v.get_text()
-            break
-
-        reply_to = ''
-        for v in tag.find_all('a'):
-            if v['href'].find('/profile') is False:
-                continue
-
-            reply_to = v.get_text()
-            v.extract()
-            break
-
-        result = {
-            'user_name': user_name,
-            'reply_to': reply_to,
-            'reply_id': tag['data-commentid'],
-            'text': tag.get_text(separator='\n'),
-            'raw_html': raw_html,
-        }
-
-        return result
 
     def get_reply(self, doc):
         """컨텐츠 하나를 조회한다."""
@@ -512,8 +521,10 @@ class SeleniumCrawler(SeleniumUtils):
         parser.add_argument('--index', default='crawler-facebook')
         parser.add_argument('--reply_index', default='crawler-facebook-reply')
 
+        parser.add_argument('--log_path', default='log')
+
         return parser.parse_args()
 
 
 if __name__ == '__main__':
-    SeleniumCrawler().batch()
+    FBCrawler().batch()
