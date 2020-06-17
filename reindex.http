@@ -7,10 +7,10 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-dictionary-example-youdao"
+    "index": "crawler-facebook-ko-new"
   },
   "dest": {
-    "index": "crawler-dictionary-example-youdao-zhen"
+    "index": "crawler-facebook-ko"
   }
 }
 

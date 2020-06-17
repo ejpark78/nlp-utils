@@ -1248,16 +1248,20 @@ Accept: application/text
 
 ###
 
-GET {{host}}/crawler-facebook-ko/_search
+GET {{host}}/crawler-facebook-id-reply/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-facebook-en/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 {
   "track_total_hits": true,
-  "_source": [
-    "page"
-  ],
   "query": {
     "bool": {
       "must": [
