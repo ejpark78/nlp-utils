@@ -57,10 +57,10 @@
     },
     {
       "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
+      "index": "crawler-facebook-en",
+      "reply_index": "crawler-facebook-en-reply",
       "meta": {
-        "lang_code": "ko",
+        "lang_code": "en",
         "category": "소프트웨어",
         "name": "Universal Media Server"
       },
@@ -68,10 +68,10 @@
     },
     {
       "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
+      "index": "crawler-facebook-en",
+      "reply_index": "crawler-facebook-en-reply",
       "meta": {
-        "lang_code": "ko",
+        "lang_code": "en",
         "category": "관심사",
         "name": "Ubuntu Maniac"
       },
@@ -145,10 +145,10 @@
     },
     {
       "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
+      "index": "crawler-facebook-en",
+      "reply_index": "crawler-facebook-en-reply",
       "meta": {
-        "lang_code": "ko",
+        "lang_code": "en",
         "category": "과학, 기술, 엔지니어링",
         "name": "Lunit Research"
       },

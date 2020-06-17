@@ -52,6 +52,8 @@ class ElasticSearchUtils(object):
 
         self.logger = Logger()
 
+        self.request_timeout = 620
+
         if self.host is not None:
             self.open()
 
@@ -143,7 +145,7 @@ class ElasticSearchUtils(object):
         try:
             self.elastic = Elasticsearch(
                 hosts=self.host,
-                timeout=30,
+                timeout=self.request_timeout,
                 http_auth=self.http_auth,
                 verify_certs=False,
                 ssl_show_warn=False,
@@ -287,23 +289,24 @@ class ElasticSearchUtils(object):
         if self.host not in self.bulk_data or len(self.bulk_data[self.host]) == 0:
             return None
 
-        params = {'request_timeout': 2 * 60}
+        bulk_data = json.loads(json.dumps(self.bulk_data[self.host]))
+        self.bulk_data[self.host] = []
+
+        params = {'request_timeout': self.request_timeout}
 
         try:
             response = self.elastic.bulk(
                 index=self.index,
-                body=self.bulk_data[self.host],
+                body=bulk_data,
                 refresh=True,
                 params=params,
             )
 
-            size = len(self.bulk_data[self.host])
+            size = len(bulk_data)
             doc_id_list = []
-            for doc in self.bulk_data[self.host]:
+            for doc in bulk_data:
                 if 'update' in doc and '_id' in doc['update']:
                     doc_id_list.append(doc['update']['_id'])
-
-            self.bulk_data[self.host] = []
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -311,10 +314,7 @@ class ElasticSearchUtils(object):
                 'exception': str(e),
             })
 
-            self.save_logs(doc_list=self.bulk_data[self.host], error_msg=str(e))
-
-            self.bulk_data[self.host] = []
-
+            self.save_logs(doc_list=bulk_data, error_msg=str(e))
             return False
 
         if 'errors' not in response:
@@ -355,6 +355,8 @@ class ElasticSearchUtils(object):
 
         try:
             if response['errors'] is True:
+                self.save_logs(doc_list=bulk_data, error_msg='저장 에러')
+
                 reason_list = []
                 for item in response['items']:
                     if 'update' not in item:
@@ -373,7 +375,6 @@ class ElasticSearchUtils(object):
                     'message': '저장 에러 (msg)',
                     'reason': reason_list,
                 })
-
                 return False
         except Exception as e:
             self.logger.error(msg={
@@ -470,7 +471,7 @@ class ElasticSearchUtils(object):
             index = self.index
 
         params = {
-            'request_timeout': 2 * 60
+            'request_timeout': self.request_timeout
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출

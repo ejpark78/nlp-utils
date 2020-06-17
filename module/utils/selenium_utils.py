@@ -6,15 +6,18 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import re
 from glob import glob
 from os.path import isdir
 from time import sleep
 
+import pytz
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.logger import Logger
 
 
@@ -28,7 +31,21 @@ class SeleniumUtils(object):
         self.env = None
         self.driver = None
 
+        self.elastic = None
+        self.timezone = pytz.timezone('Asia/Seoul')
+
         self.logger = Logger()
+
+    def open_db(self):
+        """ 디비를 연결한다."""
+        self.elastic = ElasticSearchUtils(
+            host=self.env.host,
+            index=self.env.index,
+            log_path=self.env.log_path,
+            http_auth=self.env.auth,
+            split_index=True,
+        )
+        return
 
     def open_driver(self):
         """브라우저를 실행한다."""
@@ -75,7 +92,7 @@ class SeleniumUtils(object):
             try:
                 html = self.driver.find_element_by_tag_name('html')
 
-                for _ in range(multi+1):
+                for _ in range(multi + 1):
                     html.send_keys(Keys.PAGE_DOWN)
                     self.driver.implicitly_wait(2)
 
@@ -91,7 +108,6 @@ class SeleniumUtils(object):
             sleep(2)
 
         sleep(5)
-
         return False
 
     def scroll(self, count):
@@ -151,7 +167,7 @@ class SeleniumUtils(object):
         return
 
     @staticmethod
-    def read_config(filename):
+    def read_config(filename, with_comments=False):
         """설정파일을 읽어드린다."""
         file_list = filename.split(',')
         if isdir(filename) is True:
@@ -162,7 +178,11 @@ class SeleniumUtils(object):
         result = []
         for f_name in file_list:
             with open(f_name, 'r') as fp:
-                buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+                if with_comments is True:
+                    buf = ''.join([re.sub(r'^//', '', x) for x in fp.readlines()])
+                else:
+                    buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+
                 doc = json.loads(buf)
                 result += doc['list']
 

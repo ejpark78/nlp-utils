@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PYTHONPATH=. python3 module/facebook.py \
+PYTHONPATH=. python3 module/facebook/crawler.py \
     --use_head \
     --list --reply \
     --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json,config/facebook/follows.json" \
@@ -10,7 +10,7 @@ PYTHONPATH=. python3 module/facebook.py \
     --user_data ./cache/selenium/facebook
 
 
-PYTHONPATH=. python3 module/facebook.py \
+PYTHONPATH=. python3 module/facebook/crawler.py \
     --use_head \
     --reply \
     --config config/facebook/인도네시아.json \
@@ -20,7 +20,7 @@ PYTHONPATH=. python3 module/facebook.py \
     --user_data ./cache/selenium/facebook-id
 
 
-PYTHONPATH=. python3 module/facebook.py \
+PYTHONPATH=. python3 module/facebook/crawler.py \
     --use_head \
     --reply \
     --config config/facebook/베트남.json \
