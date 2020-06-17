@@ -7,10 +7,10 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-facebook-ko-new"
+    "index": "crawler-facebook-en-new"
   },
   "dest": {
-    "index": "crawler-facebook-ko"
+    "index": "crawler-facebook-en"
   }
 }
 
