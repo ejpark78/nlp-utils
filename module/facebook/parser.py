@@ -20,8 +20,7 @@ class FBParser(SeleniumUtils):
         """ 생성자 """
         super().__init__()
 
-    @staticmethod
-    def parse_post(url, html):
+    def parse_post(self, url, html):
         """포스트 내용을 추출한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -38,7 +37,7 @@ class FBParser(SeleniumUtils):
                 attrs = json.loads(v)
                 post.update(attrs)
 
-            post['raw_html'] = tag.prettify()
+            post['raw_html'] = str(tag)
 
             # 메세지 추출
             span_list = tag.find_all('span', {'data-sigil': 'more'})
@@ -51,9 +50,7 @@ class FBParser(SeleniumUtils):
                 story_body = tag.find_all('div', {'class': 'story_body_container'})
                 post['html_content'] = '\n'.join([v.prettify() for v in story_body])
 
-            # 공감 정보
-            div_list = tag.find_all('div', {'data-sigil': 'reactions-sentence-container'})
-            post['reactions'] = [str(v) for v in div_list]
+            post['content'] = post['content'].replace('\n… \n더 보기\n', '')
 
             a_list = tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'})
             post['url'] = [urljoin(url, v['href']) for v in a_list if v.has_attr('href')]
@@ -62,9 +59,27 @@ class FBParser(SeleniumUtils):
             else:
                 del post['url']
 
+            # string 타입으로 변환
+            post = self.to_string(doc=post)
+
             result.append(post)
 
         return result
+
+    @staticmethod
+    def to_string(doc):
+        """ 문서의 각 필드값을 string 타입으로 변환한다. """
+        for k in doc:
+            if isinstance(doc[k], str) is True:
+                continue
+
+            if isinstance(doc[k], dict) is True or isinstance(doc[k], list) is True:
+                doc[k] = json.dumps(doc[k])
+                continue
+
+            doc[k] = str(doc[k])
+
+        return doc
 
     @staticmethod
     def parse_reply_body(tag):

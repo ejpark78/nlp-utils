@@ -88,6 +88,8 @@ class FBCrawler(FBParser):
             doc['post_id'] = post_id
             doc['curl_date'] = dt
 
+            doc = self.to_string(doc=doc)
+
             self.elastic.save_document(document=doc, delete=False, index=index)
 
             if 'reply_list' in reply:

@@ -28,3 +28,33 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --index crawler-facebook-vi \
     --reply_index crawler-facebook-vi-reply \
     --user_data ./cache/selenium/facebook-vi
+
+
+PYTHONPATH=. python3 module/facebook/crawler.py \
+    --use_head \
+    --list --reply \
+    --config config/facebook/news-zh.json \
+    --max_page 10000 \
+    --index crawler-facebook-zh \
+    --reply_index crawler-facebook-zh-reply \
+    --user_data ./cache/selenium/facebook-zh
+
+# split_lang
+PYTHONPATH=. python3 module/facebook/split_lang.py \
+    --from_index crawler-facebook-ko \
+    --to_index crawler-facebook-ko-new
+
+
+PYTHONPATH=. python3 module/facebook/split_lang.py \
+    --from_index crawler-facebook-en \
+    --to_index crawler-facebook-en-new
+
+
+PYTHONPATH=. python3 module/facebook/split_lang.py \
+    --from_index crawler-facebook-vi \
+    --to_index crawler-facebook-vi-new
+
+
+PYTHONPATH=. python3 module/facebook/split_lang.py \
+    --from_index crawler-facebook-id \
+    --to_index crawler-facebook-id-new

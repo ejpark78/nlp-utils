@@ -314,7 +314,7 @@ class ElasticSearchUtils(object):
                 'exception': str(e),
             })
 
-            self.save_logs(doc_list=bulk_data, error_msg=str(e))
+            self.save_logs(doc_list=bulk_data, error_msg={'exception': str(e)})
             return False
 
         if 'errors' not in response:
@@ -355,7 +355,10 @@ class ElasticSearchUtils(object):
 
         try:
             if response['errors'] is True:
-                self.save_logs(doc_list=bulk_data, error_msg='저장 에러')
+                self.save_logs(doc_list=bulk_data, error_msg={
+                    'message': '저장 에러',
+                    'response': response['errors']
+                })
 
                 reason_list = []
                 for item in response['items']:
@@ -387,7 +390,7 @@ class ElasticSearchUtils(object):
 
         return True
 
-    def save_logs(self, doc_list, error_msg=''):
+    def save_logs(self, doc_list, error_msg):
         """ 저장 에러나는 문서를 로컬에 저장한다."""
         if isdir(self.log_path) is False:
             makedirs(self.log_path)
