@@ -21,9 +21,9 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/crawler-facebook-ko-new
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
+#DELETE {{host}}/corpus-bitext-ted-multilang2
+#Authorization: Basic {{username}} {{password}}
+#Content-Type: application/json
+#Accept: application/text
 
 ###
