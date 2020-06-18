@@ -7,10 +7,10 @@ Accept: application/json
 
 {
   "source": {
-    "index": "crawler-facebook-en-new"
+    "index": "corpus-bitext"
   },
   "dest": {
-    "index": "crawler-facebook-en"
+    "index": "corpus-bitext-koen"
   }
 }
 
