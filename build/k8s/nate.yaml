@@ -1,4 +1,22 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nate
+  namespace: crawler-nate
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+  INDEX_ENTERTAINMENT: "crawler-nate-entertainment"
+  INDEX_ECONOMY: "crawler-nate-economy"
+  INDEX_INTERNATIONAL: "crawler-nate-international"
+  INDEX_IT: "crawler-nate-it"
+  INDEX_OPINION: "crawler-nate-opinion"
+  INDEX_POLITICS: "crawler-nate-politics"
+  INDEX_SOCIETY: "crawler-nate-society"
+  INDEX_SPORTS: "crawler-nate-sports"
+
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -30,6 +48,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_ECONOMY)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
 
 ---
@@ -64,6 +88,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_ENTERTAINMENT)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
 
 ---
@@ -98,6 +128,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_INTERNATIONAL)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
 
 ---
@@ -132,6 +168,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_IT)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
 
 ---
@@ -166,6 +208,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_POLITICS)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
 
 ---
@@ -200,6 +248,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SOCIETY)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
 
 ---
@@ -234,6 +288,12 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SPORTS)
+              envFrom:
+                - configMapRef:
+                    name: nate
               args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
 
 #    - name: radio

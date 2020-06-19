@@ -1298,314 +1298,303 @@
 //      },
 //      "page": "groups/golangko"
 //    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Angular 9.0 Developers"
-      },
-      "page": "groups/808205929388989"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "오픈소스 데이터센터 포럼"
-      },
-      "page": "groups/opensourcedatacenterforum"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Kubernetes Users"
-      },
-      "page": "groups/kubernetes.users"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Docker and Kubernetes user group"
-      },
-      "page": "groups/291794834890578"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "실무코딩"
-      },
-      "page": "groups/smcoding"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "DevOps Engineers"
-      },
-      "page": "groups/devops.engineers"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "DevOps Engineer's"
-      },
-      "page": "groups/231722280505373"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Ansible"
-      },
-      "page": "groups/277316715996786"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "데이터 분석 스터디"
-      },
-      "page": "groups/dastudy"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "DevOps"
-      },
-      "page": "groups/DevOpsIndia"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Docker"
-      },
-      "page": "groups/devopsdocker"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "node.js"
-      },
-      "page": "groups/125499867491756"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "TypeScript Korea"
-      },
-      "page": "groups/TSKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Docker DevOps"
-      },
-      "page": "groups/906698136116341"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "GDG Seoul"
-      },
-      "page": "groups/gdgseoul"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "OSS 개발자 포럼"
-      },
-      "page": "groups/ossdevforum"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "코드스피츠"
-      },
-      "page": "groups/codespitz"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "C++ Korea"
-      },
-      "page": "groups/cppkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "MXNet Korea User Group"
-      },
-      "page": "groups/mxnetkr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Angular 9.0"
-      },
-      "page": "groups/100629347147514"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "커피홀리데이 (커피찌꺼기그림.커피.로스팅.바리스타뱃지.바리스타모자.바리스타앞치마.바리스타용품)"
-      },
-      "page": "groups/1174085149377319"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "Nginx Korea"
-      },
-      "page": "groups/nginx"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "Jenkins korea"
-      },
-      "page": "groups/jenkinskorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "클라우드 아키텍트(Cloud Architect)"
-      },
-      "page": "groups/1963638103652580"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "오픈테크넷 포럼"
-      },
-      "page": "groups/355642681151339"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "리눅스 시스템에서 프로그래밍까지"
-      },
-      "page": "groups/902488053175342"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "우분투한국사용자모임"
-      },
-      "page": "groups/ubuntu.ko"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Linux"
-      },
-      "page": "groups/GNUAndLinux"
-    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Angular 9.0 Developers"
+//      },
+//      "page": "groups/808205929388989"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "오픈소스 데이터센터 포럼"
+//      },
+//      "page": "groups/opensourcedatacenterforum"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Kubernetes Users"
+//      },
+//      "page": "groups/kubernetes.users"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Docker and Kubernetes user group"
+//      },
+//      "page": "groups/291794834890578"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "실무코딩"
+//      },
+//      "page": "groups/smcoding"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "DevOps Engineers"
+//      },
+//      "page": "groups/devops.engineers"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "DevOps Engineer's"
+//      },
+//      "page": "groups/231722280505373"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Ansible"
+//      },
+//      "page": "groups/277316715996786"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "데이터 분석 스터디"
+//      },
+//      "page": "groups/dastudy"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "DevOps"
+//      },
+//      "page": "groups/DevOpsIndia"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Docker"
+//      },
+//      "page": "groups/devopsdocker"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "node.js"
+//      },
+//      "page": "groups/125499867491756"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "TypeScript Korea"
+//      },
+//      "page": "groups/TSKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Docker DevOps"
+//      },
+//      "page": "groups/906698136116341"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "GDG Seoul"
+//      },
+//      "page": "groups/gdgseoul"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "OSS 개발자 포럼"
+//      },
+//      "page": "groups/ossdevforum"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "코드스피츠"
+//      },
+//      "page": "groups/codespitz"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "C++ Korea"
+//      },
+//      "page": "groups/cppkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "MXNet Korea User Group"
+//      },
+//      "page": "groups/mxnetkr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Angular 9.0"
+//      },
+//      "page": "groups/100629347147514"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "커피홀리데이 (커피찌꺼기그림.커피.로스팅.바리스타뱃지.바리스타모자.바리스타앞치마.바리스타용품)"
+//      },
+//      "page": "groups/1174085149377319"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "Nginx Korea"
+//      },
+//      "page": "groups/nginx"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "Jenkins korea"
+//      },
+//      "page": "groups/jenkinskorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "클라우드 아키텍트(Cloud Architect)"
+//      },
+//      "page": "groups/1963638103652580"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "오픈테크넷 포럼"
+//      },
+//      "page": "groups/355642681151339"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "리눅스 시스템에서 프로그래밍까지"
+//      },
+//      "page": "groups/902488053175342"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "우분투한국사용자모임"
+//      },
+//      "page": "groups/ubuntu.ko"
+//    },
     {
       "site": "https://m.facebook.com",
       "index": "crawler-facebook-ko",
@@ -2606,6 +2595,17 @@
         "name": "UI Developers (HTML5, CSS3,Javascript , Jquery,AngularJS,ES6, Reactjs)"
       },
       "page": "groups/1747086275532482"
+    },
+    {
+      "site": "https://m.facebook.com",
+      "index": "crawler-facebook-en",
+      "reply_index": "crawler-facebook-en-reply",
+      "meta": {
+        "lang_code": "en",
+        "category": "그룹",
+        "name": "Linux"
+      },
+      "page": "groups/GNUAndLinux"
     },
     {
       "site": "https://m.facebook.com",
