@@ -1,3 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bbs
+  namespace: bbs
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+  ELASTIC_SEARCH_INDEX_COMMENTS: "crawler-naver-kbo_game_center_comments"
+  ELASTIC_SEARCH_INDEX_GAME_INFO: "crawler-naver-kbo_game_center_game_info"
+  ELASTIC_SEARCH_INDEX_RELAY_TEXT: "crawler-naver-kbo_game_center_relay_text"
 
 ---
 apiVersion: batch/v1beta1
@@ -31,4 +43,11 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "module/naver/kbo_game_center_utils.py", "--game_info", "--trace_comments"]
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "module/naver/kbo_game_center_utils.py",
+                "--game_info",
+                "--trace_comments"
+              ]

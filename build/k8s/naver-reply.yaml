@@ -1,4 +1,24 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: naver
+  namespace: crawler-naver-reply
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+  INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
+  INDEX_ECONOMY: "crawler-naver-economy-reply"
+  INDEX_INTERNATIONAL: "crawler-naver-international-reply"
+  INDEX_IT: "crawler-naver-it-reply"
+  INDEX_OPINION: "crawler-naver-opinion-reply"
+  INDEX_POLITICS: "crawler-naver-politics-reply"
+  INDEX_SOCIETY: "crawler-naver-society-reply"
+  INDEX_SPORTS: "crawler-naver-sports-reply"
+  INDEX_TV: "crawler-naver-tv-reply"
+  INDEX_LIVING: "crawler-naver-living-reply"
+
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -30,7 +50,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_POLITICS)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "politics-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -64,7 +94,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SOCIETY)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "society-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -98,7 +138,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_TV)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "tv-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -132,7 +182,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_ECONOMY)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "economy-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -166,7 +226,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_INTERNATIONAL)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "international-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -200,7 +270,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_IT)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "it-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -234,7 +314,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LIVING)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "living-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -268,7 +358,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_OPINION)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "opinion-reply"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -302,4 +402,14 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SPORTS)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "sports-reply"
+              ]

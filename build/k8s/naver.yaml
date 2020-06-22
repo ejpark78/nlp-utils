@@ -1,5 +1,25 @@
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: naver
+  namespace: crawler-naver
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+  INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
+  INDEX_ECONOMY: "crawler-naver-economy"
+  INDEX_INTERNATIONAL: "crawler-naver-international"
+  INDEX_IT: "crawler-naver-it"
+  INDEX_OPINION: "crawler-naver-opinion"
+  INDEX_POLITICS: "crawler-naver-politics"
+  INDEX_SOCIETY: "crawler-naver-society"
+  INDEX_SPORTS: "crawler-naver-sports"
+  INDEX_TV: "crawler-naver-tv"
+  INDEX_LIVING: "crawler-naver-living"
+
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: mq
@@ -120,7 +140,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_ECONOMY)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "economy"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -154,7 +184,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "international"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_INTERNATIONAL)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "international"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -188,7 +228,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "it"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_IT)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "it"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -222,7 +272,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "living"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LIVING)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "living"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -256,7 +316,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_OPINION)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "opinion"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -288,7 +358,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_POLLITICS)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "politics"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -322,7 +402,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "society"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SOCIETY)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "society"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -356,7 +446,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SPORTS)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "sports"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -390,4 +490,14 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_TV)
+              envFrom:
+                - configMapRef:
+                    name: naver
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "tv"
+              ]

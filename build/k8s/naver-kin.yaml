@@ -1,3 +1,23 @@
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: naver
+#  namespace: crawler-naver-kin
+#data:
+#  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+#  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+#  INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
+#  INDEX_ECONOMY: "crawler-naver-economy"
+#  INDEX_INTERNATIONAL: "crawler-naver-international"
+#  INDEX_IT: "crawler-naver-it"
+#  INDEX_OPINION: "crawler-naver-opinion"
+#  INDEX_POLITICS: "crawler-naver-politics"
+#  INDEX_SOCIETY: "crawler-naver-society"
+#  INDEX_SPORTS: "crawler-naver-sports"
+#  INDEX_TV: "crawler-naver-tv"
+#  INDEX_LIVING: "crawler-naver-living"
+
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -30,7 +50,11 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_question_list"]
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "kin_question_list"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -64,7 +88,11 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_answer_list"]
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "kin_answer_list"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -98,7 +126,11 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_detail_question"]
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "kin_detail_question"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -132,4 +164,8 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--category", "naver", "--job_id", "kin_detail_answer"]
+              args: [
+                "python3", "batch.py",
+                "--category", "naver",
+                "--job_id", "kin_detail_answer"
+              ]

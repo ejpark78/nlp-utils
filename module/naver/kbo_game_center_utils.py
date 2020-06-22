@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import json
 import logging
+import os
 from datetime import datetime
 from os.path import isfile
 from time import sleep
@@ -38,11 +39,12 @@ class NaverKBOGameCenterUtils(object):
 
     def __init__(self):
         """ """
-        self.host = 'https://corpus.ncsoft.com:9200'
+        self.host = os.getenv('ELASTIC_SEARCH_HOST', 'https://corpus.ncsoft.com:9200')
+        self.auth = os.getenv('ELASTIC_SEARCH_AUTH', 'crawler:crawler2019')
         self.index = {
-            'comments': 'crawler-naver-kbo_game_center_comments',
-            'game_info': 'crawler-naver-kbo_game_center_game_info',
-            'relay_text': 'crawler-naver-kbo_game_center_relay_text',
+            'comments': os.getenv('ELASTIC_SEARCH_INDEX_COMMENTS', 'crawler-naver-kbo_game_center_comments'),
+            'game_info': os.getenv('ELASTIC_SEARCH_INDEX_GAME_INFO', 'crawler-naver-kbo_game_center_game_info'),
+            'relay_text': os.getenv('ELASTIC_SEARCH_INDEX_RELAY_TEXT', 'crawler-naver-kbo_game_center_relay_text'),
         }
 
         self.timeout = 30
@@ -63,9 +65,25 @@ class NaverKBOGameCenterUtils(object):
     def open_elasticsearch(self):
         """ 엘라스틱서치에 연결한다."""
         self.es = {
-            'comments': ElasticSearchUtils(host=self.host, index=self.index['comments'], split_index=True, tag='2019'),
-            'game_info': ElasticSearchUtils(host=self.host, index=self.index['game_info'], split_index=False),
-            'relay_text': ElasticSearchUtils(host=self.host, index=self.index['relay_text'], split_index=False),
+            'comments': ElasticSearchUtils(
+                host=self.host,
+                http_auth=self.auth,
+                index=self.index['comments'],
+                split_index=True,
+                tag='2019'
+            ),
+            'game_info': ElasticSearchUtils(
+                host=self.host,
+                http_auth=self.auth,
+                index=self.index['game_info'],
+                split_index=False
+            ),
+            'relay_text': ElasticSearchUtils(
+                host=self.host,
+                http_auth=self.auth,
+                index=self.index['relay_text'],
+                split_index=False
+            ),
         }
 
         return

@@ -67,10 +67,21 @@ class SeleniumUtils(object):
         if self.env.user_data is not None:
             options.add_argument('user-data-dir={}'.format(self.env.user_data))
 
-        options.add_experimental_option('prefs', {
+        prefs = {
             'disk-cache-size': 4096,
             'profile.managed_default_content_settings.images': 2,
-        })
+            'profile.default_content_setting_values.notifications': 2,
+            'profile.managed_default_content_settings.stylesheets': 2,
+            'profile.managed_default_content_settings.plugins': 1,
+            'profile.managed_default_content_settings.popups': 2,
+            'profile.managed_default_content_settings.geolocation': 2,
+            'profile.managed_default_content_settings.media_stream': 2,
+        }
+
+        if hasattr(self.env, 'login') is True and self.env.login is True:
+            prefs = {}
+
+        options.add_experimental_option('prefs', prefs)
 
         chrome_driver = self.env.driver
         self.driver = webdriver.Chrome(executable_path=chrome_driver, chrome_options=options)

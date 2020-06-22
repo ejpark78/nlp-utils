@@ -1,4 +1,21 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bbs
+  namespace: bbs
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
+  INDEX_INVEN: "crawler-bbs-inven"
+  INDEX_LINEAGEM: "crawler-bbs-lineagem"
+  INDEX_LINEAGE2M: "crawler-bbs-lineage2m"
+  INDEX_MLBPARK_BULLPEN: "crawler-bbs-mlbpark_bullpen"
+  INDEX_MLBPARK_KBO: "crawler-bbs-mlbpark_kbo"
+  INDEX_MLBPARK_MLB: "crawler-bbs-mlbpark_mlb"
+  INDEX_RULIWEB: "crawler-bbs-ruliweb"
+
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -30,7 +47,18 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-kbo"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_MLBPARK_KBO)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-kbo"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -64,7 +92,18 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-mlb"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_MLBPARK_MLB)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-mlb"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -98,7 +137,18 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "mlbpark-bullpen"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_MLBPARK_BULLPEN)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-bullpen"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -132,7 +182,18 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "ruliweb"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_RULIWEB)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "ruliweb"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -166,7 +227,20 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "inven-lineagem", "--page_range", "1~20", "--page_step", "1"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_INVEN)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "inven-lineagem",
+                "--page_range", "1~20",
+                "--page_step", "1"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -200,7 +274,20 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineagem", "--page_range", "1~100", "--page_step", "1"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LINEAGEM)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "lineagem",
+                "--page_range", "1~100",
+                "--page_step", "1"
+              ]
 
 ---
 apiVersion: batch/v1beta1
@@ -234,4 +321,17 @@ spec:
                   cpu: 200m
                   memory: 200Mi
               workingDir: /usr/local/app
-              args: ["python3", "batch.py", "--overwrite", "--category", "bbs", "--job_id", "lineage2m", "--page_range", "1~100", "--page_step", "1"]
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LINEAGE2M)
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "lineage2m",
+                "--page_range", "1~100",
+                "--page_step", "1"
+              ]
