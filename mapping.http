@@ -109,3 +109,44 @@ Content-Type: application/json
 Accept: application/json
 
 ###
+
+PUT thing/_mappings/thing
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "properties": {
+    "ko": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "ko_morph": {
+          "type": "text",
+          "analyzer": "nori_korean"
+        }
+      }
+    },
+    "en": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "en_morph": {
+          "type": "text",
+          "analyzer": "english"
+        }
+      }
+    }
+  }
+}
+
+
+### POST thing/_update_by_query
+
+###
