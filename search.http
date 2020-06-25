@@ -44,7 +44,7 @@ Accept: application/json
 
 ###
 
-GET {{host}}/{{index}}/doc/4-4010502-309851013
+GET {{host}}/ko_tm04/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
