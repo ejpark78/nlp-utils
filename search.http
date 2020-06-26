@@ -44,7 +44,7 @@ Accept: application/json
 
 ###
 
-GET {{host}}/ko_tm04/_search
+GET {{host}}/{{index}}/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
@@ -1288,6 +1288,34 @@ Accept: application/text
   },
   "script": {
     "source": "ctx._source['rank'] = 'Lv1'"
+  }
+}
+
+###
+
+GET {{host}}/ko_tm04/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/ko_tm04/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "ko_ver": {
+            "lte": 0
+          }
+        }
+      }
+    }
   }
 }
 
