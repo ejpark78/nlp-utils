@@ -1,27 +1,9 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nate
-  namespace: crawler-nate
-data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
-  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
-  INDEX_ENTERTAINMENT: "crawler-nate-entertainment"
-  INDEX_ECONOMY: "crawler-nate-economy"
-  INDEX_INTERNATIONAL: "crawler-nate-international"
-  INDEX_IT: "crawler-nate-it"
-  INDEX_OPINION: "crawler-nate-opinion"
-  INDEX_POLITICS: "crawler-nate-politics"
-  INDEX_SOCIETY: "crawler-nate-society"
-  INDEX_SPORTS: "crawler-nate-sports"
-
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: economy
-  namespace: crawler-nate
+  name: bbs-mlbpark-kbo
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -50,58 +32,28 @@ spec:
               workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_ECONOMY)
+                  value: $(INDEX_MLBPARK_KBO)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               envFrom:
                 - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "economy"]
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-kbo"
+              ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: entertainment
-  namespace: crawler-nate
-  labels:
-    app: crawler
-spec:
-  schedule: "5,35 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_ENTERTAINMENT)
-              envFrom:
-                - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "entertainment"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: international
-  namespace: crawler-nate
+  name: bbs-mlbpark-mlb
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -130,58 +82,28 @@ spec:
               workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_INTERNATIONAL)
+                  value: $(INDEX_MLBPARK_MLB)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               envFrom:
                 - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "international"]
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-mlb"
+              ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: it
-  namespace: crawler-nate
-  labels:
-    app: crawler
-spec:
-  schedule: "15,45 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_IT)
-              envFrom:
-                - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "it"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: politics
-  namespace: crawler-nate
+  name: bbs-mlbpark-bullpen
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -210,58 +132,28 @@ spec:
               workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_POLITICS)
+                  value: $(INDEX_MLBPARK_BULLPEN)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               envFrom:
                 - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "politics"]
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "mlbpark-bullpen"
+              ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: society
-  namespace: crawler-nate
-  labels:
-    app: crawler
-spec:
-  schedule: "25,55 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
-          containers:
-            - name: default
-              image: corpus:5000/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_SOCIETY)
-              envFrom:
-                - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "society"]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: sports
-  namespace: crawler-nate
+  name: bbs-ruliweb
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -290,21 +182,174 @@ spec:
               workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_SPORTS)
+                  value: $(INDEX_RULIWEB)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               envFrom:
                 - configMapRef:
-                    name: nate
-              args: ["python3", "batch.py", "--category", "nate", "--job_id", "sports"]
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "ruliweb"
+              ]
 
-#    - name: radio
-#      image: corpus:5000/crawler:latest
-#      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
-#    - name: opinion
-#      image: corpus:5000/crawler:latest
-#      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
-#    - name: tv
-#      image: corpus:5000/crawler:latest
-#      workingDir: /usr/local/app
-#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bbs-inven-lineagem
+  namespace: crawler
+  labels:
+    app: crawler
+spec:
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_INVEN)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "inven-lineagem",
+                "--page_range", "1~20",
+                "--page_step", "1"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bbs-lineagem
+  namespace: crawler
+  labels:
+    app: crawler
+spec:
+  schedule: "0,30 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LINEAGEM)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "lineagem",
+                "--page_range", "1~100",
+                "--page_step", "1"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: bbs-lineage2m
+  namespace: crawler
+  labels:
+    app: crawler
+spec:
+  schedule: "15,45 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          nodeSelector:
+            group: "crawler"
+          containers:
+            - name: default
+              image: corpus:5000/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_LINEAGE2M)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: bbs
+              args: [
+                "python3", "batch.py",
+                "--overwrite",
+                "--category", "bbs",
+                "--job_id", "lineage2m",
+                "--page_range", "1~100",
+                "--page_step", "1"
+              ]

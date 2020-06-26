@@ -1,0 +1,110 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: elasticsearch-auth
+  namespace: crawler
+data:
+  http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
+#echo -n crawler:crawler2019 | base64
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bbs
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_INVEN: "crawler-bbs-inven"
+  INDEX_LINEAGEM: "crawler-bbs-lineagem"
+  INDEX_LINEAGE2M: "crawler-bbs-lineage2m"
+  INDEX_MLBPARK_BULLPEN: "crawler-bbs-mlbpark_bullpen"
+  INDEX_MLBPARK_KBO: "crawler-bbs-mlbpark_kbo"
+  INDEX_MLBPARK_MLB: "crawler-bbs-mlbpark_mlb"
+  INDEX_RULIWEB: "crawler-bbs-ruliweb"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: daum
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_CULTURE: "crawler-daum-culture"
+  INDEX_ECONOMY: "crawler-daum-economy"
+  INDEX_INTERNATIONAL: "crawler-daum-international"
+  INDEX_IT: "crawler-daum-it"
+  INDEX_OPINION: "crawler-daum-opinion"
+  INDEX_POLITICS: "crawler-daum-politics"
+  INDEX_SOCIETY: "crawler-daum-society"
+  INDEX_SPORTS: "crawler-daum-sports"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nate
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_ENTERTAINMENT: "crawler-nate-entertainment"
+  INDEX_ECONOMY: "crawler-nate-economy"
+  INDEX_INTERNATIONAL: "crawler-nate-international"
+  INDEX_IT: "crawler-nate-it"
+  INDEX_OPINION: "crawler-nate-opinion"
+  INDEX_POLITICS: "crawler-nate-politics"
+  INDEX_SOCIETY: "crawler-nate-society"
+  INDEX_SPORTS: "crawler-nate-sports"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: naver
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
+  INDEX_ECONOMY: "crawler-naver-economy"
+  INDEX_INTERNATIONAL: "crawler-naver-international"
+  INDEX_IT: "crawler-naver-it"
+  INDEX_OPINION: "crawler-naver-opinion"
+  INDEX_POLITICS: "crawler-naver-politics"
+  INDEX_SOCIETY: "crawler-naver-society"
+  INDEX_SPORTS: "crawler-naver-sports"
+  INDEX_TV: "crawler-naver-tv"
+  INDEX_LIVING: "crawler-naver-living"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-center
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_INDEX_COMMENTS: "crawler-naver-kbo_game_center_comments"
+  ELASTIC_SEARCH_INDEX_GAME_INFO: "crawler-naver-kbo_game_center_game_info"
+  ELASTIC_SEARCH_INDEX_RELAY_TEXT: "crawler-naver-kbo_game_center_relay_text"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: naver-reply
+  namespace: crawler
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
+  INDEX_ECONOMY: "crawler-naver-economy-reply"
+  INDEX_INTERNATIONAL: "crawler-naver-international-reply"
+  INDEX_IT: "crawler-naver-it-reply"
+  INDEX_OPINION: "crawler-naver-opinion-reply"
+  INDEX_POLITICS: "crawler-naver-politics-reply"
+  INDEX_SOCIETY: "crawler-naver-society-reply"
+  INDEX_SPORTS: "crawler-naver-sports-reply"
+  INDEX_TV: "crawler-naver-tv-reply"
+  INDEX_LIVING: "crawler-naver-living-reply"

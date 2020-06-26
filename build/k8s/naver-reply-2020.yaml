@@ -1,5 +1,35 @@
 ---
 apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: elasticsearch-auth
+  namespace: crawler-naver-reply-2020
+data:
+  http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
+#echo -n crawler:crawler2019 | base64
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: naver
+  namespace: crawler-naver-reply-2020
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
+  INDEX_ECONOMY: "crawler-naver-economy-reply"
+  INDEX_INTERNATIONAL: "crawler-naver-international-reply"
+  INDEX_IT: "crawler-naver-it-reply"
+  INDEX_OPINION: "crawler-naver-opinion-reply"
+  INDEX_POLITICS: "crawler-naver-politics-reply"
+  INDEX_SOCIETY: "crawler-naver-society-reply"
+  INDEX_SPORTS: "crawler-naver-sports-reply"
+  INDEX_TV: "crawler-naver-tv-reply"
+  INDEX_LIVING: "crawler-naver-living-reply"
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
   name: politics
@@ -12,7 +42,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "politics-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "politics-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -28,7 +74,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "society-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "society-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -44,7 +106,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "tv-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "tv-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -60,7 +138,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "economy-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "economy-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -76,7 +170,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "international-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "international-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -92,7 +202,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "it-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "it-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -108,7 +234,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "living-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "living-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -124,7 +266,23 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "opinion-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "opinion-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]
 
 ---
 apiVersion: v1
@@ -140,4 +298,20 @@ spec:
     - name: default
       image: corpus:5000/crawler:latest
       workingDir: /usr/local/app
-      args: ["python3", "batch.py", "--category", "naver", "--job_id", "sports-reply", "--date_range", "2020-01-01~2020-12-31"]
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--category", "naver",
+        "--job_id", "sports-reply",
+        "--date_range", "2020-01-01~2020-12-31"
+      ]

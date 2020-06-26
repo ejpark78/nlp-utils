@@ -2530,93 +2530,93 @@
 //      },
 //      "page": "groups/343736519111781"
 //    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "생활코딩"
-      },
-      "page": "groups/codingeverybody"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "독서클럽"
-      },
-      "page": "groups/liveinbook"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "Solo Tango [솔땅]"
-      },
-      "page": "groups/solotango"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "커피클럽 ( 커피 커피프린스 바리스타 에스프레소 아메리카나"
-      },
-      "page": "groups/cofeclub"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "그룹",
-        "name": "위클리비즈클럽"
-      },
-      "page": "groups/webiclub"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "UI Developers (HTML5, CSS3,Javascript , Jquery,AngularJS,ES6, Reactjs)"
-      },
-      "page": "groups/1747086275532482"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Linux"
-      },
-      "page": "groups/GNUAndLinux"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-en",
-      "reply_index": "crawler-facebook-en-reply",
-      "meta": {
-        "lang_code": "en",
-        "category": "그룹",
-        "name": "Software Developer"
-      },
-      "page": "groups/5198909724"
-    }
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "생활코딩"
+//      },
+//      "page": "groups/codingeverybody"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "독서클럽"
+//      },
+//      "page": "groups/liveinbook"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "Solo Tango [솔땅]"
+//      },
+//      "page": "groups/solotango"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "커피클럽 ( 커피 커피프린스 바리스타 에스프레소 아메리카나"
+//      },
+//      "page": "groups/cofeclub"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "그룹",
+//        "name": "위클리비즈클럽"
+//      },
+//      "page": "groups/webiclub"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "UI Developers (HTML5, CSS3,Javascript , Jquery,AngularJS,ES6, Reactjs)"
+//      },
+//      "page": "groups/1747086275532482"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Linux"
+//      },
+//      "page": "groups/GNUAndLinux"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-en",
+//      "reply_index": "crawler-facebook-en-reply",
+//      "meta": {
+//        "lang_code": "en",
+//        "category": "그룹",
+//        "name": "Software Developer"
+//      },
+//      "page": "groups/5198909724"
+//    }
   ]
 }

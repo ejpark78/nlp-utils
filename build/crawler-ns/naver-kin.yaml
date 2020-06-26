@@ -1,29 +1,9 @@
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: naver
-#  namespace: crawler-naver-kin
-#data:
-#  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
-#  ELASTIC_SEARCH_AUTH: "crawler:crawler2019"
-#  INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
-#  INDEX_ECONOMY: "crawler-naver-economy"
-#  INDEX_INTERNATIONAL: "crawler-naver-international"
-#  INDEX_IT: "crawler-naver-it"
-#  INDEX_OPINION: "crawler-naver-opinion"
-#  INDEX_POLITICS: "crawler-naver-politics"
-#  INDEX_SOCIETY: "crawler-naver-society"
-#  INDEX_SPORTS: "crawler-naver-sports"
-#  INDEX_TV: "crawler-naver-tv"
-#  INDEX_LIVING: "crawler-naver-living"
-
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: question-list
-  namespace: crawler-naver-kin
+  name: kin-question-list
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -60,8 +40,8 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: answer-list
-  namespace: crawler-naver-kin
+  name: kin-answer-list
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -98,8 +78,8 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: detail-question
-  namespace: crawler-naver-kin
+  name: kin-detail-question
+  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -136,8 +116,8 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: detail-answer
-  namespace: crawler-naver-kin
+  name: kin-detail-answer
+  namespace: crawler
   labels:
     app: crawler
 spec:

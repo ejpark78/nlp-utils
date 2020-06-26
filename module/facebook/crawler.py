@@ -101,6 +101,9 @@ class FBCrawler(FBParser):
 
     def get_reply(self, doc):
         """컨텐츠 하나를 조회한다."""
+        if 'url' not in doc:
+            return
+
         self.open_driver()
 
         self.driver.get(doc['url'])
