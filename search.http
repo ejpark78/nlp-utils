@@ -1293,6 +1293,22 @@ Accept: application/text
 
 ###
 
+POST {{host}}/ko_tm04/_update_by_query
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source.remove('edit_info')"
+  }
+}
+
+###
+
 GET {{host}}/ko_tm04/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
