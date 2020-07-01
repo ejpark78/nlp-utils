@@ -1350,7 +1350,7 @@ Accept: application/json
 {
   "track_total_hits": true,
   "_source": [
-    "meta_info.translation_method"
+    "client_info"
   ]
 }
 
