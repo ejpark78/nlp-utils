@@ -1309,10 +1309,50 @@ Accept: application/json
 
 ###
 
-GET {{host}}/ko_tm04/_search
+GET http://172.20.93.221:30006/log_mtdemo_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
+
+{
+  "size": 0,
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.translation_method",
+        "min_doc_count": 1
+      }
+    }
+  }
+}
+
+###
+
+GET http://172.20.93.221:30006/_template/log_mtdemo_*
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET http://172.20.93.221:30006/log_mtdemo_*/_mapping
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET http://172.20.93.221:30006/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "meta_info.translation_method"
+  ]
+}
 
 ###
 
