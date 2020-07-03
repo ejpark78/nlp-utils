@@ -408,6 +408,9 @@ class WebNewsCrawler(CrawlerBase):
             if 'post_process' not in job:
                 job['post_process'] = None
 
+            if self.args.skip_post_process is True:
+                job['post_process'] = None
+
             self.post_process_utils.insert_job(
                 job=job,
                 document=article,

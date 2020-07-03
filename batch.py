@@ -81,6 +81,8 @@ def init_arguments():
 
     parser.add_argument('--update_category_only', action='store_true', default=False, help='category 정보만 업데이트')
 
+    parser.add_argument('--skip_post_process', action='store_true', default=False, help='후처리 사용 여부')
+
     return parser.parse_args()
 
 
