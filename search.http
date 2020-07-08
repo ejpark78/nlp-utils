@@ -1377,3 +1377,64 @@ Accept: application/json
 
 ###
 
+GET {{host}}/mt_evaluation/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/log_mtdemo_202005_re/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "client_info.game_code": "l2m-ko"
+          }
+        },
+        {
+          "match": {
+            "source_lang": "ko"
+          }
+        },
+        {
+          "match": {
+            "target_lang": "en"
+          }
+        },
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": {
+        "range": {
+          "client_info.request_date": {
+            "format": "yyyy-MM-dd",
+            "gte": "2020-05-08",
+            "lte": "2020-07-08"
+          }
+        }
+      }
+    }
+  },
+  "size": 20,
+  "sort": [
+    {
+      "client_info.request_date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
