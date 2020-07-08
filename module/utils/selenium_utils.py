@@ -95,7 +95,7 @@ class SeleniumUtils(object):
 
         return
 
-    def page_down(self, count, multi=1):
+    def page_down(self, count, multi=1, multi_sleep=2):
         """스크롤한다."""
         from selenium.webdriver.common.keys import Keys
 
@@ -106,6 +106,7 @@ class SeleniumUtils(object):
                 for _ in range(multi + 1):
                     html.send_keys(Keys.PAGE_DOWN)
                     self.driver.implicitly_wait(2)
+                    sleep(multi_sleep)
 
                 self.driver.implicitly_wait(10)
             except Exception as e:

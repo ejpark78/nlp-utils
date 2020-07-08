@@ -40,7 +40,8 @@ class SeleniumProxyUtils(object):
         self.url_buf = {}
 
         self.headers = {
-            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/79.0.3945.79 Safari/537.36'
         }
 
@@ -74,6 +75,8 @@ class SeleniumProxyUtils(object):
 
     def open_driver(self):
         """브라우저를 실행한다."""
+        import requests
+
         if self.driver is not None:
             return
 
@@ -84,7 +87,10 @@ class SeleniumProxyUtils(object):
 
         self.proxy_server.start()
 
+        _ = requests.post('http://{}:{}/proxy'.format(self.proxy_server.host, self.proxy_server.port))
+
         self.proxy = self.proxy_server.create_proxy()
+
         self.proxy.new_har(
             uuid1(),
             options={

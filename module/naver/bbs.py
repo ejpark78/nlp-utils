@@ -19,7 +19,7 @@ from module.utils.logger import LogMessage as LogMsg
 from module.utils.proxy_utils import SeleniumProxyUtils
 
 
-class SeleniumCrawler(SeleniumProxyUtils):
+class NaverCafeCrawler(SeleniumProxyUtils):
     """웹 뉴스 크롤러 베이스"""
 
     def __init__(self):
@@ -60,11 +60,14 @@ class SeleniumCrawler(SeleniumProxyUtils):
                 }
                 self.logger.error(msg=LogMsg(msg))
 
+                if str(e).find('no such element: Unable to locate element') >= 0:
+                    return True
+
             self.driver.implicitly_wait(10)
 
             sleep(5)
 
-        return
+        return False
 
     def save_list(self, page_list, cafe_name):
         """추출한 정보를 저장한다."""
@@ -211,10 +214,12 @@ class SeleniumCrawler(SeleniumProxyUtils):
         """컨텐츠 하나를 조회한다."""
         self.open_driver()
 
+        url = 'https://m.cafe.naver.com/ArticleRead.nhn?clubid={cafeId}&articleid={articleId}&boardtype=L'.format(**result)
+
         result['content'] = ''
 
         try:
-            self.driver.get(result['url'])
+            self.driver.get(url)
             self.driver.implicitly_wait(20)
             sleep(1)
         except Exception as e:
@@ -656,11 +661,15 @@ class SeleniumCrawler(SeleniumProxyUtils):
             if self.check_history(url=content['url']) is True:
                 continue
 
-            item = json.loads(content['content']['text'])
-            if 'message' not in item:
+            if 'text' not in content['content']:
+                print(content)
                 continue
 
-            for item in item['message']['result']['articleList']:
+            message = json.loads(content['content']['text'])
+            if 'message' not in message:
+                continue
+
+            for item in message['message']['result']['articleList']:
                 doc = {k: item[k] for k in item if k in columns}
 
                 for k in item:
@@ -693,7 +702,10 @@ class SeleniumCrawler(SeleniumProxyUtils):
             }
             self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
 
-            self.scroll(count=2, start_article=start_article)
+            is_stop = self.scroll(count=2, start_article=start_article)
+            if is_stop is True:
+                break
+
             self.driver.implicitly_wait(5)
 
             start_article = None
@@ -809,4 +821,4 @@ class SeleniumCrawler(SeleniumProxyUtils):
 
 if __name__ == '__main__':
     # https://stackabuse.com/getting-started-with-selenium-and-python/
-    SeleniumCrawler().batch()
+    NaverCafeCrawler().batch()

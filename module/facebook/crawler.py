@@ -317,7 +317,7 @@ class FBCrawler(FBParser):
 
         i = 0
         for _ in range(self.env.max_page):
-            stop = self.page_down(count=10, multi=10)
+            stop = self.page_down(count=10, multi=10, multi_sleep=2)
             self.driver.implicitly_wait(25)
 
             i += 1
@@ -410,7 +410,7 @@ class FBCrawler(FBParser):
         parser.add_argument('--use_head', action='store_false', default=True)
         parser.add_argument('--max_page', default=10000, type=int)
 
-        parser.add_argument('--driver', default='/usr/lib/chromium-browser/chromedriver')
+        parser.add_argument('--driver', default='/usr/bin/chromedriver')
 
         parser.add_argument('--host', default='https://corpus.ncsoft.com:9200')
         parser.add_argument('--auth', default='crawler:crawler2019')
