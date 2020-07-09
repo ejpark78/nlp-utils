@@ -14,17 +14,6 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-MESSAGE = 25
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
-
 
 class AirKoreaCrawler(object):
     """ """

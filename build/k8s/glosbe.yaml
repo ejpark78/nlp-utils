@@ -31,7 +31,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "ejpark78@gmail.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-koen",
         "--article", "crawler-dictionary-example-glosbe-koen-article",
         "--word_list", "crawler-dictionary-example-glosbe-koen-word-list"
@@ -70,7 +70,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "korjhwang@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-envi",
         "--article", "crawler-dictionary-example-glosbe-envi-article",
         "--word_list", "crawler-dictionary-example-glosbe-envi-word-list"
@@ -109,7 +109,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "sjlee927@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-enth",
         "--article", "crawler-dictionary-example-glosbe-enth-article",
         "--word_list", "crawler-dictionary-example-glosbe-enth-word-list"
@@ -148,7 +148,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "bichanh@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-enid",
         "--article", "crawler-dictionary-example-glosbe-enid-article",
         "--word_list", "crawler-dictionary-example-glosbe-enid-word-list"
@@ -187,7 +187,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "h211150@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-enzh",
         "--article", "crawler-dictionary-example-glosbe-enzh-article",
         "--word_list", "crawler-dictionary-example-glosbe-enzh-word-list"
@@ -226,7 +226,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "suciati@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-enja",
         "--article", "crawler-dictionary-example-glosbe-enja-article",
         "--word_list", "crawler-dictionary-example-glosbe-enja-word-list"
@@ -265,7 +265,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "peiyuan@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-kovi",
         "--article", "crawler-dictionary-example-glosbe-kovi-article",
         "--word_list", "crawler-dictionary-example-glosbe-kovi-word-list"
@@ -304,7 +304,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "yskim29@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-kozh",
         "--article", "crawler-dictionary-example-glosbe-kozh-article",
         "--word_list", "crawler-dictionary-example-glosbe-kozh-word-list"
@@ -343,7 +343,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "smaseba@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-koja",
         "--article", "crawler-dictionary-example-glosbe-koja-article",
         "--word_list", "crawler-dictionary-example-glosbe-koja-word-list"
@@ -382,7 +382,7 @@ spec:
         "module/dictionary/glosbe.py",
         "--username", "sub92lee@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-koth",
         "--article", "crawler-dictionary-example-glosbe-koth-article",
         "--word_list", "crawler-dictionary-example-glosbe-koth-word-list"
@@ -420,7 +420,7 @@ spec:
         "python3", "module/dictionary/glosbe.py",
         "--username", "	wingyi@ncsoft.com",
         "--password", "nlplab",
-        "--sleep", "550",
+        "--sleep", "1000",
         "--example", "crawler-dictionary-example-glosbe-koid",
         "--article", "crawler-dictionary-example-glosbe-koid-article",
         "--word_list", "crawler-dictionary-example-glosbe-koid-word-list"

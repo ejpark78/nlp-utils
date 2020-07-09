@@ -701,9 +701,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             start_article = None
 
             # https://apis.naver.com/cafe-web/cafe2/ArticleList.json?search.clubid=27434888&search.queryType=lastArticle&search.page=1
-            resp_list = self.trace_networks(
-                path_list=['https://apis.naver.com/cafe-web/cafe2/ArticleList.json']
-            )
+            resp_list = self.trace_networks(path_list=['https://apis.naver.com/cafe-web/cafe2/ArticleList.json'])
 
             page_list = self.parse_list_response(resp_list=resp_list)
             if len(page_list) == 0:
@@ -711,6 +709,9 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                     bbs_info=bbs_info,
                     start_article=start_article
                 )
+
+            if len(page_list) == 0:
+                break
 
             self.save_list(page_list=page_list, cafe_name=bbs_info['name'])
 
@@ -798,7 +799,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
         parser.add_argument('--use_head', action='store_false', default=True, help='')
 
         parser.add_argument('--cafeId', default=None, help='', type=int)
-        parser.add_argument('--max_page', default=10, help='', type=int)
+        parser.add_argument('--max_page', default=100000, help='', type=int)
 
         parser.add_argument('--limit', default=-1, help='', type=int)
 

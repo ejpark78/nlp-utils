@@ -40,7 +40,6 @@ class GlosbeCrawler(object):
         self.logger = Logger()
 
         self.session = requests.Session()
-
         self.session.verify = False
 
         self.base_url = 'https://glosbe.com'

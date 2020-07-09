@@ -31,3 +31,4 @@ cachelib
 brotlipy
 psutil
 xmltodict
+requests-html
