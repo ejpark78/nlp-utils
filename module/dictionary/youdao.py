@@ -15,7 +15,6 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -90,10 +89,10 @@ class YoudaoSearch(DictionaryUtils):
 
         status_code = soup.select_one('input#page-status')
         if status_code is None or status_code.has_attr('value') is False:
-            self.logger.error(msg=LogMsg({
+            self.logger.error(msg={
                 'message': 'status 조회 에러',
                 'url': url,
-            }))
+            })
             return None
 
         return status_code['value']
@@ -151,12 +150,12 @@ class YoudaoSearch(DictionaryUtils):
 
                 ex_list = self.trace_examples(url=url, meta=url_info['meta'])
 
-                self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                self.logger.log(msg={
                     'message': 'saved',
                     'entry': entry['entry'],
                     'length': len(ex_list),
                     'ex_list': [ex for ex in ex_list[:5]]
-                }))
+                })
 
                 if len(ex_list) == 0:
                     break
@@ -170,8 +169,6 @@ class YoudaoSearch(DictionaryUtils):
     def batch(self):
         """"""
         self.env = self.init_arguments()
-
-        self.logger = self.get_logger()
 
         if self.env.remove_same_example is True:
             self.remove_same_example()

@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 import re
 from datetime import datetime
 from urllib.parse import urljoin
@@ -15,9 +14,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
-from module.utils.logger import LogMessage as LogMsg
-
-logger = logging.getLogger()
+from module.utils.logger import Logger
 
 
 class HtmlParser(object):
@@ -26,6 +23,8 @@ class HtmlParser(object):
     def __init__(self):
         """ 생성자 """
         self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.logger = Logger()
 
     @staticmethod
     def merge_values(item):
@@ -139,23 +138,21 @@ class HtmlParser(object):
                     try:
                         value = str(tag)
                     except Exception as e:
-                        msg = {
+                        self.logger.error(msg={
                             'level': 'ERROR',
                             'message': 'html 추출 에러',
                             'exception': str(e),
-                        }
-                        logger.error(msg=LogMsg(msg))
+                        })
                         continue
 
                     try:
                         value = str(tag.prettify())
                     except Exception as e:
-                        msg = {
+                        self.logger.error(msg={
                             'level': 'ERROR',
                             'message': 'html prettify 에러',
                             'exception': str(e),
-                        }
-                        logger.error(msg=LogMsg(msg))
+                        })
                 else:
                     if tag.has_attr(item['type']):
                         value = tag[item['type']]
@@ -272,13 +269,12 @@ class HtmlParser(object):
                 dt = parse_date(str_date)
                 date = self.timezone.localize(dt)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html 날짜 변환 에러',
                 'date': str_date,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             return str_date
 
@@ -455,12 +451,11 @@ class HtmlParser(object):
                             'caption': ''
                         })
                 except Exception as e:
-                    msg = {
+                    self.logger.error(msg={
                         'level': 'ERROR',
                         'message': 'html 이미지 추출 에러',
                         'exception': str(e),
-                    }
-                    logger.error(msg=LogMsg(msg))
+                    })
             else:
                 result.append({
                     'image': urljoin(base_url, tag['src']),
@@ -475,12 +470,11 @@ class HtmlParser(object):
 
                     tag.replace_with('')
                 except Exception as e:
-                    msg = {
+                    self.logger.error(msg={
                         'level': 'ERROR',
                         'message': 'html 이미지 캡션 추출 에러',
                         'exception': str(e),
-                    }
-                    logger.error(msg=LogMsg(msg))
+                    })
 
         return result
 

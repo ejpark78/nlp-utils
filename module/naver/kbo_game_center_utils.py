@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import os
 from datetime import datetime
 from os.path import isfile
@@ -20,18 +19,10 @@ from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-logger.setLevel(MESSAGE)
 
 
 class NaverKBOGameCenterUtils(object):
@@ -59,6 +50,8 @@ class NaverKBOGameCenterUtils(object):
 
         self.es = {}
         self.open_elasticsearch()
+
+        self.logger = Logger()
 
         return
 
@@ -122,13 +115,12 @@ class NaverKBOGameCenterUtils(object):
             resp = requests.get(url, headers=headers, timeout=self.timeout, verify=False)
             return resp.json()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '문자 중계 조회 에러',
                 'text': resp.text,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return None
 
@@ -161,13 +153,12 @@ class NaverKBOGameCenterUtils(object):
 
             return json.loads(content)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '댓글 파싱 에러',
                 'content': content,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             info = {
                 'url': url,
@@ -178,8 +169,7 @@ class NaverKBOGameCenterUtils(object):
 
         return None
 
-    @staticmethod
-    def save_debug_info(info, content):
+    def save_debug_info(self, info, content):
         """ 디버깅 정보를 기록한다."""
         try:
             mode = 'w'
@@ -195,35 +185,31 @@ class NaverKBOGameCenterUtils(object):
                 fp.write(str_info + '\n\n')
                 fp.write(content)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '디버깅 정보 저장 에러',
                 'info': info,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return
 
-    @staticmethod
-    def save_state(game_id, filename='relay_text.state'):
+    def save_state(self, game_id, filename='relay_text.state'):
         """ 현재 상태 정보를 저장한다."""
         try:
             with open(filename, 'a') as fp:
                 fp.write(game_id + '\n')
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '현재 상태 저장 에러',
                 'filename': filename,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return
 
-    @staticmethod
-    def read_state(filename='relay_text.state'):
+    def read_state(self, filename='relay_text.state'):
         """ 현재 상태 정보를 저장한다."""
         result = {}
 
@@ -235,13 +221,12 @@ class NaverKBOGameCenterUtils(object):
                 for game_id in fp.readlines():
                     result[game_id.strip()] = True
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '현재 상태 정보 읽기 에러',
                 'filename': filename,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return result
 
@@ -327,15 +312,14 @@ class NaverKBOGameCenterUtils(object):
             if max(count) < max_count:
                 break
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '응원 댓글 조회',
                 'page': page,
                 'game_id': game_id,
                 'game_date': game_info['game_date'],
                 'max_page': max_page,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             page += 1
             self.set_state(game_id=game_id, state=page)
@@ -439,7 +423,7 @@ class NaverKBOGameCenterUtils(object):
         for game_id in sorted(game_list.keys(), reverse=True):
             game_info = game_list[game_id]
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '문자 중계 조회',
                 'i': i,
@@ -448,8 +432,8 @@ class NaverKBOGameCenterUtils(object):
                 'gdate': game_info['gdate'],
                 'hFullName': game_info['hFullName'],
                 'aFullName': game_info['aFullName'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
+
             i += 1
 
             if 'cancelFlag' in game_info and game_info['cancelFlag'] == 'Y':
@@ -491,12 +475,11 @@ class NaverKBOGameCenterUtils(object):
         for dt in date_list:
             game_date = dt.strftime('%Y%m%d')
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '경기 정보 조회',
                 'game_date': game_date,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             info = self.get_game_info_by_date(game_date=game_date)
             if info is None:

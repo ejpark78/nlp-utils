@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import os
 from os.path import isdir, isfile, splitext
 from time import sleep
@@ -16,8 +15,7 @@ import requests
 from tqdm import tqdm
 
 from module.config import Config
-
-logger = logging.getLogger()
+from module.utils.logger import Logger
 
 
 class UdemyUtils(object):
@@ -45,6 +43,8 @@ class UdemyUtils(object):
 
         self.sleep = job_info['sleep']
         self.data_path = job_info['data_path']
+
+        self.logger = Logger()
 
     def batch(self):
         """코스 목록 전체를 다운로드한다."""
@@ -77,7 +77,9 @@ class UdemyUtils(object):
         }
 
         for item in lecture_list['results']:
-            logger.info('title: {}'.format(item['title']))
+            self.logger.info(msg={
+                'title: {}'.format(item['title'])
+            })
 
             if item['_class'] == 'chapter':
                 path = '{}/{}/{:02d}. {}'.format(self.data_path, course['name'], count['chapter'], item['title'])
@@ -140,23 +142,31 @@ class UdemyUtils(object):
         if isfile(filename):
             size = getsize(filename)
             if size > 1000:
-                logger.info('skip {}'.format(filename))
+                self.logger.info(msg={
+                    'skip {}'.format(filename)
+                })
                 return True
 
         for v in video:
             if v['label'] != '720':
                 continue
 
-            logger.info(filename)
-            logger.info(v['file'])
+            self.logger.info({
+                'filename': filename,
+                'f': v['file'],
+            })
 
             resp = requests.get(url=v['file'], allow_redirects=True, timeout=6000, stream=True)
 
             if resp.status_code // 100 != 2:
-                logger.error('error: {}'.format(resp.text))
+                self.logger.error(msg={
+                    'error': 'error: {}'.format(resp.text)
+                })
 
             total_size = int(resp.headers.get('content-length', 0))
-            logger.info('size: {:,}'.format(total_size))
+            self.logger.info(msg={
+                'size': 'size: {:,}'.format(total_size)
+            })
 
             block_size = 1024
             wrote = 0
@@ -176,15 +186,16 @@ class UdemyUtils(object):
 
         return False
 
-    @staticmethod
-    def get_article(article, path, name):
+    def get_article(self, article, path, name):
         """아티클을 저장한다."""
         if 'body' not in article:
             return
 
         filename = '{path}/{name}.html'.format(path=path, name=name)
         if isfile(filename):
-            logger.info('skip {}'.format(filename))
+            self.logger.info(msg={
+                'get_article': 'skip {}'.format(filename),
+            })
             return
 
         with open(filename, 'w') as fp:
@@ -203,7 +214,9 @@ class UdemyUtils(object):
                                                            label=cap['video_label'])
 
             if isfile(filename):
-                logger.info('skip {}'.format(filename))
+                self.logger.info({
+                    'get_caption': 'skip {}'.format(filename)
+                })
                 return
 
             with open(filename, 'w') as fp:

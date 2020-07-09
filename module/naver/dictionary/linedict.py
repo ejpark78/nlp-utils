@@ -14,7 +14,6 @@ import requests
 import urllib3
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -127,17 +126,17 @@ class ExampleSearchCrawler(DictionaryUtils):
                     query['page'] = page
                     query['query'] = entry['entry']
 
-                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(msg={
                         'message': '예문 조회',
                         'entry': entry['entry'],
                         'page': page,
                         'lang': lang,
                         'query': query,
-                    }))
+                    })
 
                     ex_list = self.trace_examples(url=url_info['url_frame'], query=query, lang=lang)
 
-                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(msg={
                         'message': '저장 성공',
                         'entry': entry['entry'],
                         'lang': lang,
@@ -145,7 +144,7 @@ class ExampleSearchCrawler(DictionaryUtils):
                         'skip': self.skip,
                         'length': len(ex_list),
                         'ex_list': [{x['example'], x['translationText']} for x in ex_list[:10]],
-                    }))
+                    })
 
                     if self.skip >= len(ex_list):
                         break
@@ -159,8 +158,6 @@ class ExampleSearchCrawler(DictionaryUtils):
     def batch(self):
         """"""
         self.env = self.init_arguments()
-
-        self.logger = self.get_logger()
 
         if 'remove_same_example' in self.env and self.env.remove_same_example is True:
             self.remove_same_example()

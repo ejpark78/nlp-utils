@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 from time import sleep
 
 import requests
@@ -14,14 +13,9 @@ from urllib.parse import unquote
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class UserList(CrawlerBase):
@@ -48,12 +42,11 @@ class UserList(CrawlerBase):
             # 시작
             self.batch()
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '데몬 슬립',
                 'sleep_time': daemon_info['sleep'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(daemon_info['sleep'])
 
@@ -101,14 +94,13 @@ class UserList(CrawlerBase):
                     if size == 0:
                         break
 
-                    msg = {
+                    self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '지식 파트너 목록 요청',
                         'category': c,
                         'size': size,
                         'request_url': request_url,
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    })
 
                     for doc in result['lists']:
                         doc_id = unquote(doc['u'])
@@ -171,14 +163,13 @@ class UserList(CrawlerBase):
                     if size == 0:
                         break
 
-                    msg = {
+                    self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '분야별 전문가 목록 요청',
                         'expert_type': expert_type,
                         'size': size,
                         'request_url': request_url,
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    })
 
                     for doc in result['result']:
                         doc['expert_type'] = expert_type
@@ -219,12 +210,11 @@ class UserList(CrawlerBase):
             )
 
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '명예의 전당 쿠키 정보',
                 'cookies': str(cookies),
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             self.headers['mobile']['referer'] = url
 
@@ -234,13 +224,12 @@ class UserList(CrawlerBase):
             }
 
             while query['page'] <= query['total']:
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '사용자 목록 조회 조회',
                     'year': year,
                     'query': query,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                })
 
                 list_url = job_info['url_frame'].format(year=year, month=month, page=query['page'])
                 query['page'] += 1
@@ -261,13 +250,12 @@ class UserList(CrawlerBase):
                 if len(result['eliteUserList']) == 0:
                     break
 
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '명예의 전당 목록 요청',
                     'size': len(result['eliteUserList']),
                     'list_url': list_url,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                })
 
                 for doc in result['eliteUserList']:
                     doc['_id'] = doc['u']
@@ -307,12 +295,11 @@ class UserList(CrawlerBase):
             # 쿠키 추출
             cookies = requests.utils.dict_from_cookiejar(result.cookies)
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '분야별 전문가 쿠키 정보',
                 'cookies': str(cookies),
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             self.headers['mobile']['referer'] = url
 
@@ -323,13 +310,12 @@ class UserList(CrawlerBase):
                 }
 
                 while query['page'] <= query['total']:
-                    msg = {
+                    self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '사용자 목록 조회 조회',
                         'query': query,
                         'u_frame': u_frame,
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    })
 
                     list_url = u_frame.format(dir_id=c['id'], page=query['page'])
                     query['page'] += 1
@@ -355,13 +341,12 @@ class UserList(CrawlerBase):
                             print(e)
                             break
 
-                    msg = {
+                    self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '랭크 전문가 목록 요청',
                         'size': len(result['result']),
                         'list_url': list_url,
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    })
 
                     for doc in result['result']:
                         doc_id = doc['u']

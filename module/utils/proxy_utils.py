@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 
 class SeleniumProxyUtils(object):
@@ -47,19 +47,7 @@ class SeleniumProxyUtils(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.MESSAGE = 25
-        logging.addLevelName(self.MESSAGE, 'MESSAGE')
-
-        logging_opt = {
-            'format': '[%(levelname)-s] %(message)s',
-            'handlers': [logging.StreamHandler()],
-            'level': self.MESSAGE,
-
-        }
-        logging.basicConfig(**logging_opt)
-
-        self.logger = logging.getLogger()
-        self.logger.setLevel(self.MESSAGE)
+        self.logger = Logger()
 
     @staticmethod
     def parse_url(url):
@@ -138,12 +126,11 @@ class SeleniumProxyUtils(object):
 
             process.kill()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '프로세서 킬 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         return
 
@@ -155,12 +142,11 @@ class SeleniumProxyUtils(object):
             self.proxy_server.stop()
             self.proxy.close()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '프락시 종료 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         self.proxy_server = None
 
@@ -191,13 +177,11 @@ class SeleniumProxyUtils(object):
                 html.send_keys(Keys.PAGE_DOWN)
                 self.driver.implicitly_wait(10)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'page down 에러',
                     'exception': str(e),
-                }
-
-                self.logger.error(msg=LogMsg(msg))
+                })
                 break
 
             sleep(2)
@@ -222,12 +206,11 @@ class SeleniumProxyUtils(object):
         try:
             entry_list = self.proxy.har['log']['entries']
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'proxy entry 추출 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
             return []
 
@@ -243,12 +226,11 @@ class SeleniumProxyUtils(object):
                     'content': ent['response']['content']
                 })
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'response content 추출 에러',
                     'exception': str(e),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
         return result
 
@@ -278,13 +260,11 @@ class SeleniumProxyUtils(object):
                     doc['url'] = content['url']
                     result.append(doc)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'decode response 에러',
                     'exception': str(e),
-                }
-
-                self.logger.error(msg=LogMsg(msg))
+                })
 
         return result
 

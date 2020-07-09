@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import bz2
 import json
-import logging
 import pickle
 import queue
 import threading
@@ -17,11 +16,7 @@ import pytz
 import requests
 
 from module.utils.html_parser import HtmlParser
-from module.utils.logger import LogMessage as LogMsg
-
-MESSAGE = 25
-
-logger = logging.getLogger()
+from module.utils.logger import Logger
 
 
 class PostProcessUtils(object):
@@ -35,6 +30,8 @@ class PostProcessUtils(object):
         self.is_reachable = False
 
         self.timezone = pytz.timezone('Asia/Seoul')
+        
+        self.logger = Logger()
 
     def insert_job(self, document, post_process_list, job):
         """스레드 큐에 문서와 할일을 저장한다."""
@@ -61,12 +58,11 @@ class PostProcessUtils(object):
         if self.job_queue.empty() is True:
             start_thread = True
 
-            log_msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'message': '크롤링 후처리 저장 큐에 저장',
                 'queue_size': self.job_queue.qsize(),
-            }
-            logger.info(msg=LogMsg(log_msg))
+            })
 
             self.job_queue.put(thread_job)
         else:
@@ -121,12 +117,11 @@ class PostProcessUtils(object):
 
                     self.is_reachable = True
                 except socket.error as e:
-                    msg = {
+                    self.logger.info(msg={
                         'level': 'INFO',
                         'message': 'RabbitMQ 접속 대기 {}'.format(ping_counter),
                         'exception': str(e),
-                    }
-                    logger.info(msg=LogMsg(msg))
+                    })
 
                     sleep(2)
 
@@ -155,13 +150,12 @@ class PostProcessUtils(object):
             if 'payload' in info:
                 payload.update(info['payload'])
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'Rabbit MQ payload 파싱 에러',
                 'payload': info['payload'],
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
 
             return False
 
@@ -173,13 +167,12 @@ class PostProcessUtils(object):
                 if 'serializer' in publish_info and publish_info['serializer'] == 'json':
                     body = json.dumps(payload, ensure_ascii=False)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'RabbitMQ 메세지 생성 에러',
                 'info': info,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             return False
 
@@ -215,22 +208,20 @@ class PostProcessUtils(object):
                     body=body,
                 )
 
-                log_msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': 'RabbitMQ 메세지 전달 성공',
                     'exchange_name': info['exchange']['name'],
                     'doc_url': doc_url,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(log_msg))
+                })
         except Exception as e:
-            log_msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'RabbitMQ 전달 에러',
                 'doc_url': doc_url,
                 'info': info,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(log_msg))
+            })
 
         return True
 
@@ -270,21 +261,19 @@ class PostProcessUtils(object):
                 verify=False,
             )
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '코퍼스 전처리 전달',
                 'url': url,
                 'id': document['document_id'],
                 'title': document['title'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '코퍼스 전처리 에러 (api)',
                 'id': document['document_id'],
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return True

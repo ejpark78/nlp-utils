@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import os
 import re
 from datetime import datetime, timedelta
@@ -22,14 +21,10 @@ from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class WebNewsCrawler(CrawlerBase):
@@ -82,6 +77,8 @@ class WebNewsCrawler(CrawlerBase):
                 'step': args.page_step
             }
 
+        self.logger = Logger()
+
         return
 
     def daemon(self):
@@ -98,12 +95,11 @@ class WebNewsCrawler(CrawlerBase):
             if self.update_date is True:
                 self.update_date_range()
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '데몬 슬립',
                 'sleep_time': daemon_info['sleep'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(daemon_info['sleep'])
 
@@ -183,7 +179,7 @@ class WebNewsCrawler(CrawlerBase):
             if dt is not None:
                 msg['date'] = dt.strftime('%Y-%m-%d')
 
-            logger.info(msg=LogMsg(msg))
+            self.logger.info(msg=msg)
 
             if 'category' in url:
                 job['category'] = url['category']
@@ -200,7 +196,7 @@ class WebNewsCrawler(CrawlerBase):
                 if dt is not None:
                     msg['date'] = dt.strftime('%Y-%m-%d')
 
-                logger.error(msg=LogMsg(msg))
+                self.logger.error(msg=msg)
                 continue
 
             # category 만 업데이트할 경우
@@ -225,7 +221,7 @@ class WebNewsCrawler(CrawlerBase):
                 if dt is not None:
                     msg['date'] = dt.strftime('%Y-%m-%d')
 
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                self.logger.log(msg=msg)
                 break
 
             # 마지막 content 저장
@@ -247,7 +243,7 @@ class WebNewsCrawler(CrawlerBase):
             if dt is not None:
                 msg['date'] = dt.strftime('%Y-%m-%d')
 
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            self.logger.log(msg=msg)
 
             sleep(self.sleep_time)
 
@@ -302,7 +298,7 @@ class WebNewsCrawler(CrawlerBase):
         if date is not None:
             msg['date'] = date.strftime('%Y-%m-%d')
 
-        logger.log(level=MESSAGE, msg=LogMsg(msg))
+        self.logger.log(msg=msg)
 
         return False
 
@@ -417,12 +413,11 @@ class WebNewsCrawler(CrawlerBase):
                 post_process_list=job['post_process'],
             )
 
-            msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'message': '뉴스 본문 크롤링: 슬립',
                 'sleep_time': self.sleep_time,
-            }
-            logger.info(msg=LogMsg(msg))
+            })
 
             sleep(self.sleep_time)
 
@@ -527,26 +522,24 @@ class WebNewsCrawler(CrawlerBase):
                     allow_redirects=True,
                 )
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'post request 조회 에러',
                 'url': url,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return article
 
         # 결과 파싱
         try:
             req_result = resp.json()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'post request 파싱 에러',
                 'url': url,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return article
 
         result = []
@@ -623,12 +616,11 @@ class WebNewsCrawler(CrawlerBase):
             if resp is None:
                 continue
 
-            msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'message': '다음페이지 크롤링: 슬립',
                 'sleep_time': self.sleep_time,
-            }
-            logger.info(msg=LogMsg(msg))
+            })
 
             sleep(self.sleep_time)
 
@@ -641,11 +633,10 @@ class WebNewsCrawler(CrawlerBase):
         tz = self.timezone
 
         if 'date' not in doc:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'date 필드가 없습니다.',
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return
 
         str_e = ''
@@ -666,13 +657,12 @@ class WebNewsCrawler(CrawlerBase):
             doc['parsing_error'] = True
             doc['raw_html'] = str(html)
 
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '날짜 파싱 에러: date 필드 삭제',
                 'exception': str_e,
                 'date': doc['date'],
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             if 'date' in doc:
                 del doc['date']
@@ -694,24 +684,22 @@ class WebNewsCrawler(CrawlerBase):
             doc['parsing_error'] = True
             doc['raw_html'] = str(html)
 
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html_content 필드가 없음',
                 'url': doc['url'],
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         if 'parsing_error' not in doc:
             if 'title' not in doc or len(doc['title']) == 0:
                 doc['parsing_error'] = True
                 doc['raw_html'] = str(html)
 
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'title 필드가 없음',
                     'url': doc['url'],
-                }
-                logger.error(msg=LogMsg(msg))
+                })
 
         # 날짜 필드 오류 처리
         self.remove_date_column(doc=doc, html=html)
@@ -745,7 +733,7 @@ class WebNewsCrawler(CrawlerBase):
                 if k in doc:
                     doc_info[k] = doc[k]
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
                 'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
@@ -754,8 +742,7 @@ class WebNewsCrawler(CrawlerBase):
                     index=elastic_utils.index,
                 ),
                 'doc_info': doc_info,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
         return doc
 
@@ -774,26 +761,24 @@ class WebNewsCrawler(CrawlerBase):
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
             if self.overwrite is False and len(q) == 0:
-                msg = {
+                self.logger.info(msg={
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',
                     'url': url,
-                }
-                logger.info(msg=LogMsg(msg))
+                })
 
                 return None
 
             try:
                 result = id_frame['frame'].format(**q)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'url fame 에러',
                     'q': q,
                     'id_frame': id_frame['frame'],
                     'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                })
         elif id_frame['type'] == 'value':
             result = id_frame['frame'].format(**item)
 
@@ -826,13 +811,12 @@ class WebNewsCrawler(CrawlerBase):
                 str_trace_list += str(item)
 
         if len(trace_list) == 0:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'trace_list 가 없음',
                 'trace_size': len(trace_list),
                 'sleep_time': self.sleep_time,
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             sleep(self.sleep_time)
             return None
@@ -841,13 +825,12 @@ class WebNewsCrawler(CrawlerBase):
         trace_list_history = self.get_history(name='trace_list', default='')
         if isinstance(trace_list_history, str) is True:
             if str_trace_list == trace_list_history:
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '기사 본문 조회: 이전 목록과 일치함, 조기 종료',
                     'trace_size': len(trace_list),
                     'sleep_time': self.sleep_time,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                })
 
                 sleep(self.sleep_time)
                 return None
@@ -886,12 +869,11 @@ class WebNewsCrawler(CrawlerBase):
             if len(item['url']) > 0:
                 item['url'] = item['url'][0]
             else:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'trace tag에서 url 추출 에러',
                     'resp': str(resp)[:200],
-                }
-                logger.error(msg=LogMsg(msg))
+                })
                 return None
 
         if len(item) == 0:
@@ -914,14 +896,13 @@ class WebNewsCrawler(CrawlerBase):
                     return {}
 
             # 에러 메세지 출력
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'HTML 파싱 에러',
                 'resp': str(resp)[:200],
                 'text': text,
                 'url': url_info['url'],
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             return None
 

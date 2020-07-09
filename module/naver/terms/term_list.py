@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 from time import sleep
 
 import requests
@@ -17,8 +16,6 @@ from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-logger = logging.getLogger()
 
 
 class TermList(CrawlerBase):
@@ -70,7 +67,9 @@ class TermList(CrawlerBase):
                 resp = requests.get(url=query_url, headers=self.headers['mobile'],
                                     allow_redirects=True, timeout=60)
             except Exception as e:
-                logger.error('{}'.format(e))
+                self.logger.error(msg={
+                    'e': str(e)
+                })
                 sleep(10)
                 continue
 
@@ -90,8 +89,12 @@ class TermList(CrawlerBase):
             self.cfg.save_status()
 
             # 현재 상태 로그 표시
-            logger.info(msg='{} {:,}, {:,} {:,}'.format(category['name'], page,
-                                                        count['prev'], count['element']))
+            self.logger.info(msg={
+                'name': category['name'],
+                'page': page,
+                'prev': count['prev'],
+                'element': count['element']
+            })
 
             if is_stop is True:
                 break
@@ -150,8 +153,12 @@ class TermList(CrawlerBase):
                 doc[html_key] = str(item)
 
                 # 저장 로그 표시
-                msg = '{} {} {} {}'.format(category_name, doc['_id'], doc['name'], doc['define'][:30])
-                logger.info(msg=msg)
+                self.logger.info(msg={
+                    'category_name': category_name,
+                    '_id': doc['_id'],
+                    'name': doc['name'],
+                    'define': doc['define'][:30]
+                })
 
                 if doc['_id'] in history:
                     count['overlap'] += 1

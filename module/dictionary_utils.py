@@ -6,8 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
-import sys
 from datetime import datetime
 from glob import glob
 from os.path import isdir
@@ -19,7 +17,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -47,8 +45,7 @@ class DictionaryUtils(object):
 
         self.elastic = None
 
-        self.MESSAGE = 25
-        self.logger = self.get_logger()
+        self.logger = Logger()
 
         self.skip = 0
         self.cache = set()
@@ -66,18 +63,6 @@ class DictionaryUtils(object):
 
         return ''
 
-    def get_logger(self):
-        """ """
-        logging.addLevelName(self.MESSAGE, 'MESSAGE')
-        logging.basicConfig(format='%(message)s')
-
-        self.logger = logging.getLogger()
-
-        self.logger.setLevel(self.MESSAGE)
-        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
-
-        return self.logger
-
     def open_db(self, index):
         """ """
         self.elastic = ElasticSearchUtils(host=self.host, http_auth=self.http_auth, index=index)
@@ -94,11 +79,11 @@ class DictionaryUtils(object):
             try:
                 return resp.json()
             except Exception as e:
-                self.logger.error(msg=LogMsg({
+                self.logger.error(msg={
                     'message': 'ERROR resp not json',
                     'exception': str(e),
                     'entry': resp.content,
-                }))
+                })
 
                 return None
 

@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 from time import sleep
 
 import requests
@@ -15,14 +14,9 @@ from bs4 import BeautifulSoup
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class QuestionDetail(CrawlerBase):
@@ -43,12 +37,11 @@ class QuestionDetail(CrawlerBase):
 
             self.batch(column=column, match_phrase=match_phrase)
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '데몬 슬립',
                 'sleep_time': 60,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(60)
 
@@ -96,13 +89,12 @@ class QuestionDetail(CrawlerBase):
                 )
 
                 if is_skip is True:
-                    msg = {
+                    self.logger.info(msg={
                         'level': 'INFO',
                         'message': 'SKIP',
                         'doc_id': doc_id,
                         'index': self.job_info['index'],
-                    }
-                    logger.info(msg=LogMsg(msg))
+                    })
                     continue
 
             # 질문 상세 페이지 크롤링
@@ -115,15 +107,14 @@ class QuestionDetail(CrawlerBase):
                 timeout=60,
             )
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '상세 질문',
                 'i': i,
                 'size': size,
                 'doc_id': doc_id,
                 'request_url': request_url,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             # 저장
             self.save_doc(
@@ -135,12 +126,11 @@ class QuestionDetail(CrawlerBase):
                 elastic_utils=elastic_utils,
             )
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '데몬 슬립',
                 'sleep_time': self.sleep_time,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(self.sleep_time)
 
@@ -185,7 +175,7 @@ class QuestionDetail(CrawlerBase):
             )
             elastic_utils.flush()
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '상세 답변 저장 성공',
                 'question': doc['question'],
@@ -194,8 +184,7 @@ class QuestionDetail(CrawlerBase):
                     index=elastic_utils.index,
                     id=doc_id,
                 )
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(

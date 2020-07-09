@@ -14,7 +14,6 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -145,12 +144,12 @@ class SealangExampleSearch(DictionaryUtils):
 
                 ex_list = self.trace_examples(url=url_info['url'], post_data=post_data)
 
-                self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                self.logger.log(msg={
                     'message': 'saved',
                     'entry': entry['entry'],
                     'length': len(ex_list),
                     'ex_list': [ex for ex in ex_list[:5]]
-                }))
+                })
 
                 if len(ex_list) == 0:
                     break
@@ -164,8 +163,6 @@ class SealangExampleSearch(DictionaryUtils):
     def batch(self):
         """"""
         self.env = self.init_arguments()
-
-        self.logger = self.get_logger()
 
         if self.env.remove_same_example is True:
             self.remove_same_example()

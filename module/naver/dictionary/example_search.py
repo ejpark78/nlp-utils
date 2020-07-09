@@ -5,29 +5,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 from datetime import datetime
 from time import sleep
-from urllib.parse import urlencode
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlencode
 from uuid import uuid4
 
 import urllib3
 from bs4 import BeautifulSoup
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-logger.setLevel(MESSAGE)
 
 
 class ExampleSearchCrawler(DictionaryUtils):
@@ -91,15 +80,14 @@ class ExampleSearchCrawler(DictionaryUtils):
                 if max_page < count:
                     max_page = count
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '예문 검색',
                 'page': page,
                 'index': index,
                 'max_page': max_page,
                 'size': len(ex_list),
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             page += 1
 
@@ -332,15 +320,14 @@ class ExampleSearchCrawler(DictionaryUtils):
 
                     query['query'] = item['entry']
 
-                    msg = {
+                    self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '단어 검색',
                         'lang': lang,
                         'index': index,
                         'q_lang': q_lang,
                         'entry': item['entry'],
-                    }
-                    logger.log(level=MESSAGE, msg=LogMsg(msg))
+                    })
 
                     url = '{}?{}'.format(url_info['url_info']['site'], urlencode(query))
 
@@ -364,8 +351,6 @@ class ExampleSearchCrawler(DictionaryUtils):
     def batch(self):
         """"""
         self.env = self.init_arguments()
-
-        self.logger = self.get_logger()
 
         if 'remove_same_example' in self.env and self.env.remove_same_example is True:
             self.remove_same_example()

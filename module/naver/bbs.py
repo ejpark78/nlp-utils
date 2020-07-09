@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 from module.utils.proxy_utils import SeleniumProxyUtils
 
 
@@ -35,6 +35,8 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             split_index=True
         )
 
+        self.logger = Logger()
+
     def scroll(self, count, start_article):
         """스크롤한다."""
         if start_article is not None:
@@ -53,12 +55,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             try:
                 self.driver.find_element_by_class_name('u_cbox_btn_more').click()
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'scroll 에러',
                     'exception': str(e),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
                 if str(e).find('no such element: Unable to locate element') >= 0:
                     return True
@@ -116,7 +117,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 if 'status' in doc:
                     msg['status'] = doc['status']
 
-                self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+                self.logger.log(msg=msg)
             except Exception as e:
                 self.logger.error(e)
 
@@ -129,12 +130,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
         try:
             self.driver.execute_script(script)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'delete post 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         self.driver.implicitly_wait(10)
 
@@ -170,12 +170,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 if dt != '':
                     post['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'post list 에러',
                     'exception': str(e),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
             query_info = self.parse_url(url=post['url'])
             for k in query_info:
@@ -200,12 +199,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
         except JavascriptException:
             return
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '다음 댓글 더보기 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
             return
 
         return
@@ -223,12 +221,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             self.driver.implicitly_wait(20)
             sleep(1)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'url open 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
             result['status'] = 'url open error'
             return False
@@ -320,12 +317,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             html = self.driver.page_source
             soup = BeautifulSoup(html, 'html5lib')
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'parse contents 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
             return
 
         item = {
@@ -347,12 +343,11 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             try:
                 item['date'] = parse_date(dt).astimezone(self.timezone).isoformat()
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'date parse 에러',
                     'exception': str(e),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
         level = soup.select_one('div.EmptyMessageBox__content')
         if level is not None and level.get_text().find('등급') > 0:
@@ -383,13 +378,12 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 try:
                     reply_item['date'] = parse_date(reply_item['date']).astimezone(self.timezone).isoformat()
                 except Exception as e:
-                    msg = {
+                    self.logger.error(msg={
                         'level': 'ERROR',
                         'message': 'date parse 에러',
                         'date': reply_item['date'],
                         'exception': str(e),
-                    }
-                    self.logger.error(msg=LogMsg(msg))
+                    })
 
                     del reply_item['date']
             else:
@@ -470,13 +464,12 @@ class NaverCafeCrawler(SeleniumProxyUtils):
 
     def trace_contents(self, bbs_info):
         """모든 컨텐츠를 수집한다."""
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '게시글 본문 조회',
             'cafeId': bbs_info['cafeId'],
             'bbs_name': bbs_info['name']
-        }
-        self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+        })
 
         query = {
             # 'sort': [{
@@ -544,14 +537,13 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 if 'cafeId' not in doc and 'articleId' not in doc:
                     continue
 
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '게시글 본문 조회',
                     'current': '{:,}/{:,}'.format(i, len(doc_list)),
                     'bbs_name': bbs_info['name'],
                     'articleId': str(doc['articleId']),
-                }
-                self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+                })
 
                 self.get_contents(result=doc)
 
@@ -582,11 +574,10 @@ class NaverCafeCrawler(SeleniumProxyUtils):
 
     def restart_driver(self):
         """ """
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '드라이버 재시작',
-        }
-        self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+        })
 
         self.close_driver()
         sleep(5)
@@ -694,13 +685,12 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             start_article = self.get_min_article_id(club_id=bbs_info['cafeId'])
 
         for i in range(max_iter):
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '게시글 목록 조회',
                 'current': '{:,}/{:,}'.format(i, max_iter),
                 'bbs_name': bbs_info['name']
-            }
-            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+            })
 
             is_stop = self.scroll(count=2, start_article=start_article)
             if is_stop is True:
@@ -739,25 +729,23 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 html=self.driver.page_source
             )
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '게시글 목록 조회 에러',
                 'url': bbs_info['url'],
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
             return []
 
         if result is None or len(result) == 0:
             return []
 
         if start_article is None and len(result) > 0 and 'articleid' in result[0]:
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '게시글 목록 조회 성공',
                 'articleid': str(result[0]['articleid'])
-            }
-            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+            })
 
         return result
 

@@ -6,9 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import re
-import sys
 from copy import deepcopy
 from datetime import datetime
 from time import sleep
@@ -22,19 +20,8 @@ from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-logger = logging.getLogger()
-
-logger.setLevel(MESSAGE)
-logger.handlers = [logging.StreamHandler(sys.stderr)]
 
 
 class NaverNewsReplyCrawler(CrawlerBase):
@@ -82,12 +69,11 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         # 날짜별 크롤링 시작
         for dt in date_list:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '날짜',
                 'date': str(dt)
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             for job in self.job_info:
                 if 'split_index' not in job:
@@ -227,8 +213,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
             'news': elastic_news_list
         }
 
-    @staticmethod
-    def get_news(elastic, doc_id):
+    def get_news(self, elastic, doc_id):
         """원문 기사를 가져온다."""
         try:
             return elastic.elastic.get(
@@ -238,12 +223,11 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 doc_type='_doc',
             )['_source']
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '원문 기사 조회 에러',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
         return {}
 
@@ -269,13 +253,12 @@ class NaverNewsReplyCrawler(CrawlerBase):
             query['total'] = news_info['totalPages']
 
             for news in news_info['list']:
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '기사 정보',
                     'news': news,
                     'query': query,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                })
 
                 # 예외 처리
                 if news['url'][:2] == '//':
@@ -318,8 +301,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         return
 
-    @staticmethod
-    def save_reply(elastic_utils, news, doc_id, date):
+    def save_reply(self, elastic_utils, news, doc_id, date):
         """ """
         news['_id'] = doc_id
         news['date'] = date
@@ -327,7 +309,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
         elastic_utils.save_document(document=news)
         elastic_utils.flush()
 
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '문서 저장 성공',
             'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
@@ -335,8 +317,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
                 index=elastic_utils.index,
                 id=doc_id,
             ),
-        }
-        logger.log(level=MESSAGE, msg=LogMsg(msg))
+        })
 
         return
 
@@ -352,13 +333,12 @@ class NaverNewsReplyCrawler(CrawlerBase):
         }
 
         while query['page'] <= query['total']:
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '댓글 조회',
                 'news': news,
                 'query': query,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             reply_list, query['total'] = self.extract_reply_list(
                 query=query,
@@ -384,15 +364,14 @@ class NaverNewsReplyCrawler(CrawlerBase):
             url = url_frame['reply'].format(**query)
             resp = requests.get(url=url, headers=headers)
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '댓글 조회 에러',
                 'url': url,
                 'query': query,
                 'url_frame': url_frame,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             return [], 0
 
@@ -405,13 +384,12 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
             comment_list = callback['result']['commentList']
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '댓글 파싱 에러',
                 'callback': callback,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             return [], 0
 

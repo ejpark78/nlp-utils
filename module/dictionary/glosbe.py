@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from requests.exceptions import ConnectionError
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -37,7 +37,7 @@ class GlosbeCrawler(object):
         self.elastic = None
 
         self.MESSAGE = 25
-        self.logger = self.get_logger()
+        self.logger = Logger()
 
         self.session = requests.Session()
 
@@ -51,18 +51,6 @@ class GlosbeCrawler(object):
 
         self.history = set()
         self.word_list = {}
-
-    def get_logger(self):
-        """ """
-        logging.addLevelName(self.MESSAGE, 'MESSAGE')
-        logging.basicConfig(format='%(message)s')
-
-        self.logger = logging.getLogger()
-
-        self.logger.setLevel(self.MESSAGE)
-        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
-
-        return self.logger
 
     def open_db(self, index):
         """ """
@@ -141,14 +129,13 @@ class GlosbeCrawler(object):
                 if result.get_text().strip() == '':
                     result = None
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': '본문 없음',
                     'exception': str(e),
                     'article': str(result),
                     'soup': str(soup),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
                 result = None
 
@@ -157,13 +144,12 @@ class GlosbeCrawler(object):
     def get_example(self, page, url):
         """ """
         url = '{url}?page={page}&tmmode=MUST'.format(page=page, url=url)
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '예문 조회',
             'page': page,
             'url': url,
-        }
-        self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+        })
 
         try:
             resp = self.session.get(url, timeout=120)
@@ -255,7 +241,7 @@ class GlosbeCrawler(object):
                 self.elastic.save_document(document=doc, delete=False, index=self.env.article)
                 self.elastic.flush()
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '예문 조회',
                 'entry': entry,
@@ -263,8 +249,7 @@ class GlosbeCrawler(object):
                 'example size': len(resp['examples']),
                 'word_list size': len(resp['word_list']),
                 'next_url': resp['next_url'],
-            }
-            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(self.env.sleep)
 

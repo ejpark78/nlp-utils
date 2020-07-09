@@ -5,21 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-
 import urllib3
 from time import sleep
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 from module.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class WebNewsCrawlerTest(WebNewsCrawler):
@@ -68,6 +62,8 @@ class WebNewsCrawlerTest(WebNewsCrawler):
     def re_crawl(self, date_range, query, query_field):
         """elasticsearch의 url 목록을 다시 크롤링한다."""
         from tqdm import tqdm
+
+        logger = Logger()
 
         self.update_config()
 
@@ -120,12 +116,11 @@ class WebNewsCrawlerTest(WebNewsCrawler):
                     post_process_list=job['post_process'],
                 )
 
-                msg = {
+                logger.info(msg={
                     'level': 'INFO',
                     'message': '뉴스 본문 크롤링: 슬립',
                     'sleep_time': self.sleep_time,
-                }
-                logger.info(msg=LogMsg(msg))
+                })
 
                 sleep(self.sleep_time)
 

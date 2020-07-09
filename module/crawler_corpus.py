@@ -19,15 +19,10 @@ from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
 from module.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class CrawlerCorpus(WebNewsCrawler):
@@ -397,12 +392,11 @@ class CrawlerCorpus(WebNewsCrawler):
                     post_process_list=job['post_process'],
                 )
 
-                msg = {
+                self.logger.info(msg={
                     'level': 'INFO',
                     'message': '뉴스 본문 크롤링: 슬립',
                     'sleep_time': self.sleep_time,
-                }
-                logger.info(msg=LogMsg(msg))
+                })
 
                 sleep(self.sleep_time)
 

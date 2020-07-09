@@ -14,7 +14,6 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -36,10 +35,10 @@ class EudicExampleSearch(DictionaryUtils):
 
         status_code = soup.select_one('input#page-status')
         if status_code is None or status_code.has_attr('value') is False:
-            self.logger.error(msg=LogMsg({
+            self.logger.error(msg={
                 'message': 'status 조회 에러',
                 'url': url,
-            }))
+            })
             return None
 
         return status_code['value']
@@ -120,12 +119,12 @@ class EudicExampleSearch(DictionaryUtils):
                 post_data = url_info['post_data']
 
                 for start in range(0, 100000, 20):
-                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(msg={
                         'message': 'request',
                         'entry': entry['entry'],
                         'start': start,
                         'status': status,
-                    }))
+                    })
 
                     post_data['start'] = start
                     post_data['status'] = status
@@ -135,14 +134,14 @@ class EudicExampleSearch(DictionaryUtils):
                         post_data=post_data,
                     )
 
-                    self.logger.log(level=self.MESSAGE, msg=LogMsg({
+                    self.logger.log(msg={
                         'message': 'saved',
                         'entry': entry['entry'],
                         'start': start,
                         'status': status,
                         'length': len(ex_list),
                         'ex_list': [{'english': ex['english'], 'chinese': ex['chinese']} for ex in ex_list[:5]]
-                    }))
+                    })
 
                     if len(ex_list) == 0:
                         break
@@ -156,8 +155,6 @@ class EudicExampleSearch(DictionaryUtils):
     def batch(self):
         """"""
         self.env = self.init_arguments()
-
-        self.logger = self.get_logger()
 
         if self.env.remove_same_example is True:
             self.remove_same_example()

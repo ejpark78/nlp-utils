@@ -15,7 +15,6 @@ from urllib.parse import unquote
 import requests
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
 from module.utils.proxy_utils import SeleniumProxyUtils
 
 
@@ -43,12 +42,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         try:
             chat_list = doc['response']['continuationContents']['liveChatContinuation']['actions']
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'simplify actions 추출 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
             return []
 
@@ -66,14 +64,12 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
                     chat_text = chat_item['liveChatTextMessageRenderer']
                 except Exception as e:
-                    msg = {
+                    self.logger.error(msg={
                         'level': 'ERROR',
                         'message': 'simplify chat text 추출 에러',
                         'exception': str(e),
                         'act': act,
-                    }
-
-                    self.logger.error(msg=LogMsg(msg))
+                    })
                     continue
 
                 item = {
@@ -91,14 +87,12 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
                     dt = datetime.fromtimestamp(times_temp)
                     item['date'] = dt.astimezone(self.timezone).isoformat()
                 except Exception as e:
-                    msg = {
+                    self.logger.error(msg={
                         'level': 'ERROR',
                         'message': 'parse date 에러',
                         'chat_text': chat_text['timestampUsec'],
                         'exception': str(e),
-                    }
-
-                    self.logger.error(msg=LogMsg(msg))
+                    })
 
                 result.append(item)
 
@@ -109,14 +103,13 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         doc_list = self.simplify(doc=doc)
 
         try:
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'live chat 저장',
                 'length': len(doc),
                 'meta': meta,
                 'text': [doc['text'] for doc in doc_list],
-            }
-            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+            })
         except Exception as e:
             self.logger.error(e)
 
@@ -128,12 +121,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
             self.elastic.flush()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'save live chat 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         return
 
@@ -144,14 +136,12 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             if ele:
                 return ele.text.replace('/', '-').replace('\n', '').strip()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'get text 에러',
                 'css': css,
                 'exception': str(e),
-            }
-
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         return 'unknown'
 
@@ -176,13 +166,12 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             if self.check_history(url=url) is True:
                 continue
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'get live chat',
                 'i': '{}/{}'.format(i, len(resp_list)),
                 'url': url,
-            }
-            self.logger.log(level=self.MESSAGE, msg=LogMsg(msg))
+            })
 
             meta = self.get_meta(url=url)
             try:
@@ -191,12 +180,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
                 self.save_live_chat(doc=doc, meta=meta)
             except Exception as e:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'get live chat 에러',
                     'exception': str(e),
-                }
-                self.logger.error(msg=LogMsg(msg))
+                })
 
             i += 1
             sleep(5)
@@ -250,12 +238,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             if ele is not None:
                 ele.click()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '실시간 채팅 다시보기 클릭 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         try:
             xpath = '//*[@id="ytp-id-21"]/div/div[2]/div[8]/div'
@@ -264,12 +251,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             if ele is not None:
                 ele.click()
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '2배속 클릭 에러',
                 'exception': str(e),
-            }
-            self.logger.error(msg=LogMsg(msg))
+            })
 
         return
 

@@ -18,13 +18,11 @@ from cachelib import SimpleCache
 
 from module.config import Config
 from module.utils.html_parser import HtmlParser
-from module.utils.logger import LogMessage as LogMsg
+from module.utils.logger import Logger
 from module.post_process_utils import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-logger = logging.getLogger()
 
 
 class CrawlerBase(object):
@@ -65,6 +63,8 @@ class CrawlerBase(object):
         # 날짜 범위
         self.date_range = None
         self.page_range = None
+
+        self.logger = Logger()
 
     def update_date_range(self):
         """날짜를 갱신한다."""
@@ -122,14 +122,13 @@ class CrawlerBase(object):
         except Exception as e:
             sleep_time = 10
 
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html 페이지 조회 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             sleep(sleep_time)
             return None
@@ -139,14 +138,13 @@ class CrawlerBase(object):
         if status_code // 100 != 2:
             sleep_time = 10
 
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'url 조회 상태 코드 에러',
                 'url_info': url_info,
                 'sleep_time': sleep_time,
                 'status_code': status_code,
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             sleep(sleep_time)
             return None
@@ -201,18 +199,16 @@ class CrawlerBase(object):
 
         return
 
-    @staticmethod
-    def check_doc_id(doc_id, elastic_utils, url, index, doc_history, reply_info=None):
+    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history, reply_info=None):
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
-            msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'message': '중복 문서, 건너뜀',
                 'doc_id': doc_id,
                 'url': url,
-            }
-            logger.info(msg=LogMsg(msg))
+            })
             return True
 
         # 문서가 있는지 조회
@@ -238,13 +234,12 @@ class CrawlerBase(object):
 
         doc_history[doc_id] = 1
 
-        msg = {
+        self.logger.info(msg={
             'level': 'INFO',
             'message': 'elasticsearch 에 존재함, 건너뜀',
             'doc_id': doc_id,
             'url': url,
-        }
-        logger.info(msg=LogMsg(msg))
+        })
 
         return True
 

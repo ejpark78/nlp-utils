@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 
 import requests
 from bs4 import BeautifulSoup
@@ -14,11 +13,6 @@ from time import sleep
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import LogMessage as LogMsg
-
-logger = logging.getLogger()
-
-MESSAGE = 25
 
 
 class TermDetail(CrawlerBase):
@@ -99,13 +93,12 @@ class TermDetail(CrawlerBase):
         )
 
         if is_skip is True:
-            msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'message': 'skip',
                 'index': self.job_info['index'],
                 'doc_id': doc_id,
-            }
-            logger.info(msg=LogMsg(msg))
+            })
 
             return True
 
@@ -118,12 +111,11 @@ class TermDetail(CrawlerBase):
                 timeout=60,
             )
         except Exception as e:
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '상세 페이지 조회 에러',
                 'exception': str(e),
-            }
-            logger.error(msg=LogMsg(msg))
+            })
 
             sleep(10)
             return
@@ -139,13 +131,12 @@ class TermDetail(CrawlerBase):
             base_url=request_url,
         )
 
-        msg = {
+        self.logger.info(msg={
             'level': 'INFO',
             'message': '상세 페이지',
             'doc_id': doc_id,
             'request_url': request_url,
-        }
-        logger.info(msg=LogMsg(msg))
+        })
 
         # 후처리 작업 실행
         self.post_process_utils.insert_job(
@@ -215,7 +206,7 @@ class TermDetail(CrawlerBase):
             if 'title' in doc:
                 msg['title'] = doc['title']
 
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            self.logger.log(msg=msg)
 
         # 질문 목록에서 완료 목록으로 이동
         elastic_utils.move_document(

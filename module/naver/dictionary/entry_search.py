@@ -13,7 +13,6 @@ import requests
 import urllib3
 
 from module.dictionary_utils import DictionaryUtils
-from module.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -88,12 +87,12 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
             item_list = resp['searchResultMap']['searchResultListMap']['WORD']['items']
 
-            self.logger.log(level=self.MESSAGE, msg=LogMsg({
+            self.logger.log(msg={
                 'message': 'extend entry',
                 'entry': entry,
                 'length': len(item_list),
                 'current': '{:,}/{:,}'.format(page, max_page),
-            }))
+            })
 
             page += 1
             for item in item_list:
@@ -317,10 +316,10 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
         i = 0
 
         for entry in entry_list:
-            self.logger.log(level=self.MESSAGE, msg=LogMsg({
+            self.logger.log(msg={
                 'entry': entry['entry'],
                 'current': '{:,}/{:,}'.format(i, len(entry_list)),
-            }))
+            })
 
             i += 1
 

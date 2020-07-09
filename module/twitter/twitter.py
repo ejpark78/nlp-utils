@@ -5,24 +5,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 from time import sleep
 
 import requests
 import urllib3
 from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
-from module.utils.logger import LogMessage as LogMsg
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
-
-MESSAGE = 25
-
-logger = logging.getLogger()
 
 
 class TwitterUtils(CrawlerBase):
@@ -49,12 +43,11 @@ class TwitterUtils(CrawlerBase):
             # 시작
             self.batch()
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '슬립',
                 'sleep_time': daemon_info['sleep'],
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(daemon_info['sleep'])
 
@@ -116,12 +109,11 @@ class TwitterUtils(CrawlerBase):
     def get_reply(self, screen_name, tweet):
         """트윗에 대한 댓글을 조회한다."""
         if isinstance(tweet, str):
-            msg = {
+            self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '트윗 댓글 조회 에러',
                 'tweet': tweet,
-            }
-            logger.error(msg=LogMsg(msg))
+            })
             return
 
         headers = {
@@ -143,24 +135,22 @@ class TwitterUtils(CrawlerBase):
             reply = resp.json()
         except Exception as e:
             if resp is not None:
-                msg = {
+                self.logger.error(msg={
                     'level': 'ERROR',
                     'message': '트윗 댓글 조회: resp 가 없음',
                     'exception': str(e),
-                }
-                logger.error(msg=LogMsg(msg))
+                })
 
             self.max_error_count -= 1
 
-            msg = {
+            self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '트윗 댓글 조회: 슬립',
                 'max_error_count': self.max_error_count,
                 'screen_name': screen_name,
                 'url': url,
                 'sleep': 10,
-            }
-            logger.log(level=MESSAGE, msg=LogMsg(msg))
+            })
 
             sleep(10)
             return
@@ -219,14 +209,13 @@ class TwitterUtils(CrawlerBase):
                 if 'reply' in tweet:
                     reply_list = tweet['reply']
 
-                msg = {
+                self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '트윗 저장 성공',
                     'id': tweet['id'],
                     'text': tweet['text'],
                     'reply': reply_list,
-                }
-                logger.log(level=MESSAGE, msg=LogMsg(msg))
+                })
 
                 # 문서 저장
                 elastic_utils.save_document(document=tweet)
@@ -303,12 +292,11 @@ class TwitterUtils(CrawlerBase):
 
     def sleep(self):
         """잠시 쉰다."""
-        msg = {
+        self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '슬립',
             'sleep_time': self.sleep_time
-        }
-        logger.log(level=MESSAGE, msg=LogMsg(msg))
+        })
 
         sleep(self.sleep_time)
         return
