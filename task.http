@@ -21,7 +21,7 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/corpus-bitext-ted-south_asia-koja
+DELETE {{host}}/crawler-ted
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
