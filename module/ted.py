@@ -6,40 +6,161 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-from os import makedirs
+import re
+from glob import glob
+from os import makedirs, unlink
 from os.path import isdir, isfile
 from time import sleep
 from urllib.parse import urljoin
 
+import pytz
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
+from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.logger import Logger
-from glob import glob
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class TedCrawler(object):
+class TedCorpusUtils(object):
     """ """
 
     def __init__(self):
         """생성자"""
         super().__init__()
 
-        self.filename = {
-            'url_list': 'data/ted/url-list.json',
-            'talk_list': 'data/ted/talk-list.json',
-        }
+        self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.env = self.init_arguments()
+        self.index = 'crawler-ted'
+
+        self.elastic = None
+
+    def save_talks(self, talks):
+        """ """
+        if self.elastic is None:
+            return
+
+        for doc in talks:
+            doc['_id'] = '{}-{}'.format(doc['talk_id'], doc['time'])
+
+            self.elastic.save_document(document=doc, index=self.index)
+
+        self.elastic.flush()
+
+        return
+
+    @staticmethod
+    def read_languages(talk_id):
+        """ """
+        filter_lang = {'ko', 'en', 'id', 'vi', 'ja', 'zh-tw', 'zh-cn'}
+
+        result = {}
+        lang_list = []
+        for filename in tqdm(glob('{}/*.json'.format(talk_id))):
+            if 'talk-info' in filename:
+                continue
+
+            lang = filename.split('/')[-1].replace('.json', '')
+            if lang not in filter_lang:
+                continue
+
+            with open(filename, 'r') as fp:
+                content = ''.join(fp.readlines())
+                if content.strip() == '':
+                    continue
+
+                doc = json.loads(content)
+
+            lang_list.append(lang)
+
+            if 'paragraphs' not in doc:
+                if 'error' in doc:
+                    # unlink(filename)
+                    print('error', doc)
+
+                continue
+
+            for paragraphs in doc['paragraphs']:
+                for item in paragraphs['cues']:
+
+                    s_id = int(item['time'])
+                    if s_id not in result:
+                        result[s_id] = {}
+
+                    result[s_id][lang] = item['text'].strip().replace('\n', ' ')
+                    result[s_id]['time'] = s_id
+                    result[s_id]['talk_id'] = talk_id.split('/')[-1]
+
+        return result, lang_list
+
+    def insert_talks(self):
+        """ """
+        self.elastic = ElasticSearchUtils(
+            host='https://corpus.ncsoft.com:9200',
+            index=self.index,
+            http_auth='elastic:nlplab',
+        )
+
+        path = 'data/ted/*'
+        for talk_id in tqdm(glob(path)):
+            if isdir(talk_id) is False:
+                continue
+
+            sentences, lang_list = self.read_languages(talk_id=talk_id)
+            if len(lang_list) < 2:
+                continue
+
+            merged = []
+
+            # marge english text
+            for s_id, doc in sorted(sentences.items(), key=lambda x: x[0]):
+                if len(merged) == 0:
+                    merged.append(doc)
+                    continue
+
+                prev = merged[-1]
+                if 'en' in prev and len(prev['en']) > 0 and re.match(r'[a-z,:;\-]', prev['en'][-1]) is not None:
+                    for lang in lang_list:
+                        if lang in merged[-1] and lang in doc:
+                            merged[-1][lang] += ' ' + doc[lang]
+                            continue
+
+                        if lang not in doc:
+                            doc[lang] = ''
+
+                        merged[-1][lang] = doc[lang]
+
+                    continue
+
+                merged.append(doc)
+
+            self.save_talks(talks=merged)
+
+        return
+
+
+class TedCrawlerUtils(TedCorpusUtils):
+    """ """
+
+    def __init__(self):
+        """생성자"""
+        super().__init__()
+
+        self.env = None
 
         self.logger = Logger()
 
         self.session = requests.Session()
         self.session.verify = False
+
+        self.filename = {
+            'url_list': 'data/ted/url-list.json',
+            'talk_list': 'data/ted/talk-list.json',
+        }
 
         self.page_url = 'https://www.ted.com/talks?page={page}'
         self.language_url = 'https://www.ted.com/talks/{talk_id}/transcript.json?language={languageCode}'
@@ -57,11 +178,42 @@ class TedCrawler(object):
 
         return None
 
+    def parse_talk_list(self, url):
+        """ """
+        resp = self.get_html(url=url)
+        if resp is None:
+            sleep(self.env.sleep)
+            return
+
+        soup = BeautifulSoup(resp.content, 'lxml')
+
+        result = [urljoin(url, x['href']) for x in soup.select('div.col a.ga-link') if x.has_attr('href')]
+
+        return list(set(result))
+
+    def get_max_page(self, url):
+        """ """
+        resp = self.get_html(url=url)
+        if resp is None:
+            sleep(self.env.sleep)
+            return -1
+
+        soup = BeautifulSoup(resp.content, 'lxml')
+
+        page_list = soup.select('div.pagination a')
+
+        return max([int(x.get_text()) for x in page_list if x.get_text().isdecimal()])
+
     def get_language(self, talk_id, item):
         """ """
         path = 'data/ted/{}'.format(talk_id)
 
         item.update({'talk_id': talk_id})
+
+        # 임시
+        filter_lang = {'ko', 'en', 'id', 'vi', 'ja', 'zh-tw', 'zh-cn'}
+        if item['languageCode'] not in filter_lang:
+            return False
 
         filename = '{}/{}.json'.format(path, item['languageCode'])
         if isfile(filename) is True:
@@ -78,9 +230,13 @@ class TedCrawler(object):
             sleep(self.env.sleep)
             return False
 
+        content = resp.json()
+        if 'error' in content:
+            return False
+
         try:
             with open(filename, 'w') as fp:
-                fp.write(json.dumps(resp.json(), ensure_ascii=False, indent=4))
+                fp.write(json.dumps(content, ensure_ascii=False, indent=4))
 
             self.logger.log({
                 'method': 'get_language',
@@ -96,6 +252,7 @@ class TedCrawler(object):
                 'filename': filename,
                 'e': str(e),
             })
+            return False
 
         return True
 
@@ -169,31 +326,31 @@ class TedCrawler(object):
 
         return result
 
-    def parse_talk_list(self, url):
+    def update_talk_list(self):
         """ """
-        resp = self.get_html(url=url)
-        if resp is None:
-            sleep(self.env.sleep)
-            return
+        talk_list = {}
+        for f in glob('data/ted/*/talk-info.json'):
+            print(f)
 
-        soup = BeautifulSoup(resp.content, 'lxml')
+            with open(f, 'r') as fp:
+                info = json.load(fp=fp)
 
-        result = [urljoin(url, x['href']) for x in soup.select('div.col a.ga-link') if x.has_attr('href')]
+            talk_list[info['url']] = info['talk_id']
 
-        return list(set(result))
+        with open(self.filename['talk_list'], 'w') as fp:
+            fp.write(json.dumps(talk_list, ensure_ascii=False, indent=4))
 
-    def get_max_page(self, url):
-        """ """
-        resp = self.get_html(url=url)
-        if resp is None:
-            sleep(self.env.sleep)
-            return -1
+        return
 
-        soup = BeautifulSoup(resp.content, 'lxml')
 
-        page_list = soup.select('div.pagination a')
+class TedCrawler(TedCrawlerUtils):
+    """ """
 
-        return max([int(x.get_text()) for x in page_list if x.get_text().isdecimal()])
+    def __init__(self):
+        """생성자"""
+        super().__init__()
+
+        self.env = self.init_arguments()
 
     def trace_language(self):
         """ """
@@ -226,6 +383,7 @@ class TedCrawler(object):
         if len(url_list) == 0:
             with open(self.filename['url_list'], 'r') as fp:
                 url_list = json.load(fp=fp)
+                url_list = list(set(url_list))
 
         for i, u in enumerate(url_list):
             self.logger.log({
@@ -236,7 +394,7 @@ class TedCrawler(object):
 
             if u in ted_list:
                 self.logger.log({
-                    'message': 'skip talk',
+                    'message': 'skip exists talk',
                     'talk_url': u,
                 })
                 continue
@@ -251,10 +409,10 @@ class TedCrawler(object):
 
             ted_list[u] = ted['talk_id']
 
-            sleep(self.env.sleep)
+            with open(self.filename['talk_list'], 'w') as fp:
+                fp.write(json.dumps(ted_list, ensure_ascii=False, indent=4))
 
-        with open(self.filename['talk_list'], 'w') as fp:
-            fp.write(json.dumps(ted_list, ensure_ascii=False, indent=4))
+            sleep(self.env.sleep)
 
         return
 
@@ -262,7 +420,9 @@ class TedCrawler(object):
         """ """
         max_page = self.get_max_page(url='https://www.ted.com/talks')
 
-        url_list = []
+        with open(self.filename['url_list'], 'r') as fp:
+            url_list = json.load(fp=fp)
+
         for page in range(max_page, 0, -1):
             url = self.page_url.format(page=page)
 
@@ -277,30 +437,18 @@ class TedCrawler(object):
             sleep(self.env.sleep)
 
             with open(self.filename['url_list'], 'w') as fp:
+                url_list = list(set(url_list))
                 fp.write(json.dumps(url_list, ensure_ascii=False, indent=4))
 
         self.trace_talks(url_list=url_list)
 
         return
 
-    def talk_list(self):
-        """ """
-        talk_list = {}
-        for f in glob('data/ted/*/talk-info.json'):
-            print(f)
-
-            with open(f, 'r') as fp:
-                info = json.load(fp=fp)
-
-            talk_list[info['url']] = info['talk_id']
-
-        with open(self.filename['talk_list'], 'w') as fp:
-            fp.write(json.dumps(talk_list, ensure_ascii=False, indent=4))
-
-        return
-
     def batch(self):
         """"""
+        if self.env.update_talk_list is True:
+            self.update_talk_list()
+
         if self.env.list is True:
             self.trace_list()
 
@@ -309,6 +457,9 @@ class TedCrawler(object):
 
         if self.env.language is True:
             self.trace_language()
+
+        if self.env.insert_talks is True:
+            self.insert_talks()
 
         return
 
@@ -322,6 +473,9 @@ class TedCrawler(object):
         parser.add_argument('--list', action='store_true', default=False)
         parser.add_argument('--talks', action='store_true', default=False)
         parser.add_argument('--language', action='store_true', default=False)
+
+        parser.add_argument('--insert_talks', action='store_true', default=False)
+        parser.add_argument('--update_talk_list', action='store_true', default=False)
 
         parser.add_argument('--sleep', default=5, type=int)
 
