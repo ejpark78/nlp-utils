@@ -45,23 +45,23 @@
 //  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
 //}
 
-{
-  "cafeId": 29774430,
-  "name": "증기각도기",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 29774430,
+//  "name": "증기각도기",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 
 // 모바일
-{
-  "cafeId": 27738104,
-  "name": "샤오미스토리",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 24507451,
-  "name": "SBC 커뮤니티",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 27738104,
+//  "name": "샤오미스토리",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 24507451,
+//  "name": "SBC 커뮤니티",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 {
   "cafeId": 23370764,
   "name": "디벨로이드",

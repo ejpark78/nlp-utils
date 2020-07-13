@@ -11,12 +11,16 @@ from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
 
+import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
 from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.logger import Logger
 from module.utils.proxy_utils import SeleniumProxyUtils
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class NaverCafeCrawler(SeleniumProxyUtils):
