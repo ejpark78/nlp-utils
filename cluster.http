@@ -14,7 +14,7 @@ Accept: application/text
 
 ###
 
-POST {{host}}/_cluster/reroute
+POST {{host}}/_cluster/reroute?retry_failed=true
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
