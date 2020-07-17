@@ -21,7 +21,7 @@ Accept: application/text
 
 ###
 
-GET {{host}}/{{index}}/_search
+GET {{host}}/crawler-facebook-ko/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
@@ -31,9 +31,9 @@ Accept: application/json
     "bool": {
       "must": {
         "range": {
-          "date": {
-            "gte": "2018-11-01 00:00:00",
-            "lte": "2015-04-17 00:00:00",
+          "curl_date": {
+            "gte": "2020-07-15 00:00:00",
+            "lte": "2020-07-20 00:00:00",
             "format": "yyyy-MM-dd HH:mm:ss"
           }
         }
