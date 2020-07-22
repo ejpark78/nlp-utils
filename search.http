@@ -431,40 +431,211 @@ Accept: application/json
 
 ###
 
-GET {{host}}/crawler-bbs-naver/_search
+GET {{host}}/log_mtdemo_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 {
   "track_total_hits": true,
-  "_source": [
-    "title",
-    "blog_name",
-    "date",
-    "content"
-  ],
-  "sort": [
-    {
-      "date": "desc"
-    }
-  ],
   "query": {
     "bool": {
       "must": [
         {
-          "match": {
-            "blog_name": "쿠치레 블로그"
-          }
-        },
-        {
-          "exists": {
-            "field": "html_content"
+          "nested": {
+            "path": "meta_info",
+            "query": {
+              "exists": {
+                "field": "meta_info.hit_tmpl_ver"
+              }
+            }
           }
         }
       ]
     }
   }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": []
+    }
+  },
+  "aggregations": {
+    "by_date": {
+      "date_histogram": {
+        "field": "client_info.request_date",
+        "keyed": true,
+        "time_zone": "+09:00",
+        "calendar_interval": "day"
+      },
+      "aggregations": {
+        "by_method": {
+          "nested": {
+            "path": "meta_info"
+          },
+          "aggregations": {
+            "method": {
+              "terms": {
+                "field": "meta_info.translation_method"
+              },
+              "aggregations": {
+                "by_ver": {
+                  "terms": {
+                    "field": "meta_info.hit_tmpl_ver"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "by_date": {
+      "aggregations": {
+        "by_method": {
+          "aggregations": {
+            "method": {
+              "aggregations": {
+                "by_ver": {
+                  "terms": {
+                    "field": "meta_info.hit_tmpl_ver"
+                  }
+                }
+              },
+              "terms": {
+                "field": "meta_info.translation_method"
+              }
+            }
+          },
+          "nested": {
+            "path": "meta_info"
+          }
+        }
+      },
+      "date_histogram": {
+        "calendar_interval": "day",
+        "field": "client_info.request_date",
+        "keyed": true,
+        "time_zone": "+09:00"
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "match": {
+            "client_info.game_code": "l2m-ko"
+          }
+        },
+        {
+          "match": {
+            "source_lang": "ko"
+          }
+        },
+        {
+          "match": {
+            "target_lang": "en"
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "format": "yyyy-MM-dd",
+              "gte": "2020-07-22",
+              "lte": "2020-07-22"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "nested": {
+            "path": "meta_info",
+            "query": {
+              "match": {
+                "meta_info.translation_method": "tm"
+              }
+            }
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-07-14T08:10:57.933Z",
+              "lte": "2020-07-22T08:10:57.933Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "client_info.request_date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
 }
 
 ###
