@@ -597,6 +597,36 @@ Content-Type: application/json
 Accept: application/json
 
 {
+  "aggregations": {
+    "by_date": {
+      "aggregations": {
+        "by_method": {
+          "aggregations": {
+            "method": {
+              "aggregations": {
+                "by_ver": {
+                  "terms": {
+                    "field": "meta_info.hit_tmpl_ver"
+                  }
+                }
+              },
+              "terms": {
+                "field": "meta_info.translation_method"
+              }
+            }
+          },
+          "nested": {
+            "path": "meta_info"
+          }
+        }
+      },
+      "date_histogram": {
+        "fixed_interval": "15m",
+        "field": "client_info.request_date",
+        "time_zone": "+09:00"
+      }
+    }
+  },
   "query": {
     "bool": {
       "filter": [
@@ -604,38 +634,21 @@ Accept: application/json
           "match": {
             "option.save_tm": true
           }
-        },
-        {
-          "nested": {
-            "path": "meta_info",
-            "query": {
-              "match": {
-                "meta_info.translation_method": "tm"
-              }
-            }
-          }
         }
       ],
       "must": [
         {
           "range": {
             "client_info.request_date": {
-              "gte": "2020-07-14T08:10:57.933Z",
-              "lte": "2020-07-22T08:10:57.933Z"
+              "gte": "2020-07-15T09:21:53.479Z",
+              "lte": "2020-07-22T09:21:53.479Z"
             }
           }
         }
       ]
     }
   },
-  "sort": [
-    {
-      "client_info.request_date": {
-        "order": "desc"
-      }
-    }
-  ],
-  "track_total_hits": true
+  "size": 0
 }
 
 ###
