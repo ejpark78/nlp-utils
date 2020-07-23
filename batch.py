@@ -18,7 +18,6 @@ from module.naver.terms.detail import TermDetail as NaverTermDetail
 from module.naver.terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
-from module.udemy import UdemyUtils
 from module.web_news import WebNewsCrawler
 from module.web_news_test import WebNewsCrawlerTest
 
@@ -140,11 +139,6 @@ def main():
         else:
             TwitterUtils().batch()
 
-        return
-
-    # udemy
-    if args.job_id == 'udemy':
-        UdemyUtils().batch()
         return
 
     # 재 크롤링: parsing 정보가 변경되었을 경우

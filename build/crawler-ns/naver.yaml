@@ -74,7 +74,7 @@ spec:
             - name: CONSUMER_EXCHANGE_NAME
               value: corpus_pipeline
             - name: CONSUMER_HOST
-              value: mq.crawler-naver.svc.cluster.local
+              value: mq.crawler.svc.cluster.local
             - name: CONSUMER_PORT
               value: "35672"
             - name: CONSUMER_USER_NAME

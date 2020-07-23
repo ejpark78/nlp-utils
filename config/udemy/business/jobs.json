@@ -1,0 +1,63 @@
+{
+  "_id": "udemy",
+  "sleep": 2,
+  "token": "jpMt9j3QqdyV50lxmbjxXHUtUSVquLCrK9GtoyyG",
+  "data_path": "data/udemy-business",
+  "category_name": "paid",
+  "url_info": {
+    "overview": {
+      "url": "https://ncsoft.udemy.com/{home}/learn/v4/overview"
+    },
+    "content": {
+      "url": "https://ncsoft.udemy.com/{content}/learn/v4/content"
+    },
+    "list": {
+      "url": "https://ncsoft.udemy.com/api-2.0/courses/{course_id}/cached-subscriber-curriculum-items/?{query}",
+      "query": [
+        "page_size=1400",
+        "fields[lecture]=title,object_index,is_published,sort_order,created,asset,supplementary_assets,is_free",
+        "fields[quiz]=title,object_index,is_published,sort_order,type,",
+        "fields[practice]=title,object_index,is_published,sort_order,",
+        "fields[chapter]=title,object_index,is_published,sort_order,",
+        "fields[asset]=title,filename,asset_type,status,time_estimation,is_external,"
+      ]
+    },
+    "asset": {
+      "article": "https://ncsoft.udemy.com/api-2.0/assets/{asset_id}?fields[asset]=@min,status,delayed_asset_message,processing_errors,body",
+      "video": "https://ncsoft.udemy.com/api-2.0/assets/{asset_id}?fields[asset]=@min,status,delayed_asset_message,processing_errors,time_estimation,stream_urls,thumbnail_url,captions,thumbnail_sprite&fields[caption]=@default,is_translation",
+      "file": "https://ncsoft.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{asset_id}/?fields[asset]=download_urls",
+      "external_link": "https://ncsoft.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{asset_id}/?fields[asset]=external_url"
+    },
+    "announcements": {
+      "url": "https://ncsoft.udemy.com/api-2.0/courses/{course_id}/announcements/?{query}",
+      "query": [
+        "courseId=1034400&is_promotional=false",
+        "fields[course_announcement]=@default,comment_thread",
+        "fields[announcement_group]=@default,user",
+        "fields[comment_thread]=@min,num_comments",
+        "fields[user]=@min,image_50x50,initials,url"
+      ]
+    },
+    "discussions": {
+      "url": "https://ncsoft.udemy.com/api-2.0/courses/{course_id}/discussions?{query}",
+      "query": [
+        "fields%5Bcourse%5D=id,published_title",
+        "fields%5Bcourse_discussion%5D=@default,user,course,related_object,is_following,is_instructor,num_replies,created,num_follows",
+        "fields%5Blecture%5D=@min,title,object_index",
+        "fields%5Bpractice%5D=@min,title,object_index",
+        "fields%5Bquiz%5D=@min,title,object_index",
+        "fields%5Buser%5D=@min,image_50x50,initials,url",
+        "ordering=-is_me,-created",
+        "page=1",
+        "page_size=15"
+      ]
+    }
+  },
+  "paid": [
+    {
+      "id": 2373814,
+      "name": "PyTorch for Deep Learning with Python Bootcamp",
+      "home": "pytorch-for-deep-learning-with-python-bootcamp"
+    }
+  ]
+}

@@ -79,8 +79,8 @@ class TedCorpusUtils(object):
 
             if 'paragraphs' not in doc:
                 if 'error' in doc:
-                    # unlink(filename)
-                    print('error', doc)
+                    unlink(filename)
+                    print('error', doc, 'delete', filename)
 
                 continue
 
@@ -171,7 +171,7 @@ class TedCrawlerUtils(TedCorpusUtils):
             return self.session.get(url=url, verify=False, timeout=120)
         except Exception as e:
             self.logger.error({
-                'method': 'get_html',
+                'ERROR': 'get_html',
                 'url': url,
                 'e': str(e),
             })
@@ -210,10 +210,10 @@ class TedCrawlerUtils(TedCorpusUtils):
 
         item.update({'talk_id': talk_id})
 
-        # 임시
-        filter_lang = {'ko', 'en', 'id', 'vi', 'ja', 'zh-tw', 'zh-cn'}
-        if item['languageCode'] not in filter_lang:
-            return False
+        # 1차
+        # filter_lang = {'ko', 'en', 'id', 'vi', 'ja', 'zh-tw', 'zh-cn'}
+        # if item['languageCode'] not in filter_lang:
+        #     return False
 
         filename = '{}/{}.json'.format(path, item['languageCode'])
         if isfile(filename) is True:
@@ -230,29 +230,30 @@ class TedCrawlerUtils(TedCorpusUtils):
             sleep(self.env.sleep)
             return False
 
-        content = resp.json()
-        if 'error' in content:
-            return False
-
         try:
-            with open(filename, 'w') as fp:
-                fp.write(json.dumps(content, ensure_ascii=False, indent=4))
-
-            self.logger.log({
-                'method': 'get_language',
-                'url': url,
-                'status_code': resp.status_code,
-                'filename': filename,
-            })
+            content = resp.json()
+            if 'error' in content:
+                return False
         except Exception as e:
             self.logger.error({
-                'method': 'get_language',
+                'ERROR': 'get_language',
                 'url': url,
                 'status_code': resp.status_code,
                 'filename': filename,
+                'resp': resp.text,
                 'e': str(e),
             })
             return False
+
+        with open(filename, 'w') as fp:
+            fp.write(json.dumps(content, ensure_ascii=False, indent=4))
+
+        self.logger.log({
+            'method': 'get_language',
+            'url': url,
+            'status_code': resp.status_code,
+            'filename': filename,
+        })
 
         return True
 
@@ -268,7 +269,7 @@ class TedCrawlerUtils(TedCorpusUtils):
         tags = soup.find_all('script', {'data-spec': 'q'})
         if len(tags) == 0:
             self.logger.error({
-                'method': 'get_talk',
+                'ERROR': 'get_talk',
                 'url': url,
                 'status_code': resp.status_code,
             })
@@ -281,7 +282,7 @@ class TedCrawlerUtils(TedCorpusUtils):
 
         if ted is None:
             self.logger.error({
-                'method': 'get_talk',
+                'ERROR': 'get_talk',
                 'url': url,
                 'status_code': resp.status_code,
                 'ted': ted,
@@ -402,7 +403,7 @@ class TedCrawler(TedCrawlerUtils):
             ted = self.get_talk(url=u + '/transcript')
             if ted is None:
                 self.logger.error({
-                    'message': 'empty ted',
+                    'ERROR': 'empty ted',
                     'url': u,
                 })
                 continue
@@ -477,10 +478,13 @@ class TedCrawler(TedCrawlerUtils):
         parser.add_argument('--insert_talks', action='store_true', default=False)
         parser.add_argument('--update_talk_list', action='store_true', default=False)
 
-        parser.add_argument('--sleep', default=5, type=int)
+        parser.add_argument('--sleep', default=15, type=int)
 
         return parser.parse_args()
 
 
 if __name__ == '__main__':
     TedCrawler().batch()
+
+# find data/ted -size -2k -empty
+# find data/ted -size -2k -empty -delete

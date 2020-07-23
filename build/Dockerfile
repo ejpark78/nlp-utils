@@ -51,7 +51,7 @@ RUN echo && echo "# pip 저장소 설정" \
 		echo "index-url = ${PIP_MIRROR}"; \
 		echo "trusted-host = ${PIP_TRUST_HOST}"; \
 	} > ~/.pip/pip.conf \
-    && pip3 install --no-cache-dir -r /usr/local/app/requirements.txt
+    && pip3 install --no-cache-dir -r ${APP_HOME}/requirements.txt
 
 WORKDIR ${APP_HOME}
 

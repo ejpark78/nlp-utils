@@ -3927,2184 +3927,2184 @@
 //      },
 //      "page": "MongoDB"
 //    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어",
-        "name": "Elastic"
-      },
-      "page": "elastic.co"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "앱 페이지",
-        "name": "블라인드"
-      },
-      "page": "TEAMBLIND"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "대학교",
-        "name": "충남대학교"
-      },
-      "page": "CNUNOW"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "Kevin TV KR"
-      },
-      "page": "KevTVkr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "학력",
-        "name": "패스트캠퍼스"
-      },
-      "page": "fastcampus"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "유아용품/어린이용품",
-        "name": "스토케 코리아"
-      },
-      "page": "StokkeKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "웹사이트",
-        "name": "Kaggle"
-      },
-      "page": "kaggle"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 및 인터넷 웹사이트",
-        "name": "SK플래닛 T아카데미"
-      },
-      "page": "skptacademy"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "학력",
-        "name": "코딩클럽 Coding Club"
-      },
-      "page": "codingclubs"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 및 인터넷 웹사이트",
-        "name": "꿈많은청년들"
-      },
-      "page": "DreamYoungs"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "지역 비즈니스",
-        "name": "모두의연구소"
-      },
-      "page": "lab4all"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "ArxivSanityKR"
-      },
-      "page": "ArxivSanityKr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "테리의 딥러닝 토크"
-      },
-      "page": "deeplearningtalk"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "블로거",
-        "name": "아낌 없이 주는 나무 - 책 무료 증정"
-      },
-      "page": "givingtrees79"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "Amazon Web Services"
-      },
-      "page": "amazonwebservices.ko"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "퇴사학교"
-      },
-      "page": "asaptschool"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "방송 및 미디어 제작 회사",
-        "name": "여행에 미치다"
-      },
-      "page": "travelholic1"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 및 인터넷 웹사이트",
-        "name": "좋은 지식 공유 Popit"
-      },
-      "page": "popitkr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "엔씨소프트"
-      },
-      "page": "ncsoft.official"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 회사",
-        "name": "HCLT 2016"
-      },
-      "page": "hclt2016"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "Weekly Python KR"
-      },
-      "page": "weeklypythonkr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "비영리 단체",
-        "name": "싸이버스"
-      },
-      "page": "thepsybus"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "PyCon Korea"
-      },
-      "page": "pyconkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "엑셈 exem"
-      },
-      "page": "Hiexem"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "Google For Startups"
-      },
-      "page": "GoogleforStartupsKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "영화",
-        "name": "The Present"
-      },
-      "page": "thepresentshort"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "JetBrains"
-      },
-      "page": "JetBrains"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "채용정보",
-        "name": "로켓펀치"
-      },
-      "page": "rocketpunch.inc"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어",
-        "name": "MIUI ROM"
-      },
-      "page": "miui.global.official"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "Mycroft AI"
-      },
-      "page": "aiforeveryone"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "redmine.kr"
-      },
-      "page": "redmine.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "자동차 회사",
-        "name": "르노삼성자동차 Renault Samsung Motors"
-      },
-      "page": "RenaultSamsungM"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "Facebook for Developers"
-      },
-      "page": "FacebookforDevelopers"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "블루핵"
-      },
-      "page": "bluehackinc"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "나는프로그래머다"
-      },
-      "page": "iamprogrammer.io"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "Dable 데이블"
-      },
-      "page": "teamdable"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "축제",
-        "name": "무언가"
-      },
-      "page": "moounga"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "NAVER LABS"
-      },
-      "page": "naverlabs"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "빅파이: 빅데이터를 위한 파이썬"
-      },
-      "page": "bigpython"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어",
-        "name": "쩌는 영상&사진"
-      },
-      "page": "gogoon11"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "작가",
-        "name": "신준모 성공연구소"
-      },
-      "page": "SuccessJM"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "허프포스트코리아"
-      },
-      "page": "huffpostkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "작가",
-        "name": "딸바보가 그렸어"
-      },
-      "page": "dalbabo"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "미래채널 MyF"
-      },
-      "page": "makeyourfutures"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "학력",
-        "name": "IELTS IDP Education"
-      },
-      "page": "ieltskorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "Analytics Magazine"
-      },
-      "page": "hubspotkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "아웃도어 및 스포츠 용품 회사",
-        "name": "Win&Win Black"
-      },
-      "page": "wwarcheryblack"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "아웃도어 및 스포츠 용품 회사",
-        "name": "Hoyt Archery"
-      },
-      "page": "HoytBowhunting"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "아웃도어 및 스포츠 용품 회사",
-        "name": "Mathews Archery, Inc."
-      },
-      "page": "mathewsinc"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "양궁장",
-        "name": "PSE Archery"
-      },
-      "page": "OfficialPSEArchery"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "도서",
-        "name": "북촌bookchon"
-      },
-      "page": "thebookchon"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "뉴스 및 미디어 웹사이트",
-        "name": "얼리어답터"
-      },
-      "page": "earlyadopterpage"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "개인 블로그",
-        "name": "4four.us"
-      },
-      "page": "4fourus-128273787283644"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "제품/서비스",
-        "name": "소다몬_sodamon"
-      },
-      "page": "SODAMON.KOREA"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "사이언스북스"
-      },
-      "page": "ScienceBooksFB"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "Sophia"
-      },
-      "page": "forawiserlife"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "헬스/피트니스 센터",
-        "name": "다이어터"
-      },
-      "page": "app.dieter"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "뉴스 및 미디어 웹사이트",
-        "name": "오마이뉴스"
-      },
-      "page": "OhmyNewsKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "유통 기업",
-        "name": "홈플러스(Homeplus)"
-      },
-      "page": "homeplus365"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "AI Korea"
-      },
-      "page": "awesomeai"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "필수 정보 꿀팁"
-      },
-      "page": "%ED%95%84%EC%88%98-%EC%A0%95%EB%B3%B4-%EA%BF%80%ED%8C%81-500176130085423"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "파이썬 리버싱 프로그래밍"
-      },
-      "page": "PythonProgramming"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 및 인터넷 웹사이트",
-        "name": "LeetCode"
-      },
-      "page": "LeetCode"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "HackerRank"
-      },
-      "page": "hackerrank"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "대전맛집"
-      },
-      "page": "daejeonpage"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "I Love Kizomba Korea"
-      },
-      "page": "I-Love-Kizomba-Korea-310386502502846"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "가상 인물",
-        "name": "이직할 때는 된 거 같은데 마땅한 곳이 없네"
-      },
-      "page": "careerjino"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "핸드스튜디오"
-      },
-      "page": "handstudio"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "잠깐 멈추고 존나웃자ㅋㅋㅋㅋㅋ"
-      },
-      "page": "WaitingHappys"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 컨설턴트",
-        "name": "이수영 - 영어 원서 리딩 전문가"
-      },
-      "page": "readingtc"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "1boon"
-      },
-      "page": "kakao1boon"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "자연 언어 처리"
-      },
-      "page": "pages/%EC%9E%90%EC%97%B0-%EC%96%B8%EC%96%B4-%EC%B2%98%EB%A6%AC/106896162847369"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "학교",
-        "name": "오픈컬리지"
-      },
-      "page": "OpenCollege.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "삼성자동차공업사 Lpg/Cng 개조 전문 업체"
-      },
-      "page": "autogaskor"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "딥 러닝"
-      },
-      "page": "pages/%EB%94%A5-%EB%9F%AC%EB%8B%9D/1446491498949878"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공인",
-        "name": "도올"
-      },
-      "page": "dolkimyongok"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "일본늬우스"
-      },
-      "page": "japanlocalnews"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "영화",
-        "name": "영화속 인생경험"
-      },
-      "page": "moviejoayo"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "비즈니스 서비스",
-        "name": "Codility"
-      },
-      "page": "Codility"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 연구 센터",
-        "name": "100miin"
-      },
-      "page": "100miin"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "읽고 생각하고 투자하라"
-      },
-      "page": "insightstock"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "과학 웹사이트",
-        "name": "T-Robotics : 수학으로 상상하는 로보틱스 "
-      },
-      "page": "TRobotics"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "TV 프로그램",
-        "name": "삼시세끼"
-      },
-      "page": "tvN3meals"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "학력",
-        "name": "미드로 영어를 알려줄게"
-      },
-      "page": "midroenglish"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "국가/지역",
-        "name": "캐나다"
-      },
-      "page": "pages/%EC%BA%90%EB%82%98%EB%8B%A4/107480665948163"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "정부 기관",
-        "name": "Canadian Immigration and Citizenship"
-      },
-      "page": "CitCanada"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "방송 및 미디어 제작 회사",
-        "name": "Voice of America - VOA"
-      },
-      "page": "voiceofamerica"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "BBC Learning English"
-      },
-      "page": "bbclearningenglish.multimedia"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "방송 및 미디어 제작 회사",
-        "name": "VOA Asia"
-      },
-      "page": "voaasia"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "VOA Learning English"
-      },
-      "page": "voalearningenglish"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "영어꿀"
-      },
-      "page": "englishhoney"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "웹사이트",
-        "name": "homify"
-      },
-      "page": "homifyKR"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "여행사",
-        "name": "Go USA"
-      },
-      "page": "GoUSAkr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "정부 기관",
-        "name": "세종특별자치시"
-      },
-      "page": "sejongstory"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "쇼핑 및 유통",
-        "name": "3M"
-      },
-      "page": "3MKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "제품/서비스",
-        "name": "어머, 이건 사야해"
-      },
-      "page": "wishkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "작가",
-        "name": "읽어보시집"
-      },
-      "page": "bosizip"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "Bandolera Korea 반돌레라 코리아"
-      },
-      "page": "bandolerakorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "TV 프로그램",
-        "name": "꽃보다 시리즈"
-      },
-      "page": "tvNflowerseries"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "솔트룩스 Saltlux"
-      },
-      "page": "Saltlux"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "제품/서비스",
-        "name": "EnglishCentral"
-      },
-      "page": "EnglishCentralKorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "엔터테인먼트 웹사이트",
-        "name": "Subtitles - OpenSubtitles.org"
-      },
-      "page": "opensubtitles.org"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "통계분석연구회"
-      },
-      "page": "statsas"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "창업경영신문"
-      },
-      "page": "sbiznews"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "Courseshare"
-      },
-      "page": "courseshare.co.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "도서",
-        "name": "한경BP"
-      },
-      "page": "hankyungbp"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "잡지",
-        "name": "National Geographic"
-      },
-      "page": "pages/National-Geographic/397165357062779"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "잡지",
-        "name": "National Geographic Magazine"
-      },
-      "page": "NGM"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "예술가",
-        "name": "Guillermina Sogo - Portfolio Fotográfico"
-      },
-      "page": "guillerminasogophotography"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "세바시 성장문답"
-      },
-      "page": "answer2u"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "제품/서비스",
-        "name": "호갱노노"
-      },
-      "page": "hogangnono"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "비정부 단체",
-        "name": "불교"
-      },
-      "page": "ngobuddhism"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "Xiaomi"
-      },
-      "page": "XiaomiGlobal"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "식품점",
-        "name": "기품 : 수제떡, 명품 폐백, 이바지 음식"
-      },
-      "page": "%EA%B8%B0%ED%92%88-%EC%88%98%EC%A0%9C%EB%96%A1-%EB%AA%85%ED%92%88-%ED%8F%90%EB%B0%B1-%EC%9D%B4%EB%B0%94%EC%A7%80-%EC%9D%8C%EC%8B%9D-558405017554290"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "뉴스 및 미디어 웹사이트",
-        "name": "Dung Producer"
-      },
-      "page": "DungProducer"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "잡지",
-        "name": "Fukuoka Now"
-      },
-      "page": "fukuokanow"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공인",
-        "name": "孫正義"
-      },
-      "page": "masason"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "Lively English"
-      },
-      "page": "moveon99"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "목수",
-        "name": "목수의 집"
-      },
-      "page": "namu1004"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "과학 웹사이트",
-        "name": "KOSEN"
-      },
-      "page": "kosen21.org"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "매일경제"
-      },
-      "page": "maekyungsns"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "음악가/밴드",
-        "name": "김장훈"
-      },
-      "page": "concertkimpage"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "쇼핑몰",
-        "name": "IKEA 이케아"
-      },
-      "page": "IKEA.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "좋은책만들기"
-      },
-      "page": "bonlivre"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "E4ds Lounge"
-      },
-      "page": "e4dsNews"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "탱고 아딕시온"
-      },
-      "page": "tangoadiccion"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 회사",
-        "name": "OSSF 개발자 그룹"
-      },
-      "page": "sda.re.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "채용정보",
-        "name": "현대자동차 채용"
-      },
-      "page": "hyundaijob"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "데브코리아"
-      },
-      "page": "devkorea.co.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "Daum 개발자 네트워크"
-      },
-      "page": "daumdevelopers"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "지역 비즈니스",
-        "name": "NHN NEXT"
-      },
-      "page": "nhnnext.org"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "채용정보",
-        "name": "SK 플래닛 채용"
-      },
-      "page": "skpcareers"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "회사",
-        "name": "Daum 채용"
-      },
-      "page": "DaumRecruiter"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "개인 블로그",
-        "name": "광파리"
-      },
-      "page": "kwang8e"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공공 단체",
-        "name": "유성구통합도서관"
-      },
-      "page": "noeunlibrary"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "여행사",
-        "name": "마이리얼트립"
-      },
-      "page": "myRealTrip"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "Tying It All Together (YouTube Channel)"
-      },
-      "page": "tyingitalltogether"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "페이스북 길라잡이"
-      },
-      "page": "guidebook"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "개인 블로그",
-        "name": "광고의 모든것"
-      },
-      "page": "AllaboutAD"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "교육 웹사이트",
-        "name": "상상력 FORUM D"
-      },
-      "page": "CREATIVEFORUMD"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "비즈니스 서비스",
-        "name": "대덕넷"
-      },
-      "page": "Helloscience"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "수산 시장",
-        "name": "인어교주해적단"
-      },
-      "page": "tpirates"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "서점",
-        "name": "열린책들"
-      },
-      "page": "openbooks.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "전자제품",
-        "name": "스마트카라"
-      },
-      "page": "SMARTCARA"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "Research in Germany"
-      },
-      "page": "Research.in.Germany"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "Omniscien Technologies"
-      },
-      "page": "omniscien"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "회사",
-        "name": "월드잡플러스"
-      },
-      "page": "worldjob1"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "뉴스 및 미디어 웹사이트",
-        "name": "한국인을 위한 TED"
-      },
-      "page": "tedforkoreans"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공인",
-        "name": "Emily Skye"
-      },
-      "page": "emilyskyemodel"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "항공사",
-        "name": "아시아나항공"
-      },
-      "page": "flyasiana"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컨설팅 에이전시",
-        "name": "한국청년코치협회"
-      },
-      "page": "KYCA2013"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "정부 기관",
-        "name": "대한민국 구석구석"
-      },
-      "page": "9suk9suklive"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "어떤 하루"
-      },
-      "page": "HaaaRooo"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "여행사",
-        "name": "JEJU air"
-      },
-      "page": "funjejuair"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "작가",
-        "name": "컬쳐몬스터"
-      },
-      "page": "culturemonster1"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "도서",
-        "name": "책벌레"
-      },
-      "page": "bookworm.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "뉴스 및 미디어 웹사이트",
-        "name": "잡플래닛 - Jobplanet"
-      },
-      "page": "jobplanetkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "대전찌라시"
-      },
-      "page": "daejeon.jrs"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "음악편지 - 클래식"
-      },
-      "page": "musicletter365"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "음악가/밴드",
-        "name": "오늘의 명곡"
-      },
-      "page": "todaymusik"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "동영상 크리에이터",
-        "name": "tvN D ENT."
-      },
-      "page": "tvNDENT"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "TV 프로그램",
-        "name": "코미디빅리그"
-      },
-      "page": "tvncobig"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "컴퓨터 및 인터넷 웹사이트",
-        "name": "볼랜드포럼"
-      },
-      "page": "borlandforum"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "비영리 단체",
-        "name": "손석희와 함께하는 사람들"
-      },
-      "page": "togetherson"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공인",
-        "name": "박용후"
-      },
-      "page": "parkyonghuperspective"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "수족관",
-        "name": "아쿠아플라넷"
-      },
-      "page": "HanwhaAquaplanet"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어",
-        "name": "MediaHuman"
-      },
-      "page": "MediaHuman"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "클래식에 미치다"
-      },
-      "page": "crazyclassical"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "영화관",
-        "name": "CGV"
-      },
-      "page": "CJCGV"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "영화",
-        "name": "Walt Disney Animation Studios"
-      },
-      "page": "DisneyAnimation"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "에너지 회사",
-        "name": "d.light Design"
-      },
-      "page": "dlightdesigninc"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "식음료 회사",
-        "name": "야채장수 이영석"
-      },
-      "page": "2youngseok"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "채용정보",
-        "name": "잡코리아"
-      },
-      "page": "jobkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "예술",
-        "name": "라이트룸"
-      },
-      "page": "lightroom.KR"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "렌트카",
-        "name": "롯데렌터카"
-      },
-      "page": "lotterentacar"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "인터넷 서비스 제공업체",
-        "name": "엑스마인드 코리아"
-      },
-      "page": "xmindkorea"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "공연 및 이벤트 장소",
-        "name": "코리아오토캠핑쇼"
-      },
-      "page": "campingkorea.org"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "자동차",
-        "name": "Auto Week"
-      },
-      "page": "autoweek18"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "출판사",
-        "name": "Dey Street Books"
-      },
-      "page": "DeyStreetBooks"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "친구의 책장"
-      },
-      "page": "bookshelf.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "여행사",
-        "name": "Booking.com"
-      },
-      "page": "bookingcom"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "e북세상"
-      },
-      "page": "ebookworld2013"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "열정에 기름붓기"
-      },
-      "page": "passionoil"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "운동선수",
-        "name": "김연아"
-      },
-      "page": "%EA%B9%80%EC%97%B0%EC%95%84-53417067377"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "가전제품",
-        "name": "프레소, 마이 카페 컬렉션"
-      },
-      "page": "coffeepresso"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "긍정의 한줄"
-      },
-      "page": "saying.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "영화",
-        "name": "영화공장 Movie Factory"
-      },
-      "page": "moviecapture"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "지식의 정석"
-      },
-      "page": "Principlesofknowledge"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "스포츠 및 레크리에이션",
-        "name": "Bubble Candy Dive"
-      },
-      "page": "worldbestbubblecandy"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "관심사",
-        "name": "Data mining"
-      },
-      "page": "pages/Data-mining/112195622130706"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "소프트웨어 기업",
-        "name": "한국 아이티 개발자 협동조합"
-      },
-      "page": "kodecoop"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "출판사",
-        "name": "창비"
-      },
-      "page": "changbi"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "민음사 전자책"
-      },
-      "page": "minumsaebook"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "미디어/뉴스 기업",
-        "name": "세놀사 - 세계의놀라운사실들"
-      },
-      "page": "jonna.facts"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "앱 페이지",
-        "name": "피키캐스트"
-      },
-      "page": "allnewpiki"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "추사랑"
-      },
-      "page": "salangzzang"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "커뮤니티",
-        "name": "Tango Music"
-      },
-      "page": "TangoMusic.co.kr"
-    },
-    {
-      "site": "https://m.facebook.com",
-      "index": "crawler-facebook-ko",
-      "reply_index": "crawler-facebook-ko-reply",
-      "meta": {
-        "lang_code": "ko",
-        "category": "제품/서비스",
-        "name": "Synapsoft"
-      },
-      "page": "synapsoft"
-    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어",
+//        "name": "Elastic"
+//      },
+//      "page": "elastic.co"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "앱 페이지",
+//        "name": "블라인드"
+//      },
+//      "page": "TEAMBLIND"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "대학교",
+//        "name": "충남대학교"
+//      },
+//      "page": "CNUNOW"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "Kevin TV KR"
+//      },
+//      "page": "KevTVkr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "학력",
+//        "name": "패스트캠퍼스"
+//      },
+//      "page": "fastcampus"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "유아용품/어린이용품",
+//        "name": "스토케 코리아"
+//      },
+//      "page": "StokkeKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "웹사이트",
+//        "name": "Kaggle"
+//      },
+//      "page": "kaggle"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 및 인터넷 웹사이트",
+//        "name": "SK플래닛 T아카데미"
+//      },
+//      "page": "skptacademy"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "학력",
+//        "name": "코딩클럽 Coding Club"
+//      },
+//      "page": "codingclubs"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 및 인터넷 웹사이트",
+//        "name": "꿈많은청년들"
+//      },
+//      "page": "DreamYoungs"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "지역 비즈니스",
+//        "name": "모두의연구소"
+//      },
+//      "page": "lab4all"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "ArxivSanityKR"
+//      },
+//      "page": "ArxivSanityKr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "테리의 딥러닝 토크"
+//      },
+//      "page": "deeplearningtalk"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "블로거",
+//        "name": "아낌 없이 주는 나무 - 책 무료 증정"
+//      },
+//      "page": "givingtrees79"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "Amazon Web Services"
+//      },
+//      "page": "amazonwebservices.ko"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "퇴사학교"
+//      },
+//      "page": "asaptschool"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "방송 및 미디어 제작 회사",
+//        "name": "여행에 미치다"
+//      },
+//      "page": "travelholic1"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 및 인터넷 웹사이트",
+//        "name": "좋은 지식 공유 Popit"
+//      },
+//      "page": "popitkr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "엔씨소프트"
+//      },
+//      "page": "ncsoft.official"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 회사",
+//        "name": "HCLT 2016"
+//      },
+//      "page": "hclt2016"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "Weekly Python KR"
+//      },
+//      "page": "weeklypythonkr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "비영리 단체",
+//        "name": "싸이버스"
+//      },
+//      "page": "thepsybus"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "PyCon Korea"
+//      },
+//      "page": "pyconkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "엑셈 exem"
+//      },
+//      "page": "Hiexem"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "Google For Startups"
+//      },
+//      "page": "GoogleforStartupsKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "영화",
+//        "name": "The Present"
+//      },
+//      "page": "thepresentshort"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "JetBrains"
+//      },
+//      "page": "JetBrains"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "채용정보",
+//        "name": "로켓펀치"
+//      },
+//      "page": "rocketpunch.inc"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어",
+//        "name": "MIUI ROM"
+//      },
+//      "page": "miui.global.official"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "Mycroft AI"
+//      },
+//      "page": "aiforeveryone"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "redmine.kr"
+//      },
+//      "page": "redmine.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "자동차 회사",
+//        "name": "르노삼성자동차 Renault Samsung Motors"
+//      },
+//      "page": "RenaultSamsungM"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "Facebook for Developers"
+//      },
+//      "page": "FacebookforDevelopers"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "블루핵"
+//      },
+//      "page": "bluehackinc"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "나는프로그래머다"
+//      },
+//      "page": "iamprogrammer.io"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "Dable 데이블"
+//      },
+//      "page": "teamdable"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "축제",
+//        "name": "무언가"
+//      },
+//      "page": "moounga"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "NAVER LABS"
+//      },
+//      "page": "naverlabs"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "빅파이: 빅데이터를 위한 파이썬"
+//      },
+//      "page": "bigpython"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어",
+//        "name": "쩌는 영상&사진"
+//      },
+//      "page": "gogoon11"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "작가",
+//        "name": "신준모 성공연구소"
+//      },
+//      "page": "SuccessJM"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "허프포스트코리아"
+//      },
+//      "page": "huffpostkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "작가",
+//        "name": "딸바보가 그렸어"
+//      },
+//      "page": "dalbabo"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "미래채널 MyF"
+//      },
+//      "page": "makeyourfutures"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "학력",
+//        "name": "IELTS IDP Education"
+//      },
+//      "page": "ieltskorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "Analytics Magazine"
+//      },
+//      "page": "hubspotkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "아웃도어 및 스포츠 용품 회사",
+//        "name": "Win&Win Black"
+//      },
+//      "page": "wwarcheryblack"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "아웃도어 및 스포츠 용품 회사",
+//        "name": "Hoyt Archery"
+//      },
+//      "page": "HoytBowhunting"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "아웃도어 및 스포츠 용품 회사",
+//        "name": "Mathews Archery, Inc."
+//      },
+//      "page": "mathewsinc"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "양궁장",
+//        "name": "PSE Archery"
+//      },
+//      "page": "OfficialPSEArchery"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "도서",
+//        "name": "북촌bookchon"
+//      },
+//      "page": "thebookchon"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "뉴스 및 미디어 웹사이트",
+//        "name": "얼리어답터"
+//      },
+//      "page": "earlyadopterpage"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "개인 블로그",
+//        "name": "4four.us"
+//      },
+//      "page": "4fourus-128273787283644"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "제품/서비스",
+//        "name": "소다몬_sodamon"
+//      },
+//      "page": "SODAMON.KOREA"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "사이언스북스"
+//      },
+//      "page": "ScienceBooksFB"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "Sophia"
+//      },
+//      "page": "forawiserlife"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "헬스/피트니스 센터",
+//        "name": "다이어터"
+//      },
+//      "page": "app.dieter"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "뉴스 및 미디어 웹사이트",
+//        "name": "오마이뉴스"
+//      },
+//      "page": "OhmyNewsKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "유통 기업",
+//        "name": "홈플러스(Homeplus)"
+//      },
+//      "page": "homeplus365"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "AI Korea"
+//      },
+//      "page": "awesomeai"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "필수 정보 꿀팁"
+//      },
+//      "page": "%ED%95%84%EC%88%98-%EC%A0%95%EB%B3%B4-%EA%BF%80%ED%8C%81-500176130085423"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "파이썬 리버싱 프로그래밍"
+//      },
+//      "page": "PythonProgramming"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 및 인터넷 웹사이트",
+//        "name": "LeetCode"
+//      },
+//      "page": "LeetCode"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "HackerRank"
+//      },
+//      "page": "hackerrank"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "대전맛집"
+//      },
+//      "page": "daejeonpage"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "I Love Kizomba Korea"
+//      },
+//      "page": "I-Love-Kizomba-Korea-310386502502846"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "가상 인물",
+//        "name": "이직할 때는 된 거 같은데 마땅한 곳이 없네"
+//      },
+//      "page": "careerjino"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "핸드스튜디오"
+//      },
+//      "page": "handstudio"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "잠깐 멈추고 존나웃자ㅋㅋㅋㅋㅋ"
+//      },
+//      "page": "WaitingHappys"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 컨설턴트",
+//        "name": "이수영 - 영어 원서 리딩 전문가"
+//      },
+//      "page": "readingtc"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "1boon"
+//      },
+//      "page": "kakao1boon"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "자연 언어 처리"
+//      },
+//      "page": "pages/%EC%9E%90%EC%97%B0-%EC%96%B8%EC%96%B4-%EC%B2%98%EB%A6%AC/106896162847369"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "학교",
+//        "name": "오픈컬리지"
+//      },
+//      "page": "OpenCollege.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "삼성자동차공업사 Lpg/Cng 개조 전문 업체"
+//      },
+//      "page": "autogaskor"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "딥 러닝"
+//      },
+//      "page": "pages/%EB%94%A5-%EB%9F%AC%EB%8B%9D/1446491498949878"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공인",
+//        "name": "도올"
+//      },
+//      "page": "dolkimyongok"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "일본늬우스"
+//      },
+//      "page": "japanlocalnews"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "영화",
+//        "name": "영화속 인생경험"
+//      },
+//      "page": "moviejoayo"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "비즈니스 서비스",
+//        "name": "Codility"
+//      },
+//      "page": "Codility"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 연구 센터",
+//        "name": "100miin"
+//      },
+//      "page": "100miin"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "읽고 생각하고 투자하라"
+//      },
+//      "page": "insightstock"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "과학 웹사이트",
+//        "name": "T-Robotics : 수학으로 상상하는 로보틱스 "
+//      },
+//      "page": "TRobotics"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "TV 프로그램",
+//        "name": "삼시세끼"
+//      },
+//      "page": "tvN3meals"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "학력",
+//        "name": "미드로 영어를 알려줄게"
+//      },
+//      "page": "midroenglish"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "국가/지역",
+//        "name": "캐나다"
+//      },
+//      "page": "pages/%EC%BA%90%EB%82%98%EB%8B%A4/107480665948163"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "정부 기관",
+//        "name": "Canadian Immigration and Citizenship"
+//      },
+//      "page": "CitCanada"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "방송 및 미디어 제작 회사",
+//        "name": "Voice of America - VOA"
+//      },
+//      "page": "voiceofamerica"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "BBC Learning English"
+//      },
+//      "page": "bbclearningenglish.multimedia"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "방송 및 미디어 제작 회사",
+//        "name": "VOA Asia"
+//      },
+//      "page": "voaasia"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "VOA Learning English"
+//      },
+//      "page": "voalearningenglish"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "영어꿀"
+//      },
+//      "page": "englishhoney"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "웹사이트",
+//        "name": "homify"
+//      },
+//      "page": "homifyKR"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "여행사",
+//        "name": "Go USA"
+//      },
+//      "page": "GoUSAkr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "정부 기관",
+//        "name": "세종특별자치시"
+//      },
+//      "page": "sejongstory"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "쇼핑 및 유통",
+//        "name": "3M"
+//      },
+//      "page": "3MKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "제품/서비스",
+//        "name": "어머, 이건 사야해"
+//      },
+//      "page": "wishkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "작가",
+//        "name": "읽어보시집"
+//      },
+//      "page": "bosizip"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "Bandolera Korea 반돌레라 코리아"
+//      },
+//      "page": "bandolerakorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "TV 프로그램",
+//        "name": "꽃보다 시리즈"
+//      },
+//      "page": "tvNflowerseries"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "솔트룩스 Saltlux"
+//      },
+//      "page": "Saltlux"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "제품/서비스",
+//        "name": "EnglishCentral"
+//      },
+//      "page": "EnglishCentralKorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "엔터테인먼트 웹사이트",
+//        "name": "Subtitles - OpenSubtitles.org"
+//      },
+//      "page": "opensubtitles.org"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "통계분석연구회"
+//      },
+//      "page": "statsas"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "창업경영신문"
+//      },
+//      "page": "sbiznews"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "Courseshare"
+//      },
+//      "page": "courseshare.co.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "도서",
+//        "name": "한경BP"
+//      },
+//      "page": "hankyungbp"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "잡지",
+//        "name": "National Geographic"
+//      },
+//      "page": "pages/National-Geographic/397165357062779"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "잡지",
+//        "name": "National Geographic Magazine"
+//      },
+//      "page": "NGM"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "예술가",
+//        "name": "Guillermina Sogo - Portfolio Fotográfico"
+//      },
+//      "page": "guillerminasogophotography"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "세바시 성장문답"
+//      },
+//      "page": "answer2u"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "제품/서비스",
+//        "name": "호갱노노"
+//      },
+//      "page": "hogangnono"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "비정부 단체",
+//        "name": "불교"
+//      },
+//      "page": "ngobuddhism"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "Xiaomi"
+//      },
+//      "page": "XiaomiGlobal"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "식품점",
+//        "name": "기품 : 수제떡, 명품 폐백, 이바지 음식"
+//      },
+//      "page": "%EA%B8%B0%ED%92%88-%EC%88%98%EC%A0%9C%EB%96%A1-%EB%AA%85%ED%92%88-%ED%8F%90%EB%B0%B1-%EC%9D%B4%EB%B0%94%EC%A7%80-%EC%9D%8C%EC%8B%9D-558405017554290"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "뉴스 및 미디어 웹사이트",
+//        "name": "Dung Producer"
+//      },
+//      "page": "DungProducer"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "잡지",
+//        "name": "Fukuoka Now"
+//      },
+//      "page": "fukuokanow"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공인",
+//        "name": "孫正義"
+//      },
+//      "page": "masason"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "Lively English"
+//      },
+//      "page": "moveon99"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "목수",
+//        "name": "목수의 집"
+//      },
+//      "page": "namu1004"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "과학 웹사이트",
+//        "name": "KOSEN"
+//      },
+//      "page": "kosen21.org"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "매일경제"
+//      },
+//      "page": "maekyungsns"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "음악가/밴드",
+//        "name": "김장훈"
+//      },
+//      "page": "concertkimpage"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "쇼핑몰",
+//        "name": "IKEA 이케아"
+//      },
+//      "page": "IKEA.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "좋은책만들기"
+//      },
+//      "page": "bonlivre"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "E4ds Lounge"
+//      },
+//      "page": "e4dsNews"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "탱고 아딕시온"
+//      },
+//      "page": "tangoadiccion"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 회사",
+//        "name": "OSSF 개발자 그룹"
+//      },
+//      "page": "sda.re.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "채용정보",
+//        "name": "현대자동차 채용"
+//      },
+//      "page": "hyundaijob"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "데브코리아"
+//      },
+//      "page": "devkorea.co.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "Daum 개발자 네트워크"
+//      },
+//      "page": "daumdevelopers"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "지역 비즈니스",
+//        "name": "NHN NEXT"
+//      },
+//      "page": "nhnnext.org"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "채용정보",
+//        "name": "SK 플래닛 채용"
+//      },
+//      "page": "skpcareers"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "회사",
+//        "name": "Daum 채용"
+//      },
+//      "page": "DaumRecruiter"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "개인 블로그",
+//        "name": "광파리"
+//      },
+//      "page": "kwang8e"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공공 단체",
+//        "name": "유성구통합도서관"
+//      },
+//      "page": "noeunlibrary"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "여행사",
+//        "name": "마이리얼트립"
+//      },
+//      "page": "myRealTrip"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "Tying It All Together (YouTube Channel)"
+//      },
+//      "page": "tyingitalltogether"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "페이스북 길라잡이"
+//      },
+//      "page": "guidebook"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "개인 블로그",
+//        "name": "광고의 모든것"
+//      },
+//      "page": "AllaboutAD"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "교육 웹사이트",
+//        "name": "상상력 FORUM D"
+//      },
+//      "page": "CREATIVEFORUMD"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "비즈니스 서비스",
+//        "name": "대덕넷"
+//      },
+//      "page": "Helloscience"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "수산 시장",
+//        "name": "인어교주해적단"
+//      },
+//      "page": "tpirates"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "서점",
+//        "name": "열린책들"
+//      },
+//      "page": "openbooks.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "전자제품",
+//        "name": "스마트카라"
+//      },
+//      "page": "SMARTCARA"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "Research in Germany"
+//      },
+//      "page": "Research.in.Germany"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "Omniscien Technologies"
+//      },
+//      "page": "omniscien"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "회사",
+//        "name": "월드잡플러스"
+//      },
+//      "page": "worldjob1"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "뉴스 및 미디어 웹사이트",
+//        "name": "한국인을 위한 TED"
+//      },
+//      "page": "tedforkoreans"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공인",
+//        "name": "Emily Skye"
+//      },
+//      "page": "emilyskyemodel"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "항공사",
+//        "name": "아시아나항공"
+//      },
+//      "page": "flyasiana"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컨설팅 에이전시",
+//        "name": "한국청년코치협회"
+//      },
+//      "page": "KYCA2013"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "정부 기관",
+//        "name": "대한민국 구석구석"
+//      },
+//      "page": "9suk9suklive"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "어떤 하루"
+//      },
+//      "page": "HaaaRooo"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "여행사",
+//        "name": "JEJU air"
+//      },
+//      "page": "funjejuair"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "작가",
+//        "name": "컬쳐몬스터"
+//      },
+//      "page": "culturemonster1"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "도서",
+//        "name": "책벌레"
+//      },
+//      "page": "bookworm.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "뉴스 및 미디어 웹사이트",
+//        "name": "잡플래닛 - Jobplanet"
+//      },
+//      "page": "jobplanetkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "대전찌라시"
+//      },
+//      "page": "daejeon.jrs"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "음악편지 - 클래식"
+//      },
+//      "page": "musicletter365"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "음악가/밴드",
+//        "name": "오늘의 명곡"
+//      },
+//      "page": "todaymusik"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "동영상 크리에이터",
+//        "name": "tvN D ENT."
+//      },
+//      "page": "tvNDENT"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "TV 프로그램",
+//        "name": "코미디빅리그"
+//      },
+//      "page": "tvncobig"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "컴퓨터 및 인터넷 웹사이트",
+//        "name": "볼랜드포럼"
+//      },
+//      "page": "borlandforum"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "비영리 단체",
+//        "name": "손석희와 함께하는 사람들"
+//      },
+//      "page": "togetherson"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공인",
+//        "name": "박용후"
+//      },
+//      "page": "parkyonghuperspective"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "수족관",
+//        "name": "아쿠아플라넷"
+//      },
+//      "page": "HanwhaAquaplanet"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어",
+//        "name": "MediaHuman"
+//      },
+//      "page": "MediaHuman"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "클래식에 미치다"
+//      },
+//      "page": "crazyclassical"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "영화관",
+//        "name": "CGV"
+//      },
+//      "page": "CJCGV"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "영화",
+//        "name": "Walt Disney Animation Studios"
+//      },
+//      "page": "DisneyAnimation"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "에너지 회사",
+//        "name": "d.light Design"
+//      },
+//      "page": "dlightdesigninc"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "식음료 회사",
+//        "name": "야채장수 이영석"
+//      },
+//      "page": "2youngseok"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "채용정보",
+//        "name": "잡코리아"
+//      },
+//      "page": "jobkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "예술",
+//        "name": "라이트룸"
+//      },
+//      "page": "lightroom.KR"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "렌트카",
+//        "name": "롯데렌터카"
+//      },
+//      "page": "lotterentacar"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "인터넷 서비스 제공업체",
+//        "name": "엑스마인드 코리아"
+//      },
+//      "page": "xmindkorea"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "공연 및 이벤트 장소",
+//        "name": "코리아오토캠핑쇼"
+//      },
+//      "page": "campingkorea.org"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "자동차",
+//        "name": "Auto Week"
+//      },
+//      "page": "autoweek18"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "출판사",
+//        "name": "Dey Street Books"
+//      },
+//      "page": "DeyStreetBooks"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "친구의 책장"
+//      },
+//      "page": "bookshelf.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "여행사",
+//        "name": "Booking.com"
+//      },
+//      "page": "bookingcom"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "e북세상"
+//      },
+//      "page": "ebookworld2013"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "열정에 기름붓기"
+//      },
+//      "page": "passionoil"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "운동선수",
+//        "name": "김연아"
+//      },
+//      "page": "%EA%B9%80%EC%97%B0%EC%95%84-53417067377"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "가전제품",
+//        "name": "프레소, 마이 카페 컬렉션"
+//      },
+//      "page": "coffeepresso"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "긍정의 한줄"
+//      },
+//      "page": "saying.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "영화",
+//        "name": "영화공장 Movie Factory"
+//      },
+//      "page": "moviecapture"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "지식의 정석"
+//      },
+//      "page": "Principlesofknowledge"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "스포츠 및 레크리에이션",
+//        "name": "Bubble Candy Dive"
+//      },
+//      "page": "worldbestbubblecandy"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "관심사",
+//        "name": "Data mining"
+//      },
+//      "page": "pages/Data-mining/112195622130706"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "소프트웨어 기업",
+//        "name": "한국 아이티 개발자 협동조합"
+//      },
+//      "page": "kodecoop"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "출판사",
+//        "name": "창비"
+//      },
+//      "page": "changbi"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "민음사 전자책"
+//      },
+//      "page": "minumsaebook"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "미디어/뉴스 기업",
+//        "name": "세놀사 - 세계의놀라운사실들"
+//      },
+//      "page": "jonna.facts"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "앱 페이지",
+//        "name": "피키캐스트"
+//      },
+//      "page": "allnewpiki"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "추사랑"
+//      },
+//      "page": "salangzzang"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "커뮤니티",
+//        "name": "Tango Music"
+//      },
+//      "page": "TangoMusic.co.kr"
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "index": "crawler-facebook-ko",
+//      "reply_index": "crawler-facebook-ko-reply",
+//      "meta": {
+//        "lang_code": "ko",
+//        "category": "제품/서비스",
+//        "name": "Synapsoft"
+//      },
+//      "page": "synapsoft"
+//    },
     {
       "site": "https://m.facebook.com",
       "index": "crawler-facebook-ko",

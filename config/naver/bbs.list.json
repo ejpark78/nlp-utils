@@ -62,104 +62,104 @@
 //  "name": "SBC 커뮤니티",
 //  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
 //}
-{
-  "cafeId": 23370764,
-  "name": "디벨로이드",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 23370764,
+//  "name": "디벨로이드",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 
 // 상담
-{
-  "cafeId": 10577860,
-  "name": "고민상담카페",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 10577860,
+//  "name": "고민상담카페",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 
 // 커피
-{
-  "cafeId": 10386789,
-  "name": "프로페셔널 바리스타 스튜디오 by GCC커피작업실",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 10332649,
-  "name": "커피마루",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 21453686,
-  "name": "커피나루",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 22853449,
-  "name": "Home Barista Club(Cafe'Espresso)",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 10386789,
+//  "name": "프로페셔널 바리스타 스튜디오 by GCC커피작업실",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 10332649,
+//  "name": "커피마루",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 21453686,
+//  "name": "커피나루",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 22853449,
+//  "name": "Home Barista Club(Cafe'Espresso)",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 
 // 미싱
-{
-  "cafeId": 14525415,
-  "name": "미싱스쿨 - 봉틀이~홈",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 11621257,
-  "name": "미싱으로 옷만들기",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 20047057,
-  "name": "재봉틀배우기",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 29222146,
-  "name": "친절한 재봉틀 교실",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 22164833,
-  "name": "소잉테라스",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 14525415,
+//  "name": "미싱스쿨 - 봉틀이~홈",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 11621257,
+//  "name": "미싱으로 옷만들기",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 20047057,
+//  "name": "재봉틀배우기",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 29222146,
+//  "name": "친절한 재봉틀 교실",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 22164833,
+//  "name": "소잉테라스",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 
 // 가죽
-{
-  "cafeId": 13362536,
-  "name": "가죽공작소",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 29805405,
-  "name": "레더원",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 29174789,
-  "name": "레더프렌즈",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 23462863,
-  "name": "레더에펠",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 29846718,
-  "name": "쿠치레레더",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 24610172,
-  "name": "굿엔레더",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
-{
-  "cafeId": 29017617,
-  "name": "레더톡",
-  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
-}
+//{
+//  "cafeId": 13362536,
+//  "name": "가죽공작소",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 29805405,
+//  "name": "레더원",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 29174789,
+//  "name": "레더프렌즈",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 23462863,
+//  "name": "레더에펠",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 29846718,
+//  "name": "쿠치레레더",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 24610172,
+//  "name": "굿엔레더",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
+//{
+//  "cafeId": 29017617,
+//  "name": "레더톡",
+//  "url": "https://m.cafe.naver.com/ArticleList.nhn?search.clubid={cafeId}&search.boardtype=L&search.menuid=&search.marketBoardTab=D&search.specialmenutype=&userDisplay=50"
+//}
 {
   "cafeId": 22977811,
   "name": "레더비앙",
