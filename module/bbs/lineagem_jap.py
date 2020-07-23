@@ -53,7 +53,7 @@ class LineageMBBSJap(object):
         """ """
         url = 'https://www.ncsoft.jp/lineage2/community/lineage2Board/list?currentPage={page}'.format(page=page)
 
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         result = []
@@ -78,7 +78,7 @@ class LineageMBBSJap(object):
 
     def get_article(self, url):
         """ """
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         soup.select('div.post_view')

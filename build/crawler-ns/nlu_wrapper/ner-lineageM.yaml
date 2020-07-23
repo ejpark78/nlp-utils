@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sbd-literary
-  namespace: nlu-wrapper
+  name: ner-lineagem
+  namespace: crawler
   labels:
-    app: sbd-literary
-    domain: literary
+    app: ner-lineagem
+    domain: lineagem
 spec:
   selector:
     matchLabels:
-      app: sbd-literary
+      app: ner-lineagem
   replicas: 1
   template:
     metadata:
       labels:
-        app: sbd-literary
+        app: ner-lineagem
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
+          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: STYLE
-              value: "literary"
+            - name: DOMAIN
+              value: "lineageM"
           ports:
             - containerPort: 80
 
@@ -33,17 +33,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sbd-literary
-  namespace: nlu-wrapper
+  name: ner-lineagem
+  namespace: crawler
   labels:
-    app: sbd-literary
+    app: ner-lineagem
 spec:
   type: LoadBalancer
   selector:
-    app: sbd-literary
+    app: ner-lineagem
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30031
+    - port: 30023
       targetPort: 80
 

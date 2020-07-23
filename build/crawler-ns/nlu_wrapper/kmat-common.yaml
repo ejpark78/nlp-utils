@@ -2,48 +2,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ner-lineagem
-  namespace: nlu-wrapper
+  name: kmat-common
+  namespace: crawler
   labels:
-    app: ner-lineagem
-    domain: lineagem
+    app: kmat-common
+    domain: common
 spec:
   selector:
     matchLabels:
-      app: ner-lineagem
+      app: kmat-common
   replicas: 1
   template:
     metadata:
       labels:
-        app: ner-lineagem
+        app: kmat-common
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
             - name: DOMAIN
-              value: "lineageM"
+              value: "common"
           ports:
             - containerPort: 80
+
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ner-lineagem
-  namespace: nlu-wrapper
+  name: kmat-common
+  namespace: crawler
   labels:
-    app: ner-lineagem
+    app: kmat-common
 spec:
   type: LoadBalancer
   selector:
-    app: ner-lineagem
+    app: kmat-common
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30023
+    - name: kmat-common
+      port: 30010
       targetPort: 80
 

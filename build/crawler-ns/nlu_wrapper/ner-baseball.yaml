@@ -2,50 +2,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kmat-common
-  namespace: nlu-wrapper
+  name: ner-baseball
+  namespace: crawler
   labels:
-    app: kmat-common
-    domain: common
+    app: ner-baseball
+    domain: baseball
 spec:
   selector:
     matchLabels:
-      app: kmat-common
+      app: ner-baseball
   replicas: 1
   template:
     metadata:
       labels:
-        app: kmat-common
+        app: ner-baseball
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
             - name: DOMAIN
-              value: "common"
+              value: "baseball"
           ports:
             - containerPort: 80
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kmat-common
-  namespace: nlu-wrapper
+  name: ner-baseball
+  namespace: crawler
   labels:
-    app: kmat-common
+    app: ner-baseball
 spec:
   type: LoadBalancer
   selector:
-    app: kmat-common
+    app: ner-baseball
   externalIPs:
     - 172.20.78.250
   ports:
-    - name: kmat-common
-      port: 30010
+    - port: 30022
       targetPort: 80
 

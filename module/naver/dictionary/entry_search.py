@@ -81,7 +81,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
                 site=url_info['site'],
                 query=urlencode(query),
             )
-            resp = requests.get(url, headers=headers, timeout=60).json()
+            resp = requests.get(url, headers=headers, timeout=60, verify=False).json()
             if page == 1:
                 max_page = resp['pagerInfo']['totalPages'] + 1
 

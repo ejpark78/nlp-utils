@@ -68,7 +68,7 @@ class AirKoreaCrawler(object):
         #     'https': 'socks5h://127.0.0.1:9150'
         # }
 
-        resp = requests.post(url, data=post_data, timeout=120)
+        resp = requests.post(url, data=post_data, timeout=120, verify=False)
 
         return resp.text
 

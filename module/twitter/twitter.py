@@ -131,7 +131,7 @@ class TwitterUtils(CrawlerBase):
 
         resp = None
         try:
-            resp = requests.get(url, headers=headers)
+            resp = requests.get(url, headers=headers, verify=False)
             reply = resp.json()
         except Exception as e:
             if resp is not None:

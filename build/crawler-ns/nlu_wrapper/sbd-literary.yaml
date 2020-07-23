@@ -2,49 +2,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kmat-baseball
-  namespace: nlu-wrapper
+  name: sbd-literary
+  namespace: crawler
   labels:
-    app: kmat-baseball
-    domain: economy
+    app: sbd-literary
+    domain: literary
 spec:
   selector:
     matchLabels:
-      app: kmat-baseball
+      app: sbd-literary
   replicas: 1
   template:
     metadata:
       labels:
-        app: kmat-baseball
+        app: sbd-literary
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: DOMAIN
-              value: "baseball"
+            - name: STYLE
+              value: "literary"
           ports:
             - containerPort: 80
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kmat-baseball
-  namespace: nlu-wrapper
+  name: sbd-literary
+  namespace: crawler
   labels:
-    app: kmat-baseball
+    app: sbd-literary
 spec:
   type: LoadBalancer
   selector:
-    app: kmat-baseball
+    app: sbd-literary
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30012
+    - port: 30031
       targetPort: 80
 

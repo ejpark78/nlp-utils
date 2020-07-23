@@ -59,7 +59,7 @@ class CorpusPipelineUtils(object):
         }
 
         headers = {"Content-Type": "application/json"}
-        resp = requests.post(url=url, json=post_data, headers=headers, timeout=timeout)
+        resp = requests.post(url=url, json=post_data, headers=headers, timeout=timeout, verify=False)
 
         return resp
 

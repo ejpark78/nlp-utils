@@ -83,7 +83,7 @@ class YoudaoSearch(DictionaryUtils):
         """ """
         url = url_frame.format(query=query)
 
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
 
         soup = BeautifulSoup(resp.content, 'lxml')
 
@@ -104,7 +104,7 @@ class YoudaoSearch(DictionaryUtils):
             'target': self.env.target_column,
         }
 
-        resp = requests.get(url=url)
+        resp = requests.get(url=url, verify=False)
 
         soup = BeautifulSoup(resp.content, 'lxml')
 

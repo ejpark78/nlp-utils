@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nluwrapper
-  namespace: nlu-wrapper
+  namespace: crawler
   labels:
     app: nluwrapper
 spec:
@@ -26,27 +26,27 @@ spec:
             - name: SERV_PORT
               value: "80"
             - name: POS_IP_ADDR_common
-              value: "http://kmat-common.nlu-wrapper.svc.cluster.local:30010"
+              value: "http://kmat-common.crawler.svc.cluster.local:30010"
             - name: POS_IP_ADDR_economy
-              value: "http://kmat-economy.nlu-wrapper.svc.cluster.local:30011"
+              value: "http://kmat-economy.crawler.svc.cluster.local:30011"
             - name: POS_IP_ADDR_baseball
-              value: "http://kmat-baseball.nlu-wrapper.svc.cluster.local:30012"
+              value: "http://kmat-baseball.crawler.svc.cluster.local:30012"
             - name: POS_IP_ADDR_lineageM
-              value: "http://kmat-lineagem.nlu-wrapper.svc.cluster.local:30013"
+              value: "http://kmat-lineagem.crawler.svc.cluster.local:30013"
             - name: NER_IP_ADDR_economy
-              value: "http://ner-economy.nlu-wrapper.svc.cluster.local:30021"
+              value: "http://ner-economy.crawler.svc.cluster.local:30021"
             - name: NER_IP_ADDR_baseball
-              value: "http://ner-baseball.nlu-wrapper.svc.cluster.local:30022"
+              value: "http://ner-baseball.crawler.svc.cluster.local:30022"
             - name: NER_IP_ADDR_lineageM
-              value: "http://ner-lineagem.nlu-wrapper.svc.cluster.local:30023"
+              value: "http://ner-lineagem.crawler.svc.cluster.local:30023"
             - name: SBD_CRF_IP_ADDR_colloque
-              value: "http://sbd-colloque.nlu-wrapper.svc.cluster.local:30030"
+              value: "http://sbd-colloque.crawler.svc.cluster.local:30030"
             - name: SBD_CRF_IP_ADDR_literary
-              value: "http://sbd-literary.nlu-wrapper.svc.cluster.local:30031"
+              value: "http://sbd-literary.crawler.svc.cluster.local:30031"
             - name: DP_IP_ADDR
-              value: "http://parser-common.nlu-wrapper.svc.cluster.local:30040"
+              value: "http://parser-common.crawler.svc.cluster.local:30040"
             - name: TIME_PYTHON_IP_ADDR
-              value: "http://time-common.nlu-wrapper.svc.cluster.local:30050/nctime"
+              value: "http://time-common.crawler.svc.cluster.local:30050/nctime"
           ports:
             - containerPort: 80
 
@@ -55,7 +55,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nluwrapper
-  namespace: nlu-wrapper
+  namespace: crawler
   labels:
     app: nluwrapper
 spec:

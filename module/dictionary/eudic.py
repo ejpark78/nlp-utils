@@ -29,7 +29,7 @@ class EudicExampleSearch(DictionaryUtils):
         """ """
         url = url_frame.format(query=query)
 
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
 
         soup = BeautifulSoup(resp.content, 'lxml')
 
@@ -45,7 +45,7 @@ class EudicExampleSearch(DictionaryUtils):
 
     def trace_examples(self, url, post_data):
         """ """
-        resp = requests.post(url=url, data=post_data)
+        resp = requests.post(url=url, data=post_data, verify=False)
 
         soup = BeautifulSoup(resp.content, 'lxml')
 

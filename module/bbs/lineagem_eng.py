@@ -51,7 +51,7 @@ class LineageMBBSEng(object):
     def get_forum_info():
         url = 'https://forums.lineage2.com/'
 
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
 
         soup = BeautifulSoup(resp.text, 'html5lib')
 
@@ -74,7 +74,7 @@ class LineageMBBSEng(object):
 
     @staticmethod
     def get_forum_max_page(url):
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         tags = soup.select('ul.ipsPagination li.ipsPagination_last a')
@@ -85,7 +85,7 @@ class LineageMBBSEng(object):
 
     @staticmethod
     def get_max_article(url):
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         tags = [v['data-page'] for v in soup.select('ul li.ipsPagination_last a') if v.has_attr('data-page')]
@@ -96,7 +96,7 @@ class LineageMBBSEng(object):
 
     @staticmethod
     def get_articles(url):
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         result = []
@@ -117,7 +117,7 @@ class LineageMBBSEng(object):
 
     @staticmethod
     def get_forum_list(url, forum):
-        resp = requests.get(url)
+        resp = requests.get(url, verify=False)
         soup = BeautifulSoup(resp.text, 'html5lib')
 
         result = []

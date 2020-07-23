@@ -49,7 +49,7 @@ def curl_issue():
             curl_url = url.format(id=c_id, page=page)
             page += 1
 
-            page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60)
+            page_html = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60, verify=False)
             ret = page_html.json()
 
             if len(result) == 0:
@@ -150,7 +150,13 @@ def merge_documents(issue_id, issue_title):
                             soup = BeautifulSoup(html_body, 'lxml')
                     else:
                         curl_url = 'http://v.media.daum.net/v/{}'.format(item['id'])
-                        html_result = requests.get(curl_url, headers=headers, allow_redirects=True, timeout=60)
+                        html_result = requests.get(
+                            curl_url,
+                            headers=headers,
+                            allow_redirects=True,
+                            timeout=60,
+                            verify=False
+                        )
                         html_body = html_result.content
 
                         soup = BeautifulSoup(html_body, 'lxml')
@@ -202,8 +208,8 @@ def merge_documents(issue_id, issue_title):
                             item['regDt'],
                             item['title']['sentence'],
                             item['title']['pos_tagged'],
-                            i+1,
-                            j+1,
+                            i + 1,
+                            j + 1,
                             paragraph[i][j],
                             pos_tagged[i][j],
                             named_entity[i][j]

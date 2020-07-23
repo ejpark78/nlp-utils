@@ -52,7 +52,7 @@ class ElasticSearchUtils(object):
 
         self.logger = Logger()
 
-        self.request_timeout = 620
+        self.params = {'request_timeout': 620}
 
         if self.host is not None:
             self.open()
@@ -145,7 +145,7 @@ class ElasticSearchUtils(object):
         try:
             self.elastic = Elasticsearch(
                 hosts=self.host,
-                timeout=self.request_timeout,
+                timeout=self.params['request_timeout'],
                 http_auth=self.http_auth,
                 verify_certs=False,
                 ssl_show_warn=False,
@@ -292,14 +292,12 @@ class ElasticSearchUtils(object):
         bulk_data = json.loads(json.dumps(self.bulk_data[self.host]))
         self.bulk_data[self.host] = []
 
-        params = {'request_timeout': self.request_timeout}
-
         try:
             response = self.elastic.bulk(
                 index=self.index,
                 body=bulk_data,
                 refresh=True,
-                params=params,
+                params=self.params,
             )
 
             size = len(bulk_data)
@@ -473,10 +471,6 @@ class ElasticSearchUtils(object):
         if index is None:
             index = self.index
 
-        params = {
-            'request_timeout': self.request_timeout
-        }
-
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
             search_result = self.elastic.search(
@@ -484,13 +478,13 @@ class ElasticSearchUtils(object):
                 body=query,
                 scroll='2m',
                 size=size,
-                params=params,
+                params=self.params,
             )
         else:
             search_result = self.elastic.scroll(
                 scroll_id=scroll_id,
                 scroll='2m',
-                params=params,
+                params=self.params,
             )
 
         # 검색 결과 추출

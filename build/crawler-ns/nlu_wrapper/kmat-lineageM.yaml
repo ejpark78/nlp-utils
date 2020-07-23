@@ -2,28 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: parser-common
-  namespace: nlu-wrapper
+  name: kmat-lineagem
+  namespace: crawler
   labels:
-    app: parser-common
-    domain: common
+    app: kmat-lineagem
+    domain: economy
 spec:
   selector:
     matchLabels:
-      app: parser-common
+      app: kmat-lineagem
   replicas: 1
   template:
     metadata:
       labels:
-        app: parser-common
+        app: kmat-lineagem
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/dependency-parser:latest
+          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
+            - name: DOMAIN
+              value: "lineageM"
           ports:
             - containerPort: 80
 
@@ -31,17 +33,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: parser-common
-  namespace: nlu-wrapper
+  name: kmat-lineagem
+  namespace: crawler
   labels:
-    app: parser-common
+    app: kmat-lineagem
 spec:
   type: LoadBalancer
   selector:
-    app: parser-common
+    app: kmat-lineagem
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30040
+    - port: 30013
       targetPort: 80
 

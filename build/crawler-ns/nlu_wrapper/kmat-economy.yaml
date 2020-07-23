@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ner-economy
-  namespace: nlu-wrapper
+  name: kmat-economy
+  namespace: crawler
   labels:
-    app: ner-economy
+    app: kmat-economy
     domain: economy
 spec:
   selector:
     matchLabels:
-      app: ner-economy
+      app: kmat-economy
   replicas: 1
   template:
     metadata:
       labels:
-        app: ner-economy
+        app: kmat-economy
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -33,17 +33,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ner-economy
-  namespace: nlu-wrapper
+  name: kmat-economy
+  namespace: crawler
   labels:
-    app: ner-economy
+    app: kmat-economy
 spec:
   type: LoadBalancer
   selector:
-    app: ner-economy
+    app: kmat-economy
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30021
+    - port: 30011
       targetPort: 80
 

@@ -175,7 +175,7 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
             meta = self.get_meta(url=url)
             try:
-                resp = requests.get(url, headers=self.headers)
+                resp = requests.get(url, headers=self.headers, verify=False)
                 doc = resp.json()
 
                 self.save_live_chat(doc=doc, meta=meta)

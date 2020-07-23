@@ -374,6 +374,8 @@ class TedCrawler(TedCrawlerUtils):
                 if is_sleep is True:
                     sleep(self.env.sleep)
 
+            sleep(self.env.sleep)
+
         return
 
     def trace_talks(self, url_list):

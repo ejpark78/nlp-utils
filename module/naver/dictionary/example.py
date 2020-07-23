@@ -48,7 +48,7 @@ class ExampleCrawler(DictionaryUtils):
             url = '{domain}?query={query}&page={page}&{common_query}'.format(**query)
 
             try:
-                resp = requests.get(url=url, headers=headers).json()
+                resp = requests.get(url=url, headers=headers, verify=False).json()
             except Exception as e:
                 query['page'] += 1
 

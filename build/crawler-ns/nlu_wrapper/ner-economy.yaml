@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kmat-lineagem
-  namespace: nlu-wrapper
+  name: ner-economy
+  namespace: crawler
   labels:
-    app: kmat-lineagem
+    app: ner-economy
     domain: economy
 spec:
   selector:
     matchLabels:
-      app: kmat-lineagem
+      app: ner-economy
   replicas: 1
   template:
     metadata:
       labels:
-        app: kmat-lineagem
+        app: ner-economy
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
             - name: DOMAIN
-              value: "lineageM"
+              value: "economy"
           ports:
             - containerPort: 80
 
@@ -33,17 +33,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kmat-lineagem
-  namespace: nlu-wrapper
+  name: ner-economy
+  namespace: crawler
   labels:
-    app: kmat-lineagem
+    app: ner-economy
 spec:
   type: LoadBalancer
   selector:
-    app: kmat-lineagem
+    app: ner-economy
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30013
+    - port: 30021
       targetPort: 80
 

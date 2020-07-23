@@ -36,7 +36,7 @@ class UserTranslationExampleCrawler(DictionaryUtils):
         }
         headers.update(self.headers)
 
-        resp = requests.get(url, headers=headers, timeout=60)
+        resp = requests.get(url, headers=headers, timeout=60, verify=False)
         soup = BeautifulSoup(resp.content, 'html5lib')
 
         total = 0

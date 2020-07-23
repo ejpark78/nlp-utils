@@ -240,6 +240,7 @@ class UserList(CrawlerBase):
                     cookies=cookies,
                     allow_redirects=True,
                     timeout=60,
+                    verify=False
                 )
 
                 result = request_result.json()
@@ -326,6 +327,7 @@ class UserList(CrawlerBase):
                         cookies=cookies,
                         allow_redirects=True,
                         timeout=60,
+                        verify=False
                     )
 
                     result = resp.json()

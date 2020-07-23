@@ -248,7 +248,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
             url = url_frame['list'].format(**query)
 
             headers['Referer'] = url_frame['Referer'].format(**query)
-            news_info = requests.get(url=url, headers=headers).json()
+            news_info = requests.get(url=url, headers=headers, verify=False).json()
 
             query['total'] = news_info['totalPages']
 
@@ -360,9 +360,10 @@ class NaverNewsReplyCrawler(CrawlerBase):
 
         headers['Referer'] = base_url
 
+        url = ''
         try:
             url = url_frame['reply'].format(**query)
-            resp = requests.get(url=url, headers=headers)
+            resp = requests.get(url=url, headers=headers, verify=False)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',

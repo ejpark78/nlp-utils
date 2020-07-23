@@ -60,14 +60,14 @@ class DaumReply(Utils):
                     continue
 
             url = url_frame.format(article_id=d_id)
-            html = requests.get(url=url, headers=self.headers, timeout=10)
+            html = requests.get(url=url, headers=self.headers, timeout=10, verify=False)
 
             # access_token 만료
             if html.status_code == 401 or html.status_code == 400:
                 if self.update_header(d_id, sleep_time) is False:
                     continue
 
-                html = requests.get(url=url, headers=self.headers, timeout=10)
+                html = requests.get(url=url, headers=self.headers, timeout=10, verify=False)
 
             result = html.json()
             if result is None:
@@ -404,7 +404,7 @@ class DaumReply(Utils):
         for offset in range(0, total, limit):
             url = url_frame.format(id=post_id, offset=offset, limit=limit)
 
-            html = requests.get(url=url, headers=self.headers, timeout=10)
+            html = requests.get(url=url, headers=self.headers, timeout=10, verify=False)
             result += html.json()
 
             print('{:,},'.format(offset), end='', flush=True)

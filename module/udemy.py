@@ -53,8 +53,30 @@ class UdemyCrawler(object):
 
     def batch(self):
         """코스 목록 전체를 다운로드한다."""
+        # self.get_my_course_list()
+
         for course in self.course_list:
             self.get_list(course)
+
+        return
+
+    def get_my_course_list(self):
+        """강좌 목록을 다운로드 받는다."""
+        page = 1
+        page_size = 10
+
+        url = self.url_info['my_courses']['url'].format(page=page, page_size=page_size)
+
+        resp = requests.get(
+            url=url,
+            headers=self.headers,
+            allow_redirects=True,
+            verify=False,
+            timeout=60
+        )
+        corpus_list = resp.json()['results']
+
+        self.save_cache(cache=corpus_list, path=self.data_path, name='course_list')
 
         return
 

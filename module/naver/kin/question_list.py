@@ -27,7 +27,7 @@ class QuestionList(CrawlerBase):
         self.job_category = 'naver'
         self.job_id = 'naver_kin'
         self.column = 'question_list'
-        
+
     def daemon(self, column):
         """batch를 무한 반복한다."""
         while True:
@@ -172,6 +172,7 @@ class QuestionList(CrawlerBase):
                 headers=self.headers['mobile'],
                 allow_redirects=True,
                 timeout=60,
+                verify=False
             )
         except Exception as e:
             self.logger.error(msg={

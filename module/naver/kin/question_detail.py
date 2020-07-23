@@ -33,8 +33,6 @@ class QuestionDetail(CrawlerBase):
     def daemon(self, column, match_phrase='{}'):
         """데몬으로 실행"""
         while True:
-            self.update_config()
-
             self.batch(column=column, match_phrase=match_phrase)
 
             self.logger.log(msg={
@@ -47,6 +45,8 @@ class QuestionDetail(CrawlerBase):
 
     def batch(self, column, match_phrase):
         """상세 페이지를 크롤링한다."""
+        self.update_config()
+
         elastic_utils = ElasticSearchUtils(
             host=self.job_info['host'],
             index=self.job_info['index'],
@@ -105,6 +105,7 @@ class QuestionDetail(CrawlerBase):
                 headers=self.headers['mobile'],
                 allow_redirects=True,
                 timeout=60,
+                verify=False
             )
 
             self.logger.log(msg={

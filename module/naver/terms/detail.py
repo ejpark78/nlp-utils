@@ -109,6 +109,7 @@ class TermDetail(CrawlerBase):
                 headers=self.headers['mobile'],
                 allow_redirects=True,
                 timeout=60,
+                verify=False
             )
         except Exception as e:
             self.logger.error(msg={

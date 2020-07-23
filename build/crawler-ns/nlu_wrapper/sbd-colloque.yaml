@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ner-baseball
-  namespace: nlu-wrapper
+  name: sbd-colloque
+  namespace: crawler
   labels:
-    app: ner-baseball
-    domain: baseball
+    app: sbd-colloque
+    domain: colloque
 spec:
   selector:
     matchLabels:
-      app: ner-baseball
+      app: sbd-colloque
   replicas: 1
   template:
     metadata:
       labels:
-        app: ner-baseball
+        app: sbd-colloque
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: DOMAIN
-              value: "baseball"
+            - name: STYLE
+              value: "colloque"
           ports:
             - containerPort: 80
 
@@ -33,17 +33,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ner-baseball
-  namespace: nlu-wrapper
+  name: sbd-colloque
+  namespace: crawler
   labels:
-    app: ner-baseball
+    app: sbd-colloque
 spec:
   type: LoadBalancer
   selector:
-    app: ner-baseball
+    app: sbd-colloque
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30022
+    - port: 30030
       targetPort: 80
 

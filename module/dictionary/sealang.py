@@ -101,7 +101,7 @@ class SealangExampleSearch(DictionaryUtils):
             'target': self.env.target_column,
         }
 
-        resp = requests.post(url=url, data=post_data, headers=headers)
+        resp = requests.post(url=url, data=post_data, headers=headers, verify=False)
 
         soup = BeautifulSoup(resp.content, 'lxml')
 

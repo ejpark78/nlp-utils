@@ -35,7 +35,7 @@ class ForumUtils(object):
 
         resp = None
         try:
-            resp = requests.get(url)
+            resp = requests.get(url, verify=False)
         except ConnectionError:
             msg = {
                 'level': 'ERROR',

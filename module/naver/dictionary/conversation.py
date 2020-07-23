@@ -39,9 +39,9 @@ class TodayConversationCrawler(DictionaryUtils):
         }
         headers.update(self.headers)
 
-        resp = requests.get(url=url, headers=headers)
+        resp = requests.get(url=url, headers=headers, verify=False)
 
-        text = re.sub('angular.callbacks._0\((.+)\)', '\g<1>', resp.text)
+        text = re.sub(r'angular.callbacks._0\((.+)\)', r'\g<1>', resp.text)
 
         return json.loads(text)
 

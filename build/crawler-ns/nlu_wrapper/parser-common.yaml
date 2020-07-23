@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: time-common
-  namespace: nlu-wrapper
+  name: parser-common
+  namespace: crawler
   labels:
-    app: time-common
+    app: parser-common
     domain: common
 spec:
   selector:
     matchLabels:
-      app: time-common
+      app: parser-common
   replicas: 1
   template:
     metadata:
       labels:
-        app: time-common
+        app: parser-common
     spec:
       restartPolicy: Always
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/nctime-2018:latest
+          image: galadriel02.korea.ncsoft.corp:5000/dependency-parser:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -31,17 +31,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: time-common
-  namespace: nlu-wrapper
+  name: parser-common
+  namespace: crawler
   labels:
-    app: time-common
+    app: parser-common
 spec:
   type: LoadBalancer
   selector:
-    app: time-common
+    app: parser-common
   externalIPs:
     - 172.20.78.250
   ports:
-    - port: 30050
+    - port: 30040
       targetPort: 80
 

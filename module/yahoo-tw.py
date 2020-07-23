@@ -132,7 +132,7 @@ class YahooTWCrawler(SeleniumProxyUtils):
 
             resp = None
             try:
-                resp = requests.get(url, headers=self.headers)
+                resp = requests.get(url, headers=self.headers, verify=False)
                 resp = resp.json()
             except Exception as e:
                 print({'get url error', url, resp.text, e})
