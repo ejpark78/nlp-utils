@@ -591,6 +591,17 @@ Accept: application/json
 
 ###
 
+GET {{host}}/ko_tm04,ja_tm01,en_tm03,cn_tm02,tw_tm03/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+
+}
+
+###
+
 GET {{host}}/log_mtdemo_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -624,7 +635,6 @@ Accept: application/json
             }
           }
         }
-
       ],
       "must": [
       ]
