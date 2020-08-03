@@ -331,7 +331,7 @@ class TedCrawlerUtils(TedCorpusUtils):
         """ """
         talk_list = {}
         for f in glob('data/ted/*/talk-info.json'):
-            print(f)
+            self.logger.log({'filename': f})
 
             with open(f, 'r') as fp:
                 info = json.load(fp=fp)
@@ -449,11 +449,11 @@ class TedCrawler(TedCrawlerUtils):
 
     def batch(self):
         """"""
-        if self.env.update_talk_list is True:
-            self.update_talk_list()
-
         if self.env.list is True:
             self.trace_list()
+
+        if self.env.update_talk_list is True:
+            self.update_talk_list()
 
         if self.env.talks is True:
             self.trace_talks(url_list=[])

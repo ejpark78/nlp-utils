@@ -281,6 +281,14 @@ class ElasticSearchUtils(object):
 
         return True
 
+    @staticmethod
+    def json_default(value):
+        """ 날자형을 문자로 변환한다."""
+        if isinstance(value, datetime):
+            return value.isoformat()
+
+        raise TypeError('not JSON serializable')
+
     def flush(self):
         """버퍼에 남은 문서를 저장한다."""
         if self.elastic is None:
@@ -289,7 +297,7 @@ class ElasticSearchUtils(object):
         if self.host not in self.bulk_data or len(self.bulk_data[self.host]) == 0:
             return None
 
-        bulk_data = json.loads(json.dumps(self.bulk_data[self.host]))
+        bulk_data = json.loads(json.dumps(self.bulk_data[self.host], default=self.json_default))
         self.bulk_data[self.host] = []
 
         try:

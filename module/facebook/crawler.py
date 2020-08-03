@@ -408,7 +408,7 @@ class FBCrawler(FBParser):
         parser.add_argument('--user_data', default=None)
 
         parser.add_argument('--use_head', action='store_false', default=True)
-        parser.add_argument('--max_page', default=10000, type=int)
+        parser.add_argument('--max_page', default=100, type=int)
 
         parser.add_argument('--driver', default='/usr/bin/chromedriver')
 

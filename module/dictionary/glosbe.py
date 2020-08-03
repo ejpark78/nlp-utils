@@ -5,8 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-import sys
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
@@ -21,6 +19,7 @@ from requests.exceptions import ConnectionError
 from module.utils.elasticsearch_utils import ElasticSearchUtils
 from module.utils.logger import Logger
 
+urllib3.disable_warnings(UserWarning)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -289,9 +288,10 @@ class GlosbeCrawler(object):
             if url in self.history:
                 continue
 
+            count += 1
+
             word_info = self.word_list[url]
 
-            count += 1
             resp = self.trace_example_list(entry=word_info['entry'], url=url)
             if 'error' in resp:
                 break
@@ -308,7 +308,6 @@ class GlosbeCrawler(object):
 
     def batch(self):
         """"""
-        from random import randint
 
         self.env = self.init_arguments()
 

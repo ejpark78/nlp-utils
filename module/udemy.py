@@ -184,7 +184,13 @@ class UdemyCrawler(object):
             verify=False,
             timeout=120
         )
-        result = resp.json()
+        try:
+            result = resp.json()
+        except Exception as e:
+            self.logger.error({
+                'e': str(e),
+            })
+            return
 
         self.save_cache(cache=result, path=path, name=name)
 
