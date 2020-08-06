@@ -1,13 +1,13 @@
 ### 인덱스 매핑 정보 조회
 
-GET {{host}}/{{index}}/_mappings
+GET {{host}}/text-bbs-lineagem/_mappings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/json
 
 ### 인덱스 매핑 설정
 
-PUT {{host}}/{{index}}
+PUT {{host}}/crawler-naver-economy-2020
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
@@ -16,7 +16,7 @@ Accept: application/json
 
 ###
 
-PUT {{host}}/{{index}}
+PUT {{host}}/crawler-naver-economy-2020
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json

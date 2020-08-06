@@ -1,6 +1,6 @@
 ### 설정 정보 조회
 
-GET {{host}}/{{index}}/_settings
+GET {{host}}/text-bbs-lineagem/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/text
