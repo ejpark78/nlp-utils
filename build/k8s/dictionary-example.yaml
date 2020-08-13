@@ -176,31 +176,31 @@
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "enid"]
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: zh
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      workingDir: /usr/local/app
-      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "zh"]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: zh
+#  namespace: crawler-dictionary-example
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  nodeSelector:
+#    group: "crawler"
+#  containers:
+#    - name: default
+#      image: corpus:5000/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "zh"]
 
 #---
 #apiVersion: v1

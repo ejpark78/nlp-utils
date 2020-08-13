@@ -16,11 +16,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -65,11 +69,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -114,11 +122,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -163,11 +175,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -212,11 +228,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -261,11 +281,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -310,11 +334,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -342,14 +370,14 @@ spec:
               ]
 
 #    - name: radio
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
 #    - name: opinion
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
 #    - name: tv
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]

@@ -1,7 +1,7 @@
 {
   "_id": "udemy",
-  "sleep": 2,
-  "token": "jpMt9j3QqdyV50lxmbjxXHUtUSVquLCrK9GtoyyG",
+  "sleep": 15,
+  "token": "7hb3DPxb5cBeVy40JrvgbRRJhdNLo1XgLqgRqCUl",
   "data_path": "data/udemy-business",
   "category_name": "paid",
   "url_info": {
@@ -59,25 +59,21 @@
   "paid": [
     {
       "id": 2373842,
-      "name": "Complete Tensorflow 2 and Keras Deep Learning Bootcamp",
-      "home": "complete-tensorflow-2-and-keras-deep-learning-bootcamp"
+      "title": "Complete Tensorflow 2 and Keras Deep Learning Bootcamp"
     },
     {
       "id": 918390,
-      "name": "Natural Language Processing with Deep Learning in Python",
-      "home": "natural-language-processing-with-deep-learning-in-python"
+      "title": "Natural Language Processing with Deep Learning in Python"
     },
     {
       "id": 2301254,
-      "name": "Certified Kubernetes Administrator (CKA) with Practice Tests",
-      "home": "certified-kubernetes-administrator-with-practice-tests"
+      "title": "Certified Kubernetes Administrator (CKA) with Practice Tests"
     }
   ],
   "done": [
     {
       "id": 2373814,
-      "name": "PyTorch for Deep Learning with Python Bootcamp",
-      "home": "pytorch-for-deep-learning-with-python-bootcamp"
+      "title": "PyTorch for Deep Learning with Python Bootcamp"
     }
   ]
 }

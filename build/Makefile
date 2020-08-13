@@ -2,7 +2,7 @@
 .PHONY: *
 
 # image
-BASE_IMAGE = corpus:5000/base/crawler:latest
+BASE_IMAGE = registry.nlp-utils/base/crawler:latest
 
 GIT_TAG = $(shell git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.')
 GIT_URL = $(shell git config --get remote.origin.url)
@@ -12,14 +12,14 @@ GIT_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
 
 BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 
-IMAGE = corpus:5000/crawler
+IMAGE = registry.nlp-utils/crawler
 IMAGE_TAG = $(GIT_TAG).$(GIT_COMMIT)
 
 # Mirror
 APT_CODE_NAME = focal
-APT_MIRROR = http://corpus.ncsoft.com:8081/repository/$(APT_CODE_NAME)/
-PIP_MIRROR = http://pip:nlplab@corpus.ncsoft.com:8081/repository/pypi/simple
-PIP_TRUST_HOST = corpus.ncsoft.com
+APT_MIRROR = https://nlp-utils/repository/$(APT_CODE_NAME)/
+PIP_MIRROR = https://k8s:nlplab@nlp-utils/repository/pypi/simple
+PIP_TRUST_HOST = nlp-utils
 
 batch: build push
 
@@ -28,7 +28,7 @@ base:
 	docker build \
 		-t $(BASE_IMAGE) \
 		-f base/Dockerfile \
-		--add-host "corpus.ncsoft.com:172.20.93.112" \
+		--add-host "nlp-utils:172.19.153.41" \
 		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
 		--build-arg "APT_CODE_NAME=$(APT_CODE_NAME)" \
 		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
@@ -88,7 +88,7 @@ build:
 		--label "git.tag=$(GIT_TAG)" \
 		--label "git.commit.id=$(GIT_COMMIT_ID)" \
 		--label "git.commit.count=$(GIT_COMMIT)" \
-		--add-host "corpus.ncsoft.com:172.20.93.112" \
+		--add-host "nlp-utils:172.19.153.41" \
 		.
 
 	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest

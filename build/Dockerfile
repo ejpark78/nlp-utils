@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=corpus:5000/base/crawler:latest
+ARG BASE_IMAGE=registry.nlp-utils/base/crawler:latest
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"

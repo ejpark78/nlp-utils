@@ -16,11 +16,15 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:

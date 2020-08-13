@@ -51,15 +51,6 @@ class UdemyCrawler(object):
 
         self.logger = Logger()
 
-    def batch(self):
-        """코스 목록 전체를 다운로드한다."""
-        # self.get_my_course_list()
-
-        for course in self.course_list:
-            self.get_list(course)
-
-        return
-
     def get_my_course_list(self):
         """강좌 목록을 다운로드 받는다."""
         page = 1
@@ -82,7 +73,7 @@ class UdemyCrawler(object):
 
     def get_list(self, course):
         """강좌 목록을 다운로드 받는다."""
-        path = '{}/{}'.format(self.data_path, course['name'])
+        path = '{}/{}'.format(self.data_path, course['title'])
 
         if isdir(path) is False:
             os.makedirs(path)
@@ -112,11 +103,11 @@ class UdemyCrawler(object):
 
         for item in lecture_list['results']:
             self.logger.info(msg={
-                'title: {}'.format(item['title'])
+                'title': item['title']
             })
 
             if item['_class'] == 'chapter':
-                path = '{}/{}/{:02d}. {}'.format(self.data_path, course['name'], count['chapter'], item['title'])
+                path = '{}/{}/{:02d}. {}'.format(self.data_path, course['title'], count['chapter'], item['title'])
                 count['chapter'] += 1
 
                 if isdir(path) is False:
@@ -127,7 +118,7 @@ class UdemyCrawler(object):
                     lecture_count=count['lecture'],
                     asset=item['asset'],
                     title=item['title'],
-                    course_info=course,
+                    course_id=course['id'],
                     lecture_info=item,
                 )
 
@@ -138,14 +129,14 @@ class UdemyCrawler(object):
                             lecture_count=count['lecture'],
                             asset=supplementary_assets,
                             title=item['title'],
-                            course_info=course,
+                            course_id=course['id'],
                             lecture_info=item
                         )
 
                 count['lecture'] += 1
         return
 
-    def get_lecture(self, path, lecture_count, title, asset, course_info, lecture_info):
+    def get_lecture(self, path, lecture_count, title, asset, course_id, lecture_info):
         """강좌를 다운로드 받는다."""
         url_info = self.url_info['asset']
 
@@ -162,13 +153,13 @@ class UdemyCrawler(object):
             url = url_info['article'].format(asset_id=asset['id'])
         elif asset['asset_type'] == 'File':
             url = url_info['file'].format(
-                course_id=course_info['id'],
+                course_id=course_id,
                 lecture_id=lecture_info['id'],
                 asset_id=asset['id']
             )
         elif asset['asset_type'] == 'ExternalLink':
             url = url_info['external_link'].format(
-                course_id=course_info['id'],
+                course_id=course_id,
                 lecture_id=lecture_info['id'],
                 asset_id=asset['id']
             )
@@ -221,7 +212,7 @@ class UdemyCrawler(object):
             size = getsize(filename)
             if size > 1000:
                 self.logger.info(msg={
-                    'skip {}'.format(filename)
+                    'skip': filename
                 })
                 return True
 
@@ -438,6 +429,37 @@ Icon=text-html
             result = json.loads(data)
 
         return result
+
+    @staticmethod
+    def init_arguments():
+        """ 옵션 설정 """
+        import argparse
+
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--course_list', action='store_true', default=False)
+        parser.add_argument('--trace_course_list', action='store_true', default=False)
+
+        return parser.parse_args()
+
+    def batch(self):
+        """코스 목록 전체를 다운로드한다."""
+        args = self.init_arguments()
+
+        if args.course_list is True:
+            self.get_my_course_list()
+
+        if args.trace_course_list is True:
+            self.course_list = self.open_cache(path=self.data_path, name='course_list')
+
+            for course in self.course_list:
+                self.logger.info(msg={
+                    'course': course
+                })
+
+                self.get_list(course)
+
+        return
 
 
 if __name__ == '__main__':

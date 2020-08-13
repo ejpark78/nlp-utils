@@ -15,19 +15,22 @@ ENV APP_HOME=/usr/local/app
 WORKDIR $HOME
 
 ARG APT_CODE_NAME=focal
-ARG APT_MIRROR=http://corpus.ncsoft.com:8081/repository/${APT_CODE_NAME}/
+ARG APT_MIRROR=http://mirror.kakao.com/ubuntu
+ARG PIP_TRUST_HOST=mirror.kakao.com
+ARG PIP_MIRROR=http://mirror.kakao.com/pypi/simple
 
-ARG PIP_TRUST_HOST=corpus.ncsoft.com
-ARG PIP_MIRROR=http://pip:nlplab@${PIP_TRUST_HOST}:8081/repository/pypi/simple
+ENV APT_OPTS="--no-install-recommends -o Acquire::https::${PIP_TRUST_HOST}::Verify-Peer=false"
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
-		echo "deb ${APT_MIRROR} ${APT_CODE_NAME} main restricted universe multiverse"; \
-		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-updates main restricted universe multiverse"; \
-		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-backports main restricted universe multiverse"; \
+		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME} main restricted universe multiverse"; \
+		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME}-updates main restricted universe multiverse"; \
+		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME}-backports main restricted universe multiverse"; \
 	} > /etc/apt/sources.list \
-    && apt update -yq \
-    && apt install -yq --no-install-recommends \
+    && apt update -yq ${APT_OPTS} \
+    && apt install -yq ${APT_OPTS} \
+        ca-certificates \
+    && apt install -yq ${APT_OPTS} \
 		default-jdk-headless \
         bridge-utils \
         build-essential \
@@ -48,14 +51,6 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo && echo "# install chrome" \
-    && add-apt-repository -y ppa:saiarcot895/chromium-dev \
-    && apt update -yq \
-    && apt install -yq --no-install-recommends \
-        chromium-browser \
-        chromium-chromedriver \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 파이썬 라이브러리 설치
