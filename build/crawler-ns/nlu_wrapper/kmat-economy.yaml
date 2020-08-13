@@ -18,9 +18,11 @@ spec:
         app: kmat-economy
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: registry.nlp-utils/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -38,12 +40,11 @@ metadata:
   labels:
     app: kmat-economy
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: kmat-economy
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30011
+    - port: 80
       targetPort: 80
 

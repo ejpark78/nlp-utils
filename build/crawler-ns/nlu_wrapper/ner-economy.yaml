@@ -18,9 +18,11 @@ spec:
         app: ner-economy
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          image: registry.nlp-utils/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -38,12 +40,11 @@ metadata:
   labels:
     app: ner-economy
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: ner-economy
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30021
+    - port: 80
       targetPort: 80
 

@@ -18,9 +18,11 @@ spec:
         app: kmat-baseball
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: registry.nlp-utils/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -28,7 +30,6 @@ spec:
               value: "baseball"
           ports:
             - containerPort: 80
-
 
 ---
 apiVersion: v1
@@ -39,12 +40,11 @@ metadata:
   labels:
     app: kmat-baseball
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: kmat-baseball
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30012
+    - port: 80
       targetPort: 80
 

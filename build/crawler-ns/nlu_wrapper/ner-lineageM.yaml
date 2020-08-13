@@ -18,14 +18,20 @@ spec:
         app: ner-lineagem
     spec:
       restartPolicy: Always
+      hostAliases:
+        - ip: "172.20.93.43"
+          hostnames:
+          - "llab-game-dict.korea.ncsoft.corp"
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/ner-rule-2018:latest
+          image: registry.nlp-utils/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
             - name: DOMAIN
-              value: "lineageM"
+              value: "economy"
           ports:
             - containerPort: 80
 
@@ -38,12 +44,11 @@ metadata:
   labels:
     app: ner-lineagem
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: ner-lineagem
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30023
+    - port: 80
       targetPort: 80
 

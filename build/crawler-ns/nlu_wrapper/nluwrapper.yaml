@@ -17,36 +17,38 @@ spec:
         app: nluwrapper
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/nlu_wrapper:latest
+          image: registry.nlp-utils/nlu_wrapper:latest
           env:
             - name: VERSION
               value: "latest"
             - name: SERV_PORT
               value: "80"
             - name: POS_IP_ADDR_common
-              value: "http://kmat-common.crawler.svc.cluster.local:30010"
+              value: "http://kmat-common.crawler.svc.cluster.local"
             - name: POS_IP_ADDR_economy
-              value: "http://kmat-economy.crawler.svc.cluster.local:30011"
+              value: "http://kmat-economy.crawler.svc.cluster.local"
             - name: POS_IP_ADDR_baseball
-              value: "http://kmat-baseball.crawler.svc.cluster.local:30012"
+              value: "http://kmat-baseball.crawler.svc.cluster.local"
             - name: POS_IP_ADDR_lineageM
-              value: "http://kmat-lineagem.crawler.svc.cluster.local:30013"
+              value: "http://kmat-lineagem.crawler.svc.cluster.local"
             - name: NER_IP_ADDR_economy
-              value: "http://ner-economy.crawler.svc.cluster.local:30021"
+              value: "http://ner-economy.crawler.svc.cluster.local"
             - name: NER_IP_ADDR_baseball
-              value: "http://ner-baseball.crawler.svc.cluster.local:30022"
+              value: "http://ner-baseball.crawler.svc.cluster.local"
             - name: NER_IP_ADDR_lineageM
-              value: "http://ner-lineagem.crawler.svc.cluster.local:30023"
+              value: "http://ner-lineagem.crawler.svc.cluster.local"
             - name: SBD_CRF_IP_ADDR_colloque
-              value: "http://sbd-colloque.crawler.svc.cluster.local:30030"
+              value: "http://sbd-colloque.crawler.svc.cluster.local"
             - name: SBD_CRF_IP_ADDR_literary
-              value: "http://sbd-literary.crawler.svc.cluster.local:30031"
+              value: "http://sbd-literary.crawler.svc.cluster.local"
             - name: DP_IP_ADDR
-              value: "http://parser-common.crawler.svc.cluster.local:30040"
+              value: "http://parser-common.crawler.svc.cluster.local"
             - name: TIME_PYTHON_IP_ADDR
-              value: "http://time-common.crawler.svc.cluster.local:30050/nctime"
+              value: "http://time-common.crawler.svc.cluster.local/nctime"
           ports:
             - containerPort: 80
 
@@ -59,12 +61,11 @@ metadata:
   labels:
     app: nluwrapper
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: nluwrapper
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30000
+    - port: 80
       targetPort: 80
 

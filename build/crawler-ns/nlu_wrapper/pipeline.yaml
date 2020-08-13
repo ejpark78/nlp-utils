@@ -1,0 +1,50 @@
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: corpus-pipline
+#  namespace: crawler
+#  labels:
+#    app: corpus-pipline
+#spec:
+#  selector:
+#    matchLabels:
+#      app: corpus-pipline
+#  replicas: 1
+#  template:
+#    metadata:
+#      labels:
+#        app: corpus-pipline
+#    spec:
+#      restartPolicy: Always
+#      containers:
+#        - name: default
+#          image: corpus:5000/crawler/corpus_pipeline:latest
+#          env:
+#            - name: ELASTIC_HOST
+#              value: https://corpus.ncsoft.com:9200
+#            - name: NLU_WRAPPER_URL
+#              value: http://172.20.78.250:30000/
+#            - name: USE_CONSUMER
+#              value: "0"
+#            - name: PORT
+#              value: "80"
+#
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: corpus-pipline
+#  namespace: crawler
+#  labels:
+#    app: corpus-pipline
+#spec:
+#  type: LoadBalancer
+#  selector:
+#    app: corpus-pipline
+#  externalIPs:
+#    - 172.20.78.250
+#  ports:
+#    - port: 20000
+#      targetPort: 80
+#

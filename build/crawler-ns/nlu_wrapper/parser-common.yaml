@@ -18,9 +18,11 @@ spec:
         app: parser-common
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/dependency-parser:latest
+          image: registry.nlp-utils/dependency-parser:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -36,12 +38,11 @@ metadata:
   labels:
     app: parser-common
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: parser-common
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30040
+    - port: 80
       targetPort: 80
 

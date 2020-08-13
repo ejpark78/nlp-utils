@@ -18,9 +18,11 @@ spec:
         app: time-common
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/nctime-2018:latest
+          image: registry.nlp-utils/nctime-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -36,12 +38,11 @@ metadata:
   labels:
     app: time-common
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: time-common
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30050
+    - port: 80
       targetPort: 80
 

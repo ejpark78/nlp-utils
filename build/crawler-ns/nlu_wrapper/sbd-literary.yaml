@@ -18,9 +18,11 @@ spec:
         app: sbd-literary
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/sbd_crf:latest
+          image: registry.nlp-utils/sbd_crf:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -38,12 +40,11 @@ metadata:
   labels:
     app: sbd-literary
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: sbd-literary
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30031
+    - port: 80
       targetPort: 80
 

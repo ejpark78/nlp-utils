@@ -18,9 +18,11 @@ spec:
         app: kmat-lineagem
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
       containers:
         - name: default
-          image: galadriel02.korea.ncsoft.corp:5000/kmat:latest
+          image: registry.nlp-utils/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
@@ -38,12 +40,11 @@ metadata:
   labels:
     app: kmat-lineagem
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  clusterIP: None
   selector:
     app: kmat-lineagem
-  externalIPs:
-    - 172.20.78.250
   ports:
-    - port: 30013
+    - port: 80
       targetPort: 80
 
