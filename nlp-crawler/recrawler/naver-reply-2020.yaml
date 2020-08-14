@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-politics
+  name: recrawler-naver-reply-politics
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -38,9 +38,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-society
+  name: recrawler-naver-reply-society
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -74,9 +74,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-tv
+  name: recrawler-naver-reply-tv
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -110,9 +110,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-economy
+  name: recrawler-naver-reply-economy
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -146,9 +146,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-international
+  name: recrawler-naver-reply-international
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -182,9 +182,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-it
+  name: recrawler-naver-reply-it
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -219,9 +219,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-living
+  name: recrawler-naver-reply-living
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -255,9 +255,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-opinion
+  name: recrawler-naver-reply-opinion
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:
@@ -291,9 +291,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: naver-reply-sports
+  name: recrawler-naver-reply-sports
   labels:
-    app: recrawler
+    app: recrawler-naver-reply
 spec:
   restartPolicy: Never
   hostAliases:

@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-culture
+  name: recrawler-daum-culture
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -46,9 +46,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-economy
+  name: recrawler-daum-economy
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -90,9 +90,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-international
+  name: recrawler-daum-international
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -134,9 +134,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-it
+  name: recrawler-daum-it
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -178,9 +178,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-opinion
+  name: recrawler-daum-opinion
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -222,9 +222,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-politics
+  name: recrawler-daum-politics
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -266,9 +266,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-society
+  name: recrawler-daum-society
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -310,9 +310,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: daum-sports
+  name: recrawler-daum-sports
   labels:
-    app: recrawler
+    app: recrawler-daum-news
 spec:
   restartPolicy: Never
   hostAliases:

@@ -7,8 +7,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -41,8 +45,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -75,8 +83,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -109,8 +121,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -143,8 +159,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -177,8 +197,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -211,8 +235,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -245,8 +273,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -279,8 +311,12 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
