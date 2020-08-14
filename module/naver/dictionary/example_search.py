@@ -368,7 +368,7 @@ class ExampleSearchCrawler(DictionaryUtils):
         parser = super().init_arguments()
 
         parser.add_argument('--index', default='crawler-dictionary-example-naver', help='')
-        parser.add_argument('--list_index', default='crawler-dictionary-example-naver-list', help='')
+        parser.add_argument('--list_index', default='crawler-dictionary-example-word-list', help='')
 
         parser.add_argument('--lang', default=None, help='')
 

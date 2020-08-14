@@ -28,42 +28,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/linedict.py",
         "--lang", "en",
-        "--index", "crawler-dictionary-example-linedict-enth",
-        "--list_index", "crawler-dictionary-example-linedict-enth-list",
-        "--columns", "example,translationText"
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: linedict
-  labels:
-    app: crawler-linedict
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "module/naver/dictionary/linedict.py",
         "--index", "crawler-dictionary-example-linedict",
-        "--list_index", "crawler-dictionary-example-linedict-list",
+        "--list_index", "crawler-dictionary-example-word-list",
         "--columns", "example,translationText"
       ]
-
