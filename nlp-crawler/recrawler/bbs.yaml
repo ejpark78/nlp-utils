@@ -3,16 +3,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: lineage2m
-  namespace: crawler-batch
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -24,7 +27,6 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3", "batch.py",
-        "--overwrite",
         "--category", "bbs",
         "--job_id", "lineage2m",
         "--page_range", "1~500",
@@ -36,16 +38,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: lineagem
-  namespace: crawler-batch
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -57,7 +62,6 @@ spec:
       workingDir: /usr/local/app
       args: [
         "python3", "batch.py",
-        "--overwrite",
         "--category", "bbs",
         "--job_id", "lineagem",
         "--page_range", "1~9000000",

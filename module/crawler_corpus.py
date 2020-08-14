@@ -88,7 +88,7 @@ class CrawlerCorpus(WebNewsCrawler):
                      'run ' \
                      '--label task=crawler_corpus ' \
                      '-v {share}:/usr/local/app/data:rw ' \
-                     'corpus:5000/crawler:latest'.format(**query)
+                     'registry.nlp-utils/crawler:latest'.format(**query)
 
             cmd = 'PYTHONPATH=. python3 module/crawler_corpus.py ' \
                   '-update_corpus ' \

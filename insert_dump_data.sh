@@ -7,7 +7,7 @@ PYTHONPATH=. python3 module/crawler_corpus.py \
 
 python3 crawler_corpus.py -generate_cmd -data_dir /home/ejpark/workspace/data-center/data/dump/mongodb/crawler/crawler.2019-01-28 | sort -r > 2019-01-28.sh
 
-cluster green "docker pull corpus:5000/crawler:latest"
+cluster green "docker pull registry.nlp-utils/crawler:latest"
 
 parallel -j 10 -a mlbpark-kbo.sh
 parallel -j 10 -a mlbpark-bullpen.sh

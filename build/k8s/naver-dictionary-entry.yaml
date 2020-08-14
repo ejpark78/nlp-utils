@@ -12,7 +12,7 @@ spec:
     group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "한국어"]
@@ -29,7 +29,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
@@ -46,7 +46,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "중국어"]
@@ -63,7 +63,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
 
@@ -79,7 +79,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
 
@@ -95,7 +95,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
 
@@ -111,7 +111,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "독일어"]
@@ -128,7 +128,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "스페인어"]
@@ -145,7 +145,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "일본어"]
@@ -162,7 +162,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
 
@@ -178,7 +178,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "프랑스어"]
@@ -195,7 +195,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
 
@@ -211,7 +211,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
 
@@ -227,7 +227,7 @@ spec:
 #  restartPolicy: Always
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
 
@@ -243,7 +243,7 @@ spec:
 #   restartPolicy: Always
 #   containers:
 #     - name: default
-#       image: corpus:5000/crawler:latest
+#       image: registry.nlp-utils/crawler:latest
 #       workingDir: /usr/local/app
 #       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
 
@@ -259,7 +259,7 @@ spec:
   restartPolicy: Always
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       workingDir: /usr/local/app
       args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "영어"]

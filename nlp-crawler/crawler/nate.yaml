@@ -2,171 +2,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: naver-reply-politics
-  namespace: crawler
+  name: nate-economy
   labels:
     app: crawler
 spec:
   schedule: "0,30 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.93.112"
-              hostnames:
-                - "corpus.ncsoft.com"
-          imagePullSecrets:
-            - name: registry
-          containers:
-            - name: default
-              image: registry.nlp-utils/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_POLITICS)
-                - name: ELASTIC_SEARCH_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: elasticsearch-auth
-                      key: http_auth
-              envFrom:
-                - configMapRef:
-                    name: naver-reply
-              args: [
-                "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "politics-reply"
-              ]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: naver-reply-society
-  namespace: crawler
-  labels:
-    app: crawler
-spec:
-  schedule: "5,35 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.93.112"
-              hostnames:
-                - "corpus.ncsoft.com"
-          imagePullSecrets:
-            - name: registry
-          containers:
-            - name: default
-              image: registry.nlp-utils/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_SOCIETY)
-                - name: ELASTIC_SEARCH_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: elasticsearch-auth
-                      key: http_auth
-              envFrom:
-                - configMapRef:
-                    name: naver-reply
-              args: [
-                "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "society-reply"
-              ]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: naver-reply-tv
-  namespace: crawler
-  labels:
-    app: crawler
-spec:
-  schedule: "10,40 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.93.112"
-              hostnames:
-                - "corpus.ncsoft.com"
-          imagePullSecrets:
-            - name: registry
-          containers:
-            - name: default
-              image: registry.nlp-utils/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_TV)
-                - name: ELASTIC_SEARCH_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: elasticsearch-auth
-                      key: http_auth
-              envFrom:
-                - configMapRef:
-                    name: naver-reply
-              args: [
-                "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "tv-reply"
-              ]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: naver-reply-economy
-  namespace: crawler
-  labels:
-    app: crawler
-spec:
-  schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 0
@@ -203,23 +43,74 @@ spec:
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: naver-reply
+                    name: nate
               args: [
                 "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "economy-reply"
+                "--category", "nate",
+                "--job_id", "economy"
               ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: naver-reply-international
-  namespace: crawler
+  name: nate-entertainment
   labels:
     app: crawler
 spec:
-  schedule: "20,50 * * * *"
+  schedule: "5,35 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
+          containers:
+            - name: default
+              image: registry.nlp-utils/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_ENTERTAINMENT)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: nate
+              args: [
+                "python3", "batch.py",
+                "--category", "nate",
+                "--job_id", "entertainment"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nate-international
+  labels:
+    app: crawler
+spec:
+  schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 0
@@ -256,23 +147,22 @@ spec:
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: naver-reply
+                    name: nate
               args: [
                 "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "international-reply"
+                "--category", "nate",
+                "--job_id", "international"
               ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: naver-reply-it
-  namespace: crawler
+  name: nate-it
   labels:
     app: crawler
 spec:
-  schedule: "25,55 * * * *"
+  schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 0
@@ -309,129 +199,126 @@ spec:
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: naver-reply
+                    name: nate
               args: [
                 "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "it-reply"
+                "--category", "nate",
+                "--job_id", "it"
               ]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: naver-reply-living
-  namespace: crawler
+  name: nate-politics
+  labels:
+    app: crawler
+spec:
+  schedule: "20,50 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
+          containers:
+            - name: default
+              image: registry.nlp-utils/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_POLITICS)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: nate
+              args: [
+                "python3", "batch.py",
+                "--category", "nate",
+                "--job_id", "politics"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nate-society
+  labels:
+    app: crawler
+spec:
+  schedule: "25,55 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
+          containers:
+            - name: default
+              image: registry.nlp-utils/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SOCIETY)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
+              envFrom:
+                - configMapRef:
+                    name: nate
+              args: [
+                "python3", "batch.py",
+                "--category", "nate",
+                "--job_id", "society"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nate-sports
   labels:
     app: crawler
 spec:
   schedule: "0,30 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.93.112"
-              hostnames:
-                - "corpus.ncsoft.com"
-          imagePullSecrets:
-            - name: registry
-          containers:
-            - name: default
-              image: registry.nlp-utils/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_LIVING)
-                - name: ELASTIC_SEARCH_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: elasticsearch-auth
-                      key: http_auth
-              envFrom:
-                - configMapRef:
-                    name: naver-reply
-              args: [
-                "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "living-reply"
-              ]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: naver-reply-opinion
-  namespace: crawler
-  labels:
-    app: crawler
-spec:
-  schedule: "5,35 * * * *"
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: OnFailure
-          hostAliases:
-            - ip: "172.20.93.112"
-              hostnames:
-                - "corpus.ncsoft.com"
-          imagePullSecrets:
-            - name: registry
-          containers:
-            - name: default
-              image: registry.nlp-utils/crawler:latest
-              imagePullPolicy: Always
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 200m
-                  memory: 200Mi
-              workingDir: /usr/local/app
-              env:
-                - name: ELASTIC_SEARCH_INDEX
-                  value: $(INDEX_OPINION)
-                - name: ELASTIC_SEARCH_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: elasticsearch-auth
-                      key: http_auth
-              envFrom:
-                - configMapRef:
-                    name: naver-reply
-              args: [
-                "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "opinion-reply"
-              ]
-
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: naver-reply-sports
-  namespace: crawler
-  labels:
-    app: crawler
-spec:
-  schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
   successfulJobsHistoryLimit: 0
@@ -468,9 +355,22 @@ spec:
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: naver-reply
+                    name: nate
               args: [
                 "python3", "batch.py",
-                "--category", "naver",
-                "--job_id", "sports-reply"
+                "--category", "nate",
+                "--job_id", "sports"
               ]
+
+#    - name: radio
+#      image: registry.nlp-utils/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "radio"]
+#    - name: opinion
+#      image: registry.nlp-utils/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "opinion"]
+#    - name: tv
+#      image: registry.nlp-utils/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "batch.py", "--category", "nate", "--job_id", "tv"]

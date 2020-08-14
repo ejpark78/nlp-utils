@@ -2,51 +2,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kmat-common
-  namespace: crawler
+  name: sbd-literary
   labels:
-    app: kmat-common
-    domain: common
+    app: sbd-literary
+    domain: literary
 spec:
   selector:
     matchLabels:
-      app: kmat-common
+      app: sbd-literary
   replicas: 1
   template:
     metadata:
       labels:
-        app: kmat-common
+        app: sbd-literary
     spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/kmat:latest
+          image: registry.nlp-utils/sbd_crf:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: DOMAIN
-              value: "common"
+            - name: STYLE
+              value: "literary"
           ports:
             - containerPort: 80
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kmat-common
-  namespace: crawler
+  name: sbd-literary
   labels:
-    app: kmat-common
+    app: sbd-literary
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: kmat-common
+    app: sbd-literary
   ports:
-    - name: kmat-common
-      port: 80
+    - port: 80
       targetPort: 80
 

@@ -2,32 +2,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sbd-colloque
-  namespace: crawler
+  name: kmat-baseball
   labels:
-    app: sbd-colloque
-    domain: colloque
+    app: kmat-baseball
+    domain: economy
 spec:
   selector:
     matchLabels:
-      app: sbd-colloque
+      app: kmat-baseball
   replicas: 1
   template:
     metadata:
       labels:
-        app: sbd-colloque
+        app: kmat-baseball
     spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/sbd_crf:latest
+          image: registry.nlp-utils/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: STYLE
-              value: "colloque"
+            - name: DOMAIN
+              value: "baseball"
           ports:
             - containerPort: 80
 
@@ -35,15 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sbd-colloque
-  namespace: crawler
+  name: kmat-baseball
   labels:
-    app: sbd-colloque
+    app: kmat-baseball
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: sbd-colloque
+    app: kmat-baseball
   ports:
     - port: 80
       targetPort: 80

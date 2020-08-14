@@ -1,142 +1,17 @@
 ---
 apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: elasticsearch-auth
-  namespace: crawler-naver-reply-2020
-data:
-  http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
-#echo -n crawler:crawler2019 | base64
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: naver
-  namespace: crawler-naver-reply-2020
-data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
-  INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
-  INDEX_ECONOMY: "crawler-naver-economy-reply"
-  INDEX_INTERNATIONAL: "crawler-naver-international-reply"
-  INDEX_IT: "crawler-naver-it-reply"
-  INDEX_OPINION: "crawler-naver-opinion-reply"
-  INDEX_POLITICS: "crawler-naver-politics-reply"
-  INDEX_SOCIETY: "crawler-naver-society-reply"
-  INDEX_SPORTS: "crawler-naver-sports-reply"
-  INDEX_TV: "crawler-naver-tv-reply"
-  INDEX_LIVING: "crawler-naver-living-reply"
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: politics
-  namespace: crawler-naver-reply-2020
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Never
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      envFrom:
-        - configMapRef:
-            name: naver
-      args: [
-        "python3", "batch.py",
-        "--category", "naver",
-        "--job_id", "politics-reply",
-        "--date_range", "2020-01-01~2020-12-31"
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: society
-  namespace: crawler-naver-reply-2020
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Never
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      envFrom:
-        - configMapRef:
-            name: naver
-      args: [
-        "python3", "batch.py",
-        "--category", "naver",
-        "--job_id", "society-reply",
-        "--date_range", "2020-01-01~2020-12-31"
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: tv
-  namespace: crawler-naver-reply-2020
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Never
-  containers:
-    - name: default
-      image: corpus:5000/crawler:latest
-      workingDir: /usr/local/app
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      envFrom:
-        - configMapRef:
-            name: naver
-      args: [
-        "python3", "batch.py",
-        "--category", "naver",
-        "--job_id", "tv-reply",
-        "--date_range", "2020-01-01~2020-12-31"
-      ]
-
----
-apiVersion: v1
 kind: Pod
 metadata:
   name: economy
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -151,9 +26,11 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
+        "--update_category_only",
         "--category", "naver",
-        "--job_id", "economy-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "--job_id", "economy",
+        "--config", "config/nlp/naver/economy",
+        "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -161,14 +38,15 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: international
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -183,9 +61,11 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
+        "--update_category_only",
         "--category", "naver",
-        "--job_id", "international-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "--job_id", "international",
+        "--config", "config/nlp/naver/international",
+        "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -193,14 +73,15 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: it
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -215,9 +96,11 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
+        "--update_category_only",
         "--category", "naver",
-        "--job_id", "it-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "--job_id", "it",
+        "--config", "config/nlp/naver/it",
+        "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -225,14 +108,15 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: living
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -247,9 +131,11 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
+        "--update_category_only",
         "--category", "naver",
-        "--job_id", "living-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "--job_id", "living",
+        "--config", "config/nlp/naver/living",
+        "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -257,14 +143,15 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: opinion
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -279,9 +166,81 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
+        "--update_category_only",
         "--category", "naver",
-        "--job_id", "opinion-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "--job_id", "opinion",
+        "--config", "config/nlp/naver/opinion",
+        "--date_range", "2010-01-01~2018-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: politics
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--update_category_only",
+        "--category", "naver",
+        "--job_id", "politics",
+        "--config", "config/nlp/naver/politics",
+        "--date_range", "2010-01-01~2018-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: society
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "--update_category_only",
+        "--category", "naver",
+        "--job_id", "society",
+        "--config", "config/nlp/naver/society",
+        "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -289,14 +248,15 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: sports
-  namespace: crawler-naver-reply-2020
   labels:
     app: crawler
 spec:
   restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -311,7 +271,44 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--category", "naver",
-        "--job_id", "sports-reply",
-        "--date_range", "2020-01-01~2020-12-31"
+        "update_category_only",
+        "category", "naver",
+        "job_id", "sports",
+        "config", "config/nlp/naver/sports",
+        "date_range", "2010-01-01~2018-12-31"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tv
+  labels:
+    app: crawler
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    group: "crawler"
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: naver
+      args: [
+        "python3", "batch.py",
+        "update_category_only",
+        "category", "naver",
+        "job_id", "tv",
+        "config", "config/nlp/naver/tv",
+        "date_range", "2010-01-01~2018-12-31"
       ]

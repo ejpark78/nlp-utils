@@ -3,7 +3,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-mlbpark-kbo
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -57,7 +56,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-mlbpark-mlb
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -111,7 +109,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-mlbpark-bullpen
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -165,7 +162,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-ruliweb
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -219,7 +215,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-inven-lineagem
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -275,7 +270,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-lineagem
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -331,7 +325,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: bbs-lineage2m
-  namespace: crawler
   labels:
     app: crawler
 spec:

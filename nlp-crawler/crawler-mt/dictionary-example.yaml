@@ -3,16 +3,19 @@
 #kind: Pod
 #metadata:
 #  name: linedict
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/linedict.py", "--lang", "en", "--index", "crawler-dictionary-example-linedict-enth", "--list_index", "crawler-dictionary-example-linedict-enth-list", "--columns", "example,translationText"]
@@ -22,16 +25,19 @@
 #kind: Pod
 #metadata:
 #  name: linedict
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/linedict.py", "--index", "crawler-dictionary-example-linedict", "--list_index", "crawler-dictionary-example-linedict-list", "--columns", "example,translationText"]
@@ -41,16 +47,19 @@
 #kind: Pod
 #metadata:
 #  name: eudict
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/dictionary/eudic_example.py", "--lang", "en", "--index", "crawler-dictionary-example-eudic", "--list_index", "crawler-dictionary-example-eudic-list", "--columns", "english,chinese"]
@@ -60,16 +69,19 @@
 #kind: Pod
 #metadata:
 #  name: id
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "id"]
@@ -79,16 +91,19 @@
 #kind: Pod
 #metadata:
 #  name: ru
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "ru"]
@@ -98,16 +113,19 @@
 #kind: Pod
 #metadata:
 #  name: th
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "th"]
@@ -117,16 +135,19 @@
 #kind: Pod
 #metadata:
 #  name: ja
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "ja"]
@@ -136,16 +157,19 @@
 #kind: Pod
 #metadata:
 #  name: vi
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/naver/dictionary/example_search.py", "--lang", "vi"]
@@ -155,16 +179,19 @@
 #kind: Pod
 #metadata:
 #  name: enid
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      resources:
 #        requests:
@@ -181,16 +208,19 @@
 #kind: Pod
 #metadata:
 #  name: zh
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      resources:
 #        requests:
@@ -207,16 +237,19 @@
 #kind: Pod
 #metadata:
 #  name: youdao-zhko
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      resources:
 #        requests:
@@ -243,16 +276,19 @@
 #kind: Pod
 #metadata:
 #  name: youdao-zhja
-#  namespace: crawler-dictionary-example
 #  labels:
 #    app: crawler
 #spec:
 #  restartPolicy: Always
-#  nodeSelector:
-#    group: "crawler"
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      imagePullPolicy: Always
 #      resources:
 #        requests:
@@ -279,16 +315,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: sealang-vien
-  namespace: crawler-dictionary-example
   labels:
     app: crawler
 spec:
   restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -321,11 +360,15 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -358,11 +401,15 @@ metadata:
     app: crawler
 spec:
   restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:

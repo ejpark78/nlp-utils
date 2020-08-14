@@ -11,7 +11,7 @@
 #  restartPolicy: Always
 #  containers:
 #    - name: amity
-#      image: corpus:5000/crawler:latest
+#      image: registry.nlp-utils/crawler:latest
 #      workingDir: /usr/local/app
 #      args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/친목.json", "--max_page", "50"]
 
@@ -27,7 +27,7 @@
 #   restartPolicy: Always
 #   containers:
 #     - name: community
-#       image: corpus:5000/crawler:latest
+#       image: registry.nlp-utils/crawler:latest
 #       workingDir: /usr/local/app
 #       args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/커뮤니티.json", "--max_page", "50"]
 
@@ -53,7 +53,7 @@ spec:
             group: "crawler"
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:
@@ -92,7 +92,7 @@ spec:
             group: "crawler"
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               resources:
                 requests:

@@ -2,20 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ner-baseball
-  namespace: crawler
+  name: ner-economy
   labels:
-    app: ner-baseball
-    domain: baseball
+    app: ner-economy
+    domain: economy
 spec:
   selector:
     matchLabels:
-      app: ner-baseball
+      app: ner-economy
   replicas: 1
   template:
     metadata:
       labels:
-        app: ner-baseball
+        app: ner-economy
     spec:
       restartPolicy: Always
       imagePullSecrets:
@@ -27,7 +26,7 @@ spec:
             - name: PORT_NUM
               value: "80"
             - name: DOMAIN
-              value: "baseball"
+              value: "economy"
           ports:
             - containerPort: 80
 
@@ -35,15 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ner-baseball
-  namespace: crawler
+  name: ner-economy
   labels:
-    app: ner-baseball
+    app: ner-economy
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: ner-baseball
+    app: ner-economy
   ports:
     - port: 80
       targetPort: 80

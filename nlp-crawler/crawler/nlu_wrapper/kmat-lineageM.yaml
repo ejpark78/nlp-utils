@@ -2,32 +2,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sbd-literary
-  namespace: crawler
+  name: kmat-lineagem
   labels:
-    app: sbd-literary
-    domain: literary
+    app: kmat-lineagem
+    domain: economy
 spec:
   selector:
     matchLabels:
-      app: sbd-literary
+      app: kmat-lineagem
   replicas: 1
   template:
     metadata:
       labels:
-        app: sbd-literary
+        app: kmat-lineagem
     spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/sbd_crf:latest
+          image: registry.nlp-utils/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: STYLE
-              value: "literary"
+            - name: DOMAIN
+              value: "lineageM"
           ports:
             - containerPort: 80
 
@@ -35,15 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sbd-literary
-  namespace: crawler
+  name: kmat-lineagem
   labels:
-    app: sbd-literary
+    app: kmat-lineagem
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: sbd-literary
+    app: kmat-lineagem
   ports:
     - port: 80
       targetPort: 80

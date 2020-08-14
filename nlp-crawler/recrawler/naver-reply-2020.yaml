@@ -1,48 +1,21 @@
 ---
 apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: elasticsearch-auth
-  namespace: crawler-naver-update-category
-data:
-  http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
-#echo -n crawler:crawler2019 | base64
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: naver
-  namespace: crawler-naver-update-category
-data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
-  INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
-  INDEX_ECONOMY: "crawler-naver-economy-reply"
-  INDEX_INTERNATIONAL: "crawler-naver-international-reply"
-  INDEX_IT: "crawler-naver-it-reply"
-  INDEX_OPINION: "crawler-naver-opinion-reply"
-  INDEX_POLITICS: "crawler-naver-politics-reply"
-  INDEX_SOCIETY: "crawler-naver-society-reply"
-  INDEX_SPORTS: "crawler-naver-sports-reply"
-  INDEX_TV: "crawler-naver-tv-reply"
-  INDEX_LIVING: "crawler-naver-living-reply"
-
----
-apiVersion: v1
 kind: Pod
 metadata:
-  name: economy
-  namespace: crawler-naver-update-category
+  name: naver-reply-politics
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -57,28 +30,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "economy",
-        "--config", "config/nlp/naver/economy",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "politics-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: international
-  namespace: crawler-naver-update-category
+  name: naver-reply-society
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -93,28 +67,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "international",
-        "--config", "config/nlp/naver/international",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "society-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: it
-  namespace: crawler-naver-update-category
+  name: naver-reply-tv
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -129,28 +104,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "it",
-        "--config", "config/nlp/naver/it",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "tv-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: living
-  namespace: crawler-naver-update-category
+  name: naver-reply-economy
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -165,28 +141,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "living",
-        "--config", "config/nlp/naver/living",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "economy-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: opinion
-  namespace: crawler-naver-update-category
+  name: naver-reply-international
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -201,28 +178,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "opinion",
-        "--config", "config/nlp/naver/opinion",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "international-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: politics
-  namespace: crawler-naver-update-category
+  name: naver-reply-it
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -237,28 +215,30 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
+        "--overwrite",
         "--category", "naver",
-        "--job_id", "politics",
-        "--config", "config/nlp/naver/politics",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "it-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: society
-  namespace: crawler-naver-update-category
+  name: naver-reply-living
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -273,28 +253,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "--update_category_only",
         "--category", "naver",
-        "--job_id", "society",
-        "--config", "config/nlp/naver/society",
-        "--date_range", "2010-01-01~2018-12-31"
+        "--job_id", "living-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sports
-  namespace: crawler-naver-update-category
+  name: naver-reply-opinion
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -309,28 +290,29 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "update_category_only",
-        "category", "naver",
-        "job_id", "sports",
-        "config", "config/nlp/naver/sports",
-        "date_range", "2010-01-01~2018-12-31"
+        "--category", "naver",
+        "--job_id", "opinion-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: tv
-  namespace: crawler-naver-update-category
+  name: naver-reply-sports
   labels:
-    app: crawler
+    app: recrawler
 spec:
   restartPolicy: Never
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
@@ -345,9 +327,7 @@ spec:
             name: naver
       args: [
         "python3", "batch.py",
-        "update_category_only",
-        "category", "naver",
-        "job_id", "tv",
-        "config", "config/nlp/naver/tv",
-        "date_range", "2010-01-01~2018-12-31"
+        "--category", "naver",
+        "--job_id", "sports-reply",
+        "--date_range", "2020-01-01~2020-12-31"
       ]

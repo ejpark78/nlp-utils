@@ -1,0 +1,359 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-culture
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_CULTURE)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "culture"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-economy
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_ECONOMY)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "economy"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-international
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_INTERNATIONAL)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "international"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-it
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_IT)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "it"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-opinion
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_OPINION)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "opinion"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-politics
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_POLITICS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "politics"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-society
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SOCIETY)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "society"
+      ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daum-sports
+  labels:
+    app: recrawler
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
+      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      envFrom:
+        - configMapRef:
+            name: daum
+      args: [
+        "python3", "batch.py",
+        "--date_range", "2019-01-01~2020-12-31",
+        "--category", "daum",
+        "--job_id", "sports"
+      ]

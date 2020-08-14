@@ -2,30 +2,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: parser-common
-  namespace: crawler
+  name: ner-baseball
   labels:
-    app: parser-common
-    domain: common
+    app: ner-baseball
+    domain: baseball
 spec:
   selector:
     matchLabels:
-      app: parser-common
+      app: ner-baseball
   replicas: 1
   template:
     metadata:
       labels:
-        app: parser-common
+        app: ner-baseball
     spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/dependency-parser:latest
+          image: registry.nlp-utils/ner-rule-2018:latest
           env:
             - name: PORT_NUM
               value: "80"
+            - name: DOMAIN
+              value: "baseball"
           ports:
             - containerPort: 80
 
@@ -33,15 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: parser-common
-  namespace: crawler
+  name: ner-baseball
   labels:
-    app: parser-common
+    app: ner-baseball
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: parser-common
+    app: ner-baseball
   ports:
     - port: 80
       targetPort: 80

@@ -16,7 +16,7 @@ spec:
       command: ['sh', '-c', "sleep 1"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -55,7 +55,7 @@ spec:
       command: ['sh', '-c', "sleep 50"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -94,7 +94,7 @@ spec:
       command: ['sh', '-c', "sleep 100"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -133,7 +133,7 @@ spec:
       command: ['sh', '-c', "sleep 150"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -172,7 +172,7 @@ spec:
       command: ['sh', '-c', "sleep 200"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -211,7 +211,7 @@ spec:
       command: ['sh', '-c', "sleep 250"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -250,7 +250,7 @@ spec:
       command: ['sh', '-c', "sleep 300"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -289,7 +289,7 @@ spec:
       command: ['sh', '-c', "sleep 350"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -328,7 +328,7 @@ spec:
       command: ['sh', '-c', "sleep 400"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -367,7 +367,7 @@ spec:
       command: ['sh', '-c', "sleep 450"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:
@@ -406,7 +406,7 @@ spec:
       command: ['sh', '-c', "sleep 500"]
   containers:
     - name: default
-      image: corpus:5000/crawler:latest
+      image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
       resources:
         requests:

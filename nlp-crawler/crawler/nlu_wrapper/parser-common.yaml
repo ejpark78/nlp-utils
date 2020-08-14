@@ -2,32 +2,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kmat-economy
-  namespace: crawler
+  name: parser-common
   labels:
-    app: kmat-economy
-    domain: economy
+    app: parser-common
+    domain: common
 spec:
   selector:
     matchLabels:
-      app: kmat-economy
+      app: parser-common
   replicas: 1
   template:
     metadata:
       labels:
-        app: kmat-economy
+        app: parser-common
     spec:
       restartPolicy: Always
       imagePullSecrets:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/kmat:latest
+          image: registry.nlp-utils/dependency-parser:latest
           env:
             - name: PORT_NUM
               value: "80"
-            - name: DOMAIN
-              value: "economy"
           ports:
             - containerPort: 80
 
@@ -35,15 +32,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kmat-economy
-  namespace: crawler
+  name: parser-common
   labels:
-    app: kmat-economy
+    app: parser-common
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: kmat-economy
+    app: parser-common
   ports:
     - port: 80
       targetPort: 80

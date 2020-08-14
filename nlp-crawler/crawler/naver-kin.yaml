@@ -3,7 +3,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: kin-question-list
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -45,7 +44,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: kin-answer-list
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -87,7 +85,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: kin-detail-question
-  namespace: crawler
   labels:
     app: crawler
 spec:
@@ -129,7 +126,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: kin-detail-answer
-  namespace: crawler
   labels:
     app: crawler
 spec:

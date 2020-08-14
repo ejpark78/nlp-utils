@@ -20,7 +20,7 @@ spec:
             group: "crawler"
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "module/yahoo-tw.py", "--list"]
@@ -47,7 +47,7 @@ spec:
             group: "crawler"
           containers:
             - name: default
-              image: corpus:5000/crawler:latest
+              image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
               workingDir: /usr/local/app
               args: ["python3", "module/yahoo-tw.py", "--contents"]
