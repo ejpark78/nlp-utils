@@ -345,7 +345,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--index', default='crawler-naver-dictionary', help='')
+        parser.add_argument('--index', default='crawler-dictionary-entry-naver', help='')
         parser.add_argument('--category', default='중국어', help='')
 
         parser.add_argument('--char_set', action='store_true', default=False, help='')

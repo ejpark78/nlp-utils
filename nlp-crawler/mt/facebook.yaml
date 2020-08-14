@@ -4,7 +4,6 @@
 #kind: Pod
 #metadata:
 #  name: amity-list
-#  namespace: crawler-facebook
 #  labels:
 #    app: crawler
 #spec:
@@ -20,7 +19,6 @@
 # kind: Pod
 # metadata:
 #   name: community-list
-#   namespace: crawler-facebook
 #   labels:
 #     app: crawler-facebook-community-list
 # spec:
@@ -36,7 +34,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: media-list
-  namespace: crawler-facebook
   labels:
     app: crawler-facebook
 spec:
@@ -49,8 +46,12 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
               image: registry.nlp-utils/crawler:latest
@@ -75,7 +76,6 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: school-chat-list
-  namespace: crawler-facebook
   labels:
     app: crawler-facebook
 spec:
@@ -88,8 +88,12 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
               image: registry.nlp-utils/crawler:latest

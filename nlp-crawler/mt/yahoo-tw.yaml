@@ -2,10 +2,9 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: news-list
-  namespace: crawler-yahoo-tw
+  name: yahoo-tw-list
   labels:
-    app: crawler
+    app: crawler-yahoo-tw
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -16,23 +15,33 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
               image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
-              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SPORTS)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               args: ["python3", "module/yahoo-tw.py", "--list"]
 
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: news-contents
-  namespace: crawler-yahoo-tw
+  name: yahoo-tw-contents
   labels:
-    app: crawler
+    app: crawler-yahoo-tw
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -43,11 +52,22 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          nodeSelector:
-            group: "crawler"
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
           containers:
             - name: default
               image: registry.nlp-utils/crawler:latest
               imagePullPolicy: Always
-              workingDir: /usr/local/app
+              env:
+                - name: ELASTIC_SEARCH_INDEX
+                  value: $(INDEX_SPORTS)
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: elasticsearch-auth
+                      key: http_auth
               args: ["python3", "module/yahoo-tw.py", "--contents"]
