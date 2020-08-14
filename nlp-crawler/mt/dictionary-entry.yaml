@@ -3,13 +3,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: korean
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
-  nodeSelector:
-    group: "crawler"
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -22,11 +25,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: thailand
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -39,11 +47,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: chinese
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -56,11 +69,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: indonesian
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -72,11 +90,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: vietnamese
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -88,11 +111,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: russian
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -104,11 +132,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: german
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -121,11 +154,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: spanish
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -138,11 +176,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: japanese
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -155,11 +198,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: turkish
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -171,11 +219,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: french
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
@@ -188,11 +241,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: ukrainian
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -204,11 +262,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: polish
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -220,11 +283,16 @@ spec:
 #kind: Pod
 #metadata:
 #  name: italian
-#  namespace: crawler-naver-dictionary
 #  labels:
-#    app: crawler
+#    app: crawler-dictionary-entry
 #spec:
 #  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #  containers:
 #    - name: default
 #      image: registry.nlp-utils/crawler:latest
@@ -236,11 +304,16 @@ spec:
 # kind: Pod
 # metadata:
 #   name: rumanian
-#   namespace: crawler-naver-dictionary
 #   labels:
-#     app: crawler
+#     app: crawler-dictionary-entry
 # spec:
 #   restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
 #   containers:
 #     - name: default
 #       image: registry.nlp-utils/crawler:latest
@@ -252,11 +325,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: english
-  namespace: crawler-naver-dictionary
   labels:
-    app: crawler
+    app: crawler-dictionary-entry
 spec:
   restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest

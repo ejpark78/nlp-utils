@@ -4,7 +4,7 @@
 #metadata:
 #  name: linedict
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -26,7 +26,7 @@
 #metadata:
 #  name: linedict
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -48,7 +48,7 @@
 #metadata:
 #  name: eudict
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -70,7 +70,7 @@
 #metadata:
 #  name: id
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -92,7 +92,7 @@
 #metadata:
 #  name: ru
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -114,7 +114,7 @@
 #metadata:
 #  name: th
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -136,7 +136,7 @@
 #metadata:
 #  name: ja
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -158,7 +158,7 @@
 #metadata:
 #  name: vi
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -180,7 +180,7 @@
 #metadata:
 #  name: enid
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -209,7 +209,7 @@
 #metadata:
 #  name: zh
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -238,7 +238,7 @@
 #metadata:
 #  name: youdao-zhko
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -277,7 +277,7 @@
 #metadata:
 #  name: youdao-zhja
 #  labels:
-#    app: crawler
+#    app: crawler-mt
 #spec:
 #  restartPolicy: Always
 #  hostAliases:
@@ -309,125 +309,3 @@
 #        "--target_column", "japanese",
 #        "--state_column", "state_youdao_zhja",
 #      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-vien
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      workingDir: /usr/local/app
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "vien",
-        "--search_lang", "vi,en",
-        "--index", "crawler-dictionary-example-sealang-vien",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "vietnamese,english",
-        "--source_column", "vietnamese",
-        "--target_column", "english",
-        "--state_column", "state_sealang_vien",
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-iden
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      workingDir: /usr/local/app
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "iden",
-        "--search_lang", "id,en",
-        "--index", "crawler-dictionary-example-sealang-iden",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "indonesia,english",
-        "--source_column", "indonesia",
-        "--target_column", "english",
-        "--state_column", "state_sealang_iden",
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-then
-  namespace: crawler-dictionary-example
-  labels:
-    app: crawler
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      workingDir: /usr/local/app
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "then",
-        "--search_lang", "th,en",
-        "--index", "crawler-dictionary-example-sealang-then",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "thai,english",
-        "--source_column", "thai",
-        "--target_column", "english",
-        "--state_column", "state_sealang_then",
-      ]
