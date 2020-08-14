@@ -12,7 +12,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -47,7 +46,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -82,7 +80,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -117,7 +114,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -152,7 +148,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -187,7 +182,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -222,7 +216,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -257,7 +250,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -292,7 +284,6 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)

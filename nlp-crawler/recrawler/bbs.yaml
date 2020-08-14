@@ -24,7 +24,14 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
       args: [
         "python3", "batch.py",
         "--category", "bbs",
@@ -59,7 +66,14 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
       args: [
         "python3", "batch.py",
         "--category", "bbs",

@@ -24,7 +24,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_CULTURE)
@@ -69,7 +68,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_ECONOMY)
@@ -114,7 +112,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_INTERNATIONAL)
@@ -159,7 +156,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_IT)
@@ -204,7 +200,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_OPINION)
@@ -249,7 +244,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -294,7 +288,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SOCIETY)
@@ -339,7 +332,6 @@ spec:
         limits:
           cpu: 200m
           memory: 200Mi
-      workingDir: /usr/local/app
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
