@@ -28,7 +28,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "id",
-        "--index", "crawler-dictionary-example-naver-id",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -62,7 +62,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "ru",
-        "--index", "crawler-dictionary-example-naver-ru",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -96,7 +96,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "th",
-        "--index", "crawler-dictionary-example-naver-th",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -130,7 +130,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "ja",
-        "--index", "crawler-dictionary-example-naver-ja",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -164,7 +164,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "vi",
-        "--index", "crawler-dictionary-example-naver-vi",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -205,7 +205,7 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "enid",
-        "--index", "crawler-dictionary-example-naver-enid",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]
 
@@ -246,6 +246,6 @@ spec:
       args: [
         "python3", "module/naver/dictionary/example_search.py",
         "--lang", "zh",
-        "--index", "crawler-dictionary-example-naver-zh",
+        "--index", "crawler-dictionary-example-naver",
         "--list_index", "crawler-dictionary-example-word-list"
       ]

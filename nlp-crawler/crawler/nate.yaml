@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: nate-economy
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -56,7 +56,7 @@ kind: CronJob
 metadata:
   name: nate-entertainment
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
@@ -108,7 +108,7 @@ kind: CronJob
 metadata:
   name: nate-international
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -160,7 +160,7 @@ kind: CronJob
 metadata:
   name: nate-it
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
@@ -212,7 +212,7 @@ kind: CronJob
 metadata:
   name: nate-politics
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
@@ -264,7 +264,7 @@ kind: CronJob
 metadata:
   name: nate-society
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "25,55 * * * *"
   concurrencyPolicy: Forbid
@@ -316,7 +316,7 @@ kind: CronJob
 metadata:
   name: nate-sports
   labels:
-    app: crawler
+    app: crawler-nate-news
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid

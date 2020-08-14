@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: game-info
   labels:
-    app: crawler
+    app: crawler-naver-game-center
 spec:
   schedule: "0 05 * * *"
   concurrencyPolicy: Forbid

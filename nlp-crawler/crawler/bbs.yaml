@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: bbs-mlbpark-kbo
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -57,7 +57,7 @@ kind: CronJob
 metadata:
   name: bbs-mlbpark-mlb
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -110,7 +110,7 @@ kind: CronJob
 metadata:
   name: bbs-mlbpark-bullpen
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
@@ -163,7 +163,7 @@ kind: CronJob
 metadata:
   name: bbs-ruliweb
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -216,7 +216,7 @@ kind: CronJob
 metadata:
   name: bbs-inven-lineagem
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -271,7 +271,7 @@ kind: CronJob
 metadata:
   name: bbs-lineagem
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -326,7 +326,7 @@ kind: CronJob
 metadata:
   name: bbs-lineage2m
   labels:
-    app: crawler
+    app: crawler-bbs
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid

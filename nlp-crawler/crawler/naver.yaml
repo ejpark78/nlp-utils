@@ -98,7 +98,7 @@ kind: CronJob
 metadata:
   name: naver-economy
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -126,7 +126,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_ECONOMY)
@@ -150,7 +149,7 @@ kind: CronJob
 metadata:
   name: naver-international
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
@@ -178,7 +177,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_INTERNATIONAL)
@@ -202,7 +200,7 @@ kind: CronJob
 metadata:
   name: naver-it
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -230,7 +228,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_IT)
@@ -254,7 +251,7 @@ kind: CronJob
 metadata:
   name: naver-living
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "15,45 * * * *"
   concurrencyPolicy: Forbid
@@ -282,7 +279,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_LIVING)
@@ -306,7 +302,7 @@ kind: CronJob
 metadata:
   name: naver-opinion
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
@@ -334,7 +330,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_OPINION)
@@ -358,7 +353,7 @@ kind: CronJob
 metadata:
   name: naver-politics
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "25,55 * * * *"
   concurrencyPolicy: Forbid
@@ -384,7 +379,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_POLITICS)
@@ -408,7 +402,7 @@ kind: CronJob
 metadata:
   name: naver-society
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -436,7 +430,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_SOCIETY)
@@ -460,7 +453,7 @@ kind: CronJob
 metadata:
   name: naver-sports
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
@@ -488,7 +481,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_SPORTS)
@@ -512,7 +504,7 @@ kind: CronJob
 metadata:
   name: naver-tv
   labels:
-    app: crawler
+    app: crawler-naver-news
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -540,7 +532,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_TV)

@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: kin-question-list
   labels:
-    app: crawler
+    app: crawler-naver-kin
 spec:
   schedule: "0,30 * * * *"
   concurrencyPolicy: Forbid
@@ -45,7 +45,7 @@ kind: CronJob
 metadata:
   name: kin-answer-list
   labels:
-    app: crawler
+    app: crawler-naver-kin
 spec:
   schedule: "10,40 * * * *"
   concurrencyPolicy: Forbid
@@ -86,7 +86,7 @@ kind: CronJob
 metadata:
   name: kin-detail-question
   labels:
-    app: crawler
+    app: crawler-naver-kin
 spec:
   schedule: "20,50 * * * *"
   concurrencyPolicy: Forbid
@@ -127,7 +127,7 @@ kind: CronJob
 metadata:
   name: kin-detail-answer
   labels:
-    app: crawler
+    app: crawler-naver-kin
 spec:
   schedule: "5,35 * * * *"
   concurrencyPolicy: Forbid
