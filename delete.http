@@ -1,7 +1,7 @@
 
 ###
 
-DELETE {{host}}/text_vec_sports_2020
+DELETE {{host}}/crawler-dictionary-example-naver-vi-vi
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
