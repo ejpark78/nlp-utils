@@ -53,21 +53,32 @@ class UdemyCrawler(object):
 
     def get_my_course_list(self):
         """강좌 목록을 다운로드 받는다."""
-        page = 1
         page_size = 10
 
-        url = self.url_info['my_courses']['url'].format(page=page, page_size=page_size)
+        result = []
+        for page in range(1, 20):
+            url = self.url_info['my_courses']['url'].format(page=page, page_size=page_size)
 
-        resp = requests.get(
-            url=url,
-            headers=self.headers,
-            allow_redirects=True,
-            verify=False,
-            timeout=60
-        )
-        corpus_list = resp.json()['results']
+            resp = requests.get(
+                url=url,
+                headers=self.headers,
+                allow_redirects=True,
+                verify=False,
+                timeout=60
+            ).json()
 
-        self.save_cache(cache=corpus_list, path=self.data_path, name='course_list')
+            self.logger.info(msg={
+                'resp': resp
+            })
+            if 'results' not in resp:
+                break
+
+            corpus_list = resp['results']
+
+            result += corpus_list
+
+            self.save_cache(cache=result, path=self.data_path, name='course_list')
+            sleep(self.sleep)
 
         return
 
