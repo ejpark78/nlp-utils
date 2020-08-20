@@ -1,20 +1,13 @@
 ###
 
-GET {{host}}/log_gamechatglobal_*/_search
+GET {{host}}/log_gamechat_world_kr_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 ###
 
-GET {{host}}/log_gamechat_cache/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-###
-
-GET {{host}}/log_gamechat_global2_2*/_search
+GET {{host}}/log_gamechat_world_kr_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
@@ -22,11 +15,13 @@ Accept: application/text
 {
   "query": {
     "bool": {
-      "filter": {
-        "match": {
-          "gameServer": "7"
+      "must": [
+        {
+          "match": {
+            "msg": "저 아이폰11 프로맥스인데 개잘돌아감"
+          }
         }
-      }
+      ]
     }
   }
 }

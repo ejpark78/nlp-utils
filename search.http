@@ -17,7 +17,7 @@ Accept: application/json
     "bool": {
       "must": [
         {
-          "match_phrase": {
+          "match": {
             "text": "腹(はら)を探"
           }
         }
