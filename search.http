@@ -1,23 +1,30 @@
 ###
 
-GET {{host}}/{{index}}/_search
+GET {{host}}/sentence-pool-ja/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+GET {{host}}/sentence-pool-ja/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
 {
   "query": {
-    "match_all": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "text": "腹(はら)を探"
+          }
+        }
+      ]
     }
   }
 }
-
-###
-
-GET {{host}}/{{index}}/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/text
-Accept: application/text
 
 ###
 
@@ -41,13 +48,6 @@ Accept: application/json
     }
   }
 }
-
-###
-
-GET {{host}}/{{index}}/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
 
 ###
 

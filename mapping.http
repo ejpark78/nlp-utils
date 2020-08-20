@@ -7,108 +7,14 @@ Accept: application/json
 
 ### 인덱스 매핑 설정
 
-PUT {{host}}/crawler-naver-economy-2020
+PUT {{host}}/sentence-pool-ko
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
 
-< mapping/text-lineagem.json
+< mapping/sentence-pool.json
 
-###
-
-PUT {{host}}/crawler-naver-economy-2020
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-{
-  "mappings": {
-    "properties": {
-      "articleid": {
-        "type": "long"
-      },
-      "bbs_name": {
-        "type": "text"
-      },
-      "blog_name": {
-        "type": "text"
-      },
-      "cafe_name": {
-        "type": "text"
-      },
-      "category": {
-        "type": "text"
-      },
-      "clubid": {
-        "type": "long"
-      },
-      "content": {
-        "type": "text"
-      },
-      "curl_date": {
-        "type": "date"
-      },
-      "date": {
-        "type": "date"
-      },
-      "document_id": {
-        "type": "text"
-      },
-      "html_content": {
-        "type": "text"
-      },
-      "image": {
-        "type": "text"
-      },
-      "nick": {
-        "type": "text"
-      },
-      "reply_count": {
-        "type": "long"
-      },
-      "reply_list": {
-        "properties": {
-          "class": {
-            "type": "text"
-          },
-          "date": {
-            "type": "date"
-          },
-          "image": {
-            "type": "text"
-          },
-          "nick": {
-            "type": "text"
-          },
-          "reply_to": {
-            "type": "text"
-          },
-          "text": {
-            "type": "text"
-          }
-        }
-      },
-      "title": {
-        "type": "text"
-      },
-      "url": {
-        "type": "text"
-      },
-      "view_count": {
-        "type": "long"
-      }
-    }
-  }
-}
-
-###
-
-GET {{host}}/crawler-facebook-id/_mappings
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-###
+### nori test
 
 PUT thing/_mappings/thing
 Authorization: Basic {{username}} {{password}}
