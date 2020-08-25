@@ -150,7 +150,16 @@ class CrawlerBase(object):
 
         if url_info is not None:
             if 'parser' in url_info and url_info['parser'] == 'json':
-                return resp.json()
+                try:
+                    return resp.json()
+                except Exception as e:
+                    self.logger.error(msg={
+                        'level': 'ERROR',
+                        'message': 'json 파싱 에러',
+                        'e': str(e),
+                        'resp': str(resp.content),
+                    })
+                    return None
 
         # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
         encoding = None

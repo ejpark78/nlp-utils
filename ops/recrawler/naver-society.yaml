@@ -23,7 +23,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 2000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SOCIETY)
@@ -40,7 +40,7 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "society",
-        "--date_range", "2019-01-01~2020-12-31"
+        "--date_range", "2019-01-01~2020-08-06"
       ]
 
 ---
@@ -68,7 +68,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 2000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SOCIETY)
@@ -85,5 +85,5 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "politics",
-        "--date_range", "2019-01-01~2020-12-31"
+        "--date_range", "2019-01-01~2019-06-24"
       ]

@@ -1,69 +1,69 @@
 {
   "list": [
-    {
-      "site": "https://m.facebook.com",
-      "page": "L2Virus",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "Lineage 2 Thailand 2",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
-      "page": "groups/575327325892256",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "Lineage 2 (Thailand & SEA)",
-        "view": "비공개",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
-      "page": "groups/1567576906788921",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "Lineage 2 Market (Thailand & SEA)",
-        "view": "비공개",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
-      "page": "groups/Lineage2RevolutionThailand",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "🇹🇭 Lineage2 Revolution Thailand",
-        "view": "비공개",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
-      "page": "groups/L2MThailand",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "Lineage 2 M (L2M) Thailand",
-        "view": "비공개",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
-      "page": "AdUWorld",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "AD U",
-        "category": "커뮤니티"
-      }
-    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "L2Virus",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "Lineage 2 Thailand 2",
+//        "category": "커뮤니티"
+//      }
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "groups/575327325892256",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "Lineage 2 (Thailand & SEA)",
+//        "view": "비공개",
+//        "category": "커뮤니티"
+//      }
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "groups/1567576906788921",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "Lineage 2 Market (Thailand & SEA)",
+//        "view": "비공개",
+//        "category": "커뮤니티"
+//      }
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "groups/Lineage2RevolutionThailand",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "🇹🇭 Lineage2 Revolution Thailand",
+//        "view": "비공개",
+//        "category": "커뮤니티"
+//      }
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "groups/L2MThailand",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "Lineage 2 M (L2M) Thailand",
+//        "view": "비공개",
+//        "category": "커뮤니티"
+//      }
+//    },
+//    {
+//      "site": "https://m.facebook.com",
+//      "page": "AdUWorld",
+//      "index": "crawler-facebook-th",
+//      "meta": {
+//        "lang_code": "th",
+//        "name": "AD U",
+//        "category": "커뮤니티"
+//      }
+//    },
     {
       "site": "https://m.facebook.com",
       "page": "groups/bnssvtwth",

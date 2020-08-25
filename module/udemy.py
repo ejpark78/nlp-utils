@@ -199,8 +199,10 @@ class UdemyCrawler(object):
         # 속성에 따른 다운로드
         if asset['asset_type'] == 'Video':
             # 비디오 저장
-            file_exists = self.get_video(video=result['stream_urls']['Video'], path=path, name=name)
+            if 'stream_urls' not in result:
+                return
 
+            file_exists = self.get_video(video=result['stream_urls']['Video'], path=path, name=name)
             if file_exists is False:
                 # 자막 저장
                 self.get_captions(captions=result['captions'], path=path, name=name)

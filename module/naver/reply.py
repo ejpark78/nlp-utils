@@ -260,6 +260,9 @@ class NaverNewsReplyCrawler(CrawlerBase):
                     'query': query,
                 })
 
+                if 'url' not in news:
+                    continue
+
                 # 예외 처리
                 if news['url'][:2] == '//':
                     news['url'] = '/kbo/' + news['url'][2:]
