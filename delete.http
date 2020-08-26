@@ -1,7 +1,7 @@
 
 ###
 
-DELETE {{host}}/crawler-dictionary-example-naver-vi-vi
+DELETE {{host}}/corpus-wiki-ko
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
