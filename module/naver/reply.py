@@ -260,7 +260,12 @@ class NaverNewsReplyCrawler(CrawlerBase):
                     'query': query,
                 })
 
-                if 'url' not in news:
+                if 'url' not in news or news['url'] is None:
+                    self.logger.error(msg={
+                        'level': 'ERROR',
+                        'message': 'empty url',
+                        'news': news,
+                    })
                     continue
 
                 # 예외 처리

@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-naver-society
+  name: naver-society
   labels:
-    app: recrawler-society
+    app: naver-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -40,16 +40,16 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "society",
-        "--date_range", "2019-01-01~2020-08-06"
+        "--date_range", "2019-01-01~2019-07-03"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-naver-politics
+  name: naver-politics
   labels:
-    app: recrawler-politics
+    app: naver-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -85,5 +85,5 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "politics",
-        "--date_range", "2019-01-01~2019-06-24"
+        "--date_range", "2019-01-01~2019-05-23"
       ]

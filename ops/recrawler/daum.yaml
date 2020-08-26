@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-culture
+  name: daum-culture
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -23,7 +23,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_CULTURE)
@@ -37,7 +37,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2019-08-08",
         "--category", "daum",
         "--job_id", "culture"
       ]
@@ -46,9 +46,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-economy
+  name: daum-economy
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -67,7 +67,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_ECONOMY)
@@ -81,7 +81,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2019-05-13",
         "--category", "daum",
         "--job_id", "economy"
       ]
@@ -90,9 +90,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-international
+  name: daum-international
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -111,7 +111,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_INTERNATIONAL)
@@ -125,62 +125,106 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2020-06-30",
         "--category", "daum",
         "--job_id", "international"
       ]
 
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: recrawler-daum-it
-  labels:
-    app: recrawler-daum-news
-spec:
-  restartPolicy: Never
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_IT)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      envFrom:
-        - configMapRef:
-            name: daum
-      args: [
-        "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
-        "--category", "daum",
-        "--job_id", "it"
-      ]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: daum-it
+#  labels:
+#    app: daum-news
+#spec:
+#  restartPolicy: Never
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_IT)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      envFrom:
+#        - configMapRef:
+#            name: daum
+#      args: [
+#        "python3", "batch.py",
+#        "--date_range", "2019-01-01~2020-12-31",
+#        "--category", "daum",
+#        "--job_id", "it"
+#      ]
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: daum-opinion
+#  labels:
+#    app: daum-news
+#spec:
+#  restartPolicy: Never
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_OPINION)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      envFrom:
+#        - configMapRef:
+#            name: daum
+#      args: [
+#        "python3", "batch.py",
+#        "--date_range", "2019-01-01~2020-12-31",
+#        "--category", "daum",
+#        "--job_id", "opinion"
+#      ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-opinion
+  name: daum-politics
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -199,51 +243,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_OPINION)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      envFrom:
-        - configMapRef:
-            name: daum
-      args: [
-        "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
-        "--category", "daum",
-        "--job_id", "opinion"
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: recrawler-daum-politics
-  labels:
-    app: recrawler-daum-news
-spec:
-  restartPolicy: Never
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_POLITICS)
@@ -257,7 +257,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2020-08-23",
         "--category", "daum",
         "--job_id", "politics"
       ]
@@ -266,9 +266,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-society
+  name: daum-society
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -287,7 +287,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SOCIETY)
@@ -301,7 +301,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2020-07-08",
         "--category", "daum",
         "--job_id", "society"
       ]
@@ -310,9 +310,9 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: recrawler-daum-sports
+  name: daum-sports
   labels:
-    app: recrawler-daum-news
+    app: daum-news
 spec:
   restartPolicy: Never
   hostAliases:
@@ -331,7 +331,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -345,7 +345,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2020-12-31",
+        "--date_range", "2019-01-01~2020-07-07",
         "--category", "daum",
         "--job_id", "sports"
       ]
