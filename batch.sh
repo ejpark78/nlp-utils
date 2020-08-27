@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 PYTHONPATH=. python3 module/facebook/crawler.py \
     --list \

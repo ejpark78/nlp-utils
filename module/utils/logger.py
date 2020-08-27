@@ -49,8 +49,15 @@ class Logger(object):
 
     def get_logger(self):
         """로거를 반환한다."""
+        logging_opt = {
+            'format': '[%(levelname)-s] %(message)s',
+            'handlers': [logging.StreamHandler()],
+            'level': self.MESSAGE,
+
+        }
+
         logging.addLevelName(self.MESSAGE, 'MESSAGE')
-        logging.basicConfig(format='%(message)s')
+        logging.basicConfig(**logging_opt)
 
         self.logger = logging.getLogger()
 

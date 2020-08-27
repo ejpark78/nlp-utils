@@ -1,0 +1,8 @@
+webvtt-py
+pandas
+openpyxl
+dataframe_image
+seaborn
+tqdm
+requests
+nested_lookup

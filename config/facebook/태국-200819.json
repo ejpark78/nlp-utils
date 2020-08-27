@@ -66,17 +66,6 @@
 //    },
     {
       "site": "https://m.facebook.com",
-      "page": "groups/bnssvtwth",
-      "index": "crawler-facebook-th",
-      "meta": {
-        "lang_code": "th",
-        "name": "Blade and Soul Thailand Community [ TH ]",
-        "view": "비공개",
-        "category": "커뮤니티"
-      }
-    },
-    {
-      "site": "https://m.facebook.com",
       "page": "groups/bnstwthmk",
       "index": "crawler-facebook-th",
       "meta": {
@@ -296,6 +285,17 @@
       "meta": {
         "lang_code": "th",
         "name": "Ragnarok Gravity Thailand",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/bnssvtwth",
+      "index": "crawler-facebook-th",
+      "meta": {
+        "lang_code": "th",
+        "name": "Blade and Soul Thailand Community [ TH ]",
+        "view": "비공개",
         "category": "커뮤니티"
       }
     },

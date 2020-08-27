@@ -113,7 +113,7 @@ class UdemyCrawler(object):
         }
 
         for item in lecture_list['results']:
-            self.logger.info(msg={
+            self.logger.log(msg={
                 'title': item['title']
             })
 
@@ -224,7 +224,7 @@ class UdemyCrawler(object):
         if isfile(filename):
             size = getsize(filename)
             if size > 1000:
-                self.logger.info(msg={
+                self.logger.log(msg={
                     'skip': filename
                 })
                 return True
@@ -233,7 +233,7 @@ class UdemyCrawler(object):
             if v['label'] != '720':
                 continue
 
-            self.logger.info({
+            self.logger.log({
                 'filename': filename,
                 'f': v['file'],
             })
@@ -252,7 +252,7 @@ class UdemyCrawler(object):
                 })
 
             total_size = int(resp.headers.get('content-length', 0))
-            self.logger.info(msg={
+            self.logger.log(msg={
                 'size': 'size: {:,}'.format(total_size)
             })
 
@@ -281,7 +281,7 @@ class UdemyCrawler(object):
 
         filename = '{path}/{name}.desktop'.format(path=path, name=name)
         if isfile(filename):
-            self.logger.info(msg={
+            self.logger.log(msg={
                 'get_external_link': 'skip {}'.format(filename),
             })
             return
@@ -306,7 +306,7 @@ Icon=text-html
 
         filename = '{path}/{name}.html'.format(path=path, name=name)
         if isfile(filename):
-            self.logger.info(msg={
+            self.logger.log(msg={
                 'get_article': 'skip {}'.format(filename),
             })
             return
@@ -340,7 +340,7 @@ Icon=text-html
 
             filename = '{path}/{name}'.format(path=path, name=q['filename'])
             if isfile(filename):
-                self.logger.info(msg={
+                self.logger.log(msg={
                     'get_file': 'skip {}'.format(filename),
                 })
                 continue
@@ -359,7 +359,7 @@ Icon=text-html
                 })
 
             total_size = int(resp.headers.get('content-length', 0))
-            self.logger.info(msg={
+            self.logger.log(msg={
                 'size': 'size: {:,}'.format(total_size)
             })
 
@@ -396,7 +396,7 @@ Icon=text-html
                                                            label=cap['video_label'])
 
             if isfile(filename):
-                self.logger.info({
+                self.logger.log({
                     'get_caption': 'skip {}'.format(filename)
                 })
                 return
@@ -460,13 +460,17 @@ Icon=text-html
         args = self.init_arguments()
 
         if args.course_list is True:
+            self.logger.log(msg={
+                'MESSAGE': '코스 목록 조회'
+            })
+
             self.get_my_course_list()
 
         if args.trace_course_list is True:
             self.course_list = self.open_cache(path=self.data_path, name='course_list')
 
             for course in self.course_list:
-                self.logger.info(msg={
+                self.logger.log(msg={
                     'course': course
                 })
 

@@ -179,7 +179,7 @@ class GlosbeCrawler(object):
             'word_list': word_list,
         }
 
-    def trace_example_list(self, entry, url, page=1):
+    def trace_example_list(self, entry, url, page=1, trace_example=True):
         """ """
         max_try = 5
         resp = {'next_url': 'start'}
@@ -251,6 +251,9 @@ class GlosbeCrawler(object):
 
             sleep(self.env.sleep)
 
+            if trace_example is False:
+                break
+
         return {'status': 'ok'}
 
     def save_as_done(self, document_id):
@@ -292,7 +295,7 @@ class GlosbeCrawler(object):
 
             word_info = self.word_list[url]
 
-            resp = self.trace_example_list(entry=word_info['entry'], url=url)
+            resp = self.trace_example_list(entry=word_info['entry'], url=url, trace_example=False)
             if 'error' in resp:
                 break
 
