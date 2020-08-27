@@ -1,7 +1,15 @@
 
+
 ###
 
-DELETE {{host}}/corpus-wiki-ko
+POST {{host}}/_flush
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+DELETE {{host}}/corpus-wiki-en
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
