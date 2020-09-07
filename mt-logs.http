@@ -1,0 +1,564 @@
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "by_method": {
+      "terms": {
+        "field": "meta_info.translation_method.keyword"
+      },
+      "aggregations": {
+        "by_ver": {
+          "terms": {
+            "field": "meta_info.hit_tmpl_ver"
+          }
+        }
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-08-08T04:32:29.232Z",
+              "lte": "2020-09-07T04:32:29.232Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0
+}
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "track_total_hits": true,
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "client_info.game_code.keyword",
+        "size": 200
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": []
+    }
+  },
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.hit_key.keyword",
+        "size": 1000
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "by_method": {
+      "aggregations": {
+        "by_ver": {
+          "terms": {
+            "field": "meta_info.hit_tmpl_ver"
+          }
+        }
+      },
+      "terms": {
+        "field": "meta_info.translation_method.keyword"
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-01-01",
+              "lte": "2020-09-30"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0
+}
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.tm_norm.keyword",
+        "size": 1000
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "match": {
+            "meta_info.translation_method": "tm"
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-01-01",
+              "lte": "2020-09-30"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "track_total_hits": true
+}
+
+###
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.tm_norm.keyword",
+        "size": 1000
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "range": {
+                    "meta_info.hit_tmpl_ver": {
+                      "gte": 1
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-01-01",
+              "lte": "2020-09-30"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "track_total_hits": true
+}
+
+###
+
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "query": {
+            "match": {
+              "meta_info.translation_method": "gmt"
+            }
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-01-01",
+              "lte": "2020-09-30"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 20,
+  "sort": [
+    {
+      "client_info.request_date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-01-01",
+              "lte": "2020-09-30"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 20,
+  "sort": [
+    {
+      "client_info.request_date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
+
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-09-01T00:19:44.296Z",
+              "lte": "2020-09-30T03:19:44.296Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "sample": {
+      "terms": {
+        "field": "target_lang.keyword"
+      },
+      "aggs": {
+        "method": {
+          "terms": {
+            "field": "meta_info.translation_method.keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "aggregations": {
+    "by_date": {
+      "terms": {
+        "field": "meta_info.translation_method.keyword"
+      },
+      "aggregations": {
+        "by_ver": {
+          "terms": {
+            "field": "meta_info.hit_tmpl_ver"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.tm_norm.keyword",
+        "size": 1000
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "match": {
+            "meta_info.translation_method": "tm"
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-09-07T01:56:02.957Z",
+              "lte": "2020-09-07T04:56:02.957Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "track_total_hits": true
+}
+
+###
+
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.tm_norm.keyword",
+        "size": 1000
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "must": [
+            {
+              "range": {
+                "meta_info.hit_tmpl_ver": {
+                  "lte": 0
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "gte": "2020-09-07T01:56:02.957Z",
+              "lte": "2020-09-07T04:56:02.957Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "track_total_hits": true
+}
+
+###
+
+###
+
+GET {{host}}/log_mt-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "should": [
+              {
+                "wildcard": {
+                  "source_text": "*する*"
+                }
+              },
+              {
+                "wildcard": {
+                  "target_text": "*する*"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+###

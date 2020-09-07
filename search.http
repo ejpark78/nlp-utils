@@ -1,6 +1,6 @@
 ###
 
-GET {{host}}/sentence-pool-ja/_search
+GET {{host}}/log_mt-2020.08/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
 Accept: application/text
