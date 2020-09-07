@@ -545,12 +545,12 @@ Accept: application/json
             "should": [
               {
                 "wildcard": {
-                  "source_text": "*する*"
+                  "source_text.keyword": "*する*"
                 }
               },
               {
                 "wildcard": {
-                  "target_text": "*する*"
+                  "target_text.keyword": "*する*"
                 }
               }
             ]
