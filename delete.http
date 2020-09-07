@@ -9,7 +9,7 @@ Accept: application/text
 
 ###
 
-DELETE {{host}}/corpus-wiki-en
+DELETE {{host}}/corpus-wiki-th
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
