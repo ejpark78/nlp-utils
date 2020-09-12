@@ -8,7 +8,7 @@ cython
 numpy
 pandas
 tqdm
-BeautifulSoup
+bs4
 
 # jupyter
 ipykernel

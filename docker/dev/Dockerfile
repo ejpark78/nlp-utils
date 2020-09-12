@@ -40,7 +40,6 @@ RUN echo && echo "# ML 설치" \
 		matplotlib \
 		pydot \
 		smart-open \
-        BeautifulSoup \
         bilm \
         bokeh \
         dask[complete] \
@@ -76,9 +75,9 @@ RUN echo && echo "# DL 설치" \
         tfx \
     && rm -rf /tmp/*
 
-ARG PYTORCH_URL="--find-links https://download.pytorch.org/whl/torch_stable.html"
+ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
 RUN echo && echo "# torch 설치" \
-    && pip3 install --upgrade --no-cache-dir ${PYTORCH_URL} \
+    && pip3 install --upgrade --no-cache-dir --find-links ${PYTORCH_URL} \
         torch==1.6.0+cu101 \
         torchtext \
         torchvision==0.7.0+cu101 \
@@ -109,45 +108,43 @@ RUN echo && echo "# jupyter 설치" \
         py4j \
         qgrid \
         sshkernel \
-    && rm -rf /tmp/*
-
-# jupyter notebook 플러그인 설치
-RUN ipcluster nbextension enable \
+    && mkdir -p ${HOME}/.jupyter \
+    \
+    && echo && echo "jupyter plugin 설치" \
+    && ipcluster nbextension enable \
     && python3 -m ipykernel install \
     && python3 -m bash_kernel.install \
     && python3 -m sshkernel install \
     \
     && echo && echo "nbextension 설치" \
     && jupyter nbextension install --sys-prefix --py ipyparallel \
+    && jupyter nbextension enable ipyparallel --py --sys-prefix \
 	&& jupyter contrib nbextension install \
 	&& jupyter nbextensions_configurator enable \
 	\
-	&& mkdir -p .jupyter \
-	&& echo && echo "jupyter notebook 테마 설정" \
-	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
-    && rm -rf /tmp/*
-
-RUN echo && echo "labextension 설치" \
+    && echo && echo "nbextension enable 설정" \
     && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
     && jupyter labextension install qgrid \
 	&& jupyter labextension install ipyvolume \
-    && rm -rf /tmp/*
-
-RUN echo && echo "nbextension enable 설정" \
+	\
+	&& echo && echo "nbextension enable 설정" \
 	&& jupyter nbextension enable --py --sys-prefix qgrid \
     && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
     && ipcluster nbextension enable \
+	\
+	&& echo && echo "jupyter notebook 테마 설정" \
+	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
     && rm -rf /tmp/*
-
-# skel & entrypoint 설치
-COPY skel.tar.gz ${HOME}/skel.tar.gz
-COPY entrypoint.sh ${HOME}/entrypoint.sh
 
 ARG USER=user
 ARG UID=1000
 ARG GID=1000
 
 ENV USER=${USER} HOME=/home/${USER}
+
+# skel & entrypoint 설치
+COPY skel.tar.gz ${HOME}/skel.tar.gz
+COPY entrypoint.sh ${HOME}/entrypoint.sh
 
 RUN mkdir -p ${HOME}/.local/bin \
     && cd ${HOME} \

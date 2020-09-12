@@ -159,6 +159,17 @@ kcbert:
 		.
 
 .ONESHELL:
+wheel:
+	cd docker/wheel/
+
+	docker build \
+		$(MIRROR) \
+		$(BUILD_OPT) \
+		-t $(IMAGE_PREFIX)/utils/wheel:latest \
+		-f Dockerfile \
+		.
+
+.ONESHELL:
 base:
 	cd docker/base/
 
