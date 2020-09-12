@@ -38,21 +38,14 @@ RUN echo && echo "# ML 설치" \
     && pip3 install --upgrade --no-cache-dir \
 		h5py \
 		matplotlib \
-		numpy \
-		pandas \
 		pydot \
-		scikit-learn \
-		scipy \
-		sklearn \
 		smart-open \
+        BeautifulSoup \
         bilm \
         bokeh \
         dask[complete] \
-        gensim \
-        konlpy \
         lxml \
         networkx \
-        nltk \
         pyLDAvis \
         seaborn \
         soynlp \
@@ -62,6 +55,15 @@ RUN echo && echo "# ML 설치" \
         wordcloud \
         xlrd \
         xlsxwriter \
+    && pip3 install --upgrade --no-cache-dir \
+		numpy \
+		pandas \
+		scikit-learn \
+		scipy \
+		sklearn \
+        gensim \
+        konlpy \
+        nltk \
     && rm -rf /tmp/*
 
 RUN echo && echo "# DL 설치" \
@@ -74,9 +76,9 @@ RUN echo && echo "# DL 설치" \
         tfx \
     && rm -rf /tmp/*
 
+ARG PYTORCH_URL="--find-links https://download.pytorch.org/whl/torch_stable.html"
 RUN echo && echo "# torch 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-            -f https://download.pytorch.org/whl/torch_stable.html \
+    && pip3 install --upgrade --no-cache-dir ${PYTORCH_URL} \
         torch==1.6.0+cu101 \
         torchtext \
         torchvision==0.7.0+cu101 \
@@ -98,9 +100,6 @@ RUN echo && echo "# jupyter 설치" \
 		jupyterlab \
 		notebook \
 		yapf \
-    && rm -rf /tmp/*
-
-RUN echo && echo "# jupyter plugin 설치" \
 	&& pip3 install --upgrade --no-cache-dir \
 		jupyter_contrib_nbextensions \
 		jupyter_nbextensions_configurator \

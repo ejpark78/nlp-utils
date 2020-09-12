@@ -12,14 +12,6 @@ GIT_COMMIT_ID = $(shell git rev-parse --short HEAD)
 BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 
 DOCKER_LABEL =
-DOCKER_LABEL += --build-arg "docker_tag=dev"
-DOCKER_LABEL += --build-arg "docker_image=$(IMAGE_BASE)"
-DOCKER_LABEL += --build-arg "build_date='$(BUILD_DATE)'"
-DOCKER_LABEL += --build-arg "git_url=$(GIT_URL)"
-DOCKER_LABEL += --build-arg "git_branch=$(GIT_BRANCH)"
-DOCKER_LABEL += --build-arg "git_tag=$(GIT_TAG)"
-DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
-DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 DOCKER_LABEL += --label "app=dev/embedding"
 DOCKER_LABEL += --label "version=$(IMAGE_TAG)"
 DOCKER_LABEL += --label "image_name=$(IMAGE_BASE)"
@@ -29,6 +21,14 @@ DOCKER_LABEL += --label "git.branch=$(GIT_BRANCH)"
 DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
 DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
 DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
+DOCKER_LABEL += --build-arg "docker_tag=dev"
+DOCKER_LABEL += --build-arg "docker_image=$(IMAGE_BASE)"
+DOCKER_LABEL += --build-arg "build_date='$(BUILD_DATE)'"
+DOCKER_LABEL += --build-arg "git_url=$(GIT_URL)"
+DOCKER_LABEL += --build-arg "git_branch=$(GIT_BRANCH)"
+DOCKER_LABEL += --build-arg "git_tag=$(GIT_TAG)"
+DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
+DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 
 # 도커 이미지
 IMAGE_PREFIX = registry/dev
@@ -64,7 +64,7 @@ BUILD_OPT += --build-arg "GID=$(shell id -g)"
 BUILD_OPT += --build-arg "BASE_IMAGE=$(BASE_IMAGE)"
 
 # PHONY
-.PHONY: all
+.PHONY: *
 
 # type
 batch: build push uninstall install
@@ -221,15 +221,15 @@ jupyter:
 git-tag:
 	git tag -a 1 -m 'version 1'
 
-.ONESHELL:
-tuning:
-	PYTHONPATH=. python3 batch_tuner.py \
-		--model_name word \
-		--embedding_name random \
-		--model_save_path data/word-embeddings/random-tune \
-		--test_corpus_fname data/processed/processed_ratings_test.txt.bz2 \
-		--train_corpus_fname data/processed/processed_ratings_train.txt.bz2 \
-		| tee -a tune-random.log
+#.ONESHELL:
+#tuning:
+#	PYTHONPATH=. python3 batch_tuner.py \
+#		--model_name word \
+#		--embedding_name random \
+#		--model_save_path data/word-embeddings/random-tune \
+#		--test_corpus_fname data/processed/processed_ratings_test.txt.bz2 \
+#		--train_corpus_fname data/processed/processed_ratings_train.txt.bz2 \
+#		| tee -a tune-random.log
 
 #	bash preprocess.sh dump-processed
 #	bash preprocess.sh dump-word-embeddings
@@ -238,20 +238,21 @@ tuning:
 upgrade_v2:
 	tf_upgrade_v2 --intree models --outtree models_v2 --reportfile upgrade.log
 
-
 # helm
 .ONESHELL:
 install:
-	helm install notebook-w11 notebook --set nodeName=nlp-w11 --set service.externalIPs=172.20.78.255
-	helm install notebook-w12 notebook --set nodeName=nlp-w12 --set service.externalIPs=172.20.79.238
-	helm install notebook-w13 notebook --set nodeName=nlp-w13 --set service.externalIPs=172.20.79.215
+	helm install node1 helm --set nodeName=node1 --set service.externalIPs=192.168.2.100
 
 .ONESHELL:
 uninstall:
-	helm uninstall notebook-w11
-	helm uninstall notebook-w12
-	helm uninstall notebook-w13
+	helm uninstall node1
 
 .ONESHELL:
 template:
 	helm --debug template notebook
+
+#.ONESHELL:
+#venv:
+#	python3 -m venv venv
+#	source venv/bin/activate
+#	pip3 install -r requirements.txt

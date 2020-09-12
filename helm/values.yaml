@@ -1,10 +1,9 @@
-nodeName: nlp-w13
+nodeName: node1
 jupyter:
   image:
-    repository: corpus:5000/dev/embedding
+    repository: registry/dev/embedding
     tag: latest
     pullPolicy: Always
-  password: nlplab
   resources:
     limits:
       cpu: 2000m
@@ -16,4 +15,4 @@ jupyter:
       nvidia.com/gpu: 1
 service:
   type: LoadBalancer
-  externalIPs: 172.20.78.134
+  externalIPs: 192.168.2.100
