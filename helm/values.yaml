@@ -1,0 +1,19 @@
+nodeName: nlp-w13
+jupyter:
+  image:
+    repository: corpus:5000/dev/embedding
+    tag: latest
+    pullPolicy: Always
+  password: nlplab
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2G
+      nvidia.com/gpu: 1
+    requests:
+      cpu: 8000m
+      memory: 16G
+      nvidia.com/gpu: 1
+service:
+  type: LoadBalancer
+  externalIPs: 172.20.78.134
