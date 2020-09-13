@@ -2,7 +2,9 @@ ARG BASE_IMAGE=tensorflow/tensorflow:2.3.0
 
 FROM ${BASE_IMAGE}
 
-MAINTAINER ejpark <ejpark78@gmail.com>
+# https://blog.realkinetic.com/building-minimal-docker-containers-for-python-applications-37d0272c52f3
+
+LABEL author="박은진<ejpark78@gmail.com>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8 LANGUAGE=ko_KR:en
@@ -35,6 +37,11 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3 \
         python3-dev \
         python3-pip \
+        libcurl4-openssl-dev \
+        libgoogle-perftools-dev \
+        libssl-dev \
+        libxml2-dev \
+        libxslt-dev \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -51,24 +58,24 @@ RUN echo && echo "# pip 저장소 설정" \
     && echo && echo "# 기본 유틸 설치" \
     && pip3 install --upgrade --no-cache-dir --force-reinstall \
         pip \
+        cython \
+        setuptools \
+        wheel \
     && rm -rf /tmp/*
 
-RUN mkdir -p /cache
-
-WORKDIR /cache
-
+ARG PIP_OPT='--upgrade --no-cache-dir'
 ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
 
-RUN echo && echo "# preinstall 다운로드" \
-    && pip3 download \
+RUN echo && echo "# preinstall" \
+    && pip3 install ${PIP_OPT} \
         pip \
-		cython \
-        cmake \
         pytest-runner \
         setuptools \
         wheel \
-    && echo && echo "# base 다운로드" \
-    && pip3 download \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# base 설치" \
+    && pip3 install ${PIP_OPT} \
 		h5py \
 		matplotlib \
 		pydot \
@@ -79,27 +86,31 @@ RUN echo && echo "# preinstall 다운로드" \
         lxml \
         networkx \
         pyLDAvis \
-        seaborn \
-        soynlp \
-        soyspacing \
         tqdm \
         wikiextractor \
         wordcloud \
         xlrd \
         xlsxwriter \
-    && echo && echo "# ML 다운로드" \
-    && pip3 download \
+        seaborn \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# ML 설치" \
+    && pip3 install ${PIP_OPT} \
+        soynlp \
+        soyspacing \
 		numpy \
 		pandas \
 		scikit-learn \
-		scipy \
 		sklearn \
         bs4 \
         gensim \
         konlpy \
         nltk \
-    && echo && echo "# DL 다운로드" \
-    && pip3 download \
+		scipy \
+   && rm -rf /tmp/*
+
+RUN echo && echo "# DL 설치" \
+    && pip3 install ${PIP_OPT} \
         bert \
         keras \
         sentencepiece \
@@ -108,8 +119,10 @@ RUN echo && echo "# preinstall 다운로드" \
         tf_sentencepiece \
         tfx \
         transformers==2.11.0 \
-    && echo && echo "# jupyter 다운로드" \
-    && pip3 download \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# jupyter 설치" \
+    && pip3 install ${PIP_OPT} \
 		autopep8 \
 		bash_kernel \
 		ipykernel \
@@ -127,8 +140,10 @@ RUN echo && echo "# preinstall 다운로드" \
         py4j \
         qgrid \
         sshkernel \
-    && echo && echo "# pytorch 다운로드" \
-    && pip3 download --find-links ${PYTORCH_URL} \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# pytorch 설치" \
+    && pip3 install ${PIP_OPT} --find-links ${PYTORCH_URL} \
         torch==1.6.0+cu101 \
         torchtext \
         torchvision==0.7.0+cu101 \

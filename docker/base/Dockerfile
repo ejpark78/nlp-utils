@@ -2,6 +2,7 @@ ARG GLOVE=registry/utils/glove:latest
 ARG MECAB=registry/utils/mecab:latest
 ARG KHAIII=registry/utils/khaiii:latest
 ARG FAST_TEXT=registry/utils/fast_text:latest
+ARG REQUIREMENTS=registry/dev/utils/requirements:latest
 ARG SENTENCE_PIECE=registry/utils/sentencepiece:latest
 ARG BASE_IMAGE=tensorflow/tensorflow:2.3.0
 
@@ -9,11 +10,12 @@ FROM ${GLOVE} AS glove
 FROM ${MECAB} AS mecab
 FROM ${KHAIII} AS khaiii
 FROM ${FAST_TEXT} AS fast_text
+FROM ${REQUIREMENTS} AS requirements
 FROM ${SENTENCE_PIECE} AS sentencepiece
 
 FROM ${BASE_IMAGE}
 
-MAINTAINER ejpark <ejpark78@gmail.com>
+LABEL author="박은진<ejpark78@gmail.com>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8 LANGUAGE=ko_KR:en
@@ -144,6 +146,12 @@ RUN echo && echo "# pip 저장소 설정" \
     && rm -rf /tmp/*
 
 ENV BUILD_HOME=/usr/local
+
+# requirements 설치
+# COPY --from=requirements /usr/local/bin /usr/local/bin
+# COPY --from=requirements /usr/local/lib /usr/local/lib
+# COPY --from=requirements /usr/local/share/jupyter /usr/local/share/jupyter
+# COPY --from=requirements /usr/local/share/jupyterhub /usr/local/share/jupyterhub
 
 # sentencepiece 설치
 COPY --from=sentencepiece ${BUILD_HOME}/sentencepiece ${BUILD_HOME}/sentencepiece

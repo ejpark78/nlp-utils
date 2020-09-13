@@ -68,7 +68,7 @@ BUILD_OPT += --build-arg "BASE_IMAGE=$(BASE_IMAGE)"
 
 # type
 batch: build push uninstall install
-utils: sentencepiece konlpy glove fastText khaiii mecab
+utils: sentencepiece konlpy glove fastText khaiii mecab requirements
 
 .ONESHELL:
 sentencepiece:
@@ -159,13 +159,13 @@ kcbert:
 		.
 
 .ONESHELL:
-wheel:
-	cd docker/wheel/
+requirements:
+	cd docker/requirements/
 
 	docker build \
 		$(MIRROR) \
 		$(BUILD_OPT) \
-		-t $(IMAGE_PREFIX)/utils/wheel:latest \
+		-t $(IMAGE_PREFIX)/utils/requirements:latest \
 		-f Dockerfile \
 		.
 

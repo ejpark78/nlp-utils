@@ -1,4 +1,7 @@
+ARG REQUIREMENTS=registry/dev/utils/wheel:latest
 ARG BASE_IMAGE=registry/dev/embedding:base
+
+FROM ${REQUIREMENTS} AS requirements
 
 FROM ${BASE_IMAGE}
 
@@ -34,80 +37,12 @@ RUN echo && echo "# pip 저장소 설정" \
         wheel \
     && rm -rf /tmp/*
 
-RUN echo && echo "# ML 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-		h5py \
-		matplotlib \
-		pydot \
-		smart-open \
-        bilm \
-        bokeh \
-        dask[complete] \
-        lxml \
-        networkx \
-        pyLDAvis \
-        seaborn \
-        soynlp \
-        soyspacing \
-        tqdm \
-        wikiextractor \
-        wordcloud \
-        xlrd \
-        xlsxwriter \
-    && pip3 install --upgrade --no-cache-dir \
-		numpy \
-		pandas \
-		scikit-learn \
-		scipy \
-		sklearn \
-        gensim \
-        konlpy \
-        nltk \
-    && rm -rf /tmp/*
-
-RUN echo && echo "# DL 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-        bert \
-        keras \
-        sentencepiece \
-        tensorflow-hub \
-        tf_sentencepiece \
-        tfx \
-    && rm -rf /tmp/*
-
-ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
-RUN echo && echo "# torch 설치" \
-    && pip3 install --upgrade --no-cache-dir --find-links ${PYTORCH_URL} \
-        torch==1.6.0+cu101 \
-        torchtext \
-        torchvision==0.7.0+cu101 \
-    && rm -rf /tmp/*
-
-RUN echo && echo "# transformers 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-        transformers==2.11.0 \
-    && rm -rf /tmp/*
+# requirements 설치
+COPY --from=requirements /usr/local/lib /usr/local/lib
+COPY --from=requirements /usr/local/share/jupyter /usr/local/share/jupyter
+COPY --from=requirements /usr/local/share/jupyterhub /usr/local/share/jupyterhub
 
 RUN echo && echo "# jupyter 설치" \
-	&& pip3 install --upgrade --no-cache-dir \
-		autopep8 \
-		bash_kernel \
-		ipykernel \
-		ipyparallel \
-		jupyter \
-		jupyterhub \
-		jupyterlab \
-		notebook \
-		yapf \
-	&& pip3 install --upgrade --no-cache-dir \
-		jupyter_contrib_nbextensions \
-		jupyter_nbextensions_configurator \
-		jupyterthemes \
-        PyJWT \
-        beakerx \
-        py4j \
-        qgrid \
-        sshkernel \
     && mkdir -p ${HOME}/.jupyter \
     \
     && echo && echo "jupyter plugin 설치" \

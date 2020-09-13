@@ -2,7 +2,7 @@ ARG BASE_IMAGE=tensorflow/tensorflow:2.3.0
 
 FROM ${BASE_IMAGE}
 
-MAINTAINER ejpark <ejpark78@gmail.com>
+LABEL author="박은진<ejpark78@gmail.com>"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8 LANGUAGE=ko_KR:en
