@@ -6,10 +6,10 @@ from __future__ import division
 from __future__ import print_function
 
 from time import sleep
+from urllib.parse import unquote
 
 import requests
 import urllib3
-from urllib.parse import unquote
 
 from module.crawler_base import CrawlerBase
 from module.utils.elasticsearch_utils import ElasticSearchUtils
@@ -108,10 +108,12 @@ class UserList(CrawlerBase):
                         doc['_id'] = doc_id
                         doc['category'] = [c['name']]
 
-                        if elastic_utils.elastic.exists(
-                                index=job_info['index'],
-                                doc_type='doc',
-                                id=doc_id) is True:
+                        doc_exists = elastic_utils.elastic.exists(
+                            index=job_info['index'],
+                            doc_type='doc',
+                            id=doc_id)
+
+                        if doc_exists is True:
                             elastic_utils.update_document(
                                 index=job_info['index'],
                                 field='category',
@@ -356,10 +358,12 @@ class UserList(CrawlerBase):
                         doc['_id'] = doc_id
                         doc['category'] = [c['name']]
 
-                        if elastic_utils.elastic.exists(
-                                index=job_info['index'],
-                                doc_type='doc',
-                                id=doc_id) is True:
+                        doc_exists = elastic_utils.elastic.exists(
+                            index=job_info['index'],
+                            doc_type='doc',
+                            id=doc_id)
+
+                        if doc_exists is True:
                             elastic_utils.update_document(
                                 index=job_info['index'],
                                 field='category',

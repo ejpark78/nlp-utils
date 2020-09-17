@@ -16,9 +16,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -28,12 +36,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "economy",
-        "--config", "config/nlp/naver/economy",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "economy",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -54,9 +62,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -66,12 +82,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "international",
-        "--config", "config/nlp/naver/international",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "international",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -92,9 +108,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -104,12 +128,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "it",
-        "--config", "config/nlp/naver/it",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "it",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -130,9 +154,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -142,12 +174,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "living",
-        "--config", "config/nlp/naver/living",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "living",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -168,9 +200,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -180,12 +220,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "opinion",
-        "--config", "config/nlp/naver/opinion",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "opinion",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -206,9 +246,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -218,12 +266,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "politics",
-        "--config", "config/nlp/naver/politics",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "politics",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -244,9 +292,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -256,12 +312,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "--update_category_only",
-        "--category", "naver",
-        "--job_id", "society",
-        "--config", "config/nlp/naver/society",
-        "--date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "society",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -282,9 +338,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -294,12 +358,12 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "update_category_only",
-        "category", "naver",
-        "job_id", "sports",
-        "config", "config/nlp/naver/sports",
-        "date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--skip_post_process",
+          "--update_category_only",
+          "--category", "naver",
+          "--job_id", "sports",
+          "--date_range", "2010-01-01~2018-12-31"
       ]
 
 ---
@@ -320,9 +384,17 @@ spec:
   containers:
     - name: default
       image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 200Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_POLITICS)
+          value: $(INDEX_ECONOMY)
         - name: ELASTIC_SEARCH_AUTH
           valueFrom:
             secretKeyRef:
@@ -332,10 +404,10 @@ spec:
         - configMapRef:
             name: naver
       args: [
-        "python3", "batch.py",
-        "update_category_only",
-        "category", "naver",
-        "job_id", "tv",
-        "config", "config/nlp/naver/tv",
-        "date_range", "2010-01-01~2018-12-31"
+          "python3", "batch.py",
+          "--update_category_only",
+          "--skip_post_process",
+          "--category", "naver",
+          "--job_id", "tv",
+          "--date_range", "2010-01-01~2018-12-31"
       ]

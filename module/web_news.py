@@ -267,6 +267,9 @@ class WebNewsCrawler(CrawlerBase):
         elastic_utils = self.open_elasticsearch(date=date, job=job)
 
         # 개별 뉴스를 따라간다.
+        doc_ids = set()
+        bulk_data = {}
+
         for trace in trace_list:
             item = self.parse_tag(
                 resp=trace,
@@ -282,9 +285,33 @@ class WebNewsCrawler(CrawlerBase):
             # 카테고리 업데이트
             item['category'] = job['category']
 
-            item['_id'] = self.get_doc_id(url=item['url'], job=job, item=item)
+            doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
+            item['_id'] = doc_id
 
-            elastic_utils.save_document(document=item, delete=False)
+            doc_ids.add(doc_id)
+            bulk_data[doc_id] = item
+
+        doc_list = []
+        elastic_utils.get_by_ids(
+            id_list=list(doc_ids),
+            index=elastic_utils.index,
+            source=['category', 'document_id'],
+            result=doc_list
+        )
+
+        for doc in doc_list:
+            if doc['category'].strip() == '':
+                continue
+
+            doc_id = doc['document_id']
+
+            category = doc['category'].split(',')
+            category += bulk_data[doc_id]['category'].split(',')
+
+            bulk_data[doc_id]['category'] = ','.join(list(set(category)))
+
+        for doc in bulk_data.values():
+            elastic_utils.save_document(document=doc, delete=False)
 
         elastic_utils.flush()
 
@@ -360,18 +387,21 @@ class WebNewsCrawler(CrawlerBase):
             if doc_id is None:
                 continue
 
+            is_skip = False
             if self.overwrite is False:
-                if 'check_id' not in url_info or url_info['check_id'] is True:
-                    is_skip = self.check_doc_id(
-                        url=item['url'],
-                        index=elastic_utils.index,
-                        doc_id=doc_id,
-                        doc_history=doc_history,
-                        elastic_utils=elastic_utils,
-                    )
+                is_skip = self.check_doc_id(
+                    url=item['url'],
+                    index=elastic_utils.index,
+                    doc_id=doc_id,
+                    doc_history=doc_history,
+                    elastic_utils=elastic_utils,
+                )
 
-                    if is_skip is True:
-                        continue
+            if 'check_id' not in url_info or url_info['check_id'] is False:
+                is_skip = False
+
+            if is_skip is True:
+                continue
 
             # 기사 본문 조회
             article, article_html = self.get_article(
@@ -715,7 +745,7 @@ class WebNewsCrawler(CrawlerBase):
             elastic_utils.flush()
             return doc
 
-        # 문서 저장
+        # 인덱스 변경
         if 'date' in doc and elastic_utils.split_index is True:
             elastic_utils.index = elastic_utils.get_target_index(
                 tag=elastic_utils.get_index_year_tag(date=doc['date']),
@@ -723,6 +753,10 @@ class WebNewsCrawler(CrawlerBase):
                 split_index=elastic_utils.split_index,
             )
 
+        # category 필드 병합
+        doc = self.merge_category(doc=doc, elastic_utils=elastic_utils)
+
+        # 문서 저장
         elastic_utils.save_document(document=doc)
         flag = elastic_utils.flush()
 
@@ -743,6 +777,28 @@ class WebNewsCrawler(CrawlerBase):
                 ),
                 'doc_info': doc_info,
             })
+
+        return doc
+
+    @staticmethod
+    def merge_category(doc, elastic_utils):
+        """category 정보를 병합한다."""
+        resp = elastic_utils.elastic.mget(
+            body={
+                'docs': [{'_id': doc['_id']}]
+            },
+            index=elastic_utils.index,
+            _source=['category'],
+        )
+
+        for n in resp['docs']:
+            if '_source' not in n:
+                continue
+
+            category = n['_source']['category'].split(',')
+            category += doc['category'].split(',')
+
+            doc['category'] = ','.join(list(set(category)))
 
         return doc
 
@@ -820,6 +876,9 @@ class WebNewsCrawler(CrawlerBase):
 
             sleep(self.sleep_time)
             return None
+
+        if self.update_category_only is True:
+            return trace_list
 
         # trace_list 이력 조회
         trace_list_history = self.get_history(name='trace_list', default='')

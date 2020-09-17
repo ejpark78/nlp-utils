@@ -4,7 +4,7 @@ kind: Pod
 metadata:
   name: naver-example-id
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -17,6 +17,13 @@ spec:
     - name: default
       image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -38,7 +45,7 @@ kind: Pod
 metadata:
   name: naver-example-ru
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -51,6 +58,13 @@ spec:
     - name: default
       image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -72,7 +86,7 @@ kind: Pod
 metadata:
   name: naver-example-th
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -85,6 +99,13 @@ spec:
     - name: default
       image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -106,7 +127,7 @@ kind: Pod
 metadata:
   name: naver-example-ja
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -119,6 +140,13 @@ spec:
     - name: default
       image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -140,7 +168,7 @@ kind: Pod
 metadata:
   name: naver-example-vi
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -153,6 +181,13 @@ spec:
     - name: default
       image: registry.nlp-utils/crawler:latest
       imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 200m
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -174,7 +209,7 @@ kind: Pod
 metadata:
   name: naver-example-enid
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -193,7 +228,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)
@@ -215,7 +250,7 @@ kind: Pod
 metadata:
   name: naver-example-zh
   labels:
-    app: crawler-naver-example
+    app: naver-example
 spec:
   restartPolicy: Always
   hostAliases:
@@ -234,7 +269,7 @@ spec:
           memory: 100Mi
         limits:
           cpu: 200m
-          memory: 200Mi
+          memory: 1000Mi
       env:
         - name: ELASTIC_SEARCH_INDEX
           value: $(INDEX_SPORTS)

@@ -513,7 +513,7 @@ class ElasticSearchUtils(object):
         if len(id_list) == 0:
             return
 
-        news = self.elastic.mget(
+        resp = self.elastic.mget(
             body={
                 'docs': [{'_id': x} for x in id_list]
             },
@@ -521,7 +521,7 @@ class ElasticSearchUtils(object):
             _source=source,
         )
 
-        for n in news['docs']:
+        for n in resp['docs']:
             if '_source' not in n:
                 continue
 

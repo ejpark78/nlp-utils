@@ -8,10 +8,12 @@ from __future__ import print_function
 import json
 import math
 import os
+from datetime import datetime
 from os.path import getsize
 from os.path import isdir, isfile, splitext
 from time import sleep
 
+import pytz
 import requests
 import urllib3
 from tqdm import tqdm
@@ -56,7 +58,7 @@ class UdemyCrawler(object):
         page_size = 10
 
         result = []
-        for page in range(1, 20):
+        for page in tqdm(range(1, 50), desc='course list'):
             url = self.url_info['my_courses']['url'].format(page=page, page_size=page_size)
 
             resp = requests.get(
@@ -68,8 +70,10 @@ class UdemyCrawler(object):
             ).json()
 
             self.logger.info(msg={
+                'page': page,
                 'resp': resp
             })
+
             if 'results' not in resp:
                 break
 
@@ -80,17 +84,19 @@ class UdemyCrawler(object):
             self.save_cache(cache=result, path=self.data_path, name='course_list')
             sleep(self.sleep)
 
+        self.save_cache(cache=result, path=self.data_path, name='course_list', save_time_tag=True)
+
         return
 
-    def get_list(self, course):
+    def get_course(self, course):
         """강좌 목록을 다운로드 받는다."""
-        path = '{}/{}'.format(self.data_path, course['title'])
+        course_path = '{}/{}'.format(self.data_path, course['title'].replace('/', '-'))
 
-        if isdir(path) is False:
-            os.makedirs(path)
+        if isdir(course_path) is False:
+            os.makedirs(course_path)
 
         # 강좌 목록 추출
-        lecture_list = self.open_cache(path=path, name='course')
+        lecture_list = self.open_cache(path=course_path, name='course')
         if lecture_list is None:
             list_url = self.url_info['list']
             url = list_url['url'].format(course_id=course['id'], query='&'.join(list_url['query']))
@@ -104,7 +110,7 @@ class UdemyCrawler(object):
             )
             lecture_list = resp.json()
 
-            self.save_cache(cache=lecture_list, path=path, name='course')
+            self.save_cache(cache=lecture_list, path=course_path, name='course')
 
         # 강좌 번호 초기화
         count = {
@@ -118,7 +124,7 @@ class UdemyCrawler(object):
             })
 
             if item['_class'] == 'chapter':
-                path = '{}/{}/{:02d}. {}'.format(self.data_path, course['title'], count['chapter'], item['title'])
+                path = '{}/{:02d}. {}'.format(course_path, count['chapter'], item['title'])
                 count['chapter'] += 1
 
                 if isdir(path) is False:
@@ -145,7 +151,8 @@ class UdemyCrawler(object):
                         )
 
                 count['lecture'] += 1
-        return
+
+        return course_path
 
     def get_lecture(self, path, lecture_count, title, asset, course_id, lecture_info):
         """강좌를 다운로드 받는다."""
@@ -229,12 +236,15 @@ class UdemyCrawler(object):
                 })
                 return True
 
+        max_size = max([v['label'] for v in video if v['label'].isdecimal()])
+
         for v in video:
-            if v['label'] != '720':
+            if v['label'] != str(max_size):
                 continue
 
             self.logger.log({
                 'filename': filename,
+                'max_size': max_size,
                 'f': v['file'],
             })
 
@@ -267,7 +277,6 @@ class UdemyCrawler(object):
                     fp.write(data)
 
             os.rename(filename + '.parted', filename)
-            # os.sync()
 
             sleep(self.sleep)
             break
@@ -374,7 +383,6 @@ Icon=text-html
                     fp.write(data)
 
             os.rename(filename + '.parted', filename)
-            # os.sync()
 
             sleep(self.sleep)
 
@@ -420,13 +428,19 @@ Icon=text-html
         return
 
     @staticmethod
-    def save_cache(cache, path, name):
+    def save_cache(cache, path, name, save_time_tag=False):
         """캐쉬 파일로 저장한다."""
-        filename = '{path}/{name}.json'.format(path=path, name=name)
+        data_json = json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True)
 
+        filename = '{path}/{name}.json'.format(path=path, name=name)
         with open(filename, 'w') as fp:
-            data_json = json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True)
             fp.write(data_json)
+
+        if save_time_tag is True:
+            dt = datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y%m%d-%H%M%S')
+            filename = '{path}/{name}.{dt}.json'.format(path=path, name=name, dt=dt)
+            with open(filename, 'w') as fp:
+                fp.write(data_json)
 
         return
 
@@ -455,8 +469,20 @@ Icon=text-html
 
         return parser.parse_args()
 
+    @staticmethod
+    def read_done_list(path):
+        """ """
+        filename = '{}/done.txt'.format(path)
+        if isfile(filename) is False:
+            return set()
+
+        with open(filename, 'r') as fp:
+            return set([l.strip() for l in fp.readlines()])
+
     def batch(self):
         """코스 목록 전체를 다운로드한다."""
+        from os import rename
+
         args = self.init_arguments()
 
         if args.course_list is True:
@@ -467,14 +493,30 @@ Icon=text-html
             self.get_my_course_list()
 
         if args.trace_course_list is True:
+            done_path = '{}/{}'.format(self.data_path, 'done')
+
+            if isdir(done_path) is False:
+                os.makedirs(done_path)
+
+            done_list = self.read_done_list(path=self.data_path)
+
             self.course_list = self.open_cache(path=self.data_path, name='course_list')
 
             for course in self.course_list:
-                self.logger.log(msg={
-                    'course': course
-                })
+                self.logger.log(msg={'course': course})
 
-                self.get_list(course)
+                title = course['title'].replace('/', '-')
+                if title in done_list:
+                    self.logger.log(msg={'MESSAGE': 'SKIP TITLE', 'title': title})
+                    continue
+
+                new_path = '{}/{}'.format(done_path, title)
+                if isdir(new_path) is True:
+                    continue
+
+                path = self.get_course(course)
+
+                rename(path, new_path)
 
         return
 
