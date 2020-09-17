@@ -783,9 +783,20 @@ class WebNewsCrawler(CrawlerBase):
     @staticmethod
     def merge_category(doc, elastic_utils):
         """category 정보를 병합한다."""
+        doc_id = None
+
+        if '_id' in doc:
+            doc_id = doc['_id']
+
+        if 'document_id' in doc:
+            doc_id = doc['document_id']
+
+        if doc_id is None:
+            return doc
+
         resp = elastic_utils.elastic.mget(
             body={
-                'docs': [{'_id': doc['_id']}]
+                'docs': [{'_id': doc_id}]
             },
             index=elastic_utils.index,
             _source=['category'],
