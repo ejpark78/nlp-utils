@@ -300,7 +300,10 @@ class WebNewsCrawler(CrawlerBase):
         )
 
         for doc in doc_list:
-            if doc['category'].strip() == '':
+            if 'category' not in doc or doc['category'].strip() == '':
+                continue
+
+            if 'document_id' not in doc:
                 continue
 
             doc_id = doc['document_id']

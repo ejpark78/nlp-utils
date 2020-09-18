@@ -42,7 +42,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "economy",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -89,7 +89,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "international",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -136,7 +136,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "it",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -183,7 +183,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "living",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -230,7 +230,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "opinion",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -277,7 +277,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "politics",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-20"
       ]
 
 ---
@@ -324,7 +324,7 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "society",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]
 
 ---
@@ -371,7 +371,7 @@ spec:
           "--update_category_only",
           "--category", "naver",
           "--job_id", "sports",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-15"
       ]
 
 ---
@@ -418,5 +418,5 @@ spec:
           "--skip_post_process",
           "--category", "naver",
           "--job_id", "tv",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-07-21"
       ]

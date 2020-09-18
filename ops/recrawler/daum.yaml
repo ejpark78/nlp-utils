@@ -125,7 +125,7 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2019-01-01~2019-12-03",
+        "--date_range", "2019-01-01~2019-08-26",
         "--category", "daum",
         "--job_id", "international"
       ]

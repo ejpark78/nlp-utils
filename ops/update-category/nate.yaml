@@ -42,7 +42,7 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "economy",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2018-11-27"
       ]
 
 ---
@@ -89,7 +89,7 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "international",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2016-06-11"
       ]
 
 ---
@@ -136,14 +136,14 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "it",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2018-06-04"
       ]
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nate-living
+  name: nate-entertainment
   labels:
     app: nate-news
     job: update-category
@@ -183,7 +183,7 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "entertainment",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2019-03-11"
       ]
 
 ---
@@ -230,7 +230,7 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "politics",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2018-08-08"
       ]
 
 ---
@@ -277,7 +277,7 @@ spec:
           "--skip_post_process",
           "--category", "nate",
           "--job_id", "society",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2019-03-06"
       ]
 
 ---
@@ -324,5 +324,5 @@ spec:
           "--update_category_only",
           "--category", "nate",
           "--job_id", "sports",
-          "--date_range", "2010-01-01~2020-09-17"
+          "--date_range", "2010-01-01~2020-05-20"
       ]
