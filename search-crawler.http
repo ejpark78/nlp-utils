@@ -1,0 +1,29 @@
+###
+
+GET {{host}}/crawler-naver-economy-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "category": ","
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-economy-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
