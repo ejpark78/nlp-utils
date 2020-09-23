@@ -34,3 +34,27 @@
 [submodule "fork/pretrained/huggingface_konlpy"]
 	path = fork/pretrained/huggingface_konlpy
 	url = https://github.com/lovit/huggingface_konlpy.git
+[submodule "fork/etc/standalone-dl"]
+	path = fork/etc/standalone-dl
+	url = https://github.com/heartcored98/Standalone-DeepLearning.git
+[submodule "fork/examples/es-kr-guide"]
+	path = fork/examples/es-kr-guide
+	url = https://github.com/eskrug/es-kr-guide.git
+[submodule "fork/pretrained/kcbert"]
+	path = fork/pretrained/kcbert
+	url = https://github.com/Beomi/KcBERT.git
+[submodule "fork/pretrained/skt_kobert"]
+	path = fork/pretrained/skt_kobert
+	url = https://github.com/SKTBrain/KoBERT.git
+[submodule "fork/corpus/nsmc"]
+	path = fork/corpus/nsmc
+	url = https://github.com/e9t/nsmc.git
+[submodule "fork/pretrained/koelectra"]
+	path = fork/pretrained/koelectra
+	url = https://github.com/monologg/KoELECTRA.git
+[submodule "fork/model/pytorch-bert-crf-ner"]
+	path = fork/model/pytorch-bert-crf-ner
+	url = https://github.com/eagle705/pytorch-bert-crf-ner.git
+[submodule "fork/corpus/kmu_ner"]
+	path = fork/corpus/kmu_ner
+	url = https://github.com/kmounlp/NER.git
