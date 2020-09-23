@@ -58,3 +58,18 @@
 [submodule "fork/corpus/kmu_ner"]
 	path = fork/corpus/kmu_ner
 	url = https://github.com/kmounlp/NER.git
+[submodule "fork/corpus/kakao-nlu-datasets"]
+	path = fork/corpus/kakao-nlu-datasets
+	url = https://github.com/kakaobrain/KorNLUDatasets.git
+[submodule "fork/pretrained/ko_sentence_bert"]
+	path = fork/pretrained/ko_sentence_bert
+	url = https://github.com/BM-K/KoSentenceBERT.git
+[submodule "fork/pretrained/hanbert"]
+	path = fork/pretrained/hanbert
+	url = https://github.com/tbai2019/HanBert-54k-N
+[submodule "fork/model/HanBert-Transformers"]
+	path = fork/model/HanBert-Transformers
+	url = https://github.com/monologg/HanBert-Transformers.git
+[submodule "fork/pretrained/DistilKoBERT"]
+	path = fork/pretrained/DistilKoBERT
+	url = https://github.com/monologg/DistilKoBERT.git
