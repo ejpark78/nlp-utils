@@ -19,14 +19,22 @@ ARG APT_MIRROR=http://mirror.kakao.com/ubuntu
 ARG PIP_TRUST_HOST=mirror.kakao.com
 ARG PIP_MIRROR=http://mirror.kakao.com/pypi/simple
 
-ENV APT_OPTS="--no-install-recommends -o Acquire::https::${PIP_TRUST_HOST}::Verify-Peer=false"
+ENV APT_OPTS="--no-install-suggests --no-install-recommends"
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
-		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME} main restricted universe multiverse"; \
-		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME}-updates main restricted universe multiverse"; \
-		echo "deb [trusted=yes] ${APT_MIRROR} ${APT_CODE_NAME}-backports main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME} main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-updates main restricted universe multiverse"; \
+		echo "deb ${APT_MIRROR} ${APT_CODE_NAME}-backports main restricted universe multiverse"; \
 	} > /etc/apt/sources.list \
+    \
+	&& { \
+		echo "Acquire::https {"; \
+		echo "  Verify-Peer false;"; \
+		echo "  Verify-Host false;"; \
+		echo "};"; \
+	} > /etc/apt/apt.conf.d/mirror.conf \
+    \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         ca-certificates \

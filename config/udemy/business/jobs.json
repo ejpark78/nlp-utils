@@ -6,7 +6,7 @@
   "category_name": "paid",
   "url_info": {
     "my_courses": {
-      "url": "https://ncsoft.udemy.com/api-2.0/users/me/subscribed-courses/?fields[course]=@min,visible_instructors,image_240x135,image_480x270,favorite_time,archive_time,completion_ratio,last_accessed_time,enrollment_time,is_practice_test_course,features,num_collections,published_title,buyable_object_type,remaining_time,assignment_due_date,is_assigned,next_to_watch_item,most_recent_activity&fields[user]=@min&ordering=most_recent_activity&page={page}&page_size={page_size}&max_progress=99.9&is_archived=false"
+      "url": "https://ncsoft.udemy.com/api-2.0/users/me/subscribed-courses/?fields[course]=@min,visible_instructors,image_240x135,image_480x270,favorite_time,archive_time,completion_ratio,last_accessed_time,enrollment_time,is_practice_test_course,features,num_collections,published_title,buyable_object_type,remaining_time,assignment_due_date,is_assigned,next_to_watch_item,most_recent_activity&fields[user]=@min&ordering=most_recent_activity&page={page}&page_size={page_size}"
     },
     "overview": {
       "url": "https://ncsoft.udemy.com/{home}/learn/v4/overview"
