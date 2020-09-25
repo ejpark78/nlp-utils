@@ -154,9 +154,6 @@ RUN mkdir -p ${HOME}/.local/bin \
     && usermod -d ${HOME} ${USER} \
     && chmod +x ${HOME}/entrypoint.sh
 
-WORKDIR ${HOME}
-USER ${USER}
-
 ARG docker_image
 ARG docker_tag
 ARG build_date
@@ -175,4 +172,23 @@ ENV git_tag=${git_tag}
 ENV git_commit_id=${git_commit_id}
 ENV git_commit_count=${git_commit_count}
 
-CMD ["bash", "-c", "${HOME}/entrypoint.sh"]
+RUN mkdir -p /home/jovyan
+
+USER root
+WORKDIR /home/jovyan
+
+ENV NB_PREFIX /
+
+CMD ["sh", "-c", "jupyter lab", \
+        "--ip=0.0.0.0", \
+        "--no-browser", \
+        "--allow-root", \
+        "--port=8888", \
+        "--notebook-dir=/home/jovyan", \
+        "--NotebookApp.token=''", \
+        "--NotebookApp.password=''", \
+        "--NotebookApp.allow_origin='*'", \
+        "--NotebookApp.base_url=${NB_PREFIX}", \
+        "--NotebookApp.iopub_data_rate_limit=10000000", \
+        "--NotebookApp.terminado_settings=\"{'shell_command': ['/bin/zsh']}\"" \
+]
