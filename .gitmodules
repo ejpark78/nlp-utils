@@ -73,3 +73,9 @@
 [submodule "fork/pretrained/DistilKoBERT"]
 	path = fork/pretrained/DistilKoBERT
 	url = https://github.com/monologg/DistilKoBERT.git
+[submodule "fork/examples/handson-ml2"]
+	path = fork/examples/handson-ml2
+	url = https://github.com/ageron/handson-ml2
+[submodule "fork/examples/building-machine-learning-pipelines"]
+	path = fork/examples/building-machine-learning-pipelines
+	url = https://github.com/Building-ML-Pipelines/building-machine-learning-pipelines.git
