@@ -27,27 +27,27 @@ spec:
             - name: SERV_PORT
               value: "80"
             - name: POS_IP_ADDR_common
-              value: "http://kmat-common.crawler.svc.cluster.local"
+              value: "http://kmat-common"
             - name: POS_IP_ADDR_economy
-              value: "http://kmat-economy.crawler.svc.cluster.local"
+              value: "http://kmat-economy"
             - name: POS_IP_ADDR_baseball
-              value: "http://kmat-baseball.crawler.svc.cluster.local"
+              value: "http://kmat-baseball"
             - name: POS_IP_ADDR_lineageM
-              value: "http://kmat-lineagem.crawler.svc.cluster.local"
+              value: "http://kmat-lineagem"
             - name: NER_IP_ADDR_economy
-              value: "http://ner-economy.crawler.svc.cluster.local"
+              value: "http://ner-economy"
             - name: NER_IP_ADDR_baseball
-              value: "http://ner-baseball.crawler.svc.cluster.local"
+              value: "http://ner-baseball"
             - name: NER_IP_ADDR_lineageM
-              value: "http://ner-lineagem.crawler.svc.cluster.local"
+              value: "http://ner-lineagem"
             - name: SBD_CRF_IP_ADDR_colloque
-              value: "http://sbd-colloque.crawler.svc.cluster.local"
+              value: "http://sbd-colloque"
             - name: SBD_CRF_IP_ADDR_literary
-              value: "http://sbd-literary.crawler.svc.cluster.local"
+              value: "http://sbd-literary"
             - name: DP_IP_ADDR
-              value: "http://parser-common.crawler.svc.cluster.local"
+              value: "http://parser-common"
             - name: TIME_PYTHON_IP_ADDR
-              value: "http://time-common.crawler.svc.cluster.local/nctime"
+              value: "http://time-common/nctime"
           ports:
             - containerPort: 80
 
@@ -59,8 +59,9 @@ metadata:
   labels:
     app: nluwrapper
 spec:
-  type: ClusterIP
-  clusterIP: None
+  type: LoadBalancer
+  externalIPs:
+    - 172.20.79.243
   selector:
     app: nluwrapper
   ports:

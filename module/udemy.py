@@ -131,7 +131,7 @@ class UdemyCrawler(object):
                     os.makedirs(path)
             elif item['_class'] == 'lecture':
                 self.get_lecture(
-                    path=path,
+                    path=course_path,
                     lecture_count=count['lecture'],
                     asset=item['asset'],
                     title=item['title'],
@@ -142,7 +142,7 @@ class UdemyCrawler(object):
                 if 'supplementary_assets' in item:
                     for supplementary_assets in item['supplementary_assets']:
                         self.get_lecture(
-                            path=path,
+                            path=course_path,
                             lecture_count=count['lecture'],
                             asset=supplementary_assets,
                             title=item['title'],
