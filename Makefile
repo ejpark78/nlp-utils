@@ -31,13 +31,14 @@ DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
 DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 
 # 도커 이미지
-IMAGE_PREFIX = registry/dev
+IMAGE_PREFIX = registry.nlp-utils/dev
 
-BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
-BASE_IMAGE = tensorflow/tensorflow:2.3.0
-BASE_IMAGE = tensorflow/tensorflow:1.12.0-py3
-BASE_IMAGE = tensorflow/tensorflow:1.15.2-gpu-py3
-BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
+#BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
+#BASE_IMAGE = tensorflow/tensorflow:2.3.0
+BASE_IMAGE = tensorflow/tensorflow:2.0.0-py3
+#BASE_IMAGE = tensorflow/tensorflow:1.12.0-py3
+#BASE_IMAGE = tensorflow/tensorflow:1.15.2-gpu-py3
+#BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
 
 IMAGE_BASE = $(IMAGE_PREFIX)/embedding:base
 
@@ -155,6 +156,17 @@ kcbert:
 		$(MIRROR) \
 		$(BUILD_OPT) \
 		-t $(IMAGE_PREFIX)/utils/kcbert:latest \
+		-f Dockerfile \
+		.
+
+.ONESHELL:
+kubeflow:
+	cd docker/kubeflow/
+
+	docker build \
+		$(MIRROR) \
+		$(BUILD_OPT) \
+		-t $(IMAGE_PREFIX)/utils/kubeflow-jupyter-lab:tf2.0-cpu \
 		-f Dockerfile \
 		.
 

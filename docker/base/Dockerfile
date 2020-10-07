@@ -26,6 +26,7 @@ ARG PIP_MIRROR=http://mirror.kakao.com/pypi/simple
 ARG PIP_TRUST_HOST=mirror.kakao.com
 
 ENV APT_OPTS="--no-install-suggests --no-install-recommends"
+ENV PYTHONWARNINGS="ignore:Unverified HTTPS request"
 
 USER root
 

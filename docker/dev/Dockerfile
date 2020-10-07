@@ -91,11 +91,9 @@ RUN echo && echo "# transformers 설치" \
 RUN echo && echo "# jupyter 설치" \
 	&& pip3 install --upgrade --no-cache-dir \
 		autopep8 \
-		bash_kernel \
 		ipykernel \
 		ipyparallel \
 		jupyter \
-		jupyterhub \
 		jupyterlab \
 		notebook \
 		yapf \
@@ -107,25 +105,26 @@ RUN echo && echo "# jupyter 설치" \
         beakerx \
         py4j \
         qgrid \
+		bash_kernel \
         sshkernel \
     && mkdir -p ${HOME}/.jupyter \
     \
     && echo && echo "jupyter plugin 설치" \
     && ipcluster nbextension enable \
     && python3 -m ipykernel install \
-    && python3 -m bash_kernel.install \
     && python3 -m sshkernel install \
+    && python3 -m bash_kernel.install \
     \
     && echo && echo "nbextension 설치" \
+	&& jupyter contrib nbextension install \
     && jupyter nbextension install --sys-prefix --py ipyparallel \
     && jupyter nbextension enable ipyparallel --py --sys-prefix \
-	&& jupyter contrib nbextension install \
 	&& jupyter nbextensions_configurator enable \
 	\
     && echo && echo "nbextension enable 설정" \
-    && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
     && jupyter labextension install qgrid \
 	&& jupyter labextension install ipyvolume \
+    && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
 	\
 	&& echo && echo "nbextension enable 설정" \
 	&& jupyter nbextension enable --py --sys-prefix qgrid \
@@ -179,16 +178,17 @@ WORKDIR /home/jovyan
 
 ENV NB_PREFIX /
 
-CMD ["sh", "-c", "jupyter lab", \
-        "--ip=0.0.0.0", \
-        "--no-browser", \
-        "--allow-root", \
-        "--port=8888", \
-        "--notebook-dir=/home/jovyan", \
-        "--NotebookApp.token=''", \
-        "--NotebookApp.password=''", \
-        "--NotebookApp.allow_origin='*'", \
-        "--NotebookApp.base_url=${NB_PREFIX}", \
-        "--NotebookApp.iopub_data_rate_limit=10000000", \
-        "--NotebookApp.terminado_settings=\"{'shell_command': ['/bin/zsh']}\"" \
-]
+CMD ["bash", "-c", "\
+    jupyter lab \
+        --no-browser \
+        --ip=0.0.0.0 \
+        --port=8888 \
+        --allow-root \
+        --notebook-dir=/home/jovyan \
+        --LabApp.token='' \
+        --LabApp.password='' \
+        --LabApp.allow_origin='*' \
+        --LabApp.base_url=${NB_PREFIX} \
+        --NotebookApp.iopub_data_rate_limit=10000000 \
+        --NotebookApp.terminado_settings=\"{'shell_command': ['/bin/zsh']}\"\
+"]
