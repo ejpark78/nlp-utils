@@ -35,6 +35,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         pkg-config \
         libgoogle-perftools-dev \
         git-core \
+        wget \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -49,4 +50,19 @@ RUN echo && echo "# sentencepiece 설치" \
     && cd sentencepiece/build \
     && cmake -DCMAKE_INSTALL_PREFIX=/app/sentencepiece .. \
     && make -j $(nproc) \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz sentencepiece.tar.gz sentencepiece
+
+ARG MINIO_URI=http://172.19.168.48:9000
+ARG MINIO_BUCKET="minio"
+ARG MINIO_TOKEN="minio123"
+
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/ \
+	\
+	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
+	&& mc cp ${BUILD_HOME}/sentencepiece.tar.gz minio/cache/sentencepiece.tar.gz

@@ -10,3 +10,4 @@ registry/dev/utils/konlpy          latest              da8c2169390c        4 hou
 registry/dev/utils/mecab           latest              cc9b2bc39052        4 hours ago         2.07GB
 registry/dev/utils/sentencepiece   latest              a8c278c4005a        4 hours ago         1.33GB
 tensorflow/tensorflow              1.15.2-py3          b2b972268a17        7 months ago        1.18GB
+registry.nlp-utils/dev/embedding                    base                f040681b3136        About an hour ago    4.05GB

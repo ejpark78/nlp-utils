@@ -91,8 +91,6 @@ RUN echo && echo "# transformers 설치" \
 RUN echo && echo "# jupyter 설치" \
 	&& pip3 install --upgrade --no-cache-dir \
 		autopep8 \
-		ipykernel \
-		ipyparallel \
 		jupyter \
 		jupyterlab \
 		notebook \
@@ -110,8 +108,6 @@ RUN echo && echo "# jupyter 설치" \
     && mkdir -p ${HOME}/.jupyter \
     \
     && echo && echo "jupyter plugin 설치" \
-    && ipcluster nbextension enable \
-    && python3 -m ipykernel install \
     && python3 -m sshkernel install \
     && python3 -m bash_kernel.install \
     \
@@ -129,7 +125,6 @@ RUN echo && echo "# jupyter 설치" \
 	&& echo && echo "nbextension enable 설정" \
 	&& jupyter nbextension enable --py --sys-prefix qgrid \
     && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
-    && ipcluster nbextension enable \
 	\
 	&& echo && echo "jupyter notebook 테마 설정" \
 	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \

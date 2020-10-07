@@ -35,6 +35,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         curl \
         git \
         zip \
+        wget \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -92,4 +93,19 @@ RUN echo && echo "# kakao/khaiii 설치" \
     && cd package_python \
     && pip3 install . \
     && pip3 wheel . \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz khaiii.tar.gz khaiii
+
+ARG MINIO_URI=http://172.19.168.48:9000
+ARG MINIO_BUCKET="minio"
+ARG MINIO_TOKEN="minio123"
+
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/ \
+	\
+	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
+	&& mc cp ${BUILD_HOME}/khaiii.tar.gz minio/cache/khaiii.tar.gz

@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=tensorflow/tensorflow:2.0.0-py3
+ARG BASE_IMAGE=tensorflow/tensorflow:2.3.0
 
 FROM ${BASE_IMAGE}
 
@@ -67,23 +67,27 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# 파이썬 라이브러리 설치
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
-        echo "[global]"; \
-        echo "timeout = 60"; \
-        echo "index-url = ${PIP_MIRROR}"; \
-        echo "trusted-host = ${PIP_TRUST_HOST}"; \
-    } > ~/.pip/pip.conf \
+		echo "[global]"; \
+		echo "timeout = 60"; \
+		echo "index-url = ${PIP_MIRROR}"; \
+		echo "trusted-host = ${PIP_TRUST_HOST}"; \
+	} > ~/.pip/pip.conf \
     \
     && echo && echo "# 기본 유틸 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-        cython \
+    && pip3 install --upgrade --no-cache-dir --force-reinstall \
+		cython \
         cmake \
         pip \
         pytest-runner \
         setuptools \
         wheel \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# kubeflow 설치" \
     && pip3 install --upgrade --no-cache-dir \
         dill \
         kfp \
@@ -102,9 +106,11 @@ RUN echo && echo "# pip 저장소 설정" \
 		autopep8 \
 		bash_kernel \
         sshkernel \
+	\
     && echo && echo "jupyter kernel 설치" \
     && python3 -m sshkernel install \
     && python3 -m bash_kernel.install \
+	\
     && echo && echo "nbextension enable 설정" \
     && jupyter labextension install qgrid \
 	&& jupyter labextension install ipyvolume \
@@ -116,6 +122,29 @@ RUN echo && echo "# pip 저장소 설정" \
 	\
     && rm -rf /tmp/* \
     && jupyter serverextension enable --py jupyterlab --sys-prefix
+
+RUN echo && echo "# DL 설치" \
+    && pip3 install --upgrade --no-cache-dir \
+        bert \
+        keras \
+        sentencepiece \
+        tensorflow-hub \
+        tf_sentencepiece \
+        tfx \
+    && rm -rf /tmp/*
+
+ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
+RUN echo && echo "# torch 설치" \
+    && pip3 install --upgrade --no-cache-dir --find-links ${PYTORCH_URL} \
+        torch==1.6.0+cu101 \
+        torchtext \
+        torchvision==0.7.0+cu101 \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# transformers 설치" \
+    && pip3 install --upgrade --no-cache-dir \
+        transformers==2.11.0 \
+    && rm -rf /tmp/*
 
 RUN echo && echo "oh my zsh 설치" \
     && curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash - \
@@ -139,14 +168,20 @@ RUN echo && echo "oh my zsh 설치" \
     && export PATH="${HOME}/.krew/bin:$PATH" \
     && kubectl krew update \
     && kubectl krew install ctx \
-    && kubectl krew install ns \
-    \
-	&& echo && echo "kubeflow utils: minio client" \
+    && kubectl krew install ns
+
+ARG MINI_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
+RUN echo && echo "kubeflow utils: minio client" \
 	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
 	&& chmod +x mc \
-	&& mv mc /usr/bin/
-
-#	 mc alias set minio http://minio-service.kubeflow.svc.cluster.local:9000 minio minio123
+	&& mv mc /usr/bin/ \
+	&& { \
+		echo "("; \
+		echo "sleep 60;"; \
+		echo "mc alias set minio ${MINI_URI} minio minio123"; \
+		echo ") &"; \
+	} > /usr/bin/minio_alias.sh \
+    && chmod +x /usr/bin/minio_alias.sh
 
 WORKDIR /home/jovyan
 
@@ -160,6 +195,7 @@ ENV NB_PREFIX /
 #ENV HOME /home/$NB_USER
 
 CMD ["bash", "-c", "\
+    /usr/bin/minio_alias.sh ;\
     jupyter lab \
         --no-browser \
         --ip=0.0.0.0 \
@@ -173,3 +209,21 @@ CMD ["bash", "-c", "\
         --NotebookApp.iopub_data_rate_limit=10000000 \
         --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\"\
 "]
+
+ARG docker_image
+ARG docker_tag
+ARG build_date
+ARG git_url
+ARG git_branch
+ARG git_tag
+ARG git_commit_id
+ARG git_commit_count
+
+ENV docker_image=${docker_image}
+ENV docker_tag=${docker_tag}
+ENV build_date=${build_date}
+ENV git_url=${git_url}
+ENV git_branch=${git_branch}
+ENV git_tag=${git_tag}
+ENV git_commit_id=${git_commit_id}
+ENV git_commit_count=${git_commit_count}

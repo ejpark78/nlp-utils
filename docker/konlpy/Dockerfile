@@ -38,6 +38,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         openjdk-8-jdk \
         python3-dev \
         python3-pip \
+        wget \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -71,7 +72,10 @@ RUN echo && echo "# mecab_ko 설치" \
     && make -j $(nproc) \
     && make check \
     && make install \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz mecab.tar.gz mecab
 
 RUN echo && echo "# mecab-ko-dic 설치" \
     && cd ${BUILD_HOME} \
@@ -87,7 +91,10 @@ RUN echo && echo "# mecab-ko-dic 설치" \
     && make -j $(nproc) \
     && echo "dicdir=/usr/local/lib/mecab/dic/mecab-ko-dic" > /usr/local/etc/mecabrc \
     && make install \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz mecab-ko-dic.tar.gz mecab-ko-dic
 
 RUN echo && echo "# mecab-python 설치" \
     && cd ${BUILD_HOME} \
@@ -95,7 +102,10 @@ RUN echo && echo "# mecab-python 설치" \
     && cd mecab-python \
     && pip3 install -U pip \
     && pip3 install mecab-python \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz mecab-python.tar.gz mecab-python
 
 RUN echo && echo "# konlpy 설치" \
     && cd ${BUILD_HOME} \
@@ -106,6 +116,24 @@ RUN echo && echo "# konlpy 설치" \
     && git clone https://github.com/konlpy/konlpy konlpy \
     && cd konlpy \
     && pip3 install -r requirements-dev.txt \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz konlpy.tar.gz konlpy
 
-CMD python3 -m pytest -v .
+ARG MINIO_URI=http://172.19.168.48:9000
+ARG MINIO_BUCKET="minio"
+ARG MINIO_TOKEN="minio123"
+
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/ \
+	\
+	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
+	&& mc cp ${BUILD_HOME}/mecab.tar.gz minio/cache/mecab.tar.gz \
+	&& mc cp ${BUILD_HOME}/mecab-ko-dic.tar.gz minio/cache/mecab-ko-dic.tar.gz \
+	&& mc cp ${BUILD_HOME}/mecab-python.tar.gz minio/cache/mecab-python.tar.gz \
+	&& mc cp ${BUILD_HOME}/konlpy.tar.gz minio/cache/konlpy.tar.gz
+
+CMD ["python3 -m pytest -v ."]

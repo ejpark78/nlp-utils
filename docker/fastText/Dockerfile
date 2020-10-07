@@ -33,6 +33,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         cmake \
         build-essential \
         git-core \
+        wget \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -68,4 +69,19 @@ RUN echo && echo "# facebookresearch/fastText 설치" \
     \
     && cd .. \
     && pip3 install . \
-	&& rm -rf /tmp/*
+	&& rm -rf /tmp/* \
+    \
+    && cd ${BUILD_HOME} \
+    && tar cvfz fastText.tar.gz fastText
+
+ARG MINIO_URI=http://172.19.168.48:9000
+ARG MINIO_BUCKET="minio"
+ARG MINIO_TOKEN="minio123"
+
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/ \
+	\
+	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
+	&& mc cp ${BUILD_HOME}/fastText.tar.gz minio/cache/fastText.tar.gz
