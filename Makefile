@@ -11,51 +11,34 @@ GIT_COMMIT_ID = $(shell git rev-parse --short HEAD)
 
 BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 
-DOCKER_LABEL =
-DOCKER_LABEL += --label "app=dev/embedding"
-DOCKER_LABEL += --label "version=$(IMAGE_TAG)"
-DOCKER_LABEL += --label "image_name=$(IMAGE_BASE)"
-DOCKER_LABEL += --label "build-date=$(BUILD_DATE)"
-DOCKER_LABEL += --label "git.url=$(GIT_URL)"
-DOCKER_LABEL += --label "git.branch=$(GIT_BRANCH)"
-DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
-DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
-DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
-DOCKER_LABEL += --build-arg "docker_tag=dev"
-DOCKER_LABEL += --build-arg "docker_image=$(IMAGE_BASE)"
-DOCKER_LABEL += --build-arg "build_date='$(BUILD_DATE)'"
-DOCKER_LABEL += --build-arg "git_url=$(GIT_URL)"
-DOCKER_LABEL += --build-arg "git_branch=$(GIT_BRANCH)"
-DOCKER_LABEL += --build-arg "git_tag=$(GIT_TAG)"
-DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
-DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
-
 # 도커 이미지
-IMAGE_PREFIX = registry.nlp-utils/dev
+DOCKER_REGISTRY = registry.nlp-utils
 
 #BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
 BASE_IMAGE = tensorflow/tensorflow:2.3.0
+
 #BASE_IMAGE = tensorflow/tensorflow:2.0.0-py3
 #BASE_IMAGE = tensorflow/tensorflow:1.12.0-py3
 #BASE_IMAGE = tensorflow/tensorflow:1.15.2-gpu-py3
 #BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
 
-IMAGE = $(IMAGE_PREFIX)/embedding
-IMAGE_TAG = $(GIT_TAG).$(GIT_COMMIT)
+IMAGE = $(DOCKER_REGISTRY)/utils
+IMAGE_TAG = tf2.3.0-cpu
+#IMAGE_TAG = tf2.3.0-gpu
 
 # 도커 이미지명
-IMAGE_BASE = $(IMAGE_PREFIX)/embedding:base
-IMAGE_DEV = $(IMAGE):$(IMAGE_TAG)
-IMAGE_KUBEFLOW = $(IMAGE_PREFIX)/utils/kubeflow-jupyter-lab:tf2.3-cpu
+IMAGE_DEV = $(DOCKER_REGISTRY)/utils/dev:$(IMAGE_TAG)
+IMAGE_BASE = $(DOCKER_REGISTRY)/utils/base:$(IMAGE_TAG)
+IMAGE_KUBEFLOW = $(DOCKER_REGISTRY)/utils/kubeflow:$(IMAGE_TAG)
 
-IMAGE_SPE = $(IMAGE_PREFIX)/utils/sentencepiece:latest
-IMAGE_KONLPY = $(IMAGE_PREFIX)/utils/konlpy:latest
-IMAGE_GLOVE = $(IMAGE_PREFIX)/utils/glove:latest
-IMAGE_FASTTEXT = $(IMAGE_PREFIX)/utils/fast_text:latest
-IMAGE_KHAIII = $(IMAGE_PREFIX)/utils/khaiii:latest
-IMAGE_MECAB = $(IMAGE_PREFIX)/utils/mecab:latest
-IMAGE_KOBERT = $(IMAGE_PREFIX)/utils/kobert:latest
-IMAGE_KCBERT = $(IMAGE_PREFIX)/utils/kcbert:latest
+IMAGE_SPE = $(DOCKER_REGISTRY)/utils/sentencepiece:$(IMAGE_TAG)
+IMAGE_MECAB = $(DOCKER_REGISTRY)/utils/mecab:$(IMAGE_TAG)
+IMAGE_GLOVE = $(DOCKER_REGISTRY)/utils/glove:$(IMAGE_TAG)
+IMAGE_KONLPY = $(DOCKER_REGISTRY)/utils/konlpy:$(IMAGE_TAG)
+IMAGE_KHAIII = $(DOCKER_REGISTRY)/utils/khaiii:$(IMAGE_TAG)
+IMAGE_KOBERT = $(DOCKER_REGISTRY)/utils/kobert:$(IMAGE_TAG)
+IMAGE_KCBERT = $(DOCKER_REGISTRY)/utils/kcbert:$(IMAGE_TAG)
+IMAGE_FASTTEXT = $(DOCKER_REGISTRY)/utils/fast_text:$(IMAGE_TAG)
 
 BUILD_IMAGE =
 BUILD_IMAGE += --build-arg "GLOVE=$(IMAGE_GLOVE)"
@@ -78,130 +61,182 @@ MIRROR += --build-arg "PIP_MIRROR=$(PIP_MIRROR)"
 MIRROR += --build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)"
 
 # 공통 도커 빌드 옵션
-BUILD_OPT =
-BUILD_OPT += --build-arg "UID=$(shell id -u)"
-BUILD_OPT += --build-arg "GID=$(shell id -g)"
-BUILD_OPT += --build-arg "MINIO_URI=http://172.19.168.48:9000"
-BUILD_OPT += --build-arg "MINIO_BUCKET=minio"
-BUILD_OPT += --build-arg "MINIO_TOKEN=minio123"
+MINIO_URI = "http://$(shell hostname -I | cut -f1 -d' '):9000"
+MINIO_ACCESS_KEY = "minio"
+MINIO_SECRET_KEY = "minio123"
+MINIO_BUCKET="cache"
+MINIO_PATH = $(IMAGE_TAG)
+
+MINIO =
+MINIO += --build-arg "MINIO_URI=$(MINIO_URI)"
+MINIO += --build-arg "MINIO_ACCESS_KEY=$(MINIO_ACCESS_KEY)"
+MINIO += --build-arg "MINIO_SECRET_KEY=$(MINIO_SECRET_KEY)"
+MINIO += --build-arg "MINIO_BUCKET=$(MINIO_BUCKET)"
+MINIO += --build-arg "MINIO_PATH=$(MINIO_PATH)"
+
+# 도커 이미지 라벨
+DOCKER_LABEL =
+DOCKER_LABEL += --label "app=dev/nlp-utils"
+DOCKER_LABEL += --label "version=$(IMAGE_TAG)"
+DOCKER_LABEL += --label "image_name=$(IMAGE_BASE)"
+DOCKER_LABEL += --label "build-date=$(BUILD_DATE)"
+DOCKER_LABEL += --label "git.url=$(GIT_URL)"
+DOCKER_LABEL += --label "git.branch=$(GIT_BRANCH)"
+DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
+DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
+DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
+DOCKER_LABEL += --build-arg "docker_tag=$(IMAGE_TAG)"
+DOCKER_LABEL += --build-arg "docker_image=$(IMAGE_BASE)"
+DOCKER_LABEL += --build-arg "build_date='$(BUILD_DATE)'"
+DOCKER_LABEL += --build-arg "git_url=$(GIT_URL)"
+DOCKER_LABEL += --build-arg "git_branch=$(GIT_BRANCH)"
+DOCKER_LABEL += --build-arg "git_tag=$(GIT_TAG)"
+DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
+DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 
 # PHONY
 .PHONY: *
 
 # type
-batch: build push uninstall install
+batch: build push
 utils: sentencepiece konlpy glove fastText khaiii mecab
+
+.ONESHELL:
+start-minio:
+	docker run \
+		-d \
+		--name minio \
+		-p 9000:9000 \
+		-v $(shell pwd)/.cache:/data:rw \
+		-e "MINIO_ACCESS_KEY=$(MINIO_ACCESS_KEY)" \
+		-e "MINIO_SECRET_KEY=$(MINIO_SECRET_KEY)" \
+		minio/minio server /data
+
+	mc alias set $(MINIO_BUCKET) ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+	mc mb $(MINIO_BUCKET)/$(MINIO_PATH)
+
+.ONESHELL:
+stop-minio:
+	docker stop minio
+	docker rm minio
+
+.ONESHELL:
+clean-minio:
+	sudo rm -rf $(shell pwd)/.cache
 
 .ONESHELL:
 sentencepiece:
 	cd docker/sentencepiece/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_SPE) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_SPE) \
+		.
 
 .ONESHELL:
 konlpy:
 	cd docker/konlpy/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_KONLPY) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_KONLPY) \
+		.
 
 .ONESHELL:
 glove:
 	cd docker/glove/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_GLOVE) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_GLOVE) \
+		.
 
 .ONESHELL:
 fastText:
 	cd docker/fastText/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_FASTTEXT) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_FASTTEXT) \
+		.
 
 .ONESHELL:
 khaiii:
 	cd docker/khaiii/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_KHAIII) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_KHAIII) \
+		.
 
 .ONESHELL:
 mecab:
 	cd docker/mecab/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_MECAB) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_MECAB) \
+		.
 
 .ONESHELL:
 kobert:
 	cd docker/kobert/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_KOBERT) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_KOBERT) \
+		.
 
 .ONESHELL:
 kcbert:
 	cd docker/kcbert/
-	docker build $(MIRROR) $(BUILD_OPT) -t $(IMAGE_KCBERT) --build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_KCBERT) \
+		.
 
 .ONESHELL:
 base:
 	cd docker/base/
-	docker build $(MIRROR) $(BUILD_OPT) $(DOCKER_LABEL) $(BUILD_IMAGE) -t $(IMAGE_BASE) \
-		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_BASE) \
+		.
 
 .ONESHELL:
-base-minio:
-	cd docker/base_minio/
-	docker build $(MIRROR) $(BUILD_OPT) $(DOCKER_LABEL) $(BUILD_IMAGE) -t $(IMAGE_BASE) \
-		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" .
+base-stage:
+	cd docker/base-stage/
+	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) $(BUILD_IMAGE) \
+		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
+		-t $(IMAGE_BASE) \
+		.
 
 .ONESHELL:
 kubeflow:
 	cd docker/kubeflow/
-	docker build $(MIRROR) $(BUILD_OPT) $(DOCKER_LABEL) -t $(IMAGE_KUBEFLOW) \
-		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" .
+	docker build $(MIRROR) $(DOCKER_LABEL) \
+		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
+		-t $(IMAGE_KUBEFLOW) \
+		.
+
+	docker tag $(IMAGE_KUBEFLOW) kubeflow-registry.default.svc.cluster.local:30000/kubeflow:$(IMAGE_TAG)
 
 .ONESHELL:
 dev:
 	cd docker/dev/
-	docker build $(MIRROR) $(BUILD_OPT) $(DOCKER_LABEL) -t $(IMAGE_DEV)	\
-		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" .
-
-	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
+	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) \
+		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
+		-t $(IMAGE_DEV)	\
+		.
 
 .ONESHELL:
 push:
-	docker push $(IMAGE):$(IMAGE_TAG)
-	docker push $(IMAGE):latest
+	docker push $(IMAGE_DEV)
 
 .ONESHELL:
-run:
+run-dev:
 	docker run \
 		-it --rm \
 		--hostname dev \
 		--name embedding_dev \
-		-u $(shell id -u):$(shell id -g) \
 		--entrypoint /bin/bash \
-		-v $(shell pwd):/home/user/embedding \
-		$(IMAGE):latest
-
-.ONESHELL:
-jupyter:
-	docker run \
-		-it --rm \
-		--hostname dev \
-		-u $(shell id -u):$(shell id -g) \
-		--name embedding_dev \
 		-p 8888:8888 \
 		-v $(shell pwd):/home/user/embedding \
-		$(IMAGE):latest
+		$(IMAGE_DEV)
 
 .ONESHELL:
 git-tag:
 	git tag -a 1 -m 'version 1'
-
-.ONESHELL:
-upgrade_v2:
-	tf_upgrade_v2 --intree models --outtree models_v2 --reportfile upgrade.log
-
-# helm
-.ONESHELL:
-install:
-	helm install node1 helm --set nodeName=node1 --set service.externalIPs=192.168.2.100
-
-.ONESHELL:
-uninstall:
-	helm uninstall node1
-
-.ONESHELL:
-template:
-	helm --debug template notebook

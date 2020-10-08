@@ -17,7 +17,8 @@ ENV PYTHONWARNINGS="ignore:Unverified HTTPS request"
 
 USER root
 
-RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
+RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
+    && echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
 		echo "Acquire::https {"; \
 		echo "  Verify-Peer false;"; \
@@ -52,7 +53,6 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         openssh-client \
         python3-dev \
         python3-pip \
-        python3-setuptools \
         unzip \
         vim \
         wget \
@@ -103,6 +103,7 @@ RUN echo && echo "# kubeflow 설치" \
     && pip3 install --upgrade --no-cache-dir \
         jupyter \
         jupyterlab \
+        jupyterthemes \
 		autopep8 \
 		bash_kernel \
         sshkernel \
@@ -120,14 +121,16 @@ RUN echo && echo "# kubeflow 설치" \
 	&& jupyter nbextension enable --py --sys-prefix qgrid \
     && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
 	\
-    && rm -rf /tmp/* \
-    && jupyter serverextension enable --py jupyterlab --sys-prefix
+    && jupyter serverextension enable --py jupyterlab --sys-prefix \
+	\
+	&& echo && echo "jupyter notebook 테마 설정" \
+	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
+    && rm -rf /tmp/*
 
 RUN echo && echo "# DL 설치" \
     && pip3 install --upgrade --no-cache-dir \
         bert \
         keras \
-        sentencepiece \
         tensorflow-hub \
         tf_sentencepiece \
         tfx \
@@ -170,7 +173,11 @@ RUN echo && echo "oh my zsh 설치" \
     && kubectl krew install ctx \
     && kubectl krew install ns
 
-ARG MINI_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
+ARG MINIO_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
+ARG MINIO_ACCESS_KEY="minio"
+ARG MINIO_SECRET_KEY="minio123"
+ARG MINIO_BUCKET="minio"
+
 RUN echo && echo "kubeflow utils: minio client" \
 	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
 	&& chmod +x mc \
@@ -178,7 +185,7 @@ RUN echo && echo "kubeflow utils: minio client" \
 	&& { \
 		echo "("; \
 		echo "sleep 60;"; \
-		echo "mc alias set minio ${MINI_URI} minio minio123"; \
+		echo "mc alias set ${MINIO_BUCKET} ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}"; \
 		echo ") &"; \
 	} > /usr/bin/minio_alias.sh \
     && chmod +x /usr/bin/minio_alias.sh
@@ -201,11 +208,11 @@ CMD ["bash", "-c", "\
         --ip=0.0.0.0 \
         --port=8888 \
         --allow-root \
-        --notebook-dir=/home/jovyan \
         --LabApp.token='' \
         --LabApp.password='' \
         --LabApp.allow_origin='*' \
         --LabApp.base_url=${NB_PREFIX} \
+        --notebook-dir=/home/jovyan \
         --NotebookApp.iopub_data_rate_limit=10000000 \
         --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\"\
 "]

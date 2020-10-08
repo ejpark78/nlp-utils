@@ -15,7 +15,8 @@ ARG PIP_TRUST_HOST=mirror.kakao.com
 USER root
 
 # 파이썬 라이브러리 설치
-RUN echo && echo "# pip 저장소 설정" \
+RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
+    && echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
 		echo "[global]"; \
@@ -129,24 +130,6 @@ RUN echo && echo "# jupyter 설치" \
 	&& echo && echo "jupyter notebook 테마 설정" \
 	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
     && rm -rf /tmp/*
-
-ARG USER=user
-ARG UID=1000
-ARG GID=1000
-
-ENV USER=${USER} HOME=/home/${USER}
-
-# skel & entrypoint 설치
-COPY skel.tar.gz ${HOME}/skel.tar.gz
-COPY entrypoint.sh ${HOME}/entrypoint.sh
-
-RUN mkdir -p ${HOME}/.local/bin \
-    && cd ${HOME} \
-    && tar xvfz skel.tar.gz \
-    && rm -rf skel.tar.gz \
-    && chown -R ${UID}:${GID} ${HOME} \
-    && usermod -d ${HOME} ${USER} \
-    && chmod +x ${HOME}/entrypoint.sh
 
 ARG docker_image
 ARG docker_tag

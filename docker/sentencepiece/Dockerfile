@@ -56,13 +56,15 @@ RUN echo && echo "# sentencepiece 설치" \
     && tar cvfz sentencepiece.tar.gz sentencepiece
 
 ARG MINIO_URI=http://172.19.168.48:9000
-ARG MINIO_BUCKET="minio"
-ARG MINIO_TOKEN="minio123"
+ARG MINIO_ACCESS_KEY="minio"
+ARG MINIO_SECRET_KEY="minio123"
+ARG MINIO_BUCKET="cache"
+ARG MINIO_PATH="build"
 
 RUN echo && echo "minio client" \
 	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
 	&& chmod +x mc \
 	&& mv mc /usr/bin/ \
 	\
-	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
-	&& mc cp ${BUILD_HOME}/sentencepiece.tar.gz minio/cache/sentencepiece.tar.gz
+	&& mc alias set ${MINIO_BUCKET} ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} \
+	&& mc cp ${BUILD_HOME}/sentencepiece.tar.gz ${MINIO_BUCKET}/${MINIO_PATH}/sentencepiece.tar.gz

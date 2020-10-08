@@ -1,15 +1,4 @@
-ARG GLOVE=registry/utils/glove:latest
-ARG MECAB=registry/utils/mecab:latest
-ARG KHAIII=registry/utils/khaiii:latest
-ARG FAST_TEXT=registry/utils/fast_text:latest
-ARG SENTENCE_PIECE=registry/utils/sentencepiece:latest
 ARG BASE_IMAGE=tensorflow/tensorflow:2.3.0
-
-FROM ${GLOVE} AS glove
-FROM ${MECAB} AS mecab
-FROM ${KHAIII} AS khaiii
-FROM ${FAST_TEXT} AS fast_text
-FROM ${SENTENCE_PIECE} AS sentencepiece
 
 FROM ${BASE_IMAGE}
 
@@ -28,7 +17,8 @@ ENV PYTHONWARNINGS="ignore:Unverified HTTPS request"
 
 USER root
 
-RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
+RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
+    && echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
 		echo "Acquire::https {"; \
 		echo "  Verify-Peer false;"; \
@@ -119,11 +109,6 @@ RUN echo && echo "# locale-gen" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata
 
-RUN echo && echo "minio client" \
-	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
-	&& chmod +x mc \
-	&& mv mc /usr/bin/
-
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
     && { \
@@ -143,58 +128,74 @@ RUN echo && echo "# pip 저장소 설정" \
         wheel \
     && rm -rf /tmp/*
 
+ARG MINIO_URI=http://172.19.168.48:9000
+ARG MINIO_ACCESS_KEY="minio"
+ARG MINIO_SECRET_KEY="minio123"
+ARG MINIO_BUCKET="cache"
+ARG MINIO_PATH="build"
+
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/ \
+	&& mc alias set ${MINIO_BUCKET} ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
+
 ENV BUILD_HOME=/usr/local
 
 # sentencepiece 설치
-COPY --from=sentencepiece ${BUILD_HOME}/sentencepiece ${BUILD_HOME}/sentencepiece
-
 RUN echo && echo "# sentencepiece 설치" \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/sentencepiece.tar.gz ${BUILD_HOME}/sentencepiece.tar.gz \
+    && tar xvfz ${BUILD_HOME}/sentencepiece.tar.gz -C ${BUILD_HOME}\
     && cd ${BUILD_HOME}/sentencepiece/build \
     && make install \
     && ldconfig -v \
-    && rm -rf ${BUILD_HOME}/sentencepiece /tmp/*
+    && rm -rf /tmp/* ${BUILD_HOME}/sentencepiece ${BUILD_HOME}/sentencepiece.tar.gz
 
 # konlpy/mecab 설치
-COPY --from=mecab ${BUILD_HOME}/mecab ${BUILD_HOME}/mecab
-COPY --from=mecab ${BUILD_HOME}/mecab-ko-dic ${BUILD_HOME}/mecab-ko-dic
-COPY --from=mecab ${BUILD_HOME}/mecab-python ${BUILD_HOME}/mecab-python
-
 RUN echo && echo "# konlpy/mecab 설치" \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/mecab.tar.gz ${BUILD_HOME}/mecab.tar.gz \
+    && tar xvfz ${BUILD_HOME}/mecab.tar.gz -C ${BUILD_HOME} \
     && cd ${BUILD_HOME}/mecab \
     && make check \
     && make install \
-    && rm -rf ${BUILD_HOME}/mecab \
+    && rm -rf ${BUILD_HOME}/mecab ${BUILD_HOME}/mecab.tar.gz \
     \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/mecab-ko-dic.tar.gz ${BUILD_HOME}/mecab-ko-dic.tar.gz \
+    && tar xvfz ${BUILD_HOME}/mecab-ko-dic.tar.gz -C ${BUILD_HOME} \
     && cd ${BUILD_HOME}/mecab-ko-dic \
     && mecab-config --libs-only-L | $sudo tee /etc/ld.so.conf.d/mecab.conf \
     && ldconfig -v \
     && make -j $(nproc) \
     && echo "dicdir=/usr/local/lib/mecab/dic/mecab-ko-dic" > /usr/local/etc/mecabrc \
     && make install \
-    && rm -rf ${BUILD_HOME}/mecab-ko-dic \
+    && rm -rf ${BUILD_HOME}/mecab-ko-dic ${BUILD_HOME}/mecab-ko-dic.tar.gz /tmp/* \
     \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/mecab-python.tar.gz ${BUILD_HOME}/mecab-python.tar.gz \
+    && tar xvfz ${BUILD_HOME}/mecab-python.tar.gz -C ${BUILD_HOME} \
     && cd ${BUILD_HOME}/mecab-python \
     && pip3 install mecab-python \
-    && rm -rf ${BUILD_HOME}/mecab-python /tmp/*
+    && rm -rf ${BUILD_HOME}/mecab-python ${BUILD_HOME}/mecab-python.tar.gz /tmp/*
 
 # stanfordnlp/glove 설치
-COPY --from=glove ${BUILD_HOME}/glove ${BUILD_HOME}/glove
+RUN echo && echo "# stanfordnlp/glove 설치" \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/glove.tar.gz ${BUILD_HOME}/glove.tar.gz \
+    && tar xvfz ${BUILD_HOME}/glove.tar.gz -C ${BUILD_HOME} \
+    && rm -rf ${BUILD_HOME}/glove.tar.gz /tmp/*
 
 # facebookresearch/fastText 설치
-COPY --from=fast_text ${BUILD_HOME}/fastText ${BUILD_HOME}/fastText
-
 RUN echo && echo "# facebookresearch/fastText 설치" \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/fastText.tar.gz ${BUILD_HOME}/fastText.tar.gz \
+    && tar xvfz ${BUILD_HOME}/fastText.tar.gz -C ${BUILD_HOME} \
     && cd ${BUILD_HOME}/fastText/build \
     && make install \
     && cd .. \
     && pip3 install --upgrade --no-cache-dir . \
-    && rm -rf ${BUILD_HOME}/fastText /tmp/*
+    && rm -rf ${BUILD_HOME}/fastText ${BUILD_HOME}/fastText.tar.gz /tmp/*
 
 # kakao/khaiii 설치
-COPY --from=khaiii ${BUILD_HOME}/khaiii ${BUILD_HOME}/khaiii
-COPY --from=khaiii /root/.hunter ${HOME}/.hunter
-
 RUN echo && echo "# kakao/khaiii 설치" \
+    && mc cp ${MINIO_BUCKET}/${MINIO_PATH}/khaiii.tar.gz ${BUILD_HOME}/khaiii.tar.gz \
+    && tar xvfz ${BUILD_HOME}/khaiii.tar.gz -C ${BUILD_HOME} \
     && cd ${BUILD_HOME}/khaiii/build \
     && make resource \
     && make large_resource \
@@ -203,24 +204,7 @@ RUN echo && echo "# kakao/khaiii 설치" \
     && cd package_python \
     && pip3 install . \
     \
-    && rm -rf ${BUILD_HOME}/khaiii ${HOME}/.hunter /tmp/*
-
-ARG USER=user
-ARG UID=1000
-ARG GID=1000
-
-ENV USER=${USER} HOME=/home/${USER}
-
-RUN echo "# 사용자 생성: ${USER}..." \
-	&& addgroup --gid ${GID} ${USER} \
-	&& useradd --uid ${UID} --gid ${GID} -d ${HOME} -s /bin/zsh -m ${USER} \
-    && usermod -d ${HOME} ${USER} \
-    && chown -R ${UID}:${GID} ${HOME} \
-	&& usermod -G sudo ${USER} \
-	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-WORKDIR ${HOME}
-USER ${USER}
+    && rm -rf ${BUILD_HOME}/khaiii ${HOME}/.hunter ${BUILD_HOME}/khaiii.tar.gz /tmp/*
 
 ARG docker_image
 ARG docker_tag

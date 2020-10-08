@@ -109,15 +109,17 @@ RUN echo && echo "# mecab-python 설치" \
     && tar cvfz mecab-python.tar.gz mecab-python
 
 ARG MINIO_URI=http://172.19.168.48:9000
-ARG MINIO_BUCKET="minio"
-ARG MINIO_TOKEN="minio123"
+ARG MINIO_ACCESS_KEY="minio"
+ARG MINIO_SECRET_KEY="minio123"
+ARG MINIO_BUCKET="cache"
+ARG MINIO_PATH="build"
 
 RUN echo && echo "minio client" \
 	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
 	&& chmod +x mc \
 	&& mv mc /usr/bin/ \
 	\
-	&& mc alias set minio ${MINIO_URI} ${MINIO_BUCKET} ${MINIO_TOKEN} \
-	&& mc cp ${BUILD_HOME}/mecab.tar.gz minio/cache/mecab.tar.gz \
-	&& mc cp ${BUILD_HOME}/mecab-ko-dic.tar.gz minio/cache/mecab-ko-dic.tar.gz \
-	&& mc cp ${BUILD_HOME}/mecab-python.tar.gz minio/cache/mecab-python.tar.gz
+	&& mc alias set ${MINIO_BUCKET} ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY} \
+	&& mc cp ${BUILD_HOME}/mecab.tar.gz ${MINIO_BUCKET}/${MINIO_PATH}/mecab.tar.gz \
+	&& mc cp ${BUILD_HOME}/mecab-ko-dic.tar.gz ${MINIO_BUCKET}/${MINIO_PATH}/mecab-ko-dic.tar.gz \
+	&& mc cp ${BUILD_HOME}/mecab-python.tar.gz ${MINIO_BUCKET}/${MINIO_PATH}/mecab-python.tar.gz
