@@ -14,8 +14,8 @@ BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 # 도커 이미지
 DOCKER_REGISTRY = registry.nlp-utils
 
-#BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
-BASE_IMAGE = tensorflow/tensorflow:2.3.0
+BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
+#BASE_IMAGE = tensorflow/tensorflow:2.3.0
 
 #BASE_IMAGE = tensorflow/tensorflow:2.0.0-py3
 #BASE_IMAGE = tensorflow/tensorflow:1.12.0-py3
@@ -23,13 +23,14 @@ BASE_IMAGE = tensorflow/tensorflow:2.3.0
 #BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
 
 IMAGE = $(DOCKER_REGISTRY)/utils
-IMAGE_TAG = tf2.3.0-cpu
-#IMAGE_TAG = tf2.3.0-gpu
+#IMAGE_TAG = tf2.3.0-cpu
+IMAGE_TAG = tf2.3.0-gpu
 
 # 도커 이미지명
 IMAGE_DEV = $(DOCKER_REGISTRY)/utils/dev:$(IMAGE_TAG)
 IMAGE_BASE = $(DOCKER_REGISTRY)/utils/base:$(IMAGE_TAG)
-IMAGE_KUBEFLOW = $(DOCKER_REGISTRY)/utils/kubeflow:$(IMAGE_TAG)
+IMAGE_JUPYTER = $(DOCKER_REGISTRY)/utils/jupyter:$(IMAGE_TAG)
+IMAGE_KUBEFLOW_JUPYTER = kubeflow-registry.default.svc.cluster.local:30000/jupyter:$(IMAGE_TAG)
 
 IMAGE_SPE = $(DOCKER_REGISTRY)/utils/sentencepiece:$(IMAGE_TAG)
 IMAGE_MECAB = $(DOCKER_REGISTRY)/utils/mecab:$(IMAGE_TAG)
@@ -205,14 +206,14 @@ base-stage:
 		.
 
 .ONESHELL:
-kubeflow:
+jupyter:
 	cd docker/kubeflow/
 	docker build $(MIRROR) $(DOCKER_LABEL) \
 		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
-		-t $(IMAGE_KUBEFLOW) \
+		-t $(IMAGE_JUPYTER) \
 		.
 
-	docker tag $(IMAGE_KUBEFLOW) kubeflow-registry.default.svc.cluster.local:30000/kubeflow:$(IMAGE_TAG)
+	docker tag $(IMAGE_JUPYTER) $(IMAGE_KUBEFLOW_JUPYTER)
 
 .ONESHELL:
 dev:
@@ -225,6 +226,8 @@ dev:
 .ONESHELL:
 push:
 	docker push $(IMAGE_DEV)
+	docker push $(IMAGE_JUPYTER)
+	docker push $(IMAGE_KUBEFLOW_JUPYTER)
 
 .ONESHELL:
 run-dev:
