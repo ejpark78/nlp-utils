@@ -36,28 +36,16 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
-        apt-transport-https \
         bash \
-        build-essential \
         bzip2 \
-        ca-certificates \
         curl \
-        emacs \
         g++ \
         git \
-        gnupg \
-        graphviz \
-        locales \
-        lsb-release \
-        openssh-client \
-        python3-dev \
-        python3-pip \
         unzip \
         vim \
         wget \
         zip \
         zsh \
-        postgresql postgresql-contrib postgresql-server-dev-all gcc \
     && echo && echo "nodejs 설치" \
     && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt update -yq ${APT_OPTS} \
@@ -67,36 +55,29 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# 파이썬 라이브러리 설치
-RUN echo && echo "# pip 저장소 설정" \
-    && mkdir -p ~/.pip \
-    && { \
-		echo "[global]"; \
-		echo "timeout = 60"; \
-		echo "index-url = ${PIP_MIRROR}"; \
-		echo "trusted-host = ${PIP_TRUST_HOST}"; \
-	} > ~/.pip/pip.conf \
-    \
-    && echo && echo "# 기본 유틸 설치" \
-    && pip3 install --upgrade --no-cache-dir --force-reinstall \
-		cython \
-        cmake \
-        pip \
-        pytest-runner \
-        setuptools \
-        wheel \
-    && rm -rf /tmp/*
+ENV PATH /usr/local/conda/bin:$PATH
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh \
+    && /bin/bash /tmp/miniconda.sh -b -p /usr/local/conda \
+    && rm /tmp/miniconda.sh \
+    && ln -s /usr/local/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+    && echo ". /usr/local/conda/etc/profile.d/conda.sh" >> ~/.zshrc \
+    && echo "conda activate base" >> ~/.zshrc
+
+RUN conda update conda \
+    && rm $HOME/.pip/pip.conf
 
 RUN echo && echo "# mlflow 설치" \
     && pip3 install --upgrade --no-cache-dir \
         mlflow \
         sklearn \
         matplotlib \
-        psycopg2 \
         keras \
         konlpy \
         qgrid \
         six \
+    && pip3 install --upgrade --no-cache-dir \
+        psycopg2-binary \
     && pip3 install --upgrade --no-cache-dir \
         jupyter \
         jupyterlab \
