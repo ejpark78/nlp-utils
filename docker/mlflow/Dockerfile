@@ -47,7 +47,6 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
         git \
         gnupg \
         graphviz \
-        kubectl=1.15.12-00 \
         locales \
         lsb-release \
         openssh-client \
@@ -58,6 +57,7 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
         wget \
         zip \
         zsh \
+        postgresql postgresql-contrib postgresql-server-dev-all gcc \
     && echo && echo "nodejs 설치" \
     && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt update -yq ${APT_OPTS} \
@@ -87,19 +87,16 @@ RUN echo && echo "# pip 저장소 설정" \
         wheel \
     && rm -rf /tmp/*
 
-RUN echo && echo "# kubeflow 설치" \
+RUN echo && echo "# mlflow 설치" \
     && pip3 install --upgrade --no-cache-dir \
-        dill \
-        kfp \
-        kfserving \
-        kubeflow-fairing \
-        kubeflow-kale \
-        msrestazure \
+        mlflow \
+        sklearn \
+        matplotlib \
+        psycopg2 \
         keras \
         konlpy \
         qgrid \
         six \
-        cloudpickle==1.1.1 \
     && pip3 install --upgrade --no-cache-dir \
         jupyter \
         jupyterlab \
@@ -151,27 +148,7 @@ RUN echo && echo "# transformers 설치" \
 
 RUN echo && echo "oh my zsh 설치" \
     && curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash - \
-    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
-    && sed -i -r 's/^plugins=\(/plugins=\(kubectl kube-ps1 /' ${HOME}/.zshrc \
-    && echo "if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi" >> ${HOME}/.zshrc \
-    \
-    && echo && echo "kubernetes utils: k9s" \
-    && wget https://github.com/derailed/k9s/releases/download/v0.22.1/k9s_Linux_x86_64.tar.gz \
-    && tar xvfz k9s_Linux_x86_64.tar.gz -C /tmp \
-    && mv /tmp/k9s /usr/bin/ \
-    && rm k9s_Linux_x86_64.tar.gz /tmp/* \
-    \
-	&& echo && echo "kubernetes utils: krew" \
-    && curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" \
-    && tar zxvf krew.tar.gz -C /tmp \
-    && mv /tmp/krew-linux_amd64 /usr/bin/krew \
-    && rm krew.tar.gz /tmp/* \
-    && chmod +x /usr/bin/krew \
-    && krew install krew \
-    && export PATH="${HOME}/.krew/bin:$PATH" \
-    && kubectl krew update \
-    && kubectl krew install ctx \
-    && kubectl krew install ns
+    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc
 
 ARG MINIO_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
 ARG MINIO_ACCESS_KEY="minio"

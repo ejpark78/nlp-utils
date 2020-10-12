@@ -23,12 +23,14 @@ BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
 #BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
 
 IMAGE = $(DOCKER_REGISTRY)/utils
-#IMAGE_TAG = tf2.3.0-cpu
-IMAGE_TAG = tf2.3.0-gpu
+IMAGE_TAG = tf2.3.0-cpu
+#IMAGE_TAG = tf2.3.0-gpu
 
 # 도커 이미지명
 IMAGE_DEV = $(DOCKER_REGISTRY)/utils/dev:$(IMAGE_TAG)
 IMAGE_BASE = $(DOCKER_REGISTRY)/utils/base:$(IMAGE_TAG)
+IMAGE_MLFLOW = $(DOCKER_REGISTRY)/utils/mlflow:$(IMAGE_TAG)
+
 IMAGE_JUPYTER = $(DOCKER_REGISTRY)/utils/jupyter:$(IMAGE_TAG)
 IMAGE_KUBEFLOW_JUPYTER = kubeflow-registry.default.svc.cluster.local:30000/jupyter:$(IMAGE_TAG)
 
@@ -65,7 +67,7 @@ MIRROR += --build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)"
 MINIO_URI = "http://$(shell hostname -I | cut -f1 -d' '):9000"
 MINIO_ACCESS_KEY = "minio"
 MINIO_SECRET_KEY = "minio123"
-MINIO_BUCKET="cache"
+MINIO_BUCKET = "cache"
 MINIO_PATH = $(IMAGE_TAG)
 
 MINIO =
@@ -99,7 +101,8 @@ DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 .PHONY: *
 
 # type
-batch: build push
+all: start-minio utils batch stop-minio
+batch: start-minio base mlflow jupyter dev stop-minio
 utils: sentencepiece konlpy glove fastText khaiii mecab
 
 .ONESHELL:
@@ -174,22 +177,6 @@ mecab:
 		.
 
 .ONESHELL:
-kobert:
-	cd docker/kobert/
-	docker build $(MIRROR) $(MINIO) \
-		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
-		-t $(IMAGE_KOBERT) \
-		.
-
-.ONESHELL:
-kcbert:
-	cd docker/kcbert/
-	docker build $(MIRROR) $(MINIO) \
-		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
-		-t $(IMAGE_KCBERT) \
-		.
-
-.ONESHELL:
 base:
 	cd docker/base/
 	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) \
@@ -206,7 +193,7 @@ base-stage:
 		.
 
 .ONESHELL:
-jupyter:
+kubeflow:
 	cd docker/kubeflow/
 	docker build $(MIRROR) $(DOCKER_LABEL) \
 		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
@@ -214,6 +201,14 @@ jupyter:
 		.
 
 	docker tag $(IMAGE_JUPYTER) $(IMAGE_KUBEFLOW_JUPYTER)
+
+.ONESHELL:
+mlflow:
+	cd docker/mlflow/
+	docker build $(MIRROR) $(DOCKER_LABEL) \
+		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
+		-t $(IMAGE_MLFLOW) \
+		.
 
 .ONESHELL:
 dev:
