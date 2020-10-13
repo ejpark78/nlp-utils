@@ -1,141 +1,141 @@
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-vien
-  labels:
-    app: crawler-sealang
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "vien",
-        "--search_lang", "vi,en",
-        "--index", "crawler-dictionary-example-sealang-vien",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "vietnamese,english",
-        "--source_column", "vietnamese",
-        "--target_column", "english",
-        "--state_column", "state_sealang_vien",
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-iden
-  labels:
-    app: crawler-sealang
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "iden",
-        "--search_lang", "id,en",
-        "--index", "crawler-dictionary-example-sealang-iden",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "indonesia,english",
-        "--source_column", "indonesia",
-        "--target_column", "english",
-        "--state_column", "state_sealang_iden",
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: sealang-then
-  labels:
-    app: crawler-sealang
-spec:
-  restartPolicy: Always
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
-        limits:
-          cpu: 300m
-          memory: 400Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "module/dictionary/sealang.py",
-        "--sleep", "25",
-        "--lang", "then",
-        "--search_lang", "th,en",
-        "--index", "crawler-dictionary-example-sealang-then",
-        "--list_index", "crawler-dictionary-example-word-list",
-        "--columns", "thai,english",
-        "--source_column", "thai",
-        "--target_column", "english",
-        "--state_column", "state_sealang_then",
-      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: sealang-vien
+#  labels:
+#    app: crawler-sealang
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 200m
+#          memory: 300Mi
+#        limits:
+#          cpu: 300m
+#          memory: 400Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/dictionary/sealang.py",
+#        "--sleep", "25",
+#        "--lang", "vien",
+#        "--search_lang", "vi,en",
+#        "--index", "crawler-dictionary-example-sealang-vien",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "vietnamese,english",
+#        "--source_column", "vietnamese",
+#        "--target_column", "english",
+#        "--state_column", "state_sealang_vien",
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: sealang-iden
+#  labels:
+#    app: crawler-sealang
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 200m
+#          memory: 300Mi
+#        limits:
+#          cpu: 300m
+#          memory: 400Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/dictionary/sealang.py",
+#        "--sleep", "25",
+#        "--lang", "iden",
+#        "--search_lang", "id,en",
+#        "--index", "crawler-dictionary-example-sealang-iden",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "indonesia,english",
+#        "--source_column", "indonesia",
+#        "--target_column", "english",
+#        "--state_column", "state_sealang_iden",
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: sealang-then
+#  labels:
+#    app: crawler-sealang
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 200m
+#          memory: 300Mi
+#        limits:
+#          cpu: 300m
+#          memory: 400Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/dictionary/sealang.py",
+#        "--sleep", "25",
+#        "--lang", "then",
+#        "--search_lang", "th,en",
+#        "--index", "crawler-dictionary-example-sealang-then",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "thai,english",
+#        "--source_column", "thai",
+#        "--target_column", "english",
+#        "--state_column", "state_sealang_then",
+#      ]

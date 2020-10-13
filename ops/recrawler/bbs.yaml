@@ -1,83 +1,83 @@
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: recrawler-lineage2m
-  labels:
-    app: recrawler-bbs
-spec:
-  restartPolicy: Never
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "batch.py",
-        "--category", "bbs",
-        "--job_id", "lineage2m",
-        "--page_range", "1~500",
-        "--page_step", "1"
-      ]
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: recrawler-lineagem
-  labels:
-    app: recrawler-bbs
-spec:
-  restartPolicy: Never
-  hostAliases:
-    - ip: "172.20.93.112"
-      hostnames:
-        - "corpus.ncsoft.com"
-  imagePullSecrets:
-    - name: registry
-  containers:
-    - name: default
-      image: registry.nlp-utils/crawler:latest
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 200m
-          memory: 200Mi
-      env:
-        - name: ELASTIC_SEARCH_INDEX
-          value: $(INDEX_SPORTS)
-        - name: ELASTIC_SEARCH_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: elasticsearch-auth
-              key: http_auth
-      args: [
-        "python3", "batch.py",
-        "--category", "bbs",
-        "--job_id", "lineagem",
-        "--page_range", "1~9000000",
-        "--page_step", "1"
-      ]
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: recrawler-lineage2m
+#  labels:
+#    app: recrawler-bbs
+#spec:
+#  restartPolicy: Never
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "batch.py",
+#        "--category", "bbs",
+#        "--job_id", "lineage2m",
+#        "--page_range", "1~500",
+#        "--page_step", "1"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: recrawler-lineagem
+#  labels:
+#    app: recrawler-bbs
+#spec:
+#  restartPolicy: Never
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "batch.py",
+#        "--category", "bbs",
+#        "--job_id", "lineagem",
+#        "--page_range", "1~9000000",
+#        "--page_step", "1"
+#      ]

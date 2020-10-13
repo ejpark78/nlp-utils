@@ -42,7 +42,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "economy",
-          "--date_range", "2010-01-01~2019-12-08"
+          "--date_range", "2010-01-01~2018-11-15"
       ]
 
 ---
@@ -89,7 +89,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "international",
-          "--date_range", "2010-01-01~2018-12-14"
+          "--date_range", "2010-01-01~2016-02-10"
       ]
 
 ---
@@ -136,7 +136,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "it",
-          "--date_range", "2010-01-01~2018-12-12"
+          "--date_range", "2010-01-01~2010-01-04"
       ]
 
 ---
@@ -183,7 +183,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "culture",
-          "--date_range", "2010-01-01~2018-11-30"
+          "--date_range", "2010-01-01~2014-09-03"
       ]
 
 ---
@@ -230,7 +230,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "opinion",
-          "--date_range", "2010-01-01~2018-12-19"
+          "--date_range", "2010-01-01~2010-01-04"
       ]
 
 ---
@@ -277,7 +277,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "politics",
-          "--date_range", "2010-01-01~2019-05-20"
+          "--date_range", "2010-01-01~2018-09-12"
       ]
 
 ---
@@ -324,7 +324,7 @@ spec:
           "--skip_post_process",
           "--category", "daum",
           "--job_id", "society",
-          "--date_range", "2010-01-01~2019-11-11"
+          "--date_range", "2010-01-01~2016-01-27"
       ]
 
 ---
@@ -371,5 +371,5 @@ spec:
           "--update_category_only",
           "--category", "daum",
           "--job_id", "sports",
-          "--date_range", "2010-01-01~2014-05-01"
+          "--date_range", "2010-01-01~2020-01-01"
       ]
