@@ -400,8 +400,8 @@ class WebNewsCrawler(CrawlerBase):
                     elastic_utils=elastic_utils,
                 )
 
-            if 'check_id' not in url_info or url_info['check_id'] is False:
-                is_skip = False
+                if 'check_id' not in url_info or url_info['check_id'] is False:
+                    is_skip = False
 
             if is_skip is True:
                 self.logger.log(msg={

@@ -14,21 +14,25 @@
         {
           "url_frame": "https://news.nate.com/ent/subsection?mid=e1300&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "연예/영화"
         },
         {
           "url_frame": "https://news.nate.com/ent/subsection?mid=e1100&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "연예/연예가 화제"
         },
         {
           "url_frame": "https://news.nate.com/ent/subsection?mid=e1200&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "연예/방송가요"
         },
         {
           "url_frame": "https://news.nate.com/ent/subsection?mid=e1400&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "연예/해외연예"
         }
       ],

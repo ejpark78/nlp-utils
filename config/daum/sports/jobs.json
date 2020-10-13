@@ -16,6 +16,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/야구",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -29,6 +30,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외야구",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -42,6 +44,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/게임",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -55,6 +58,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/축구",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -68,6 +72,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외축구",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -81,6 +86,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/골프",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -94,6 +100,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/농구&배구",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },
@@ -107,6 +114,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/일반",
+          "check_id": true,
           "headers": {
             "Content-Type": "application/json"
           },

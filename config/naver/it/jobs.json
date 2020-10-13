@@ -14,41 +14,49 @@
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/모바일"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=226&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/인터넷/SNS"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=227&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/통신/뉴미디어"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=230&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/IT 일반"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=732&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/보안/해킹"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=283&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/컴퓨터"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=229&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/게임/리뷰"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=228&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/과학 일반"
         }
       ],
@@ -59,45 +67,6 @@
         }
       },
       "post_process": [
-        {
-          "name": "RabbitMQ 메세지 전송",
-          "module": "rabbit_mq",
-          "exchange": {
-            "type": "topic",
-            "name": "corpus_pipeline"
-          },
-          "host": {
-            "name": "naver-mq.crawler.svc.cluster.local",
-            "port": 5672,
-            "user_name": "user",
-            "user_password": "nlplab!"
-          },
-          "payload": {
-            "elastic": {
-              "host": "https://corpus.ncsoft.com:9200",
-              "index": "corpus_process-naver-it",
-              "http_auth": "crawler:crawler2019",
-              "split_index": true
-            },
-            "doc_type": "web_news",
-            "module": [
-              {
-                "name": "nlu_wrapper",
-                "option": {
-                  "domain": "economy",
-                  "style": "literary",
-                  "module": [
-                    "SBD_crf",
-                    "POS",
-                    "NER"
-                  ]
-                },
-                "column": "content",
-                "result": "nlu_wrapper"
-              }
-            ]
-          }
-        }
       ]
     }
   ]

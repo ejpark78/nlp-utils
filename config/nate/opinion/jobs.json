@@ -14,11 +14,13 @@
         {
           "url_frame": "https://news.nate.com/columnList?mid=n0702&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사설/사설"
         },
         {
           "url_frame": "https://news.nate.com/columnList?mid=n0704&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사설/칼럼"
         }
       ],

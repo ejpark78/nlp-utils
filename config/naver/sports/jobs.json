@@ -16,6 +16,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/야구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -29,6 +30,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외야구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -42,6 +44,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/게임",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -55,6 +58,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/축구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -68,6 +72,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/해외축구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -81,6 +86,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/농구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -94,6 +100,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/배구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -107,6 +114,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/골프",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -120,6 +128,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/축구",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -133,6 +142,7 @@
           "parser": "json",
           "date_format": "%Y%m%d",
           "category": "스포츠/스포츠-일반",
+          "check_id": true,
           "trace": "list",
           "headers": {
             "Content-Type": "application/json"
@@ -149,45 +159,6 @@
         }
       },
       "post_process": [
-        {
-          "name": "RabbitMQ 메세지 전송",
-          "module": "rabbit_mq",
-          "exchange": {
-            "type": "topic",
-            "name": "corpus_pipeline"
-          },
-          "host": {
-            "name": "naver-mq.crawler.svc.cluster.local",
-            "port": 5672,
-            "user_name": "user",
-            "user_password": "nlplab!"
-          },
-          "payload": {
-            "elastic": {
-              "host": "https://corpus.ncsoft.com:9200",
-              "index": "corpus_process-naver-sports",
-              "http_auth": "crawler:crawler2019",
-              "split_index": true
-            },
-            "doc_type": "web_news",
-            "module": [
-              {
-                "name": "nlu_wrapper",
-                "option": {
-                  "domain": "baseball",
-                  "style": "literary",
-                  "module": [
-                    "SBD_crf",
-                    "POS",
-                    "NER"
-                  ]
-                },
-                "column": "content",
-                "result": "nlu_wrapper"
-              }
-            ]
-          }
-        }
       ]
     }
   ]

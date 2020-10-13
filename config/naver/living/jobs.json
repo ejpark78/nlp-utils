@@ -14,56 +14,67 @@
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=241&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/건강정보"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=239&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/자동차시승기"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=240&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/도로교통"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=237&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/여행/레저"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=238&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/음식맛집"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=376&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/패션뷰티"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=242&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/공연전시"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=243&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/책"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=244&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/종교"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=248&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/날씨"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=245&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "생활/일반"
         }
       ],
@@ -74,45 +85,6 @@
         }
       },
       "post_process": [
-        {
-          "name": "RabbitMQ 메세지 전송",
-          "module": "rabbit_mq",
-          "exchange": {
-            "type": "topic",
-            "name": "corpus_pipeline"
-          },
-          "host": {
-            "name": "naver-mq.crawler.svc.cluster.local",
-            "port": 5672,
-            "user_name": "user",
-            "user_password": "nlplab!"
-          },
-          "payload": {
-            "elastic": {
-              "host": "https://corpus.ncsoft.com:9200",
-              "index": "corpus_process-naver-living",
-              "http_auth": "crawler:crawler2019",
-              "split_index": true
-            },
-            "doc_type": "web_news",
-            "module": [
-              {
-                "name": "nlu_wrapper",
-                "option": {
-                  "domain": "economy",
-                  "style": "literary",
-                  "module": [
-                    "SBD_crf",
-                    "POS",
-                    "NER"
-                  ]
-                },
-                "column": "content",
-                "result": "nlu_wrapper"
-              }
-            ]
-          }
-        }
       ]
     }
   ]

@@ -14,26 +14,31 @@
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=231&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "세계/아시아호주"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=232&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "세계/미국중남미"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=233&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "세계/유럽"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=234&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "세계/중동아프리카"
         },
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=104&sid2=322&listType=title&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "세계/일반"
         }
       ],
@@ -44,45 +49,6 @@
         }
       },
       "post_process": [
-        {
-          "name": "RabbitMQ 메세지 전송",
-          "module": "rabbit_mq",
-          "exchange": {
-            "type": "topic",
-            "name": "corpus_pipeline"
-          },
-          "host": {
-            "name": "naver-mq.crawler.svc.cluster.local",
-            "port": 5672,
-            "user_name": "user",
-            "user_password": "nlplab!"
-          },
-          "payload": {
-            "elastic": {
-              "host": "https://corpus.ncsoft.com:9200",
-              "index": "corpus_process-naver-international",
-              "http_auth": "crawler:crawler2019",
-              "split_index": true
-            },
-            "doc_type": "web_news",
-            "module": [
-              {
-                "name": "nlu_wrapper",
-                "option": {
-                  "domain": "economy",
-                  "style": "literary",
-                  "module": [
-                    "SBD_crf",
-                    "POS",
-                    "NER"
-                  ]
-                },
-                "column": "content",
-                "result": "nlu_wrapper"
-              }
-            ]
-          }
-        }
       ]
     }
   ]

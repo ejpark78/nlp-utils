@@ -9,6 +9,7 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-society",
       "split_index": true,
+      "check_id": true,
       "sleep": 10,
       "list": [
         {

@@ -14,31 +14,37 @@
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/청와대"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/국회/정당"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/외교/국방"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/북한"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/행정"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "사회/정치 일반"
         }
       ],

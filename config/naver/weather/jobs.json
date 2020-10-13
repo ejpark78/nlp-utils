@@ -14,6 +14,7 @@
         {
           "url_frame": "https://weather.naver.com/news/wetrNewsList.nhn?ymd={date}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "날씨"
         }
       ],

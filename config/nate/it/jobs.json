@@ -14,31 +14,37 @@
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0602&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/과학"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0603&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/디지털"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0604&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/컴퓨터/인터넷"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0605&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/뉴미디어/통신"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0606&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/게임"
         },
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0607&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "IT/IT/과학 일반"
         }
       ],

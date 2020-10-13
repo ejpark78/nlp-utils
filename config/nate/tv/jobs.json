@@ -14,16 +14,19 @@
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0903&cp=sv&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/SBS"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0908&cp=jt&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/JTBC"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0904&cp=yn&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/YTN"
         },
         {
@@ -34,31 +37,37 @@
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0905&cp=ny&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/연합뉴스TV"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0914&cp=ob&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/OBS TV"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0912&cp=cn&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/SBSCNBC"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0913&cp=ht&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/한국경제TV"
         },
         {
           "url_frame": "https://news.nate.com/recentTV?mid=n0915&cp=kv&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/KTV국민방송"
         },
         {
           "url_frame": "https://news.nate.com/liveNews?mid=n0910&type=t&date={date}&page={page}",
           "date_format": "%Y%m%d",
+          "check_id": true,
           "category": "TV/실시간 중계"
         }
       ],
