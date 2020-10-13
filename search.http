@@ -1,6 +1,6 @@
 ###
 
-GET {{host}}/{{index}}/_search
+GET {{host}}/crawler-naver-economy-2019/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json

@@ -33,7 +33,7 @@ Accept: application/text
 
 ### nodes
 
-GET {{host}}/_cat/nodes?v
+GET {{host}}/_cat/nodes?v&s=name
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
 
