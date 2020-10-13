@@ -43,8 +43,6 @@ class UdemyCrawler(object):
 
         self.url_info = job_info['url_info']
 
-        self.update_token(job_info['token'])
-
         category_name = job_info['category_name']
         self.course_list = job_info[category_name]
 
@@ -67,7 +65,11 @@ class UdemyCrawler(object):
                 allow_redirects=True,
                 verify=False,
                 timeout=60
-            ).json()
+            )
+
+            print(resp.text)
+
+            resp = resp.json()
 
             self.logger.info(msg={
                 'page': page,
@@ -108,6 +110,9 @@ class UdemyCrawler(object):
                 verify=False,
                 timeout=60
             )
+            if resp.status_code == 403:
+                return None
+
             lecture_list = resp.json()
 
             self.save_cache(cache=lecture_list, path=course_path, name='course')
@@ -416,14 +421,15 @@ Icon=text-html
 
         return
 
-    def update_token(self, token):
+    def update_token(self, token, url):
         """토큰 정보를 갱신한다."""
         self.headers = {
             'authorization': 'Bearer {token}'.format(token=token),
-            'x-udemy-authorization': 'Bearer {token}'.format(token=token),
+            'X-Udemy-Authorization': 'Bearer {token}'.format(token=token),
+            'Referer': url,
             'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/84.0.4147.89 Safari/537.36'
+                          'Chrome/86.0.4240.75 Safari/537.36'
         }
         return
 
@@ -490,6 +496,11 @@ Icon=text-html
                 'MESSAGE': '코스 목록 조회'
             })
 
+            self.update_token(
+                token=self.cfg.job_info['token'],
+                url='https://ncsoft.udemy.com/home/my-courses/learning/'
+            )
+
             self.get_my_course_list()
 
         if args.trace_course_list is True:
@@ -515,6 +526,8 @@ Icon=text-html
                     continue
 
                 path = self.get_course(course)
+                if path is None:
+                    continue
 
                 rename(path, new_path)
 

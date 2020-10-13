@@ -14,7 +14,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
