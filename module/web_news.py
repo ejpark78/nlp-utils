@@ -404,6 +404,12 @@ class WebNewsCrawler(CrawlerBase):
                 is_skip = False
 
             if is_skip is True:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': '크롤링된 뉴스가 있음',
+                    'doc_id': doc_id,
+                    'url': item['url'],
+                })
                 continue
 
             # 기사 본문 조회
