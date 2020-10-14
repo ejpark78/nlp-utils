@@ -232,7 +232,7 @@ run-dev:
 		--name embedding_dev \
 		--entrypoint /bin/bash \
 		-p 8888:8888 \
-		-v $(shell pwd):/home/user/embedding \
+		-v $(shell pwd):/home/jovyan \
 		$(IMAGE_DEV)
 
 .ONESHELL:

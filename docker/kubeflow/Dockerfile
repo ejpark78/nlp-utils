@@ -124,9 +124,7 @@ RUN echo && echo "# transformers 설치" \
         transformers==2.11.0 \
     && rm -rf /tmp/*
 
-RUN echo && echo "oh my zsh 설치" \
-    && curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash - \
-    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
+RUN echo && echo "oh my zsh 설정" \
     && sed -i -r 's/^plugins=\(/plugins=\(kubectl kube-ps1 /' ${HOME}/.zshrc \
     && echo "if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi" >> ${HOME}/.zshrc \
     \

@@ -102,10 +102,6 @@ RUN echo && echo "# transformers 설치" \
         transformers==2.11.0 \
     && rm -rf /tmp/*
 
-RUN echo && echo "oh my zsh 설치" \
-    && curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash - \
-    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc
-
 ARG MINIO_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
 ARG MINIO_ACCESS_KEY="minio"
 ARG MINIO_SECRET_KEY="minio123"

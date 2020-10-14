@@ -82,7 +82,9 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
     && rm -rf /usr/share/fonts/truetype/dejavu \
     && fc-cache -f -v \
     && fmtutil-sys --all \
-    \
+    && echo && echo "# oh my zsh 설치" \
+    && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
+    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
