@@ -100,31 +100,6 @@ RUN echo && echo "# kubeflow 설치" \
         qgrid \
         six \
         cloudpickle==1.1.1 \
-    && pip3 install --upgrade --no-cache-dir \
-        jupyter \
-        jupyterlab \
-        jupyterthemes \
-		autopep8 \
-		bash_kernel \
-        sshkernel \
-	\
-    && echo && echo "jupyter kernel 설치" \
-    && python3 -m sshkernel install \
-    && python3 -m bash_kernel.install \
-	\
-    && echo && echo "nbextension enable 설정" \
-    && jupyter labextension install qgrid \
-	&& jupyter labextension install ipyvolume \
-    && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
-	\
-	&& echo && echo "nbextension enable 설정" \
-	&& jupyter nbextension enable --py --sys-prefix qgrid \
-    && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
-	\
-    && jupyter serverextension enable --py jupyterlab --sys-prefix \
-	\
-	&& echo && echo "jupyter notebook 테마 설정" \
-	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
     && rm -rf /tmp/*
 
 RUN echo && echo "# DL 설치" \
@@ -189,14 +164,8 @@ RUN echo && echo "minio alias" \
 
 WORKDIR /home/jovyan
 
-ARG NB_USER=jovyan
-
-EXPOSE 8888
-
-ENV NB_USER $NB_USER
-ENV NB_UID=1000
-ENV NB_PREFIX /
-#ENV HOME /home/$NB_USER
+ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/
+EXPOSE ${PORT}
 
 CMD ["bash", "-c", "\
     /usr/bin/minio_alias.sh ;\

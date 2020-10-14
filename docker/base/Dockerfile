@@ -87,7 +87,7 @@ RUN echo && echo "# BASE_IMAGE: ${BASE_IMAGE}" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo && echo "nodejs 설치" \
-    && curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
+    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         nodejs \
@@ -126,6 +126,32 @@ RUN echo && echo "# pip 저장소 설정" \
         pytest-runner \
         setuptools \
         wheel \
+    && echo && echo "# jupyter 설치" \
+    && pip3 install --upgrade --no-cache-dir \
+		autopep8 \
+		bash_kernel \
+        jupyter \
+        jupyterlab \
+        jupyterthemes \
+        qgrid \
+        sshkernel \
+    && echo && echo "jupyter kernel 설치" \
+    && python3 -m sshkernel install \
+    && python3 -m bash_kernel.install \
+	\
+    && echo && echo "nbextension enable 설정" \
+    && jupyter labextension install qgrid \
+	&& jupyter labextension install ipyvolume \
+    && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
+	\
+	&& echo && echo "nbextension enable 설정" \
+	&& jupyter nbextension enable --py --sys-prefix qgrid \
+    && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
+	\
+    && jupyter serverextension enable --py jupyterlab --sys-prefix \
+	\
+	&& echo && echo "jupyter notebook 테마 설정" \
+	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
     && rm -rf /tmp/*
 
 ARG MINIO_URI=http://172.19.168.48:9000
@@ -205,6 +231,26 @@ RUN echo && echo "# kakao/khaiii 설치" \
     && pip3 install . \
     \
     && rm -rf ${BUILD_HOME}/khaiii ${HOME}/.hunter ${BUILD_HOME}/khaiii.tar.gz /tmp/*
+
+WORKDIR /home/jovyan
+
+ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/
+EXPOSE ${PORT}
+
+CMD ["bash", "-c", "\
+    jupyter lab \
+        --no-browser \
+        --ip=0.0.0.0 \
+        --port=${PORT} \
+        --allow-root \
+        --LabApp.token='' \
+        --LabApp.password='' \
+        --LabApp.allow_origin='*' \
+        --LabApp.base_url=${NB_PREFIX} \
+        --notebook-dir=/home/jovyan \
+        --NotebookApp.iopub_data_rate_limit=10000000 \
+        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\"\
+"]
 
 ARG docker_image
 ARG docker_tag
