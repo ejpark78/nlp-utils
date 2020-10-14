@@ -3,9 +3,24 @@ FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
-ARG UID=1000
-ARG GID=1000
-ARG USER=crawler
+ENV APP_HOME=/app
+
+ADD app.tar.gz ${APP_HOME}
+
+ADD ssl/*.crt /usr/share/ca-certificates/
+
+RUN echo "" >> /etc/ca-certificates.conf \
+    && echo "SSLVACERT.crt" >> /etc/ca-certificates.conf \
+    && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
+    && update-ca-certificates
+
+RUN echo && echo "# pip 저장소 설정" \
+    && pip3 install --no-cache-dir -r ${APP_HOME}/requirements.txt
+
+WORKDIR ${APP_HOME}
+
+ENV CURL_CA_BUNDLE=""
+ENV PYTHONPATH=${APP_HOME}
 
 ARG docker_image
 ARG docker_tag
@@ -25,35 +40,3 @@ ENV git_tag=${git_tag}
 ENV git_commit_id=${git_commit_id}
 ENV git_commit_count=${git_commit_count}
 
-RUN echo "사용자 생성: ${USER}..." \
-    && mkdir -p ${APP_HOME} \
-	&& echo "사용자 생성..." \
-	&& addgroup --gid ${GID} ${USER} \
-	&& useradd --no-create-home --uid ${UID} --gid ${GID} -s /bin/bash ${USER} \
-	&& chown -R ${UID}:${GID} ${APP_HOME} \
-	&& usermod -G sudo ${USER} \
-	&& echo "${USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-ADD app.tar.gz ${APP_HOME}
-
-ADD ssl/*.crt /usr/share/ca-certificates/
-
-RUN echo "" >> /etc/ca-certificates.conf \
-    && echo "SSLVACERT.crt" >> /etc/ca-certificates.conf \
-    && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
-    && update-ca-certificates
-
-RUN echo && echo "# pip 저장소 설정" \
-    && mkdir -p ~/.pip \
-    && { \
-		echo "[global]"; \
-		echo "timeout = 60"; \
-		echo "index-url = ${PIP_MIRROR}"; \
-		echo "trusted-host = ${PIP_TRUST_HOST}"; \
-	} > ~/.pip/pip.conf \
-    && pip3 install --no-cache-dir -r ${APP_HOME}/requirements.txt
-
-WORKDIR ${APP_HOME}
-
-ENV CURL_CA_BUNDLE=""
-ENV PYTHONPATH=${APP_HOME}

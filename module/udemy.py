@@ -49,7 +49,15 @@ class UdemyCrawler(object):
         self.sleep = job_info['sleep']
         self.data_path = job_info['data_path']
 
+        self.session = requests.Session()
+        self.session.verify = False
+
         self.logger = Logger()
+
+    def login(self):
+        """ """
+        # login_url = 'https://auth2.glosbe.com/login'
+        # return self.session.post(login_url, data=self.login_info, timeout=120)
 
     def get_my_course_list(self):
         """강좌 목록을 다운로드 받는다."""

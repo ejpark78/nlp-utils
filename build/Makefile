@@ -60,6 +60,8 @@ build:
 		--exclude=status \
 		--exclude=notebook \
 		--exclude=cache \
+		--exclude=ops \
+		--exclude=module/browsermob-proxy/ \
 		.
 
 	cd build/
