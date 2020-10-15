@@ -105,7 +105,11 @@ all: start-minio utils batch stop-minio
 batch: start-minio base mlflow jupyter dev stop-minio
 utils: sentencepiece konlpy glove fastText khaiii mecab
 
-.ONESHELL:
+inst-minio-client:
+	wget https://dl.min.io/client/mc/release/linux-amd64/mc
+	chmod +x mc 
+	sudo mv mc /usr/bin/ 
+
 start-minio:
 	docker run \
 		-d \
@@ -119,12 +123,10 @@ start-minio:
 	mc alias set $(MINIO_BUCKET) ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
 	mc mb $(MINIO_BUCKET)/$(MINIO_PATH)
 
-.ONESHELL:
 stop-minio:
 	docker stop minio
 	docker rm minio
 
-.ONESHELL:
 clean-minio:
 	sudo rm -rf $(shell pwd)/.cache
 
