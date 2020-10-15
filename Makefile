@@ -14,7 +14,7 @@ BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 # 도커 이미지
 DOCKER_REGISTRY = registry.nlp-utils
 
-IMAGE_TAG = 2.3.0-cpu
+IMAGE_TAG = 2.3.0
 #IMAGE_TAG = 2.3.0-gpu
 #IMAGE_TAG = 1.12.0-py3
 #IMAGE_TAG = 1.15.2-gpu-py3
@@ -40,13 +40,6 @@ IMAGE_KHAIII = $(DOCKER_REGISTRY)/utils/khaiii:$(IMAGE_TAG)
 IMAGE_KOBERT = $(DOCKER_REGISTRY)/utils/kobert:$(IMAGE_TAG)
 IMAGE_KCBERT = $(DOCKER_REGISTRY)/utils/kcbert:$(IMAGE_TAG)
 IMAGE_FASTTEXT = $(DOCKER_REGISTRY)/utils/fast_text:$(IMAGE_TAG)
-
-BUILD_IMAGE =
-BUILD_IMAGE += --build-arg "GLOVE=$(IMAGE_GLOVE)"
-BUILD_IMAGE += --build-arg "MECAB=$(IMAGE_MECAB)"
-BUILD_IMAGE += --build-arg "KHAIII=$(IMAGE_KHAIII)"
-BUILD_IMAGE += --build-arg "FAST_TEXT=$(IMAGE_FASTTEXT)"
-BUILD_IMAGE += --build-arg "SENTENCE_PIECE=$(IMAGE_SPE)"
 
 # APT, PIP 미러
 APT_CODE_NAME = bionic
@@ -180,14 +173,6 @@ mecab:
 base:
 	cd docker/base/
 	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) \
-		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
-		-t $(IMAGE_BASE) \
-		.
-
-.ONESHELL:
-base-stage:
-	cd docker/base-stage/
-	docker build $(MIRROR) $(MINIO) $(DOCKER_LABEL) $(BUILD_IMAGE) \
 		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
 		-t $(IMAGE_BASE) \
 		.
