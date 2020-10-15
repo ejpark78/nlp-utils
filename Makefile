@@ -14,17 +14,15 @@ BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 # 도커 이미지
 DOCKER_REGISTRY = registry.nlp-utils
 
-BASE_IMAGE = tensorflow/tensorflow:2.3.0-gpu
-#BASE_IMAGE = tensorflow/tensorflow:2.3.0
+IMAGE_TAG = 2.3.0-cpu
+#IMAGE_TAG = 2.3.0-gpu
+#IMAGE_TAG = 1.12.0-py3
+#IMAGE_TAG = 1.15.2-gpu-py3
+#IMAGE_TAG = 1.15.2-py3
 
-#BASE_IMAGE = tensorflow/tensorflow:2.0.0-py3
-#BASE_IMAGE = tensorflow/tensorflow:1.12.0-py3
-#BASE_IMAGE = tensorflow/tensorflow:1.15.2-gpu-py3
-#BASE_IMAGE = tensorflow/tensorflow:1.15.2-py3
+BASE_IMAGE = tensorflow/tensorflow:$(IMAGE_TAG)
 
 IMAGE = $(DOCKER_REGISTRY)/utils
-IMAGE_TAG = tf2.3.0-cpu
-#IMAGE_TAG = tf2.3.0-gpu
 
 # 도커 이미지명
 IMAGE_DEV = $(DOCKER_REGISTRY)/utils/dev:$(IMAGE_TAG)
