@@ -43,6 +43,8 @@ class WebNewsCrawler(CrawlerBase):
         self.job_id = args.job_id
         self.job_category = args.category
 
+        self.job_sub_category = args.sub_category.split(',') if args.sub_category != '' else []
+
         self.column = args.column
 
         self.trace_depth = 0
@@ -127,6 +129,14 @@ class WebNewsCrawler(CrawlerBase):
         # url 목록 반복
         for url in job['list']:
             if url['url_frame'][0] == '#':
+                continue
+
+            if len(self.job_sub_category) > 0 and url['category'] not in self.job_sub_category:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': 'skip 카테고리',
+                    'category': url['category'],
+                })
                 continue
 
             if url['url_frame'].find('date') < 0:

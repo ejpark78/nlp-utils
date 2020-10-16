@@ -37,9 +37,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "culture"
+        "--job_id", "culture",
+        "--skip_check_history"
       ]
 
 ---
@@ -81,9 +82,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "economy"
+        "--job_id", "economy",
+        "--skip_check_history"
       ]
 
 ---
@@ -125,9 +127,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "international"
+        "--job_id", "international",
+        "--skip_check_history"
       ]
 
 ---
@@ -169,9 +172,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "it"
+        "--job_id", "it",
+        "--skip_check_history"
       ]
 
 ---
@@ -213,9 +217,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "opinion"
+        "--job_id", "opinion",
+        "--skip_check_history"
       ]
 
 ---
@@ -257,9 +262,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "politics"
+        "--job_id", "politics",
+        "--skip_check_history"
       ]
 
 ---
@@ -301,9 +307,10 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "society"
+        "--job_id", "society",
+        "--skip_check_history"
       ]
 
 ---
@@ -345,7 +352,8 @@ spec:
             name: daum
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "daum",
-        "--job_id", "sports"
+        "--job_id", "sports",
+        "--skip_check_history"
       ]

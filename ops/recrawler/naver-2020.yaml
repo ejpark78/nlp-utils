@@ -40,7 +40,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "economy",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -85,7 +86,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "international",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -130,7 +132,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "it",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -175,7 +178,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "living",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -220,7 +224,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "opinion",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -265,7 +270,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "politics",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -310,7 +316,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "society",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -355,7 +362,8 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "sports",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]
 
 ---
@@ -400,5 +408,6 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "tv",
-        "--date_range", "2020-01-01~2020-10-13"
+        "--date_range", "2020-01-01~2020-10-16",
+        "--skip_check_history"
       ]

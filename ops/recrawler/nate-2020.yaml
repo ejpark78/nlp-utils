@@ -38,9 +38,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "economy"
+        "--job_id", "economy",
+        "--skip_check_history"
       ]
 
 ---
@@ -82,9 +83,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "entertainment"
+        "--job_id", "entertainment",
+        "--skip_check_history"
       ]
 
 ---
@@ -126,9 +128,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "international"
+        "--job_id", "international",
+        "--skip_check_history"
       ]
 
 ---
@@ -170,9 +173,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "it"
+        "--job_id", "it",
+        "--skip_check_history"
       ]
 
 ---
@@ -214,9 +218,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "politics"
+        "--job_id", "politics",
+        "--skip_check_history"
       ]
 
 ---
@@ -258,9 +263,10 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "society"
+        "--job_id", "society",
+        "--skip_check_history"
       ]
 
 ---
@@ -302,7 +308,8 @@ spec:
             name: nate
       args: [
         "python3", "batch.py",
-        "--date_range", "2020-01-01~2020-10-13",
+        "--date_range", "2020-01-01~2020-10-16",
         "--category", "nate",
-        "--job_id", "sports"
+        "--job_id", "sports",
+        "--skip_check_history"
       ]

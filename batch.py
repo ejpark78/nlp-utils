@@ -50,6 +50,8 @@ def init_arguments():
     parser.add_argument('--category', default='', help='작업 카테고리')
     parser.add_argument('--job_id', default='', help='작업 아이디')
 
+    parser.add_argument('--sub_category', default='', help='하위 카테고리')
+
     # 데이터 덤프
     parser.add_argument('--dump', action='store_true', default=False, help='크롤링 결과 덤프')
 

@@ -40,5 +40,6 @@ spec:
         "--skip_post_process",
         "--category", "naver",
         "--job_id", "society",
-        "--date_range", "2019-01-01~2019-01-12"
+        "--date_range", "2019-01-01~2019-01-12",
+        "--skip_check_history"
       ]
