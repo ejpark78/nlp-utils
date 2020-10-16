@@ -53,6 +53,8 @@ class WebNewsCrawler(CrawlerBase):
         self.update_date = False
         self.update_category_only = args.update_category_only
 
+        self.skip_check_history = args.skip_check_history
+
         if args.date_range is None:
             self.update_date = True
             self.update_date_range()
@@ -898,6 +900,9 @@ class WebNewsCrawler(CrawlerBase):
             return None
 
         if self.update_category_only is True:
+            return trace_list
+
+        if self.skip_check_history is True:
             return trace_list
 
         # trace_list 이력 조회

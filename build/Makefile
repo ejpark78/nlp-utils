@@ -119,3 +119,13 @@ check-ip:
 
 	@echo "Local IP: "
 	@hostname -I
+
+.ONESHELL:
+run:
+	docker run -d \
+		--hostname crawler_dev \
+		--name crawler_dev \
+		-e PORT=8888 \
+		-p 7777:8888 \
+		-v $(shell pwd):/home/jovyan \
+		$(BASE_IMAGE)

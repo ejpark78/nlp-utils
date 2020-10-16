@@ -82,6 +82,8 @@ def init_arguments():
 
     parser.add_argument('--skip_post_process', action='store_true', default=False, help='후처리 사용 여부')
 
+    parser.add_argument('--skip_check_history', action='store_true', default=False, help='히스토리 점검 여부')
+
     return parser.parse_args()
 
 

@@ -57,8 +57,11 @@ class GlosbeCrawler(object):
 
     def login(self):
         """ """
-        login_url = 'https://auth2.glosbe.com/login'
-        return self.session.post(login_url, data=self.login_info, timeout=120)
+        return self.session.post(
+            'https://auth2.glosbe.com/login',
+            data=self.login_info,
+            timeout=120
+        )
 
     def parse_word_list(self, soup):
         """ """
