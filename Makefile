@@ -37,8 +37,6 @@ IMAGE_MECAB = $(DOCKER_REGISTRY)/utils/mecab:$(IMAGE_TAG)
 IMAGE_GLOVE = $(DOCKER_REGISTRY)/utils/glove:$(IMAGE_TAG)
 IMAGE_KONLPY = $(DOCKER_REGISTRY)/utils/konlpy:$(IMAGE_TAG)
 IMAGE_KHAIII = $(DOCKER_REGISTRY)/utils/khaiii:$(IMAGE_TAG)
-IMAGE_KOBERT = $(DOCKER_REGISTRY)/utils/kobert:$(IMAGE_TAG)
-IMAGE_KCBERT = $(DOCKER_REGISTRY)/utils/kcbert:$(IMAGE_TAG)
 IMAGE_FASTTEXT = $(DOCKER_REGISTRY)/utils/fast_text:$(IMAGE_TAG)
 
 # APT, PIP 미러
@@ -92,8 +90,8 @@ DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 .PHONY: *
 
 # type
-all: start-minio utils batch stop-minio
-batch: start-minio base mlflow jupyter dev stop-minio
+all: start-minio mk-bucket utils batch stop-minio
+batch: base mlflow jupyter dev
 utils: sentencepiece konlpy glove fastText khaiii mecab
 
 inst-minio-client:
@@ -111,6 +109,8 @@ start-minio:
 		-e "MINIO_SECRET_KEY=$(MINIO_SECRET_KEY)" \
 		minio/minio server /data
 
+.ONESHELL:
+mk-bucket:
 	mc alias set $(MINIO_BUCKET) ${MINIO_URI} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}
 	mc mb $(MINIO_BUCKET)/$(MINIO_PATH)
 
@@ -219,6 +219,15 @@ run-dev:
 		-p 8888:8888 \
 		-v $(shell pwd):/home/jovyan \
 		$(IMAGE_DEV)
+
+.ONESHELL:
+clean-utils:
+	docker rmi $(IMAGE_SPE)
+	docker rmi $(IMAGE_MECAB)
+	docker rmi $(IMAGE_GLOVE)
+	docker rmi $(IMAGE_KONLPY)
+	docker rmi $(IMAGE_KHAIII)
+	docker rmi $(IMAGE_FASTTEXT)
 
 .ONESHELL:
 git-tag:
