@@ -14,7 +14,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -32,7 +32,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_ECONOMY)

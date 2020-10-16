@@ -14,7 +14,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -66,7 +66,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -118,7 +118,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -170,7 +170,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -222,7 +222,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -274,7 +274,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -326,7 +326,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -378,7 +378,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -430,7 +430,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:

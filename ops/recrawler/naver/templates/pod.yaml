@@ -1,0 +1,30 @@
+{{- range $jobIndex, $job := .Values.jobs }}
+{{- range $CategoryIndex, $subCategory := $job.subSategory }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ $job.name }}-{{ $CategoryIndex }}
+spec:
+  restartPolicy: {{ $.Values.restartPolicy }}
+  hostAliases:
+    {{- toYaml $.Values.hostAliases | nindent 2 }}
+  imagePullSecrets:
+  - name: {{ $.Values.imagePullSecrets }}
+  containers:
+  - name: default
+    resources:
+      {{- toYaml $.Values.resources | nindent 5 }}
+    image: {{ $.Values.image }}
+    envFrom:
+    - configMapRef:
+        name: {{ $job.configMapRef }}
+    env:
+      {{- toYaml $.Values.environmentVariables | nindent 4 }}
+      {{- toYaml $job.environmentVariables | nindent 4 }}
+    args:
+    {{- toYaml $job.args | nindent 4 }}
+    - --sub_category
+    - {{ $subCategory }}
+{{- end }}
+{{- end }}

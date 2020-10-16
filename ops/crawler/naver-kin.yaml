@@ -14,7 +14,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -32,7 +32,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               args: [
                 "python3", "batch.py",
                 "--category", "naver",
@@ -55,7 +54,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -73,7 +72,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               args: [
                 "python3", "batch.py",
                 "--category", "naver",
@@ -96,7 +94,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -114,7 +112,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               args: [
                 "python3", "batch.py",
                 "--category", "naver",
@@ -137,7 +134,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -155,7 +152,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               args: [
                 "python3", "batch.py",
                 "--category", "naver",

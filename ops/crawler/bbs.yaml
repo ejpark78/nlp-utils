@@ -14,7 +14,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -32,7 +32,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_MLBPARK_KBO)
@@ -67,7 +66,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -85,7 +84,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_MLBPARK_MLB)
@@ -120,7 +118,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -138,7 +136,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_MLBPARK_BULLPEN)
@@ -173,7 +170,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -191,7 +188,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_RULIWEB)
@@ -226,7 +222,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -244,7 +240,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_INVEN)
@@ -281,7 +276,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -299,7 +294,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_LINEAGEM)
@@ -336,7 +330,7 @@ spec:
     spec:
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           hostAliases:
             - ip: "172.20.93.112"
               hostnames:
@@ -354,7 +348,6 @@ spec:
                 limits:
                   cpu: 200m
                   memory: 200Mi
-              workingDir: /usr/local/app
               env:
                 - name: ELASTIC_SEARCH_INDEX
                   value: $(INDEX_LINEAGE2M)

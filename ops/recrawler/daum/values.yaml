@@ -1,10 +1,10 @@
 resources:
   requests:
     cpu: 100m
-    memory: 100Mi
+    memory: 128Mi
   limits:
     cpu: 200m
-    memory: 1024Mi
+    memory: 512Mi
 
 imagePullSecrets: registry
 
@@ -25,185 +25,205 @@ environmentVariables:
         key: http_auth
 
 jobs:
-  - name: naver-economy-2020
+  - name: daum-culture-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_ECONOMY)
-    configMapRef: naver
+        value: $(INDEX_CULTURE)
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
+      - "--job_id"
+      - "culture"
+      - "--date_range"
+      - "2020-01-01~2020-10-16"
+    subSategory:
+      - "문화/공연전시"
+      - "문화/책"
+      - "문화/뷰티패션"
+      - "문화/음식맛집"
+      - "문화/건강"
+      - "문화/가정육아"
+      - "문화/여행레저"
+      - "문화/생활정보"
+      - "문화/생활일반"
+      - "문화/종교"
+      - "문화/날씨"
+
+  - name: daum-economy-2020
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: daum
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "daum"
       - "--job_id"
       - "economy"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
-      - "경제/증권"
-      - "경제/금융"
       - "경제/부동산"
-      - "경제/산업/재계"
-      - "경제/글로벌 경제"
-      - "경제/경제 일반"
       - "경제/생활경제"
-      - "경제/중기/벤처"
+      - "경제/금융"
+      - "경제/기업산업"
+      - "경제/취업직장인"
+      - "경제/국제경제"
+      - "경제/자동차"
+      - "경제/경제일반"
+      - "경제/주식"
+      - "경제/시황분석"
+      - "경제/해외증시"
+      - "경제/채권선물"
+      - "경제/외환"
+      - "경제/주식일반"
 
-  - name: naver-international-2020
+  - name: daum-international-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_INTERNATIONAL)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "international"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
-      - "세계/아시아호주"
-      - "세계/미국중남미"
-      - "세계/유럽"
-      - "세계/중동아프리카"
-      - "세계/일반"
+      - "국제/일본"
+      - "국제/중국"
+      - "국제/아시아/대양주"
+      - "국제/미주/아메리카"
+      - "국제/유럽"
+      - "국제/중동/아프리카"
+      - "국제/영어뉴스"
+      - "국제/해외화제"
+      - "국제/국제일반"
 
-  - name: naver-it-2020
+  - name: daum-it-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_IT)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "it"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
-      - "IT/모바일"
-      - "IT/인터넷/SNS"
-      - "IT/통신/뉴미디어"
-      - "IT/IT 일반"
-      - "IT/보안/해킹"
-      - "IT/컴퓨터"
-      - "IT/게임/리뷰"
-      - "IT/과학 일반"
+      - "IT/IT기기"
+      - "IT/통신모바일"
+      - "IT/소프트웨어"
+      - "IT/인터넷"
+      - "IT/게임"
+      - "IT/IT일반"
 
-  - name: naver-living-2020
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_LIVING)
-    configMapRef: naver
-    args:
-      - "python3"
-      - "batch.py"
-      - "--skip_check_history"
-      - "--category"
-      - "naver"
-      - "--job_id"
-      - "living"
-      - "--date_range"
-      - "2020-01-01~2020-10-16"
-    subSategory:
-      - "생활/건강정보"
-      - "생활/자동차시승기"
-      - "생활/도로교통"
-      - "생활/여행/레저"
-      - "생활/음식맛집"
-      - "생활/패션뷰티"
-      - "생활/공연전시"
-      - "생활/책"
-      - "생활/종교"
-      - "생활/날씨"
-      - "생활/일반"
-
-  - name: naver-opinion-2020
+  - name: daum-opinion-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_OPINION)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "opinion"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
-      - "오피니언"
+      - "칼럼-칼럼"
+      - "칼럼-사설"
+      - "칼럼-여론"
+      - "칼럼-만평"
+      - "칼럼"
 
-  - name: naver-politics-2020
+  - name: daum-politics-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_POLITICS)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "politics"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
-      - "정치/청와대"
+      - "정치/행정지자체"
       - "정치/국회정당"
+      - "정치/외교국방"
       - "정치/북한"
-      - "정치/행정"
-      - "정치/국방외교"
       - "정치/정치일반"
+      - "정치/청와대"
 
-  - name: naver-society-2020
+  - name: daum-society-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_SOCIETY)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "society"
       - "--date_range"
       - "2020-01-01~2020-10-16"
     subSategory:
       - "사회/사건사고"
+      - "사회/충청"
       - "사회/교육"
-      - "사회/노동"
-      - "사회/언론"
       - "사회/환경"
-      - "사회/인권복지"
-      - "사회/식품의료"
-      - "사회/지역"
-      - "사회/인물"
+      - "사회/강원"
+      - "사회/경상"
+      - "사회/제주"
+      - "사회/전라"
+      - "사회/노동"
+      - "사회/미디어"
+      - "사회/수도권"
+      - "사회/전국"
+      - "사회/지역일반"
       - "사회/사회일반"
+      - "사회/인물"
+      - "사회/서울"
+      - "사회/복지"
+      - "사회/여성"
 
-  - name: naver-sports-2020
+  - name: daum-sports-2020
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_SPORTS)
-    configMapRef: naver
+    configMapRef: daum
     args:
       - "python3"
       - "batch.py"
       - "--skip_check_history"
       - "--category"
-      - "naver"
+      - "daum"
       - "--job_id"
       - "sports"
       - "--date_range"
@@ -214,44 +234,6 @@ jobs:
       - "스포츠/게임"
       - "스포츠/축구"
       - "스포츠/해외축구"
-      - "스포츠/농구"
-      - "스포츠/배구"
       - "스포츠/골프"
-      - "스포츠/축구"
-      - "스포츠/스포츠-일반"
-
-  - name: naver-tv-2020
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_TV)
-    configMapRef: naver
-    args:
-      - "python3"
-      - "batch.py"
-      - "--skip_check_history"
-      - "--category"
-      - "naver"
-      - "--job_id"
-      - "tv"
-      - "--date_range"
-      - "2020-01-01~2020-10-16"
-    subSategory:
-      - "TV"
-
-  - name: naver-weather-2020
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_WEATHER)
-    configMapRef: naver
-    args:
-      - "python3"
-      - "batch.py"
-      - "--skip_check_history"
-      - "--category"
-      - "naver"
-      - "--job_id"
-      - "weather"
-      - "--date_range"
-      - "2020-01-01~2020-10-16"
-    subSategory:
-      - "날씨"
+      - "스포츠/농구&배구"
+      - "스포츠/일반"
