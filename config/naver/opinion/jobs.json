@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-opinion",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.naver.com/main/list.nhn?sid1=110&listType=title&mid=shm&date={date}&page={page}",

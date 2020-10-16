@@ -52,6 +52,8 @@ class WebNewsCrawler(CrawlerBase):
 
         self.date_step = args.date_step
 
+        self.sleep_time = args.sleep
+
         self.update_date = False
         self.update_category_only = args.update_category_only
 
@@ -117,8 +119,6 @@ class WebNewsCrawler(CrawlerBase):
             job['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
             job['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
             job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
-
-            self.sleep_time = job['sleep']
 
             self.trace_url_list(job=job)
 

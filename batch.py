@@ -75,6 +75,8 @@ def init_arguments():
     parser.add_argument('--page_range', default=None, help='page 범위: 1~100')
     parser.add_argument('--page_step', default=1, type=int, help='page step')
 
+    parser.add_argument('--sleep', default=10, type=int, help='sleep time')
+
     parser.add_argument('--column', default='trace_list', help='config 컬럼이름 (trace_list)')
 
     # 설정파일

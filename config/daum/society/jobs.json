@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-daum-society",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://media.daum.net/breakingnews/society/affair?regDate={date}&page={page}",

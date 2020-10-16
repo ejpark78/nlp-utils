@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-nate-sports",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}",

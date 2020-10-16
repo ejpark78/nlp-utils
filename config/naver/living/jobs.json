@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-living",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=241&listType=title&date={date}&page={page}",

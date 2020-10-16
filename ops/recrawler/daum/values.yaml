@@ -40,6 +40,8 @@ jobs:
       - "culture"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "문화/공연전시"
       - "문화/책"
@@ -68,6 +70,8 @@ jobs:
       - "economy"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "경제/부동산"
       - "경제/생활경제"
@@ -99,6 +103,8 @@ jobs:
       - "international"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "국제/일본"
       - "국제/중국"
@@ -125,6 +131,8 @@ jobs:
       - "it"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "IT/IT기기"
       - "IT/통신모바일"
@@ -148,6 +156,8 @@ jobs:
       - "opinion"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "칼럼-칼럼"
       - "칼럼-사설"
@@ -170,6 +180,8 @@ jobs:
       - "politics"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "정치/행정지자체"
       - "정치/국회정당"
@@ -193,6 +205,8 @@ jobs:
       - "society"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "사회/사건사고"
       - "사회/충청"
@@ -228,6 +242,8 @@ jobs:
       - "sports"
       - "--date_range"
       - "2020-01-01~2020-10-16"
+      - "--sleep"
+      - "20"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"

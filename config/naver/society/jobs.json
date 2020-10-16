@@ -10,7 +10,6 @@
       "index": "crawler-naver-society",
       "split_index": true,
       "check_id": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=249&listType=title&date={date}&page={page}",

@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-nate-entertainment",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.nate.com/ent/subsection?mid=e1300&type=t&date={date}&page={page}",

@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-daum-economy",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://media.daum.net/breakingnews/economic/estate?regDate={date}&page={page}",

@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-daum-politics",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://media.daum.net/breakingnews/politics/administration?regDate={date}&page={page}",

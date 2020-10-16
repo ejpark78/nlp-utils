@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-sports-reply",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "list": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=N&type=comment&page={page}&date={date}",

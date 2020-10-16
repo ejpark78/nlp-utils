@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-nate-it",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.nate.com/subsection?mid=n0602&type=t&date={date}&page={page}",

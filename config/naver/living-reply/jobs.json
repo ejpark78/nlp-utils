@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-living-reply",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "list": "elasticsearch",

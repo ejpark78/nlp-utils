@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-politics",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=264&listType=title&date={date}&page={page}",

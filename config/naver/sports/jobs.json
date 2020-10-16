@@ -9,7 +9,6 @@
       "http_auth": "crawler:crawler2019",
       "index": "crawler-naver-sports",
       "split_index": true,
-      "sleep": 10,
       "list": [
         {
           "url_frame": "https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}",
