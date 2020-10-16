@@ -38,6 +38,8 @@ class NaverNewsReplyCrawler(CrawlerBase):
         self.job_id = args.job_id
         self.column = args.column
 
+        self.sleep_time = args.sleep
+
         self.stop_columns = [
             'idType', 'lang', 'country', 'idProvider', 'visible', 'containText',
             'maskedUserName', 'commentType', 'expose', 'profileType', 'regTimeGmt',
@@ -78,8 +80,6 @@ class NaverNewsReplyCrawler(CrawlerBase):
             for job in self.job_info:
                 if 'split_index' not in job:
                     job['split_index'] = False
-
-                self.sleep_time = job['sleep']
 
                 for url_frame in job['list']:
                     elastic = self.open_elasticsearch(date=dt, job=job, url_frame=url_frame)

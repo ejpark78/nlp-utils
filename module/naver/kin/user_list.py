@@ -21,13 +21,15 @@ urllib3.disable_warnings(UserWarning)
 class UserList(CrawlerBase):
     """답변 목록을 중심으로 크롤링"""
 
-    def __init__(self):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
         self.job_category = 'naver'
         self.job_id = 'naver_kin'
         self.column = 'partner_list'
+
+        self.sleep_time = args.sleep
 
         self.update_config()
 
@@ -129,7 +131,7 @@ class UserList(CrawlerBase):
 
                     elastic_utils.flush()
 
-                sleep(5)
+                sleep(self.sleep_time)
 
         return
 
@@ -183,7 +185,7 @@ class UserList(CrawlerBase):
 
                     elastic_utils.flush()
 
-                sleep(5)
+                sleep(self.sleep_time)
 
         return
 
@@ -267,7 +269,7 @@ class UserList(CrawlerBase):
 
                 elastic_utils.flush()
 
-                sleep(5)
+                sleep(self.sleep_time)
 
         return
 
@@ -335,7 +337,7 @@ class UserList(CrawlerBase):
                     result = resp.json()
 
                     if 'result' not in result:
-                        sleep(5)
+                        sleep(self.sleep_time)
                         continue
 
                     if 'currentTotalCount' in result:
@@ -382,6 +384,6 @@ class UserList(CrawlerBase):
                     if len(result['result']) != 20:
                         break
 
-                    sleep(5)
+                    sleep(self.sleep_time)
 
         return

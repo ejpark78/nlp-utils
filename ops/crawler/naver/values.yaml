@@ -270,3 +270,246 @@ jobs:
       - "20"
     subSategory:
       - "날씨"
+
+  - name: naver-reply-politics
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_POLITICS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "politics-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-society
+    schedule: "5 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-tv
+    schedule: "10 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_TV)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "tv-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-economy
+    schedule: "15 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-international
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_INTERNATIONAL)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "international-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-it
+    schedule: "25 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_IT)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "it-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-living
+    schedule: "30 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_LIVING)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "living-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-opinion
+    schedule: "35 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_OPINION)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "opinion-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-sports
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SPORTS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "sports-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-question-list
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_question_list"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-answer-list
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_answer_list"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-detail-question
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_detail_question"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-detail-answer
+    schedule: "50 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_detail_answer"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"

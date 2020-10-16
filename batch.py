@@ -113,22 +113,22 @@ def main():
             return
 
         if args.job_id == 'kin_question_list':
-            NaverKinQuestionList().batch(column='question')
+            NaverKinQuestionList(args=args).batch(column='question')
             return
         elif args.job_id == 'kin_answer_list':
-            NaverKinQuestionList().batch(column='answer')
+            NaverKinQuestionList(args=args).batch(column='answer')
             return
         elif args.job_id == 'kin_user_list':
-            NaverKinUserList().batch()
+            NaverKinUserList(args=args).batch()
             return
         elif args.job_id == 'kin_detail_question':
-            NaverKinQuestionDetail().batch(
+            NaverKinQuestionDetail(args=args).batch(
                 column='question',
                 match_phrase=args.match_phrase,
             )
             return
         elif args.job_id == 'kin_detail_answer':
-            NaverKinQuestionDetail().batch(
+            NaverKinQuestionDetail(args=args).batch(
                 column='answer',
                 match_phrase=args.match_phrase,
             )

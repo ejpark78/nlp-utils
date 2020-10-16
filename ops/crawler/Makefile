@@ -5,14 +5,14 @@ config:
 start-naver:
 	helm install naver naver
 
-test-naver:
-	helm template naver --debug
-
 start-daum:
 	helm install daum daum
 
 start-nate:
 	helm install nate nate
+
+start-bbs:
+	helm install bbs bbs
 
 stop-naver:
 	helm uninstall naver
@@ -23,6 +23,12 @@ stop-daum:
 stop-nate:
 	helm uninstall nate
 
+stop-bbs:
+	helm uninstall bbs
+
 list:
 	helm list
+
+test:
+	helm template naver --debug
 

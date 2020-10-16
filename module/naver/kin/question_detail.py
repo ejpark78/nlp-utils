@@ -22,13 +22,15 @@ urllib3.disable_warnings(UserWarning)
 class QuestionDetail(CrawlerBase):
     """질문 상세 페이지 크롤링"""
 
-    def __init__(self):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
         self.job_category = 'naver'
         self.job_id = 'naver_kin'
         self.column = 'detail'
+
+        self.sleep_time = args.sleep
 
     def daemon(self, column, match_phrase='{}'):
         """데몬으로 실행"""
@@ -41,7 +43,7 @@ class QuestionDetail(CrawlerBase):
                 'sleep_time': 60,
             })
 
-            sleep(60)
+            sleep(self.sleep_time)
 
     def batch(self, column, match_phrase):
         """상세 페이지를 크롤링한다."""

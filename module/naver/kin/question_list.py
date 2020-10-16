@@ -20,13 +20,15 @@ urllib3.disable_warnings(UserWarning)
 class QuestionList(CrawlerBase):
     """질문 목록 크롤링"""
 
-    def __init__(self):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
         self.job_category = 'naver'
         self.job_id = 'naver_kin'
         self.column = 'question_list'
+
+        self.sleep_time = args.sleep
 
     def daemon(self, column):
         """batch를 무한 반복한다."""
@@ -182,7 +184,7 @@ class QuestionList(CrawlerBase):
                 'exception': str(e),
             })
 
-            sleep(10)
+            sleep(self.sleep_time)
             return True, total_page
 
         resp_info = None
