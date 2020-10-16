@@ -5,6 +5,9 @@ config:
 start-naver:
 	helm install naver naver
 
+test-naver:
+	helm template naver --debug
+
 start-daum:
 	helm install daum daum
 
@@ -19,4 +22,7 @@ stop-daum:
 
 stop-nate:
 	helm uninstall nate
+
+list:
+	helm list
 
