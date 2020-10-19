@@ -71,6 +71,11 @@ RUN echo && echo "nodejs 설치" \
     && echo && echo "# 저장소 정리" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN echo && echo "minio client" \
+	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
+	&& chmod +x mc \
+	&& mv mc /usr/bin/
+
 # 파이썬 라이브러리 설치
 RUN echo && echo "# pip 저장소 설정" \
     && mkdir -p ~/.pip \
