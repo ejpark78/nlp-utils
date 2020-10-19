@@ -71,7 +71,8 @@ class CrawlerBase(object):
 
         self.date_range = {
             'end': today,
-            'start': today + relativedelta(weeks=-1),
+            'start': today,
+            # 'start': today + relativedelta(weeks=-1),
         }
         return
 
