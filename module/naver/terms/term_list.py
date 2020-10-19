@@ -21,13 +21,15 @@ urllib3.disable_warnings(UserWarning)
 class TermList(CrawlerBase):
     """백과사전 크롤링"""
 
-    def __init__(self):
+    def __init__(self, args):
         """ 생성자 """
         super().__init__()
 
         self.job_category = 'naver'
         self.job_id = 'naver_terms'
         self.column = 'term_list'
+
+        self.job_sub_category = args.sub_category.split(',') if args.sub_category != '' else []
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
@@ -47,6 +49,14 @@ class TermList(CrawlerBase):
 
         # 카테고리 하위 목록을 크롤링한다.
         for c in self.job_info['category']:
+            if len(self.job_sub_category) > 0 and c['name'] not in self.job_sub_category:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': 'skip 카테고리',
+                    'category': c['name'],
+                })
+                continue
+
             if category_id is not None and c['id'] != category_id:
                 continue
 

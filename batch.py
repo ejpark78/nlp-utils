@@ -102,7 +102,7 @@ def main():
             return
 
         if args.job_id == 'term_list':
-            NaverTermList().batch()
+            NaverTermList(args=args).batch()
             return
         elif args.job_id == 'term_detail':
             NaverTermDetail().batch()

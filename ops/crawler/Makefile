@@ -1,34 +1,18 @@
 
+NAME=naver
+
 config:
 	kubectl apply -f configmap.yaml
 
-start-naver:
-	helm install naver naver
+start:
+	helm install $(NAME) . -f $(NAME).yaml
 
-start-daum:
-	helm install daum daum
+stop:
+	helm uninstall $(NAME) . -f $(NAME).yaml
 
-start-nate:
-	helm install nate nate
-
-start-bbs:
-	helm install bbs bbs
-
-stop-naver:
-	helm uninstall naver
-
-stop-daum:
-	helm uninstall daum
-
-stop-nate:
-	helm uninstall nate
-
-stop-bbs:
-	helm uninstall bbs
+test:
+	helm template . -f $(NAME).yaml
 
 list:
 	helm list
-
-test:
-	helm template naver --debug
 
