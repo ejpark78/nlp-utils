@@ -11,6 +11,9 @@ start-daum:
 start-nate:
 	helm install nate nate
 
+start-naver-terms:
+	helm install naver-terms naver-terms
+
 stop-naver:
 	helm uninstall naver
 
@@ -19,4 +22,7 @@ stop-daum:
 
 stop-nate:
 	helm uninstall nate
+
+stop-naver-terms:
+	helm install naver-terms
 

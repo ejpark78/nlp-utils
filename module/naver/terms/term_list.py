@@ -35,8 +35,15 @@ class TermList(CrawlerBase):
 
         # 이전 카테고리를 찾는다.
         category_id = None
-        if 'category' in self.status:
+        if self.status is not None and 'category' in self.status:
             category_id = self.status['category']['id']
+
+        if self.status is None:
+            self.status = {
+                'start': 1,
+                'end': 100000,
+                'step': 1,
+            }
 
         # 카테고리 하위 목록을 크롤링한다.
         for c in self.job_info['category']:
@@ -134,7 +141,13 @@ class TermList(CrawlerBase):
         trace_tag = self.parsing_info['trace']['tag']
 
         for trace in trace_tag:
-            item_list = soup.find_all(trace['name'], trace['attribute'])
+            if 'select' in trace:
+                # css select 인 경우
+                item_list = soup.select(trace['select'])
+            else:
+                # 기존 방식
+                item_list = soup.find_all(trace['name'], trace['attribute'])
+
             for item in item_list:
                 # html 본문에서 값 추출
                 doc = self.parser.parse(
@@ -154,11 +167,26 @@ class TermList(CrawlerBase):
                 doc['doc_id'] = q['docId']
                 doc['category'] = category_name
 
+                # 문서가 있는지 조회
+                is_exists = elastic_utils.elastic.exists(
+                    index=job_info['index'] + '_done',
+                    doc_type='_doc',
+                    id=doc['_id']
+                )
+                if is_exists is False:
+                    self.logger.log(msg={
+                        'MESSAGE': '중복 용어',
+                        'category_name': category_name,
+                        '_id': doc['_id'],
+                    })
+                    continue
+
                 html_key = self.parsing_info['trace']['key']
                 doc[html_key] = str(item)
 
                 # 저장 로그 표시
-                self.logger.info(msg={
+                self.logger.log(msg={
+                    'MESSAGE': '신규 용어 목록에 추가',
                     'category_name': category_name,
                     '_id': doc['_id'],
                     'name': doc['name'],
@@ -171,10 +199,16 @@ class TermList(CrawlerBase):
                 history[doc['_id']] = 1
 
                 # 이전에 수집한 문서와 병합
-                doc = elastic_utils.merge_doc(index=job_info['index'],
-                                              doc=doc, column=['category'])
-                doc = elastic_utils.merge_doc(index=job_info['index'] + '_done',
-                                              doc=doc, column=['category'])
+                doc = elastic_utils.merge_doc(
+                    index=job_info['index'],
+                    doc=doc,
+                    column=['category']
+                )
+                doc = elastic_utils.merge_doc(
+                    index=job_info['index'] + '_done',
+                    doc=doc,
+                    column=['category']
+                )
 
                 count['element'] += 1
                 elastic_utils.save_document(document=doc)
