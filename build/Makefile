@@ -125,3 +125,10 @@ run:
 		-p 7777:8888 \
 		-v $(shell pwd):/home/jovyan \
 		$(BASE_IMAGE)
+
+prune:
+	cat /etc/hosts \
+		| grep nc-crawler \
+		| perl -ple 's/\s+/\t/g' \
+		| cut -f2 \
+		| xargs -I{} ssh {} "docker system prune -f ; docker image prune -f -a"

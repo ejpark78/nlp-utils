@@ -1,10 +1,10 @@
 resources:
   requests:
     cpu: 100m
-    memory: 64Mi
+    memory: 128Mi
   limits:
     cpu: 200m
-    memory: 64Mi
+    memory: 200Mi
 
 imagePullSecrets: registry
 
@@ -41,7 +41,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "경제/증권"
       - "경제/금융"
@@ -68,7 +68,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -92,7 +92,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "IT/모바일"
       - "IT/인터넷/SNS"
@@ -119,7 +119,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "생활/건강정보"
       - "생활/자동차시승기"
@@ -149,7 +149,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "오피니언"
 
@@ -169,7 +169,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "정치/청와대"
       - "정치/국회정당"
@@ -194,7 +194,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "사회/사건사고"
       - "사회/교육"
@@ -223,7 +223,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"
@@ -252,7 +252,7 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "TV"
 
@@ -272,6 +272,6 @@ jobs:
       - "--date_range"
       - "2020-01-01~2020-10-15"
       - "--sleep"
-      - "20"
+      - "10"
     subSategory:
       - "날씨"
