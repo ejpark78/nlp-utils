@@ -1,0 +1,25 @@
+{{- range $jobIndex, $service := .Values.services }}
+{{- range $domainIndex, $domain := $service.domains }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $service.name }}-{{lower $domain }}
+  labels:
+    app: {{ $service.name }}-{{lower $domain }}
+spec:
+  {{- if $service.service }}
+  type: {{ $service.service.type }}
+  externalIPs:
+    - {{ $service.service.externalIPs }}
+  {{- else}}
+  type: ClusterIP
+  clusterIP: None
+  {{- end}}
+  selector:
+    app: {{ $service.name }}-{{lower $domain }}
+  ports:
+    - port: 80
+      targetPort: 80
+{{- end }}
+{{- end }}

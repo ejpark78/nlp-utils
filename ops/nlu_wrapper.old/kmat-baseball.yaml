@@ -21,7 +21,7 @@ spec:
         - name: registry
       containers:
         - name: default
-          image: registry.nlp-utils/kmat:latest
+          image: registry.nlp-utils/nlu-wrapper/kmat:latest
           env:
             - name: PORT_NUM
               value: "80"
