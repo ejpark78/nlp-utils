@@ -1,0 +1,286 @@
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-id
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "id",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-ru
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "ru",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-th
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "th",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-ja
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "ja",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-vi
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "vi",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-enid
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "enid",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: naver-example-zh
+#  labels:
+#    app: naver-example
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 1000Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/naver/dictionary/example_search.py",
+#        "--lang", "zh",
+#        "--index", "crawler-dictionary-example-naver",
+#        "--list_index", "crawler-dictionary-example-word-list"
+#      ]

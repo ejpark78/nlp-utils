@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nluwrapper
+  labels:
+    app: nluwrapper
+spec:
+  selector:
+    matchLabels:
+      app: nluwrapper
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nluwrapper
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/nlu_wrapper:latest
+          env:
+            - name: VERSION
+              value: "latest"
+            - name: SERV_PORT
+              value: "80"
+            - name: POS_IP_ADDR_common
+              value: "http://kmat-common"
+            - name: POS_IP_ADDR_economy
+              value: "http://kmat-economy"
+            - name: POS_IP_ADDR_baseball
+              value: "http://kmat-baseball"
+            - name: POS_IP_ADDR_lineageM
+              value: "http://kmat-lineagem"
+            - name: NER_IP_ADDR_economy
+              value: "http://ner-economy"
+            - name: NER_IP_ADDR_baseball
+              value: "http://ner-baseball"
+            - name: NER_IP_ADDR_lineageM
+              value: "http://ner-lineagem"
+            - name: SBD_CRF_IP_ADDR_colloque
+              value: "http://sbd-colloque"
+            - name: SBD_CRF_IP_ADDR_literary
+              value: "http://sbd-literary"
+            - name: DP_IP_ADDR
+              value: "http://parser-common"
+            - name: TIME_PYTHON_IP_ADDR
+              value: "http://time-common/nctime"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nluwrapper
+  labels:
+    app: nluwrapper
+spec:
+  type: LoadBalancer
+  externalIPs:
+    - 172.20.79.243
+  selector:
+    app: nluwrapper
+  ports:
+    - port: 80
+      targetPort: 80
+

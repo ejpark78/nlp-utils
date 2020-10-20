@@ -1,0 +1,92 @@
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: youdao-zhko
+#  labels:
+#    app: crawler-youdao
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/dictionary/youdao.py",
+#        "--lang", "zhko",
+#        "--search_lang", "cn,ko",
+#        "--index", "crawler-dictionary-example-youdao-zhko",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "korean,chinese",
+#        "--source_column", "korean",
+#        "--target_column", "chinese",
+#        "--state_column", "state_youdao_zhko",
+#      ]
+#
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: youdao-zhja
+#  labels:
+#    app: crawler-youdao
+#spec:
+#  restartPolicy: Always
+#  hostAliases:
+#    - ip: "172.20.93.112"
+#      hostnames:
+#        - "corpus.ncsoft.com"
+#  imagePullSecrets:
+#    - name: registry
+#  containers:
+#    - name: default
+#      image: registry.nlp-utils/crawler:latest
+#      imagePullPolicy: Always
+#      resources:
+#        requests:
+#          cpu: 100m
+#          memory: 100Mi
+#        limits:
+#          cpu: 200m
+#          memory: 200Mi
+#      env:
+#        - name: ELASTIC_SEARCH_INDEX
+#          value: $(INDEX_SPORTS)
+#        - name: ELASTIC_SEARCH_AUTH
+#          valueFrom:
+#            secretKeyRef:
+#              name: elasticsearch-auth
+#              key: http_auth
+#      args: [
+#        "python3", "module/dictionary/youdao.py",
+#        "--lang", "zhja",
+#        "--search_lang", "cn,ja",
+#        "--index", "crawler-dictionary-example-youdao-zhja",
+#        "--list_index", "crawler-dictionary-example-word-list",
+#        "--columns", "japanese,chinese",
+#        "--source_column", "chinese",
+#        "--target_column", "japanese",
+#        "--state_column", "state_youdao_zhja",
+#      ]

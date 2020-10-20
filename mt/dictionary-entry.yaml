@@ -1,0 +1,455 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: korean
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "한국어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: thailand
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "태국어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: chinese
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "중국어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: indonesian
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "인도네시아어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vietnamese
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "베트남어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: russian
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "러시아어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: german
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "독일어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spanish
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "스페인어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: japanese
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "일본어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: turkish
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "터키어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: french
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "프랑스어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ukrainian
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "우크라이나어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: polish
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "폴란드어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: italian
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "이탈리아어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rumanian
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "루마니아어"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: english
+  labels:
+    app: crawler-dictionary-entry
+spec:
+  restartPolicy: Always
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  imagePullSecrets:
+    - name: registry
+  containers:
+    - name: default
+      image: registry.nlp-utils/crawler:latest
+      imagePullPolicy: Always
+      env:
+        - name: ELASTIC_SEARCH_INDEX
+          value: $(INDEX_SPORTS)
+        - name: ELASTIC_SEARCH_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-auth
+              key: http_auth
+      args: ["python3", "module/naver/dictionary/entry_search.py", "--category", "영어"]

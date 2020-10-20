@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sbd-colloque
+  labels:
+    app: sbd-colloque
+    domain: colloque
+spec:
+  selector:
+    matchLabels:
+      app: sbd-colloque
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sbd-colloque
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/sbd_crf:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: STYLE
+              value: "colloque"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sbd-colloque
+  labels:
+    app: sbd-colloque
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: sbd-colloque
+  ports:
+    - port: 80
+      targetPort: 80
+

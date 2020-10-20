@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ner-lineagem
+  labels:
+    app: ner-lineagem
+    domain: lineagem
+spec:
+  selector:
+    matchLabels:
+      app: ner-lineagem
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ner-lineagem
+    spec:
+      restartPolicy: Always
+      hostAliases:
+        - ip: "172.20.93.43"
+          hostnames:
+          - "llab-game-dict.korea.ncsoft.corp"
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/ner-rule-2018:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: DOMAIN
+              value: "economy"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ner-lineagem
+  labels:
+    app: ner-lineagem
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: ner-lineagem
+  ports:
+    - port: 80
+      targetPort: 80
+

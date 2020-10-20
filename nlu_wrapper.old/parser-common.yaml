@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parser-common
+  labels:
+    app: parser-common
+    domain: common
+spec:
+  selector:
+    matchLabels:
+      app: parser-common
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: parser-common
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/dependency-parser:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parser-common
+  labels:
+    app: parser-common
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: parser-common
+  ports:
+    - port: 80
+      targetPort: 80
+

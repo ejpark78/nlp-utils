@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kmat-economy
+  labels:
+    app: kmat-economy
+    domain: economy
+spec:
+  selector:
+    matchLabels:
+      app: kmat-economy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kmat-economy
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/kmat:latest
+          env:
+            - name: PORT_NUM
+              value: "80"
+            - name: DOMAIN
+              value: "economy"
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kmat-economy
+  labels:
+    app: kmat-economy
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: kmat-economy
+  ports:
+    - port: 80
+      targetPort: 80
+

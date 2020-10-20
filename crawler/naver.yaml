@@ -1,0 +1,515 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+imagePullSecrets: registry
+
+restartPolicy: OnFailure
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+image: registry.nlp-utils/crawler:latest
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+
+jobs:
+  - name: naver-economy
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "경제/증권"
+      - "경제/금융"
+      - "경제/부동산"
+      - "경제/산업/재계"
+      - "경제/글로벌 경제"
+      - "경제/경제 일반"
+      - "경제/생활경제"
+      - "경제/중기/벤처"
+
+  - name: naver-international
+    schedule: "5 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_INTERNATIONAL)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "international"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "세계/아시아호주"
+      - "세계/미국중남미"
+      - "세계/유럽"
+      - "세계/중동아프리카"
+      - "세계/일반"
+
+  - name: naver-it
+    schedule: "10 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_IT)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "it"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "IT/모바일"
+      - "IT/인터넷/SNS"
+      - "IT/통신/뉴미디어"
+      - "IT/IT 일반"
+      - "IT/보안/해킹"
+      - "IT/컴퓨터"
+      - "IT/게임/리뷰"
+      - "IT/과학 일반"
+
+  - name: naver-living
+    schedule: "15 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_LIVING)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "living"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "생활/건강정보"
+      - "생활/자동차시승기"
+      - "생활/도로교통"
+      - "생활/여행/레저"
+      - "생활/음식맛집"
+      - "생활/패션뷰티"
+      - "생활/공연전시"
+      - "생활/책"
+      - "생활/종교"
+      - "생활/날씨"
+      - "생활/일반"
+
+  - name: naver-opinion
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_OPINION)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "opinion"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "오피니언"
+
+  - name: naver-politics
+    schedule: "25 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_POLITICS)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "politics"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "정치/청와대"
+      - "정치/국회정당"
+      - "정치/북한"
+      - "정치/행정"
+      - "정치/국방외교"
+      - "정치/정치일반"
+
+  - name: naver-society
+    schedule: "30 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-sports
+    schedule: "35 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SPORTS)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "sports"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "스포츠/야구"
+      - "스포츠/해외야구"
+      - "스포츠/게임"
+      - "스포츠/축구"
+      - "스포츠/해외축구"
+      - "스포츠/농구"
+      - "스포츠/배구"
+      - "스포츠/골프"
+      - "스포츠/축구"
+      - "스포츠/스포츠-일반"
+
+  - name: naver-tv
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_TV)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "tv"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "TV"
+
+  - name: naver-weather
+    schedule: "45 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_WEATHER)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "weather"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "날씨"
+
+  - name: naver-reply-politics
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_POLITICS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "politics-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-society
+    schedule: "5 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-tv
+    schedule: "10 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_TV)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "tv-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-economy
+    schedule: "15 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-international
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_INTERNATIONAL)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "international-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-it
+    schedule: "25 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_IT)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "it-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-living
+    schedule: "30 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_LIVING)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "living-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-opinion
+    schedule: "35 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_OPINION)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "opinion-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-sports
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SPORTS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "sports-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-question-list
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_question_list"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-answer-list
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_answer_list"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-detail-question
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_detail_question"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-kin-detail-answer
+    schedule: "50 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "kin_detail_answer"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
