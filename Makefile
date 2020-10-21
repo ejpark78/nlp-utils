@@ -16,7 +16,6 @@ DOCKER_REGISTRY = registry.nlp-utils
 
 IMAGE_TAG = 2.3.0
 #IMAGE_TAG = 2.3.0-gpu
-#IMAGE_TAG = 1.12.0-py3
 #IMAGE_TAG = 1.15.2-gpu-py3
 #IMAGE_TAG = 1.15.2-py3
 
@@ -29,8 +28,8 @@ IMAGE_DEV = $(DOCKER_REGISTRY)/utils/dev:$(IMAGE_TAG)
 IMAGE_BASE = $(DOCKER_REGISTRY)/utils/base:$(IMAGE_TAG)
 IMAGE_MLFLOW = $(DOCKER_REGISTRY)/utils/mlflow:$(IMAGE_TAG)
 
-IMAGE_JUPYTER = $(DOCKER_REGISTRY)/utils/jupyter:$(IMAGE_TAG)
-IMAGE_KUBEFLOW_JUPYTER = kubeflow-registry.default.svc.cluster.local:30000/jupyter:$(IMAGE_TAG)
+IMAGE_KUBEFLOW = $(DOCKER_REGISTRY)/utils/kubeflow:$(IMAGE_TAG)
+IMAGE_KUBEFLOW_JUPYTER = kubeflow-registry.default.svc.cluster.local:30000/kubeflow:$(IMAGE_TAG)
 
 IMAGE_SPE = $(DOCKER_REGISTRY)/utils/sentencepiece:$(IMAGE_TAG)
 IMAGE_MECAB = $(DOCKER_REGISTRY)/utils/mecab:$(IMAGE_TAG)
@@ -90,8 +89,8 @@ DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
 .PHONY: *
 
 # type
-all: start-minio mk-bucket utils batch stop-minio
-batch: base mlflow jupyter dev
+all: start-minio mk-bucket utils base batch stop-minio
+batch: mlflow kubeflow dev
 utils: sentencepiece konlpy glove fastText khaiii mecab
 
 inst-minio-client:
@@ -176,16 +175,19 @@ base:
 		--build-arg "BASE_IMAGE=$(BASE_IMAGE)" \
 		-t $(IMAGE_BASE) \
 		.
+	
+	docker save $(IMAGE_BASE) | gzip - > base.$(IMAGE_TAG).tar.gz
 
 .ONESHELL:
 kubeflow:
 	cd docker/kubeflow/
 	docker build $(MIRROR) $(DOCKER_LABEL) \
 		--build-arg "BASE_IMAGE=$(IMAGE_BASE)" \
-		-t $(IMAGE_JUPYTER) \
+		-t $(IMAGE_KUBEFLOW) \
 		.
 
-	docker tag $(IMAGE_JUPYTER) $(IMAGE_KUBEFLOW_JUPYTER)
+	docker tag $(IMAGE_KUBEFLOW) $(IMAGE_KUBEFLOW_JUPYTER)
+	docker save $(IMAGE_KUBEFLOW) | gzip - > kubeflow.$(IMAGE_TAG).tar.gz
 
 .ONESHELL:
 mlflow:
@@ -195,6 +197,8 @@ mlflow:
 		-t $(IMAGE_MLFLOW) \
 		.
 
+	docker save $(IMAGE_MLFLOW) | gzip - > mlflow.$(IMAGE_TAG).tar.gz
+
 .ONESHELL:
 dev:
 	cd docker/dev/
@@ -203,22 +207,27 @@ dev:
 		-t $(IMAGE_DEV)	\
 		.
 
+	docker save $(IMAGE_MLFLOW) | gzip - > dev.$(IMAGE_TAG).tar.gz
+
 .ONESHELL:
 push:
 	docker push $(IMAGE_DEV)
-	docker push $(IMAGE_JUPYTER)
+	docker push $(IMAGE_KUBEFLOW)
 	docker push $(IMAGE_KUBEFLOW_JUPYTER)
 
 .ONESHELL:
 run-dev:
 	docker run \
-		-it --rm \
+		-d \
 		--hostname dev \
-		--name embedding_dev \
-		--entrypoint /bin/bash \
+		--name dev \
 		-p 8888:8888 \
 		-v $(shell pwd):/home/jovyan \
 		$(IMAGE_DEV)
+
+.ONESHELL:
+shell:
+	docker exec -it embedding zsh
 
 .ONESHELL:
 clean-utils:

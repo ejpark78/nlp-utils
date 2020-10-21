@@ -68,7 +68,7 @@ RUN conda update conda \
     && rm $HOME/.pip/pip.conf
 
 RUN echo && echo "# mlflow 설치" \
-    && pip3 install --upgrade --no-cache-dir \
+    && pip3 install --no-cache-dir \
         mlflow \
         sklearn \
         matplotlib \
@@ -76,30 +76,32 @@ RUN echo && echo "# mlflow 설치" \
         konlpy \
         qgrid \
         six \
-    && pip3 install --upgrade --no-cache-dir \
+    && pip3 install --no-cache-dir \
         psycopg2-binary \
     && rm -rf /tmp/*
 
 RUN echo && echo "# DL 설치" \
-    && pip3 install --upgrade --no-cache-dir \
+    && pip3 install --no-cache-dir \
         bert \
         keras \
-        tensorflow-hub \
+        sentencepiece \
         tf_sentencepiece \
-        tfx \
     && rm -rf /tmp/*
+
+        # tensorflow-hub 
+        # tfx 
 
 ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
 RUN echo && echo "# torch 설치" \
-    && pip3 install --upgrade --no-cache-dir --find-links ${PYTORCH_URL} \
+    && pip3 install --no-cache-dir --find-links ${PYTORCH_URL} \
         torch==1.6.0+cu101 \
         torchtext \
         torchvision==0.7.0+cu101 \
     && rm -rf /tmp/*
 
 RUN echo && echo "# transformers 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-        transformers==2.11.0 \
+    && pip3 install --no-cache-dir \
+        transformers \
     && rm -rf /tmp/*
 
 ARG MINIO_URI="http://minio-service.kubeflow.svc.cluster.local:9000"

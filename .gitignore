@@ -7,3 +7,4 @@ data/
 venv/
 
 *.log
+*.tar.gz

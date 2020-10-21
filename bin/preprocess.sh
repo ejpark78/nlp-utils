@@ -4,35 +4,35 @@
 
 COMMAND=$1
 function gdrive_download () {
-  CONFIRM=$(wget --no-netrc --quiet --save-cookies cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-  echo wget --load-cookies cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
-  wget --no-netrc --load-cookies cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
+  CONFIRM=$(wget -c --no-check-certificate --no-netrc --quiet --save-cookies cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
+  echo wget -c --no-check-certificate --load-cookies cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
+  wget -c --no-check-certificate --no-netrc --load-cookies cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
   rm -rf cookies.txt
 }
 
 case $COMMAND in
     dump-raw-wiki)
         echo "download ko-wikipedia..."
-        wget --no-netrc https://dumps.wikimedia.org/kowiki/latest/kowiki-latest-pages-articles.xml.bz2 -P data/raw
+        wget -c --no-check-certificate --no-netrc https://dumps.wikimedia.org/kowiki/latest/kowiki-latest-pages-articles.xml.bz2 -P data/raw
         mkdir -p data/processed
         ;;
     dump-raw-korquad)
         echo "download KorQuAD data..."
-        wget --no-netrc https://korquad.github.io/dataset/KorQuAD_v1.0_train.json -P data/raw
-        wget --no-netrc https://korquad.github.io/dataset/KorQuAD_v1.0_dev.json -P data/raw
+        wget -c --no-check-certificate --no-netrc https://korquad.github.io/dataset/KorQuAD_v1.0_train.json -P data/raw
+        wget -c --no-check-certificate --no-netrc https://korquad.github.io/dataset/KorQuAD_v1.0_dev.json -P data/raw
         mkdir -p data/processed
         ;;
     dump-raw-nsmc)
         echo "download naver movie corpus..."
-        wget --no-netrc https://github.com/e9t/nsmc/raw/master/ratings.txt -P data/raw
-        wget --no-netrc https://github.com/e9t/nsmc/raw/master/ratings_train.txt -P data/raw
-        wget --no-netrc https://github.com/e9t/nsmc/raw/master/ratings_test.txt -P data/raw
+        wget -c --no-check-certificate --no-netrc https://github.com/e9t/nsmc/raw/master/ratings.txt -P data/raw
+        wget -c --no-check-certificate --no-netrc https://github.com/e9t/nsmc/raw/master/ratings_train.txt -P data/raw
+        wget -c --no-check-certificate --no-netrc https://github.com/e9t/nsmc/raw/master/ratings_test.txt -P data/raw
         mkdir -p data/processed
         ;;
     dump-blog)
         echo "download blog data.."
         mkdir -p data/processed
-        # gdrive_download 1Few7-Mh3JypQN3rjnuXD8yAXrkxUwmjS data/processed/processed_blog.txt
+        gdrive_download 1Few7-Mh3JypQN3rjnuXD8yAXrkxUwmjS data/processed/processed_blog.txt
         ;;
     dump-raw)
         echo "make directories..."
@@ -40,14 +40,14 @@ case $COMMAND in
         mkdir -p data/processed
         mkdir data/tokenized
         echo "download similar sentence data..."
-        wget --no-netrc https://github.com/songys/Question_pair/raw/master/kor_pair_train.csv -P data/raw
-        wget --no-netrc https://github.com/songys/Question_pair/raw/master/kor_Pair_test.csv -P data/raw
+        wget -c --no-check-certificate --no-netrc https://github.com/songys/Question_pair/raw/master/kor_pair_train.csv -P data/raw
+        wget -c --no-check-certificate --no-netrc https://github.com/songys/Question_pair/raw/master/kor_Pair_test.csv -P data/raw
         ;;
     dump-word-embeddings)
         echo "download word embeddings..."
         mkdir -p data/processed
         cd data
-        # gdrive_download 1FeGIbSz2E1A63JZP_XIxnGaSRt7AhXFf data/word-embeddings.zip
+        gdrive_download 1FeGIbSz2E1A63JZP_XIxnGaSRt7AhXFf data/word-embeddings.zip
         unzip word-embeddings.zip
         # rm word-embeddings.zip
         ;;
@@ -55,7 +55,7 @@ case $COMMAND in
         echo "download sentence embeddings..."
         mkdir -p data/processed
         cd data
-        # gdrive_download 1jL3Q5H1vwATewHrx0PJgJ8YoUCtEkaGW data/sentence-embeddings.zip
+        gdrive_download 1jL3Q5H1vwATewHrx0PJgJ8YoUCtEkaGW data/sentence-embeddings.zip
         unzip sentence-embeddings.zip
         # rm sentence-embeddings.zip
         ;;
@@ -63,7 +63,7 @@ case $COMMAND in
         echo "download tokenized data..."
         mkdir -p data/processed
         cd data
-        # gdrive_download 1Ybp_DmzNEpsBrUKZ1-NoPDzCMO39f-fx data/tokenized.zip
+        gdrive_download 1Ybp_DmzNEpsBrUKZ1-NoPDzCMO39f-fx data/tokenized.zip
         unzip tokenized.zip
         # rm tokenized.zip
         ;;
@@ -71,7 +71,7 @@ case $COMMAND in
         echo "download processed data..."
         mkdir -p data
         cd data
-        # gdrive_download 1kUecR7xO7bsHFmUI6AExtY5u2XXlObOG data/processed.zip
+        gdrive_download 1kUecR7xO7bsHFmUI6AExtY5u2XXlObOG data/processed.zip
         unzip processed.zip
         # rm processed.zip
         ;;
