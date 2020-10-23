@@ -45,12 +45,6 @@
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/정치일반"
-        },
-        {
-          "url_frame": "https://news.naver.com/main/main.nhn?mode=LSD&mid=shm&sid1=100&listType=title&date={date}&page={page}",
-          "date_format": "%Y%m%d",
-          "check_id": true,
-          "section": "정치"
         }
       ],
       "article": {
