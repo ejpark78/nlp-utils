@@ -76,6 +76,7 @@ RUN echo && echo "# mlflow 설치" \
         konlpy \
         qgrid \
         six \
+        boto3 \
     && pip3 install --no-cache-dir \
         psycopg2-binary \
     && rm -rf /tmp/*
