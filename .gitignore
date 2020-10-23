@@ -1,0 +1,28 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+.ipynb_checkpoints
+.cache
+.pki
+.idea
+.bash_history
+.python_history
+
+__pycache__
+
+data
+
+core
+*.json.gz
+*.model
+*.jar
+*.log
+
+app.tar.gz
+venv
+config/jobs/nate/opinion.json 제거할 예정
+config/jobs/nate/radio.json 제거할 예정
+config/jobs/nate/tv.json 제거할 예정
+cache
+/module/browsermob-proxy/
+/log/
+status
