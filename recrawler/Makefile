@@ -22,6 +22,9 @@ start:
 stop:
 	helm uninstall $(NAME)
 
+upgrade:
+	helm upgrade $(NAME) . -f $(NAME).yaml
+
 test:
 	helm template . -f $(NAME).yaml
 

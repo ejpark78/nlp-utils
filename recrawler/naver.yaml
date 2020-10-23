@@ -39,7 +39,7 @@ jobs:
       - "--job_id"
       - "economy"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -66,7 +66,7 @@ jobs:
       - "--job_id"
       - "international"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -90,7 +90,7 @@ jobs:
       - "--job_id"
       - "it"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -117,7 +117,7 @@ jobs:
       - "--job_id"
       - "living"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -147,7 +147,7 @@ jobs:
       - "--job_id"
       - "opinion"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -167,7 +167,7 @@ jobs:
       - "--job_id"
       - "politics"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -192,7 +192,7 @@ jobs:
       - "--job_id"
       - "society"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -221,7 +221,7 @@ jobs:
       - "--job_id"
       - "sports"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -250,7 +250,7 @@ jobs:
       - "--job_id"
       - "tv"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -270,7 +270,7 @@ jobs:
       - "--job_id"
       - "weather"
       - "--date_range"
-      - "2020-01-01~2020-10-15"
+      - "2020-10-01~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
