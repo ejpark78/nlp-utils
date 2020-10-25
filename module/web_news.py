@@ -131,7 +131,7 @@ class WebNewsCrawler(CrawlerBase):
             if url['url_frame'][0] == '#':
                 continue
 
-            if len(self.job_sub_category) > 0 and url['category'] not in self.job_sub_category:
+            if len(self.job_sub_category) > 0 and 'category' in url and url['category'] not in self.job_sub_category:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': 'skip 카테고리',
@@ -222,16 +222,26 @@ class WebNewsCrawler(CrawlerBase):
 
             # 문서 저장
             early_stop, trace_list = self.trace_news(html=resp, url_info=url, job=job, date=dt)
+            if trace_list is None:
+                msg = {
+                    'level': 'MESSAGE',
+                    'message': 'trace_list 가 없음',
+                    'url': url['url'],
+                    'category': job['category'],
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                }
+
+                self.logger.log(msg=msg)
+                break
+
             if early_stop is True:
                 msg = {
                     'level': 'MESSAGE',
-                    'message': '조기 종료',
+                    'message': '기사 목록 끝에 도달: 종료',
                     'url': url['url'],
                     'category': job['category'],
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
                 }
-
-                if dt is not None:
-                    msg['date'] = dt.strftime('%Y-%m-%d')
 
                 self.logger.log(msg=msg)
                 break

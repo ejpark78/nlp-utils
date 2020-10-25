@@ -21,18 +21,21 @@ APT_MIRROR = https://nlp-utils/repository/$(APT_CODE_NAME)/
 PIP_MIRROR = https://k8s:nlplab@nlp-utils/repository/pypi/simple
 PIP_TRUST_HOST = nlp-utils
 
+MIRROR =
+MIRROR += --add-host "nlp-utils:172.19.153.41"
+MIRROR += --build-arg "APT_MIRROR=$(APT_MIRROR)"
+MIRROR += --build-arg "APT_CODE_NAME=$(APT_CODE_NAME)"
+MIRROR += --build-arg "PIP_MIRROR=$(PIP_MIRROR)"
+MIRROR += --build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)"
+
 batch: build push
 
 .ONESHELL:
 base:
 	docker build \
+		$(MIRROR)" \
 		-t $(BASE_IMAGE) \
 		-f base/Dockerfile \
-		--add-host "nlp-utils:172.19.153.41" \
-		--build-arg "APT_MIRROR=$(APT_MIRROR)" \
-		--build-arg "APT_CODE_NAME=$(APT_CODE_NAME)" \
-		--build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)" \
-		--build-arg "PIP_MIRROR=$(PIP_MIRROR)" \
 		.
 
 .ONESHELL:
