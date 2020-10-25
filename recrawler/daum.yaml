@@ -39,7 +39,7 @@ jobs:
       - "--job_id"
       - "culture"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -69,7 +69,7 @@ jobs:
       - "--job_id"
       - "economy"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -102,7 +102,7 @@ jobs:
       - "--job_id"
       - "international"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -130,7 +130,7 @@ jobs:
       - "--job_id"
       - "it"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -155,7 +155,7 @@ jobs:
       - "--job_id"
       - "opinion"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -179,7 +179,7 @@ jobs:
       - "--job_id"
       - "politics"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -204,7 +204,7 @@ jobs:
       - "--job_id"
       - "society"
       - "--date_range"
-      - "2020-10-01~2020-10-23"
+      - "2020-10-22~2020-10-23"
       - "--sleep"
       - "10"
     subSategory:
@@ -227,29 +227,29 @@ jobs:
       - "사회/복지"
       - "사회/여성"
 
-  - name: daum-sports-2020
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_SPORTS)
-    configMapRef: daum
-    args:
-      - "python3"
-      - "batch.py"
-      - "--skip_check_history"
-      - "--category"
-      - "daum"
-      - "--job_id"
-      - "sports"
-      - "--date_range"
-      - "2020-10-01~2020-10-23"
-      - "--sleep"
-      - "10"
-    subSategory:
-      - "스포츠/야구"
-      - "스포츠/해외야구"
-      - "스포츠/게임"
-      - "스포츠/축구"
-      - "스포츠/해외축구"
-      - "스포츠/골프"
-      - "스포츠/농구&배구"
-      - "스포츠/일반"
+#  - name: daum-sports-2020
+#    environmentVariables:
+#      - name: ELASTIC_SEARCH_INDEX
+#        value: $(INDEX_SPORTS)
+#    configMapRef: daum
+#    args:
+#      - "python3"
+#      - "batch.py"
+#      - "--skip_check_history"
+#      - "--category"
+#      - "daum"
+#      - "--job_id"
+#      - "sports"
+#      - "--date_range"
+#      - "2020-10-22~2020-10-23"
+#      - "--sleep"
+#      - "10"
+#    subSategory:
+#      - "스포츠/야구"
+#      - "스포츠/해외야구"
+#      - "스포츠/게임"
+#      - "스포츠/축구"
+#      - "스포츠/해외축구"
+#      - "스포츠/골프"
+#      - "스포츠/농구&배구"
+#      - "스포츠/일반"
