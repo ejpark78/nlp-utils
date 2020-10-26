@@ -33,7 +33,7 @@ batch: build push
 .ONESHELL:
 base:
 	docker build \
-		$(MIRROR)" \
+		$(MIRROR) \
 		-t $(BASE_IMAGE) \
 		-f base/Dockerfile \
 		.

@@ -19,6 +19,24 @@ RUN echo && echo "# pip 저장소 설정" \
 
 WORKDIR ${APP_HOME}
 
+ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
+EXPOSE ${PORT}
+
+CMD ["bash", "-c", "\
+    jupyter lab \
+        --no-browser \
+        --ip=0.0.0.0 \
+        --port=${PORT} \
+        --allow-root \
+        --LabApp.token=${NB_TOKEN} \
+        --LabApp.password=${NB_PASSWD} \
+        --LabApp.allow_origin='*' \
+        --LabApp.base_url=${NB_PREFIX} \
+        --notebook-dir=/home/jovyan \
+        --NotebookApp.iopub_data_rate_limit=10000000 \
+        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
+"]
+
 ENV CURL_CA_BUNDLE=""
 ENV PYTHONPATH=${APP_HOME}
 
