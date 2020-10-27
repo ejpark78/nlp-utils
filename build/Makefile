@@ -126,7 +126,7 @@ run:
 		--name crawler_dev \
 		-e PORT=8888 \
 		-p 7777:8888 \
-		-v $(shell pwd):/home/jovyan \
+		-v $(shell realpath ../):/home/jovyan \
 		$(BASE_IMAGE)
 
 prune:

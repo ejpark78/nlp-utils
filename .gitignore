@@ -16,6 +16,7 @@ core
 *.model
 *.jar
 *.log
+*.db
 
 app.tar.gz
 venv
