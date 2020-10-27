@@ -43,6 +43,7 @@ class DaumMovieReviews(object):
         self.url = {
             'code': 'https://movie.daum.net/boxoffice/weekly?startDate={year}{month:02d}{day:02d}',
             'info': 'https://movie.daum.net/moviedb/main?movieId={code}',
+            'grade': 'https://movie.daum.net/moviedb/grade?movieId={code}',
             'post': 'https://comment.daum.net/apis/v1/ui/single/main/@{code}',
             'reviews': 'https://comment.daum.net/apis/v1/posts/{post_id}/comments?'
                        'parentId=0&offset=15&limit=5&sort=RECOMMEND&isInitial=false&hasNext=true',
