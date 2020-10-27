@@ -13,6 +13,6 @@ kubectl get po | grep -v NAME | cut -f1 -d' ' \
   | sh - | tee category
 
 wc -l index status dt category
-paste index status category dt | tee last-date.txt
+paste index status category dt | tee last-date.csv
 
 rm index status dt category
