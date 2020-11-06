@@ -33,8 +33,8 @@ class LogMessage(object):
                 self.message['logging_date'] = datetime.now(self.timezone).isoformat()
 
             return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
-        except Exception as _:
-            return str(self.message)
+        except Exception as e:
+            return '{0}:{1}'.format(str(self.message), str(e))
 
 
 class Logger(object):
@@ -46,6 +46,9 @@ class Logger(object):
 
         self.MESSAGE = 25
         self.logger = self.get_logger()
+
+    def __del__(self):
+        pass
 
     def get_logger(self):
         """로거를 반환한다."""
