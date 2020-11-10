@@ -7,12 +7,12 @@ from __future__ import print_function
 
 import json
 import re
-import sqlite3
 from time import sleep
 from urllib.parse import urljoin
+from seleniumwire import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
 
 import pytz
-import requests
 import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
@@ -23,6 +23,91 @@ from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
+
+
+class SeleniumWireUtils(object):
+
+    def __init__(self):
+        super().__init__()
+
+        self.logger = Logger()
+
+        self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.driver = None
+        self.login = False
+        self.headless = True
+        self.user_data_path = None
+        self.executable_path = '/usr/bin/chromedriver'
+
+        self.open_driver()
+
+    def open_driver(self):
+        if self.driver is not None:
+            return
+
+        options = webdriver.ChromeOptions()
+
+        if self.headless is True:
+            options.add_argument('headless')
+
+        options.add_argument('window-size=1920x1080')
+        options.add_argument('disable-gpu')
+        options.add_argument('disable-infobars')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--dns-prefetch-disable')
+        options.add_argument('--disable-dev-shm-usage')
+
+        if self.user_data_path is not None:
+            options.add_argument('user-data-dir={}'.format(self.user_data_path))
+
+        prefs = {
+            'disk-cache-size': 4096,
+            'profile.managed_default_content_settings.images': 2,
+            'profile.default_content_setting_values.notifications': 2,
+            'profile.managed_default_content_settings.stylesheets': 2,
+            'profile.managed_default_content_settings.plugins': 1,
+            'profile.managed_default_content_settings.popups': 2,
+            'profile.managed_default_content_settings.geolocation': 2,
+            'profile.managed_default_content_settings.media_stream': 2,
+        }
+
+        if self.login is True:
+            prefs = {}
+
+        options.add_experimental_option('prefs', prefs)
+
+        self.driver = webdriver.Chrome(executable_path=self.executable_path, chrome_options=options)
+
+        return
+
+    def close_driver(self):
+        if self.driver is not None:
+            self.driver.quit()
+            self.driver = None
+
+        return
+
+    def get(self, url):
+        self.driver.get(url=url)
+
+        self.driver.implicitly_wait(15)
+        WebDriverWait(self.driver, 5, 10)
+
+        result = []
+        for req in self.driver.requests:
+            if req.response is None:
+                continue
+
+            if '/apis/' not in req.url:
+                continue
+
+            req.json = json.loads(req.response.body)
+            req.auth_token = req.headers['Authorization']
+
+            result.append(req)
+
+        return result
 
 
 class DaumMovieReviews(object):
@@ -44,7 +129,7 @@ class DaumMovieReviews(object):
             'grade': 'https://movie.daum.net/moviedb/grade?movieId={code}',
             'post': 'https://comment.daum.net/apis/v1/ui/single/main/@{code}',
             'reviews': 'https://comment.daum.net/apis/v1/posts/{post_id}/comments?'
-                       'parentId=0&offset=15&limit=5&sort=RECOMMEND&isInitial=false&hasNext=true',
+                       'parentId=0&offset={offset}&limit=10&sort=RECOMMEND&isInitial=false&hasNext=true',
         }
 
         self.db = SqliteUtils(filename=self.params.filename)
@@ -93,7 +178,7 @@ class DaumMovieReviews(object):
         for dt in dt_list:
             url = self.url['code'].format(year=dt.year, month=dt.month, day=dt.day)
 
-            content, is_cache = self.db.get_contents(url=url)
+            content, is_cache = self.db.get_contents(url=url, meta={})
             _ = self.save_movie_code(url=url, content=content)
 
             if is_cache is False:
@@ -101,29 +186,37 @@ class DaumMovieReviews(object):
 
         return
 
-    def get_post(self):
-        size = 100
+    def get_movie_info(self):
+        import requests
+
+        selenium = SeleniumWireUtils()
+
         _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
 
-        while True:
-            rows = self.db.cursor.fetchmany(size)
-            if not rows:
-                break
+        rows = self.db.cursor.fetchall()
 
-            for item in rows:
-                print(item)
+        for i, item in enumerate(rows):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '영화 정보',
+                'code': item[0],
+                'title': item[1],
+                'position': i,
+                'size': len(rows)
+            })
 
-                url = self.url['info'].format(code=item[0])
+            info_url = self.url['info'].format(code=item[0])
+            resp = selenium.get(url=info_url)
 
-                content, is_cache = self.db.get_contents(url=url)
-                review_list = self.save_movie_reviews(title=item[1], code=item[0], content=content)
+            reviews_url = self.url['reviews'].format(post_id=resp[0].json['post']['id'], offset=10)
 
-                if is_cache is False:
-                    sleep(self.sleep_time)
+            resp = requests.get(url=reviews_url, headers=resp[0].headers, timeout=120, verify=False)
+
+            break
 
         return
 
-    def save_movie_reviews(self, code, title, content):
+    def save_movie_reviews(self, code, title, content, meta):
         soup = BeautifulSoup(content, 'html5lib')
 
         buf = set()
@@ -154,7 +247,15 @@ class DaumMovieReviews(object):
             buf.add(review['comment'])
             buf.add(review['date'])
 
-            print(len(buf), title, review['date'], review['comment'])
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '영화 리뷰 조회',
+                'count': len(buf) / 2 if len(buf) > 0 else 0,
+                'date': review['date'],
+                'score': review['score'],
+                'comment': review['comment'],
+                **meta
+            })
 
             try:
                 self.db.cursor.execute(
@@ -162,38 +263,55 @@ class DaumMovieReviews(object):
                     (title, code, json.dumps(review, ensure_ascii=False),)
                 )
             except Exception as e:
-                print(e)
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '영화 리뷰 저장 오류',
+                    'error': str(e),
+                    **meta
+                })
 
         self.db.conn.commit()
 
         return ','.join(list(buf))
 
-    def get_reviews(self):
+    def get_movie_reviews(self):
         _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
 
         rows = self.db.cursor.fetchall()
 
-        for item in rows:
-            print(item[0])
+        for i, item in enumerate(rows):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '영화 정보',
+                'code': item[0],
+                'title': item[1],
+                'position': i,
+                'size': len(rows)
+            })
 
             prev = ''
             for p in range(1, 1000):
                 url = self.url['reviews'].format(code=item[0], page=p)
 
-                print(item, 'https://movie.naver.com/movie/bi/mi/basic.nhn?code=' + item[0], url)
-
-                content, is_cache = self.db.get_contents(url=url)
-                review_list = self.save_movie_reviews(title=item[1], code=item[0], content=content)
+                content, is_cache = self.db.get_contents(url=url, meta={})
+                review_list = self.save_movie_reviews(title=item[1], code=item[0], content=content, meta={})
 
                 if is_cache is False:
                     sleep(self.sleep_time)
 
                 if review_list == '':
-                    print('리뷰 없음')
+                    self.logger.log(msg={
+                        'level': 'MESSAGE',
+                        'message': '영화 리뷰 없음',
+                    })
                     break
 
                 if review_list != '' and prev == review_list:
-                    print('중복 목록: ', review_list)
+                    self.logger.log(msg={
+                        'level': 'MESSAGE',
+                        'message': '영화 리뷰 중복',
+                        'review_list': review_list.split(',')
+                    })
                     break
 
                 prev = review_list
@@ -204,11 +322,11 @@ class DaumMovieReviews(object):
         if self.params.movie_code is True:
             self.get_movie_code()
 
-        if self.params.movie_post is True:
-            self.get_post()
+        if self.params.movie_info is True:
+            self.get_movie_info()
 
         if self.params.movie_reviews is True:
-            self.get_reviews()
+            self.get_movie_reviews()
 
         return
 
@@ -221,7 +339,7 @@ class DaumMovieReviews(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--movie-code', action='store_true', default=False, help='영화 코드 크롤링')
-        parser.add_argument('--movie-post', action='store_true', default=False, help='포스트 코드 크롤링')
+        parser.add_argument('--movie-info', action='store_true', default=False, help='영화 정보 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
         parser.add_argument('--filename', default='daum_movie_reviews.db', help='파일명')

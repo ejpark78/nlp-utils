@@ -11,6 +11,7 @@ from os.path import isfile
 import pytz
 import requests
 import urllib3
+from requests_html import HTMLSession
 
 from module.utils.logger import Logger
 
@@ -26,6 +27,8 @@ class SqliteUtils(object):
         self.logger = Logger()
 
         self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.session = HTMLSession()
 
         self.use_cache = True
 
@@ -136,26 +139,26 @@ class SqliteUtils(object):
         if self.use_cache is True:
             content = self.exists(url=url)
 
-        is_cache = True
-        if content is None:
-            is_cache = False
+        if content is not None:
+            return {
+                'content': content,
+                'is_cache': True
+            }
 
-            resp = requests.get(url=url, verify=False, headers=self.headers, timeout=120)
+        resp = requests.get(url=url, verify=False, headers=self.headers, timeout=120)
 
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': 'requests',
-                'url': url,
-                'status_code': resp.status_code,
-                **meta
-            })
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': 'requests',
+            'url': url,
+            'status_code': resp.status_code,
+            **meta
+        })
 
-            self.cursor.execute(self.template['cache'], (url, resp.content,))
-            self.conn.commit()
-
-            content = resp.content
+        self.cursor.execute(self.template['cache'], (url, resp.content,))
+        self.conn.commit()
 
         return {
-            'content': content,
-            'is_cache': is_cache
+            'content': resp.content,
+            'is_cache': False
         }

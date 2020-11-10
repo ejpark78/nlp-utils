@@ -36,6 +36,10 @@ class NaverMovieReviews(object):
 
         self.url = {
             'code': 'https://movie.naver.com/movie/sdb/browsing/bmovie.nhn?open={year}&page={page}',
+            'info_basic': 'https://movie.naver.com/movie/bi/mi/basic.nhn?code={code}',
+            'info_detail': 'https://movie.naver.com/movie/bi/mi/detail.nhn?code={code}',
+            'info_point': 'https://movie.naver.com/movie/bi/mi/point.nhn?code={code}',
+            'info_review': 'https://movie.naver.com/movie/bi/mi/review.nhn?code={code}',
             'reviews': 'https://movie.naver.com/movie/bi/mi/pointWriteFormList.nhn?'
                        'code={code}&type=after&isActualPointWriteExecute=false&isMileageSubscriptionAlready=false&'
                        'isMileageSubscriptionReject=false&page={page}',
@@ -178,7 +182,7 @@ class NaverMovieReviews(object):
 
         return ','.join(list(buf))
 
-    def get_reviews(self):
+    def get_movie_info(self):
         _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
 
         rows = self.db.cursor.fetchall()
@@ -190,6 +194,21 @@ class NaverMovieReviews(object):
                 'code': item[0],
                 'title': item[1],
                 'i': i,
+                'size': len(rows)
+            })
+
+    def get_movie_reviews(self):
+        _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
+
+        rows = self.db.cursor.fetchall()
+
+        for i, item in enumerate(rows):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '영화 정보',
+                'code': item[0],
+                'title': item[1],
+                'position': i,
                 'size': len(rows)
             })
 
@@ -214,7 +233,7 @@ class NaverMovieReviews(object):
                         'title': item[1],
                         'url': url,
                         'page': p,
-                        'i': i,
+                        'position': i,
                         'size': len(rows)
                     }
                 )
@@ -250,6 +269,7 @@ class NaverMovieReviews(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--movie-code', action='store_true', default=False, help='영화 코드 크롤링')
+        parser.add_argument('--movie-info', action='store_true', default=False, help='영화 정보 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
         parser.add_argument('--filename', default='naver_movie_reviews.db', help='파일명')
@@ -260,8 +280,11 @@ class NaverMovieReviews(object):
         if self.params.movie_code is True:
             self.get_movie_code()
 
+        if self.params.movie_info is True:
+            self.get_movie_info()
+
         if self.params.movie_reviews is True:
-            self.get_reviews()
+            self.get_movie_reviews()
 
         return
 
