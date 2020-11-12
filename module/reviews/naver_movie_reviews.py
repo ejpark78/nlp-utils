@@ -157,7 +157,7 @@ class NaverMovieReviews(object):
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '영화 리뷰 조회',
+                'message': '영화 리뷰 저장',
                 'count': len(buf) / 2 if len(buf) > 0 else 0,
                 'date': review['date'],
                 'score': review['score'],

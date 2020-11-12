@@ -134,9 +134,9 @@ class SqliteUtils(object):
 
         return None
 
-    def get_contents(self, url, meta):
+    def get_contents(self, url, meta, headers=None, use_cache=True):
         content = None
-        if self.use_cache is True:
+        if self.use_cache is True and use_cache is True:
             content = self.exists(url=url)
 
         if content is not None:
@@ -145,7 +145,10 @@ class SqliteUtils(object):
                 'is_cache': True
             }
 
-        resp = requests.get(url=url, verify=False, headers=self.headers, timeout=120)
+        if headers is None:
+            headers = self.headers
+
+        resp = requests.get(url=url, verify=False, headers=headers, timeout=120)
 
         self.logger.log(msg={
             'level': 'MESSAGE',
@@ -155,10 +158,14 @@ class SqliteUtils(object):
             **meta
         })
 
-        self.cursor.execute(self.template['cache'], (url, resp.content,))
-        self.conn.commit()
+        self.save_cache(url=url, content=resp.content)
 
         return {
             'content': resp.content,
             'is_cache': False
         }
+
+    def save_cache(self, url, content):
+        self.cursor.execute(self.template['cache'], (url, content,))
+        self.conn.commit()
+        return
