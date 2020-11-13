@@ -38,6 +38,7 @@ class CacheUtils(object):
                 id TEXT NOT NULL UNIQUE PRIMARY KEY, 
                 title TEXT NOT NULL,
                 reply_count NUMBER DEFAULT -1,
+                tags TEXT NOT NULL,
                 data TEXT NOT NULL
             )
             ''',
@@ -52,7 +53,7 @@ class CacheUtils(object):
         ]
 
         self.template = {
-            'videos': 'REPLACE INTO videos (id, title, data) VALUES (?, ?, ?)',
+            'videos': 'REPLACE INTO videos (id, title, data, tags) VALUES (?, ?, ?, ?)',
             'reply': 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)',
         }
 
@@ -107,10 +108,10 @@ class CacheUtils(object):
 
         return
 
-    def save_videos(self, v_id, title, data):
+    def save_videos(self, v_id, title, data, tags):
         self.cursor.execute(
             self.template['videos'],
-            (v_id, title, json.dumps(data, ensure_ascii=False),)
+            (v_id, title, json.dumps(data, ensure_ascii=False), json.dumps(tags, ensure_ascii=False), )
         )
         self.conn.commit()
         return

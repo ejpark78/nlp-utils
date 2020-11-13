@@ -10,6 +10,7 @@ from time import sleep
 
 import pytz
 import urllib3
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
@@ -86,15 +87,13 @@ class SeleniumWireUtils(object):
 
         return
 
-    def scroll(self, meta, count=10, sleep_time=2):
+    def scroll(self, meta, count=10, sleep_time=0.5):
         """스크롤 한다."""
-        from selenium.webdriver.common.keys import Keys
-
         html = self.driver.find_element_by_tag_name('html')
 
         for i in range(count):
             self.logger.log(msg={
-                'level': 'MESSAGE',
+                'level': 'INFO',
                 'message': 'scroll',
                 'scroll count': i,
                 **meta

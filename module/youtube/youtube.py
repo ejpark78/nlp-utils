@@ -80,17 +80,45 @@ class YoutubeCrawler(object):
             'title': '삼프로TV_경제의신과함께',
             'videos': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/videos?view=0',
             'playlist': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/playlists?view=1&flow=grid',
+        }, {
+            'lang': 'cn',
+            'tag': 'L2',
+            'title': 'WuKong国人大联盟L2Classic.club天堂2欧服怀旧',
+            'videos': 'https://www.youtube.com/channel/UCKwmshJy5DTFjXjYe7STsOA/videos',
+            'playlist': '',
+        }, {
+            'lang': 'vi',
+            'tag': 'L2',
+            'title': 'Neton - Chuyên công nghệ',
+            'videos': 'https://www.youtube.com/channel/UCcRsvqTKNQ8JLPTmHNyqrGw/videos',
+            'playlist': '',
+        }, {
+            'lang': 'th',
+            'tag': 'L2',
+            'title': 'Lineage2 Revolution Thailand - Official',
+            'videos': 'https://www.youtube.com/channel/UCdYyqdH0oc3RUt9pt1ld9JA/videos',
+            'playlist': '',
         }]
 
         for item in url_list:
             videos = self.get_playlist(url=item['videos'], tab_name='videos', meta=item)
 
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '동영상 목록 조회',
+                'count': len(videos),
+                **item
+            })
+
             for data in videos:
                 self.db.save_videos(
                     v_id=data['videoId'],
-                    title=data['title']['accessibility']['accessibilityData']['label'],
-                    data=data
+                    title=data['title']['runs'][0]['text'],
+                    data=data,
+                    tags=item,
                 )
+
+            sleep(self.sleep_time)
 
         return
 
@@ -102,7 +130,7 @@ class YoutubeCrawler(object):
         for i, item in enumerate(rows):
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '영화 정보',
+                'message': '댓글 조회',
                 'video id': item[0],
                 'title': item[1],
                 'position': i,
@@ -163,8 +191,7 @@ class YoutubeCrawler(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--filename', default='youtube.db', help='파일명')
-
-        parser.add_argument('--max-scroll', default=10, type=int, help='sleep time')
+        parser.add_argument('--max-scroll', default=30, type=int, help='sleep time')
 
         return parser.parse_args()
 
