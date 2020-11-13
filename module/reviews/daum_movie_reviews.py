@@ -50,6 +50,8 @@ class DaumMovieReviews(object):
         self.db = CacheUtils(filename=self.params.filename)
         self.db.use_cache = self.params.use_cache
 
+        self.selenium = SeleniumWireUtils()
+
     def save_movie_code(self, url, content, meta):
         soup = BeautifulSoup(content, 'html5lib')
 
@@ -160,8 +162,6 @@ class DaumMovieReviews(object):
         }
 
     def get_movie_reviews(self):
-        selenium = SeleniumWireUtils()
-
         _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
 
         rows = self.db.cursor.fetchall()
@@ -177,7 +177,7 @@ class DaumMovieReviews(object):
             })
 
             info_url = self.url['info'].format(code=item[0])
-            resp = selenium.open(
+            resp = self.selenium.open(
                 url=info_url,
                 resp_url_path='/apis/',
                 wait_for_path=r'/apis/v1/comments/on/\d+/flag'
@@ -217,7 +217,7 @@ class DaumMovieReviews(object):
                 url = self.url['reviews'].format(post_id=comments_info['post_id'], offset=offset)
 
                 if offset // 1000 > 0 and offset % 1000 == 0:
-                    _ = selenium.open(
+                    _ = self.selenium.open(
                         url=info_url,
                         resp_url_path='/apis/',
                         wait_for_path=r'/apis/v1/comments/on/\d+/flag'
@@ -231,7 +231,7 @@ class DaumMovieReviews(object):
                         'position': i,
                         'size': len(rows)
                     },
-                    headers=selenium.headers
+                    headers=self.selenium.headers
                 )
 
                 self.save_movie_reviews(

@@ -169,12 +169,58 @@ class YoutubeCrawler(object):
 
         return
 
+    def export(self):
+        import json
+        import pandas as pd
+
+        # video
+        column = 'id,title,reply_count'
+        _ = self.db.cursor.execute('SELECT {} FROM videos'.format(column))
+
+        rows = self.db.cursor.fetchall()
+
+        data = []
+        for i, item in enumerate(rows):
+            data.append(dict(zip(column.split(','), item)))
+
+        pd.DataFrame(data).to_excel('youtube-video.xlsx')
+
+        # reply
+        column = 'id,video_id,video_title,data'
+        _ = self.db.cursor.execute('SELECT {} FROM reply'.format(column))
+
+        rows = self.db.cursor.fetchall()
+
+        data = []
+        for i, item in enumerate(rows):
+            r = dict(zip(column.split(','), item))
+
+            reply = json.loads(r['data'])
+            del r['data']
+
+            r['username'] = reply['authorText']['simpleText']
+            r['contentText'] = reply['contentText']['runs'][0]['text']
+            r['isLiked'] = reply['isLiked']
+            r['likeCount'] = reply['likeCount']
+
+            if 'replyCount' in reply:
+                r['replyCount'] = reply['replyCount']
+
+            data.append(r)
+
+        pd.DataFrame(data).to_excel('youtube-reply.xlsx')
+
+        return
+
     def batch(self):
         if self.params.video_list is True:
             self.get_video_list()
 
         if self.params.reply is True:
             self.get_reply()
+
+        if self.params.export is True:
+            self.export()
 
         return
 
@@ -187,6 +233,8 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
+
+        parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 

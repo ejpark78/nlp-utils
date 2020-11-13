@@ -87,7 +87,7 @@ class SeleniumWireUtils(object):
 
         return
 
-    def scroll(self, meta, count=10, sleep_time=0.5):
+    def scroll(self, meta, count=10, sleep_time=0.7):
         """스크롤 한다."""
         html = self.driver.find_element_by_tag_name('html')
 
