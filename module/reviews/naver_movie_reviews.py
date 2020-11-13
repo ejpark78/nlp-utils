@@ -14,7 +14,7 @@ import pytz
 import urllib3
 from bs4 import BeautifulSoup
 
-from module.sqlite_utils import SqliteUtils
+from module.reviews.cache_utils import CacheUtils
 from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -45,7 +45,7 @@ class NaverMovieReviews(object):
                        'isMileageSubscriptionReject=false&page={page}',
         }
 
-        self.db = SqliteUtils(filename=self.params.filename)
+        self.db = CacheUtils(filename=self.params.filename)
         self.db.use_cache = self.params.use_cache
 
     def __del__(self):
@@ -72,7 +72,7 @@ class NaverMovieReviews(object):
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '영화 코드 조회',
+                'message': '영화 코드 저장',
                 'code': values[1],
                 'title': values[2],
                 **meta
@@ -105,7 +105,7 @@ class NaverMovieReviews(object):
             for p in range(1, 1000):
                 url = self.url['code'].format(year=y, page=p)
 
-                contents = self.db.get_contents(url=url, meta={'year': y, 'page': p})
+                contents = self.db.read_cache(url=url, meta={'year': y, 'page': p})
                 code_list = self.save_movie_code(url=url, content=contents['content'], meta={'year': y, 'page': p})
 
                 if code_list != '' and prev == code_list:
@@ -216,7 +216,7 @@ class NaverMovieReviews(object):
             for p in range(1, 1000):
                 url = self.url['reviews'].format(code=item[0], page=p)
 
-                contents = self.db.get_contents(
+                contents = self.db.read_cache(
                     url=url,
                     meta={
                         'title': item[1],

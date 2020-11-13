@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+from time import sleep
 
 import pytz
 import urllib3
@@ -20,7 +21,7 @@ urllib3.disable_warnings(UserWarning)
 
 class SeleniumWireUtils(object):
 
-    def __init__(self):
+    def __init__(self, login=False, headless=True, user_data_path=None, executable_path='/usr/bin/chromedriver'):
         super().__init__()
 
         self.logger = Logger()
@@ -28,10 +29,10 @@ class SeleniumWireUtils(object):
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.driver = None
-        self.login = False
-        self.headless = True
-        self.user_data_path = None
-        self.executable_path = '/usr/bin/chromedriver'
+        self.login = login
+        self.headless = headless
+        self.user_data_path = user_data_path
+        self.executable_path = executable_path
 
         self.headers = None
 
@@ -85,29 +86,78 @@ class SeleniumWireUtils(object):
 
         return
 
-    def open(self, url, wait_for_path):
-        del self.driver.requests
+    def scroll(self, meta, count=10, sleep_time=2):
+        """스크롤 한다."""
+        from selenium.webdriver.common.keys import Keys
+
+        html = self.driver.find_element_by_tag_name('html')
+
+        for i in range(count):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': 'scroll',
+                'scroll count': i,
+                **meta
+            })
+
+            try:
+                html.send_keys(Keys.PAGE_DOWN)
+
+                self.driver.implicitly_wait(10)
+                WebDriverWait(self.driver, 10, 10)
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'page down error',
+                    'exception': str(e),
+                    **meta,
+                })
+                break
+
+            sleep(sleep_time)
+
+        return False
+
+    def open(self, url, resp_url_path, wait_for_path, clear_requests=True):
+        if clear_requests is True:
+            del self.driver.requests
 
         self.driver.get(url=url)
+        self.logger.log(msg={'level': 'MESSAGE', 'message': 'requests', 'url': url})
 
         if wait_for_path is not None:
-            self.driver.wait_for_request(wait_for_path, timeout=30)
+            try:
+                self.driver.wait_for_request(wait_for_path, timeout=30)
+            except Exception as e:
+                self.logger.error(msg={'wait_for_path': wait_for_path, 'error': str(e)})
         else:
             self.driver.implicitly_wait(15)
             WebDriverWait(self.driver, 5, 10)
 
+        return self.get_requests(resp_url_path=resp_url_path)
+
+    def get_requests(self, resp_url_path):
         result = []
         for req in self.driver.requests:
             if req.response is None:
                 continue
 
-            if '/apis/' not in req.url:
+            if resp_url_path is None:
+                result.append(req)
                 continue
 
-            req.data = json.loads(req.response.body)
-            req.auth_token = req.headers['Authorization']
+            if resp_url_path not in req.url:
+                continue
+
+            if 'Content-Type' in req.response.headers and 'json' in req.response.headers['Content-Type']:
+                try:
+                    req.data = json.loads(req.response.body)
+                except Exception as e:
+                    self.logger.error(msg={'error': str(e)})
 
             self.headers = req.headers
+            if 'Authorization' in req.headers:
+                req.auth_token = req.headers['Authorization']
 
             result.append(req)
 

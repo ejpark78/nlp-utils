@@ -11,16 +11,7 @@ import os
 import sqlite3
 import sys
 
-MESSAGE = 25
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
+from module.utils.logger import Logger
 
 
 class SqliteUtils(object):
@@ -35,6 +26,8 @@ class SqliteUtils(object):
 
         # 디비 오픈
         self.open_db(filename=filename)
+
+        self.logger = Logger()
         return
 
     def open_db(self, filename):

@@ -19,7 +19,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class SqliteUtils(object):
+class CacheUtils(object):
 
     def __init__(self, filename):
         super().__init__()
@@ -43,6 +43,35 @@ class SqliteUtils(object):
 
         }
 
+        self.schema = [
+            '''
+                CREATE TABLE IF NOT EXISTS cache (
+                    url TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                    content TEXT NOT NULL
+                )
+            ''',
+            '''
+                CREATE TABLE IF NOT EXISTS movie_code (
+                    url TEXT NOT NULL, 
+                    code TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                    title TEXT NOT NULL
+                )
+            ''',
+            '''
+                CREATE TABLE IF NOT EXISTS movie_info (
+                    code TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                    info TEXT NOT NULL
+                )
+            ''',
+            '''
+                CREATE TABLE IF NOT EXISTS movie_reviews (
+                    title TEXT NOT NULL, 
+                    code TEXT NOT NULL, 
+                    review TEXT NOT NULL
+                )
+            '''
+        ]
+
         self.template = {
             'cache': 'REPLACE INTO cache (url, content) VALUES (?, ?)',
             'code': 'INSERT INTO movie_code (url, code, title) VALUES (?, ?, ?)',
@@ -52,7 +81,6 @@ class SqliteUtils(object):
         self.open_db(filename)
 
     def __del__(self):
-        pass
         # if self.cursor is not None:
         #     self.cursor = None
         #
@@ -61,9 +89,10 @@ class SqliteUtils(object):
         #     self.conn.close()
         #
         #     self.conn = None
+        pass
 
     def open_db(self, filename):
-        if filename is None or isfile(filename) is False:
+        if filename is None:
             return
 
         self.conn = sqlite3.connect(filename)
@@ -72,37 +101,12 @@ class SqliteUtils(object):
 
         self.set_pragma(self.cursor, readonly=False)
 
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS cache (
-                url TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                content TEXT NOT NULL
-            )
-        ''')
-
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS movie_code (
-                url TEXT NOT NULL, 
-                code TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                title TEXT NOT NULL
-            )
-        ''')
-
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS movie_info (
-                code TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                info TEXT NOT NULL
-            )
-        ''')
-
-        self.cursor.execute('''
-            CREATE TABLE IF NOT EXISTS movie_reviews (
-                title TEXT NOT NULL, 
-                code TEXT NOT NULL, 
-                review TEXT NOT NULL
-            )
-        ''')
+        for item in self.schema:
+            self.cursor.execute(item)
 
         self.conn.commit()
+
+        return
 
     @staticmethod
     def set_pragma(cursor, readonly=True):
@@ -134,7 +138,7 @@ class SqliteUtils(object):
 
         return None
 
-    def get_contents(self, url, meta, headers=None, use_cache=True):
+    def read_cache(self, url, meta, headers=None, use_cache=True):
         content = None
         if self.use_cache is True and use_cache is True:
             content = self.exists(url=url)

@@ -9,7 +9,6 @@ import json
 import re
 from time import sleep
 from urllib.parse import urljoin
-import requests
 
 import pytz
 import urllib3
@@ -18,7 +17,7 @@ from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, WEEKLY, MO
 from urllib.parse import urlparse, parse_qs
 
-from module.sqlite_utils import SqliteUtils
+from module.reviews.cache_utils import CacheUtils
 from module.utils.logger import Logger
 from module.utils.selenium_wire_utils import SeleniumWireUtils
 
@@ -48,10 +47,10 @@ class DaumMovieReviews(object):
                        'parentId=0&offset={offset}&limit=10&sort=RECOMMEND&isInitial=false&hasNext=true',
         }
 
-        self.db = SqliteUtils(filename=self.params.filename)
+        self.db = CacheUtils(filename=self.params.filename)
         self.db.use_cache = self.params.use_cache
 
-    def save_movie_code(self, url, content):
+    def save_movie_code(self, url, content, meta):
         soup = BeautifulSoup(content, 'html5lib')
 
         buf = set()
@@ -69,12 +68,26 @@ class DaumMovieReviews(object):
             )
 
             buf.add(values[1])
-            print(len(buf), values[1:])
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '영화 코드 저장',
+                'code': values[1],
+                'title': values[2],
+                **meta
+            })
 
             try:
                 self.db.cursor.execute(self.db.template['code'], values)
             except Exception as e:
-                print(e)
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '영화 코드 저장 오류',
+                    'code': values[1],
+                    'title': values[2],
+                    'error': str(e),
+                    **meta
+                })
 
         self.db.conn.commit()
 
@@ -94,8 +107,8 @@ class DaumMovieReviews(object):
         for dt in dt_list:
             url = self.url['code'].format(year=dt.year, month=dt.month, day=dt.day)
 
-            contents = self.db.get_contents(url=url, meta={})
-            _ = self.save_movie_code(url=url, content=contents['content'])
+            contents = self.db.read_cache(url=url, meta={})
+            _ = self.save_movie_code(url=url, content=contents['content'], meta={})
 
             if contents['is_cache'] is False:
                 sleep(self.sleep_time)
@@ -164,7 +177,14 @@ class DaumMovieReviews(object):
             })
 
             info_url = self.url['info'].format(code=item[0])
-            resp = selenium.open(url=info_url, wait_for_path=r'/apis/v1/comments/on/\d+/flag')
+            resp = selenium.open(
+                url=info_url,
+                resp_url_path='/apis/',
+                wait_for_path=r'/apis/v1/comments/on/\d+/flag'
+            )
+
+            if len(resp) == 0:
+                continue
 
             info = {
                 'post': resp[0],
@@ -194,13 +214,17 @@ class DaumMovieReviews(object):
             )
 
             for offset in range(comments_info['size'], comments_info['total'], comments_info['size']):
-                reviews_url = self.url['reviews'].format(post_id=comments_info['post_id'], offset=offset)
+                url = self.url['reviews'].format(post_id=comments_info['post_id'], offset=offset)
 
-                if offset // 2000 > 0 and offset % 2000 == 0:
-                    _ = selenium.open(url=info_url, wait_for_path=r'/apis/v1/comments/on/\d+/flag')
+                if offset // 1000 > 0 and offset % 1000 == 0:
+                    _ = selenium.open(
+                        url=info_url,
+                        resp_url_path='/apis/',
+                        wait_for_path=r'/apis/v1/comments/on/\d+/flag'
+                    )
 
-                contents = self.db.get_contents(
-                    url=reviews_url,
+                contents = self.db.read_cache(
+                    url=url,
                     meta={
                         'title': item[1],
                         'url': info['comments'].url,
@@ -216,10 +240,11 @@ class DaumMovieReviews(object):
                     content=contents['content'],
                     meta={
                         'title': item[1],
-                        'url': reviews_url,
+                        'url': url,
                         'position': i,
                         'offset': offset,
-                        'size': len(rows)
+                        'size': len(rows),
+                        'comments_info': comments_info
                     }
                 )
 
