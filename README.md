@@ -58,3 +58,9 @@ https://nlp-utils/#browse/browse:pypi-hosted
 ```bash
 pip3 install nlplab
 ```
+
+## 참고 
+
+* [파이썬 package 배포 하기](https://rampart81.github.io/post/python_package_publish/)
+* [Nexus3 를 이용하여 python private repository를 구축하자 - 3](http://blog.naver.com/dmzone75/221395643249)
+* [[pypi] python private registry 구축하기 (pip)](https://waspro.tistory.com/559) 
