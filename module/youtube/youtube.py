@@ -131,7 +131,13 @@ class YoutubeCrawler(object):
             if 'header' not in resp_item.keys():
                 continue
 
-            total = int(resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText'])
+            total_text = resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText']
+            if '천' in total_text:
+                total = float(total_text.replace('천', '')) * 1000
+            elif '만' in total_text:
+                total = float(total_text.replace('만', '')) * 10000
+            else:
+                total = float(total_text)
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -139,11 +145,11 @@ class YoutubeCrawler(object):
                 'total': total
             })
 
-            return total
+            return round(total, 0)
 
         return -1
 
-    def get_more_reply(self, v_id, title, meta, total, reply_count=0, max_try=100):
+    def get_more_reply(self, v_id, title, meta, total, reply_sum=0, max_try=500, max_zero_count=10):
         if max_try < 0:
             return
 
@@ -170,20 +176,36 @@ class YoutubeCrawler(object):
                 data=data
             )
 
-        if len(replies) == 0:
-            return reply_count
+        reply_sum += len(replies)
 
         self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '댓글 조회 계속',
             'count': len(replies),
-            'sum': reply_count,
+            'reply_sum': reply_sum,
             'max_try': max_try,
+            'total': total,
         })
 
-        reply_count += len(replies)
+        if len(replies) == 0:
+            max_zero_count -= 1
 
-        if reply_count < total:
+            if max_zero_count < 0 or total - reply_sum < 50:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': '댓글 조회 중지',
+                    'max_try': max_try,
+                    'count': len(replies),
+                    'total': total,
+                    'reply_sum': reply_sum,
+                    'max_zero_count': max_zero_count,
+                })
+
+                return reply_sum
+        else:
+            max_zero_count = 10
+
+        if reply_sum < total:
             del self.selenium.driver.requests
 
             self.get_more_reply(
@@ -192,10 +214,11 @@ class YoutubeCrawler(object):
                 meta=meta,
                 total=total,
                 max_try=max_try - 1,
-                reply_count=reply_count
+                reply_sum=reply_sum,
+                max_zero_count=max_zero_count,
             )
 
-        return reply_count
+        return reply_sum
 
     def get_reply(self):
         sql = 'SELECT id, title FROM videos WHERE reply_count < 0'
@@ -243,14 +266,23 @@ class YoutubeCrawler(object):
 
     def export(self):
         # video
-        column = 'id,title,reply_count'
+        column = 'id,title,reply_count,tags'
         _ = self.db.cursor.execute('SELECT {} FROM videos'.format(column))
 
         rows = self.db.cursor.fetchall()
 
+        meta = {}
+
         data = []
         for i, item in enumerate(rows):
-            data.append(dict(zip(column.split(','), item)))
+            r = dict(zip(column.split(','), item))
+            tags = json.loads(r['tags'])
+            del r['tags']
+
+            r.update(tags)
+            data.append(r)
+
+            meta[item[0]] = tags
 
         pd.DataFrame(data).to_excel('youtube-video.xlsx')
 
@@ -276,45 +308,13 @@ class YoutubeCrawler(object):
             if 'replyCount' in reply:
                 r['replyCount'] = reply['replyCount']
 
+            if item[1] in meta:
+                r.update(meta[item[1]])
+
             data.append(r)
 
         pd.DataFrame(data).to_excel('youtube-reply.xlsx')
 
-        return
-
-    def merge(self):
-        from_db = CacheUtils(filename='youtube.bak.db')
-        to_db = CacheUtils(filename='youtube.db')
-
-        # reply
-        sql = 'UPDATE videos SET reply_count=? WHERE id=?'
-        to_db.cursor.execute('SELECT video_id, COUNT(*) FROM reply GROUP BY video_id')
-
-        rows = to_db.cursor.fetchall()
-        for i, item in enumerate(rows):
-            print(i, item)
-            to_db.cursor.execute(sql, (item[1], item[0], ))
-            to_db.conn.commit()
-
-        # # video
-        # sql = 'UPDATE videos SET reply_count=? WHERE id=?'
-        # from_db.cursor.execute('SELECT id, reply_count FROM videos WHERE reply_count >= 0')
-        #
-        # rows = from_db.cursor.fetchall()
-        # for i, item in enumerate(rows):
-        #     print(i)
-        #     to_db.cursor.execute(sql, (item[1], item[0], ))
-        #     to_db.conn.commit()
-        #
-        # # reply
-        # sql = 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)'
-        # from_db.cursor.execute('SELECT id, video_id, video_title, data FROM reply')
-        #
-        # rows = from_db.cursor.fetchall()
-        # for i, item in enumerate(rows):
-        #     print(i)
-        #     to_db.cursor.execute(sql, item)
-        #     to_db.conn.commit()
         return
 
     def batch(self):
