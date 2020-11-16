@@ -1,0 +1,9 @@
+wheel
+setuptools
+twine
+pandas
+requests
+urllib3
+bs4
+tqdm
+webdav
