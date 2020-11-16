@@ -5,7 +5,7 @@ setup(
     version='1.0.0',
     packages=find_packages(exclude=['docs', 'tests*']),
     python_requires='>=3',
-    url='',
+    url='http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab',
     license='MIT',
     author='ejpark',
     author_email='ejpark@ncsoft.com',

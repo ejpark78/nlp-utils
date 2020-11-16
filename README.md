@@ -1,6 +1,14 @@
 
 ## private pypi 이용한 라이브러리 배포
 
+### /etc/hosts 에 nlp-utils 추가 
+
+```bash
+echo "172.19.153.41  nlp-utils" | sudo tee -a /etc/hosts
+
+# nlp-utils.ncsoft.com
+```
+
 ### ~/.pip/pip.conf 설정
 
 ```bash
