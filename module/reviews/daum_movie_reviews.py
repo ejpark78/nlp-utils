@@ -167,16 +167,19 @@ class DaumMovieReviews(object):
         rows = self.db.cursor.fetchall()
 
         for i, item in enumerate(rows):
+            code = item[0]
+            title = item[1]
+
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '영화 정보',
-                'code': item[0],
-                'title': item[1],
+                'code': code,
+                'title': title,
                 'position': i,
                 'size': len(rows)
             })
 
-            info_url = self.url['info'].format(code=item[0])
+            info_url = self.url['info'].format(code=code)
             resp = self.selenium.open(
                 url=info_url,
                 resp_url_path='/apis/',
@@ -196,8 +199,8 @@ class DaumMovieReviews(object):
             self.db.save_cache(url=info['comments'].url, content=info['comments'].response.body)
 
             self.save_movie_reviews(
-                title=item[1],
-                code=item[0],
+                code=code,
+                title=title,
                 content=info['comments'].response.body,
                 meta={
                     'title': item[1],
@@ -234,9 +237,28 @@ class DaumMovieReviews(object):
                     headers=self.selenium.headers
                 )
 
+                if 'Access token expired' in contents['content'].decode('utf-8'):
+                    _ = self.selenium.open(
+                        url=info_url,
+                        resp_url_path='/apis/',
+                        wait_for_path=r'/apis/v1/comments/on/\d+/flag'
+                    )
+
+                    contents = self.db.read_cache(
+                        url=url,
+                        meta={
+                            'title': item[1],
+                            'url': info['comments'].url,
+                            'position': i,
+                            'size': len(rows)
+                        },
+                        headers=self.selenium.headers,
+                        use_cache=False,
+                    )
+
                 self.save_movie_reviews(
-                    title=item[1],
-                    code=item[0],
+                    code=code,
+                    title=title,
                     content=contents['content'],
                     meta={
                         'title': item[1],

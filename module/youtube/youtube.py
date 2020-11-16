@@ -5,11 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from module.utils.elasticsearch_utils import ElasticSearchUtils
+import json
+from time import sleep
+
+import pandas as pd
+
 from module.utils.logger import Logger
 from module.utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
-from time import sleep
+
 
 class YoutubeCrawler(object):
     """유튜브 크롤러"""
@@ -26,15 +30,6 @@ class YoutubeCrawler(object):
 
         self.home_path = 'data/youtube'
         self.data_path = self.home_path
-
-        host = 'https://corpus.ncsoft.com:9200'
-        index = 'crawler-youtube-reply'
-
-        self.elastic = ElasticSearchUtils(
-            host=host,
-            index=index,
-            split_index=True
-        )
 
         self.selenium = SeleniumWireUtils(headless=True)
 
@@ -55,7 +50,9 @@ class YoutubeCrawler(object):
         if tab_name == 'videos':
             tab = tabs[1]
 
-        result = tab['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
+        result = \
+            tab['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0][
+                'gridRenderer']['items']
 
         self.selenium.scroll(count=self.max_scroll, meta=meta)
 
@@ -69,17 +66,17 @@ class YoutubeCrawler(object):
 
     def get_video_list(self):
         url_list = [{
-            'lang': 'en',
-            'tag': 'L2',
-            'title': 'Clobberstomp',
-            'videos': 'https://www.youtube.com/c/Clobberstomped/videos?view=0&sort=dd&shelf_id=0',
-            'playlist': 'https://www.youtube.com/c/Clobberstomped/playlists?view=1&flow=grid',
-        }, {
             'lang': 'ko',
             'tag': 'economy',
             'title': '삼프로TV_경제의신과함께',
             'videos': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/videos?view=0',
             'playlist': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/playlists?view=1&flow=grid',
+        }, {
+            'lang': 'en',
+            'tag': 'L2',
+            'title': 'Clobberstomp',
+            'videos': 'https://www.youtube.com/c/Clobberstomped/videos?view=0&sort=dd&shelf_id=0',
+            'playlist': 'https://www.youtube.com/c/Clobberstomped/playlists?view=1&flow=grid',
         }, {
             'lang': 'cn',
             'tag': 'L2',
@@ -122,22 +119,103 @@ class YoutubeCrawler(object):
 
         return
 
+    def get_total_reply_count(self):
+        self.selenium.scroll(count=3, meta={})
+
+        for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
+            if 'itemSectionContinuation' not in x.data['response']['continuationContents']:
+                continue
+
+            resp_item = x.data['response']['continuationContents']['itemSectionContinuation']
+
+            if 'header' not in resp_item.keys():
+                continue
+
+            total = int(resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText'])
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '댓글수',
+                'total': total
+            })
+
+            return total
+
+        return -1
+
+    def get_more_reply(self, v_id, title, meta, total, reply_count=0, max_try=100):
+        if max_try < 0:
+            return
+
+        self.selenium.scroll(count=self.max_scroll, meta=meta)
+
+        replies = []
+        for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
+            if 'itemSectionContinuation' not in x.data['response']['continuationContents']:
+                continue
+
+            resp_item = x.data['response']['continuationContents']['itemSectionContinuation']
+
+            if 'contents' not in resp_item:
+                continue
+
+            replies += resp_item['contents']
+
+        replies = [x['commentThreadRenderer']['comment']['commentRenderer'] for x in replies]
+        for data in replies:
+            self.db.save_reply(
+                c_id=data['commentId'],
+                video_id=v_id,
+                video_title=title,
+                data=data
+            )
+
+        if len(replies) == 0:
+            return reply_count
+
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': '댓글 조회 계속',
+            'count': len(replies),
+            'sum': reply_count,
+            'max_try': max_try,
+        })
+
+        reply_count += len(replies)
+
+        if reply_count < total:
+            del self.selenium.driver.requests
+
+            self.get_more_reply(
+                v_id=v_id,
+                title=title,
+                meta=meta,
+                total=total,
+                max_try=max_try - 1,
+                reply_count=reply_count
+            )
+
+        return reply_count
+
     def get_reply(self):
-        _ = self.db.cursor.execute('SELECT id, title, data FROM videos WHERE reply_count < 0')
+        sql = 'SELECT id, title FROM videos WHERE reply_count < 0'
+        _ = self.db.cursor.execute(sql)
 
         rows = self.db.cursor.fetchall()
 
         for i, item in enumerate(rows):
+            v_id = item[0]
+            title = item[1]
+
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '댓글 조회',
-                'video id': item[0],
-                'title': item[1],
+                'video id': v_id,
+                'title': title,
                 'position': i,
                 'size': len(rows)
             })
 
-            v_id = item[0]
             url = 'https://www.youtube.com/watch?v={v_id}'.format(v_id=v_id)
             self.selenium.open(
                 url=url,
@@ -145,34 +223,25 @@ class YoutubeCrawler(object):
                 wait_for_path=None
             )
 
-            self.selenium.scroll(count=self.max_scroll, meta={'title': item[1], 'position': i})
+            total = self.get_total_reply_count()
+            if total == 0:
+                self.db.update_reply_count(v_id=v_id, count=0)
+                sleep(self.sleep_time)
+                continue
 
-            replies = []
-            for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
-                resp_item = x.data['response']['continuationContents']['itemSectionContinuation']
-                if 'contents' not in resp_item:
-                    continue
+            reply_count = self.get_more_reply(
+                v_id=v_id,
+                title=title,
+                meta={'title': title, 'position': i},
+                total=total
+            )
 
-                replies += resp_item['contents']
-
-            replies = [x['commentThreadRenderer']['comment']['commentRenderer'] for x in replies]
-            for data in replies:
-                self.db.save_reply(
-                    c_id=data['commentId'],
-                    video_id=item[0],
-                    video_title=item[1],
-                    data=data
-                )
-
-            self.db.update_reply_count(v_id=v_id, count=len(replies))
+            self.db.update_reply_count(v_id=v_id, count=reply_count)
             sleep(self.sleep_time)
 
         return
 
     def export(self):
-        import json
-        import pandas as pd
-
         # video
         column = 'id,title,reply_count'
         _ = self.db.cursor.execute('SELECT {} FROM videos'.format(column))
@@ -203,6 +272,7 @@ class YoutubeCrawler(object):
             r['isLiked'] = reply['isLiked']
             r['likeCount'] = reply['likeCount']
 
+            r['replyCount'] = 0
             if 'replyCount' in reply:
                 r['replyCount'] = reply['replyCount']
 
@@ -210,6 +280,41 @@ class YoutubeCrawler(object):
 
         pd.DataFrame(data).to_excel('youtube-reply.xlsx')
 
+        return
+
+    def merge(self):
+        from_db = CacheUtils(filename='youtube.bak.db')
+        to_db = CacheUtils(filename='youtube.db')
+
+        # reply
+        sql = 'UPDATE videos SET reply_count=? WHERE id=?'
+        to_db.cursor.execute('SELECT video_id, COUNT(*) FROM reply GROUP BY video_id')
+
+        rows = to_db.cursor.fetchall()
+        for i, item in enumerate(rows):
+            print(i, item)
+            to_db.cursor.execute(sql, (item[1], item[0], ))
+            to_db.conn.commit()
+
+        # # video
+        # sql = 'UPDATE videos SET reply_count=? WHERE id=?'
+        # from_db.cursor.execute('SELECT id, reply_count FROM videos WHERE reply_count >= 0')
+        #
+        # rows = from_db.cursor.fetchall()
+        # for i, item in enumerate(rows):
+        #     print(i)
+        #     to_db.cursor.execute(sql, (item[1], item[0], ))
+        #     to_db.conn.commit()
+        #
+        # # reply
+        # sql = 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)'
+        # from_db.cursor.execute('SELECT id, video_id, video_title, data FROM reply')
+        #
+        # rows = from_db.cursor.fetchall()
+        # for i, item in enumerate(rows):
+        #     print(i)
+        #     to_db.cursor.execute(sql, item)
+        #     to_db.conn.commit()
         return
 
     def batch(self):
@@ -239,7 +344,7 @@ class YoutubeCrawler(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--filename', default='youtube.db', help='파일명')
-        parser.add_argument('--max-scroll', default=30, type=int, help='sleep time')
+        parser.add_argument('--max-scroll', default=10, type=int, help='sleep time')
 
         return parser.parse_args()
 

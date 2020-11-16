@@ -44,7 +44,8 @@ class CacheUtils(object):
             ''',
             '''
             CREATE TABLE IF NOT EXISTS reply (
-                id TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                no INTEGER PRIMARY KEY AUTOINCREMENT, 
+                id TEXT NOT NULL UNIQUE, 
                 video_id TEXT NOT NULL, 
                 video_title TEXT NOT NULL, 
                 data TEXT NOT NULL
