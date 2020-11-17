@@ -1,4 +1,6 @@
 wheel
+setuptools
+twine
 python-dateutil
 boto3
 bs4
@@ -9,6 +11,7 @@ pymongo
 requests
 requests[socks]
 requests[security]
+requests-oauthlib
 requests-html
 selenium
 selenium-wire
