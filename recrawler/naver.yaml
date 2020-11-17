@@ -275,3 +275,357 @@ jobs:
       - "10"
     subSategory:
       - "날씨"
+
+  - name: naver-economy-2020-01
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy"
+      - "--date_range"
+      - "2020-01-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "경제/산업/재계"
+      - "경제/경제 일반"
+
+  - name: naver-economy-2020-02
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy"
+      - "--date_range"
+      - "2020-02-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "경제/산업/재계"
+      - "경제/경제 일반"
+
+  - name: naver-economy-2020-03
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "economy"
+      - "--date_range"
+      - "2020-03-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "경제/산업/재계"
+      - "경제/경제 일반"
+
+  - name: naver-society-2020-01
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-01-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-02
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-02-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-03
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-03-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-04
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-04-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-05
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-05-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-06
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-06-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-07
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-07-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-08
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-08-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-09
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-09-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: naver-society-2020-10
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver
+    args:
+      - "python3"
+      - "batch.py"
+      - "--skip_check_history"
+      - "--category"
+      - "naver"
+      - "--job_id"
+      - "society"
+      - "--date_range"
+      - "2020-10-01"
+      - "--sleep"
+      - "10"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
