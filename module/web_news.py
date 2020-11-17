@@ -9,6 +9,8 @@ import json
 import os
 import re
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
 from time import sleep
 from urllib.parse import parse_qs
 from urllib.parse import urljoin
@@ -63,11 +65,17 @@ class WebNewsCrawler(CrawlerBase):
             self.update_date = True
             self.update_date_range()
         else:
-            dt_start, dt_end = args.date_range.split('~', maxsplit=1)
+            token = args.date_range.split('~', maxsplit=1)
+
+            dt_start = parse_date(token[0])
+            dt_end = dt_start + relativedelta(months=1)
+
+            if len(token) > 1:
+                dt_end = parse_date(token[1])
 
             self.date_range = {
-                'end': self.timezone.localize(parse_date(dt_end)),
-                'start': self.timezone.localize(parse_date(dt_start)),
+                'end': self.timezone.localize(dt_end),
+                'start': self.timezone.localize(dt_start),
             }
 
             today = datetime.now(self.timezone)

@@ -17,6 +17,7 @@ import pytz
 import requests
 import urllib3
 from tqdm import tqdm
+from module.utils.selenium_wire_utils import SeleniumWireUtils
 
 from module.config import Config
 from module.utils.logger import Logger
@@ -32,11 +33,11 @@ class UdemyCrawler(object):
         """생성자"""
         super().__init__()
 
+        self.params = self.init_arguments()
+
         self.job_id = 'business'
 
         self.cfg = Config(job_category='udemy', job_id=self.job_id)
-
-        self.headers = None
 
         # crawler job 정보
         job_info = self.cfg.job_info
@@ -49,8 +50,11 @@ class UdemyCrawler(object):
         self.sleep = job_info['sleep']
         self.data_path = job_info['data_path']
 
-        self.session = requests.Session()
-        self.session.verify = False
+        self.selenium = SeleniumWireUtils(
+            login=self.params.login,
+            headless=~self.params.head,
+            user_data_path=self.params.user_data,
+        )
 
         self.logger = Logger()
 
@@ -429,18 +433,6 @@ Icon=text-html
 
         return
 
-    def update_token(self, token, url):
-        """토큰 정보를 갱신한다."""
-        self.headers = {
-            'authorization': 'Bearer {token}'.format(token=token),
-            'X-Udemy-Authorization': 'Bearer {token}'.format(token=token),
-            'Referer': url,
-            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.75 Safari/537.36'
-        }
-        return
-
     @staticmethod
     def save_cache(cache, path, name, save_time_tag=False):
         """캐쉬 파일로 저장한다."""
@@ -478,14 +470,18 @@ Icon=text-html
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--course_list', action='store_true', default=False)
-        parser.add_argument('--trace_course_list', action='store_true', default=False)
+        parser.add_argument('--login', action='store_true', default=False)
+        parser.add_argument('--head', action='store_true', default=False)
+
+        parser.add_argument('--course-list', action='store_true', default=False)
+        parser.add_argument('--trace-course', action='store_true', default=False)
+
+        parser.add_argument('--user-data', default='./cache/selenium/udemy')
 
         return parser.parse_args()
 
     @staticmethod
     def read_done_list(path):
-        """ """
         filename = '{}/done.txt'.format(path)
         if isfile(filename) is False:
             return set()
@@ -497,21 +493,21 @@ Icon=text-html
         """코스 목록 전체를 다운로드한다."""
         from os import rename
 
-        args = self.init_arguments()
+        if self.params.login is True:
+            self.selenium.open(url='https://ncsoft.udemy.com')
+            print(1)
 
-        if args.course_list is True:
+        if self.params.course_list is True:
             self.logger.log(msg={
                 'MESSAGE': '코스 목록 조회'
             })
 
-            self.update_token(
-                token=self.cfg.job_info['token'],
-                url='https://ncsoft.udemy.com/home/my-courses/learning/'
-            )
+            # token=self.cfg.job_info['token'],
+            # url='https://ncsoft.udemy.com/home/my-courses/learning/'
 
             self.get_my_course_list()
 
-        if args.trace_course_list is True:
+        if self.params.trace_course is True:
             done_path = '{}/{}'.format(self.data_path, 'done')
 
             if isdir(done_path) is False:

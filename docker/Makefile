@@ -51,7 +51,9 @@ build:
 		--exclude=*.log \
 		--exclude=*.tar.gz \
 		--exclude=*.bz2 \
+		--exclude=*.db \
 		--exclude=*.pycharm* \
+		--exclude=*browsermob-proxy* \
 		--exclude=__pycache__ \
 		--exclude=tmp \
 		--exclude=log \
@@ -64,7 +66,6 @@ build:
 		--exclude=notebook \
 		--exclude=cache \
 		--exclude=ops \
-		--exclude=module/browsermob-proxy/ \
 		.
 
 	cd build/

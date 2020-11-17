@@ -117,7 +117,7 @@ class SeleniumWireUtils(object):
 
         return False
 
-    def open(self, url, resp_url_path, wait_for_path, clear_requests=True):
+    def open(self, url, resp_url_path=None, wait_for_path=None, clear_requests=True):
         if clear_requests is True:
             del self.driver.requests
 

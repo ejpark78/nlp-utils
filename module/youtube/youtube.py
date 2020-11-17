@@ -127,8 +127,10 @@ class YoutubeCrawler(object):
                 continue
 
             resp_item = x.data['response']['continuationContents']['itemSectionContinuation']
-
             if 'header' not in resp_item.keys():
+                continue
+
+            if 'commentsCount' not in resp_item['header']['commentsHeaderRenderer']:
                 continue
 
             total_text = resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText']
@@ -139,13 +141,15 @@ class YoutubeCrawler(object):
             else:
                 total = float(total_text)
 
+            total = round(total, 0)
+
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '댓글수',
                 'total': total
             })
 
-            return round(total, 0)
+            return total
 
         return -1
 
@@ -153,21 +157,22 @@ class YoutubeCrawler(object):
         if max_try < 0:
             return
 
-        self.selenium.scroll(count=self.max_scroll, meta=meta)
+        if total > 10:
+            scroll_count = self.max_scroll if total > 20 else 3
+            self.selenium.scroll(count=scroll_count, meta=meta)
 
-        replies = []
+        contents = []
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
             if 'itemSectionContinuation' not in x.data['response']['continuationContents']:
                 continue
 
             resp_item = x.data['response']['continuationContents']['itemSectionContinuation']
-
             if 'contents' not in resp_item:
                 continue
 
-            replies += resp_item['contents']
+            contents += resp_item['contents']
 
-        replies = [x['commentThreadRenderer']['comment']['commentRenderer'] for x in replies]
+        replies = [x['commentThreadRenderer']['comment']['commentRenderer'] for x in contents]
         for data in replies:
             self.db.save_reply(
                 c_id=data['commentId'],
@@ -222,7 +227,7 @@ class YoutubeCrawler(object):
 
     def get_reply(self):
         sql = 'SELECT id, title FROM videos WHERE reply_count < 0'
-        _ = self.db.cursor.execute(sql)
+        self.db.cursor.execute(sql)
 
         rows = self.db.cursor.fetchall()
 
@@ -264,10 +269,48 @@ class YoutubeCrawler(object):
 
         return
 
+    def get_live_chat(self):
+        sql = 'SELECT id, title FROM videos'
+        self.db.cursor.execute(sql)
+
+        rows = self.db.cursor.fetchall()
+
+        for i, item in enumerate(rows):
+            v_id = item[0]
+            title = item[1]
+
+            v_id = 's5kHF08Sqi4'
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '라이브 채팅 조회',
+                'video id': v_id,
+                'title': title,
+                'position': i,
+                'size': len(rows)
+            })
+
+            url = 'https://www.youtube.com/watch?v={v_id}'.format(v_id=v_id)
+            self.selenium.open(
+                url=url,
+                resp_url_path=None,
+                wait_for_path=None
+            )
+
+            init_data = self.selenium.driver.execute_script('return window["ytInitialData"]')
+
+            for x in self.selenium.get_requests(resp_url_path='/get_live_chat_replay'):
+                pass
+
+        return
+
+    def get_caption(self):
+        return
+
     def export(self):
         # video
         column = 'id,title,reply_count,tags'
-        _ = self.db.cursor.execute('SELECT {} FROM videos'.format(column))
+        self.db.cursor.execute('SELECT {} FROM videos'.format(column))
 
         rows = self.db.cursor.fetchall()
 
@@ -288,7 +331,7 @@ class YoutubeCrawler(object):
 
         # reply
         column = 'id,video_id,video_title,data'
-        _ = self.db.cursor.execute('SELECT {} FROM reply'.format(column))
+        self.db.cursor.execute('SELECT {} FROM reply'.format(column))
 
         rows = self.db.cursor.fetchall()
 
@@ -324,6 +367,12 @@ class YoutubeCrawler(object):
         if self.params.reply is True:
             self.get_reply()
 
+        if self.params.live_chat is True:
+            self.get_live_chat()
+
+        if self.params.caption is True:
+            self.get_caption()
+
         if self.params.export is True:
             self.export()
 
@@ -338,6 +387,8 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
+        parser.add_argument('--live-chat', action='store_true', default=False, help='라이브 채팅 조회')
+        parser.add_argument('--caption', action='store_true', default=False, help='자막 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
