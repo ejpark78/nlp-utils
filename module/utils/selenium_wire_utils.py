@@ -135,7 +135,7 @@ class SeleniumWireUtils(object):
 
         return self.get_requests(resp_url_path=resp_url_path)
 
-    def get_requests(self, resp_url_path):
+    def get_requests(self, resp_url_path=None):
         result = []
         for req in self.driver.requests:
             if req.response is None:

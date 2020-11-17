@@ -52,51 +52,35 @@ class UdemyCrawler(object):
 
         self.selenium = SeleniumWireUtils(
             login=self.params.login,
-            headless=~self.params.head,
+            headless=not self.params.head,
             user_data_path=self.params.user_data,
         )
 
         self.logger = Logger()
 
-    def login(self):
-        """ """
-        # login_url = 'https://auth2.glosbe.com/login'
-        # return self.session.post(login_url, data=self.login_info, timeout=120)
-
     def get_my_course_list(self):
         """강좌 목록을 다운로드 받는다."""
-        page_size = 10
-
         result = []
-        for page in tqdm(range(1, 50), desc='course list'):
-            url = self.url_info['my_courses']['url'].format(page=page, page_size=page_size)
+        for page in tqdm(range(1, 12), desc='course list'):
+            del self.selenium.driver.requests
 
-            resp = requests.get(
-                url=url,
-                headers=self.headers,
-                allow_redirects=True,
-                verify=False,
-                timeout=60
-            )
+            url = 'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'.format(page=page)
 
-            print(resp.text)
+            self.selenium.open(url=url)
+            sleep(self.sleep)
 
-            resp = resp.json()
-
-            self.logger.info(msg={
-                'page': page,
-                'resp': resp
-            })
-
-            if 'results' not in resp:
+            resp = self.selenium.get_requests(resp_url_path='/api-2.0/users/me/subscribed-courses/')
+            if len(resp) == 0:
                 break
 
-            corpus_list = resp['results']
+            for r in resp:
+                if 'results' not in r.data:
+                    return
 
-            result += corpus_list
+                corpus_list = r.data['results']
+                result += corpus_list
 
-            self.save_cache(cache=result, path=self.data_path, name='course_list')
-            sleep(self.sleep)
+                self.save_cache(cache=result, path=self.data_path, name='course_list')
 
         self.save_cache(cache=result, path=self.data_path, name='course_list', save_time_tag=True)
 
@@ -109,6 +93,14 @@ class UdemyCrawler(object):
         if isdir(course_path) is False:
             os.makedirs(course_path)
 
+        self.selenium.open(
+            url='https://ncsoft.udemy.com{}'.format(course['url']),
+            resp_url_path='/api-2.0/courses/',
+            wait_for_path='.+/api-2.0/courses/.+$',
+        )
+
+        _ = self.selenium.get_requests(resp_url_path='/api-2.0/courses/')
+
         # 강좌 목록 추출
         lecture_list = self.open_cache(path=course_path, name='course')
         if lecture_list is None:
@@ -117,7 +109,7 @@ class UdemyCrawler(object):
 
             resp = requests.get(
                 url=url,
-                headers=self.headers,
+                headers=self.selenium.headers,
                 allow_redirects=True,
                 verify=False,
                 timeout=60
@@ -205,7 +197,7 @@ class UdemyCrawler(object):
         # 세부 강좌 목록 조회
         resp = requests.get(
             url=url,
-            headers=self.headers,
+            headers=self.selenium.headers,
             allow_redirects=True,
             verify=False,
             timeout=120
@@ -464,6 +456,61 @@ Icon=text-html
         return result
 
     @staticmethod
+    def read_done_list(path):
+        filename = '{}/done.txt'.format(path)
+        if isfile(filename) is False:
+            return set()
+
+        with open(filename, 'r') as fp:
+            return set([l.strip() for l in fp.readlines()])
+
+    def batch(self):
+        """코스 목록 전체를 다운로드한다."""
+        from os import rename
+
+        if self.params.login is True:
+            self.selenium.open(url='https://ncsoft.udemy.com')
+            sleep(10000)
+
+        if self.params.course_list is True:
+            self.logger.log(msg={
+                'MESSAGE': '코스 목록 조회'
+            })
+
+            self.get_my_course_list()
+
+        if self.params.trace_course is True:
+            self.selenium.open(url='https://ncsoft.udemy.com/home/my-courses/learning')
+            sleep(self.sleep)
+
+            done_path = '{}/{}'.format(self.data_path, 'done')
+            if isdir(done_path) is False:
+                os.makedirs(done_path)
+
+            done_list = self.read_done_list(path=self.data_path)
+            self.course_list = self.open_cache(path=self.data_path, name='course_list')
+
+            for course in self.course_list:
+                self.logger.log(msg={'course': course})
+
+                title = course['title'].replace('/', '-')
+                if title in done_list:
+                    self.logger.log(msg={'MESSAGE': 'SKIP TITLE', 'title': title})
+                    continue
+
+                new_path = '{}/{}'.format(done_path, title)
+                if isdir(new_path) is True:
+                    continue
+
+                path = self.get_course(course=course)
+                if path is None:
+                    continue
+
+                rename(path, new_path)
+
+        return
+
+    @staticmethod
     def init_arguments():
         """ 옵션 설정 """
         import argparse
@@ -479,63 +526,6 @@ Icon=text-html
         parser.add_argument('--user-data', default='./cache/selenium/udemy')
 
         return parser.parse_args()
-
-    @staticmethod
-    def read_done_list(path):
-        filename = '{}/done.txt'.format(path)
-        if isfile(filename) is False:
-            return set()
-
-        with open(filename, 'r') as fp:
-            return set([l.strip() for l in fp.readlines()])
-
-    def batch(self):
-        """코스 목록 전체를 다운로드한다."""
-        from os import rename
-
-        if self.params.login is True:
-            self.selenium.open(url='https://ncsoft.udemy.com')
-            print(1)
-
-        if self.params.course_list is True:
-            self.logger.log(msg={
-                'MESSAGE': '코스 목록 조회'
-            })
-
-            # token=self.cfg.job_info['token'],
-            # url='https://ncsoft.udemy.com/home/my-courses/learning/'
-
-            self.get_my_course_list()
-
-        if self.params.trace_course is True:
-            done_path = '{}/{}'.format(self.data_path, 'done')
-
-            if isdir(done_path) is False:
-                os.makedirs(done_path)
-
-            done_list = self.read_done_list(path=self.data_path)
-
-            self.course_list = self.open_cache(path=self.data_path, name='course_list')
-
-            for course in self.course_list:
-                self.logger.log(msg={'course': course})
-
-                title = course['title'].replace('/', '-')
-                if title in done_list:
-                    self.logger.log(msg={'MESSAGE': 'SKIP TITLE', 'title': title})
-                    continue
-
-                new_path = '{}/{}'.format(done_path, title)
-                if isdir(new_path) is True:
-                    continue
-
-                path = self.get_course(course)
-                if path is None:
-                    continue
-
-                rename(path, new_path)
-
-        return
 
 
 if __name__ == '__main__':

@@ -394,7 +394,7 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
-        parser.add_argument('--filename', default='youtube.db', help='파일명')
+        parser.add_argument('--filename', default='./data/youtube.db', help='파일명')
         parser.add_argument('--max-scroll', default=10, type=int, help='sleep time')
 
         return parser.parse_args()
