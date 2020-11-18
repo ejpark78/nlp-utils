@@ -54,17 +54,14 @@ class CacheUtils(object):
                 CREATE TABLE IF NOT EXISTS movie_code (
                     url TEXT NOT NULL, 
                     code TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                    title TEXT NOT NULL
-                )
-            ''',
-            '''
-                CREATE TABLE IF NOT EXISTS movie_info (
-                    code TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                    info TEXT NOT NULL
+                    title TEXT NOT NULL,
+                    review_count INTEGER DEFAULT -1,
+                    total INTEGER DEFAULT -1
                 )
             ''',
             '''
                 CREATE TABLE IF NOT EXISTS movie_reviews (
+                    no INTEGER PRIMARY KEY AUTOINCREMENT, 
                     title TEXT NOT NULL, 
                     code TEXT NOT NULL, 
                     review TEXT NOT NULL
@@ -75,7 +72,9 @@ class CacheUtils(object):
         self.template = {
             'cache': 'REPLACE INTO cache (url, content) VALUES (?, ?)',
             'code': 'INSERT INTO movie_code (url, code, title) VALUES (?, ?, ?)',
-            'reviews': 'INSERT INTO movie_reviews (title, code, review) VALUES (?, ?, ?)'
+            'reviews': 'INSERT INTO movie_reviews (title, code, review) VALUES (?, ?, ?)',
+            'review_count': 'UPDATE movie_code SET review_count=? WHERE code=?',
+            'total': 'UPDATE movie_code SET total=? WHERE code=?',
         }
 
         self.open_db(filename)
@@ -168,6 +167,16 @@ class CacheUtils(object):
             'content': resp.content,
             'is_cache': False
         }
+
+    def update_review_count(self, code, count):
+        self.cursor.execute(self.template['review_count'], (count, code), )
+        self.conn.commit()
+        return
+
+    def update_total(self, code, total):
+        self.cursor.execute(self.template['total'], (total, code), )
+        self.conn.commit()
+        return
 
     def save_cache(self, url, content):
         self.cursor.execute(self.template['cache'], (url, content,))

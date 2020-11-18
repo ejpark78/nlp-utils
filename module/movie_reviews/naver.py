@@ -14,7 +14,7 @@ import pytz
 import urllib3
 from bs4 import BeautifulSoup
 
-from module.reviews.cache_utils import CacheUtils
+from module.movie_reviews.cache_utils import CacheUtils
 from module.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -128,6 +128,7 @@ class NaverMovieReviews(object):
         soup = BeautifulSoup(content, 'html5lib')
 
         buf = set()
+        count = 0
         for item in soup.select('div.score_result ul li'):
             p = item.select('div.score_reple p')[0]
             span = p.select('span')
@@ -170,6 +171,8 @@ class NaverMovieReviews(object):
                     self.db.template['reviews'],
                     (title, code, json.dumps(review, ensure_ascii=False),)
                 )
+
+                count += 1
             except Exception as e:
                 self.logger.error(msg={
                     'level': 'ERROR',
@@ -180,83 +183,73 @@ class NaverMovieReviews(object):
 
         self.db.conn.commit()
 
-        return ','.join(list(buf))
-
-    def get_movie_info(self):
-        _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
-
-        rows = self.db.cursor.fetchall()
-
-        for i, item in enumerate(rows):
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '영화 정보',
-                'code': item[0],
-                'title': item[1],
-                'i': i,
-                'size': len(rows)
-            })
+        return {
+            'list': ','.join(list(buf)),
+            'count': count
+        }
 
     def get_movie_reviews(self):
-        _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
+        _ = self.db.cursor.execute('SELECT code, title FROM movie_code WHERE review_count < 0')
 
         rows = self.db.cursor.fetchall()
 
         for i, item in enumerate(rows):
+            (code, title) = (item[0], item[1])
+
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '영화 정보',
-                'code': item[0],
-                'title': item[1],
-                'position': i,
-                'size': len(rows)
+                'code': code,
+                'title': title,
+                'position': '{:,}/{:,}'.format(i, len(rows)),
             })
 
             prev = ''
+            count = 0
             for p in range(1, 1000):
-                url = self.url['reviews'].format(code=item[0], page=p)
+                url = self.url['reviews'].format(code=code, page=p)
 
                 contents = self.db.read_cache(
                     url=url,
                     meta={
-                        'title': item[1],
+                        'title': title,
                         'page': p,
-                        'i': i,
-                        'size': len(rows)
+                        'position': '{:,}/{:,}'.format(i, len(rows)),
                     }
                 )
-                review_list = self.save_movie_reviews(
-                    title=item[1],
-                    code=item[0],
+                review_info = self.save_movie_reviews(
+                    title=title,
+                    code=code,
                     content=contents['content'],
                     meta={
-                        'title': item[1],
+                        'title': title,
                         'url': url,
                         'page': p,
-                        'position': i,
-                        'size': len(rows)
+                        'position': '{:,}/{:,}'.format(i, len(rows)),
                     }
                 )
+                count += review_info['count']
 
-                if review_list == '':
+                if review_info['list'] == '':
                     self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '영화 리뷰 없음',
                     })
                     break
-
-                if review_list != '' and prev == review_list:
+                elif prev == review_info['list']:
                     self.logger.log(msg={
                         'level': 'MESSAGE',
                         'message': '영화 리뷰 중복',
-                        'review_list': review_list.split(',')
+                        'review_list': review_info['list'].split(',')
                     })
                     break
 
-                prev = review_list
+                prev = review_info['list']
 
                 if contents['is_cache'] is False:
                     sleep(self.sleep_time)
+
+            self.db.update_review_count(code=code, count=count)
 
         return
 
@@ -269,19 +262,15 @@ class NaverMovieReviews(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--movie-code', action='store_true', default=False, help='영화 코드 크롤링')
-        parser.add_argument('--movie-info', action='store_true', default=False, help='영화 정보 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
-        parser.add_argument('--filename', default='naver_movie_reviews.db', help='파일명')
+        parser.add_argument('--filename', default='data/movie_reviews/naver.db', help='파일명')
 
         return parser.parse_args()
 
     def batch(self):
         if self.params.movie_code is True:
             self.get_movie_code()
-
-        if self.params.movie_info is True:
-            self.get_movie_info()
 
         if self.params.movie_reviews is True:
             self.get_movie_reviews()

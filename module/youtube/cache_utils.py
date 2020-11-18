@@ -37,7 +37,8 @@ class CacheUtils(object):
             CREATE TABLE IF NOT EXISTS videos (
                 id TEXT NOT NULL UNIQUE PRIMARY KEY, 
                 title TEXT NOT NULL,
-                reply_count NUMBER DEFAULT -1,
+                reply_count INTEGER DEFAULT -1,
+                total INTEGER DEFAULT -1,
                 tags TEXT NOT NULL,
                 data TEXT NOT NULL
             )
@@ -56,6 +57,8 @@ class CacheUtils(object):
         self.template = {
             'videos': 'REPLACE INTO videos (id, title, data, tags) VALUES (?, ?, ?, ?)',
             'reply': 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)',
+            'reply_count': 'UPDATE videos SET reply_count=? WHERE id=?',
+            'total': 'UPDATE videos SET total=? WHERE id=?',
         }
 
         self.open_db(filename)
@@ -118,7 +121,12 @@ class CacheUtils(object):
         return
 
     def update_reply_count(self, v_id, count):
-        self.cursor.execute('UPDATE videos SET reply_count=? WHERE id=?', (count, v_id), )
+        self.cursor.execute(self.template['reply_count'], (count, v_id), )
+        self.conn.commit()
+        return
+
+    def update_total(self, v_id, total):
+        self.cursor.execute(self.template['total'], (total, v_id), )
         self.conn.commit()
         return
 

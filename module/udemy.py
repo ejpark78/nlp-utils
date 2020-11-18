@@ -52,7 +52,7 @@ class UdemyCrawler(object):
 
         self.selenium = SeleniumWireUtils(
             login=self.params.login,
-            headless=not self.params.head,
+            headless=self.params.headless,
             user_data_path=self.params.user_data,
         )
 
@@ -61,7 +61,7 @@ class UdemyCrawler(object):
     def get_my_course_list(self):
         """강좌 목록을 다운로드 받는다."""
         result = []
-        for page in tqdm(range(1, 12), desc='course list'):
+        for page in tqdm(range(1, 14), desc='course list'):
             del self.selenium.driver.requests
 
             url = 'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'.format(page=page)
@@ -73,14 +73,19 @@ class UdemyCrawler(object):
             if len(resp) == 0:
                 break
 
+            is_stop = False
             for r in resp:
                 if 'results' not in r.data:
-                    return
+                    is_stop = True
+                    break
 
                 corpus_list = r.data['results']
                 result += corpus_list
 
                 self.save_cache(cache=result, path=self.data_path, name='course_list')
+
+            if is_stop is True:
+                break
 
         self.save_cache(cache=result, path=self.data_path, name='course_list', save_time_tag=True)
 
@@ -518,7 +523,7 @@ Icon=text-html
         parser = argparse.ArgumentParser()
 
         parser.add_argument('--login', action='store_true', default=False)
-        parser.add_argument('--head', action='store_true', default=False)
+        parser.add_argument('--headless', action='store_true', default=False)
 
         parser.add_argument('--course-list', action='store_true', default=False)
         parser.add_argument('--trace-course', action='store_true', default=False)

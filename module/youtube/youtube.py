@@ -252,6 +252,8 @@ class YoutubeCrawler(object):
             )
 
             total = self.get_total_reply_count()
+            self.db.update_total(v_id=v_id, total=total)
+
             if total == 0:
                 self.db.update_reply_count(v_id=v_id, count=0)
                 sleep(self.sleep_time)

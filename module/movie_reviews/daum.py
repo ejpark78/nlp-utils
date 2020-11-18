@@ -9,15 +9,15 @@ import json
 import re
 from time import sleep
 from urllib.parse import urljoin
+from urllib.parse import urlparse, parse_qs
 
 import pytz
 import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, WEEKLY, MO
-from urllib.parse import urlparse, parse_qs
 
-from module.reviews.cache_utils import CacheUtils
+from module.movie_reviews.cache_utils import CacheUtils
 from module.utils.logger import Logger
 from module.utils.selenium_wire_utils import SeleniumWireUtils
 
@@ -143,7 +143,7 @@ class DaumMovieReviews(object):
 
         self.db.conn.commit()
 
-        return
+        return len(reviews)
 
     @staticmethod
     def parse_comments_info(url, post, comment_info):
@@ -162,21 +162,19 @@ class DaumMovieReviews(object):
         }
 
     def get_movie_reviews(self):
-        _ = self.db.cursor.execute('SELECT code, title FROM movie_code')
+        _ = self.db.cursor.execute('SELECT code, title FROM movie_code WHERE review_count < 0')
 
         rows = self.db.cursor.fetchall()
 
         for i, item in enumerate(rows):
-            code = item[0]
-            title = item[1]
+            (code, title) = (item[0], item[1])
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '영화 정보',
                 'code': code,
                 'title': title,
-                'position': i,
-                'size': len(rows)
+                'position': '{:,}/{:,}'.format(i, len(rows)),
             })
 
             info_url = self.url['info'].format(code=code)
@@ -198,15 +196,14 @@ class DaumMovieReviews(object):
             self.db.save_cache(url=info['post'].url, content=info['post'].response.body)
             self.db.save_cache(url=info['comments'].url, content=info['comments'].response.body)
 
-            self.save_movie_reviews(
+            count = self.save_movie_reviews(
                 code=code,
                 title=title,
                 content=info['comments'].response.body,
                 meta={
                     'title': item[1],
                     'url': info['comments'].url,
-                    'position': i,
-                    'size': len(rows)
+                    'position': '{:,}/{:,}'.format(i, len(rows)),
                 }
             )
 
@@ -215,6 +212,7 @@ class DaumMovieReviews(object):
                 post=info['post'],
                 comment_info=info['comments_info']
             )
+            self.db.update_total(code=code, total=comments_info['total'])
 
             for offset in range(comments_info['size'], comments_info['total'], comments_info['size']):
                 url = self.url['reviews'].format(post_id=comments_info['post_id'], offset=offset)
@@ -231,8 +229,7 @@ class DaumMovieReviews(object):
                     meta={
                         'title': item[1],
                         'url': info['comments'].url,
-                        'position': i,
-                        'size': len(rows)
+                        'position': '{:,}/{:,}'.format(i, len(rows)),
                     },
                     headers=self.selenium.headers
                 )
@@ -249,29 +246,29 @@ class DaumMovieReviews(object):
                         meta={
                             'title': item[1],
                             'url': info['comments'].url,
-                            'position': i,
-                            'size': len(rows)
+                            'position': '{:,}/{:,}'.format(i, len(rows)),
                         },
                         headers=self.selenium.headers,
                         use_cache=False,
                     )
 
-                self.save_movie_reviews(
+                count += self.save_movie_reviews(
                     code=code,
                     title=title,
                     content=contents['content'],
                     meta={
                         'title': item[1],
                         'url': url,
-                        'position': i,
                         'offset': offset,
-                        'size': len(rows),
+                        'position': '{:,}/{:,}'.format(i, len(rows)),
                         'comments_info': comments_info
                     }
                 )
 
                 if contents['is_cache'] is False:
                     sleep(self.sleep_time)
+
+            self.db.update_review_count(code=code, count=count)
 
         return
 
@@ -296,7 +293,7 @@ class DaumMovieReviews(object):
         parser.add_argument('--movie-info', action='store_true', default=False, help='영화 정보 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
-        parser.add_argument('--filename', default='daum_movie_reviews.db', help='파일명')
+        parser.add_argument('--filename', default='data/movie_reviews/daum.db', help='파일명')
 
         return parser.parse_args()
 
