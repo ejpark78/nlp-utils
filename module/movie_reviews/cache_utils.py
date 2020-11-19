@@ -46,13 +46,15 @@ class CacheUtils(object):
         self.schema = [
             '''
                 CREATE TABLE IF NOT EXISTS cache (
-                    url TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                    url TEXT NOT NULL UNIQUE PRIMARY KEY,
+                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                     content TEXT NOT NULL
                 )
             ''',
             '''
                 CREATE TABLE IF NOT EXISTS movie_code (
                     url TEXT NOT NULL, 
+                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                     code TEXT NOT NULL UNIQUE PRIMARY KEY, 
                     title TEXT NOT NULL,
                     review_count INTEGER DEFAULT -1,
@@ -62,6 +64,7 @@ class CacheUtils(object):
             '''
                 CREATE TABLE IF NOT EXISTS movie_reviews (
                     no INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                     title TEXT NOT NULL, 
                     code TEXT NOT NULL, 
                     review TEXT NOT NULL

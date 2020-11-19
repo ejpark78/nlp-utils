@@ -95,7 +95,7 @@ class YoutubeVideos(object):
 
         videos = []
         for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
-            if x.data is None or len(x.data) < 2:
+            if hasattr(x, 'data') is False or len(x.data) < 2:
                 continue
 
             response = x.data[1]['response']
@@ -196,6 +196,9 @@ class YoutubeReply(object):
         self.selenium.scroll(count=3, meta={})
 
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
+            if hasattr(x, 'data') is False or len(x.data) < 2:
+                continue
+
             if 'itemSectionContinuation' not in x.data['response']['continuationContents']:
                 continue
 
@@ -250,6 +253,9 @@ class YoutubeReply(object):
 
         contents = []
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
+            if hasattr(x, 'data') is False or 'response' not in x.data:
+                continue
+
             if 'itemSectionContinuation' not in x.data['response']['continuationContents']:
                 continue
 

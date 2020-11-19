@@ -36,6 +36,7 @@ class CacheUtils(object):
             '''
             CREATE TABLE IF NOT EXISTS channels (
                 id TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                 title TEXT NOT NULL,
                 video_count INTEGER DEFAULT -1,
                 data TEXT NOT NULL
@@ -44,6 +45,7 @@ class CacheUtils(object):
             '''
             CREATE TABLE IF NOT EXISTS videos (
                 id TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                 title TEXT NOT NULL,
                 reply_count INTEGER DEFAULT -1,
                 total INTEGER DEFAULT -1,
@@ -54,6 +56,7 @@ class CacheUtils(object):
             '''
             CREATE TABLE IF NOT EXISTS reply (
                 no INTEGER PRIMARY KEY AUTOINCREMENT, 
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                 id TEXT NOT NULL UNIQUE, 
                 video_id TEXT NOT NULL, 
                 video_title TEXT NOT NULL, 
