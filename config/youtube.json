@@ -1,0 +1,447 @@
+{
+  "template": {
+    "c_name": {
+      "playlist": "https://www.youtube.com/c/{c_name}/playlists",
+      "videos": [
+        "https://www.youtube.com/c/{c_name}/videos"
+      ]
+    },
+    "c_live": {
+      "playlist": "https://www.youtube.com/c/{c_live}/playlists",
+      "videos": [
+        "https://www.youtube.com/c/{c_live}/videos?view=0",
+        "https://www.youtube.com/c/{c_live}/videos?view=2&live_view=503"
+      ]
+    },
+    "channel": {
+      "playlist": "https://www.youtube.com/channel/{channel}/playlists",
+      "videos": [
+        "https://www.youtube.com/channel/{channel}/videos"
+      ]
+    },
+    "channel_live": {
+      "playlist": "https://www.youtube.com/channel/{channel_live}/playlists",
+      "videos": [
+        "https://www.youtube.com/channel/{channel_live}/videos?view=0",
+        "https://www.youtube.com/channel/{channel_live}/videos?view=2&live_view=503"
+      ]
+    },
+    "user": {
+      "playlist": "https://www.youtube.com/user/{user}/playlists",
+      "videos": [
+        "https://www.youtube.com/user/{user}/videos?view=0",
+        "https://www.youtube.com/user/{user}/videos?view=2&live_view=503"
+      ]
+    }
+  },
+  "channel_list": [
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "",
+      "c_live": "KanandaWidyantara"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "",
+      "c_live": "kemaspakezmantapkali"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Jess No Limit",
+      "c_live": "JessNoLimit"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "WAWAN MKS",
+      "c_live": "WawanMKS"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "BrandonKent Everything",
+      "c_live": "BrandonKentEverything"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "VianoGaming",
+      "c_name": "VianoGamingID"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Kimi Hime",
+      "c_live": "KimberlyHimeKu"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Hi Patrick",
+      "c_live": "HiPatrick"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "MILYHYA",
+      "c_name": "MILYHYA"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "BANG ALEX",
+      "c_live": "BANGALEX"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Rendy Rangers",
+      "c_live": "RendyRangers"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "FrontaL Gaming",
+      "c_live": "FrontaLGaming"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "BUDI01 GAMING",
+      "c_live": "BUDI01GAMING"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "efdewe",
+      "c_live": "efdewe"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Obbyphy",
+      "c_name": "Obbyphy"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Olivia Gosandra",
+      "c_live": "OliviaGosandra"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Sarah Viloid",
+      "c_live": "SarahViloid"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "EJGaming",
+      "c_name": "EJGamingChannel"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "Windia Nata",
+      "c_name": "WindiaNata"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "VY Gaming",
+      "c_live": "VYGaming"
+    },
+    {
+      "lang": "th",
+      "tag": "game",
+      "title": "zbing z.",
+      "c_live": "zbingzbing"
+    },
+    {
+      "lang": "th",
+      "tag": "game",
+      "title": "CGGG",
+      "channel_live": "UCbjxYa1F_1Lbm-IA5yAgWxg"
+    },
+    {
+      "lang": "ko",
+      "tag": "game",
+      "title": "란슬롯Lancelot",
+      "c_live": "란슬롯"
+    },
+    {
+      "lang": "ko",
+      "tag": "game",
+      "title": "강화인간",
+      "channel_live": "UCpJkpW9MGXWHJU3jEYLE9qQ"
+    },
+    {
+      "lang": "en",
+      "tag": "game/BNS",
+      "title": "Blade & Soul",
+      "c_live": "bladeandsoul"
+    },
+    {
+      "lang": "tw",
+      "tag": "game/BNS",
+      "title": "連公子",
+      "channel": "UCoAkmDd7R7kXJAmoUIfL-cw"
+    },
+    {
+      "lang": "tw",
+      "tag": "game/BNS",
+      "title": "墨仔MOJAI",
+      "channel": "UCuUxTyWHFf_t3hu1uSioPwA"
+    },
+    {
+      "lang": "ko",
+      "tag": "economy",
+      "title": "삼프로TV_경제의신과함께",
+      "c_live": "삼프로tv"
+    },
+    {
+      "lang": "en",
+      "tag": "game/L2",
+      "title": "Clobberstomp",
+      "c_live": "Clobberstomped"
+    },
+    {
+      "lang": "cn",
+      "tag": "game/L2",
+      "title": "WuKong国人大联盟L2Classic.club天堂2欧服怀旧",
+      "channel": "UCKwmshJy5DTFjXjYe7STsOA"
+    },
+    {
+      "lang": "vi",
+      "tag": "game/L2",
+      "title": "Neton - Chuyên công nghệ",
+      "channel": "UCcRsvqTKNQ8JLPTmHNyqrGw"
+    },
+    {
+      "lang": "vi",
+      "tag": "game/L2",
+      "title": "iiimibuiii (게이머 계정)",
+      "user": "iiimibuiii"
+    },
+    {
+      "lang": "th",
+      "tag": "game/L2",
+      "title": "Netmarble Global",
+      "c_live": "netmarblegames"
+    },
+    {
+      "lang": "th",
+      "tag": "game/L2",
+      "title": "Lineage2 Revolution Thailand - Official",
+      "channel_live": "UCdYyqdH0oc3RUt9pt1ld9JA"
+    },
+    {
+      "lang": "th",
+      "tag": "game/L2",
+      "title": "Frame Play",
+      "channel_live": "UCZQNLY52RY5BjXydQDT9M_g"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "똘끼100%",
+      "channel_live": "UCybKp0O2N9sUZOgIm1j2r_w"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "난닝구TV",
+      "channel": "UCEzvxHNrMzAP0HH7QDmd8Pg"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "스트리머 사또",
+      "c_live": "스트리머사또"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "불도그",
+      "c_live": "불도그입니다"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "겜창현",
+      "channel_live": "UCymheuyZLem9B6XEAn0Iflg"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "똘건",
+      "c_live": "똘건"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "수삼티비",
+      "c_live": "수삼티비"
+    },
+    {
+      "lang": "ko",
+      "tag": "game/L2M",
+      "title": "태산군주 TV",
+      "c_live": "태산군주TV"
+    },
+    {
+      "lang": "vi",
+      "tag": "game/L2M",
+      "title": "THƯ VIỆN GAME",
+      "channel": "UCEX5oSlgYzfVUqP5GbROIqg"
+    },
+    {
+      "lang": "id",
+      "tag": "game/L2M",
+      "title": "Lein Xceed",
+      "c_live": "LeinXceed"
+    },
+    {
+      "lang": "id",
+      "tag": "game/L2M",
+      "title": "R0ixy Dragony",
+      "c_live": "R0ixyDragony"
+    },
+    {
+      "lang": "th",
+      "tag": "game/L2M",
+      "title": "Shorty Bluejova",
+      "c_live": "ShortyBluejova"
+    },
+    {
+      "lang": "ja",
+      "tag": "game/BNS",
+      "title": "NC JAPAN公式チャンネル",
+      "user": "NCsoftJP"
+    },
+    {
+      "lang": "ja",
+      "tag": "game/BNS",
+      "title": "Risky Lee",
+      "channel": "UCOw3u0xRXJV-YcTlQFDJSVw"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Vietnam Esports TV",
+      "user": "GarenaVietnam"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "PEWPEW",
+      "c_live": "PewPew"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "MISTHY TV",
+      "c_live": "MISTHYTV"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "ViruSs",
+      "c_live": "ViruSsTeam"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Thơ Nguyễn",
+      "c_live": "ThơNguyễndochoi"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Cris Devil Gamer",
+      "c_name": "CrisDevilGamer"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "NTN Vlogs",
+      "c_name": "NTNVlogsVN"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Oops Banana",
+      "c_name": "Oopsbanana"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Hau Hoang",
+      "c_name": "HậuHoàng"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "MixiGaming",
+      "c_live": "MixiGamingofficial"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Linh Ngọc Đàm",
+      "c_live": "LinhNgọcĐàmLazy"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Dũng CT",
+      "channel": "UCoraY4uBmIHHzqgefji9Jwg"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "QTV",
+      "c_live": "FFQTVOfficial"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Xemesis",
+      "c_live": "Xemesis"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Uyên Pu",
+      "c_live": "UyênPu1510"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Jaki Natsumi 2",
+      "channel_live": "UCx92_Rz0qrPm-y03-_fDo8Q"
+    },
+    {
+      "lang": "vi",
+      "tag": "game",
+      "title": "Tiền Zombie v4",
+      "c_live": "zombiev4"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "",
+      "user": "Miawaug"
+    },
+    {
+      "lang": "id",
+      "tag": "game",
+      "title": "",
+      "c_live": "DylandPROS"
+    }
+  ]
+}

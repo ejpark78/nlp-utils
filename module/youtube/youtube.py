@@ -38,86 +38,100 @@ class YoutubeCrawler(object):
         self.db = CacheUtils(filename=self.params.filename)
         self.db.use_cache = self.params.use_cache
 
-        self.sleep_time = 5
+        self.sleep_time = self.params.sleep
 
-    def get_playlist(self, url, meta, tab_name='videos'):
-        self.selenium.open(url=url, resp_url_path=None, wait_for_path=None)
+    def get_playlist(self, url, meta, tags, tab_name='videos'):
+        self.selenium.open(url=url)
 
         init_data = self.selenium.driver.execute_script('return window["ytInitialData"]')
-        tabs = init_data['contents']['twoColumnBrowseResultsRenderer']['tabs']
+        if init_data is None:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': '동영상 목록 조회 에러: empty init data',
+                **meta
+            })
+            return -1
 
+        tabs = init_data['contents']['twoColumnBrowseResultsRenderer']['tabs']
         tab = tabs[2]
         if tab_name == 'videos':
             tab = tabs[1]
 
-        result = \
-            tab['tabRenderer']['content']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents'][0][
-                'gridRenderer']['items']
+        contents = tab['tabRenderer']['content']['sectionListRenderer']['contents']
+        result = contents[0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
 
-        self.selenium.scroll(count=self.max_scroll, meta=meta)
+        self.save_playlist(playlist=result, tab_name=tab_name, tags=tags)
 
-        for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
-            result += x.data[1]['response']['continuationContents']['gridContinuation']['items']
+        return self.get_more_playlist(result_count=len(result), meta=meta, tab_name=tab_name, tags=tags)
 
+    def save_playlist(self, playlist, tab_name, tags):
         if tab_name == 'videos':
-            return [x['gridVideoRenderer'] for x in result]
+            video_list = [x['gridVideoRenderer'] for x in playlist]
+        else:
+            video_list = [x['gridPlaylistRenderer'] for x in playlist]
 
-        return [x['gridPlaylistRenderer'] for x in result]
-
-    def get_video_list(self):
-        url_list = [{
-            'lang': 'ko',
-            'tag': 'economy',
-            'title': '삼프로TV_경제의신과함께',
-            'videos': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/videos?view=0',
-            'playlist': 'https://www.youtube.com/c/%EC%82%BC%ED%94%84%EB%A1%9Ctv/playlists?view=1&flow=grid',
-        }, {
-            'lang': 'en',
-            'tag': 'L2',
-            'title': 'Clobberstomp',
-            'videos': 'https://www.youtube.com/c/Clobberstomped/videos?view=0&sort=dd&shelf_id=0',
-            'playlist': 'https://www.youtube.com/c/Clobberstomped/playlists?view=1&flow=grid',
-        }, {
-            'lang': 'cn',
-            'tag': 'L2',
-            'title': 'WuKong国人大联盟L2Classic.club天堂2欧服怀旧',
-            'videos': 'https://www.youtube.com/channel/UCKwmshJy5DTFjXjYe7STsOA/videos',
-            'playlist': '',
-        }, {
-            'lang': 'vi',
-            'tag': 'L2',
-            'title': 'Neton - Chuyên công nghệ',
-            'videos': 'https://www.youtube.com/channel/UCcRsvqTKNQ8JLPTmHNyqrGw/videos',
-            'playlist': '',
-        }, {
-            'lang': 'th',
-            'tag': 'L2',
-            'title': 'Lineage2 Revolution Thailand - Official',
-            'videos': 'https://www.youtube.com/channel/UCdYyqdH0oc3RUt9pt1ld9JA/videos',
-            'playlist': '',
-        }]
-
-        for item in url_list:
-            videos = self.get_playlist(url=item['videos'], tab_name='videos', meta=item)
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '동영상 목록 조회',
-                'count': len(videos),
-                **item
-            })
-
-            for data in videos:
-                self.db.save_videos(
-                    v_id=data['videoId'],
-                    title=data['title']['runs'][0]['text'],
-                    data=data,
-                    tags=item,
-                )
-
-            sleep(self.sleep_time)
+        for item in video_list:
+            self.db.save_videos(
+                v_id=item['videoId'],
+                title=item['title']['runs'][0]['text'],
+                data=item,
+                tags=tags,
+            )
 
         return
+
+    def get_more_playlist(self, result_count, meta, tab_name, tags, max_try=500, max_zero_count=10):
+        if max_try < 0 or max_zero_count < 0:
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': 'playlist 조회 종료',
+                'max_try': max_try,
+                'max_zero_count': max_zero_count,
+            })
+            return result_count
+
+        del self.selenium.driver.requests
+        self.selenium.scroll(count=self.max_scroll, meta=meta)
+
+        playlist = []
+        for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
+            if x.data is None or len(x.data) < 2:
+                continue
+
+            response = x.data[1]['response']
+            if 'continuationContents' not in response:
+                continue
+
+            playlist += response['continuationContents']['gridContinuation']['items']
+
+        self.save_playlist(playlist=playlist, tab_name=tab_name, tags=tags)
+
+        result_count += len(playlist)
+
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': 'playlist 조회',
+            'count': len(playlist),
+            'sum': result_count,
+            'max_try': max_try,
+        })
+
+        if len(playlist) == 0:
+            max_zero_count -= 1
+        else:
+            max_zero_count = 10
+            sleep(self.sleep_time)
+
+        self.get_more_playlist(
+            result_count=result_count,
+            meta=meta,
+            max_try=max_try - 1,
+            max_zero_count=max_zero_count,
+            tab_name=tab_name,
+            tags=tags
+        )
+
+        return result_count
 
     def get_total_reply_count(self):
         self.selenium.scroll(count=3, meta={})
@@ -154,8 +168,18 @@ class YoutubeCrawler(object):
         return -1
 
     def get_more_reply(self, v_id, title, meta, total, reply_sum=0, max_try=500, max_zero_count=10):
-        if max_try < 0:
-            return
+        if max_try < 0 or max_zero_count < 0:
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '댓글 조회 종료',
+                'max_try': max_try,
+                'total': total,
+                'reply_sum': reply_sum,
+                'max_zero_count': max_zero_count,
+            })
+            return reply_sum
+
+        del self.selenium.driver.requests
 
         if total > 10:
             scroll_count = self.max_scroll if total > 20 else 3
@@ -181,47 +205,32 @@ class YoutubeCrawler(object):
                 data=data
             )
 
-        reply_sum += len(replies)
-
         self.logger.log(msg={
             'level': 'MESSAGE',
-            'message': '댓글 조회 계속',
+            'message': '댓글 조회',
             'count': len(replies),
             'reply_sum': reply_sum,
             'max_try': max_try,
             'total': total,
         })
 
+        reply_sum += len(replies)
+
         if len(replies) == 0:
             max_zero_count -= 1
-
-            if max_zero_count < 0 or total - reply_sum < 50:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': '댓글 조회 중지',
-                    'max_try': max_try,
-                    'count': len(replies),
-                    'total': total,
-                    'reply_sum': reply_sum,
-                    'max_zero_count': max_zero_count,
-                })
-
-                return reply_sum
         else:
             max_zero_count = 10
+            sleep(self.sleep_time)
 
-        if reply_sum < total:
-            del self.selenium.driver.requests
-
-            self.get_more_reply(
-                v_id=v_id,
-                title=title,
-                meta=meta,
-                total=total,
-                max_try=max_try - 1,
-                reply_sum=reply_sum,
-                max_zero_count=max_zero_count,
-            )
+        self.get_more_reply(
+            v_id=v_id,
+            title=title,
+            meta=meta,
+            total=total,
+            max_try=max_try - 1,
+            reply_sum=reply_sum,
+            max_zero_count=max_zero_count,
+        )
 
         return reply_sum
 
@@ -306,9 +315,6 @@ class YoutubeCrawler(object):
 
         return
 
-    def get_caption(self):
-        return
-
     def export(self):
         # video
         column = 'id,title,reply_count,tags'
@@ -362,18 +368,61 @@ class YoutubeCrawler(object):
 
         return
 
+    def get_video_list(self):
+        with open(self.params.config, 'r') as fp:
+            buf = [x.strip() for x in fp.readlines()]
+
+            config = json.loads(''.join(buf))
+
+            template = config['template']
+            channel_list = config['channel_list']
+
+        for i, item in enumerate(channel_list):
+            c_id = ''
+            url_list = []
+            for col in template.keys():
+                if col not in item.keys():
+                    continue
+
+                c_id = item[col]
+                url_list += [x.format(**item) for x in template[col]['videos']]
+                break
+
+            video_count = self.db.get_video_count(c_id=c_id)
+            if video_count > 0:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': 'SKIP CHANNEL',
+                    'item': item,
+                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                })
+                continue
+
+            self.db.save_channels(c_id=c_id, title=item['title'], data=item)
+
+            video_count = 0
+            for url in url_list:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': '동영상 목록 조회',
+                    'url': url,
+                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                    **item
+                })
+
+                video_count += self.get_playlist(url=url, tab_name='videos', meta=item, tags=item)
+                sleep(self.sleep_time)
+
+            self.db.update_video_count(c_id=c_id, count=video_count)
+
+        return
+
     def batch(self):
         if self.params.video_list is True:
             self.get_video_list()
 
         if self.params.reply is True:
             self.get_reply()
-
-        if self.params.live_chat is True:
-            self.get_live_chat()
-
-        if self.params.caption is True:
-            self.get_caption()
 
         if self.params.export is True:
             self.export()
@@ -389,15 +438,17 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
-        parser.add_argument('--live-chat', action='store_true', default=False, help='라이브 채팅 조회')
-        parser.add_argument('--caption', action='store_true', default=False, help='자막 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--filename', default='./data/youtube.db', help='파일명')
-        parser.add_argument('--max-scroll', default=10, type=int, help='sleep time')
+        parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
+
+        parser.add_argument('--sleep', default=5, type=float, help='sleep time')
+
+        parser.add_argument('--config', default='./config/youtube.json', help='url 목록')
 
         return parser.parse_args()
 

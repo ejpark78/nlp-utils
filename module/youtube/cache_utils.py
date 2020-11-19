@@ -34,6 +34,14 @@ class CacheUtils(object):
 
         self.schema = [
             '''
+            CREATE TABLE IF NOT EXISTS channels (
+                id TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                title TEXT NOT NULL,
+                video_count INTEGER DEFAULT -1,
+                data TEXT NOT NULL
+            )
+            ''',
+            '''
             CREATE TABLE IF NOT EXISTS videos (
                 id TEXT NOT NULL UNIQUE PRIMARY KEY, 
                 title TEXT NOT NULL,
@@ -55,6 +63,8 @@ class CacheUtils(object):
         ]
 
         self.template = {
+            'channels': 'REPLACE INTO channels (id, title, data) VALUES (?, ?, ?)',
+            'video_count': 'UPDATE channels SET video_count=? WHERE id=?',
             'videos': 'REPLACE INTO videos (id, title, data, tags) VALUES (?, ?, ?, ?)',
             'reply': 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)',
             'reply_count': 'UPDATE videos SET reply_count=? WHERE id=?',
@@ -104,12 +114,29 @@ class CacheUtils(object):
         cursor.execute('PRAGMA legacy_file_format = 1;')
         cursor.execute('PRAGMA locking_mode  = EXCLUSIVE;')
         cursor.execute('PRAGMA page_size     = 4096;')
-        cursor.execute('PRAGMA synchronous   = OFF;')
         cursor.execute('PRAGMA temp_store    = MEMORY;')
+        cursor.execute('PRAGMA synchronous   = OFF;')
 
         if readonly is True:
             cursor.execute('PRAGMA query_only    = 1;')
 
+        return
+
+    def get_video_count(self, c_id):
+        self.cursor.execute('SELECT video_count FROM channels WHERE id=?', (c_id,))
+
+        row = self.cursor.fetchone()
+        if row is not None and len(row) == 1:
+            return row[0]
+
+        return -1
+
+    def save_channels(self, c_id, title, data):
+        self.cursor.execute(
+            self.template['channels'],
+            (c_id, title, json.dumps(data, ensure_ascii=False), )
+        )
+        self.conn.commit()
         return
 
     def save_videos(self, v_id, title, data, tags):
@@ -117,6 +144,11 @@ class CacheUtils(object):
             self.template['videos'],
             (v_id, title, json.dumps(data, ensure_ascii=False), json.dumps(tags, ensure_ascii=False), )
         )
+        self.conn.commit()
+        return
+
+    def update_video_count(self, c_id, count):
+        self.cursor.execute(self.template['video_count'], (count, c_id), )
         self.conn.commit()
         return
 

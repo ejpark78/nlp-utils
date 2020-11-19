@@ -132,6 +132,7 @@ class SeleniumWireUtils(object):
         else:
             self.driver.implicitly_wait(15)
             WebDriverWait(self.driver, 5, 10)
+            pass
 
         return self.get_requests(resp_url_path=resp_url_path)
 
