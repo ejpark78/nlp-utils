@@ -316,26 +316,49 @@ class YoutubeCrawler(object):
         return
 
     def export(self):
+        # channel
+        column = 'id,title,video_count,data'
+        self.db.cursor.execute('SELECT {} FROM channels'.format(column))
+
+        rows = self.db.cursor.fetchall()
+
+        data = []
+        channels = {}
+        for i, item in enumerate(rows):
+            r = dict(zip(column.split(','), item))
+            tags = json.loads(r['data'])
+            del r['data']
+
+            channels[item[0]] = {'channels.{}'.format(k): tags[k] for k in tags.keys()}
+
+            r.update(channels[item[0]])
+            data.append(r)
+
+        pd.DataFrame(data).to_excel('data/youtube-channels.xlsx')
+
         # video
         column = 'id,title,reply_count,tags'
         self.db.cursor.execute('SELECT {} FROM videos'.format(column))
 
         rows = self.db.cursor.fetchall()
 
-        meta = {}
-
         data = []
+        videos = {}
         for i, item in enumerate(rows):
             r = dict(zip(column.split(','), item))
             tags = json.loads(r['tags'])
             del r['tags']
 
+            videos[item[0]] = {'videos.{}'.format(k): tags[k] for k in tags.keys()}
+
             r.update(tags)
+
+            if item[1] in channels:
+                r.update(channels[item[1]])
+
             data.append(r)
 
-            meta[item[0]] = tags
-
-        pd.DataFrame(data).to_excel('youtube-video.xlsx')
+        pd.DataFrame(data).to_excel('data/youtube-videos.xlsx')
 
         # reply
         column = 'id,video_id,video_title,data'
@@ -359,12 +382,12 @@ class YoutubeCrawler(object):
             if 'replyCount' in reply:
                 r['replyCount'] = reply['replyCount']
 
-            if item[1] in meta:
-                r.update(meta[item[1]])
+            if item[1] in videos:
+                r.update(videos[item[1]])
 
             data.append(r)
 
-        pd.DataFrame(data).to_excel('youtube-reply.xlsx')
+        pd.DataFrame(data).to_excel('data/youtube-replies.xlsx')
 
         return
 
