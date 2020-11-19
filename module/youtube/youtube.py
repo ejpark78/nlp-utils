@@ -15,7 +15,7 @@ from module.utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 
-class YoutubePlaylist(object):
+class YoutubeVideos(object):
 
     def __init__(self, params):
         super().__init__()
@@ -40,11 +40,11 @@ class YoutubePlaylist(object):
 
         return result
 
-    def save_playlist(self, playlist, tab_name, tags):
+    def save_videos(self, videos, tab_name, tags):
         if tab_name == 'videos':
-            video_list = [x['gridVideoRenderer'] for x in playlist]
+            video_list = [x['gridVideoRenderer'] for x in videos]
         else:
-            video_list = [x['gridPlaylistRenderer'] for x in playlist]
+            video_list = [x['gridPlaylistRenderer'] for x in videos]
 
         for item in video_list:
             self.db.save_videos(
@@ -56,7 +56,7 @@ class YoutubePlaylist(object):
 
         return
 
-    def get_playlist(self, url, meta, tags, tab_name='videos'):
+    def get_videos(self, url, meta, tags, tab_name='videos'):
         self.selenium.open(url=url)
 
         init_data = self.selenium.driver.execute_script('return window["ytInitialData"]')
@@ -76,24 +76,24 @@ class YoutubePlaylist(object):
         contents = tab['tabRenderer']['content']['sectionListRenderer']['contents']
         result = contents[0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
 
-        self.save_playlist(playlist=result, tab_name=tab_name, tags=tags)
+        self.save_videos(videos=result, tab_name=tab_name, tags=tags)
 
-        return self.get_more_playlist(result_count=len(result), meta=meta, tab_name=tab_name, tags=tags)
+        return self.get_more_videos(video_count=len(result), meta=meta, tab_name=tab_name, tags=tags)
 
-    def get_more_playlist(self, result_count, meta, tab_name, tags, max_try=500, max_zero_count=10):
+    def get_more_videos(self, video_count, meta, tab_name, tags, max_try=500, max_zero_count=10):
         if max_try < 0 or max_zero_count < 0:
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': 'playlist 조회 종료',
+                'message': 'videos 조회 종료',
                 'max_try': max_try,
                 'max_zero_count': max_zero_count,
             })
-            return result_count
+            return video_count
 
         del self.selenium.driver.requests
         self.selenium.scroll(count=self.params.max_scroll, meta=meta)
 
-        playlist = []
+        videos = []
         for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
             if x.data is None or len(x.data) < 2:
                 continue
@@ -102,28 +102,28 @@ class YoutubePlaylist(object):
             if 'continuationContents' not in response:
                 continue
 
-            playlist += response['continuationContents']['gridContinuation']['items']
+            videos += response['continuationContents']['gridContinuation']['items']
 
-        self.save_playlist(playlist=playlist, tab_name=tab_name, tags=tags)
+        self.save_videos(videos=videos, tab_name=tab_name, tags=tags)
 
-        result_count += len(playlist)
+        video_count += len(videos)
 
         self.logger.log(msg={
             'level': 'MESSAGE',
-            'message': 'playlist 조회',
-            'count': len(playlist),
-            'sum': result_count,
+            'message': 'videos 조회',
+            'count': len(videos),
+            'video_count': video_count,
             'max_try': max_try,
         })
 
-        if len(playlist) == 0:
+        if len(videos) == 0:
             max_zero_count -= 1
         else:
             max_zero_count = 10
             sleep(self.params.sleep)
 
-        self.get_more_playlist(
-            result_count=result_count,
+        self.get_more_videos(
+            video_count=video_count,
             meta=meta,
             max_try=max_try - 1,
             max_zero_count=max_zero_count,
@@ -131,7 +131,7 @@ class YoutubePlaylist(object):
             tags=tags
         )
 
-        return result_count
+        return video_count
 
     def batch(self):
         template = self.read_config(filename=self.params.template, column='template')
@@ -170,7 +170,7 @@ class YoutubePlaylist(object):
                     **item
                 })
 
-                video_count += self.get_playlist(url=url, tab_name='videos', meta=item, tags=item)
+                video_count += self.get_videos(url=url, tab_name='videos', meta=item, tags=item)
                 sleep(self.params.sleep)
 
             self.db.update_video_count(c_id=c_id, count=video_count)
@@ -207,10 +207,14 @@ class YoutubeReply(object):
                 continue
 
             total_text = resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText']
-            if '천' in total_text:
-                total = float(total_text.replace('천', '')) * 1000
-            elif '만' in total_text:
-                total = float(total_text.replace('만', '')) * 10000
+            if '천' in total_text or 'K' in total_text:
+                total_text = total_text.replace('천', '').replace('K', '')
+
+                total = float(total_text) * 1000
+            elif '만' in total_text or 'M' in total_text:
+                total_text = total_text.replace('만', '').replace('M', '')
+
+                total = float(total_text) * 10000
             else:
                 total = float(total_text)
 
@@ -342,8 +346,17 @@ class YoutubeReply(object):
 
 class YoutubeLiveChat(object):
 
-    def __init__(self):
+    def __init__(self, params):
         super().__init__()
+
+        self.params = params
+
+        self.logger = Logger()
+
+        self.selenium = SeleniumWireUtils(headless=True)
+
+        self.db = CacheUtils(filename=self.params.filename)
+        self.db.use_cache = self.params.use_cache
 
     def get_live_chat(self):
         sql = 'SELECT id, title FROM videos'
@@ -487,9 +500,27 @@ class YoutubeCrawler(object):
         self.export_reply(videos=videos)
         return
 
+    def test(self):
+        db = CacheUtils(filename=self.params.filename)
+
+        db.cursor.execute('SELECT id FROM videos WHERE data NOT LIKE ?', ('%삼프로tv%', ))
+
+        videos = [x[0] for x in db.cursor.fetchall()]
+
+        sql = 'DELETE FROM reply WHERE video_id=?'
+        for v_id in videos:
+            db.cursor.execute(sql, (v_id,))
+
+        db.conn.commit()
+
+        return
+
     def batch(self):
-        if self.params.playlist is True:
-            YoutubePlaylist(params=self.params).batch()
+        if self.params.test is True:
+            self.test()
+
+        if self.params.videos is True:
+            YoutubeVideos(params=self.params).batch()
 
         if self.params.reply is True:
             YoutubeReply(params=self.params).batch()
@@ -506,7 +537,8 @@ class YoutubeCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--playlist', action='store_true', default=False, help='비디오 목록 조회')
+        parser.add_argument('--test', action='store_true', default=False, help='테스트')
+        parser.add_argument('--videos', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
