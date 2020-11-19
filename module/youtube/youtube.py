@@ -15,30 +15,46 @@ from module.utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 
-class YoutubeCrawler(object):
-    """유튜브 크롤러"""
+class YoutubePlaylist(object):
 
-    def __init__(self):
-        """ 생성자 """
+    def __init__(self, params):
         super().__init__()
 
-        self.params = self.init_arguments()
-
-        self.env = None
+        self.params = params
 
         self.logger = Logger()
 
-        self.home_path = 'data/youtube'
-        self.data_path = self.home_path
-
         self.selenium = SeleniumWireUtils(headless=True)
-
-        self.max_scroll = self.params.max_scroll
 
         self.db = CacheUtils(filename=self.params.filename)
         self.db.use_cache = self.params.use_cache
 
-        self.sleep_time = self.params.sleep
+    @staticmethod
+    def read_config(filename, column):
+        with open(filename, 'r') as fp:
+            buf = [x.strip() for x in fp.readlines()]
+
+            config = json.loads(''.join(buf))
+
+            result = config[column]
+
+        return result
+
+    def save_playlist(self, playlist, tab_name, tags):
+        if tab_name == 'videos':
+            video_list = [x['gridVideoRenderer'] for x in playlist]
+        else:
+            video_list = [x['gridPlaylistRenderer'] for x in playlist]
+
+        for item in video_list:
+            self.db.save_videos(
+                v_id=item['videoId'],
+                title=item['title']['runs'][0]['text'],
+                data=item,
+                tags=tags,
+            )
+
+        return
 
     def get_playlist(self, url, meta, tags, tab_name='videos'):
         self.selenium.open(url=url)
@@ -64,22 +80,6 @@ class YoutubeCrawler(object):
 
         return self.get_more_playlist(result_count=len(result), meta=meta, tab_name=tab_name, tags=tags)
 
-    def save_playlist(self, playlist, tab_name, tags):
-        if tab_name == 'videos':
-            video_list = [x['gridVideoRenderer'] for x in playlist]
-        else:
-            video_list = [x['gridPlaylistRenderer'] for x in playlist]
-
-        for item in video_list:
-            self.db.save_videos(
-                v_id=item['videoId'],
-                title=item['title']['runs'][0]['text'],
-                data=item,
-                tags=tags,
-            )
-
-        return
-
     def get_more_playlist(self, result_count, meta, tab_name, tags, max_try=500, max_zero_count=10):
         if max_try < 0 or max_zero_count < 0:
             self.logger.log(msg={
@@ -91,7 +91,7 @@ class YoutubeCrawler(object):
             return result_count
 
         del self.selenium.driver.requests
-        self.selenium.scroll(count=self.max_scroll, meta=meta)
+        self.selenium.scroll(count=self.params.max_scroll, meta=meta)
 
         playlist = []
         for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
@@ -120,7 +120,7 @@ class YoutubeCrawler(object):
             max_zero_count -= 1
         else:
             max_zero_count = 10
-            sleep(self.sleep_time)
+            sleep(self.params.sleep_time)
 
         self.get_more_playlist(
             result_count=result_count,
@@ -132,6 +132,65 @@ class YoutubeCrawler(object):
         )
 
         return result_count
+
+    def batch(self):
+        template = self.read_config(filename=self.params.template, column='template')
+        channel_list = self.read_config(filename=self.params.channel_list, column='channel_list')
+
+        for i, item in enumerate(channel_list):
+            c_id = ''
+            url_list = []
+            for col in template.keys():
+                if col not in item.keys():
+                    continue
+
+                c_id = item[col]
+                url_list += [x.format(**item) for x in template[col]['videos']]
+                break
+
+            video_count = self.db.get_video_count(c_id=c_id)
+            if video_count > 0:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': 'SKIP CHANNEL',
+                    'item': item,
+                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                })
+                continue
+
+            self.db.save_channels(c_id=c_id, title=item['title'], data=item)
+
+            video_count = 0
+            for url in url_list:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': '동영상 목록 조회',
+                    'url': url,
+                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                    **item
+                })
+
+                video_count += self.get_playlist(url=url, tab_name='videos', meta=item, tags=item)
+                sleep(self.params.sleep_time)
+
+            self.db.update_video_count(c_id=c_id, count=video_count)
+
+        return
+
+
+class YoutubeReply(object):
+
+    def __init__(self, params):
+        super().__init__()
+
+        self.params = params
+
+        self.logger = Logger()
+
+        self.selenium = SeleniumWireUtils(headless=True)
+
+        self.db = CacheUtils(filename=self.params.filename)
+        self.db.use_cache = self.params.use_cache
 
     def get_total_reply_count(self):
         self.selenium.scroll(count=3, meta={})
@@ -182,7 +241,7 @@ class YoutubeCrawler(object):
         del self.selenium.driver.requests
 
         if total > 10:
-            scroll_count = self.max_scroll if total > 20 else 3
+            scroll_count = self.params.max_scroll if total > 20 else 3
             self.selenium.scroll(count=scroll_count, meta=meta)
 
         contents = []
@@ -220,7 +279,7 @@ class YoutubeCrawler(object):
             max_zero_count -= 1
         else:
             max_zero_count = 10
-            sleep(self.sleep_time)
+            sleep(self.params.sleep_time)
 
         self.get_more_reply(
             v_id=v_id,
@@ -234,7 +293,7 @@ class YoutubeCrawler(object):
 
         return reply_sum
 
-    def get_reply(self):
+    def batch(self):
         sql = 'SELECT id, title FROM videos WHERE reply_count < 0'
         self.db.cursor.execute(sql)
 
@@ -265,7 +324,7 @@ class YoutubeCrawler(object):
 
             if total == 0:
                 self.db.update_reply_count(v_id=v_id, count=0)
-                sleep(self.sleep_time)
+                sleep(self.params.sleep_time)
                 continue
 
             reply_count = self.get_more_reply(
@@ -276,9 +335,15 @@ class YoutubeCrawler(object):
             )
 
             self.db.update_reply_count(v_id=v_id, count=reply_count)
-            sleep(self.sleep_time)
+            sleep(self.params.sleep_time)
 
         return
+
+
+class YoutubeLiveChat(object):
+
+    def __init__(self):
+        super().__init__()
 
     def get_live_chat(self):
         sql = 'SELECT id, title FROM videos'
@@ -315,12 +380,27 @@ class YoutubeCrawler(object):
 
         return
 
-    def export(self):
-        # channel
-        column = 'id,title,video_count,data'
-        self.db.cursor.execute('SELECT {} FROM channels'.format(column))
 
-        rows = self.db.cursor.fetchall()
+class YoutubeCrawler(object):
+    """유튜브 크롤러"""
+
+    def __init__(self):
+        """ 생성자 """
+        super().__init__()
+
+        self.logger = Logger()
+
+        self.selenium = SeleniumWireUtils(headless=True)
+
+        self.params = self.init_arguments()
+
+    def export_channels(self):
+        db = CacheUtils(filename=self.params.filename)
+
+        column = 'id,title,video_count,data'
+        db.cursor.execute('SELECT {} FROM channels'.format(column))
+
+        rows = db.cursor.fetchall()
 
         data = []
         channels = {}
@@ -336,11 +416,15 @@ class YoutubeCrawler(object):
 
         pd.DataFrame(data).to_excel('data/youtube-channels.xlsx')
 
-        # video
-        column = 'id,title,reply_count,tags'
-        self.db.cursor.execute('SELECT {} FROM videos'.format(column))
+        return channels
 
-        rows = self.db.cursor.fetchall()
+    def export_videos(self, channels):
+        db = CacheUtils(filename=self.params.filename)
+
+        column = 'id,title,reply_count,tags'
+        db.cursor.execute('SELECT {} FROM videos'.format(column))
+
+        rows = db.cursor.fetchall()
 
         data = []
         videos = {}
@@ -360,11 +444,15 @@ class YoutubeCrawler(object):
 
         pd.DataFrame(data).to_excel('data/youtube-videos.xlsx')
 
-        # reply
-        column = 'id,video_id,video_title,data'
-        self.db.cursor.execute('SELECT {} FROM reply'.format(column))
+        return videos
 
-        rows = self.db.cursor.fetchall()
+    def export_reply(self, videos):
+        db = CacheUtils(filename=self.params.filename)
+
+        column = 'id,video_id,video_title,data'
+        db.cursor.execute('SELECT {} FROM reply'.format(column))
+
+        rows = db.cursor.fetchall()
 
         data = []
         for i, item in enumerate(rows):
@@ -391,61 +479,20 @@ class YoutubeCrawler(object):
 
         return
 
-    def get_video_list(self):
-        with open(self.params.config, 'r') as fp:
-            buf = [x.strip() for x in fp.readlines()]
+    def export(self):
+        channels = self.export_channels()
 
-            config = json.loads(''.join(buf))
+        videos = self.export_videos(channels=channels)
 
-            template = config['template']
-            channel_list = config['channel_list']
-
-        for i, item in enumerate(channel_list):
-            c_id = ''
-            url_list = []
-            for col in template.keys():
-                if col not in item.keys():
-                    continue
-
-                c_id = item[col]
-                url_list += [x.format(**item) for x in template[col]['videos']]
-                break
-
-            video_count = self.db.get_video_count(c_id=c_id)
-            if video_count > 0:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': 'SKIP CHANNEL',
-                    'item': item,
-                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
-                })
-                continue
-
-            self.db.save_channels(c_id=c_id, title=item['title'], data=item)
-
-            video_count = 0
-            for url in url_list:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': '동영상 목록 조회',
-                    'url': url,
-                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
-                    **item
-                })
-
-                video_count += self.get_playlist(url=url, tab_name='videos', meta=item, tags=item)
-                sleep(self.sleep_time)
-
-            self.db.update_video_count(c_id=c_id, count=video_count)
-
+        self.export_reply(videos=videos)
         return
 
     def batch(self):
-        if self.params.video_list is True:
-            self.get_video_list()
+        if self.params.playlist is True:
+            YoutubePlaylist(params=self.params).batch()
 
         if self.params.reply is True:
-            self.get_reply()
+            YoutubeReply(params=self.params).batch()
 
         if self.params.export is True:
             self.export()
@@ -459,19 +506,20 @@ class YoutubeCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
+        parser.add_argument('--playlist', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
-        parser.add_argument('--filename', default='./data/youtube.db', help='파일명')
+        parser.add_argument('--filename', default='./data/youtube/mtd.db', help='파일명')
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')
 
-        parser.add_argument('--config', default='./config/youtube.json', help='url 목록')
+        parser.add_argument('--template', default='./config/youtube/template.json', help='channel template')
+        parser.add_argument('--channel-list', default='./config/youtube/mtd.json', help='channel 목록')
 
         return parser.parse_args()
 

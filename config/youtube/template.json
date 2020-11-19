@@ -1,0 +1,43 @@
+{
+  "template": {
+    "c_name": {
+      "playlist": "https://www.youtube.com/c/{c_name}/playlists",
+      "videos": [
+        "https://www.youtube.com/c/{c_name}/videos"
+      ]
+    },
+    "c_live": {
+      "playlist": "https://www.youtube.com/c/{c_live}/playlists",
+      "videos": [
+        "https://www.youtube.com/c/{c_live}/videos?view=0",
+        "https://www.youtube.com/c/{c_live}/videos?view=2&live_view=503"
+      ]
+    },
+    "channel": {
+      "playlist": "https://www.youtube.com/channel/{channel}/playlists",
+      "videos": [
+        "https://www.youtube.com/channel/{channel}/videos"
+      ]
+    },
+    "channel_live": {
+      "playlist": "https://www.youtube.com/channel/{channel_live}/playlists",
+      "videos": [
+        "https://www.youtube.com/channel/{channel_live}/videos?view=0",
+        "https://www.youtube.com/channel/{channel_live}/videos?view=2&live_view=503"
+      ]
+    },
+    "user": {
+      "playlist": "https://www.youtube.com/user/{user}/playlists",
+      "videos": [
+        "https://www.youtube.com/user/{user}/videos"
+      ]
+    },
+    "user_live": {
+      "playlist": "https://www.youtube.com/user/{user_live}/playlists",
+      "videos": [
+        "https://www.youtube.com/user/{user_live}/videos?view=0",
+        "https://www.youtube.com/user/{user_live}/videos?view=2&live_view=503"
+      ]
+    }
+  }
+}
