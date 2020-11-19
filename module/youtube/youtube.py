@@ -120,7 +120,7 @@ class YoutubePlaylist(object):
             max_zero_count -= 1
         else:
             max_zero_count = 10
-            sleep(self.params.sleep_time)
+            sleep(self.params.sleep)
 
         self.get_more_playlist(
             result_count=result_count,
@@ -171,7 +171,7 @@ class YoutubePlaylist(object):
                 })
 
                 video_count += self.get_playlist(url=url, tab_name='videos', meta=item, tags=item)
-                sleep(self.params.sleep_time)
+                sleep(self.params.sleep)
 
             self.db.update_video_count(c_id=c_id, count=video_count)
 
@@ -279,7 +279,7 @@ class YoutubeReply(object):
             max_zero_count -= 1
         else:
             max_zero_count = 10
-            sleep(self.params.sleep_time)
+            sleep(self.params.sleep)
 
         self.get_more_reply(
             v_id=v_id,
@@ -324,7 +324,7 @@ class YoutubeReply(object):
 
             if total == 0:
                 self.db.update_reply_count(v_id=v_id, count=0)
-                sleep(self.params.sleep_time)
+                sleep(self.params.sleep)
                 continue
 
             reply_count = self.get_more_reply(
@@ -335,7 +335,7 @@ class YoutubeReply(object):
             )
 
             self.db.update_reply_count(v_id=v_id, count=reply_count)
-            sleep(self.params.sleep_time)
+            sleep(self.params.sleep)
 
         return
 
