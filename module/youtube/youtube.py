@@ -49,7 +49,7 @@ class YoutubeCrawler(object):
             r.update(channels[item[0]])
             data.append(r)
 
-        pd.DataFrame(data).to_excel('data/youtube-channels.xlsx')
+        pd.DataFrame(data).to_excel('data/youtube/channels.xlsx')
 
         return channels
 
@@ -77,7 +77,7 @@ class YoutubeCrawler(object):
 
             data.append(r)
 
-        pd.DataFrame(data).to_excel('data/youtube-videos.xlsx')
+        pd.DataFrame(data).to_excel('data/youtube/videos.xlsx')
 
         return videos
 
@@ -96,6 +96,14 @@ class YoutubeCrawler(object):
             reply = json.loads(r['data'])
             del r['data']
 
+            if 'runs' not in reply['contentText']:
+                print(reply['contentText'])
+                continue
+
+            if 'authorText' not in reply:
+                print(reply)
+                continue
+
             r['username'] = reply['authorText']['simpleText']
             r['contentText'] = reply['contentText']['runs'][0]['text']
             r['isLiked'] = reply['isLiked']
@@ -105,12 +113,23 @@ class YoutubeCrawler(object):
             if 'replyCount' in reply:
                 r['replyCount'] = reply['replyCount']
 
-            if item[1] in videos:
-                r.update(videos[item[1]])
+            # if item[1] in videos:
+            #     r.update(videos[item[1]])
 
             data.append(r)
 
-        pd.DataFrame(data).to_excel('data/youtube-replies.xlsx')
+        df = pd.DataFrame(data)
+
+        filename = 'data/youtube/replies'
+        df.to_excel(filename + '.xlsx')
+
+        df.to_json(
+            filename + '.json.bz2',
+            force_ascii=False,
+            compression='bz2',
+            orient='records',
+            lines=True,
+        )
 
         return
 

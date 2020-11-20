@@ -253,6 +253,67 @@ class NaverMovieReviews(object):
 
         return
 
+    def export(self):
+        import pandas as pd
+        from dateutil.parser import parse as parse_date
+
+        timezone = pytz.timezone('Asia/Seoul')
+
+        db = CacheUtils(filename=self.params.filename)
+
+        column = 'no,title,code,review'
+        db.cursor.execute('SELECT {} FROM movie_reviews'.format(column))
+
+        rows = db.cursor.fetchall()
+
+        data = []
+        for i, item in enumerate(rows):
+            r = dict(zip(column.split(','), item))
+
+            review = json.loads(r['review'])
+            del r['review']
+
+            review['date'] = parse_date(review['date']).astimezone(timezone).isoformat()
+
+            r.update(review)
+
+            data.append(r)
+
+        df = pd.DataFrame(data)
+
+        # xlsx
+        writer = pd.ExcelWriter(
+            '{}.reviews.xlsx'.format(self.params.filename),
+            engine='xlsxwriter'
+        )
+
+        df.to_excel(writer, index=False, sheet_name='review')
+
+        writer.save()
+
+        # json
+        df.to_json(
+            '{}.reviews.json.bz2'.format(self.params.filename),
+            force_ascii=False,
+            compression='bz2',
+            orient='records',
+            lines=True,
+        )
+
+        return
+
+    def batch(self):
+        if self.params.movie_code is True:
+            self.get_movie_code()
+
+        if self.params.movie_reviews is True:
+            self.get_movie_reviews()
+
+        if self.params.export is True:
+            self.export()
+
+        return
+
     @staticmethod
     def init_arguments():
         import argparse
@@ -264,18 +325,11 @@ class NaverMovieReviews(object):
         parser.add_argument('--movie-code', action='store_true', default=False, help='영화 코드 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
+        parser.add_argument('--export', action='store_true', default=False, help='내보내기')
+
         parser.add_argument('--filename', default='data/movie_reviews/naver.db', help='파일명')
 
         return parser.parse_args()
-
-    def batch(self):
-        if self.params.movie_code is True:
-            self.get_movie_code()
-
-        if self.params.movie_reviews is True:
-            self.get_movie_reviews()
-
-        return
 
 
 if __name__ == '__main__':

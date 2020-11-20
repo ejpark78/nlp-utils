@@ -34,3 +34,4 @@ cachelib
 brotlipy
 psutil
 xmltodict
+xlsxwriter
