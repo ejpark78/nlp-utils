@@ -5,14 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-
-logging.basicConfig(
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-    level=logging.INFO,
-)
-
 
 class CorpusLibraryUtils(object):
     """코퍼스 처리 클리스"""

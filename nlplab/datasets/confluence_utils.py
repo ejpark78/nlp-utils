@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
 import re
 from os import makedirs
 from os.path import dirname, isdir
@@ -19,12 +18,7 @@ from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-logging.basicConfig(
-    format="[%(levelname)-s] %(message)s",
-    handlers=[logging.StreamHandler()],
-    level=logging.INFO,
-)
+urllib3.disable_warnings(UserWarning)
 
 
 class ConfluenceUtils(object):
