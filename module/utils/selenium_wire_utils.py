@@ -136,9 +136,24 @@ class SeleniumWireUtils(object):
 
         return self.get_requests(resp_url_path=resp_url_path)
 
-    def get_requests(self, resp_url_path=None):
+    def get_requests(self, resp_url_path=None, max_try=10, sleep_time=10):
+        if max_try < 0:
+            return []
+
+        try:
+            req_list = self.driver.requests
+        except Exception as e:
+            self.logger.error(msg={
+                'MESSAGE': 'get_requests 추출 에러',
+                'error': str(e)
+            })
+            sleep(sleep_time)
+
+            self.get_requests(resp_url_path=resp_url_path, max_try=max_try-1)
+            return []
+
         result = []
-        for req in self.driver.requests:
+        for req in req_list:
             if req.response is None:
                 continue
 

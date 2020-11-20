@@ -38,7 +38,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         )
 
     def simplify(self, doc):
-        """ """
         try:
             chat_list = doc['response']['continuationContents']['liveChatContinuation']['actions']
         except Exception as e:
@@ -99,7 +98,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return result
 
     def save_live_chat(self, doc, meta):
-        """ """
         doc_list = self.simplify(doc=doc)
 
         try:
@@ -130,7 +128,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return
 
     def get_text(self, css):
-        """ """
         try:
             ele = self.driver.find_element_by_css_selector(css)
             if ele:
@@ -146,7 +143,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return 'unknown'
 
     def get_meta(self, url):
-        """ """
         css = 'h1.title yt-formatted-string'
         title = self.get_text(css=css)
 
@@ -160,7 +156,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         }
 
     def get_live_chat(self, resp_list):
-        """ """
         i = 0
         for url in resp_list:
             if self.check_history(url=url) is True:
@@ -192,7 +187,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return
 
     def save_response(self, doc_list):
-        """ """
         i = 0
         for doc in doc_list:
             if self.check_history(url=doc['url']) is True:
@@ -206,7 +200,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return
 
     def dump_response(self, doc_list):
-        """ """
         from uuid import uuid4
 
         if len(doc_list) == 0:
@@ -225,8 +218,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return
 
     def prepare(self):
-        """ """
-
         try:
             css = 'div.trigger paper-button#label'
             ele = self.driver.find_element_by_css_selector(css)
@@ -260,7 +251,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         return
 
     def batch(self):
-        """ """
         self.args = self.init_arguments()
 
         self.open_driver()
@@ -281,12 +271,11 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
         for i in range(100000):
             if self.args.trace_list is True:
-                # self.page_down(10)
                 resp_list = self.trace_networks(path_list=['/playlist?', '/browse_ajax?'])
             else:
                 resp_list = self.trace_networks(path_list=['/get_live_chat'])
                 self.get_live_chat(resp_list=[x['url'] for x in resp_list])
-            #
+
             # doc_list = self.decode_response(content_list=resp_list)
             #
             # self.save_response(doc_list=doc_list)
