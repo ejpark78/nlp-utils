@@ -6,7 +6,8 @@ with open('requirements.txt', 'r') as fp:
 setup(
     name='nlplab',
     version='1.0.0',
-    packages=find_packages(exclude=['docs', 'tests*']),
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     python_requires='>=3',
     url='http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab',
     license='Apache License Version 2.0',

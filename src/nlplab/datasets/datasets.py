@@ -11,7 +11,7 @@ from os.path import isfile
 
 import urllib3
 
-from nlplab.minio_utils import MinioUtils
+from nlplab import MinioUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

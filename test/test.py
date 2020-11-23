@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import nlplab
+from nlplab import datasets
 
-# nlplab.datesets.confluence_utils
+print(datasets)
