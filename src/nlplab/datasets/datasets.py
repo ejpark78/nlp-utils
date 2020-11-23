@@ -11,7 +11,7 @@ from os.path import isfile
 
 import urllib3
 
-from nlplab import MinioUtils
+from nlplab.minio_utils import MinioUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -19,7 +19,7 @@ urllib3.disable_warnings(UserWarning)
 
 class DataSets(object):
 
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.minio = MinioUtils()
 
         self.info = {
@@ -39,12 +39,21 @@ class DataSets(object):
 
         self.name = name
 
-        self.target = self.info[self.name]
+    def list(self):
+        return [{name: self.info[name]['desc']} for name in self.info.keys()]
 
-    def load(self):
+    def load(self, tag=None, name=None):
+        ds = self.get_dataset_info(name=name)
+        if ds is None:
+            return
+
+        tag_list = [tag]
+        if tag is None:
+            tag_list = ds['tags']
+
         result = {}
-        for tag in self.target['tags']:
-            filename = '{}/{}.json.bz2'.format(target['local_path'], tag)
+        for tag in tag_list:
+            filename = '{}/{}.json.bz2'.format(ds['local_path'], tag)
 
             if isfile(filename) is False:
                 self.pull(tag=tag)
@@ -54,27 +63,55 @@ class DataSets(object):
                 for line in fp.readlines():
                     result[tag].append(json.loads(line.decode('utf-8')))
 
+        if len(result.keys()) == 1:
+            return result[result.keys()[0]]
+
         return result
 
-    def pull(self, tag):
+    def get_dataset_info(self, name):
+        if name is None:
+            name = self.name
+
+        if name is None:
+            return None
+
+        if name not in self.info.keys():
+            return None
+
+        return self.info[name]
+
+    def pull(self, tag, name=None):
+        ds = self.get_dataset_info(name=name)
+        if ds is None:
+            return
+
         self.minio.pull(
-            local='{}/{}.json.bz2'.format(self.target['local_path'], tag),
-            remote='{}/{}.json.bz2'.format(self.target['remote_path'], tag),
+            local='{}/{}.json.bz2'.format(ds['local_path'], tag),
+            remote='{}/{}.json.bz2'.format(ds['remote_path'], tag),
         )
         return
 
-    def push(self, tag):
+    def push(self, tag, name=None):
+        ds = self.get_dataset_info(name=name)
+        if ds is None:
+            return
+
         self.minio.push(
-            local='{}/{}.json.bz2'.format(self.target['local_path'], tag),
-            remote='{}/{}.json.bz2'.format(self.target['remote_path'], tag),
+            local='{}/{}.json.bz2'.format(ds['local_path'], tag),
+            remote='{}/{}.json.bz2'.format(ds['remote_path'], tag),
         )
         return
 
-    def batch(self):
-        for tag in self.target['tags']:
+    def batch(self, name):
+        ds = self.get_dataset_info(name=name)
+        if ds is None:
+            return
+
+        for tag in ds['tags']:
             ds.push(tag=tag)
+
         return
 
 
 if __name__ == "__main__":
-    DataSets(name='movie_reviews').batch()
+    DataSets().batch(name='movie_reviews')

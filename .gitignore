@@ -1,6 +1,7 @@
-build
-dist
+.ipynb_checkpoints
 .idea
 *.egg-info
+build
+dist
 venv
 data

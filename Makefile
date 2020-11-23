@@ -15,5 +15,9 @@ upload:
 			--verbose \
 			dist/*
 
+test: clean build
+	pip3 uninstall -y nlplab
+	pip3 install dist/*.whl
+
 clean:
-	rm -rf build dist *.egg-info
+	rm -rf build dist src/*.egg-info
