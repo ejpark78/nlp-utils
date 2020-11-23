@@ -30,7 +30,8 @@ class datasets(object):
         }
 
         self.tags = {
-            'movie_reviews': ['daum', 'naver']
+            'movie_reviews': ['daum', 'naver'],
+            'youtube/replies': ['mtd', 'news']
         }
 
     def load(self):
