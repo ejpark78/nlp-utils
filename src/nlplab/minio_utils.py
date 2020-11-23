@@ -17,21 +17,20 @@ class MinioUtils(object):
 
     def __init__(self, bucket=None, username=None, key=None, endpoint=None):
         self.bucket = bucket
-        self.endpoint = endpoint
-        self.username = username
-        self.key = key
-
         if bucket is None:
-            self.bucket = os.getenv('NLPLAB_DATASET_BUCKET', 'datasets')
+            self.bucket = os.getenv('NLPLAB_S3_BUCKET', 'datasets')
 
+        self.username = username
         if username is None:
-            self.username = os.getenv('NLPLAB_DATASET_USERNAME', 'k8s')
+            self.username = os.getenv('NLPLAB_S3_USERNAME', 'k8s')
 
+        self.key = key
         if key is None:
-            self.key = os.getenv('NLPLAB_DATASET_BUCKET_KEY', 'nlplab2020')
+            self.key = os.getenv('NLPLAB_S3_BUCKET_KEY', 'nlplab2020')
 
+        self.endpoint = endpoint
         if endpoint is None:
-            self.endpoint = os.getenv('NLPLAB_DATASET_BUCKET_ENDPOINT', '172.19.153.41:32900')
+            self.endpoint = os.getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')
 
     def push(self, local, remote):
         client = Minio(
