@@ -15,7 +15,7 @@ import urllib3
 from elasticsearch import Elasticsearch
 from tqdm import tqdm
 
-from nlplab.logger import Logger
+from nlplab.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -93,13 +93,10 @@ class ElasticSearchUtils(object):
         if isinstance(total, dict) and 'value' in total:
             total = total['value']
 
-        count = len(hits['hits'])
-
         return {
             'hits': hits['hits'],
+            'total': total,
             'scroll_id': scroll_id,
-            'count': count,
-            'total': total
         }
 
     def export(self, index, filename):
@@ -116,10 +113,16 @@ class ElasticSearchUtils(object):
         with bz2.open(filename=filename, mode='wb') as fp:
             while count > 0:
                 resp = self.scroll(index=index, size=size, scroll_id=scroll_id)
-                count = resp['count']
+
+                count = len(resp['hits'])
+                scroll_id = resp['scroll_id']
 
                 if p_bar is None:
-                    p_bar = tqdm(total=resp['total'], desc='dump: ' + index, dynamic_ncols=True)
+                    p_bar = tqdm(
+                        desc='downloading: {}'.format(index),
+                        total=resp['total'],
+                        dynamic_ncols=True
+                    )
 
                 p_bar.update(count)
                 sum_count += count
@@ -137,6 +140,8 @@ class ElasticSearchUtils(object):
 
                     doc['_id'] = item['_id']
                     doc['_index'] = item['_index']
+                    if 'document_id' in item:
+                        del item['document_id']
 
                     line = json.dumps(doc, ensure_ascii=False, sort_keys=True) + '\n'
                     fp.write(line.encode('utf-8'))

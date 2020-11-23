@@ -1,4 +1,5 @@
 
+reinstall: clean build uninstall install
 
 build:
 	python3 setup.py bdist_wheel
@@ -15,11 +16,8 @@ upload:
 			--verbose \
 			dist/*
 
-test: clean build
+uninstall:
 	pip3 uninstall -y nlplab
-	pip3 install dist/*.whl
-
-	make clean
 
 clean:
 	rm -rf build dist src/*.egg-info
