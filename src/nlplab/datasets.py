@@ -140,16 +140,16 @@ class DataSets(object):
         )
         return
 
-    def batch(self, name):
+    def upload(self, name=None, tag=None):
         meta = self.get_meta(name=name)
         if meta is None:
             return
 
-        for tag in meta['tags']:
-            self.push_minio_file(tag=tag)
+        tag_list = [tag]
+        if meta is not None:
+            tag_list = meta['tags']
+
+        for tag in tag_list:
+            self.push_minio_file(name=name, tag=tag)
 
         return
-
-
-if __name__ == "__main__":
-    DataSets().batch(name='movie_reviews')
