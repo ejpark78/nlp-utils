@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+from os.path import splitext
 
 import pandas as pd
 
@@ -49,7 +50,8 @@ class YoutubeCrawler(object):
             r.update(channels[item[0]])
             data.append(r)
 
-        pd.DataFrame(data).to_excel('data/youtube/channels.xlsx')
+        filename = '{}.channels'.format(splitext(self.params.filename)[0])
+        pd.DataFrame(data).to_excel(filename + '.xlsx')
 
         return channels
 
@@ -77,7 +79,8 @@ class YoutubeCrawler(object):
 
             data.append(r)
 
-        pd.DataFrame(data).to_excel('data/youtube/videos.xlsx')
+        filename = '{}.videos'.format(splitext(self.params.filename)[0])
+        pd.DataFrame(data).to_excel(filename + '.xlsx')
 
         return videos
 
@@ -120,7 +123,7 @@ class YoutubeCrawler(object):
 
         df = pd.DataFrame(data)
 
-        filename = 'data/youtube/replies'
+        filename = '{}.replies'.format(splitext(self.params.filename)[0])
         df.to_excel(filename + '.xlsx')
 
         df.to_json(
@@ -141,25 +144,7 @@ class YoutubeCrawler(object):
         self.export_reply(videos=videos)
         return
 
-    def test(self):
-        db = CacheUtils(filename=self.params.filename)
-
-        db.cursor.execute('SELECT id FROM videos WHERE data NOT LIKE ?', ('%삼프로tv%',))
-
-        videos = [x[0] for x in db.cursor.fetchall()]
-
-        sql = 'DELETE FROM reply WHERE video_id=?'
-        for v_id in videos:
-            db.cursor.execute(sql, (v_id,))
-
-        db.conn.commit()
-
-        return
-
     def batch(self):
-        if self.params.test is True:
-            self.test()
-
         if self.params.videos is True:
             YoutubeVideoList(params=self.params).batch()
 
@@ -178,7 +163,6 @@ class YoutubeCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--test', action='store_true', default=False, help='테스트')
         parser.add_argument('--videos', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
 

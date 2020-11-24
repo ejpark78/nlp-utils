@@ -747,6 +747,9 @@ class ElasticSearchUtils(object):
                 if result is None:
                     document = json.dumps(item['_source'], ensure_ascii=False, sort_keys=True)
                     print(document, flush=True)
+
+                    # print(json.dumps({'index': {'_index': item['_index'], '_id': item['_id']}}, ensure_ascii=False), flush=True)
+                    # print(json.dumps({'doc': item['_source']}, ensure_ascii=False), flush=True)
                 else:
                     if include_id is True:
                         if 'document_id' not in item['_source']:
@@ -783,6 +786,7 @@ class ElasticSearchUtils(object):
 
     def rename_docs(self, error_ids, index):
         """ """
+
         def parse_url(url):
             from urllib.parse import urlparse, parse_qs
 
