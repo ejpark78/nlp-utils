@@ -11,8 +11,8 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 
-from module.crawler_base import CrawlerBase
-from utils import ElasticSearchUtils
+from module.web_news.crawler_base import CrawlerBase
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 
 class TermDetail(CrawlerBase):

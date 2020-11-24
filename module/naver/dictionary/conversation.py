@@ -6,9 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import logging
 import re
-import sys
 from datetime import datetime
 from time import sleep
 
@@ -31,11 +29,13 @@ class TodayConversationCrawler(DictionaryUtils):
 
     def get_conversation(self, date):
         """ """
-        site = 'https://gateway.dict.naver.com/endict/kr/enko/today/{date}/conversation.dict'.format(date=date.strftime('%Y%m%d'))
+        site = 'https://gateway.dict.naver.com/endict/kr/enko/today/{date}/conversation.dict'.format(
+            date=date.strftime('%Y%m%d'))
         url = '{site}?callback=angular.callbacks._0'.format(site=site)
 
         headers = {
-            'Referer': 'https://learn.dict.naver.com/conversation#/endic/{date}?tabIndex=0'.format(date=date.strftime('%Y%m%d'))
+            'Referer': 'https://learn.dict.naver.com/conversation#/endic/{date}?tabIndex=0'.format(
+                date=date.strftime('%Y%m%d'))
         }
         headers.update(self.headers)
 

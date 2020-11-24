@@ -17,8 +17,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from utils import ElasticSearchUtils
-from utils import Logger
+from utils.elasticsearch_utils import ElasticSearchUtils
+from utils.logger import Logger
 
 
 class SeleniumUtils(object):

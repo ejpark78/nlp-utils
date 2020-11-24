@@ -14,10 +14,10 @@ import requests
 import urllib3
 from cachelib import SimpleCache
 
-from module.config import Config
-from utils import HtmlParser
-from utils import Logger
-from module.post_process_utils import PostProcessUtils
+from module.web_news.config import Config
+from utils.html_parser import HtmlParser
+from utils.logger import Logger
+from module.web_news.post_process_utils import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

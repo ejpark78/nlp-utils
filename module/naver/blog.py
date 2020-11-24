@@ -15,8 +15,8 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from utils import ElasticSearchUtils
-from utils import SeleniumUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
+from utils.selenium_utils import SeleniumUtils
 
 
 class SeleniumCrawler(SeleniumUtils):

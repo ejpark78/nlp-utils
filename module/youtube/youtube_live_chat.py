@@ -14,7 +14,7 @@ from urllib.parse import unquote
 
 import requests
 
-from utils import ElasticSearchUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
 from utils import SeleniumProxyUtils
 
 

@@ -12,7 +12,7 @@ import requests
 import urllib3
 from requests_html import HTMLSession
 
-from utils import Logger
+from utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

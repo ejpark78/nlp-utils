@@ -8,8 +8,8 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 
-from module.config import Config
-from utils import ElasticSearchUtils
+from module.web_news.config import Config
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

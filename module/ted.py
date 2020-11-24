@@ -19,8 +19,8 @@ import urllib3
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from utils import ElasticSearchUtils
-from utils import Logger
+from utils.elasticsearch_utils import ElasticSearchUtils
+from utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

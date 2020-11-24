@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 
-from utils import Logger
+from utils.logger import Logger
 
 
 class HtmlParser(object):

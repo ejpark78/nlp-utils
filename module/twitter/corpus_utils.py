@@ -8,16 +8,9 @@ from __future__ import print_function
 import logging
 from datetime import datetime
 
-from module.config import Config
-from module.crawler_base import CrawlerBase
-from utils import ElasticSearchUtils
-
-logging.basicConfig(format="[%(levelname)-s] %(message)s",
-                    handlers=[logging.StreamHandler()],
-                    level=logging.INFO)
-
-MESSAGE = 25
-logging.addLevelName(MESSAGE, 'MESSAGE')
+from module.web_news.config import Config
+from module.web_news.crawler_base import CrawlerBase
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 
 class CorpusUtils(CrawlerBase):
@@ -25,7 +18,7 @@ class CorpusUtils(CrawlerBase):
 
     def __init__(self):
         """ 생성자 """
-        self.__init__()
+        super().__init__()
 
         self.job_id = 'twitter'
         self.cfg = Config(job_category='', job_id=self.job_id)

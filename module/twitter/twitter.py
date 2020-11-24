@@ -12,8 +12,8 @@ import urllib3
 from bs4 import BeautifulSoup
 from requests_oauthlib import OAuth1Session
 
-from module.crawler_base import CrawlerBase
-from utils import ElasticSearchUtils
+from module.web_news.crawler_base import CrawlerBase
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

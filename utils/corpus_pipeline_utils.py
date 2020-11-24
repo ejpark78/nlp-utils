@@ -12,7 +12,7 @@ import requests
 from tqdm import trange
 from tqdm.autonotebook import tqdm
 
-from utils import ElasticSearchUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 
 class CorpusPipelineUtils(object):

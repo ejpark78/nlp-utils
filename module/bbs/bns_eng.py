@@ -15,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
 
-from utils import ElasticSearchUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

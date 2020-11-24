@@ -12,9 +12,8 @@ import sys
 from os import listdir
 from os.path import isdir, join
 
-from module.config import Config
-from module.common_utils import CommonUtils
-from utils import ElasticSearchUtils
+from module.web_news.config import Config
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {
@@ -35,8 +34,6 @@ class CorpusUtils(object):
         """ 생성자 """
         self.job_id = 'naver_kin'
         self.cfg = Config(job_category='naver', job_id=self.job_id)
-
-        self.common_utils = CommonUtils()
 
     def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
         """ 네이버 지식인 질문 목록 결과를 취합한다. """
@@ -100,7 +97,7 @@ class CorpusUtils(object):
                 print('{} {:,}'.format(file, count), end='\r', flush=True, file=sys.stderr)
 
         # excel 저장
-        self.common_utils.save_excel(filename=result_filename, data=doc_index, columns=columns)
+        # self.common_utils.save_excel(filename=result_filename, data=doc_index, columns=columns)
 
         return
 

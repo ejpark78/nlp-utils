@@ -8,7 +8,7 @@ from __future__ import print_function
 import json
 from time import sleep
 
-from utils import Logger
+from utils.logger import Logger
 from utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 

@@ -8,9 +8,9 @@ from __future__ import print_function
 import urllib3
 from time import sleep
 
-from utils import ElasticSearchUtils
-from utils import Logger
-from module.web_news import WebNewsCrawler
+from utils.elasticsearch_utils import ElasticSearchUtils
+from utils.logger import Logger
+from module.web_news.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

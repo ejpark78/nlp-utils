@@ -10,7 +10,7 @@ import logging
 import os
 import sqlite3
 
-from utils import Logger
+from utils.logger import Logger
 
 
 class SqliteUtils(object):

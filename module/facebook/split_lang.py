@@ -9,7 +9,7 @@ import json
 
 from tqdm import tqdm
 
-from utils import SeleniumUtils
+from utils.selenium_utils import SeleniumUtils
 
 
 class FBSplitLang(SeleniumUtils):

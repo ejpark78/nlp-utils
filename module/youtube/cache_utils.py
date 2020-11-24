@@ -11,7 +11,7 @@ import sqlite3
 import pytz
 import urllib3
 
-from utils import Logger
+from utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

@@ -5,10 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-import sys
-from os import getenv
-
 from module.naver.kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from module.naver.kin.question_list import QuestionList as NaverKinQuestionList
 from module.naver.kin.user_list import UserList as NaverKinUserList
@@ -18,24 +14,8 @@ from module.naver.terms.detail import TermDetail as NaverTermDetail
 from module.naver.terms.term_list import TermList as NaverTermList
 from module.twitter.corpus_utils import CorpusUtils as TwitterCorpusUtils
 from module.twitter.twitter import TwitterUtils
-from module.web_news import WebNewsCrawler
-from module.web_news_test import WebNewsCrawlerTest
-
-MESSAGE = 25
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(format='%(message)s')
-
-root_logger = logging.getLogger()
-
-# 로그 레벨 설정
-log_level = int(getenv('LOG_LEVEL', MESSAGE))
-if log_level != MESSAGE:
-    root_logger.setLevel(log_level)
-else:
-    root_logger.setLevel(MESSAGE)
-
-root_logger.handlers = [logging.StreamHandler(sys.stderr)]
+from module.web_news.web_news import WebNewsCrawler
+from module.web_news.web_news_test import WebNewsCrawlerTest
 
 
 def init_arguments():

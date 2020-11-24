@@ -14,8 +14,8 @@ import pytz
 import requests
 from bs4 import BeautifulSoup
 
-from utils import ElasticSearchUtils
-from utils import Logger
+from utils.elasticsearch_utils import ElasticSearchUtils
+from utils.logger import Logger
 
 
 class ForumUtils(object):

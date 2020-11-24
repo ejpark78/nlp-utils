@@ -18,8 +18,8 @@ import urllib3
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from utils import ElasticSearchUtils
-from module.web_news import WebNewsCrawler
+from utils.elasticsearch_utils import ElasticSearchUtils
+from module.web_news.web_news import WebNewsCrawler
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
