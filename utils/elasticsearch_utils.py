@@ -179,6 +179,30 @@ class ElasticSearchUtils(object):
 
         return
 
+    def get_index_list(self):
+        """모든 인덱스 목록을 반환한다."""
+        return [v for v in self.elastic.indices.get('*') if v[0] != '.']
+
+    def get_column_list(self, index_list, column_type=None):
+        """index 내의 field 목록을 반환한다."""
+        result = []
+
+        if type(index_list) is str:
+            index_list = [index_list]
+
+        for idx in index_list:
+            m_info = self.elastic.indices.get_mapping(index=idx)
+
+            if column_type is None:
+                result += list(m_info[idx]['mappings']['properties'].keys())
+            else:
+                for k in m_info[idx]['mappings']['properties']:
+                    item = m_info[idx]['mappings']['properties'][k]
+                    if 'type' in item and item['type'] == column_type:
+                        result.append(k)
+
+        return list(set(result))
+
     def update_document(self, document, doc_id, field, value, index):
         """문서를 저장한다."""
         # 서버 접속
@@ -809,6 +833,186 @@ class ElasticSearchUtils(object):
             self.dump(index=args.index, stdout=True)
 
         return
+
+    def import_data(self, index, id_field=None, use_year_tag=False):
+        """데이터를 서버에 저장한다."""
+        import sys
+        from dateutil.parser import parse as parse_date
+
+        idx_cache = {}
+
+        count = 0
+        for line in sys.stdin:
+            doc = json.loads(line)
+
+            if doc is None:
+                continue
+
+            count += 1
+            if count % 1000 == 0:
+                print('{} {:,}'.format(index, count))
+
+            if id_field is not None and id_field in doc:
+                doc['_id'] = doc[id_field]
+
+            # 날짜 변환
+            for k in ['date', 'curl_date', 'update_date', 'insert_date', '@timestamp']:
+                if k not in doc:
+                    continue
+
+                if isinstance(doc[k], dict) and '$date' in doc[k]:
+                    doc[k] = doc[k]['$date']
+
+                if isinstance(doc[k], str):
+                    if doc[k] == '' or doc[k] == '|':
+                        del doc[k]
+                        continue
+
+                    dt = parse_date(doc[k])
+
+                    # 시간대를 변경한다.
+                    if dt.tzinfo is not None:
+                        dt = dt.astimezone(self.timezone)
+                    elif doc[k].find('+00:00') > 0:
+                        dt = dt.astimezone(self.timezone)
+                    elif doc[k].find('+09:00') < 0:
+                        dt = self.timezone.localize(dt)
+
+                    doc[k] = dt
+
+            target_idx = index
+            if use_year_tag is True:
+                try:
+                    target_idx = '{index}-{year}'.format(index=index, year=doc['date'].year)
+
+                    if target_idx not in idx_cache:
+                        idx_cache[target_idx] = self.get_id_list(index=target_idx)
+
+                    # 중복 아이디 확인
+                    if doc['document_id'] in idx_cache[target_idx]:
+                        continue
+                except Exception as e:
+                    print(e)
+
+            self.save_document(document=doc, index=target_idx)
+
+        self.flush()
+
+        return
+
+    def delete_doc_by_id(self, index, id_list):
+        """아이디로 문서를 삭제한다."""
+        self.elastic.delete_by_query(
+            index=index,
+            body={
+                'query': {
+                    'ids': {
+                        'values': id_list
+                    }
+                }
+            }
+        )
+
+        return
+
+    def rename_docs(self, error_ids, index):
+        """ """
+
+        def parse_url(url):
+            from urllib.parse import urlparse, parse_qs
+
+            url_info = urlparse(url)
+
+            query = parse_qs(url_info.query)
+            for key in query:
+                query[key] = query[key][0]
+
+            return query
+
+        step = 500
+        size = len(error_ids)
+
+        for i in tqdm(range(0, size, step), dynamic_ncols=True):
+            st, en = (i, i + step - 1)
+            if en > size:
+                en = size + 1
+
+            doc_list = []
+            self.elastic.get_by_ids(
+                id_list=error_ids[st:en],
+                index=index,
+                source=None,
+                result=doc_list,
+            )
+
+            bulk_data = []
+            for doc in doc_list:
+                if 'url' not in doc:
+                    continue
+
+                # src_id 삭제
+                bulk_data.append({
+                    'delete': {
+                        '_id': doc['document_id'],
+                        '_index': index,
+                    }
+                })
+
+                doc_id = '{oid}-{aid}'.format(**parse_url(doc['url']))
+                flag = self.elastic.elastic.exists(index=index, id=doc_id, doc_type='_doc')
+                if flag is True:
+                    continue
+
+                # 문서 저장
+                doc['document_id'] = doc_id
+
+                bulk_data.append({
+                    'update': {
+                        '_id': doc_id,
+                        '_index': index,
+                    }
+                })
+
+                bulk_data.append({
+                    'doc': doc,
+                    'doc_as_upsert': True,
+                })
+
+            self.bulk_data[self.elastic.host] = bulk_data
+            self.flush()
+
+        return
+
+    @staticmethod
+    def simplify_nlu_wrapper(doc_list):
+        """ """
+        result = []
+        for doc in tqdm(doc_list):
+            if 'nlu_wrapper' not in doc:
+                continue
+
+            for k in doc['nlu_wrapper']:
+                buf = {}
+                for item in doc['nlu_wrapper'][k]:
+                    for c in item:
+                        if c not in buf:
+                            buf[c] = ''
+
+                        if isinstance(item[c], list):
+                            buf[c] += '\n'.join(item[c])
+                        else:
+                            buf[c] += item[c]
+
+                row = {
+                    'document_id': doc['document_id'],
+                    'date': doc['date'],
+                    'column': k,
+                }
+                row.update(buf)
+
+                result.append(row)
+
+        return result
 
     @staticmethod
     def init_arguments():
