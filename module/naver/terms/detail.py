@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from time import sleep
 
 from module.crawler_base import CrawlerBase
-from module.utils.elasticsearch_utils import ElasticSearchUtils
+from utils import ElasticSearchUtils
 
 
 class TermDetail(CrawlerBase):

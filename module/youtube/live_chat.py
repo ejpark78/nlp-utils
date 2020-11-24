@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from module.utils.logger import Logger
-from module.utils.selenium_wire_utils import SeleniumWireUtils
+from utils import Logger
+from utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 

@@ -12,12 +12,11 @@ from time import sleep
 import pytz
 import requests
 import urllib3
-from dateutil.relativedelta import relativedelta
 from cachelib import SimpleCache
 
 from module.config import Config
-from module.utils.html_parser import HtmlParser
-from module.utils.logger import Logger
+from utils import HtmlParser
+from utils import Logger
 from module.post_process_utils import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

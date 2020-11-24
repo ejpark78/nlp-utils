@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
 from module.movie_reviews.cache_utils import CacheUtils
-from module.utils.logger import Logger
+from utils import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

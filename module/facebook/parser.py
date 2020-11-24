@@ -10,7 +10,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
-from module.utils.selenium_utils import SeleniumUtils
+from utils import SeleniumUtils
 
 
 class FBParser(SeleniumUtils):

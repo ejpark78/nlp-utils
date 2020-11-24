@@ -17,10 +17,10 @@ import pytz
 import requests
 import urllib3
 from tqdm import tqdm
-from module.utils.selenium_wire_utils import SeleniumWireUtils
+from utils import SeleniumWireUtils
 
 from module.config import Config
-from module.utils.logger import Logger
+from utils import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

@@ -24,6 +24,6 @@ config/jobs/nate/opinion.json 제거할 예정
 config/jobs/nate/radio.json 제거할 예정
 config/jobs/nate/tv.json 제거할 예정
 cache
-/module/browsermob-proxy/
+/utils/browsermob-proxy/
 /log/
 status

@@ -15,7 +15,7 @@ import pandas as pd
 import urllib3
 from tqdm.autonotebook import tqdm
 
-from module.utils.elasticsearch_utils import ElasticSearchUtils
+from utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

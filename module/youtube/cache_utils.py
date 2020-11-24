@@ -7,12 +7,11 @@ from __future__ import print_function
 
 import json
 import sqlite3
-from os.path import isfile
 
 import pytz
 import urllib3
 
-from module.utils.logger import Logger
+from utils import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

@@ -15,8 +15,8 @@ from datetime import datetime
 import pytz
 import requests
 
-from module.utils.html_parser import HtmlParser
-from module.utils.logger import Logger
+from utils import HtmlParser
+from utils import Logger
 
 
 class PostProcessUtils(object):

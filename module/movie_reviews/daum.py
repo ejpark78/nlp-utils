@@ -20,8 +20,8 @@ from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, WEEKLY, MO
 
 from module.movie_reviews.cache_utils import CacheUtils
-from module.utils.logger import Logger
-from module.utils.selenium_wire_utils import SeleniumWireUtils
+from utils import Logger
+from utils import SeleniumWireUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

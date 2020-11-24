@@ -6,14 +6,13 @@ from __future__ import division
 from __future__ import print_function
 
 import sqlite3
-from os.path import isfile
 
 import pytz
 import requests
 import urllib3
 from requests_html import HTMLSession
 
-from module.utils.logger import Logger
+from utils import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

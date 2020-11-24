@@ -14,7 +14,7 @@ from os.path import isdir, join
 
 from module.config import Config
 from module.common_utils import CommonUtils
-from module.utils.elasticsearch_utils import ElasticSearchUtils
+from utils import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

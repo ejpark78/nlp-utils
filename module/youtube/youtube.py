@@ -10,8 +10,8 @@ from os.path import splitext
 
 import pandas as pd
 
-from module.utils.logger import Logger
-from module.utils.selenium_wire_utils import SeleniumWireUtils
+from utils import Logger
+from utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 from module.youtube.reply import YoutubeReply
 from module.youtube.video_list import YoutubeVideoList

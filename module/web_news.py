@@ -22,8 +22,8 @@ from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, DAILY
 
 from module.crawler_base import CrawlerBase
-from module.utils.elasticsearch_utils import ElasticSearchUtils
-from module.utils.logger import Logger
+from utils import ElasticSearchUtils
+from utils import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
