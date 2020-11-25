@@ -8,7 +8,7 @@ from __future__ import print_function
 from time import sleep
 
 from utils.logger import Logger
-from utils import SeleniumWireUtils
+from utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 
@@ -23,8 +23,7 @@ class YoutubeReply(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-        self.db = CacheUtils(filename=self.params.filename)
-        self.db.use_cache = self.params.use_cache
+        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
 
     def get_total_reply_count(self):
         self.selenium.scroll(count=3, meta={})
@@ -79,7 +78,7 @@ class YoutubeReply(object):
             })
             return reply_sum
 
-        del self.selenium.driver.requests
+        self.selenium.reset_requests()
 
         if total > 10:
             scroll_count = self.params.max_scroll if total > 20 else 3
@@ -88,6 +87,9 @@ class YoutubeReply(object):
         contents = []
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
             if hasattr(x, 'data') is False or 'response' not in x.data:
+                continue
+
+            if 'continuationContents' not in x.data['response']:
                 continue
 
             if 'itemSectionContinuation' not in x.data['response']['continuationContents']:

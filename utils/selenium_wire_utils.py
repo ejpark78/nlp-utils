@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import json
 from time import sleep
+from urllib.parse import urlparse
 
 import pytz
 import urllib3
@@ -30,12 +31,13 @@ class SeleniumWireUtils(object):
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.driver = None
+        self.headers = None
+
         self.login = login
         self.headless = headless
+
         self.user_data_path = user_data_path
         self.executable_path = executable_path
-
-        self.headers = None
 
         self.open_driver()
 
@@ -87,9 +89,8 @@ class SeleniumWireUtils(object):
 
         return
 
-    def scroll(self, meta, count=10, sleep_time=1):
-        """스크롤 한다."""
-        html = self.driver.find_element_by_tag_name('html')
+    def scroll(self, meta, count=10, sleep_time=1, css_selector='html'):
+        html = self.driver.find_element_by_css_selector(css_selector)
 
         for i in range(count):
             self.logger.log(msg={
@@ -117,22 +118,55 @@ class SeleniumWireUtils(object):
 
         return False
 
+    def scroll_to(self, count, sleep_time=3):
+        for _ in range(count):
+            try:
+                self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+                self.driver.implicitly_wait(15)
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'scroll error',
+                    'exception': str(e),
+                })
+                break
+
+            sleep(sleep_time)
+
+        return False
+
     def open(self, url, resp_url_path=None, wait_for_path=None, clear_requests=True):
         if clear_requests is True:
-            del self.driver.requests
+            self.reset_requests()
 
-        self.driver.get(url=url)
+        try:
+            self.driver.get(url=url)
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url open error',
+                'url': url,
+                'error': str(e)
+            })
+
         self.logger.log(msg={'level': 'MESSAGE', 'message': 'requests', 'url': url})
 
-        if wait_for_path is not None:
-            try:
-                self.driver.wait_for_request(wait_for_path, timeout=30)
-            except Exception as e:
-                self.logger.error(msg={'wait_for_path': wait_for_path, 'error': str(e)})
-        else:
+        if wait_for_path is None:
             self.driver.implicitly_wait(15)
             WebDriverWait(self.driver, 5, 10)
-            pass
+
+            return self.get_requests(resp_url_path=resp_url_path)
+
+        try:
+            self.driver.wait_for_request(wait_for_path, timeout=30)
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url open wait error',
+                'url': url,
+                'wait_for_path': wait_for_path,
+                'error': str(e)
+            })
 
         return self.get_requests(resp_url_path=resp_url_path)
 
@@ -149,12 +183,23 @@ class SeleniumWireUtils(object):
             })
             sleep(sleep_time)
 
-            self.get_requests(resp_url_path=resp_url_path, max_try=max_try-1)
+            self.get_requests(resp_url_path=resp_url_path, max_try=max_try - 1)
             return []
+
+        netloc = urlparse(self.driver.current_url).netloc
+        token = netloc.split('.')
+        if len(token) >= 3:
+            netloc = '.'.join(token[1:])
 
         result = []
         for req in req_list:
             if req.response is None:
+                continue
+
+            if 'www.google' in req.url or 'googleapis' in req.url:
+                continue
+
+            if netloc not in req.url:
                 continue
 
             if resp_url_path is None:
@@ -176,4 +221,11 @@ class SeleniumWireUtils(object):
 
             result.append(req)
 
+        if self.headers is None and len(req_list) > 0:
+            self.headers = req_list[-1].headers
+
         return result
+
+    def reset_requests(self):
+        del self.driver.requests
+        return

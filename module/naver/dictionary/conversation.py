@@ -15,7 +15,7 @@ import urllib3
 from dateutil.rrule import rrule, DAILY
 from tqdm.autonotebook import tqdm
 
-from module.dictionary_utils import DictionaryUtils
+from utils.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

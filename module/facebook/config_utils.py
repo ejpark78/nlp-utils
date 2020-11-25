@@ -9,7 +9,7 @@ import json
 from bs4 import BeautifulSoup
 
 
-class FBGroup(object):
+class FBConfigUtils(object):
 
     def __init__(self):
         """ """
@@ -40,7 +40,7 @@ class FBGroup(object):
 
             result.append(doc)
 
-        self.save(filename='config/facebook/group.json', contents=result)
+        self.save(filename='../../config/facebook/group.json', contents=result)
 
         return
 
@@ -77,7 +77,7 @@ class FBGroup(object):
 
             result.append(doc)
 
-        self.save(filename='config/facebook/friends.json', contents=result)
+        self.save(filename='../../config/facebook/friends.json', contents=result)
 
         return
 
@@ -114,7 +114,7 @@ class FBGroup(object):
 
             result.append(doc)
 
-        self.save(filename='config/facebook/likes.json', contents=result)
+        self.save(filename='../../config/facebook/likes.json', contents=result)
 
         return
 
@@ -185,7 +185,7 @@ class FBGroup(object):
         filename = 'data/follow-2.html'
         result += self.follows(filename)
 
-        filename = 'config/facebook/follows.json'
+        filename = '../../config/facebook/follows.json'
         self.save(filename, result)
 
         return

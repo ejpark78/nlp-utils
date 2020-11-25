@@ -9,7 +9,7 @@ import json
 from time import sleep
 
 from utils.logger import Logger
-from utils import SeleniumWireUtils
+from utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 
@@ -24,8 +24,7 @@ class YoutubeVideoList(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-        self.db = CacheUtils(filename=self.params.filename)
-        self.db.use_cache = self.params.use_cache
+        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
 
     @staticmethod
     def read_config(filename, column):
@@ -88,7 +87,7 @@ class YoutubeVideoList(object):
             })
             return video_count
 
-        del self.selenium.driver.requests
+        self.selenium.reset_requests()
         self.selenium.scroll(count=self.params.max_scroll, meta=meta)
 
         videos = []

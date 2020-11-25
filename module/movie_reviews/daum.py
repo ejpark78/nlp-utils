@@ -21,7 +21,7 @@ from dateutil.rrule import rrule, WEEKLY, MO
 
 from module.movie_reviews.cache_utils import CacheUtils
 from utils.logger import Logger
-from utils import SeleniumWireUtils
+from utils.selenium_wire_utils import SeleniumWireUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -32,14 +32,6 @@ class DaumMovieReviews(object):
     def __init__(self):
         super().__init__()
 
-        self.logger = Logger()
-
-        self.timezone = pytz.timezone('Asia/Seoul')
-
-        self.params = self.init_arguments()
-
-        self.sleep_time = 15
-
         self.url = {
             'code': 'https://movie.daum.net/boxoffice/weekly?startDate={year}{month:02d}{day:02d}',
             'info': 'https://movie.daum.net/moviedb/main?movieId={code}',
@@ -49,8 +41,13 @@ class DaumMovieReviews(object):
                        'parentId=0&offset={offset}&limit=10&sort=RECOMMEND&isInitial=false&hasNext=true',
         }
 
-        self.db = CacheUtils(filename=self.params.filename)
-        self.db.use_cache = self.params.use_cache
+        self.logger = Logger()
+
+        self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.params = self.init_arguments()
+
+        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
 
         self.selenium = SeleniumWireUtils()
 
@@ -115,7 +112,7 @@ class DaumMovieReviews(object):
             _ = self.save_movie_code(url=url, content=contents['content'], meta={})
 
             if contents['is_cache'] is False:
-                sleep(self.sleep_time)
+                sleep(self.params.sleep)
 
         return
 
@@ -268,7 +265,7 @@ class DaumMovieReviews(object):
                 )
 
                 if contents['is_cache'] is False:
-                    sleep(self.sleep_time)
+                    sleep(self.params.sleep)
 
             self.db.update_review_count(code=code, count=count)
 
@@ -371,6 +368,8 @@ class DaumMovieReviews(object):
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--filename', default='data/movie_reviews/daum.db', help='파일명')
+
+        parser.add_argument('--sleep', default=15, type=float, help='sleep time')
 
         return parser.parse_args()
 

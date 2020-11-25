@@ -29,14 +29,6 @@ class NaverMovieReviews(object):
     def __init__(self):
         super().__init__()
 
-        self.logger = Logger()
-
-        self.timezone = pytz.timezone('Asia/Seoul')
-
-        self.params = self.init_arguments()
-
-        self.sleep_time = 15
-
         self.url = {
             'code': 'https://movie.naver.com/movie/sdb/browsing/bmovie.nhn?open={year}&page={page}',
             'info_basic': 'https://movie.naver.com/movie/bi/mi/basic.nhn?code={code}',
@@ -48,8 +40,13 @@ class NaverMovieReviews(object):
                        'isMileageSubscriptionReject=false&page={page}',
         }
 
-        self.db = CacheUtils(filename=self.params.filename)
-        self.db.use_cache = self.params.use_cache
+        self.logger = Logger()
+
+        self.timezone = pytz.timezone('Asia/Seoul')
+
+        self.params = self.init_arguments()
+
+        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
 
     def __del__(self):
         pass
@@ -123,7 +120,7 @@ class NaverMovieReviews(object):
                 prev = code_list
 
                 if contents['is_cache'] is False:
-                    sleep(self.sleep_time)
+                    sleep(self.params.sleep)
 
         return
 
@@ -250,7 +247,7 @@ class NaverMovieReviews(object):
                 prev = review_info['list']
 
                 if contents['is_cache'] is False:
-                    sleep(self.sleep_time)
+                    sleep(self.params.sleep)
 
             self.db.update_review_count(code=code, count=count)
 
@@ -342,6 +339,8 @@ class NaverMovieReviews(object):
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--filename', default='data/movie_reviews/naver.db', help='파일명')
+
+        parser.add_argument('--sleep', default=15, type=float, help='sleep time')
 
         return parser.parse_args()
 

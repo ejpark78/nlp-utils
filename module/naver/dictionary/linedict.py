@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 import requests
 import urllib3
 
-from module.dictionary_utils import DictionaryUtils
+from utils.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

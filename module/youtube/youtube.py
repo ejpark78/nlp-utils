@@ -11,7 +11,7 @@ from os.path import splitext
 import pandas as pd
 
 from utils.logger import Logger
-from utils import SeleniumWireUtils
+from utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 from module.youtube.reply import YoutubeReply
 from module.youtube.video_list import YoutubeVideoList
@@ -25,10 +25,9 @@ class YoutubeCrawler(object):
         super().__init__()
 
         self.logger = Logger()
+        self.params = self.init_arguments()
 
         self.selenium = SeleniumWireUtils(headless=True)
-
-        self.params = self.init_arguments()
 
     def export_channels(self):
         db = CacheUtils(filename=self.params.filename)

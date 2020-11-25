@@ -10,29 +10,14 @@ import requests
 
 from time import sleep, time
 
-from utils import Utils
 
-
-class DaumReply(Utils):
-    """
-    """
+class DaumReply(object):
 
     def __init__(self):
         super().__init__()
 
     def get_post_id(self, db_name='daum_sports', collection_name='2017-10'):
-        """
-        기사 아이디를 이용하여 post id 를 가져온다.
-
-        :param db_name:
-            디비명
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            True/False
-        """
+        """ 기사 아이디를 이용하여 post id 를 가져온다. """
         start = time()
 
         sleep_time = 3
@@ -93,12 +78,7 @@ class DaumReply(Utils):
         return True
 
     def update_header(self, article_id, sleep_time):
-        """
-        해더의 Authorization 업데이트
-
-        :return:
-            True/False
-        """
+        """ 해더의 Authorization 업데이트 """
 
         access_token = self.get_access_token(article_id)
         if access_token is None:
@@ -118,30 +98,7 @@ class DaumReply(Utils):
 
     def get_document_list(self, db_name, collection_name, query=None, projection=None,
                           exclude_list=None, host='frodo', port=27018, as_hash=False):
-        """
-        기사 아이디 목록 반환
-        :param db_name:
-            디비명
-
-        :param collection_name:
-            컬랙션명
-
-        :param exclude_list:
-            제외할 목록
-
-        :param query:
-            검색 조건식
-
-        :param projection:
-            반환할 필드
-
-        :param host:
-        :param port:
-        :param as_hash:
-
-        :return:
-            기사 아이디 목록
-        """
+        """ 기사 아이디 목록 반환 """
         if query is None:
             query = {}
 
@@ -182,19 +139,7 @@ class DaumReply(Utils):
         return result
 
     def save_document(self, document, db_name, collection_name):
-        """
-        :param document:
-            저장할 문서
-
-        :param db_name:
-            디비명
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            True
-        """
+        """ """
         from datetime import datetime
 
         connect, db = self.open_db(db_name=db_name, host='frodo', port=27018)
@@ -262,18 +207,7 @@ class DaumReply(Utils):
         return item['access_token']
 
     def get_reply_list(self, db_name='daum_sports', collection_name='2017-10'):
-        """
-        post id를 이용하여 기사에 달린 댓글을 가져온다.
-
-        :param db_name:
-            디비명
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            True
-        """
+        """ post id를 이용하여 기사에 달린 댓글을 가져온다. """
         start = time()
 
         sleep_time = 3
@@ -319,17 +253,7 @@ class DaumReply(Utils):
         return True
 
     def get_reply_children(self, db_name='daum_sports', collection_name='2017-10'):
-        """
-        댓글의 댓글 크롤링
-        :param db_name:
-            디비명
-
-        :param collection_name:
-            컬랙션 이름
-
-        :return:
-            True/False
-        """
+        """ 댓글의 댓글 크롤링 """
         start = time()
 
         sleep_time = 3
@@ -396,10 +320,7 @@ class DaumReply(Utils):
         return True
 
     def get_one_replay(self, url_frame, post_id, total, limit, sleep_time):
-        """
-        :return:
-            댓글 목록 반환
-        """
+        """ """
         result = []
         for offset in range(0, total, limit):
             url = url_frame.format(id=post_id, offset=offset, limit=limit)
@@ -415,9 +336,7 @@ class DaumReply(Utils):
         return result
 
     def export_replay(self):
-        """
-        :return:
-        """
+        """ """
         start = time()
 
         db_name = 'daum_sports'
@@ -457,11 +376,7 @@ class DaumReply(Utils):
 
     @staticmethod
     def _get_data(data, key_list):
-        """
-        :param data:
-        :param key_list:
-        :return:
-        """
+        """ """
         result = []
         for k in key_list:
             if k not in data:
@@ -477,12 +392,7 @@ class DaumReply(Utils):
         return result
 
     def update_article_id(self):
-        """
-        기사 아이디가 잘못된 경우 변경
-
-        :return:
-            True
-        """
+        """ 기사 아이디가 잘못된 경우 변경 """
         db_name = 'daum_sports'
         host = 'frodo'
         port = 27018
@@ -511,12 +421,6 @@ class DaumReply(Utils):
 
 
 def init_arguments():
-    """
-    옵션 설정
-
-    :return:
-        parsed arguments
-    """
     import argparse
 
     parser = argparse.ArgumentParser(description='daum 댓글 크롤러')

@@ -5,10 +5,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import sqlite3
 
 import pytz
-import requests
 import urllib3
 from requests_html import HTMLSession
 
@@ -34,62 +34,54 @@ class CacheUtils(object):
         self.conn = None
         self.cursor = None
 
-        self.headers = {
-            'Referer': 'https://movie.naver.com',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/86.0.4240.111 Safari/537.36'
-
-        }
-
         self.schema = [
             '''
                 CREATE TABLE IF NOT EXISTS cache (
                     url TEXT NOT NULL UNIQUE PRIMARY KEY,
                     date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                    content TEXT NOT NULL,
+                    state TEXT NOT NULL DEFAULT ''
+                )
+            ''',
+            '''
+                CREATE TABLE IF NOT EXISTS report_list (
+                    documentid TEXT NOT NULL UNIQUE PRIMARY KEY,
+                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                     content TEXT NOT NULL
                 )
             ''',
             '''
-                CREATE TABLE IF NOT EXISTS movie_code (
-                    url TEXT NOT NULL, 
+                CREATE TABLE IF NOT EXISTS reports (
+                    documentid TEXT NOT NULL UNIQUE PRIMARY KEY,
                     date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                    code TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                    enc TEXT NOT NULL,
                     title TEXT NOT NULL,
-                    review_count INTEGER DEFAULT -1,
-                    total INTEGER DEFAULT -1
-                )
-            ''',
-            '''
-                CREATE TABLE IF NOT EXISTS movie_reviews (
-                    no INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                    title TEXT NOT NULL, 
-                    code TEXT NOT NULL, 
-                    review TEXT NOT NULL
+                    summary TEXT NOT NULL,
+                    pdf TEXT DEFAULT ''
                 )
             '''
         ]
 
         self.template = {
             'cache': 'REPLACE INTO cache (url, content) VALUES (?, ?)',
-            'code': 'INSERT INTO movie_code (url, code, title) VALUES (?, ?, ?)',
-            'reviews': 'INSERT INTO movie_reviews (title, code, review) VALUES (?, ?, ?)',
-            'review_count': 'UPDATE movie_code SET review_count=? WHERE code=?',
-            'total': 'UPDATE movie_code SET total=? WHERE code=?',
+            'report_list': 'REPLACE INTO report_list (documentid, content) VALUES (?, ?)',
+            'reports': 'REPLACE INTO reports (documentid, enc, title, summary) VALUES (?, ?, ?, ?)',
+            'pdf': 'UPDATE reports SET pdf=? WHERE documentid=?',
+            'state': 'UPDATE report_list SET state=? WHERE documentid=?',
         }
 
         self.open_db(filename)
 
     def __del__(self):
-        # if self.cursor is not None:
-        #     self.cursor = None
-        #
-        # if self.conn is not None:
-        #     self.conn.commit()
-        #     self.conn.close()
-        #
-        #     self.conn = None
+        if self.cursor is not None:
+            self.cursor = None
+
+        if self.conn is not None:
+            self.conn.commit()
+            self.conn.close()
+
+            self.conn = None
+
         pass
 
     def open_db(self, filename):
@@ -130,7 +122,7 @@ class CacheUtils(object):
 
         return
 
-    def exists(self, url):
+    def fetch(self, url):
         self.cursor.execute('SELECT content FROM cache WHERE url=?', (url,))
 
         row = self.cursor.fetchone()
@@ -139,48 +131,27 @@ class CacheUtils(object):
 
         return None
 
-    def read_cache(self, url, meta, headers=None, use_cache=True):
-        content = None
-        if self.use_cache is True and use_cache is True:
-            content = self.exists(url=url)
-
-        if content is not None:
-            return {
-                'content': content,
-                'is_cache': True
-            }
-
-        if headers is None:
-            headers = self.headers
-
-        resp = requests.get(url=url, verify=False, headers=headers, timeout=120)
-
-        self.logger.log(msg={
-            'level': 'MESSAGE',
-            'message': 'requests',
-            'url': url,
-            'status_code': resp.status_code,
-            **meta
-        })
-
-        self.save_cache(url=url, content=resp.content)
-
-        return {
-            'content': resp.content,
-            'is_cache': False
-        }
-
-    def update_review_count(self, code, count):
-        self.cursor.execute(self.template['review_count'], (count, code), )
-        self.conn.commit()
-        return
-
-    def update_total(self, code, total):
-        self.cursor.execute(self.template['total'], (total, code), )
-        self.conn.commit()
-        return
-
     def save_cache(self, url, content):
         self.cursor.execute(self.template['cache'], (url, content,))
+        self.conn.commit()
+        return
+
+    def save_report_list(self, doc_id, content):
+        self.cursor.execute(self.template['report_list'], (doc_id, json.dumps(content, ensure_ascii=False),))
+        self.conn.commit()
+        return
+
+    def save_reports(self, doc_id, enc, title, summary):
+        self.cursor.execute(self.template['reports'], (doc_id, enc, title, summary, ))
+        self.conn.commit()
+        return
+
+    def save_pdf(self, doc_id, pdf):
+        self.cursor.execute(self.template['pdf'], (pdf, doc_id, ))
+        self.conn.commit()
+        return
+
+    def update_state(self, doc_id, state):
+        self.cursor.execute(self.template['state'], (state, doc_id, ))
         self.conn.commit()
         return

@@ -6,7 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 from utils.logger import Logger
-from utils import SeleniumWireUtils
+from utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
 
 
@@ -21,8 +21,7 @@ class YoutubeLiveChat(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-        self.db = CacheUtils(filename=self.params.filename)
-        self.db.use_cache = self.params.use_cache
+        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
 
     def get_live_chat(self):
         sql = 'SELECT id, title FROM videos'

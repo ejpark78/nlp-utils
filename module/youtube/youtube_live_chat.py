@@ -15,7 +15,7 @@ from urllib.parse import unquote
 import requests
 
 from utils.elasticsearch_utils import ElasticSearchUtils
-from utils import SeleniumProxyUtils
+from utils.proxy_utils import SeleniumProxyUtils
 
 
 class YoutubeLiveChatCrawler(SeleniumProxyUtils):

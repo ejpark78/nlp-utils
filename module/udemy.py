@@ -62,7 +62,7 @@ class UdemyCrawler(object):
         """강좌 목록을 다운로드 받는다."""
         result = []
         for page in tqdm(range(1, 14), desc='course list'):
-            del self.selenium.driver.requests
+            self.selenium.reset_requests()
 
             url = 'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'.format(page=page)
 

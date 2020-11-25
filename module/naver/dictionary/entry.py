@@ -17,7 +17,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from tqdm.autonotebook import tqdm
 
-from module.dictionary_utils import DictionaryUtils
+from utils.dictionary_utils import DictionaryUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

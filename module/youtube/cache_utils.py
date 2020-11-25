@@ -19,14 +19,14 @@ urllib3.disable_warnings(UserWarning)
 
 class CacheUtils(object):
 
-    def __init__(self, filename):
+    def __init__(self, filename, use_cache=True):
         super().__init__()
 
         self.logger = Logger()
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.use_cache = True
+        self.use_cache = use_cache
 
         self.conn = None
         self.cursor = None
