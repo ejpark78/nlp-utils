@@ -6,13 +6,17 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-from os.path import splitext
+import math
+import os
+from os import makedirs
+from os.path import splitext, dirname, isdir, isfile
 from time import sleep
 
 import pandas as pd
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 from module.kbsec.cache_utils import CacheUtils
 from utils.logger import Logger
@@ -51,8 +55,8 @@ class KBSecBase(object):
             resp = requests.get(
                 url=url,
                 verify=False,
+                timeout=120,
                 headers=self.selenium.headers,
-                timeout=120
             )
 
             content = resp.content
@@ -62,6 +66,63 @@ class KBSecBase(object):
             self.db.save_cache(url=url, content=content)
 
         return content, is_cache
+
+    def download_file(self, url, filename):
+        if isfile(filename) is True:
+            self.logger.log({
+                'level': 'MESSAGE',
+                'message': '파일이 이미 존재함',
+                'url': url,
+                'filename': filename,
+            })
+            return
+
+        self.logger.log({
+            'level': 'MESSAGE',
+            'message': '파일 다운로드',
+            'url': url,
+            'filename': filename,
+        })
+
+        resp = requests.get(
+            url=url,
+            timeout=6000,
+            verify=False,
+            stream=True,
+            headers=self.selenium.headers,
+            allow_redirects=True,
+        )
+
+        if resp.status_code // 100 != 2:
+            self.logger.error(msg={
+                'error': 'error: {}'.format(resp.text)
+            })
+
+        total_size = int(resp.headers.get('content-length', 0))
+        self.logger.log(msg={
+            'size': 'size: {:,}'.format(total_size)
+        })
+
+        path = dirname(filename)
+        if isdir(path) is False:
+            makedirs(path)
+
+        wrote = 0
+        block_size = 1024
+
+        with open(filename + '.parted', 'wb') as fp:
+            pbar = tqdm(
+                resp.iter_content(block_size),
+                total=math.ceil(total_size // block_size), unit='KB',
+                unit_scale=True
+            )
+
+            for data in pbar:
+                wrote = wrote + len(data)
+                fp.write(data)
+
+        os.rename(filename + '.parted', filename)
+        return
 
 
 class KBSecReportList(KBSecBase):
@@ -199,6 +260,7 @@ class KBSecReports(KBSecBase):
         soup = BeautifulSoup(content, 'html5lib')
 
         text = '\n'.join([x.get_text('\n') for x in soup.select('div.viewCon1')])
+
         item = {
             'enc': soup.select('input#enc')[0]['value'],
             'title': soup.select('input#doctitle')[0]['value'],
@@ -217,7 +279,7 @@ class KBSecReports(KBSecBase):
         )
         sleep(self.params.sleep)
 
-        _ = self.db.cursor.execute('SELECT documentid FROM report_list WHERE state!=?', ('done',))
+        _ = self.db.cursor.execute('SELECT documentid FROM report_list WHERE state != ?', ('done',))
 
         rows = self.db.cursor.fetchall()
 
@@ -242,6 +304,12 @@ class KBSecReports(KBSecBase):
             js_body = [x.response.body for x in resp if '/js/researchWeb/detailView/detailView.js' in x.url][0]
 
             self.pdf_view(enc=detail['enc'], js_body=js_body, doc_id=doc_id)
+
+            self.download_file(
+                url='http://rdata.kbsec.com/pdf_data/{}.pdf'.format(doc_id),
+                filename='{}/pdf/{}.pdf'.format(dirname(self.params.filename), doc_id)
+            )
+
             sleep(self.params.sleep)
 
         return
@@ -384,7 +452,7 @@ class KBSecCrawler(object):
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
-        parser.add_argument('--filename', default='./data/kbsec.db', help='파일명')
+        parser.add_argument('--filename', default='./data/kbsec/kbsec.db', help='파일명')
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')

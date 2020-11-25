@@ -17,10 +17,10 @@ import pytz
 import requests
 import urllib3
 from tqdm import tqdm
-from utils.selenium_wire_utils import SeleniumWireUtils
 
 from module.web_news.config import Config
 from utils.logger import Logger
+from utils.selenium_wire_utils import SeleniumWireUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -256,46 +256,56 @@ class UdemyCrawler(object):
             if v['label'] != str(max_size):
                 continue
 
-            self.logger.log({
-                'filename': filename,
-                'max_size': max_size,
-                'f': v['file'],
-            })
-
-            resp = requests.get(
-                url=v['file'],
-                allow_redirects=True,
-                timeout=6000,
-                verify=False,
-                stream=True
-            )
-
-            if resp.status_code // 100 != 2:
-                self.logger.error(msg={
-                    'error': 'error: {}'.format(resp.text)
-                })
-
-            total_size = int(resp.headers.get('content-length', 0))
-            self.logger.log(msg={
-                'size': 'size: {:,}'.format(total_size)
-            })
-
-            block_size = 1024
-            wrote = 0
-
-            with open(filename + '.parted', 'wb') as fp:
-                for data in tqdm(resp.iter_content(block_size),
-                                 total=math.ceil(total_size // block_size), unit='KB',
-                                 unit_scale=True):
-                    wrote = wrote + len(data)
-                    fp.write(data)
-
-            os.rename(filename + '.parted', filename)
+            self.download_file(url=v['file'], filename=filename)
 
             sleep(self.sleep)
             break
 
         return False
+
+    def download_file(self, url, filename):
+        self.logger.log({
+            'level': 'MESSAGE',
+            'message': '파일 다운로드',
+            'url': url,
+            'filename': filename,
+        })
+
+        resp = requests.get(
+            url=url,
+            allow_redirects=True,
+            timeout=6000,
+            verify=False,
+            stream=True
+        )
+
+        if resp.status_code // 100 != 2:
+            self.logger.error(msg={
+                'error': 'error: {}'.format(resp.text)
+            })
+
+        total_size = int(resp.headers.get('content-length', 0))
+        self.logger.log(msg={
+            'size': 'size: {:,}'.format(total_size)
+        })
+
+        wrote = 0
+        block_size = 1024
+
+        with open(filename + '.parted', 'wb') as fp:
+            pbar = tqdm(
+                    resp.iter_content(block_size),
+                    total=math.ceil(total_size // block_size), unit='KB',
+                    unit_scale=True
+            )
+
+            for data in pbar:
+                wrote = wrote + len(data)
+                fp.write(data)
+
+        os.rename(filename + '.parted', filename)
+
+        return
 
     def get_external_link(self, external_link, path, name):
         """외부 링크를 저장한다."""

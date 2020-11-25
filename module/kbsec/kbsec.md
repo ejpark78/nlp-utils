@@ -9,8 +9,18 @@ PYTHONPATH=. python3 module/kbsec/kbsec.py --reports
 ## export 
 
 ```bash
+cp data/kbsec/kbsec.db data/kbsec/kbsec.bak.db
+
 PYTHONPATH=. python3 module/kbsec/kbsec.py --export \
-    --filename data/kbsec.2.db
+    --filename data/kbsec/kbsec.bak.db
+
+rename 's/.bak././' data/kbsec/kbsec.bak.report*
+```
+
+## pdf
+
+```bash
+cat doc-id.list | xargs -I{} echo "wget --no-netrc -c http://rdata.kbsec.com/pdf_data/{}.pdf ; sleep 2" | bash -
 ```
 
 ## memo
