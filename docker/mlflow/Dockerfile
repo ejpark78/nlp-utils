@@ -121,23 +121,22 @@ RUN echo && echo "minio alias" \
 
 WORKDIR /home/jovyan
 
-ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/
+ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
 EXPOSE ${PORT}
 
 CMD ["bash", "-c", "\
-    /usr/bin/minio_alias.sh ;\
     jupyter lab \
         --no-browser \
         --ip=0.0.0.0 \
-        --port=8888 \
+        --port=${PORT} \
         --allow-root \
-        --LabApp.token='' \
-        --LabApp.password='' \
+        --LabApp.token=${NB_TOKEN} \
+        --LabApp.password=${NB_PASSWD} \
         --LabApp.allow_origin='*' \
         --LabApp.base_url=${NB_PREFIX} \
         --notebook-dir=/home/jovyan \
         --NotebookApp.iopub_data_rate_limit=10000000 \
-        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\"\
+        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
 "]
 
 ARG docker_image
