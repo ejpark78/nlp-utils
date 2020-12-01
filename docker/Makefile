@@ -41,7 +41,7 @@ base:
 .ONESHELL:
 build:
 	cd ../
-	tar cvfz ./build/app.tar.gz \
+	tar cvfz ./docker/app.tar.gz \
 		--exclude=.git \
 		--exclude=.pki \
 		--exclude=.idea \
@@ -68,7 +68,7 @@ build:
 		--exclude=ops \
 		.
 
-	cd build/
+	cd -
 	docker build \
 		-t $(IMAGE):$(IMAGE_TAG) \
 		-f Dockerfile \
