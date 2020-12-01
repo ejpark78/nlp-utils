@@ -10,7 +10,6 @@ import sqlite3
 import pytz
 import requests
 import urllib3
-from requests_html import HTMLSession
 
 from utils.logger import Logger
 
@@ -27,8 +26,6 @@ class CacheUtils(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.session = HTMLSession()
-
         self.use_cache = use_cache
 
         self.conn = None
@@ -39,7 +36,6 @@ class CacheUtils(object):
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                           'AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/86.0.4240.111 Safari/537.36'
-
         }
 
         self.schema = [

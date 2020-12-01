@@ -123,7 +123,6 @@ class YoutubeCrawler(object):
         df = pd.DataFrame(data)
 
         filename = '{}.replies'.format(splitext(self.params.filename)[0])
-        df.to_excel(filename + '.xlsx')
 
         df.to_json(
             filename + '.json.bz2',
@@ -133,6 +132,27 @@ class YoutubeCrawler(object):
             lines=True,
         )
 
+        self.save_excel(filename=filename, df=df)
+
+        return
+
+    @staticmethod
+    def save_excel(filename, df, size=500000):
+        writer = pd.ExcelWriter(filename + '.xlsx', engine='xlsxwriter')
+
+        if len(df) > size:
+            for pos in range(0, len(df), size):
+                end_pos = pos + size if len(df) > (pos + size) else len(df)
+
+                df[pos:pos + size].to_excel(
+                    writer,
+                    index=False,
+                    sheet_name='{:,}-{:,}'.format(pos, end_pos)
+                )
+        else:
+            df.to_excel(writer, index=False, sheet_name='review')
+
+        writer.save()
         return
 
     def export(self):
