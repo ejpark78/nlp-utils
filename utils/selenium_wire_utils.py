@@ -47,17 +47,28 @@ class SeleniumWireUtils(object):
 
         options = webdriver.ChromeOptions()
 
-        if self.headless is True:
-            options.add_argument('headless')
-
         options.add_argument('window-size=1920x1080')
         options.add_argument('disable-gpu')
         options.add_argument('disable-infobars')
+        options.add_argument("--incognito")
         options.add_argument('--no-sandbox')
+        options.add_argument('--ignore-ssl-errors')
+        options.add_argument('--disable-extensions')
         options.add_argument('--dns-prefetch-disable')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--ignore-certificate-errors-spki-list')
-        options.add_argument('--ignore-ssl-errors')
+
+        options.add_argument("--disable-xss-auditor")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        options.add_argument("--disable-setuid-sandbox")
+        options.add_argument("--disable-webgl")
+        options.add_argument("--disable-popup-blocking")
+
+        options.add_argument("--no-default-browser-check")
+
+        if self.headless is True:
+            options.add_argument('headless')
 
         if self.user_data_path is not None:
             options.add_argument('user-data-dir={}'.format(self.user_data_path))

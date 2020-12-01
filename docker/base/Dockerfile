@@ -155,3 +155,5 @@ CMD ["bash", "-c", "\
         --NotebookApp.iopub_data_rate_limit=10000000 \
         --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
 "]
+
+#ref: https://stynxh.github.io/2020-06-21-Install-Google-Chrome-on-Ubuntu-linux-from-command-line-kor/
