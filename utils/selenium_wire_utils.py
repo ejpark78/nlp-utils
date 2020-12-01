@@ -23,7 +23,8 @@ urllib3.disable_warnings(UserWarning)
 
 class SeleniumWireUtils(object):
 
-    def __init__(self, login=False, headless=True, user_data_path=None, executable_path='/usr/bin/chromedriver'):
+    def __init__(self, login=False, headless=True, user_data_path=None, incognito=False,
+                 executable_path='/usr/bin/chromedriver'):
         super().__init__()
 
         self.logger = Logger()
@@ -35,6 +36,8 @@ class SeleniumWireUtils(object):
 
         self.login = login
         self.headless = headless
+
+        self.incognito = incognito
 
         self.user_data_path = user_data_path
         self.executable_path = executable_path
@@ -50,7 +53,10 @@ class SeleniumWireUtils(object):
         options.add_argument('window-size=1920x1080')
         options.add_argument('disable-gpu')
         options.add_argument('disable-infobars')
-        options.add_argument("--incognito")
+
+        if self.incognito is True:
+            options.add_argument("--incognito")
+
         options.add_argument('--no-sandbox')
         options.add_argument('--ignore-ssl-errors')
         options.add_argument('--disable-extensions')

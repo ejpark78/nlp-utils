@@ -10,6 +10,9 @@ DELETE FROM videos WHERE tags LIKE '%삼프로tv%';
 ## 크롤링 
 
 ```bash
+tmux new -s youtube-news
+tmux new -s youtube-mtd
+
 PYTHONPATH=. python3 module/youtube/youtube.py \
     --videos \
     --reply \
@@ -18,6 +21,18 @@ PYTHONPATH=. python3 module/youtube/youtube.py \
 
 PYTHONPATH=. python3 module/youtube/youtube.py \
     --videos \
+    --reply \
+    --filename data/youtube/news.db \
+    --channel-list config/youtube/news.json 
+```
+
+```bash
+PYTHONPATH=. python3 module/youtube/youtube.py \
+    --reply \
+    --filename data/youtube/mtd.db \
+    --channel-list config/youtube/mtd.json
+
+PYTHONPATH=. python3 module/youtube/youtube.py \
     --reply \
     --filename data/youtube/news.db \
     --channel-list config/youtube/news.json 

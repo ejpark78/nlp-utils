@@ -28,10 +28,10 @@ pandas
 pycurl
 pyjwt
 PySocks
-browsermob-proxy
 certifi
 cachelib
 brotlipy
 psutil
 xmltodict
 xlsxwriter
+minio

@@ -32,13 +32,15 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
+        apt-transport-https \
+        apt-utils \
 		bash \
-		default-jdk-headless \
         bridge-utils \
         build-essential \
         ca-certificates \
         curl \
         git \
+        gnupg \
         gpg-agent \
         jq \
         libcurl4-openssl-dev \
@@ -54,6 +56,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         tmux \
         tzdata \
         wget \
+        unzip \
         zsh \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
@@ -63,13 +66,28 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN echo && echo "nodejs 설치" \
-    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+# chrome, webdriver:
+# - https://chromedriver.chromium.org/downloads
+# - https://stynxh.github.io/2020-06-21-Install-Google-Chrome-on-Ubuntu-linux-from-command-line-kor/
+# - https://stynxh.github.io/2019-10-09-Set-Selenium-and-Chrome-browser-in-Docker-korean/
+# - https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker
+ENV DISPLAY=:99 CHROMEDRIVER_VER=87.0.4280.20
+
+RUN echo && echo "chrome, webdriver 설치" \
+    && curl -k -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
-        nodejs \
-    && echo && echo "# 저장소 정리" \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        fonts-vlgothic \
+        google-chrome-stable \
+        mercurial \
+        xvfb \
+    && apt autoremove -yq \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && google-chrome-stable --version \
+    && wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VER}/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
+    && rm -rf /tmp/* /var/tmp/*
 
 RUN echo && echo "minio client" \
 	&& wget https://dl.min.io/client/mc/release/linux-amd64/mc \
@@ -92,31 +110,44 @@ RUN echo && echo "# pip 저장소 설정" \
         wheel \
     && echo && echo "# 의존성 라이브러리 설치" \
     && pip3 install --upgrade --no-cache-dir \
-        apache-airflow \
         bs4 \
         cachelib \
         elasticsearch \
         html5lib \
         jsonlines \
         lxml \
+        minio \
         openpyxl \
+        pandas \
         pycurl \
         python-dateutil \
         qgrid \
         requests \
+        requests-html \
+        requests-oauthlib \
         requests[security] \
         requests[socks] \
         selenium \
+        selenium-wire \
         urllib3 \
+        xlsxwriter \
     && rm -rf /tmp/*
 
-RUN echo && echo "# jupyter 설치" \
+RUN echo && echo "nodejs & jupyter 설치" \
+    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt update -yq ${APT_OPTS} \
+    && apt install -yq ${APT_OPTS} \
+        nodejs \
+    && echo && echo "# 저장소 정리" \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    \
+    && echo && echo "# jupyter 설치" \
     && pip3 install --upgrade --no-cache-dir \
+		autopep8 \
+		bash_kernel \
         jupyter \
         jupyterlab \
         jupyterthemes \
-		autopep8 \
-		bash_kernel \
         sshkernel \
     && echo && echo "jupyter kernel 설치" \
     && python3 -m sshkernel install \
@@ -156,4 +187,5 @@ CMD ["bash", "-c", "\
         --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
 "]
 
-#ref: https://stynxh.github.io/2020-06-21-Install-Google-Chrome-on-Ubuntu-linux-from-command-line-kor/
+# selenium-hub : https://medium.com/@HoussemDellai/run-selenium-ui-tests-in-docker-containers-f41ae2796b8d
+# https://stackoverflow.com/questions/62011537/how-can-i-run-selenium-tests-in-a-docker-container-with-a-visible-browser
