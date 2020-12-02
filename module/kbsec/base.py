@@ -6,8 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import math
-import os
-from os import makedirs
+from os import makedirs, rename
 from os.path import dirname, isdir, isfile
 
 import requests
@@ -109,15 +108,15 @@ class KBSecBase(object):
         block_size = 1024
 
         with open(filename + '.parted', 'wb') as fp:
-            pbar = tqdm(
+            p_bar = tqdm(
                 resp.iter_content(block_size),
                 total=math.ceil(total_size // block_size), unit='KB',
                 unit_scale=True
             )
 
-            for data in pbar:
+            for data in p_bar:
                 wrote = wrote + len(data)
                 fp.write(data)
 
-        os.rename(filename + '.parted', filename)
+        rename(filename + '.parted', filename)
         return

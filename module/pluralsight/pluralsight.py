@@ -5,10 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import math
+from os import makedirs, rename
+from os.path import isfile, isdir, dirname
 from time import sleep
 
 import pytz
+import requests
 import urllib3
+from tqdm import tqdm
 
 from module.pluralsight.cache_utils import CacheUtils
 from utils.logger import Logger
@@ -40,6 +45,63 @@ class PluralSightBase(object):
             user_data_path=self.params.user_data,
         )
 
+    def download_file(self, url, filename):
+        if isfile(filename) is True:
+            self.logger.log({
+                'level': 'MESSAGE',
+                'message': '파일이 이미 존재함',
+                'url': url,
+                'filename': filename,
+            })
+            return
+
+        self.logger.log({
+            'level': 'MESSAGE',
+            'message': '파일 다운로드',
+            'url': url,
+            'filename': filename,
+        })
+
+        resp = requests.get(
+            url=url,
+            timeout=6000,
+            verify=False,
+            stream=True,
+            headers=self.selenium.headers,
+            allow_redirects=True,
+        )
+
+        if resp.status_code // 100 != 2:
+            self.logger.error(msg={
+                'error': 'error: {}'.format(resp.text)
+            })
+
+        total_size = int(resp.headers.get('content-length', 0))
+        self.logger.log(msg={
+            'size': 'size: {:,}'.format(total_size)
+        })
+
+        path = dirname(filename)
+        if isdir(path) is False:
+            makedirs(path)
+
+        wrote = 0
+        block_size = 1024
+
+        with open(filename + '.parted', 'wb') as fp:
+            p_bar = tqdm(
+                resp.iter_content(block_size),
+                total=math.ceil(total_size // block_size), unit='KB',
+                unit_scale=True
+            )
+
+            for data in p_bar:
+                wrote = wrote + len(data)
+                fp.write(data)
+
+        rename(filename + '.parted', filename)
+        return
+
 
 class PluralSightCourses(PluralSightBase):
 
@@ -47,6 +109,9 @@ class PluralSightCourses(PluralSightBase):
         super().__init__(params=params)
 
     def batch(self):
+        self.selenium.open(url='https://app.pluralsight.com/library/')
+        sleep(self.params.sleep)
+
         return
 
 
@@ -58,11 +123,12 @@ class PluralSightCrawler(object):
         self.params = self.init_arguments()
 
     def batch(self):
+        if self.params.login:
+            PluralSightCourses(params=self.params).selenium.open(url='https://app.pluralsight.com/library/')
+            sleep(10000)
+
         if self.params.courses:
             PluralSightCourses(params=self.params).batch()
-
-        if self.params.login:
-            sleep(10000)
 
         return
 
