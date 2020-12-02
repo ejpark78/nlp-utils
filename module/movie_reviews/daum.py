@@ -47,7 +47,10 @@ class DaumMovieReviews(object):
 
         self.params = self.init_arguments()
 
-        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
+        self.db = CacheUtils(
+            filename=self.params.filename,
+            use_cache=self.params.use_cache
+        )
 
         self.selenium = SeleniumWireUtils()
 

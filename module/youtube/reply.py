@@ -23,7 +23,10 @@ class YoutubeReply(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
+        self.db = CacheUtils(
+            filename=self.params.filename,
+            use_cache=self.params.use_cache
+        )
 
     def get_total_reply_count(self):
         self.selenium.scroll(count=3, meta={})

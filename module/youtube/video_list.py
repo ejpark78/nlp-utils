@@ -24,7 +24,10 @@ class YoutubeVideoList(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-        self.db = CacheUtils(filename=self.params.filename, use_cache=self.params.use_cache)
+        self.db = CacheUtils(
+            filename=self.params.filename,
+            use_cache=self.params.use_cache
+        )
 
     @staticmethod
     def read_config(filename, column):
