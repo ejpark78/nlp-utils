@@ -19,7 +19,7 @@ class MinioUtils(object):
     def __init__(self, bucket=None, username=None, key=None, endpoint=None):
         self.bucket = bucket
         if bucket is None:
-            self.bucket = getenv('NLPLAB_S3_BUCKET', 'datasets')
+            self.bucket = getenv('NLPLAB_S3_BUCKET', 'nlplab')
 
         self.username = username
         if username is None:

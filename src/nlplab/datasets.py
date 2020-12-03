@@ -28,7 +28,8 @@ class DataSets(object):
         self.name = name
         self.use_cache = use_cache
 
-        self.cache_path = getenv('NLPLAB_CACHE_PATH', 'data/datasets')
+        self.local_home = getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets')
+        self.remote_home = getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
 
         self.info = {
             'movie_reviews': {
@@ -76,7 +77,7 @@ class DataSets(object):
         return None
 
     def load_elasticsearch_data(self, meta, name):
-        filename = '{}/{}/{}.json.bz2'.format(self.cache_path, meta['local_path'], name)
+        filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], name)
         if isfile(filename) is False or self.use_cache is False:
             self.elastic.export(filename=filename, index=name)
 
@@ -94,7 +95,7 @@ class DataSets(object):
 
         result = {}
         for tag in tag_list:
-            filename = '{}/{}/{}.json.bz2'.format(self.cache_path, meta['local_path'], tag)
+            filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag)
 
             if isfile(filename) is False or self.use_cache is False:
                 self.pull_minio_file(tag=tag)
@@ -127,8 +128,8 @@ class DataSets(object):
             return
 
         self.minio.pull(
-            local='{}/{}/{}.json.bz2'.format(self.cache_path, meta['local_path'], tag),
-            remote='{}/{}.json.bz2'.format(meta['remote_path'], tag),
+            local='{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag),
+            remote='{}/{}/{}.json.bz2'.format(self.remote_home, meta['remote_path'], tag),
         )
         return
 
@@ -138,8 +139,8 @@ class DataSets(object):
             return
 
         self.minio.push(
-            local='{}/{}/{}.json.bz2'.format(self.cache_path, meta['local_path'], tag),
-            remote='{}/{}.json.bz2'.format(meta['remote_path'], tag),
+            local='{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag),
+            remote='{}/{}/{}.json.bz2'.format(self.remote_home, meta['remote_path'], tag),
         )
         return
 
