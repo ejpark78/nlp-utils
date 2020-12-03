@@ -5,7 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import os
+from os import getenv
+
 import urllib3
 from minio import Minio
 
@@ -18,19 +19,19 @@ class MinioUtils(object):
     def __init__(self, bucket=None, username=None, key=None, endpoint=None):
         self.bucket = bucket
         if bucket is None:
-            self.bucket = os.getenv('NLPLAB_S3_BUCKET', 'datasets')
+            self.bucket = getenv('NLPLAB_S3_BUCKET', 'datasets')
 
         self.username = username
         if username is None:
-            self.username = os.getenv('NLPLAB_S3_USERNAME', 'k8s')
+            self.username = getenv('NLPLAB_S3_USERNAME', 'k8s')
 
         self.key = key
         if key is None:
-            self.key = os.getenv('NLPLAB_S3_BUCKET_KEY', 'nlplab2020')
+            self.key = getenv('NLPLAB_S3_BUCKET_KEY', 'nlplab2020')
 
         self.endpoint = endpoint
         if endpoint is None:
-            self.endpoint = os.getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')
+            self.endpoint = getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')
 
     def push(self, local, remote):
         client = Minio(

@@ -7,7 +7,7 @@ from __future__ import print_function
 
 import bz2
 import json
-import os
+from os import getenv
 from os.path import isfile
 
 import urllib3
@@ -22,11 +22,13 @@ urllib3.disable_warnings(UserWarning)
 class DataSets(object):
 
     def __init__(self, name=None, use_cache=True):
-        self.es = ElasticSearchUtils()
+        self.elastic = ElasticSearchUtils()
         self.minio = MinioUtils()
 
+        self.name = name
         self.use_cache = use_cache
-        self.cache_path = os.getenv('NLPLAB_CACHE_PATH', 'data')
+
+        self.cache_path = getenv('NLPLAB_CACHE_PATH', 'data/datasets')
 
         self.info = {
             'movie_reviews': {
@@ -45,14 +47,15 @@ class DataSets(object):
             }
         }
 
-        for index in self.es.index_list():
+        for index in self.elastic.index_list():
+            if 'corpus_process' in index:
+                continue
+
             self.info[index] = {
                 'desc': 'elasticsearch 코퍼스',
                 'location': 'elasticsearch',
                 'local_path': 'elasticsearch',
             }
-
-        self.name = name
 
     def list(self):
         return [{name: self.info[name]['desc']} for name in self.info.keys()]
@@ -75,7 +78,7 @@ class DataSets(object):
     def load_elasticsearch_data(self, meta, name):
         filename = '{}/{}/{}.json.bz2'.format(self.cache_path, meta['local_path'], name)
         if isfile(filename) is False or self.use_cache is False:
-            self.es.export(filename=filename, index=name)
+            self.elastic.export(filename=filename, index=name)
 
         result = []
         with bz2.open(filename, 'rb') as fp:

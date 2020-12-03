@@ -7,8 +7,7 @@ from __future__ import print_function
 
 import bz2
 import json
-import os
-from os import makedirs
+from os import makedirs, getenv
 from os.path import dirname, isdir
 
 import urllib3
@@ -26,13 +25,12 @@ class ElasticSearchUtils(object):
     def __init__(self, host=None, http_auth=None):
         self.host = host
         if host is None:
-            self.host = os.getenv('NLPLAB_ES_HOST', 'https://corpus.ncsoft.com:9200')
+            self.host = getenv('NLPLAB_ES_HOST', 'https://corpus.ncsoft.com:9200')
 
-        self.http_auth = http_auth
         if http_auth is None:
-            self.http_auth = os.getenv('NLPLAB_ES_AUTH', 'elastic:nlplab')
+            http_auth = getenv('NLPLAB_ES_AUTH', 'elastic:nlplab')
 
-        self.http_auth = (self.http_auth.split(':'))
+        self.http_auth = (http_auth.split(':'))
 
         self.logger = Logger()
         self.elastic = None

@@ -5,24 +5,40 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import os
+from os import getenv
 
-class CorpusLibraryUtils(object):
-    """코퍼스 처리 클리스"""
+import pycurl
+import webdav.client as wc
+from webdav.exceptions import NotConnection
+from webdav.urn import Urn
 
-    def __init__(self):
+
+class WebdavUtils(object):
+
+    def __init__(self, home=None, endpoint=None, username=None, passwd=None):
         """생성자"""
-        self.webdav_home = '코퍼스 취합'
+        self.webdav_home = home
+        if home is None:
+            self.webdav_home = getenv('NLPLAB_WEBDAV_HOME', '코퍼스 취합')
+
+        if endpoint is None:
+            endpoint = getenv('NLPLAB_WEBDAV_ENDPOINT', 'https://corpus.ncsoft.com:8080/remote.php/webdav/')
+
+        if username is None:
+            username = getenv('NLPLAB_WEBDAV_USERNAME', 'corpus_center')
+
+        if passwd is None:
+            passwd = getenv('NLPLAB_WEBDAV_PASSWORD', 'nlplab2018')
 
         self.webdav_options = {
-            'webdav_hostname': 'https://corpus.ncsoft.com:8080/remote.php/webdav/',
-            'webdav_login': 'corpus_center',
-            'webdav_password': 'nlplab2018'
+            'webdav_hostname': endpoint,
+            'webdav_login': username,
+            'webdav_password': passwd
         }
 
     def open_webdev_client(self):
-        """"""
-        import webdav.client as wc
-
         client = wc.Client(self.webdav_options)
 
         client.default_options.update({
@@ -103,9 +119,6 @@ class CorpusLibraryUtils(object):
 
     def get_cloud_corpus_sub_item(self, group, corpus_name):
         """해당 코퍼스 디렉토리에 포함된 파일들을 불러와 저장 """
-        import os
-        import json
-
         client = self.open_webdev_client()
 
         home_path = '{}/{}/{}'.format(self.webdav_home, group, corpus_name)
@@ -176,10 +189,6 @@ class CorpusLibraryUtils(object):
     @staticmethod
     def download_file(client, remote_file, local_path):
         """파일을 다운로드한다."""
-        import pycurl
-        from webdav.urn import Urn
-        from webdav.exceptions import NotConnection
-
         try:
             urn = Urn(remote_file)
 

@@ -6,7 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import re
-from os import makedirs
+from os import getenv, makedirs
 from os.path import dirname, isdir
 from time import sleep
 from urllib.parse import urljoin
@@ -24,15 +24,20 @@ urllib3.disable_warnings(UserWarning)
 class ConfluenceUtils(object):
     """Confluence API 연동 클래스"""
 
-    def __init__(self):
+    def __init__(self, url=None, auth=None):
         """생성자"""
         # 참고: https://developer.atlassian.com/server/confluence/confluence-rest-api-examples/
 
         # 컨플루언스 IP주소 (galadriel)
-        self.url = 'http://172.20.93.58:8090'
+        self.url = url
+        if url is None:
+            self.url = getenv('NLPLAB_CONFLUENCE_URL', 'http://172.20.93.58:8090')
 
         # 계정 정보
-        self.auth = ('corpus_center', 'test1234')
+        if auth is None:
+            auth = getenv('NLPLAB_ES_AUTH', 'corpus_center:test1234')
+
+        self.auth = (auth.split(':'))
 
         # confluence '야구공작소' 공간에 존재하는 페이지ID
         self.state = {
