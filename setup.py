@@ -1,11 +1,21 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 from setuptools import setup, find_packages
+
+with open('version', 'r') as fp:
+    version = ''.join([x.strip() for x in fp.readlines()]).strip()
 
 with open('requirements.txt', 'r') as fp:
     install_requires = [x.strip() for x in fp.readlines()]
 
 setup(
     name='nlplab',
-    version='1.0.0',
+    version=version,
     package_dir={'': 'src'},
     packages=find_packages('src'),
     python_requires='>=3',
