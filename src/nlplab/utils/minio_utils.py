@@ -29,6 +29,7 @@ class MinioUtils(object):
         if key is None:
             self.key = getenv('NLPLAB_S3_BUCKET_KEY', 'nlplab2020')
 
+        # nlp-utils: 172.19.153.41
         self.endpoint = endpoint
         if endpoint is None:
             self.endpoint = getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')

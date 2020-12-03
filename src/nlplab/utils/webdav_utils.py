@@ -212,6 +212,7 @@ class WebdavUtils(object):
 
                 request.perform()
                 request.close()
-
         except pycurl.error:
             raise NotConnection(client.webdav.hostname)
+
+        return

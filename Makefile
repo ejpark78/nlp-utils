@@ -21,3 +21,5 @@ uninstall:
 
 clean:
 	rm -rf build dist src/*.egg-info
+
+# pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
