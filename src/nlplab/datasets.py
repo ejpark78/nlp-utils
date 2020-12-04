@@ -31,38 +31,45 @@ class DataSets(object):
         self.local_home = getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets')
         self.remote_home = getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
 
-        self.info = {
-            'movie_reviews': {
-                'desc': '네이버/다음 영화 리뷰',
-                'location': 'minio',
-                'local_path': 'movie_reviews',
-                'remote_path': 'movie_reviews',
-                'tags': ['daum', 'naver']
-            },
-            'youtube/replies': {
-                'desc': '유튜브 댓글',
-                'location': 'minio',
-                'local_path': 'youtube/replies',
-                'remote_path': 'youtube/replies',
-                'tags': ['mtd', 'news']
-            }
-        }
+        self.meta = {}
+        self.pull_meta()
 
+    def push_meta(self):
+        self.minio.push(
+            local='{}/meta.json'.format(self.local_home),
+            remote='{}/meta.json'.format(self.remote_home),
+        )
+        return
+
+    def pull_meta(self):
+        filename = '{}/meta.json'.format(self.local_home)
+        if isfile(filename) is False or self.use_cache is False:
+            self.minio.pull(
+                local=filename,
+                remote='{}/meta.json'.format(self.remote_home),
+            )
+
+        with open(filename, 'r') as fp:
+            self.meta = json.load(fp=fp)
+
+        return
+
+    def pull_elastic_meta(self):
         for index in self.elastic.index_list():
             if 'corpus_process' in index:
                 continue
 
-            self.info[index] = {
+            self.meta[index] = {
+                'name': index,
                 'desc': 'elasticsearch 코퍼스',
-                'location': 'elasticsearch',
+                'source': self.elastic.host,
                 'local_path': 'elasticsearch',
             }
 
-    def list(self):
-        return [{name: self.info[name]['desc']} for name in self.info.keys()]
+        return
 
     def load(self, name=None, tag=None, use_cache=True):
-        meta = self.get_meta(name=name)
+        meta = self.get_info(name=name)
         if meta is None:
             return None
 
@@ -110,48 +117,48 @@ class DataSets(object):
 
         return result
 
-    def get_meta(self, name):
+    def get_info(self, name):
         if name is None:
             name = self.name
 
         if name is None:
             return None
 
-        if name not in self.info.keys():
+        if name not in self.meta.keys():
             return None
 
-        return self.info[name]
+        return self.meta[name]
 
     def pull_minio_file(self, tag, name=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
         self.minio.pull(
-            local='{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag),
-            remote='{}/{}/{}.json.bz2'.format(self.remote_home, meta['remote_path'], tag),
+            local='{}/{}/{}.json.bz2'.format(self.local_home, info['local_path'], tag),
+            remote='{}/{}/{}.json.bz2'.format(self.remote_home, info['remote_path'], tag),
         )
         return
 
     def push_minio_file(self, tag, name=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
         self.minio.push(
-            local='{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag),
-            remote='{}/{}/{}.json.bz2'.format(self.remote_home, meta['remote_path'], tag),
+            local='{}/{}/{}.json.bz2'.format(self.local_home, info['local_path'], tag),
+            remote='{}/{}/{}.json.bz2'.format(self.remote_home, info['remote_path'], tag),
         )
         return
 
     def upload(self, name=None, tag=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
         tag_list = [tag]
-        if meta is not None:
-            tag_list = meta['tags']
+        if info is not None:
+            tag_list = info['tags']
 
         for tag in tag_list:
             self.push_minio_file(name=name, tag=tag)

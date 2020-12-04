@@ -5,9 +5,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import tarfile
 from os import getenv
-from os.path import dirname
+from os.path import dirname, isfile
 
 import urllib3
 
@@ -28,43 +29,50 @@ class Models(object):
         self.local_home = getenv('NLPLAB_MODEL_PATH', 'data/models')
         self.remote_home = getenv('NLPLAB_MODEL_REMOTE_HOME', 'models')
 
-        self.info = {
-            'bert': {
-                'desc': '버트 모델',
-                'location': 'minio',
-                'local_path': 'bert',
-                'remote_path': 'bert',
-                'tags': [
-                    '002_bert_morp_tensorflow',
-                    '004_bert_eojeol_tensorflow'
-                ]
-            }
-        }
+        self.meta = {}
+        self.pull_meta()
 
-    def list(self):
-        return [{name: self.info[name]['desc']} for name in self.info.keys()]
+    def push_meta(self):
+        self.minio.push(
+            local='{}/meta.json'.format(self.local_home),
+            remote='{}/meta.json'.format(self.remote_home),
+        )
+        return
 
-    def get_meta(self, name):
+    def pull_meta(self):
+        filename = '{}/meta.json'.format(self.local_home)
+        if isfile(filename) is False or self.use_cache is False:
+            self.minio.pull(
+                local=filename,
+                remote='{}/meta.json'.format(self.remote_home),
+            )
+
+        with open(filename, 'r') as fp:
+            self.meta = json.load(fp=fp)
+
+        return
+
+    def get_info(self, name):
         if name is None:
             name = self.name
 
         if name is None:
             return None
 
-        if name not in self.info.keys():
+        if name not in self.meta.keys():
             return None
 
-        return self.info[name]
+        return self.meta[name]
 
     def pull(self, tag, name=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
-        filename = '{}/{}/{}.tar.bz2'.format(self.local_home, meta['local_path'], tag)
+        filename = '{}/{}/{}.tar.bz2'.format(self.local_home, info['local_path'], tag)
         self.minio.pull(
             local=filename,
-            remote='{}/{}/{}.tar.bz2'.format(self.remote_home, meta['remote_path'], tag),
+            remote='{}/{}/{}.tar.bz2'.format(self.remote_home, info['remote_path'], tag),
         )
 
         with tarfile.open(filename, 'r:bz2') as tar:
@@ -73,24 +81,24 @@ class Models(object):
         return
 
     def push(self, tag, name=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
         self.minio.push(
-            local='{}/{}/{}.tar.bz2'.format(self.local_home, meta['local_path'], tag),
-            remote='{}/{}/{}.tar.bz2'.format(self.remote_home, meta['remote_path'], tag),
+            local='{}/{}/{}.tar.bz2'.format(self.local_home, info['local_path'], tag),
+            remote='{}/{}/{}.tar.bz2'.format(self.remote_home, info['remote_path'], tag),
         )
         return
 
     def upload(self, name=None, tag=None):
-        meta = self.get_meta(name=name)
-        if meta is None:
+        info = self.get_info(name=name)
+        if info is None:
             return
 
         tag_list = [tag]
-        if meta is not None:
-            tag_list = meta['tags']
+        if info is not None:
+            tag_list = info['tags']
 
         for tag in tag_list:
             self.push(name=name, tag=tag)
