@@ -70,6 +70,9 @@ class Models(object):
             return
 
         filename = '{}/{}/{}.tar.bz2'.format(self.local_home, info['local_path'], tag)
+        if isfile(filename) is True and self.use_cache is True:
+            return
+
         self.minio.pull(
             local=filename,
             remote='{}/{}/{}.tar.bz2'.format(self.remote_home, info['remote_path'], tag),
@@ -85,8 +88,12 @@ class Models(object):
         if info is None:
             return
 
+        filename = '{}/{}/{}.tar.bz2'.format(self.local_home, info['local_path'], tag)
+        if isfile(filename) is False:
+            return
+
         self.minio.push(
-            local='{}/{}/{}.tar.bz2'.format(self.local_home, info['local_path'], tag),
+            local=filename,
             remote='{}/{}/{}.tar.bz2'.format(self.remote_home, info['remote_path'], tag),
         )
         return

@@ -96,23 +96,29 @@ class DataSets(object):
         return result
 
     def load_minio_data(self, meta, tag):
-        tag_list = [tag]
-        if meta is not None:
+        tag_list = []
+        if tag is not None:
+            tag_list = [tag]
+
+        if len(tag_list) == 0 and meta is not None:
             tag_list = meta['tags']
 
         result = {}
-        for tag in tag_list:
-            filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag)
+        if len(tag_list) == 0:
+            return result
+
+        for tag_nam in tag_list:
+            filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag_nam)
 
             if isfile(filename) is False or self.use_cache is False:
                 self.pull_minio_file(tag=tag)
 
-            result[tag] = []
+            result[tag_nam] = []
             with bz2.open(filename, 'rb') as fp:
                 for line in fp.readlines():
-                    result[tag].append(json.loads(line.decode('utf-8')))
+                    result[tag_nam].append(json.loads(line.decode('utf-8')))
 
-        if len(result.keys()) == 1:
+        if tag is not None:
             return result[list(result.keys())[0]]
 
         return result
