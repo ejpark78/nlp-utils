@@ -7,6 +7,20 @@
 pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 ```
 
+## 라이브러리 구성
+
+```bash
+nlplab
+  ├── datasets.py
+  ├── models.py
+  └── utils
+      ├── confluence_utils.py
+      ├── elasticsearch_utils.py
+      ├── logger.py
+      ├── minio_utils.py
+      └── webdav_utils.py
+```
+
 ## datasets
 
 ```python
@@ -108,33 +122,33 @@ make upload
 
 ```bash
 cache
-  └── datasets
-     ├── meta.json
-     ├── movie_reviews
-     │ ├── daum.json.bz2
-     │ └── naver.json.bz2
-     └── youtube
-        └── replies
-            ├── mtd.json.bz2
-            └── news.json.bz2
+  └── datasets
+     ├── meta.json
+     ├── movie_reviews
+     │ ├── daum.json.bz2
+     │ └── naver.json.bz2
+     └── youtube
+        └── replies
+            ├── mtd.json.bz2
+            └── news.json.bz2
 ```
 
 ## models cache
 
 ```bash
 cache
-  └── models
-    ├── meta.json
-    └── bert
-      ├── 002_bert_morp_tensorflow.tar.bz2
-      └── 002_bert_morp_tensorflow
-        ├── bert_config.json
-        ├── model.ckpt.data-00000-of-00001
-        ├── model.ckpt.index
-        ├── model.ckpt.meta
-        ├── src_tokenizer
-        │ └── tokenization_morp.py
-        └── vocab.korean_morp.list
+  └── models
+    ├── meta.json
+    └── bert
+      ├── 002_bert_morp_tensorflow.tar.bz2
+      └── 002_bert_morp_tensorflow
+        ├── bert_config.json
+        ├── model.ckpt.data-00000-of-00001
+        ├── model.ckpt.index
+        ├── model.ckpt.meta
+        ├── src_tokenizer
+        │ └── tokenization_morp.py
+        └── vocab.korean_morp.list
 ```
 
 ### datasets: meta.json
