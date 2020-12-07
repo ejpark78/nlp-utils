@@ -138,17 +138,17 @@ cache
 ```bash
 cache
   └── models
-    ├── meta.json
-    └── bert
-      ├── 002_bert_morp_tensorflow.tar.bz2
-      └── 002_bert_morp_tensorflow
-        ├── bert_config.json
-        ├── model.ckpt.data-00000-of-00001
-        ├── model.ckpt.index
-        ├── model.ckpt.meta
-        ├── src_tokenizer
-        │ └── tokenization_morp.py
-        └── vocab.korean_morp.list
+     ├── meta.json
+     └── bert
+        ├── 002_bert_morp_tensorflow.tar.bz2
+        └── 002_bert_morp_tensorflow
+           ├── bert_config.json
+           ├── model.ckpt.data-00000-of-00001
+           ├── model.ckpt.index
+           ├── model.ckpt.meta
+           ├── src_tokenizer
+           │ └── tokenization_morp.py
+           └── vocab.korean_morp.list
 ```
 
 ### datasets: meta.json
