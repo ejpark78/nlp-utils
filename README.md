@@ -109,11 +109,11 @@ make upload
 ```bash
 └── data
     ├── datasets
-    │ ├── meta.json
-    │ ├── movie_reviews
-    │ │ ├── daum.json.bz2
-    │ │ └── naver.json.bz2
-    │ └── youtube
+    │  ├── meta.json
+    │  ├── movie_reviews
+    │  │ ├── daum.json.bz2
+    │  │ └── naver.json.bz2
+    │  └── youtube
     │     └── replies
     │         ├── mtd.json.bz2
     │         └── news.json.bz2
