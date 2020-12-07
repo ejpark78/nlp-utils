@@ -54,32 +54,30 @@ class FBCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--login', action='store_true', default=False)
-
         parser.add_argument('--list', action='store_true', default=False)
         parser.add_argument('--reply', action='store_true', default=False)
 
         parser.add_argument('--overwrite', action='store_true', default=False)
 
         parser.add_argument('--config', default='./config/facebook/커뮤니티.json')
+
+        parser.add_argument('--login', action='store_true', default=False)
+        parser.add_argument('--headless', action='store_true', default=False)
         parser.add_argument('--user-data', default=None)
-
-        parser.add_argument('--use-head', action='store_false', default=True)
-        parser.add_argument('--max-page', default=100, type=int)
-        parser.add_argument('--max-try', default=20, type=int)
-
         parser.add_argument('--driver', default='/usr/bin/chromedriver')
 
-        parser.add_argument('--host', default='https://corpus.ncsoft.com:9200')
-        parser.add_argument('--auth', default='crawler:crawler2019')
-        parser.add_argument('--index', default='crawler-facebook')
-        parser.add_argument('--reply-index', default='crawler-facebook-reply')
+        parser.add_argument('--max-try', default=20, type=int)
+        parser.add_argument('--max-page', default=10000, type=int)
+
+        parser.add_argument('--host', default=None)
+        parser.add_argument('--auth', default=None)
+        parser.add_argument('--index', default=None)
+        parser.add_argument('--reply-index', default=None)
 
         parser.add_argument('--log-path', default='log')
 
+        parser.add_argument('--cache', default='./data/facebook/facebook.db', help='캐쉬명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
-
-        parser.add_argument('--filename', default='./data/facebook/facebook.db', help='파일명')
 
         return parser.parse_args()
 

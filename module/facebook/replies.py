@@ -22,7 +22,7 @@ class FBReplies(FBBase):
 
         self.params = params
 
-    def save_reply(self, reply_list, post_id, index):
+    def save_replies(self, reply_list, post_id, index):
         """추출한 정보를 저장한다."""
         if len(reply_list) == 0:
             return
@@ -44,16 +44,21 @@ class FBReplies(FBBase):
 
             doc = self.parser.to_string(doc=doc)
 
-            self.elastic.save_document(document=doc, delete=False, index=index)
+            if self.db is not None:
+                self.db.save_replies(document=doc, post_id=post_id, reply_id=doc['reply_id'])
+
+            if self.elastic is not None:
+                self.elastic.save_document(document=doc, delete=False, index=index)
 
             if 'reply_list' in reply:
-                self.save_reply(reply_list=reply['reply_list'], post_id=post_id, index=index)
+                self.save_replies(reply_list=reply['reply_list'], post_id=post_id, index=index)
 
-        self.elastic.flush()
+        if self.elastic is not None:
+            self.elastic.flush()
 
         return
 
-    def get_reply(self, doc):
+    def get_replies(self, doc):
         """컨텐츠 하나를 조회한다."""
         if 'url' not in doc:
             return
@@ -98,8 +103,7 @@ class FBReplies(FBBase):
 
     def see_more_reply(self):
         """ 더 보기 링크를019! 클릭한다."""
-        self.params.max_try = 15
-        self.see_prev_reply()
+        self.see_prev_reply(max_try=self.params.max_try)
 
         try:
             ele_list = self.selenium.driver.find_elements_by_tag_name('a')
@@ -125,11 +129,9 @@ class FBReplies(FBBase):
         sleep(2)
         return
 
-    def see_prev_reply(self):
+    def see_prev_reply(self, max_try=15):
         """ 이전 댓글 보기를 클릭한다."""
-        self.params.max_try -= 1
-        if self.params.max_try < 0:
-            self.params.max_try = 15
+        if max_try < 0:
             return
 
         stop = True
@@ -161,34 +163,38 @@ class FBReplies(FBBase):
             return
 
         if stop is True:
-            self.params.max_try = 15
             return
 
-        self.see_prev_reply()
+        self.see_prev_reply(max_try=max_try - 1)
         return
 
     def trace_reply_list(self, group_info):
-        query = {
-            'query': {
-                'bool': {
-                    'must': {
-                        'match': {
-                            'page': group_info['page']
+        id_list = []
+
+        if self.db is not None:
+            pass
+
+        if self.elastic is not None:
+            query = {
+                'query': {
+                    'bool': {
+                        'must': {
+                            'match': {
+                                'page': group_info['page']
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if self.params.overwrite is False:
-            query['query']['bool']['must_not'] = {
-                'match': {
-                    'state': 'done'
+            if self.params.overwrite is False:
+                query['query']['bool']['must_not'] = {
+                    'match': {
+                        'state': 'done'
+                    }
                 }
-            }
 
-        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
-        id_list = list(id_list)
+            id_list += list(self.elastic.get_id_list(index=self.elastic.index, query_cond=query))
 
         if len(id_list) == 0:
             return
@@ -200,7 +206,8 @@ class FBReplies(FBBase):
 
         if 'index' in group_info:
             self.params.index = group_info['index']
-            self.elastic.index = group_info['index']
+            if self.elastic is not None:
+                self.elastic.index = group_info['index']
 
         reply_index = self.params.reply_index
         if 'reply_index' in group_info:
@@ -208,12 +215,16 @@ class FBReplies(FBBase):
 
         while start < len(id_list):
             doc_list = []
-            self.elastic.get_by_ids(
-                index=self.elastic.index,
-                source=None,
-                result=doc_list,
-                id_list=id_list[start:end],
-            )
+            if self.elastic is not None:
+                self.elastic.get_by_ids(
+                    index=self.elastic.index,
+                    source=None,
+                    result=doc_list,
+                    id_list=id_list[start:end],
+                )
+
+            if self.db is not None:
+                pass
 
             if start >= len(id_list):
                 break
@@ -240,11 +251,11 @@ class FBReplies(FBBase):
                     'top_level_post_id': doc['top_level_post_id']
                 })
 
-                self.get_reply(doc=doc)
+                self.get_replies(doc=doc)
 
                 if 'reply_list' in doc:
                     post_id = '{page}-{top_level_post_id}'.format(**doc)
-                    self.save_reply(reply_list=doc['reply_list'], post_id=post_id, index=reply_index)
+                    self.save_replies(reply_list=doc['reply_list'], post_id=post_id, index=reply_index)
 
                     del doc['reply_list']
 

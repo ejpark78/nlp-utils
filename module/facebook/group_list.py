@@ -26,7 +26,7 @@ class FBGroupList(FBBase):
 
         i = 0
         for _ in range(self.params.max_page):
-            stop = self.selenium.page_down(count=10, multi=10, multi_sleep=2)
+            stop = self.selenium.page_down(count=10)
             self.selenium.driver.implicitly_wait(25)
 
             i += 1
@@ -53,7 +53,9 @@ class FBGroupList(FBBase):
 
             for doc in post_list:
                 self.save_post(doc=doc, group_info=group_info)
-            self.elastic.flush()
+
+            if self.elastic is not None:
+                self.elastic.flush()
 
             # 태그 삭제
             self.delete_post()

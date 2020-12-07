@@ -33,20 +33,28 @@ class FBBase(object):
 
         self.parser = FBParser()
 
-        self.selenium = SeleniumUtils()
-
-        self.db = CacheUtils(
-            filename=self.params.filename,
-            use_cache=self.params.use_cache
+        self.selenium = SeleniumUtils(
+            login=self.params.login,
+            headless=self.params.headless,
+            user_data_path=self.params.user_data,
         )
 
-        self.elastic = ElasticSearchUtils(
-            host=self.params.host,
-            index=self.params.index,
-            log_path=self.params.log_path,
-            http_auth=self.params.auth,
-            split_index=True,
-        )
+        self.db = None
+        if self.params.cache is not None:
+            self.db = CacheUtils(
+                filename=self.params.cache,
+                use_cache=self.params.use_cache
+            )
+
+        self.elastic = None
+        if self.params.index is not None:
+            self.elastic = ElasticSearchUtils(
+                host=self.params.host,
+                index=self.params.index,
+                log_path=self.params.log_path,
+                http_auth=self.params.auth,
+                split_index=True,
+            )
 
     def save_post(self, doc, group_info):
         """추출한 정보를 저장한다."""
@@ -65,14 +73,25 @@ class FBBase(object):
         if 'index' in group_info:
             index = group_info['index']
 
-        self.elastic.save_document(document=doc, delete=False, index=index)
+        if self.elastic is not None:
+            self.elastic.save_document(document=doc, delete=False, index=index)
 
-        self.logger.log(msg={
-            'level': 'MESSAGE',
-            'message': '문서 저장 성공',
-            'document_id': doc['document_id'],
-            'content': doc['content'],
-        })
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '문서 저장 성공',
+                'document_id': doc['document_id'],
+                'content': doc['content'],
+            })
+
+        if self.db is not None:
+            self.db.save_post(document=doc, post_id=doc['top_level_post_id'])
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '문서 저장 성공',
+                'group_info': group_info,
+                'content': doc['content'],
+            })
 
         return
 

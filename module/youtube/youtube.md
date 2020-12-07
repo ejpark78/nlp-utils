@@ -15,18 +15,21 @@ tmux new -s youtube-news
 tmux new -s youtube-mtd
 
 PYTHONPATH=. python3 module/youtube/youtube.py \
+    --headless \
     --videos \
     --reply \
     --filename data/youtube/bns.db \
     --channel-list config/youtube/bns.json
 
 PYTHONPATH=. python3 module/youtube/youtube.py \
+    --headless \
     --videos \
     --reply \
     --filename data/youtube/mtd.db \
     --channel-list config/youtube/mtd.json
 
 PYTHONPATH=. python3 module/youtube/youtube.py \
+    --headless \
     --videos \
     --reply \
     --filename data/youtube/news.db \
@@ -35,11 +38,13 @@ PYTHONPATH=. python3 module/youtube/youtube.py \
 
 ```bash
 PYTHONPATH=. python3 module/youtube/youtube.py \
+    --headless \
     --reply \
     --filename data/youtube/mtd.db \
     --channel-list config/youtube/mtd.json
 
 PYTHONPATH=. python3 module/youtube/youtube.py \
+    --headless \
     --reply \
     --filename data/youtube/news.db \
     --channel-list config/youtube/news.json 

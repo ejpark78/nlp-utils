@@ -197,6 +197,10 @@ class YoutubeCrawler(object):
         parser.add_argument('--template', default='./config/youtube/template.json', help='channel template')
         parser.add_argument('--channel-list', default='./config/youtube/mtd.json', help='channel 목록')
 
+        parser.add_argument('--login', action='store_true', default=False)
+        parser.add_argument('--headless', action='store_true', default=False)
+        parser.add_argument('--user-data', default=None)
+
         return parser.parse_args()
 
 

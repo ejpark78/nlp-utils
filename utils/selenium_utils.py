@@ -115,17 +115,13 @@ class SeleniumUtils(object):
 
         return
 
-    def page_down(self, count, multi=1, multi_sleep=2):
+    def page_down(self, count, sleep_time=2):
         """스크롤한다."""
+        html = self.driver.find_element_by_tag_name('html')
+
         for _ in range(count):
             try:
-                html = self.driver.find_element_by_tag_name('html')
-
-                for _ in range(multi + 1):
-                    html.send_keys(Keys.PAGE_DOWN)
-                    self.driver.implicitly_wait(2)
-                    sleep(multi_sleep)
-
+                html.send_keys(Keys.PAGE_DOWN)
                 self.driver.implicitly_wait(10)
             except Exception as e:
                 self.logger.error(msg={
@@ -135,9 +131,8 @@ class SeleniumUtils(object):
                 })
                 break
 
-            sleep(2)
+            sleep(sleep_time)
 
-        sleep(5)
         return False
 
     def scroll(self, count):

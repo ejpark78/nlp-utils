@@ -152,7 +152,6 @@ class KBSecCrawler(object):
 
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
-
         parser.add_argument('--user-data', default='./cache/selenium/kbsec')
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')

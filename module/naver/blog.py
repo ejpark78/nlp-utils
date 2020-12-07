@@ -213,7 +213,7 @@ class SeleniumCrawler(SeleniumUtils):
             sleep(15)
 
         for _ in tqdm(range(max_iter)):
-            self.page_down(count=2)
+            self.page_down(count=10)
             self.driver.implicitly_wait(15)
 
             html = self.driver.page_source
