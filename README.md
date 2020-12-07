@@ -104,40 +104,37 @@ make upload
 
 > https://nlp-utils/#browse/browse:pypi-hosted
 
-## cache
+## datasets cache
 
 ```bash
-└── data
-    ├── datasets
-    │  ├── meta.json
-    │  ├── movie_reviews
-    │  │ ├── daum.json.bz2
-    │  │ └── naver.json.bz2
-    │  └── youtube
-    │     └── replies
-    │         ├── mtd.json.bz2
-    │         └── news.json.bz2
-    └── models
-        ├── bert
-        │ ├── 002_bert_morp_tensorflow
-        │ │ ├── bert_config.json
-        │ │ ├── model.ckpt.data-00000-of-00001
-        │ │ ├── model.ckpt.index
-        │ │ ├── model.ckpt.meta
-        │ │ ├── src_tokenizer
-        │ │ │ └── tokenization_morp.py
-        │ │ └── vocab.korean_morp.list
-        │ ├── 002_bert_morp_tensorflow.tar.bz2
-        │ ├── 004_bert_eojeol_tensorflow
-        │ │ ├── bert_config.json
-        │ │ ├── model.ckpt-56000.data-00000-of-00001
-        │ │ ├── model.ckpt-56000.index
-        │ │ ├── model.ckpt-56000.meta
-        │ │ ├── src_tokenizer
-        │ │ │ └── tokenization.py
-        │ │ └── vocab.korean.rawtext.list
-        │ └── 004_bert_eojeol_tensorflow.tar.bz2
-        └── meta.json
+cache
+  └── datasets
+     ├── meta.json
+     ├── movie_reviews
+     │ ├── daum.json.bz2
+     │ └── naver.json.bz2
+     └── youtube
+        └── replies
+            ├── mtd.json.bz2
+            └── news.json.bz2
+```
+
+## models cache
+
+```bash
+cache
+  └── models
+    ├── meta.json
+    └── bert
+      ├── 002_bert_morp_tensorflow.tar.bz2
+      └── 002_bert_morp_tensorflow
+        ├── bert_config.json
+        ├── model.ckpt.data-00000-of-00001
+        ├── model.ckpt.index
+        ├── model.ckpt.meta
+        ├── src_tokenizer
+        │ └── tokenization_morp.py
+        └── vocab.korean_morp.list
 ```
 
 ### datasets: meta.json
