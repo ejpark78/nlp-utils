@@ -12,8 +12,6 @@ build:
 	echo $(GIT_TAG).$(GIT_COMMIT) > version
 	python3 setup.py bdist_wheel
 
-	rm version
-
 .ONESHELL:
 install:
 	pip3 install dist/nlplab-1.*.whl
