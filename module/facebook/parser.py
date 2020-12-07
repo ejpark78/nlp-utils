@@ -10,10 +10,8 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
-from utils.selenium_utils import SeleniumUtils
 
-
-class FBParser(SeleniumUtils):
+class FBParser(object):
     """페이스북 파서"""
 
     def __init__(self):
@@ -83,7 +81,6 @@ class FBParser(SeleniumUtils):
 
     @staticmethod
     def parse_reply_body(tag):
-        """ """
         raw_html = tag.prettify()
 
         user_name = ''

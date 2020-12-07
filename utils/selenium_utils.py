@@ -10,42 +10,36 @@ import re
 from glob import glob
 from os.path import isdir
 from time import sleep
+from urllib.parse import urlparse, parse_qs
 
-import pytz
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from utils.elasticsearch_utils import ElasticSearchUtils
 from utils.logger import Logger
 
 
 class SeleniumUtils(object):
     """웹 뉴스 크롤러 베이스"""
 
-    def __init__(self):
+    def __init__(self, login=False, headless=True, user_data_path=None, incognito=False,
+                 executable_path='/usr/bin/chromedriver'):
         """ 생성자 """
         super().__init__()
 
-        self.env = None
         self.driver = None
 
-        self.elastic = None
-        self.timezone = pytz.timezone('Asia/Seoul')
+        self.login = login
+        self.headless = headless
+        self.incognito = incognito
+        self.user_data_path = user_data_path
+        self.executable_path = executable_path
 
         self.logger = Logger()
 
-    def open_db(self):
-        """ 디비를 연결한다."""
-        self.elastic = ElasticSearchUtils(
-            host=self.env.host,
-            index=self.env.index,
-            log_path=self.env.log_path,
-            http_auth=self.env.auth,
-            split_index=True,
-        )
-        return
+        self.open_driver()
 
     def open_driver(self):
         """브라우저를 실행한다."""
@@ -54,7 +48,7 @@ class SeleniumUtils(object):
 
         options = webdriver.ChromeOptions()
 
-        if self.env.use_head is True:
+        if self.headless is True:
             options.add_argument('headless')
 
         options.add_argument('window-size=1920x1080')
@@ -64,8 +58,8 @@ class SeleniumUtils(object):
         options.add_argument('--dns-prefetch-disable')
         options.add_argument('--disable-dev-shm-usage')
 
-        if self.env.user_data is not None:
-            options.add_argument('user-data-dir={}'.format(self.env.user_data))
+        if self.user_data_path is not None:
+            options.add_argument('user-data-dir={}'.format(self.user_data_path))
 
         prefs = {
             'disk-cache-size': 4096,
@@ -78,13 +72,12 @@ class SeleniumUtils(object):
             'profile.managed_default_content_settings.media_stream': 2,
         }
 
-        if hasattr(self.env, 'login') is True and self.env.login is True:
+        if self.login is True:
             prefs = {}
 
         options.add_experimental_option('prefs', prefs)
 
-        chrome_driver = self.env.driver
-        self.driver = webdriver.Chrome(executable_path=chrome_driver, chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path=self.executable_path, chrome_options=options)
 
         return
 
@@ -95,10 +88,39 @@ class SeleniumUtils(object):
 
         return
 
+    def open(self, url, wait_for_path=None):
+        try:
+            self.driver.get(url=url)
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url open error',
+                'url': url,
+                'error': str(e)
+            })
+
+        self.logger.log(msg={'level': 'MESSAGE', 'message': 'requests', 'url': url})
+
+        if wait_for_path is None:
+            self.driver.implicitly_wait(15)
+            WebDriverWait(self.driver, 5, 10)
+            return
+
+        try:
+            self.driver.wait_for_request(wait_for_path, timeout=30)
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url open wait error',
+                'url': url,
+                'wait_for_path': wait_for_path,
+                'error': str(e)
+            })
+
+        return
+
     def page_down(self, count, multi=1, multi_sleep=2):
         """스크롤한다."""
-        from selenium.webdriver.common.keys import Keys
-
         for _ in range(count):
             try:
                 html = self.driver.find_element_by_tag_name('html')
@@ -124,7 +146,6 @@ class SeleniumUtils(object):
 
     def scroll(self, count):
         """스크롤한다."""
-        from selenium.webdriver.support.ui import WebDriverWait
 
         def check_height(prev_height):
             """현재 위치를 확인한다."""
@@ -159,7 +180,6 @@ class SeleniumUtils(object):
         return False
 
     def wait(self, css):
-        """ """
         wait = WebDriverWait(self.driver, 120)
 
         wait.until(
@@ -169,7 +189,6 @@ class SeleniumUtils(object):
         return
 
     def wait_clickable(self, css):
-        """ """
         wait = WebDriverWait(self.driver, 120)
 
         wait.until(
@@ -218,8 +237,6 @@ class SeleniumUtils(object):
     @staticmethod
     def parse_url(url):
         """url 에서 쿼리문을 반환한다."""
-        from urllib.parse import urlparse, parse_qs
-
         url_info = urlparse(url)
         query = parse_qs(url_info.query)
         for key in query:

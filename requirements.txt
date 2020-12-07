@@ -35,3 +35,4 @@ psutil
 xmltodict
 xlsxwriter
 minio
+git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

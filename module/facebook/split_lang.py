@@ -10,6 +10,7 @@ import json
 from tqdm import tqdm
 
 from utils.selenium_utils import SeleniumUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
 
 
 class FBSplitLang(SeleniumUtils):
@@ -18,6 +19,19 @@ class FBSplitLang(SeleniumUtils):
     def __init__(self):
         """ 생성자 """
         super().__init__()
+
+        self.elastic = None
+
+    def open_db(self):
+        """ 디비를 연결한다."""
+        self.elastic = ElasticSearchUtils(
+            host=self.env.host,
+            index=self.env.index,
+            log_path=self.env.log_path,
+            http_auth=self.env.auth,
+            split_index=True,
+        )
+        return
 
     @staticmethod
     def to_string(doc):

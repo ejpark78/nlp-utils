@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import pytz
 import requests
 import urllib3
 
@@ -19,8 +18,6 @@ class CacheUtils(CacheBase):
 
     def __init__(self, filename, use_cache=True):
         super().__init__(filename=filename)
-
-        self.timezone = pytz.timezone('Asia/Seoul')
 
         self.use_cache = use_cache
 

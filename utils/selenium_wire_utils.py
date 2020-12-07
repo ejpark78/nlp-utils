@@ -48,6 +48,9 @@ class SeleniumWireUtils(object):
         if self.driver is not None:
             return
 
+        # from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+        # capabilities = DesiredCapabilities.CHROME.copy()
+
         options = webdriver.ChromeOptions()
 
         options.add_argument('window-size=1920x1080')
@@ -66,10 +69,10 @@ class SeleniumWireUtils(object):
 
         options.add_argument("--disable-xss-auditor")
         options.add_argument("--disable-web-security")
-        options.add_argument("--allow-running-insecure-content")
         options.add_argument("--disable-setuid-sandbox")
         options.add_argument("--disable-webgl")
         options.add_argument("--disable-popup-blocking")
+        options.add_argument("--allow-running-insecure-content")
 
         options.add_argument("--no-default-browser-check")
 

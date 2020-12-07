@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import json
 
-import pytz
 import urllib3
 
 from utils.cache_base import CacheBase
@@ -20,7 +19,6 @@ class CacheUtils(CacheBase):
 
     def __init__(self, filename, use_cache=True):
         super().__init__(filename=filename)
-        self.timezone = pytz.timezone('Asia/Seoul')
 
         self.use_cache = use_cache
 
