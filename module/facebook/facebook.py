@@ -15,10 +15,8 @@ from utils.selenium_utils import SeleniumUtils
 
 
 class FBCrawler(object):
-    """페이스북 크롤러"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
         self.timezone = pytz.timezone('Asia/Seoul')
@@ -78,6 +76,10 @@ class FBCrawler(object):
         parser.add_argument('--reply-index', default='crawler-facebook-reply')
 
         parser.add_argument('--log-path', default='log')
+
+        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
+
+        parser.add_argument('--filename', default='./data/facebook/facebook.db', help='파일명')
 
         return parser.parse_args()
 

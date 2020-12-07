@@ -1,6 +1,16 @@
 
 ```bash
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
+    --use_head \
+    --list --reply \
+    --config "config/facebook/stock.json" \
+    --max-page 1000000 \
+    --index crawler-facebook-stock \
+    --reply-index crawler-facebook-stock-reply \
+    --user-data ./cache/selenium/facebook
+
+
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --use_head \
     --list --reply \
     --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json,config/facebook/follows.json" \
@@ -10,7 +20,7 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --user-data ./cache/selenium/facebook
 
 
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --use_head \
     --reply \
     --config config/facebook/인도네시아.json \
@@ -20,7 +30,7 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --user-data ./cache/selenium/facebook-id
 
 
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --use_head \
     --reply \
     --config config/facebook/베트남.json \
@@ -30,7 +40,7 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --user-data ./cache/selenium/facebook-vi
 
 
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --use_head \
     --list --reply \
     --config config/facebook/news-zh.json \
@@ -62,7 +72,7 @@ PYTHONPATH=. python3 module/facebook/split_lang.py \
 ```
 
 ```bash
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --list \
     --reply \
     --use_head \
@@ -71,7 +81,7 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --reply-index crawler-facebook-vi-reply \
     --user-data ./cache/selenium/facebook-vi
 
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --reply \
     --use_head \
     --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json,config/facebook/follows.json" \
@@ -79,7 +89,7 @@ PYTHONPATH=. python3 module/facebook/crawler.py \
     --reply-index crawler-facebook-ko-reply \
     --user-data ./cache/selenium/facebook
 
-PYTHONPATH=. python3 module/facebook/crawler.py \
+PYTHONPATH=. python3 module/facebook/facebook.py \
     --list \
     --reply \
     --use_head \

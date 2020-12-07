@@ -5,7 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import re
 from datetime import datetime
+from glob import glob
+from os.path import isdir
 from time import sleep
 from urllib.parse import urljoin
 from urllib.parse import urlparse, parse_qs
@@ -232,8 +236,29 @@ class SeleniumCrawler(SeleniumUtils):
 
         return
 
+    @staticmethod
+    def read_config(filename, with_comments=False):
+        """설정파일을 읽어드린다."""
+        file_list = filename.split(',')
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob('{}/*.json'.format(filename)):
+                file_list.append(f_name)
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                if with_comments is True:
+                    buf = ''.join([re.sub(r'^//', '', x) for x in fp.readlines()])
+                else:
+                    buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+
+                doc = json.loads(buf)
+                result += doc['list']
+
+        return result
+
     def batch(self):
-        """"""
         # https://stackabuse.com/getting-started-with-selenium-and-python/
         self.env = self.init_arguments()
 

@@ -258,7 +258,7 @@ class FBReplies(FBBase):
         return
 
     def batch(self):
-        group_list = self.selenium.read_config(filename=self.params.config)
+        group_list = self.read_config(filename=self.params.config)
 
         for group in group_list:
             self.trace_reply_list(group_info=group)

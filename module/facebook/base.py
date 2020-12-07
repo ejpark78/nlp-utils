@@ -5,10 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import re
 from datetime import datetime
+from glob import glob
+from os.path import isdir
 
 import pytz
 
+from module.facebook.cache_utils import CacheUtils
 from module.facebook.parser import FBParser
 from utils.elasticsearch_utils import ElasticSearchUtils
 from utils.logger import Logger
@@ -29,6 +34,11 @@ class FBBase(object):
         self.parser = FBParser()
 
         self.selenium = SeleniumUtils()
+
+        self.db = CacheUtils(
+            filename=self.params.filename,
+            use_cache=self.params.use_cache
+        )
 
         self.elastic = ElasticSearchUtils(
             host=self.params.host,
@@ -54,6 +64,7 @@ class FBBase(object):
         index = None
         if 'index' in group_info:
             index = group_info['index']
+
         self.elastic.save_document(document=doc, delete=False, index=index)
 
         self.logger.log(msg={
@@ -64,3 +75,25 @@ class FBBase(object):
         })
 
         return
+
+    @staticmethod
+    def read_config(filename, with_comments=False):
+        """설정파일을 읽어드린다."""
+        file_list = filename.split(',')
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob('{}/*.json'.format(filename)):
+                file_list.append(f_name)
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                if with_comments is True:
+                    buf = ''.join([re.sub(r'^//', '', x) for x in fp.readlines()])
+                else:
+                    buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+
+                doc = json.loads(buf)
+                result += doc['list']
+
+        return result
