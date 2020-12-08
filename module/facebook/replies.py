@@ -58,14 +58,14 @@ class FBReplies(FBBase):
 
         return
 
-    def get_replies(self, doc):
+    def get_replies(self, post):
         """컨텐츠 하나를 조회한다."""
-        if 'url' not in doc:
+        if 'url' not in post:
             return
 
         self.selenium.open_driver()
 
-        self.selenium.driver.get(doc['url'])
+        self.selenium.driver.get(post['url'])
         self.selenium.driver.implicitly_wait(15)
 
         self.see_more_reply()
@@ -74,7 +74,7 @@ class FBReplies(FBBase):
 
         soup = BeautifulSoup(html, 'html5lib')
 
-        reply_list = []
+        count = 0
         for tag in soup.find_all('div', {'data-sigil': 'comment'}):
             item = dict()
 
@@ -84,25 +84,22 @@ class FBReplies(FBBase):
 
             comment_list = tag.find_all('div', {'data-sigil': 'comment-body'})
             replies = [self.parser.parse_reply_body(v) for v in comment_list]
-            if len(replies) > 0:
-                item.update(replies[0])
-                del replies[0]
 
-            item['reply_list'] = replies
+            count += len(replies)
+            for reply in replies:
+                self.db.save_replies(document=reply, post_id=post['top_level_post_id'], reply_id=reply['reply_id'])
 
-            reply_list.append(item)
-
-        doc['reply_list'] = reply_list
-
-        doc['content'] = '\n'.join([v.get_text(separator='\n') for v in soup.find_all('p')])
+        post['content'] = '\n'.join([v.get_text(separator='\n') for v in soup.find_all('p')])
 
         story_body = soup.find_all('div', {'class': 'story_body_container'})
-        doc['html_content'] = '\n'.join([v.prettify() for v in story_body])
+        post['html_content'] = '\n'.join([v.prettify() for v in story_body])
 
-        return
+        self.db.save_post(document=post, post_id=post['top_level_post_id'])
+
+        return count
 
     def see_more_reply(self):
-        """ 더 보기 링크를019! 클릭한다."""
+        """ 더 보기 링크를 클릭한다."""
         self.see_prev_reply(max_try=self.params.max_try)
 
         try:
@@ -129,7 +126,7 @@ class FBReplies(FBBase):
         sleep(2)
         return
 
-    def see_prev_reply(self, max_try=15):
+    def see_prev_reply(self, max_try=200):
         """ 이전 댓글 보기를 클릭한다."""
         if max_try < 0:
             return
@@ -168,110 +165,23 @@ class FBReplies(FBBase):
         self.see_prev_reply(max_try=max_try - 1)
         return
 
-    def trace_reply_list(self, group_info):
-        id_list = []
-
-        if self.db is not None:
-            pass
-
-        if self.elastic is not None:
-            query = {
-                'query': {
-                    'bool': {
-                        'must': {
-                            'match': {
-                                'page': group_info['page']
-                            }
-                        }
-                    }
-                }
-            }
-
-            if self.params.overwrite is False:
-                query['query']['bool']['must_not'] = {
-                    'match': {
-                        'state': 'done'
-                    }
-                }
-
-            id_list += list(self.elastic.get_id_list(index=self.elastic.index, query_cond=query))
-
-        if len(id_list) == 0:
-            return
-
-        size = 1000
-
-        start = 0
-        end = size
-
-        if 'index' in group_info:
-            self.params.index = group_info['index']
-            if self.elastic is not None:
-                self.elastic.index = group_info['index']
-
-        reply_index = self.params.reply_index
-        if 'reply_index' in group_info:
-            self.params.reply_index = group_info['reply_index']
-
-        while start < len(id_list):
-            doc_list = []
-            if self.elastic is not None:
-                self.elastic.get_by_ids(
-                    index=self.elastic.index,
-                    source=None,
-                    result=doc_list,
-                    id_list=id_list[start:end],
-                )
-
-            if self.db is not None:
-                pass
-
-            if start >= len(id_list):
-                break
-
-            start = end
-            end += size
-
-            if end > len(id_list):
-                end = len(id_list)
-
-            self.selenium.open_driver()
-
-            for i, doc in enumerate(doc_list):
-                if self.params.overwrite is False and 'reply_list' in doc:
-                    continue
-
-                self.logger.log({
-                    'level': 'MESSAGE',
-                    'message': 'trace_reply_list',
-                    'name': group_info['meta']['name'],
-                    'start': start,
-                    'end': end,
-                    'i': i,
-                    'top_level_post_id': doc['top_level_post_id']
-                })
-
-                self.get_replies(doc=doc)
-
-                if 'reply_list' in doc:
-                    post_id = '{page}-{top_level_post_id}'.format(**doc)
-                    self.save_replies(reply_list=doc['reply_list'], post_id=post_id, index=reply_index)
-
-                    del doc['reply_list']
-
-                    doc['state'] = 'done'
-                    self.save_post(doc=doc, group_info=group_info)
-
-                sleep(5)
-
-            self.selenium.close_driver()
-
-        return
-
     def batch(self):
-        group_list = self.read_config(filename=self.params.config)
+        _ = self.db.cursor.execute('SELECT content FROM posts WHERE reply_count < 0')
 
-        for group in group_list:
-            self.trace_reply_list(group_info=group)
+        rows = self.db.cursor.fetchall()
+
+        for i, item in enumerate(rows):
+            post = json.loads(item[0])
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '댓글 조회',
+                'content': post['content'],
+                'position': '{:,}/{:,}'.format(i, len(rows)),
+            })
+
+            count = self.get_replies(post=post)
+
+            self.db.save_reply_count(post_id=post['top_level_post_id'], count=count)
 
         return

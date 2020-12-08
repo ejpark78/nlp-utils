@@ -19,6 +19,15 @@ class CacheUtils(CacheBase):
 
         self.schema = [
             '''
+                CREATE TABLE IF NOT EXISTS accounts (
+                    id TEXT NOT NULL UNIQUE PRIMARY KEY,
+                    date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                    post_count INTEGER DEFAULT -1,
+                    name TEXT NOT NULL,
+                    content TEXT NOT NULL
+                )
+            ''',
+            '''
                 CREATE TABLE IF NOT EXISTS posts (
                     id TEXT NOT NULL UNIQUE PRIMARY KEY,
                     date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
@@ -37,14 +46,32 @@ class CacheUtils(CacheBase):
         ]
 
         self.template = {
+            'accounts': 'REPLACE INTO accounts (id, name, content) VALUES (?, ?, ?)',
+            'post_count': 'UPDATE accounts SET post_count=? WHERE id=?',
             'posts': 'REPLACE INTO posts (id, content) VALUES (?, ?)',
+            'reply_count': 'UPDATE posts SET reply_count=? WHERE id=?',
             'replies': 'REPLACE INTO replies (id, post_id, content) VALUES (?, ?, ?)',
         }
 
         self.open_db(filename)
 
+    def save_account(self, document, name, account_id):
+        self.cursor.execute(self.template['accounts'], (account_id, name, json.dumps(document, ensure_ascii=False),))
+        self.conn.commit()
+        return
+
+    def save_post_count(self, account_id, count):
+        self.cursor.execute(self.template['post_count'], (count, account_id), )
+        self.conn.commit()
+        return
+
     def save_post(self, document, post_id):
         self.cursor.execute(self.template['posts'], (post_id, json.dumps(document, ensure_ascii=False),))
+        self.conn.commit()
+        return
+
+    def save_reply_count(self, post_id, count):
+        self.cursor.execute(self.template['reply_count'], (count, post_id), )
         self.conn.commit()
         return
 

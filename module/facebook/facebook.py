@@ -66,8 +66,10 @@ class FBCrawler(object):
         parser.add_argument('--user-data', default=None)
         parser.add_argument('--driver', default='/usr/bin/chromedriver')
 
-        parser.add_argument('--max-try', default=20, type=int)
+        parser.add_argument('--max-try', default=100, type=int)
         parser.add_argument('--max-page', default=10000, type=int)
+
+        parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
         parser.add_argument('--host', default=None)
         parser.add_argument('--auth', default=None)
