@@ -28,27 +28,8 @@ class KBSecCrawler(object):
 
         self.params = self.init_arguments()
 
-    @staticmethod
-    def save_excel(filename, df, size=500000):
-        writer = pd.ExcelWriter(filename + '.xlsx', engine='xlsxwriter')
-
-        if len(df) > size:
-            for pos in range(0, len(df), size):
-                end_pos = pos + size if len(df) > (pos + size) else len(df)
-
-                df[pos:pos + size].to_excel(
-                    writer,
-                    index=False,
-                    sheet_name='{:,}-{:,}'.format(pos, end_pos)
-                )
-        else:
-            df.to_excel(writer, index=False, sheet_name='review')
-
-        writer.save()
-        return
-
     def export_report_list(self):
-        db = CacheUtils(filename=self.params.filename)
+        db = CacheUtils(filename=self.params.cache)
 
         column = 'documentid,content,state'
         db.cursor.execute('SELECT {} FROM report_list'.format(column))
@@ -65,25 +46,13 @@ class KBSecCrawler(object):
             r.update(content)
             data.append(r)
 
-        df = pd.DataFrame(data)
+        filename = '{}.report_list'.format(splitext(self.params.cache)[0])
+        db.save(filename=filename, rows=data)
 
-        filename = '{}.report_list'.format(splitext(self.params.filename)[0])
-
-        # json
-        df.to_json(
-            filename + '.json.bz2',
-            force_ascii=False,
-            compression='bz2',
-            orient='records',
-            lines=True,
-        )
-
-        # xlsx
-        self.save_excel(filename=filename, df=df)
         return
 
     def export_reports(self):
-        db = CacheUtils(filename=self.params.filename)
+        db = CacheUtils(filename=self.params.cache)
 
         column = 'documentid,enc,title,summary,pdf'
         db.cursor.execute('SELECT {} FROM reports WHERE pdf != ""'.format(column))
@@ -102,21 +71,9 @@ class KBSecCrawler(object):
             })
             data.append(r)
 
-        df = pd.DataFrame(data)
+        filename = '{}.reports'.format(splitext(self.params.cache)[0])
+        db.save(filename=filename, rows=data)
 
-        filename = '{}.reports'.format(splitext(self.params.filename)[0])
-
-        # json
-        df.to_json(
-            filename + '.json.bz2',
-            force_ascii=False,
-            compression='bz2',
-            orient='records',
-            lines=True,
-        )
-
-        # xlsx
-        self.save_excel(filename=filename, df=df)
         return
 
     def export(self):
@@ -156,7 +113,7 @@ class KBSecCrawler(object):
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
-        parser.add_argument('--filename', default='./data/kbsec/kbsec.db', help='파일명')
+        parser.add_argument('--cache', default='./data/kbsec/kbsec.db', help='파일명')
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')

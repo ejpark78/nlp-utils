@@ -30,7 +30,7 @@ class YoutubeCrawler(object):
         self.selenium = SeleniumWireUtils(headless=True)
 
     def export_channels(self):
-        db = CacheUtils(filename=self.params.filename)
+        db = CacheUtils(filename=self.params.cache)
 
         column = 'id,title,video_count,data'
         db.cursor.execute('SELECT {} FROM channels'.format(column))
@@ -49,13 +49,13 @@ class YoutubeCrawler(object):
             r.update(channels[item[0]])
             data.append(r)
 
-        filename = '{}.channels'.format(splitext(self.params.filename)[0])
-        pd.DataFrame(data).to_excel(filename + '.xlsx')
+        filename = '{}.channels'.format(splitext(self.params.cache)[0])
+        db.save(filename=filename, rows=data)
 
         return channels
 
     def export_videos(self, channels):
-        db = CacheUtils(filename=self.params.filename)
+        db = CacheUtils(filename=self.params.cache)
 
         column = 'id,title,reply_count,tags'
         db.cursor.execute('SELECT {} FROM videos'.format(column))
@@ -78,13 +78,13 @@ class YoutubeCrawler(object):
 
             data.append(r)
 
-        filename = '{}.videos'.format(splitext(self.params.filename)[0])
-        pd.DataFrame(data).to_excel(filename + '.xlsx')
+        filename = '{}.videos'.format(splitext(self.params.cache)[0])
+        db.save(filename=filename, rows=data)
 
         return videos
 
     def export_reply(self, videos):
-        db = CacheUtils(filename=self.params.filename)
+        db = CacheUtils(filename=self.params.cache)
 
         column = 'id,video_id,video_title,data'
         db.cursor.execute('SELECT {} FROM reply'.format(column))
@@ -120,39 +120,9 @@ class YoutubeCrawler(object):
 
             data.append(r)
 
-        df = pd.DataFrame(data)
+        filename = '{}.replies'.format(splitext(self.params.cache)[0])
+        db.save(filename=filename, rows=data)
 
-        filename = '{}.replies'.format(splitext(self.params.filename)[0])
-
-        df.to_json(
-            filename + '.json.bz2',
-            force_ascii=False,
-            compression='bz2',
-            orient='records',
-            lines=True,
-        )
-
-        self.save_excel(filename=filename, df=df)
-
-        return
-
-    @staticmethod
-    def save_excel(filename, df, size=500000):
-        writer = pd.ExcelWriter(filename + '.xlsx', engine='xlsxwriter')
-
-        if len(df) > size:
-            for pos in range(0, len(df), size):
-                end_pos = pos + size if len(df) > (pos + size) else len(df)
-
-                df[pos:pos + size].to_excel(
-                    writer,
-                    index=False,
-                    sheet_name='{:,}-{:,}'.format(pos, end_pos)
-                )
-        else:
-            df.to_excel(writer, index=False, sheet_name='review')
-
-        writer.save()
         return
 
     def export(self):
@@ -188,8 +158,8 @@ class YoutubeCrawler(object):
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
+        parser.add_argument('--cache', default='./data/youtube/mtd.db', help='파일명')
 
-        parser.add_argument('--filename', default='./data/youtube/mtd.db', help='파일명')
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')

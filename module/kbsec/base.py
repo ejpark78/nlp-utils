@@ -32,7 +32,7 @@ class KBSecBase(object):
         self.params = params
 
         self.db = CacheUtils(
-            filename=self.params.filename,
+            filename=self.params.cache,
             use_cache=self.params.use_cache
         )
 

@@ -22,15 +22,15 @@ class YoutubeVideoList(object):
 
         self.logger = Logger()
 
+        self.db = CacheUtils(
+            filename=self.params.cache,
+            use_cache=self.params.use_cache
+        )
+
         self.selenium = SeleniumWireUtils(
             login=self.params.login,
             headless=self.params.headless,
             user_data_path=self.params.user_data,
-        )
-
-        self.db = CacheUtils(
-            filename=self.params.filename,
-            use_cache=self.params.use_cache
         )
 
     @staticmethod

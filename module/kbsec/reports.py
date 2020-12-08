@@ -116,7 +116,7 @@ class KBSecReports(KBSecBase):
 
             self.download_file(
                 url='http://rdata.kbsec.com/pdf_data/{}.pdf'.format(doc_id),
-                filename='{}/pdf/{}.pdf'.format(dirname(self.params.filename), doc_id)
+                filename='{}/pdf/{}.pdf'.format(dirname(self.params.cache), doc_id)
             )
 
             sleep(self.params.sleep)

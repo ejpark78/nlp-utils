@@ -5,7 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
+import re
+from datetime import datetime
+from glob import glob
+from os.path import isdir
 from time import sleep
+
 from module.facebook.base import FBBase
 
 
@@ -73,6 +79,45 @@ class FBGroupList(FBBase):
 
         return count
 
+    def save_post(self, doc, group_info):
+        """추출한 정보를 저장한다."""
+        doc['page'] = group_info['page']
+        if 'page' not in doc or 'top_level_post_id' not in doc:
+            return
+
+        doc['_id'] = '{page}-{top_level_post_id}'.format(**doc)
+
+        if 'meta' in group_info:
+            doc.update(group_info['meta'])
+
+        doc['curl_date'] = datetime.now(self.timezone).isoformat()
+
+        index = None
+        if 'index' in group_info:
+            index = group_info['index']
+
+        if self.elastic is not None:
+            self.elastic.save_document(document=doc, delete=False, index=index)
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '문서 저장 성공',
+                'document_id': doc['document_id'],
+                'content': doc['content'],
+            })
+
+        if self.db is not None:
+            self.db.save_post(document=doc, post_id=doc['top_level_post_id'])
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '문서 저장 성공',
+                'group_info': group_info,
+                'content': doc['content'],
+            })
+
+        return
+
     def delete_post(self):
         """이전 포스트를 삭제한다."""
         script = 'document.querySelectorAll("article").forEach(function(ele) {ele.remove();})'
@@ -90,6 +135,28 @@ class FBGroupList(FBBase):
         self.selenium.driver.implicitly_wait(10)
 
         return
+
+    @staticmethod
+    def read_config(filename, with_comments=False):
+        """설정파일을 읽어드린다."""
+        file_list = filename.split(',')
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob('{}/*.json'.format(filename)):
+                file_list.append(f_name)
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                if with_comments is True:
+                    buf = ''.join([re.sub(r'^//', '', x) for x in fp.readlines()])
+                else:
+                    buf = ''.join([x for x in fp.readlines() if x.find('//') != 0])
+
+                doc = json.loads(buf)
+                result += doc['list']
+
+        return result
 
     def batch(self):
         group_list = self.read_config(filename=self.params.config)
