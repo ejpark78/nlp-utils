@@ -7,30 +7,13 @@ from __future__ import print_function
 
 from time import sleep
 
-from utils.logger import Logger
-from utils.selenium_wire_utils import SeleniumWireUtils
-from module.youtube.cache_utils import CacheUtils
+from module.youtube.base import YoutubeBase
 
 
-class YoutubeReply(object):
+class YoutubeReply(YoutubeBase):
 
     def __init__(self, params):
-        super().__init__()
-
-        self.params = params
-
-        self.logger = Logger()
-
-        self.db = CacheUtils(
-            filename=self.params.cache,
-            use_cache=self.params.use_cache
-        )
-
-        self.selenium = SeleniumWireUtils(
-            login=self.params.login,
-            headless=self.params.headless,
-            user_data_path=self.params.user_data,
-        )
+        super().__init__(params=params)
 
     def get_total_reply_count(self):
         self.selenium.scroll(count=3, meta={})

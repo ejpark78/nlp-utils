@@ -8,13 +8,12 @@ from __future__ import print_function
 import json
 from os.path import splitext
 
-import pandas as pd
-
-from utils.logger import Logger
-from utils.selenium_wire_utils import SeleniumWireUtils
 from module.youtube.cache_utils import CacheUtils
+from module.youtube.live_chat import YoutubeLiveChat
 from module.youtube.reply import YoutubeReply
 from module.youtube.video_list import YoutubeVideoList
+from utils.logger import Logger
+from utils.selenium_wire_utils import SeleniumWireUtils
 
 
 class YoutubeCrawler(object):
@@ -140,6 +139,9 @@ class YoutubeCrawler(object):
         if self.params.reply is True:
             YoutubeReply(params=self.params).batch()
 
+        if self.params.live_chat is True:
+            YoutubeLiveChat(params=self.params).batch()
+
         if self.params.export is True:
             self.export()
 
@@ -154,11 +156,12 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--videos', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
+        parser.add_argument('--live-chat', action='store_true', default=False, help='라이브챗 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
 
-        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
         parser.add_argument('--cache', default='./data/youtube/mtd.db', help='파일명')
+        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 

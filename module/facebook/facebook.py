@@ -95,6 +95,9 @@ class FBCrawler(object):
         if self.params.login:
             self.sleep_to_login()
 
+        if self.params.account:
+            FBGroupList(params=self.params).account()
+
         if self.params.list:
             FBGroupList(params=self.params).batch()
 
@@ -113,6 +116,7 @@ class FBCrawler(object):
 
         parser = argparse.ArgumentParser()
 
+        parser.add_argument('--account', action='store_true', default=False)
         parser.add_argument('--list', action='store_true', default=False)
         parser.add_argument('--reply', action='store_true', default=False)
 

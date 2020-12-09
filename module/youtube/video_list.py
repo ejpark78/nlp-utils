@@ -8,30 +8,13 @@ from __future__ import print_function
 import json
 from time import sleep
 
-from utils.logger import Logger
-from utils.selenium_wire_utils import SeleniumWireUtils
-from module.youtube.cache_utils import CacheUtils
+from module.youtube.base import YoutubeBase
 
 
-class YoutubeVideoList(object):
+class YoutubeVideoList(YoutubeBase):
 
     def __init__(self, params):
-        super().__init__()
-
-        self.params = params
-
-        self.logger = Logger()
-
-        self.db = CacheUtils(
-            filename=self.params.cache,
-            use_cache=self.params.use_cache
-        )
-
-        self.selenium = SeleniumWireUtils(
-            login=self.params.login,
-            headless=self.params.headless,
-            user_data_path=self.params.user_data,
-        )
+        super().__init__(params=params)
 
     @staticmethod
     def read_config(filename, column):

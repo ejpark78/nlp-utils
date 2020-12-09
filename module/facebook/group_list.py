@@ -158,6 +158,14 @@ class FBGroupList(FBBase):
 
         return result
 
+    def account(self):
+        account = self.read_config(filename=self.params.config)
+
+        for group in account:
+            self.db.save_account(account_id=group['page'], name=group['meta']['name'], document=group)
+
+        return
+
     def batch(self):
         group_list = self.read_config(filename=self.params.config)
 
@@ -165,7 +173,6 @@ class FBGroupList(FBBase):
             self.db.save_account(account_id=group['page'], name=group['meta']['name'], document=group)
 
             count = self.trace_post_list(group_info=group)
-
             self.db.save_post_count(account_id=group['page'], count=count)
 
         return

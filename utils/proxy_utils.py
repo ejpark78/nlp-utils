@@ -115,7 +115,6 @@ class SeleniumProxyUtils(object):
         return self.driver
 
     def kill(self, proc_pid):
-        """ """
         import psutil
 
         try:
@@ -134,7 +133,6 @@ class SeleniumProxyUtils(object):
         return
 
     def close_driver(self):
-        """ """
         self.kill(self.proxy_server.process.pid)
 
         try:
@@ -159,7 +157,6 @@ class SeleniumProxyUtils(object):
 
     @staticmethod
     def make_path(data_path):
-        """ """
         if isdir(data_path) is True:
             return
 
@@ -188,7 +185,6 @@ class SeleniumProxyUtils(object):
         return False
 
     def is_valid_path(self, path_list, url):
-        """ """
         if url in self.url_buf:
             return False
 
@@ -201,7 +197,6 @@ class SeleniumProxyUtils(object):
         return False
 
     def trace_networks(self, path_list):
-        """ """
         try:
             entry_list = self.proxy.har['log']['entries']
         except Exception as e:
@@ -234,7 +229,6 @@ class SeleniumProxyUtils(object):
         return result
 
     def decode_response(self, content_list):
-        """ """
         import json
         import brotli
         from base64 import b64decode
@@ -268,7 +262,6 @@ class SeleniumProxyUtils(object):
         return result
 
     def check_history(self, url):
-        """ """
         if url in self.url_buf:
             return True
 
@@ -277,7 +270,6 @@ class SeleniumProxyUtils(object):
         return False
 
     def wait(self, css):
-        """ """
         wait = WebDriverWait(self.driver, 120)
 
         wait.until(

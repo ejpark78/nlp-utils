@@ -30,6 +30,7 @@ class CacheUtils(CacheBase):
             '''
                 CREATE TABLE IF NOT EXISTS posts (
                     id TEXT NOT NULL UNIQUE PRIMARY KEY,
+                    account_id TEXT NOT NULL,
                     date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
                     reply_count INTEGER DEFAULT -1,
                     content TEXT NOT NULL
@@ -48,7 +49,7 @@ class CacheUtils(CacheBase):
         self.template = {
             'accounts': 'REPLACE INTO accounts (id, name, content) VALUES (?, ?, ?)',
             'post_count': 'UPDATE accounts SET post_count=? WHERE id=?',
-            'posts': 'REPLACE INTO posts (id, content) VALUES (?, ?)',
+            'posts': 'REPLACE INTO posts (id, account_id, content) VALUES (?, ?, ?)',
             'reply_count': 'UPDATE posts SET reply_count=? WHERE id=?',
             'replies': 'REPLACE INTO replies (id, post_id, content) VALUES (?, ?, ?)',
         }
@@ -65,8 +66,16 @@ class CacheUtils(CacheBase):
         self.conn.commit()
         return
 
-    def save_post(self, document, post_id):
-        self.cursor.execute(self.template['posts'], (post_id, json.dumps(document, ensure_ascii=False),))
+    def save_post(self, document, post_id, account_id, date=None):
+        if date is None:
+            self.cursor.execute(self.template['posts'],
+                                (post_id, account_id, json.dumps(document, ensure_ascii=False),))
+        else:
+            self.cursor.execute(
+                'REPLACE INTO posts (id, account_id, content, date) VALUES (?, ?, ?, ?)',
+                (post_id, account_id, json.dumps(document, ensure_ascii=False), date,)
+            )
+
         self.conn.commit()
         return
 
@@ -75,7 +84,15 @@ class CacheUtils(CacheBase):
         self.conn.commit()
         return
 
-    def save_replies(self, document, post_id, reply_id):
-        self.cursor.execute(self.template['replies'], (reply_id, post_id, json.dumps(document, ensure_ascii=False),))
+    def save_replies(self, document, post_id, reply_id, date=None):
+        if date is None:
+            self.cursor.execute(self.template['replies'],
+                                (reply_id, post_id, json.dumps(document, ensure_ascii=False),))
+        else:
+            self.cursor.execute(
+                'REPLACE INTO replies (id, post_id, content, date) VALUES (?, ?, ?, ?)',
+                (reply_id, post_id, json.dumps(document, ensure_ascii=False), date,)
+            )
+
         self.conn.commit()
         return

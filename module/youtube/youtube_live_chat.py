@@ -320,6 +320,4 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
 
 
 if __name__ == '__main__':
-    utils = YoutubeLiveChatCrawler()
-
-    utils.batch()
+    YoutubeLiveChatCrawler().batch()
