@@ -1,0 +1,141 @@
+###
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {
+    }
+  }
+}
+
+###
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match_all": {
+        }
+      },
+      "boost": "5",
+      "functions": [
+        {
+          "filter": {
+            "match": {
+              "text": "누나"
+            }
+          },
+          "random_score": {},
+          "weight": 23
+        }
+      ],
+      "max_boost": 42,
+      "score_mode": "max",
+      "boost_mode": "multiply",
+      "min_score": 42
+    }
+  }
+}
+
+###
+# 부스트
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "query_string": {
+      "query": "누나^3 AND 군주",
+      "fields": [
+        "text^3",
+        "description"
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "text": "누나"
+        }
+      },
+      "functions": [
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "text": "누나"
+        }
+      },
+      "functions": [
+        {
+          "weight": 1.5,
+          "filter": {
+            "term": {
+              "text": "군주"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/text-chatting-lineagem/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "text": "누나"
+        }
+      },
+      "functions": [
+
+      ]
+    }
+  }
+}
+
+###
