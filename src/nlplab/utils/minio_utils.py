@@ -76,7 +76,7 @@ class MinioUtils(object):
 
         objects = client.list_objects(
             prefix=path,
-            recursive=False,
+            recursive=True,
             bucket_name=self.bucket,
         )
 
