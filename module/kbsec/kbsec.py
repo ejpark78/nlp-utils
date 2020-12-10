@@ -9,12 +9,12 @@ import json
 from os.path import splitext
 from time import sleep
 
-import pandas as pd
 import urllib3
 
 from module.kbsec.cache_utils import CacheUtils
 from module.kbsec.report_list import KBSecReportList
 from module.kbsec.reports import KBSecReports
+from utils.dataset_utils import DataSetUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -23,7 +23,6 @@ urllib3.disable_warnings(UserWarning)
 class KBSecCrawler(object):
 
     def __init__(self):
-        """생성자"""
         super().__init__()
 
         self.params = self.init_arguments()
@@ -91,6 +90,9 @@ class KBSecCrawler(object):
         if self.params.export is True:
             self.export()
 
+        if self.params.upload is True:
+            DataSetUtils().upload(filename='data/kbsec/meta.json')
+
         if self.params.login:
             sleep(10000)
 
@@ -102,10 +104,11 @@ class KBSecCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--export', action='store_true', default=False, help='내보내기')
-
         parser.add_argument('--report-list', action='store_true', default=False)
         parser.add_argument('--reports', action='store_true', default=False)
+
+        parser.add_argument('--export', action='store_true', default=False, help='내보내기')
+        parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
