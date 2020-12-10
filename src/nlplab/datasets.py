@@ -31,6 +31,8 @@ class DataSets(object):
         self.local_home = getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets')
         self.remote_home = getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
 
+        self.meta_path = '{home}/meta'.format(home=self.remote_home)
+
         self.meta = {}
         self.pull_meta()
 
