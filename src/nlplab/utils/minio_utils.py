@@ -65,3 +65,19 @@ class MinioUtils(object):
         )
 
         return
+
+    def ls(self, path):
+        client = Minio(
+            self.endpoint,
+            access_key=self.username,
+            secret_key=self.key,
+            secure=False
+        )
+
+        objects = client.list_objects(
+            prefix=path,
+            recursive=False,
+            bucket_name=self.bucket,
+        )
+
+        return [x.object_name for x in objects]
