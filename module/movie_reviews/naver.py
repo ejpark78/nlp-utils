@@ -15,6 +15,7 @@ from dateutil.parser import parse as parse_date
 from module.movie_reviews.cache_utils import CacheUtils
 from module.movie_reviews.naver.movie_code import NaverMovieCode
 from module.movie_reviews.naver.reviews import NaverMovieReviews
+from utils.dataset_utils import DataSetUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -62,6 +63,9 @@ class NaverMovieReviewCrawler(object):
         if self.params.movie_reviews is True:
             NaverMovieReviews(params=self.params).batch()
 
+        if self.params.upload is True:
+            DataSetUtils().upload(filename='data/movie_reviews/naver-meta.json')
+
         if self.params.export is True:
             self.export()
 
@@ -77,6 +81,7 @@ class NaverMovieReviewCrawler(object):
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
+        parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
         parser.add_argument('--cache', default='data/movie_reviews/naver.db', help='파일명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')

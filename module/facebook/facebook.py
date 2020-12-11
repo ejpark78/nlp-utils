@@ -14,6 +14,7 @@ import pytz
 from module.facebook.cache_utils import CacheUtils
 from module.facebook.group_list import FBGroupList
 from module.facebook.replies import FBReplies
+from utils.dataset_utils import DataSetUtils
 from utils.selenium_utils import SeleniumUtils
 
 
@@ -104,6 +105,9 @@ class FBCrawler(object):
         if self.params.reply:
             FBReplies(params=self.params).batch()
 
+        if self.params.upload is True:
+            DataSetUtils().upload(filename='data/facebook/meta.json')
+
         if self.params.export is True:
             self.export()
 
@@ -121,6 +125,7 @@ class FBCrawler(object):
         parser.add_argument('--reply', action='store_true', default=False)
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
+        parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
         parser.add_argument('--overwrite', action='store_true', default=False)
 

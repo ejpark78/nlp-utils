@@ -14,6 +14,7 @@ from module.youtube.reply import YoutubeReply
 from module.youtube.video_list import YoutubeVideoList
 from utils.logger import Logger
 from utils.selenium_wire_utils import SeleniumWireUtils
+from utils.dataset_utils import DataSetUtils
 
 
 class YoutubeCrawler(object):
@@ -142,6 +143,10 @@ class YoutubeCrawler(object):
         if self.params.live_chat is True:
             YoutubeLiveChat(params=self.params).batch()
 
+        if self.params.upload is True:
+            DataSetUtils().upload(filename='data/youtube/mtd-meta.json')
+            DataSetUtils().upload(filename='data/youtube/news-meta.json')
+
         if self.params.export is True:
             self.export()
 
@@ -149,7 +154,6 @@ class YoutubeCrawler(object):
 
     @staticmethod
     def init_arguments():
-        """ 옵션 설정 """
         import argparse
 
         parser = argparse.ArgumentParser()
@@ -159,6 +163,7 @@ class YoutubeCrawler(object):
         parser.add_argument('--live-chat', action='store_true', default=False, help='라이브챗 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
+        parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
         parser.add_argument('--cache', default='./data/youtube/mtd.db', help='파일명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
