@@ -8,7 +8,7 @@ from __future__ import print_function
 import bz2
 import json
 from os import getenv
-from os.path import isfile
+from os.path import basename, isfile
 
 import urllib3
 
@@ -36,23 +36,46 @@ class DataSets(object):
         self.meta = {}
         self.pull_meta()
 
-    def push_meta(self):
+    def get_info(self, name):
+        if name is None:
+            name = self.name
+
+        if name is None:
+            return None
+
+        if name not in self.meta.keys():
+            return None
+
+        return self.meta[name]
+
+    def push_meta(self, filename):
         self.minio.push(
-            local='{}/meta.json'.format(self.local_home),
-            remote='{}/meta.json'.format(self.remote_home),
+            local='{path}/{filename}'.format(path=self.local_home, filename=filename),
+            remote='{path}/{filename}'.format(path=self.remote_home, filename=filename),
         )
         return
 
     def pull_meta(self):
-        filename = '{}/meta.json'.format(self.local_home)
-        if isfile(filename) is False or self.use_cache is False:
-            self.minio.pull(
-                local=filename,
-                remote='{}/meta.json'.format(self.remote_home),
+        meta_list = self.minio.ls(path=self.meta_path)
+
+        self.meta = {}
+        for remote_meta in meta_list:
+            filename = '{path}/{filename}'.format(
+                path=self.local_home,
+                filename=basename(remote_meta)
             )
 
-        with open(filename, 'r') as fp:
-            self.meta = json.load(fp=fp)
+            # download meta
+            self.minio.pull(
+                local=filename,
+                remote=remote_meta,
+            )
+
+            # read meta
+            with open(filename, 'r') as fp:
+                content = json.load(fp=fp)
+
+            self.meta[content['name']] = content
 
         return
 
@@ -70,15 +93,15 @@ class DataSets(object):
 
         return
 
-    def load(self, name=None, tag=None, use_cache=True):
+    def load(self, name=None, filename=None, use_cache=True):
         meta = self.get_info(name=name)
         if meta is None:
             return None
 
         self.use_cache = use_cache
 
-        if meta['location'] == 'minio':
-            return self.load_minio_data(meta=meta, tag=tag)
+        if 'location' not in meta:
+            return self.load_minio_data(meta=meta, filename=filename)
 
         if meta['location'] == 'elasticsearch':
             return self.load_elasticsearch_data(meta=meta, name=name)
@@ -86,7 +109,12 @@ class DataSets(object):
         return None
 
     def load_elasticsearch_data(self, meta, name):
-        filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], name)
+        filename = '{home}/{path}/{filename}'.format(
+            home=self.local_home,
+            path=meta['local_path'],
+            filename=name
+        )
+
         if isfile(filename) is False or self.use_cache is False:
             self.elastic.export(filename=filename, index=name)
 
@@ -97,78 +125,74 @@ class DataSets(object):
 
         return result
 
-    def load_minio_data(self, meta, tag):
-        tag_list = []
-        if tag is not None:
-            tag_list = [tag]
+    def load_minio_data(self, meta, filename):
+        local_file = '{home}/{path}/{filename}'.format(
+            home=self.local_home,
+            path=meta['local_path'],
+            filename=filename
+        )
 
-        if len(tag_list) == 0 and meta is not None:
-            tag_list = meta['tags']
+        if isfile(local_file) is False or self.use_cache is False:
+            self.pull_minio_file(filename=filename, name=meta['name'])
 
-        result = {}
-        if len(tag_list) == 0:
-            return result
-
-        for tag_nam in tag_list:
-            filename = '{}/{}/{}.json.bz2'.format(self.local_home, meta['local_path'], tag_nam)
-
-            if isfile(filename) is False or self.use_cache is False:
-                self.pull_minio_file(tag=tag)
-
-            result[tag_nam] = []
-            with bz2.open(filename, 'rb') as fp:
-                for line in fp.readlines():
-                    result[tag_nam].append(json.loads(line.decode('utf-8')))
-
-        if tag is not None:
-            return result[list(result.keys())[0]]
+        result = []
+        with bz2.open(local_file, 'rb') as fp:
+            for line in fp.readlines():
+                result.append(json.loads(line.decode('utf-8')))
 
         return result
 
-    def get_info(self, name):
-        if name is None:
-            name = self.name
-
-        if name is None:
-            return None
-
-        if name not in self.meta.keys():
-            return None
-
-        return self.meta[name]
-
-    def pull_minio_file(self, tag, name=None):
+    def pull_minio_file(self, filename, name=None):
         info = self.get_info(name=name)
         if info is None:
             return
 
         self.minio.pull(
-            local='{}/{}/{}.json.bz2'.format(self.local_home, info['local_path'], tag),
-            remote='{}/{}/{}.json.bz2'.format(self.remote_home, info['remote_path'], tag),
+            local='{home}/{path}/{filename}'.format(
+                home=self.local_home,
+                path=info['local_path'],
+                filename=filename
+            ),
+            remote='{home}/{path}/{filename}'.format(
+                home=self.remote_home,
+                path=info['remote_path'],
+                filename=filename
+            ),
         )
         return
 
-    def push_minio_file(self, tag, name=None):
+    def push_minio_file(self, filename, name=None):
         info = self.get_info(name=name)
         if info is None:
             return
 
         self.minio.push(
-            local='{}/{}/{}.json.bz2'.format(self.local_home, info['local_path'], tag),
-            remote='{}/{}/{}.json.bz2'.format(self.remote_home, info['remote_path'], tag),
+            local='{home}/{path}/{filename}'.format(
+                home=self.local_home,
+                path=info['local_path'],
+                filename=filename
+            ),
+            remote='{home}/{path}/{filename}'.format(
+                home=self.remote_home,
+                path=info['remote_path'],
+                filename=filename
+            ),
         )
         return
 
-    def upload(self, name=None, tag=None):
+    def upload(self, name=None, filename=None):
         info = self.get_info(name=name)
         if info is None:
             return
 
-        tag_list = [tag]
-        if info is not None:
-            tag_list = info['tags']
-
-        for tag in tag_list:
-            self.push_minio_file(name=name, tag=tag)
+        self.push_minio_file(name=name, filename=filename)
 
         return
+
+
+if __name__ == '__main__':
+    ds = DataSets()
+    print(ds.meta)
+
+    data = ds.load(name='kbsec', filename='kbsec.reports.json.bz2')
+    print(data)
