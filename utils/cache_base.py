@@ -5,12 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import bz2
+import json
 import sqlite3
 from os import makedirs
 from os.path import dirname, isdir
 
-import urllib3
 import pandas as pd
+import urllib3
+from tqdm import tqdm
 
 from utils.logger import Logger
 
@@ -110,7 +113,7 @@ class CacheBase(object):
         df = pd.DataFrame(rows)
 
         df.to_json(
-            '{}.json.bz2'.format(filename),
+            '{filename}.json.bz2'.format(filename=filename),
             force_ascii=False,
             compression='bz2',
             orient='records',
@@ -118,5 +121,67 @@ class CacheBase(object):
         )
 
         self.save_excel(filename=filename, df=df)
+        return
+
+    def json2xlsx(self, filename):
+        df = pd.read_json(
+            '{filename}.json.bz2'.format(filename=filename),
+            compression='bz2',
+            orient='records',
+            lines=True,
+        )
+
+        self.save_excel(filename=filename, df=df)
+        return
+
+    def export_tbl(self, filename, tbl, column, json_column, columns=None, stop_columns=None, xlsx=True, size=20000):
+        if columns is None:
+            columns = []
+
+        if stop_columns is None:
+            stop_columns = []
+
+        fp = bz2.open(filename, 'wb')
+
+        self.cursor.execute('SELECT {column} FROM {tbl}'.format(column=column, tbl=tbl))
+
+        rows = self.cursor.fetchmany(size)
+        while rows:
+            for values in tqdm(rows):
+                doc = dict(zip(column.split(','), values))
+
+                if json_column is not None:
+                    content = json.loads(doc[json_column])
+                    del doc[json_column]
+
+                    for c in stop_columns:
+                        if c not in content:
+                            continue
+
+                        del content[c]
+
+                    doc.update(content)
+
+                new_doc = {}
+                if len(columns) > 0:
+                    for c in columns:
+                        if c not in doc:
+                            continue
+
+                        new_doc[c] = doc[c]
+                else:
+                    new_doc = doc
+
+                line = json.dumps(new_doc, ensure_ascii=False) + '\n'
+                fp.write(line.encode('utf-8'))
+
+            fp.flush()
+
+            rows = self.cursor.fetchmany(size)
+
+        fp.close()
+
+        if xlsx is True:
+            self.json2xlsx(filename=filename.replace('.json.bz2', ''))
 
         return

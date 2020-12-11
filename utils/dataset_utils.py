@@ -22,7 +22,7 @@ class DataSetUtils(object):
         super().__init__()
 
     @staticmethod
-    def upload(filename='data/kbsec/meta.json'):
+    def upload(filename):
         with open(filename, 'r') as fp:
             meta = json.load(fp)
 
@@ -36,6 +36,8 @@ class DataSetUtils(object):
         # upload datasets
         data_path = dirname(filename)
         for f in meta['files']:
+            print(f)
+
             minio.push(
                 local='{path}/{filename}'.format(path=data_path, filename=f['name']),
                 remote='{home}/{path}/{filename}'.format(

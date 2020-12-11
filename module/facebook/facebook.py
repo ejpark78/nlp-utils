@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 from os.path import splitext
 from time import sleep
 
@@ -15,7 +14,6 @@ from module.facebook.cache_utils import CacheUtils
 from module.facebook.group_list import FBGroupList
 from module.facebook.replies import FBReplies
 from utils.dataset_utils import DataSetUtils
-from utils.selenium_utils import SeleniumUtils
 
 
 class FBCrawler(object):
@@ -27,69 +25,58 @@ class FBCrawler(object):
 
         self.params = self.init_arguments()
 
-        self.selenium = SeleniumUtils()
+    @staticmethod
+    def sleep_to_login():
+        from utils.selenium_utils import SeleniumUtils
 
-    def sleep_to_login(self):
-        self.selenium.open_driver()
+        selenium = SeleniumUtils()
 
-        self.selenium.driver.get('https://m.facebook.com')
-        self.selenium.driver.implicitly_wait(10)
+        selenium.open_driver()
+
+        selenium.driver.get('https://m.facebook.com')
+        selenium.driver.implicitly_wait(10)
 
         sleep(3200)
-
-        return
-
-    def export_posts(self):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'id,reply_count,content'
-        db.cursor.execute('SELECT {} FROM posts'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            doc = dict(zip(column.split(','), item))
-
-            content = json.loads(doc['content'])
-            del doc['content']
-
-            doc.update(content)
-
-            data.append(doc)
-
-        filename = '{}.posts'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return
-
-    def export_replies(self):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'id,post_id,content'
-        db.cursor.execute('SELECT {} FROM replies'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            doc = dict(zip(column.split(','), item))
-
-            content = json.loads(doc['content'])
-            del doc['content']
-
-            doc.update(content)
-
-            data.append(doc)
-
-        filename = '{}.replies'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
         return
 
     def export(self):
-        self.export_posts()
-        self.export_replies()
+        columns = 'id,reply_count,category,content,group_id,lang_code,name,original_content_id,page,page_id'.split(',')
+        columns += 'id,post_id,reply_id,reply_to,text,user_name'.split(',')
+
+        columns = list(set(columns))
+
+        # stop_columns = 'page_insights,tagged_locations,throwback_story_fbid,reactions,top_level_post_id,actor_id,' \
+        #                'qid,content_owner_id_new,photo_id,attached_story_attachment_style,action_source,' \
+        #                'attached_story_attachment_style,story_location,original_content_owner_id,filter,tn,' \
+        #                'tl_objid,src,story_attachment_style,html_content,raw_html,linkdata,url,feedback_source,' \
+        #                'feedback_target,document_id,mf_story_key,share_id,state,tds_flgs,data-uniqueid,' \
+        #                'photo_attachments_list'.split(',')
+        #
+        # stop_columns = list(set(stop_columns))
+
+        db = CacheUtils(filename=self.params.cache)
+
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='posts',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='posts',
+            column='id,reply_count,content',
+            json_column='content',
+            columns=columns
+        )
+
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='posts',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='replies',
+            column='id,post_id,content',
+            json_column='content',
+            columns=columns
+        )
         return
 
     def batch(self):
