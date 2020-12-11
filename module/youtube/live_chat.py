@@ -242,7 +242,7 @@ class YoutubeLiveChat(YoutubeBase):
                 wait_for_path=None
             )
 
-            resp_list = self.selenium.get_requests(resp_url_path='/get_live_chat')
+            resp_list = self.selenium.get_requests(resp_url_path='live_chat')
 
             self.get_live_chat(resp_list=[x.url for x in resp_list])
 
