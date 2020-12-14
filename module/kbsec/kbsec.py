@@ -91,7 +91,7 @@ class KBSecCrawler(object):
             self.export()
 
         if self.params.upload is True:
-            DataSetUtils().upload(filename='data/kbsec/meta.json')
+            DataSetUtils().upload(filename=self.params.meta)
 
         if self.params.login:
             sleep(10000)
@@ -120,6 +120,8 @@ class KBSecCrawler(object):
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')
+
+        parser.add_argument('--meta', default='./data/kbsec/meta.json', help='메타 파일명')
 
         return parser.parse_args()
 

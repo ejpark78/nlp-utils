@@ -93,7 +93,7 @@ class FBCrawler(object):
             FBReplies(params=self.params).batch()
 
         if self.params.upload is True:
-            DataSetUtils().upload(filename='data/facebook/meta.json')
+            DataSetUtils().upload(filename=self.params.meta)
 
         if self.params.export is True:
             self.export()
@@ -102,7 +102,6 @@ class FBCrawler(object):
 
     @staticmethod
     def init_arguments():
-        """ 옵션 설정 """
         import argparse
 
         parser = argparse.ArgumentParser()
@@ -137,6 +136,8 @@ class FBCrawler(object):
 
         parser.add_argument('--cache', default='./data/facebook/facebook.db', help='캐쉬명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
+
+        parser.add_argument('--meta', default='./data/facebook/facebook-meta.json', help='메타 파일명')
 
         return parser.parse_args()
 

@@ -144,8 +144,7 @@ class YoutubeCrawler(object):
             YoutubeLiveChat(params=self.params).batch()
 
         if self.params.upload is True:
-            DataSetUtils().upload(filename='data/youtube/mtd-meta.json')
-            DataSetUtils().upload(filename='data/youtube/news-meta.json')
+            DataSetUtils().upload(filename=self.params.meta)
 
         if self.params.export is True:
             self.export()
@@ -178,6 +177,8 @@ class YoutubeCrawler(object):
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
         parser.add_argument('--user-data', default=None)
+
+        parser.add_argument('--meta', default='./data/youtube/mtd-meta.json', help='메타 파일명')
 
         return parser.parse_args()
 

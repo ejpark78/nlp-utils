@@ -64,7 +64,7 @@ class NaverMovieReviewCrawler(object):
             NaverMovieReviews(params=self.params).batch()
 
         if self.params.upload is True:
-            DataSetUtils().upload(filename='data/movie_reviews/naver-meta.json')
+            DataSetUtils().upload(filename=self.params.meta)
 
         if self.params.export is True:
             self.export()
@@ -87,6 +87,8 @@ class NaverMovieReviewCrawler(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--sleep', default=15, type=float, help='sleep time')
+
+        parser.add_argument('--meta', default='./data/movie_reviews/naver-meta.json', help='메타 파일명')
 
         return parser.parse_args()
 
