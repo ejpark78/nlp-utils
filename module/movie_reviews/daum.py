@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 from os.path import splitext
 
 import urllib3
@@ -27,40 +26,54 @@ class DaumMovieReviewCrawler(object):
         self.params = self.init_arguments()
 
     def export(self):
+        alias = {
+            'code': 'movie_code',
+            'content': 'text',
+            'postId': 'post_id',
+            'id': 'reply_id',
+            'userId': 'username',
+            'user.displayName': 'username',
+            'createdAt': 'date',
+            'likeCount': 'like',
+            'dislikeCount': 'dislike',
+            'recommendCount': 'recommend',
+            'childCount': 'reply',
+        }
+
+        columns = list(set(
+            'title,movie_code,username,date,post_id,rating,text,'
+            'reply,like,dislike,recommend'.split(',')
+        ))
+
         db = CacheUtils(filename=self.params.cache)
 
-        column = 'no,title,code,review'
-        db.cursor.execute('SELECT {} FROM movie_reviews'.format(column))
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='reviews',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='movie_reviews',
+            db_column='no,title,date,code,review',
+            json_columns='review'.split(','),
+            date_columns='date'.split(','),
+            columns=columns,
+            alias=alias
+        )
 
-        rows = db.cursor.fetchall()
-
-        keys = 'id,postId,rating,content,childCount,likeCount,dislikeCount,recommendCount'.split(',')
-
-        data = []
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-
-            review = json.loads(r['review'])
-            del r['review']
-
-            r['username'] = review['userId']
-            if 'displayName' in review['user']:
-                r['username'] = review['user']['displayName']
-
-            r['date'] = review['createdAt']
-
-            for k in keys:
-                if k not in review:
-                    continue
-
-                r[k] = review[k]
-                if isinstance(review[k], str):
-                    r[k] = str(review[k]).strip()
-
-            data.append(r)
-
-        filename = '{}.reviews'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='movie_code',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='movie_code',
+            db_column='title,code,date,review_count,total',
+            json_columns=None,
+            date_columns='date'.split(','),
+            columns=None,
+            alias={
+                'code': 'movie_code'
+            }
+        )
 
         return
 

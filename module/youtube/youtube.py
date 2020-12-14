@@ -29,108 +29,55 @@ class YoutubeCrawler(object):
 
         self.selenium = SeleniumWireUtils(headless=True)
 
-    def export_channels(self):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'id,title,video_count,data'
-        db.cursor.execute('SELECT {} FROM channels'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        channels = {}
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-            tags = json.loads(r['data'])
-            del r['data']
-
-            channels[item[0]] = {'channels.{}'.format(k): tags[k] for k in tags.keys()}
-
-            r.update(channels[item[0]])
-            data.append(r)
-
-        filename = '{}.channels'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return channels
-
-    def export_videos(self, channels):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'id,title,reply_count,tags'
-        db.cursor.execute('SELECT {} FROM videos'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        videos = {}
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-            tags = json.loads(r['tags'])
-            del r['tags']
-
-            videos[item[0]] = {'videos.{}'.format(k): tags[k] for k in tags.keys()}
-
-            r.update(tags)
-
-            if item[1] in channels:
-                r.update(channels[item[1]])
-
-            data.append(r)
-
-        filename = '{}.videos'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return videos
-
-    def export_reply(self, videos):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'id,video_id,video_title,data'
-        db.cursor.execute('SELECT {} FROM reply'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-
-            reply = json.loads(r['data'])
-            del r['data']
-
-            if 'runs' not in reply['contentText']:
-                print(reply['contentText'])
-                continue
-
-            if 'authorText' not in reply:
-                print(reply)
-                continue
-
-            r['username'] = reply['authorText']['simpleText']
-            r['contentText'] = reply['contentText']['runs'][0]['text']
-            r['isLiked'] = reply['isLiked']
-            r['likeCount'] = reply['likeCount']
-
-            r['replyCount'] = 0
-            if 'replyCount' in reply:
-                r['replyCount'] = reply['replyCount']
-
-            # if item[1] in videos:
-            #     r.update(videos[item[1]])
-
-            data.append(r)
-
-        filename = '{}.replies'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return
-
     def export(self):
-        channels = self.export_channels()
+        db = CacheUtils(filename=self.params.cache)
 
-        videos = self.export_videos(channels=channels)
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='channels',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='channels',
+            db_column='id,title,video_count,data',
+            json_columns='data'.split(','),
+            date_columns=None,
+            columns=None,
+            alias=None
+        )
 
-        self.export_reply(videos=videos)
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='videos',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='videos',
+            db_column='id,title,reply_count,tags',
+            json_columns='tags'.split(','),
+            date_columns=None,
+            columns=None,
+            alias=None
+        )
+
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='replies',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='reply',
+            db_column='id,video_id,video_title,data',
+            json_columns='data,voteCount'.split(','),
+            date_columns=None,
+            columns='id,video_id,title,reply_id,username,like,reply,text'.split(','),
+            alias={
+                'authorText.simpleText': 'username',
+                'likeCount': 'like',
+                'replyCount': 'reply',
+                'commentId': 'reply_id',
+                'video_title': 'title',
+                'contentText.runs.:.text': 'text',
+            }
+        )
+
         return
 
     def batch(self):

@@ -6,7 +6,8 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-from os.path import dirname
+import sys
+from os.path import dirname, isfile
 
 import urllib3
 from nlplab.datasets import DataSets
@@ -36,10 +37,15 @@ class DataSetUtils(object):
         # upload datasets
         data_path = dirname(filename)
         for f in meta['files']:
-            print(f)
+            local_filename = '{path}/{filename}'.format(path=data_path, filename=f['name'])
+            if isfile(local_filename) is False:
+                print('upload error (file not found): ', local_filename, file=sys.stderr)
+                continue
+
+            print(local_filename)
 
             minio.push(
-                local='{path}/{filename}'.format(path=data_path, filename=f['name']),
+                local=local_filename,
                 remote='{home}/{path}/{filename}'.format(
                     home=ds.remote_home,
                     path=meta['remote_path'],

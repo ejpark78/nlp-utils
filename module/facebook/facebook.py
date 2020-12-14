@@ -40,19 +40,16 @@ class FBCrawler(object):
         return
 
     def export(self):
-        columns = 'id,reply_count,category,content,group_id,lang_code,name,original_content_id,page,page_id'.split(',')
-        columns += 'id,post_id,reply_id,reply_to,text,user_name'.split(',')
+        alias = {
+            'content': 'text',
+            'user_name': 'username',
+            'original_content_id': 'post_id',
+        }
 
-        columns = list(set(columns))
-
-        # stop_columns = 'page_insights,tagged_locations,throwback_story_fbid,reactions,top_level_post_id,actor_id,' \
-        #                'qid,content_owner_id_new,photo_id,attached_story_attachment_style,action_source,' \
-        #                'attached_story_attachment_style,story_location,original_content_owner_id,filter,tn,' \
-        #                'tl_objid,src,story_attachment_style,html_content,raw_html,linkdata,url,feedback_source,' \
-        #                'feedback_target,document_id,mf_story_key,share_id,state,tds_flgs,data-uniqueid,' \
-        #                'photo_attachments_list'.split(',')
-        #
-        # stop_columns = list(set(stop_columns))
+        columns = list(set(
+            'id,reply_count,category,content,group_id,lang_code,name,original_content_id,page,page_id,'
+            'id,post_id,reply_id,reply_to,text,user_name'.split(',')
+        ))
 
         db = CacheUtils(filename=self.params.cache)
 
@@ -62,20 +59,22 @@ class FBCrawler(object):
                 filename=splitext(self.params.cache)[0]
             ),
             tbl='posts',
-            column='id,reply_count,content',
-            json_column='content',
-            columns=columns
+            db_column='id,reply_count,content',
+            json_columns='content'.split(','),
+            columns=columns,
+            alias=alias
         )
 
         db.export_tbl(
             filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='posts',
+                tbl='replies',
                 filename=splitext(self.params.cache)[0]
             ),
             tbl='replies',
-            column='id,post_id,content',
-            json_column='content',
-            columns=columns
+            db_column='id,post_id,content',
+            json_columns='content'.split(','),
+            columns=columns,
+            alias=alias
         )
         return
 

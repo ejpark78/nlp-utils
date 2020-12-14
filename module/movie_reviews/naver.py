@@ -5,12 +5,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 from os.path import splitext
 
-import pytz
 import urllib3
-from dateutil.parser import parse as parse_date
 
 from module.movie_reviews.cache_utils import CacheUtils
 from module.movie_reviews.naver.movie_code import NaverMovieCode
@@ -29,30 +26,48 @@ class NaverMovieReviewCrawler(object):
         self.params = self.init_arguments()
 
     def export(self):
-        timezone = pytz.timezone('Asia/Seoul')
+        alias = {
+            'score': 'rating',
+            'code': 'movie_code',
+            'comment': 'text',
+            'author': 'username',
+            'sympathy': 'like',
+            'not_sympathy': 'dislike',
+        }
+
+        columns = list(set(
+            'title,movie_code,username,date,rating,text,like,dislike'.split(',')
+        ))
 
         db = CacheUtils(filename=self.params.cache)
 
-        column = 'no,title,code,review'
-        db.cursor.execute('SELECT {} FROM movie_reviews'.format(column))
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='reviews',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='movie_reviews',
+            db_column='no,title,date,code,review',
+            json_columns='review'.split(','),
+            date_columns='date'.split(','),
+            columns=columns,
+            alias=alias
+        )
 
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-
-            review = json.loads(r['review'])
-            del r['review']
-
-            review['date'] = parse_date(review['date']).astimezone(timezone).isoformat()
-
-            r.update(review)
-
-            data.append(r)
-
-        filename = '{}.reviews'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='movie_code',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='movie_code',
+            db_column='title,code,date,review_count,total',
+            json_columns=None,
+            date_columns='date'.split(','),
+            columns=None,
+            alias={
+                'code': 'movie_code'
+            }
+        )
 
         return
 

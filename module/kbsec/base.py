@@ -110,7 +110,8 @@ class KBSecBase(object):
         with open(filename + '.parted', 'wb') as fp:
             p_bar = tqdm(
                 resp.iter_content(block_size),
-                total=math.ceil(total_size // block_size), unit='KB',
+                total=math.ceil(total_size // block_size),
+                unit='KB',
                 unit_scale=True
             )
 

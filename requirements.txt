@@ -6,8 +6,6 @@ boto3
 bs4
 elasticsearch
 lxml
-numpy
-pymongo
 requests
 requests[socks]
 requests[security]
@@ -20,9 +18,6 @@ openpyxl
 jsonlines
 urllib3
 tqdm
-botocore
-queues
-pika
 pytz
 pandas
 pycurl
@@ -32,8 +27,8 @@ certifi
 cachelib
 brotlipy
 psutil
-xmltodict
 xlsxwriter
 minio
+dotty_dict
 git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev

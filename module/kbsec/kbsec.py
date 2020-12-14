@@ -27,57 +27,51 @@ class KBSecCrawler(object):
 
         self.params = self.init_arguments()
 
-    def export_report_list(self):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'documentid,content,state'
-        db.cursor.execute('SELECT {} FROM report_list'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-
-            content = json.loads(r['content'])
-            del r['content']
-
-            r.update(content)
-            data.append(r)
-
-        filename = '{}.report_list'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return
-
-    def export_reports(self):
-        db = CacheUtils(filename=self.params.cache)
-
-        column = 'documentid,enc,title,summary,pdf'
-        db.cursor.execute('SELECT {} FROM reports WHERE pdf != ""'.format(column))
-
-        rows = db.cursor.fetchall()
-
-        data = []
-        for i, item in enumerate(rows):
-            r = dict(zip(column.split(','), item))
-
-            pdf = json.loads(r['pdf'])
-            del r['pdf']
-
-            r.update({
-                'pdf': ''.join(pdf)
-            })
-            data.append(r)
-
-        filename = '{}.reports'.format(splitext(self.params.cache)[0])
-        db.save(filename=filename, rows=data)
-
-        return
-
     def export(self):
-        self.export_report_list()
-        self.export_reports()
+        alias = {
+            'pdf': 'text',
+            'content': 'text',
+            'documentid': 'report_id',
+            'analystNm': 'author',
+            'docTitle': 'report_title',
+            'docTitleSub': 'sub_title',
+            'foldertemplate': 'category',
+            'docDetail': 'summary',
+            'urlLink': 'pdf_link',
+            'publicDate': 'date',
+            'publicTime': 'time',
+        }
+
+        columns = list(set(
+            'report_id,title,summary,text,pdf_link,writer,report_title,sub_title,category,date,time'.split(',')
+        ))
+
+        db = CacheUtils(filename=self.params.cache)
+
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='reports',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='reports',
+            db_column='documentid,title,summary,pdf',
+            json_columns='pdf'.split(','),
+            columns=columns,
+            alias=alias
+        )
+
+        db.export_tbl(
+            filename='{filename}.{tbl}.json.bz2'.format(
+                tbl='report_list',
+                filename=splitext(self.params.cache)[0]
+            ),
+            tbl='report_list',
+            db_column='documentid,content',
+            json_columns='content'.split(','),
+            columns=columns,
+            alias=alias
+        )
+
         return
 
     def batch(self):

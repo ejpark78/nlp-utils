@@ -12,7 +12,10 @@ from os import makedirs
 from os.path import dirname, isdir
 
 import pandas as pd
+import pytz
 import urllib3
+from dateutil.parser import parse as parse_date
+from dotty_dict import dotty
 from tqdm import tqdm
 
 from utils.logger import Logger
@@ -96,8 +99,9 @@ class CacheBase(object):
         if len(df) > size:
             for pos in range(0, len(df), size):
                 end_pos = pos + size if len(df) > (pos + size) else len(df)
+                parted = df[pos:pos + size]
 
-                df[pos:pos + size].to_excel(
+                parted.to_excel(
                     writer,
                     index=False,
                     sheet_name='{:,}-{:,}'.format(pos, end_pos)
@@ -109,7 +113,7 @@ class CacheBase(object):
 
         return
 
-    def save(self, filename, rows):
+    def save(self, filename, rows, date_columns=None):
         df = pd.DataFrame(rows)
 
         df.to_json(
@@ -120,10 +124,14 @@ class CacheBase(object):
             lines=True,
         )
 
+        if date_columns is not None:
+            for col in date_columns:
+                df[col] = df[col].apply(lambda x: pd.to_datetime(x).date())
+
         self.save_excel(filename=filename, df=df)
         return
 
-    def json2xlsx(self, filename):
+    def json2xlsx(self, filename, date_columns):
         df = pd.read_json(
             '{filename}.json.bz2'.format(filename=filename),
             compression='bz2',
@@ -131,57 +139,138 @@ class CacheBase(object):
             lines=True,
         )
 
+        if date_columns is not None:
+            for col in date_columns:
+                df[col] = df[col].apply(lambda x: pd.to_datetime(x).date())
+
         self.save_excel(filename=filename, df=df)
         return
 
-    def export_tbl(self, filename, tbl, column, json_column, columns=None, stop_columns=None, xlsx=True, size=20000):
+    @staticmethod
+    def parse_json_column(doc, columns, stop_columns):
         if columns is None:
-            columns = []
+            return doc
 
-        if stop_columns is None:
-            stop_columns = []
+        for col in columns:
+            if col not in doc:
+                continue
+
+            content = doc[col]
+            if isinstance(doc[col], str) or isinstance(doc[col], bytes):
+                content = json.loads(doc[col])
+
+            del doc[col]
+
+            if isinstance(content, list):
+                doc[col] = ' '.join(content)
+                continue
+
+            if stop_columns is not None:
+                for c in stop_columns:
+                    if c not in content:
+                        continue
+
+                    del content[c]
+
+            doc.update(content)
+
+        return doc
+
+    @staticmethod
+    def limit_column(doc, columns):
+        if columns is None or len(columns) <= 0:
+            return doc
+
+        result = {}
+        for c in columns:
+            if c not in doc:
+                continue
+
+            result[c] = doc[c]
+
+        return result
+
+    @staticmethod
+    def parse_date_column(doc, columns):
+        if columns is None:
+            return doc
+
+        timezone = pytz.timezone('Asia/Seoul')
+        for col in columns:
+            if col not in doc:
+                continue
+
+            doc[col] = parse_date(doc[col]).astimezone(timezone).isoformat()
+
+        return doc
+
+    def table_size(self, tbl):
+        self.cursor.execute('SELECT COUNT(*) FROM {tbl}'.format(tbl=tbl))
+
+        row = self.cursor.fetchone()
+        if row is None:
+            return -1
+
+        return int(row[0])
+
+    @staticmethod
+    def apply_alias(doc, alias):
+        if alias is None:
+            return doc
+
+        dot = dotty(doc)
+        for col in alias.keys():
+            if dot.get(col) is None:
+                continue
+
+            dot[alias[col]] = dot[col]
+            if isinstance(dot[col], list) is True:
+                dot[alias[col]] = ' '.join(dot[col])
+
+        return dot.to_dict()
+
+    def export_tbl(self, filename, tbl, db_column, xlsx=True, size=20000, alias=None,
+                   columns=None, json_columns=None, stop_columns=None, date_columns=None):
+        p_bar = tqdm(
+            desc=tbl,
+            total=self.table_size(tbl=tbl),
+            unit_scale=True,
+            dynamic_ncols=True
+        )
+
+        self.cursor.execute('SELECT {column} FROM {tbl}'.format(column=db_column, tbl=tbl))
+        rows = self.cursor.fetchmany(size)
 
         fp = bz2.open(filename, 'wb')
 
-        self.cursor.execute('SELECT {column} FROM {tbl}'.format(column=column, tbl=tbl))
-
-        rows = self.cursor.fetchmany(size)
         while rows:
-            for values in tqdm(rows):
-                doc = dict(zip(column.split(','), values))
+            for values in rows:
+                doc = dict(zip(db_column.split(','), values))
 
-                if json_column is not None:
-                    content = json.loads(doc[json_column])
-                    del doc[json_column]
+                # parse json
+                doc = self.parse_json_column(doc=doc, columns=json_columns, stop_columns=stop_columns)
 
-                    for c in stop_columns:
-                        if c not in content:
-                            continue
+                # apply alias
+                doc = self.apply_alias(doc=doc, alias=alias)
 
-                        del content[c]
+                # limit columns
+                doc = self.limit_column(doc=doc, columns=columns)
 
-                    doc.update(content)
+                # pars date column
+                doc = self.parse_date_column(doc=doc, columns=date_columns)
 
-                new_doc = {}
-                if len(columns) > 0:
-                    for c in columns:
-                        if c not in doc:
-                            continue
-
-                        new_doc[c] = doc[c]
-                else:
-                    new_doc = doc
-
-                line = json.dumps(new_doc, ensure_ascii=False) + '\n'
+                # write line
+                line = json.dumps(doc, ensure_ascii=False) + '\n'
                 fp.write(line.encode('utf-8'))
 
-            fp.flush()
+                p_bar.update(1)
 
+            fp.flush()
             rows = self.cursor.fetchmany(size)
 
         fp.close()
 
         if xlsx is True:
-            self.json2xlsx(filename=filename.replace('.json.bz2', ''))
+            self.json2xlsx(filename=filename.replace('.json.bz2', ''), date_columns=date_columns)
 
         return
