@@ -29,7 +29,7 @@ class YoutubeLiveChat(YoutubeBase):
 
     def simplify(self, doc):
         try:
-            chat_list = doc['response']['continuationContents']['liveChatContinuation']['actions']
+            chat_list = doc['continuationContents']['liveChatContinuation']['actions']
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -65,9 +65,8 @@ class YoutubeLiveChat(YoutubeBase):
                     '_id': unquote(chat_text['id']),
                     'video_offset': int(act_item['replayChatItemAction']['videoOffsetTimeMsec']),
                     'time_stamp': chat_text['timestampText']['simpleText'],
-                    'author': chat_text['authorName']['simpleText'],
-                    'text': '\n'.join([v['text'].strip() for v in chat_text['message']['runs'] if 'text' in v]),
-                    'curl_date': datetime.now(self.timezone).isoformat(),
+                    'username': chat_text['authorName']['simpleText'],
+                    'text': '\n'.join([v['text'].strip() for v in chat_text['message']['runs'] if 'text' in v])
                 }
 
                 try:
@@ -87,39 +86,9 @@ class YoutubeLiveChat(YoutubeBase):
 
         return result
 
-    def save_live_chat(self, doc, meta):
-        doc_list = self.simplify(doc=doc)
-
-        try:
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': 'live chat 저장',
-                'length': len(doc),
-                'meta': meta,
-                'text': [doc['text'] for doc in doc_list],
-            })
-        except Exception as e:
-            self.logger.error(e)
-
-        try:
-            for doc in doc_list:
-                doc.update(meta)
-
-                self.elastic.save_document(document=doc)
-
-            self.elastic.flush()
-        except Exception as e:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'save live chat 에러',
-                'exception': str(e),
-            })
-
-        return
-
     def get_text(self, css):
         try:
-            ele = self.driver.find_element_by_css_selector(css)
+            ele = self.selenium.driver.find_element_by_css_selector(css)
             if ele:
                 return ele.text.replace('/', '-').replace('\n', '').strip()
         except Exception as e:
@@ -132,7 +101,7 @@ class YoutubeLiveChat(YoutubeBase):
 
         return 'unknown'
 
-    def get_meta(self, url):
+    def get_meta(self):
         css = 'h1.title yt-formatted-string'
         title = self.get_text(css=css)
 
@@ -140,41 +109,9 @@ class YoutubeLiveChat(YoutubeBase):
         streamer = self.get_text(css=css)
 
         return {
-            'url': url,
             'title': title,
             'streamer': streamer,
         }
-
-    def save_response(self, doc_list):
-        i = 0
-        for doc in doc_list:
-            if self.check_history(url=doc['url']) is True:
-                continue
-
-            meta = self.get_meta(url=doc['url'])
-
-            i += 1
-            self.save_live_chat(doc=doc, meta=meta)
-
-        return
-
-    def dump_response(self, doc_list):
-        from uuid import uuid4
-
-        if len(doc_list) == 0:
-            return
-
-        filename = '{}/{}.json'.format(self.home_path, str(uuid4()))
-
-        dir_path = dirname(filename)
-        if isdir(dir_path) is False:
-            makedirs(dir_path)
-
-        with open(filename, 'w') as fp:
-            for doc in doc_list:
-                fp.write(json.dumps(doc, indent=4, ensure_ascii=False) + '\n')
-
-        return
 
     def check_history(self, url):
         if url in self.url_buf:
@@ -184,34 +121,26 @@ class YoutubeLiveChat(YoutubeBase):
 
         return False
 
-    def get_live_chat(self, resp_list):
-        i = 0
-        for url in resp_list:
-            if self.check_history(url=url) is True:
+    def get_live_chat(self, resp_list, video_id):
+        if len(resp_list) == 0:
+            return
+
+        for item in resp_list:
+            if self.check_history(url=item.url) is True:
                 continue
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'get live chat',
-                'i': '{}/{}'.format(i, len(resp_list)),
-                'url': url,
+                'url': item.url,
             })
 
-            meta = self.get_meta(url=url)
-            try:
-                resp = requests.get(url, headers=self.selenium.headers, verify=False)
-                doc = resp.json()
+            doc_list = self.simplify(doc=item.data)
+            for doc in doc_list:
+                c_id = doc['_id']
+                del doc['_id']
 
-                self.save_live_chat(doc=doc, meta=meta)
-            except Exception as e:
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': 'get live chat 에러',
-                    'exception': str(e),
-                })
-
-            i += 1
-            sleep(5)
+                self.db.save_live_chat(c_id=c_id, video_id=video_id, data=doc)
 
         return
 
@@ -221,36 +150,31 @@ class YoutubeLiveChat(YoutubeBase):
         rows = self.db.cursor.fetchall()
 
         for i, item in enumerate(rows):
-            v_id = item[0]
+            video_id = item[0]
             title = item[1]
 
-            v_id = 's5kHF08Sqi4'
+            video_id = 'GSbMCHXFIc4'
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '라이브 채팅 조회',
-                'video id': v_id,
+                'video id': video_id,
                 'title': title,
                 'position': i,
                 'size': len(rows)
             })
 
-            url = 'https://www.youtube.com/watch?v={v_id}'.format(v_id=v_id)
+            url = 'https://www.youtube.com/watch?v={video_id}'.format(video_id=video_id)
             self.selenium.open(
                 url=url,
-                resp_url_path=None,
-                wait_for_path=None
+                resp_url_path='/get_live_chat_replay',
+                wait_for_path='/get_live_chat_replay'
             )
 
-            resp_list = self.selenium.get_requests(resp_url_path='live_chat')
+            for _ in range(10000000):
+                resp_list = self.selenium.get_requests(resp_url_path='/get_live_chat_replay')
+                self.get_live_chat(resp_list=resp_list, video_id=video_id)
 
-            self.get_live_chat(resp_list=[x.url for x in resp_list])
-
-            # doc_list = self.decode_response(content_list=resp_list)
-
-            # self.save_response(doc_list=resp_list)
-            # self.dump_response(doc_list=resp_list)
-
-            pass
+                sleep(self.params.sleep)
 
         return

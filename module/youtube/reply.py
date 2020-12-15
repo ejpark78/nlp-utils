@@ -130,8 +130,7 @@ class YoutubeReply(YoutubeBase):
         return reply_sum
 
     def batch(self):
-        sql = 'SELECT id, title FROM videos WHERE reply_count < 0'
-        self.db.cursor.execute(sql)
+        self.db.cursor.execute('SELECT id, title FROM videos WHERE reply_count < 0')
 
         rows = self.db.cursor.fetchall()
 

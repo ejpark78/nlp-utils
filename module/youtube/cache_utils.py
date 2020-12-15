@@ -52,6 +52,14 @@ class CacheUtils(CacheBase):
                 video_title TEXT NOT NULL, 
                 data TEXT NOT NULL
             )
+            ''',
+            '''
+            CREATE TABLE IF NOT EXISTS live_chat (
+                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                id TEXT NOT NULL UNIQUE, 
+                video_id TEXT NOT NULL, 
+                data TEXT NOT NULL
+            )
             '''
         ]
 
@@ -62,6 +70,7 @@ class CacheUtils(CacheBase):
             'reply': 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)',
             'reply_count': 'UPDATE videos SET reply_count=? WHERE id=?',
             'total': 'UPDATE videos SET total=? WHERE id=?',
+            'live_chat': 'REPLACE INTO live_chat (id, video_id, data) VALUES (?, ?, ?)',
         }
 
         self.open_db(filename)
@@ -110,6 +119,14 @@ class CacheUtils(CacheBase):
         self.cursor.execute(
             self.template['reply'],
             (c_id, video_id, video_title, json.dumps(data, ensure_ascii=False),)
+        )
+        self.conn.commit()
+        return
+
+    def save_live_chat(self, c_id, video_id, data):
+        self.cursor.execute(
+            self.template['live_chat'],
+            (c_id, video_id, json.dumps(data, ensure_ascii=False),)
         )
         self.conn.commit()
         return

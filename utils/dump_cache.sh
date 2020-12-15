@@ -27,8 +27,8 @@ case ${cache} in
     export_scripts="${youtube_scripts}"
     ;;
   youtube-news)
-    filename=data/youtube/news.db
-    meta_filename=data/youtube/news-meta.json
+    filename="data/youtube/news.db"
+    meta_filename="data/youtube/news-meta.json"
     export_scripts="${youtube_scripts}"
     ;;
   kbsec)
@@ -78,8 +78,8 @@ PYTHONPATH=. python3 "${export_scripts}" \
   --meta "${dump_meta}"
 sync
 
-echo "sql 덤프"
-utils/sql_dump.sh "${dump_filename}"
-sync
-
+#echo "sql 덤프"
+#utils/sql_dump.sh "${dump_filename}"
+#sync
+#
 #rm "${dump_filename}"
