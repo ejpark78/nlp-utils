@@ -69,18 +69,12 @@ class ElasticSearchUtils(object):
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            query = {}
-            if columns is not None:
-                query = {
-                    '_source': columns,
-                }
-
             search_result = self.elastic.search(
                 index=index,
                 scroll='2m',
                 size=size,
                 params=params,
-                query=query,
+                _source=columns,
             )
         else:
             search_result = self.elastic.scroll(
