@@ -62,18 +62,25 @@ class ElasticSearchUtils(object):
     def index_list(self):
         return [v for v in self.elastic.indices.get('*') if v[0] != '.']
 
-    def scroll(self, index, scroll_id, size=1000):
+    def scroll(self, index, scroll_id, size=1000, columns=None):
         params = {
             'request_timeout': 10 * 60
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
+            query = {}
+            if columns is not None:
+                query = {
+                    '_source': columns,
+                }
+
             search_result = self.elastic.search(
                 index=index,
                 scroll='2m',
                 size=size,
                 params=params,
+                query=query,
             )
         else:
             search_result = self.elastic.scroll(
@@ -97,7 +104,7 @@ class ElasticSearchUtils(object):
             'scroll_id': scroll_id,
         }
 
-    def export(self, index, filename):
+    def export(self, index, filename, columns=None):
         path = dirname(filename)
         if isdir(path) is False:
             makedirs(path)
@@ -110,7 +117,7 @@ class ElasticSearchUtils(object):
         p_bar = None
         with bz2.open(filename=filename, mode='wb') as fp:
             while count > 0:
-                resp = self.scroll(index=index, size=size, scroll_id=scroll_id)
+                resp = self.scroll(index=index, size=size, scroll_id=scroll_id, columns=columns)
 
                 count = len(resp['hits'])
                 scroll_id = resp['scroll_id']
