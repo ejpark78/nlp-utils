@@ -15,7 +15,7 @@ class SyncElasticsearchIndex(object):
         super().__init__()
 
     @staticmethod
-    def open_es(host: str, http_auth: str):
+    def open_es(host: str, http_auth: str) -> Elasticsearch:
         return Elasticsearch(
             hosts=host,
             timeout=60,
@@ -26,9 +26,9 @@ class SyncElasticsearchIndex(object):
         )
 
     @staticmethod
-    def scroll(es: Elasticsearch, index: str, scroll_id: str, size: int = 1000):
+    def scroll(es: Elasticsearch, index: str, scroll_id: str, size: int = 1000) -> dict:
         params = {
-            'request_timeout': 10 * 60
+            'request_timeout': 620
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
@@ -60,7 +60,7 @@ class SyncElasticsearchIndex(object):
             'scroll_id': scroll_id,
         }
 
-    def sync_index(self, src_es: Elasticsearch, trg_es: Elasticsearch, index: str, size: int = 500):
+    def sync_index(self, src_es: Elasticsearch, trg_es: Elasticsearch, index: str, size: int = 500) -> None:
         count = 1
         scroll_id = ''
 
@@ -114,15 +114,15 @@ class SyncElasticsearchIndex(object):
 
         return
 
-    def batch(self):
+    def batch(self) -> None:
         params = self.init_arguments()
 
         src_es = self.open_es(host=params.src_host, http_auth=params.src_auth)
         trg_es = self.open_es(host=params.trg_host, http_auth=params.trg_auth)
 
-        index_list = [v for v in src_es.indices.get('*') if v[0] != '.']
-        if params.index is not None:
-            index_list = [params.index]
+        index_list = [params.index]
+        if params.index is None:
+            index_list = [v for v in src_es.indices.get('*') if v[0] != '.']
 
         for index in index_list:
             self.sync_index(src_es=src_es, trg_es=trg_es, index=index)

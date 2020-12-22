@@ -26,7 +26,7 @@ urllib3.disable_warnings(UserWarning)
 
 class CacheBase(object):
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         super().__init__()
 
         self.logger = Logger()
@@ -36,7 +36,7 @@ class CacheBase(object):
 
         self.schema = []
 
-        self.open_db(filename)
+        self.open_db(filename=filename)
 
     def __del__(self):
         if self.cursor is not None:
@@ -48,9 +48,9 @@ class CacheBase(object):
 
             self.conn = None
 
-        pass
+        return
 
-    def open_db(self, filename):
+    def open_db(self, filename: str) -> None:
         if filename is None:
             return
 
@@ -64,15 +64,16 @@ class CacheBase(object):
 
         self.set_pragma(self.cursor, readonly=False)
 
-        for item in self.schema:
-            self.cursor.execute(item)
+        if self.schema is not None:
+            for item in self.schema:
+                self.cursor.execute(item)
 
         self.conn.commit()
 
         return
 
     @staticmethod
-    def set_pragma(cursor, readonly=True):
+    def set_pragma(cursor, readonly: bool = True) -> None:
         """ sqlite 의 속도 개선을 위한 설정 """
         # cursor.execute('PRAGMA threads       = 8;')
 
@@ -93,7 +94,7 @@ class CacheBase(object):
         return
 
     @staticmethod
-    def save_excel(filename, df, size=500000):
+    def save_excel(filename: str, df: pd.DataFrame, size: int = 500000) -> None:
         writer = pd.ExcelWriter(filename + '.xlsx', engine='xlsxwriter')
 
         if len(df) > size:
@@ -113,7 +114,7 @@ class CacheBase(object):
 
         return
 
-    def save(self, filename, rows, date_columns=None):
+    def save(self, filename: str, rows, date_columns=None) -> None:
         df = pd.DataFrame(rows)
 
         df.to_json(
@@ -131,7 +132,7 @@ class CacheBase(object):
         self.save_excel(filename=filename, df=df)
         return
 
-    def json2xlsx(self, filename, date_columns):
+    def json2xlsx(self, filename: str, date_columns: list = None) -> None:
         df = pd.read_json(
             '{filename}.json.bz2'.format(filename=filename),
             compression='bz2',
@@ -147,7 +148,7 @@ class CacheBase(object):
         return
 
     @staticmethod
-    def parse_json_column(doc, columns, stop_columns):
+    def parse_json_column(doc: dict, columns: list = None, exclude_columns: dict = None) -> dict:
         if columns is None:
             return doc
 
@@ -165,8 +166,8 @@ class CacheBase(object):
                 doc[col] = ' '.join(content)
                 continue
 
-            if stop_columns is not None:
-                for c in stop_columns:
+            if exclude_columns is not None:
+                for c in exclude_columns:
                     if c not in content:
                         continue
 
@@ -177,7 +178,7 @@ class CacheBase(object):
         return doc
 
     @staticmethod
-    def limit_column(doc, columns):
+    def limit_column(doc: dict, columns: list = None) -> dict:
         if columns is None or len(columns) <= 0:
             return doc
 
@@ -191,7 +192,7 @@ class CacheBase(object):
         return result
 
     @staticmethod
-    def parse_date_column(doc, columns):
+    def parse_date_column(doc: dict, columns: list = None) -> dict:
         if columns is None:
             return doc
 
@@ -204,7 +205,7 @@ class CacheBase(object):
 
         return doc
 
-    def table_size(self, tbl):
+    def table_size(self, tbl: str) -> int:
         self.cursor.execute('SELECT COUNT(*) FROM {tbl}'.format(tbl=tbl))
 
         row = self.cursor.fetchone()
@@ -214,12 +215,15 @@ class CacheBase(object):
         return int(row[0])
 
     @staticmethod
-    def apply_alias(doc, alias):
+    def apply_alias(doc: dict, alias: dict = None) -> dict:
         if alias is None:
             return doc
 
         dot = dotty(doc)
         for col in alias.keys():
+            if col == alias[col]:
+                continue
+
             if dot.get(col) is None:
                 continue
 
@@ -229,8 +233,9 @@ class CacheBase(object):
 
         return dot.to_dict()
 
-    def export_tbl(self, filename, tbl, db_column, xlsx=True, size=20000, alias=None,
-                   columns=None, json_columns=None, stop_columns=None, date_columns=None):
+    def export_tbl(self, filename: str, tbl: str, db_column: str = '*', size: int = 20000, alias: dict = None,
+                   columns: list = None, json_columns: list = None, exclude_columns: list = None,
+                   date_columns: list = None) -> None:
         p_bar = tqdm(
             desc=tbl,
             total=self.table_size(tbl=tbl),
@@ -238,17 +243,22 @@ class CacheBase(object):
             dynamic_ncols=True
         )
 
+        if db_column is None:
+            db_column = '*'
+
         self.cursor.execute('SELECT {column} FROM {tbl}'.format(column=db_column, tbl=tbl))
         rows = self.cursor.fetchmany(size)
+
+        db_cols = [d[0] for d in self.cursor.description]
 
         fp = bz2.open(filename, 'wb')
 
         while rows:
             for values in rows:
-                doc = dict(zip(db_column.split(','), values))
+                doc = dict(zip(db_cols, values))
 
                 # parse json
-                doc = self.parse_json_column(doc=doc, columns=json_columns, stop_columns=stop_columns)
+                doc = self.parse_json_column(doc=doc, columns=json_columns, exclude_columns=exclude_columns)
 
                 # apply alias
                 doc = self.apply_alias(doc=doc, alias=alias)
@@ -269,8 +279,5 @@ class CacheBase(object):
             rows = self.cursor.fetchmany(size)
 
         fp.close()
-
-        if xlsx is True:
-            self.json2xlsx(filename=filename.replace('.json.bz2', ''), date_columns=date_columns)
 
         return

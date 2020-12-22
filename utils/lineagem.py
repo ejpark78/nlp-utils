@@ -342,8 +342,8 @@ class LineageMBbsUtils(object):
 
         elastic.open()
 
-        elastic.delete_index(elastic=elastic.elastic, index=index)
-        elastic.create_index(elastic=elastic.elastic, index=index, filename=mapping)
+        elastic.delete_index(elastic=elastic.conn, index=index)
+        elastic.create_index(elastic=elastic.conn, index=index, filename=mapping)
 
         with bz2.open(filename, 'rb') as fp:
             bfp = BufferedReader(fp)

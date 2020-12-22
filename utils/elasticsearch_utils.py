@@ -32,7 +32,7 @@ class ElasticSearchUtils(object):
         self.host = host
         self.http_auth = (http_auth.split(':'))
 
-        self.elastic = None
+        self.conn = None
         self.split_index = split_index
 
         self.index = self.get_target_index(
@@ -143,7 +143,7 @@ class ElasticSearchUtils(object):
 
         # host 접속
         try:
-            self.elastic = Elasticsearch(
+            self.conn = Elasticsearch(
                 hosts=self.host,
                 timeout=self.params['request_timeout'],
                 http_auth=self.http_auth,
@@ -166,8 +166,8 @@ class ElasticSearchUtils(object):
 
         # 인덱스가 없는 경우, 생성함
         try:
-            if self.elastic.indices.exists(index=self.index) is False:
-                self.create_index(self.elastic, self.index)
+            if self.conn.indices.exists(index=self.index) is False:
+                self.create_index(self.conn, self.index)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -181,7 +181,7 @@ class ElasticSearchUtils(object):
 
     def get_index_list(self):
         """모든 인덱스 목록을 반환한다."""
-        return [v for v in self.elastic.indices.get('*') if v[0] != '.']
+        return [v for v in self.conn.indices.get('*') if v[0] != '.']
 
     def get_column_list(self, index_list, column_type=None):
         """index 내의 field 목록을 반환한다."""
@@ -191,7 +191,7 @@ class ElasticSearchUtils(object):
             index_list = [index_list]
 
         for idx in index_list:
-            m_info = self.elastic.indices.get_mapping(index=idx)
+            m_info = self.conn.indices.get_mapping(index=idx)
 
             if column_type is None:
                 result += list(m_info[idx]['mappings']['properties'].keys())
@@ -206,7 +206,7 @@ class ElasticSearchUtils(object):
     def update_document(self, document, doc_id, field, value, index):
         """문서를 저장한다."""
         # 서버 접속
-        if self.elastic is None:
+        if self.conn is None:
             self.open()
 
         if index is not None:
@@ -227,7 +227,7 @@ class ElasticSearchUtils(object):
                 'upsert': document
             }
 
-            self.elastic.update(
+            self.conn.update(
                 index=index,
                 doc_type='doc',
                 id=doc_id,
@@ -245,7 +245,7 @@ class ElasticSearchUtils(object):
     def save_document(self, document, index=None, delete=True):
         """문서를 저장한다."""
         # 서버 접속
-        if self.elastic is None:
+        if self.conn is None:
             self.open()
 
         if index is None:
@@ -315,7 +315,7 @@ class ElasticSearchUtils(object):
 
     def flush(self):
         """버퍼에 남은 문서를 저장한다."""
-        if self.elastic is None:
+        if self.conn is None:
             return None
 
         if self.host not in self.bulk_data or len(self.bulk_data[self.host]) == 0:
@@ -325,7 +325,7 @@ class ElasticSearchUtils(object):
         self.bulk_data[self.host] = []
 
         try:
-            response = self.elastic.bulk(
+            response = self.conn.bulk(
                 index=self.index,
                 body=bulk_data,
                 refresh=True,
@@ -505,7 +505,7 @@ class ElasticSearchUtils(object):
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            search_result = self.elastic.search(
+            search_result = self.conn.search(
                 index=index,
                 body=query,
                 scroll='2m',
@@ -513,7 +513,7 @@ class ElasticSearchUtils(object):
                 params=self.params,
             )
         else:
-            search_result = self.elastic.scroll(
+            search_result = self.conn.scroll(
                 scroll_id=scroll_id,
                 scroll='2m',
                 params=self.params,
@@ -537,7 +537,7 @@ class ElasticSearchUtils(object):
         if len(id_list) == 0:
             return
 
-        resp = self.elastic.mget(
+        resp = self.conn.mget(
             body={
                 'docs': [{'_id': x} for x in id_list]
             },
@@ -556,7 +556,7 @@ class ElasticSearchUtils(object):
     def get_id_list(self, index, size=5000, query_cond=None, limit=-1):
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         result = {}
-        if self.elastic.indices.exists(index) is False:
+        if self.conn.indices.exists(index) is False:
             return result
 
         count = 1
@@ -699,7 +699,7 @@ class ElasticSearchUtils(object):
 
         # 원본 문서 확인
         try:
-            exists = self.elastic.exists(index=source_index, doc_type='doc', id=source_id)
+            exists = self.conn.exists(index=source_index, doc_type='doc', id=source_id)
             if exists is False:
                 self.logger.info(msg={
                     'level': 'INFO',
@@ -721,7 +721,7 @@ class ElasticSearchUtils(object):
 
         # 원본 문서 읽기
         try:
-            document = self.elastic.get(index=source_index, doc_type='_doc', id=source_id)
+            document = self.conn.get(index=source_index, doc_type='_doc', id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
@@ -745,7 +745,7 @@ class ElasticSearchUtils(object):
 
         # 기존 문서 삭제
         try:
-            self.elastic.delete(index=source_index, doc_type='doc', id=source_id)
+            self.conn.delete(index=source_index, doc_type='doc', id=source_id)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -762,12 +762,12 @@ class ElasticSearchUtils(object):
         """이전에 수집한 문서와 병합"""
         doc_id = doc['_id']
 
-        exists = self.elastic.exists(index=index, doc_type='_doc', id=doc_id)
+        exists = self.conn.exists(index=index, doc_type='_doc', id=doc_id)
         if exists is False:
             return doc
 
         try:
-            resp = self.elastic.get(index=index, doc_type='_doc', id=doc_id)
+            resp = self.conn.get(index=index, doc_type='_doc', id=doc_id)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -801,7 +801,7 @@ class ElasticSearchUtils(object):
 
     def exists(self, index, doc_id, list_index, list_id, merge_column=None):
         """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
-        exists_doc = self.elastic.exists(
+        exists_doc = self.conn.exists(
             id=doc_id,
             index=index,
             doc_type='doc',
@@ -902,7 +902,7 @@ class ElasticSearchUtils(object):
 
     def delete_doc_by_id(self, index, id_list):
         """아이디로 문서를 삭제한다."""
-        self.elastic.delete_by_query(
+        self.conn.delete_by_query(
             index=index,
             body={
                 'query': {
@@ -938,7 +938,7 @@ class ElasticSearchUtils(object):
                 en = size + 1
 
             doc_list = []
-            self.elastic.get_by_ids(
+            self.conn.get_by_ids(
                 id_list=error_ids[st:en],
                 index=index,
                 source=None,
@@ -959,7 +959,7 @@ class ElasticSearchUtils(object):
                 })
 
                 doc_id = '{oid}-{aid}'.format(**parse_url(doc['url']))
-                flag = self.elastic.elastic.exists(index=index, id=doc_id, doc_type='_doc')
+                flag = self.conn.exists(index=index, id=doc_id, doc_type='_doc')
                 if flag is True:
                     continue
 
@@ -978,7 +978,7 @@ class ElasticSearchUtils(object):
                     'doc_as_upsert': True,
                 })
 
-            self.bulk_data[self.elastic.host] = bulk_data
+            self.bulk_data[self.conn.host] = bulk_data
             self.flush()
 
         return
