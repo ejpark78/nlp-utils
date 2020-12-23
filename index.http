@@ -24,6 +24,12 @@ Accept: application/text
 
 ###
 
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
 DELETE {{host}}/.monitoring-*
 Authorization: Basic {{username}} {{password}}
 Accept: application/text
