@@ -41,11 +41,9 @@ class NaverMovieReviewCrawler(object):
 
         db = CacheUtils(filename=self.params.cache)
 
+        f_name = '{filename}.reviews'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='reviews',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='movie_reviews',
             db_column='no,title,date,code,review',
             json_columns='review'.split(','),
@@ -53,12 +51,11 @@ class NaverMovieReviewCrawler(object):
             columns=columns,
             alias=alias
         )
+        db.json2xlsx(filename=f_name)
 
+        f_name = '{filename}.movie_code'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='movie_code',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='movie_code',
             db_column='title,code,date,review_count,total',
             json_columns=None,
@@ -68,6 +65,7 @@ class NaverMovieReviewCrawler(object):
                 'code': 'movie_code'
             }
         )
+        db.json2xlsx(filename=f_name)
 
         return
 

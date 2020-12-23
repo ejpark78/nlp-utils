@@ -32,11 +32,9 @@ class YoutubeCrawler(object):
     def export(self):
         db = CacheUtils(filename=self.params.cache)
 
+        f_name = '{filename}.channels'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='channels',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='channels',
             db_column='id,title,video_count,data',
             json_columns='data'.split(','),
@@ -44,12 +42,11 @@ class YoutubeCrawler(object):
             columns=None,
             alias=None
         )
+        db.json2xlsx(filename=f_name)
 
+        f_name = '{filename}.videos'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='videos',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='videos',
             db_column='id,title,reply_count,tags',
             json_columns='tags'.split(','),
@@ -57,12 +54,11 @@ class YoutubeCrawler(object):
             columns=None,
             alias=None
         )
+        db.json2xlsx(filename=f_name)
 
+        f_name = '{filename}.replies'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='replies',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='reply',
             db_column='id,video_id,video_title,data',
             json_columns='data,voteCount'.split(','),
@@ -77,6 +73,7 @@ class YoutubeCrawler(object):
                 'contentText.runs.:.text': 'text',
             }
         )
+        db.json2xlsx(filename=f_name)
 
         return
 

@@ -28,7 +28,7 @@ class UdemyCourseList(UdemyBase):
         })
 
         result = []
-        for page in tqdm(range(1, 17), desc='course list'):
+        for page in tqdm(range(1, 19), desc='course list'):
             self.selenium.reset_requests()
 
             url = 'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'.format(page=page)

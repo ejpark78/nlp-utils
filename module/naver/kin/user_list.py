@@ -110,7 +110,7 @@ class UserList(CrawlerBase):
                         doc['_id'] = doc_id
                         doc['category'] = [c['name']]
 
-                        doc_exists = elastic_utils.elastic.exists(
+                        doc_exists = elastic_utils.conn.exists(
                             index=job_info['index'],
                             doc_type='doc',
                             id=doc_id)
@@ -360,7 +360,7 @@ class UserList(CrawlerBase):
                         doc['_id'] = doc_id
                         doc['category'] = [c['name']]
 
-                        doc_exists = elastic_utils.elastic.exists(
+                        doc_exists = elastic_utils.conn.exists(
                             index=job_info['index'],
                             doc_type='doc',
                             id=doc_id)

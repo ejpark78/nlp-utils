@@ -217,7 +217,7 @@ class NaverNewsReplyCrawler(CrawlerBase):
     def get_news(self, elastic, doc_id):
         """원문 기사를 가져온다."""
         try:
-            return elastic.elastic.get(
+            return elastic.conn.get(
                 id=doc_id,
                 index=elastic.index,
                 _source=['url', 'title', 'date'],

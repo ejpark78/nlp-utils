@@ -220,14 +220,14 @@ class CrawlerBase(object):
             return True
 
         # 문서가 있는지 조회
-        is_exists = elastic_utils.elastic.exists(index=index, doc_type='_doc', id=doc_id)
+        is_exists = elastic_utils.conn.exists(index=index, doc_type='_doc', id=doc_id)
         if is_exists is False:
             return False
 
         # 댓글 정보 추가 확인
         if reply_info is not None:
             field_name = reply_info['source']
-            doc = elastic_utils.elastic.get(
+            doc = elastic_utils.conn.get(
                 id=doc_id,
                 index=index,
                 _source=[field_name],

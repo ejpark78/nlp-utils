@@ -603,7 +603,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             }
         }
 
-        search_result = self.elastic.elastic.search(
+        search_result = self.elastic.conn.search(
             index=self.elastic.index,
             body=query,
             size=1,

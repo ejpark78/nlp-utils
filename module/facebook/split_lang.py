@@ -107,7 +107,7 @@ class FBSplitLang(SeleniumUtils):
         """ """
         params = {'request_timeout': 620}
 
-        self.elastic.elastic.bulk(
+        self.elastic.conn.bulk(
             index=index,
             body=bulk_data,
             refresh=True,

@@ -48,29 +48,27 @@ class KBSecCrawler(object):
 
         db = CacheUtils(filename=self.params.cache)
 
+        f_name = '{filename}.reports'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='reports',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='reports',
             db_column='documentid,title,summary,pdf',
             json_columns='pdf'.split(','),
             columns=columns,
             alias=alias
         )
+        db.json2xlsx(filename=f_name)
 
+        f_name = '{filename}.report_list'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='report_list',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='report_list',
             db_column='documentid,content',
             json_columns='content'.split(','),
             columns=columns,
             alias=alias
         )
+        db.json2xlsx(filename=f_name)
 
         return
 

@@ -45,14 +45,16 @@ class MtdCrawler(object):
             if alias is not None:
                 result_columns += alias.values()
 
+            f_name = splitext(self.params.cache)[0]
             db.export_tbl(
-                filename='{filename}.json.bz2'.format(filename=splitext(filename)[0]),
+                filename='{f_name}.json.bz2'.format(f_name=f_name),
                 tbl='idx',
                 db_column='id,idx,content',
                 json_columns='content'.split(','),
                 columns=result_columns,
                 alias=alias
             )
+            db.json2xlsx(filename=f_name)
 
         return
 

@@ -833,7 +833,7 @@ class WebNewsCrawler(CrawlerBase):
         if doc_id is None:
             return doc
 
-        resp = elastic_utils.elastic.mget(
+        resp = elastic_utils.conn.mget(
             body={
                 'docs': [{'_id': doc_id}]
             },

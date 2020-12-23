@@ -26,7 +26,7 @@ class FBCrawler(object):
         self.params = self.init_arguments()
 
     @staticmethod
-    def sleep_to_login():
+    def sleep_to_login() -> None:
         from utils.selenium_utils import SeleniumUtils
 
         selenium = SeleniumUtils()
@@ -39,7 +39,7 @@ class FBCrawler(object):
         sleep(3200)
         return
 
-    def export(self):
+    def export(self) -> None:
         alias = {
             'content': 'text',
             'user_name': 'username',
@@ -53,11 +53,9 @@ class FBCrawler(object):
 
         db = CacheUtils(filename=self.params.cache)
 
+        f_name = '{filename}.posts'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='posts',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='posts',
             db_column='id,reply_count,content',
             json_columns='content'.split(','),
@@ -65,20 +63,22 @@ class FBCrawler(object):
             alias=alias
         )
 
+        db.json2xlsx(filename=f_name)
+
+        f_name = '{filename}.replies'.format(filename=splitext(self.params.cache)[0])
         db.export_tbl(
-            filename='{filename}.{tbl}.json.bz2'.format(
-                tbl='replies',
-                filename=splitext(self.params.cache)[0]
-            ),
+            filename='{f_name}.json.bz2'.format(f_name=f_name),
             tbl='replies',
             db_column='id,post_id,content',
             json_columns='content'.split(','),
             columns=columns,
             alias=alias
         )
+
+        db.json2xlsx(filename=f_name)
         return
 
-    def batch(self):
+    def batch(self) -> None:
         if self.params.login:
             self.sleep_to_login()
 

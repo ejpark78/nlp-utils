@@ -41,7 +41,7 @@ class CacheUtils(CacheBase):
 
         p_bar = None
         while count > 0:
-            resp = es.scroll(index=index, size=size, scroll_id=scroll_id, columns=columns)
+            resp = es.scroll(index=index, size=size, scroll_id=scroll_id, source=columns)
 
             count = len(resp['hits'])
             scroll_id = resp['scroll_id']
