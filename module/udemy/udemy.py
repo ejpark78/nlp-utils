@@ -21,18 +21,20 @@ class UdemyCrawler(object):
     def __init__(self):
         super().__init__()
 
-        self.params = self.init_arguments()
+        self.params = None
 
     def batch(self):
         """코스 목록 전체를 다운로드한다."""
+        self.params = self.init_arguments()
+
         if self.params.login is True:
             UdemyCourseList(params=self.params).selenium.open(url='https://ncsoft.udemy.com')
             sleep(10000)
 
-        if self.params.course_list is True:
+        if self.params.list is True:
             UdemyCourseList(params=self.params).batch()
 
-        if self.params.trace_course is True:
+        if self.params.trace is True:
             UdemyTraceCourse(params=self.params).batch()
 
         return
@@ -47,8 +49,8 @@ class UdemyCrawler(object):
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
 
-        parser.add_argument('--course-list', action='store_true', default=False)
-        parser.add_argument('--trace-course', action='store_true', default=False)
+        parser.add_argument('--list', action='store_true', default=False)
+        parser.add_argument('--trace', action='store_true', default=False)
 
         parser.add_argument('--user-data', default='./cache/selenium/udemy')
         parser.add_argument('--data-path', default='data/udemy-business')
