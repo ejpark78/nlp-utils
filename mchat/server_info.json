@@ -1,4 +1,23 @@
 {
+  "bns-cn": {
+    "tieba": "tieba"
+  },
+  "bns-en": {
+    "gamespo": "gamespo",
+    "youtube": "youtube"
+  },
+  "bns-ko": {
+    "inven": "inven",
+    "plaync": "plaync"
+  },
+  "bns-ja": {
+    "ja1": "ja1",
+    "ja2": "ja2"
+  },
+  "bns-tw": {
+    "tw1": "tw1",
+    "tw2": "tw2"
+  },
   "l2-en": {},
   "l2-zh": {
     "QQ": "오픈채팅",

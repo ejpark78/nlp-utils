@@ -1,0 +1,12 @@
+{
+  "room_list": [
+    {
+      "name": "gamespo",
+      "count": 10
+    },
+    {
+      "name": "youtube",
+      "count": 10
+    }
+  ]
+}
