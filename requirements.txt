@@ -30,5 +30,6 @@ psutil
 xlsxwriter
 minio
 dotty_dict
-git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
+nlplab
+# git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev

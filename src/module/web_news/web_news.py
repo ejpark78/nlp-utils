@@ -118,9 +118,11 @@ class WebNewsCrawler(WebNewsBase):
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.job_info:
             # override elasticsearch config
-            job['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
-            job['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
+            job['host'] = self.cache_info['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
             job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
+            job['http_auth'] = self.cache_info['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
+
+            self.cache_info['job'] = job
 
             self.trace_url_list(job=job)
 

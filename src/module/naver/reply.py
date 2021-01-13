@@ -54,7 +54,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
         self.config = env.config
         self.overwrite = env.overwrite
 
-        self.job_category = env.category
+        self.job_category = 'naver'
         self.job_id = env.job_id
         self.column = env.column
 
@@ -457,7 +457,6 @@ class NaverNewsReplyCrawler(WebNewsBase):
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
         # 작업 아이디
-        parser.add_argument('--category', default='', help='작업 카테고리')
         parser.add_argument('--job_id', default='', help='작업 아이디')
 
         parser.add_argument('--date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')

@@ -40,8 +40,8 @@ base:
 
 .ONESHELL:
 build:
-	cd ../
-	tar cvfz ./docker/app.tar.gz \
+	cd ../src/
+	tar cvfz ../docker/app.tar.gz \
 		--exclude=.git \
 		--exclude=.pki \
 		--exclude=.idea \
@@ -66,7 +66,7 @@ build:
 		--exclude=notebook \
 		--exclude=cache \
 		--exclude=ops \
-		.
+		. ../requirements.txt
 
 	cd -
 	docker build \

@@ -24,9 +24,9 @@ class NaverKinCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--user_list', action='store_true', default=False)
-        parser.add_argument('--question_list', action='store_true', default=False)
-        parser.add_argument('--answer_list', action='store_true', default=False)
+        parser.add_argument('--user-list', action='store_true', default=False)
+        parser.add_argument('--question-list', action='store_true', default=False)
+        parser.add_argument('--answer-list', action='store_true', default=False)
         parser.add_argument('--question', action='store_true', default=False)
         parser.add_argument('--answer', action='store_true', default=False)
 

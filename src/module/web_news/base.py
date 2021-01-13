@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import re
 from datetime import datetime
 from time import sleep
@@ -15,9 +16,10 @@ import urllib3
 from cachelib import SimpleCache
 
 from module.web_news.config import Config
+from module.web_news.post_process import PostProcessUtils
+from utils.elasticsearch_utils import ElasticSearchUtils
 from utils.html_parser import HtmlParser
 from utils.logger import Logger
-from module.web_news.post_process import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -62,6 +64,14 @@ class WebNewsBase(object):
         self.date_range = None
         self.page_range = None
 
+        # elasticsearch
+        self.cache_info = {
+            'job': {},
+            'host': None,
+            'index': 'crawler-web_news-cache',
+            'http_auth': None,
+        }
+
         self.logger = Logger()
 
     def update_date_range(self):
@@ -103,7 +113,7 @@ class WebNewsBase(object):
 
         return soup, encoding
 
-    def get_html_page(self, url_info):
+    def get_html_page(self, url_info: dict):
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
         if 'headers' in url_info:
@@ -129,6 +139,14 @@ class WebNewsBase(object):
                 'exception': str(e),
             })
 
+            self.save_raw_html(
+                url=url_info['url'],
+                status_code=0,
+                error='html 페이지 조회 에러',
+                content='',
+                content_type='',
+            )
+
             sleep(sleep_time)
             return None
 
@@ -145,13 +163,30 @@ class WebNewsBase(object):
                 'status_code': status_code,
             })
 
+            self.save_raw_html(
+                url=url_info['url'],
+                status_code=resp.status_code,
+                error='status_code 에러',
+                content='',
+                content_type='',
+            )
+
             sleep(sleep_time)
             return None
 
         if url_info is not None:
             if 'parser' in url_info and url_info['parser'] == 'json':
                 try:
-                    return resp.json()
+                    result = resp.json()
+                    self.save_raw_html(
+                        url=url_info['url'],
+                        status_code=resp.status_code,
+                        error='',
+                        content=result,
+                        content_type='json',
+                    )
+
+                    return result
                 except Exception as e:
                     self.logger.error(msg={
                         'level': 'ERROR',
@@ -171,7 +206,40 @@ class WebNewsBase(object):
         if encoding is not None:
             result = resp.content.decode(encoding, 'ignore')
 
+        self.save_raw_html(
+            url=url_info['url'],
+            status_code=resp.status_code,
+            error='',
+            content=result,
+            content_type='html',
+        )
+
         return result
+
+    def save_raw_html(self, url: str, status_code: int, content: str, content_type: str, error: str = '') -> None:
+        if self.cache_info['host'] is None:
+            return
+
+        doc = {
+            'url': url,
+            'status_code': status_code,
+            'date': datetime.now(self.timezone).isoformat(),
+            'type': content_type,
+            'content': content,
+            'error': error,
+            'job': json.dumps(self.cache_info, ensure_ascii=False)
+        }
+
+        elastic_utils = ElasticSearchUtils(
+            host=self.cache_info['host'],
+            index=self.cache_info['index'],
+            http_auth=self.cache_info['http_auth'],
+            split_index=False,
+        )
+
+        elastic_utils.save_document(document=doc, index=self.cache_info['index'])
+        elastic_utils.flush()
+        return
 
     def set_history(self, value, name):
         """문서 아이디 이력을 저장한다."""
