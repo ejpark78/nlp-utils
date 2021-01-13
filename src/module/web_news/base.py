@@ -66,7 +66,6 @@ class WebNewsBase(object):
 
         # elasticsearch
         self.cache_info = {
-            'job': {},
             'host': None,
             'index': 'crawler-web_news-cache',
             'http_auth': None,
@@ -113,7 +112,7 @@ class WebNewsBase(object):
 
         return soup, encoding
 
-    def get_html_page(self, url_info: dict):
+    def get_html_page(self, url_info: dict, tags: str):
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
         if 'headers' in url_info:
@@ -140,11 +139,12 @@ class WebNewsBase(object):
             })
 
             self.save_raw_html(
-                url=url_info['url'],
+                url_info=url_info,
                 status_code=0,
                 error='html 페이지 조회 에러',
                 content='',
                 content_type='',
+                tags=tags
             )
 
             sleep(sleep_time)
@@ -164,11 +164,12 @@ class WebNewsBase(object):
             })
 
             self.save_raw_html(
-                url=url_info['url'],
+                url_info=url_info,
                 status_code=resp.status_code,
                 error='status_code 에러',
                 content='',
                 content_type='',
+                tags=tags,
             )
 
             sleep(sleep_time)
@@ -179,11 +180,12 @@ class WebNewsBase(object):
                 try:
                     result = resp.json()
                     self.save_raw_html(
-                        url=url_info['url'],
+                        url_info=url_info,
                         status_code=resp.status_code,
                         error='',
                         content=result,
                         content_type='json',
+                        tags=tags
                     )
 
                     return result
@@ -207,27 +209,32 @@ class WebNewsBase(object):
             result = resp.content.decode(encoding, 'ignore')
 
         self.save_raw_html(
-            url=url_info['url'],
+            url_info=url_info,
             status_code=resp.status_code,
             error='',
             content=result,
             content_type='html',
+            tags=tags
         )
 
         return result
 
-    def save_raw_html(self, url: str, status_code: int, content: str, content_type: str, error: str = '') -> None:
+    def save_raw_html(self, url_info: dict, status_code: int, content: str, content_type: str, tags: str,
+                      error: str = '') -> None:
         if self.cache_info['host'] is None:
             return
 
+        dt = datetime.now(self.timezone).isoformat()
         doc = {
-            'url': url,
+            '_id': dt.replace('+09:00', '').replace('-', '').replace(':', '').replace('.', ''),
+            'url': url_info['url'],
             'status_code': status_code,
-            'date': datetime.now(self.timezone).isoformat(),
+            'date': dt,
             'type': content_type,
             'content': content,
             'error': error,
-            'job': json.dumps(self.cache_info, ensure_ascii=False)
+            'tags': tags,
+            'url_info': url_info
         }
 
         elastic_utils = ElasticSearchUtils(

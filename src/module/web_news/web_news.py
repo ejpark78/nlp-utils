@@ -122,8 +122,6 @@ class WebNewsCrawler(WebNewsBase):
             job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
             job['http_auth'] = self.cache_info['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
 
-            self.cache_info['job'] = job
-
             self.trace_url_list(job=job)
 
         return
@@ -201,7 +199,7 @@ class WebNewsCrawler(WebNewsBase):
                 job['category'] = url['category']
 
             # 기사 목록 조회
-            resp = self.get_html_page(url_info=url)
+            resp = self.get_html_page(url_info=url, tags='#list')
             if resp is None:
                 msg = {
                     'level': 'ERROR',
@@ -517,9 +515,9 @@ class WebNewsCrawler(WebNewsBase):
 
             # 추출된 html_contents 가 없는 경우: 다시 크롤링
             if isinstance(resp, list):
-                resp = self.get_html_page(url_info=article_url)
+                resp = self.get_html_page(url_info=article_url, tags='#article')
         else:
-            resp = self.get_html_page(url_info=article_url)
+            resp = self.get_html_page(url_info=article_url, tags='#article')
             if resp is None:
                 return None, ''
 
@@ -677,7 +675,7 @@ class WebNewsCrawler(WebNewsBase):
             next_url = self.parsing_info
             next_url['url'] = url
 
-            resp = self.get_html_page(url_info=self.parsing_info)
+            resp = self.get_html_page(url_info=self.parsing_info, tags='#article #next_page')
             if resp is None:
                 continue
 

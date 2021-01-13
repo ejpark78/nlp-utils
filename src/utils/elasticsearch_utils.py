@@ -262,7 +262,8 @@ class ElasticSearchUtils(object):
             elif 'document_id' in document:
                 document_id = document['document_id']
             else:
-                document_id = datetime.now(self.timezone).isoformat()
+                dt = datetime.now(self.timezone).isoformat()
+                document_id = dt.replace('+09:00', '').replace('-', '').replace(':', '').replace('.', '')
 
             document['document_id'] = document_id
 
