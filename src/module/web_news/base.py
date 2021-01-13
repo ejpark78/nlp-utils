@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import re
 from datetime import datetime
 from time import sleep
@@ -111,7 +112,7 @@ class WebNewsBase(object):
 
         return soup, encoding
 
-    def get_html_page(self, url_info: dict, tags: str):
+    def get_html_page(self, url_info: dict, tags: str) -> None or str:
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
         if 'headers' in url_info:
@@ -178,11 +179,12 @@ class WebNewsBase(object):
             if 'parser' in url_info and url_info['parser'] == 'json':
                 try:
                     result = resp.json()
+
                     self.save_raw_html(
                         url_info=url_info,
                         status_code=resp.status_code,
                         error='',
-                        content=result,
+                        content=json.dumps(result, ensure_ascii=False),
                         content_type='json',
                         tags=tags
                     )
@@ -259,7 +261,7 @@ class WebNewsBase(object):
 
         return
 
-    def set_history(self, value, name):
+    def set_history(self, value, name) -> None:
         """문서 아이디 이력을 저장한다."""
         self.cache.set(name, value, timeout=600)
         return
@@ -274,7 +276,7 @@ class WebNewsBase(object):
 
         return value
 
-    def get_dict_value(self, data, key_list, result):
+    def get_dict_value(self, data, key_list, result) -> None:
         """commentlist.list 형태의 키 값을 찾아서 반환한다."""
         if len(key_list) == 0:
             if isinstance(data, list):
