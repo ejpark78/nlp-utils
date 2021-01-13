@@ -11,14 +11,14 @@ from urllib.parse import unquote
 import requests
 import urllib3
 
-from module.web_news.base import CrawlerBase
+from module.web_news.base import WebNewsBase
 from utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class UserList(CrawlerBase):
+class UserList(WebNewsBase):
     """답변 목록을 중심으로 크롤링"""
 
     def __init__(self, sleep_time):

@@ -511,6 +511,7 @@ class NaverKBOGameCenterUtils(object):
 
         parser.add_argument('--sleep', default=2, type=int, help='슬립 시간')
 
+        # dummy
         parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         return parser.parse_args()

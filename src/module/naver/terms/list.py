@@ -11,14 +11,14 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-from module.web_news.base import CrawlerBase
+from module.web_news.base import WebNewsBase
 from utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class TermList(CrawlerBase):
+class TermList(WebNewsBase):
     """백과사전 크롤링"""
 
     def __init__(self):

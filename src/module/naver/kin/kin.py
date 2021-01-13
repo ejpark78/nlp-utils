@@ -30,10 +30,13 @@ class NaverKinCrawler(object):
         parser.add_argument('--question', action='store_true', default=False)
         parser.add_argument('--answer', action='store_true', default=False)
 
-        parser.add_argument('--match_phrase', default='{}', help='검색 조건')
+        parser.add_argument('--match-phrase', default='{}', help='검색 조건')
         # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
+
+        # dummy
+        parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         return parser.parse_args()
 

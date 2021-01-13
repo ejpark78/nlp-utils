@@ -227,7 +227,7 @@ class WebNewsCrawler(WebNewsBase):
             if trace_list is None:
                 msg = {
                     'level': 'MESSAGE',
-                    'message': 'trace_list 가 없음',
+                    'message': 'trace_list 가 없음: 마지막 페이지',
                     'url': url['url'],
                     'category': job['category'],
                     'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
@@ -604,6 +604,15 @@ class WebNewsCrawler(WebNewsBase):
                 'exception': str(e),
             })
             return article
+
+        self.save_raw_html(
+            url_info=url_info,
+            status_code=0,
+            error='',
+            content=json.dumps(req_result, ensure_ascii=False),
+            content_type='json',
+            tags='#reply'
+        )
 
         result = []
         self.get_dict_value(
