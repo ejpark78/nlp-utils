@@ -223,28 +223,40 @@ class WebNewsBase(object):
         if self.cache_info['host'] is None:
             return
 
-        dt = datetime.now(self.timezone).isoformat()
-        doc = {
-            '_id': dt.replace('+09:00', '').replace('-', '').replace(':', '').replace('.', ''),
-            'url': url_info['url'],
-            'status_code': status_code,
-            'date': dt,
-            'type': content_type,
-            'content': content,
-            'error': error,
-            'tags': tags,
-            'url_info': url_info
-        }
+        try:
+            ElasticSearchUtils(
+                host=self.cache_info['host'],
+                index=self.cache_info['index'],
+                http_auth=self.cache_info['http_auth'],
+                split_index=False,
+            ).conn.bulk(
+                index=self.cache_info['index'],
+                body=[
+                    {
+                        'index': {
+                            '_index': self.cache_info['index'],
+                        }
+                    },
+                    {
+                        'url': url_info['url'],
+                        'status_code': status_code,
+                        'date': datetime.now(self.timezone).isoformat(),
+                        'type': content_type,
+                        'content': content,
+                        'error': error,
+                        'tags': tags,
+                        'url_info': url_info
+                    }
+                ],
+                refresh=True,
+                params={'request_timeout': 620},
+            )
+        except Exception as e:
+            self.logger.error(msg={
+                'LEVEL': 'ERROR',
+                'e': str(e)
+            })
 
-        elastic_utils = ElasticSearchUtils(
-            host=self.cache_info['host'],
-            index=self.cache_info['index'],
-            http_auth=self.cache_info['http_auth'],
-            split_index=False,
-        )
-
-        elastic_utils.save_document(document=doc, index=self.cache_info['index'])
-        elastic_utils.flush()
         return
 
     def set_history(self, value, name):

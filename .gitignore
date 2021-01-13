@@ -10,8 +10,8 @@
 __pycache__
 
 data
-
 core
+
 *.json.gz
 *.model
 *.jar
@@ -20,10 +20,6 @@ core
 
 app.tar.gz
 venv
-src/config/jobs/nate/opinion.json 제거할 예정
-src/config/jobs/nate/radio.json 제거할 예정
-src/config/jobs/nate/tv.json 제거할 예정
 cache
-/src/utils/browsermob-proxy/
 /log/
 status
