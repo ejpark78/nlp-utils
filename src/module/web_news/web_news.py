@@ -1024,15 +1024,15 @@ class WebNewsCrawler(WebNewsBase):
 
         # 작업 아이디
         parser.add_argument('--category', default='', help='작업 카테고리')
-        parser.add_argument('--job_id', default='', help='작업 아이디')
+        parser.add_argument('--job-id', default='', help='작업 아이디')
 
-        parser.add_argument('--sub_category', default='', help='하위 카테고리')
+        parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
-        parser.add_argument('--date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
-        parser.add_argument('--date_step', default=-1, type=int, help='date step')
+        parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
+        parser.add_argument('--date-step', default=-1, type=int, help='date step')
 
-        parser.add_argument('--page_range', default=None, help='page 범위: 1~100')
-        parser.add_argument('--page_step', default=1, type=int, help='page step')
+        parser.add_argument('--page-range', default=None, help='page 범위: 1~100')
+        parser.add_argument('--page-step', default=1, type=int, help='page step')
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
@@ -1041,10 +1041,10 @@ class WebNewsCrawler(WebNewsBase):
         # 설정파일
         parser.add_argument('--config', default=None, help='설정 파일 정보')
 
-        parser.add_argument('--update_category_only', action='store_true', default=False, help='category 정보만 업데이트')
+        parser.add_argument('--update-category-only', action='store_true', default=False, help='category 정보만 업데이트')
 
-        parser.add_argument('--skip_post_process', action='store_true', default=False, help='후처리 사용 여부')
-        parser.add_argument('--skip_check_history', action='store_true', default=False, help='히스토리 점검 여부')
+        parser.add_argument('--skip-post-process', action='store_true', default=False, help='후처리 사용 여부')
+        parser.add_argument('--skip-check-history', action='store_true', default=False, help='히스토리 점검 여부')
 
         return parser.parse_args()
 

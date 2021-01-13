@@ -30,7 +30,7 @@ class TermsCrawler(object):
         parser.add_argument('--list', action='store_true', default=False, help='목록')
         parser.add_argument('--detail', action='store_true', default=False, help='상세 정보')
 
-        parser.add_argument('--sub_category', default='', help='하위 카테고리')
+        parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         return parser.parse_args()
 

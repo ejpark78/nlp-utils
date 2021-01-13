@@ -500,18 +500,18 @@ class NaverKBOGameCenterUtils(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--game_info', action='store_true', default=False, help='날짜 범위안의 게임 정보')
-        parser.add_argument('--trace_comments', action='store_true', default=False, help='응원글 조회')
-        parser.add_argument('--set_state', action='store_true', default=False, help='게임 상태 변경')
+        parser.add_argument('--game-info', action='store_true', default=False, help='날짜 범위안의 게임 정보')
+        parser.add_argument('--trace-comments', action='store_true', default=False, help='응원글 조회')
+        parser.add_argument('--set-state', action='store_true', default=False, help='게임 상태 변경')
 
-        parser.add_argument('--date_range', default=None, help='게임 날짜 범위, 미지정시 어제 날짜')
+        parser.add_argument('--date-range', default=None, help='게임 날짜 범위, 미지정시 어제 날짜')
 
         parser.add_argument('--state', default=None, help='상태 정보')
-        parser.add_argument('--game_id', default=None, help='게임 아이디')
+        parser.add_argument('--game-id', default=None, help='게임 아이디')
 
         parser.add_argument('--sleep', default=2, type=int, help='슬립 시간')
 
-        parser.add_argument('--sub_category', default='', help='하위 카테고리')
+        parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         return parser.parse_args()
 

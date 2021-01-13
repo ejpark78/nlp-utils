@@ -457,9 +457,10 @@ class NaverNewsReplyCrawler(WebNewsBase):
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
         # 작업 아이디
-        parser.add_argument('--job_id', default='', help='작업 아이디')
+        parser.add_argument('--job-id', default='', help='작업 아이디')
+        parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
-        parser.add_argument('--date_range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
+        parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
