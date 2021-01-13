@@ -12,9 +12,8 @@ from os.path import dirname, isdir
 
 import urllib3
 from elasticsearch import Elasticsearch
-from tqdm import tqdm
-
 from nlplab.utils.logger import Logger
+from tqdm import tqdm
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -22,7 +21,7 @@ urllib3.disable_warnings(UserWarning)
 
 class ElasticSearchUtils(object):
 
-    def __init__(self, host=None, http_auth=None):
+    def __init__(self, host: str = None, http_auth: str = None):
         self.host = host
         if host is None:
             self.host = getenv('NLPLAB_ES_HOST', 'https://corpus.ncsoft.com:9200')
@@ -33,18 +32,18 @@ class ElasticSearchUtils(object):
         self.http_auth = (http_auth.split(':'))
 
         self.logger = Logger()
-        self.elastic = None
+        self.conn = None
 
         if self.host is not None:
             self.open()
 
-    def open(self):
+    def open(self) -> None:
         try:
-            self.elastic = Elasticsearch(
+            self.conn = Elasticsearch(
                 hosts=self.host,
                 timeout=60,
                 http_auth=self.http_auth,
-                use_ssl=True,
+                use_ssl=False,
                 verify_certs=False,
                 ssl_show_warn=False
             )
@@ -60,24 +59,24 @@ class ElasticSearchUtils(object):
         return
 
     def index_list(self):
-        return [v for v in self.elastic.indices.get('*') if v[0] != '.']
+        return [v for v in self.conn.indices.get('*') if v[0] != '.']
 
-    def scroll(self, index, scroll_id, size=1000, columns=None):
+    def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None) -> dict:
         params = {
             'request_timeout': 10 * 60
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
-            search_result = self.elastic.search(
+            search_result = self.conn.search(
                 index=index,
                 scroll='2m',
                 size=size,
                 params=params,
-                _source=columns,
+                _source=source,
             )
         else:
-            search_result = self.elastic.scroll(
+            search_result = self.conn.scroll(
                 scroll_id=scroll_id,
                 scroll='2m',
                 params=params,
@@ -98,7 +97,7 @@ class ElasticSearchUtils(object):
             'scroll_id': scroll_id,
         }
 
-    def export(self, index, filename, columns=None):
+    def export(self, index: str, filename: str, source: list = None) -> None:
         path = dirname(filename)
         if isdir(path) is False:
             makedirs(path)
@@ -111,7 +110,7 @@ class ElasticSearchUtils(object):
         p_bar = None
         with bz2.open(filename=filename, mode='wb') as fp:
             while count > 0:
-                resp = self.scroll(index=index, size=size, scroll_id=scroll_id, columns=columns)
+                resp = self.scroll(index=index, size=size, scroll_id=scroll_id, source=source)
 
                 count = len(resp['hits'])
                 scroll_id = resp['scroll_id']
@@ -126,14 +125,6 @@ class ElasticSearchUtils(object):
                 p_bar.update(count)
                 sum_count += count
 
-                self.logger.info(msg={
-                    'level': 'INFO',
-                    'index': index,
-                    'count': count,
-                    'sum_count': sum_count,
-                    'total': resp['total'],
-                })
-
                 for item in resp['hits']:
                     doc = item['_source']
 
@@ -147,5 +138,59 @@ class ElasticSearchUtils(object):
 
         if p_bar is not None:
             p_bar.close()
+
+        return
+
+    @staticmethod
+    def change_case(text: str) -> str:
+        return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', text)).lower()
+
+    def get_properties(self, mappings: dict) -> dict:
+        props = mappings['properties']
+        return {self.change_case(col): props[col]['type'] if 'type' in props[col] else 'json' for col in props}
+
+    def dump_index(self, index: str, size: int = 1000) -> None:
+        if index is None or index == '':
+            return
+
+        count = 1
+        sum_count = 0
+        scroll_id = ''
+
+        # save settings/mapping
+        settings = {
+            **self.conn.indices.get_settings(index)[index],
+            **self.conn.indices.get_mapping(index)[index]
+        }
+
+        print(json.dumps(settings, ensure_ascii=False), flush=True)
+
+        p_bar = None
+        while count > 0:
+            resp = self.scroll(index=index, size=size, scroll_id=scroll_id)
+
+            count = len(resp['hits'])
+            scroll_id = resp['scroll_id']
+
+            if p_bar is None:
+                p_bar = tqdm(
+                    desc=index,
+                    total=resp['total'],
+                    unit_scale=True,
+                    dynamic_ncols=True
+                )
+
+            p_bar.update(count)
+            sum_count += count
+
+            for item in resp['hits']:
+                doc = item['_source']
+
+                doc.update({
+                    '_id': item['_id'],
+                    '_index': item['_index'],
+                })
+
+                print(json.dumps(doc, ensure_ascii=False), flush=True)
 
         return
