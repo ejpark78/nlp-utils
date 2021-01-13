@@ -35,7 +35,7 @@ jobs:
       - "batch.py"
       - "--category"
       - "naver"
-      - "--job_id"
+      - "--job-id"
       - "term_list"
     subSategory:
       - "용어해설/인문과학,용어해설/사회과학,용어해설/자연과학,용어해설/기술/공학,용어해설/문화예술,용어해설/생활/레저,용어해설/역사,용어해설/건강/의학,용어해설/컴퓨터/통신"
@@ -86,7 +86,7 @@ jobs:
       - "batch.py"
       - "--category"
       - "naver"
-      - "--job_id"
+      - "--job-id"
       - "term_detail"
     subSategory:
       - "''"

@@ -38,12 +38,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "mlbpark-kbo"
       - "--sleep"
       - "20"
@@ -58,12 +58,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "mlbpark-mlb"
       - "--sleep"
       - "20"
@@ -78,12 +78,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "mlbpark-bullpen"
       - "--sleep"
       - "20"
@@ -98,12 +98,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "ruliweb"
       - "--sleep"
       - "20"
@@ -118,12 +118,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "inven-lineagem"
       - "--sleep"
       - "20"
@@ -142,12 +142,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "lineagem"
       - "--sleep"
       - "20"
@@ -166,12 +166,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--overwrite"
       - "--category"
       - "bbs"
-      - "--job_id"
+      - "--job-id"
       - "lineage2m"
       - "--sleep"
       - "20"
@@ -179,19 +179,5 @@ jobs:
       - "1~100"
       - "--page_step"
       - "1"
-    subSategory:
-      - "''"
-
-  - name: naver-game-center
-    schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: ""
-    configMapRef: game-center
-    args:
-      - "python3"
-      - "module/naver/kbo_game_center_utils.py"
-      - "--game_info"
-      - "--trace_comments"
     subSategory:
       - "''"

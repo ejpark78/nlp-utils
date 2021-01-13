@@ -41,7 +41,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "economy",
+          "--job-id", "economy",
           "--date_range", "2010-01-01~2012-07-07"
       ]
 
@@ -88,7 +88,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "international",
+          "--job-id", "international",
           "--date_range", "2010-01-01~2010-01-05"
       ]
 
@@ -135,7 +135,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "it",
+          "--job-id", "it",
           "--date_range", "2010-01-01~2010-01-06"
       ]
 
@@ -182,7 +182,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "entertainment",
+          "--job-id", "entertainment",
           "--date_range", "2010-01-01~2012-01-31"
       ]
 
@@ -229,7 +229,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "politics",
+          "--job-id", "politics",
           "--date_range", "2010-01-01~2010-01-03"
       ]
 
@@ -276,7 +276,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "nate",
-          "--job_id", "society",
+          "--job-id", "society",
           "--date_range", "2010-01-01~2013-03-11"
       ]
 
@@ -323,6 +323,6 @@ spec:
           "--skip_post_process",
           "--update_category_only",
           "--category", "nate",
-          "--job_id", "sports",
+          "--job-id", "sports",
           "--date_range", "2010-01-01~2014-08-16"
       ]

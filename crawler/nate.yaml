@@ -38,11 +38,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "economy"
       - "--sleep"
       - "20"
@@ -63,11 +63,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "entertainment"
       - "--sleep"
       - "20"
@@ -85,11 +85,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "international"
       - "--sleep"
       - "20"
@@ -109,11 +109,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "it"
       - "--sleep"
       - "20"
@@ -133,11 +133,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "politics"
       - "--sleep"
       - "20"
@@ -157,11 +157,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "society"
       - "--sleep"
       - "20"
@@ -185,11 +185,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
-      - "--skip_check_history"
+      - "module/web_news/web_news.py"
+      - "--skip-check-history"
       - "--category"
       - "nate"
-      - "--job_id"
+      - "--job-id"
       - "sports"
       - "--sleep"
       - "20"

@@ -41,7 +41,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "economy",
+          "--job-id", "economy",
           "--date_range", "2010-01-01~2018-11-15"
       ]
 
@@ -88,7 +88,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "international",
+          "--job-id", "international",
           "--date_range", "2010-01-01~2016-02-10"
       ]
 
@@ -135,7 +135,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "it",
+          "--job-id", "it",
           "--date_range", "2010-01-01~2010-01-04"
       ]
 
@@ -182,7 +182,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "culture",
+          "--job-id", "culture",
           "--date_range", "2010-01-01~2014-09-03"
       ]
 
@@ -229,7 +229,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "opinion",
+          "--job-id", "opinion",
           "--date_range", "2010-01-01~2010-01-04"
       ]
 
@@ -276,7 +276,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "politics",
+          "--job-id", "politics",
           "--date_range", "2010-01-01~2018-09-12"
       ]
 
@@ -323,7 +323,7 @@ spec:
           "--update_category_only",
           "--skip_post_process",
           "--category", "daum",
-          "--job_id", "society",
+          "--job-id", "society",
           "--date_range", "2010-01-01~2016-01-27"
       ]
 
@@ -370,6 +370,6 @@ spec:
           "--skip_post_process",
           "--update_category_only",
           "--category", "daum",
-          "--job_id", "sports",
+          "--job-id", "sports",
           "--date_range", "2010-01-01~2020-01-01"
       ]

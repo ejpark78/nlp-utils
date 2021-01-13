@@ -30,7 +30,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "politics-reply",
+        "--job-id", "politics-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -66,7 +66,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "society-reply",
+        "--job-id", "society-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -102,7 +102,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "tv-reply",
+        "--job-id", "tv-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -138,7 +138,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "economy-reply",
+        "--job-id", "economy-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -174,7 +174,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "international-reply",
+        "--job-id", "international-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -211,7 +211,7 @@ spec:
         "python3", "batch.py",
         "--overwrite",
         "--category", "naver",
-        "--job_id", "it-reply",
+        "--job-id", "it-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -247,7 +247,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "living-reply",
+        "--job-id", "living-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -283,7 +283,7 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "opinion-reply",
+        "--job-id", "opinion-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]
 
@@ -319,6 +319,6 @@ spec:
       args: [
         "python3", "batch.py",
         "--category", "naver",
-        "--job_id", "sports-reply",
+        "--job-id", "sports-reply",
         "--date_range", "2020-01-01~2020-12-31"
       ]

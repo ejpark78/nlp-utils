@@ -1,0 +1,176 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+imagePullSecrets: registry
+
+restartPolicy: OnFailure
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+image: registry.nlp-utils/crawler:latest
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+
+jobs:
+  - name: naver-reply-politics
+    schedule: "0 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_POLITICS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "politics-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-society
+    schedule: "5 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SOCIETY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "society-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-tv
+    schedule: "10 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_TV)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "tv-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-economy
+    schedule: "15 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_ECONOMY)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "economy-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-international
+    schedule: "20 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_INTERNATIONAL)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "international-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-it
+    schedule: "25 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_IT)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "it-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-living
+    schedule: "30 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_LIVING)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "living-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-opinion
+    schedule: "35 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_OPINION)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "opinion-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
+  - name: naver-reply-sports
+    schedule: "40 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: $(INDEX_SPORTS)
+    configMapRef: naver-reply
+    args:
+      - "python3"
+      - "module/naver/reply.py"
+      - "--job-id"
+      - "sports-reply"
+      - "--sleep"
+      - "20"
+    subSategory:
+      - "''"
+
