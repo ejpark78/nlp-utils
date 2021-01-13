@@ -42,30 +42,7 @@ base:
 build:
 	cd ../src/
 	tar cvfz ../docker/app.tar.gz \
-		--exclude=.git \
-		--exclude=.pki \
-		--exclude=.idea \
-		--exclude=.cache \
-		--exclude=.vscode \
-		--exclude=.ipynb_checkpoints \
-		--exclude=*.log \
-		--exclude=*.tar.gz \
-		--exclude=*.bz2 \
-		--exclude=*.db \
-		--exclude=*.pycharm* \
-		--exclude=*browsermob-proxy* \
 		--exclude=__pycache__ \
-		--exclude=tmp \
-		--exclude=log \
-		--exclude=wrap \
-		--exclude=venv \
-		--exclude=data \
-		--exclude=down \
-		--exclude=build \
-		--exclude=status \
-		--exclude=notebook \
-		--exclude=cache \
-		--exclude=ops \
 		. ../requirements.txt
 
 	cd -

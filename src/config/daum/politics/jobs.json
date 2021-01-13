@@ -11,37 +11,37 @@
       "split_index": true,
       "list": [
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/administration?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/administration?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/행정지자체"
         },
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/assembly?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/assembly?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/국회정당"
         },
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/dipdefen?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/dipdefen?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/외교국방"
         },
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/north?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/north?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/북한"
         },
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/others?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/others?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/정치일반"
         },
         {
-          "url_frame": "https://media.daum.net/breakingnews/politics/president?regDate={date}&page={page}",
+          "url_frame": "https://news.daum.net/breakingnews/politics/president?regDate={date}&page={page}",
           "date_format": "%Y%m%d",
           "check_id": true,
           "category": "정치/청와대"
