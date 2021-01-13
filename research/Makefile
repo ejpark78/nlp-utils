@@ -1,33 +1,45 @@
 
 NAME=naver
 
+.ONESHELL:
 start-all:
-	make NAME=naver start
-	make NAME=daum start
-	make NAME=nate start
 	make NAME=bbs start
+	make NAME=nate start
+	make NAME=daum start
+	make NAME=naver start
+	make NAME=naver-kin start
+	make NAME=naver-reply start
 
+.ONESHELL:
 stop-all:
-	make NAME=naver stop
-	make NAME=daum stop
-	make NAME=nate stop
 	make NAME=bbs stop
+	make NAME=nate stop
+	make NAME=daum stop
+	make NAME=naver stop
+	make NAME=naver-kin stop
+	make NAME=naver-reply stop
 
+.ONESHELL:
 config:
 	kubectl apply -f configmap.yaml
 
+.ONESHELL:
 start:
 	helm install $(NAME) . -f $(NAME).yaml
 
+.ONESHELL:
 stop:
 	helm uninstall $(NAME)
 
+.ONESHELL:
 test:
 	helm template . -f $(NAME).yaml
 
+.ONESHELL:
 list:
 	helm list
 
+.ONESHELL:
 prune:
 	cat /etc/hosts \
 		| grep nc-crawler \

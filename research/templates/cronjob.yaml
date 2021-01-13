@@ -35,7 +35,7 @@ spec:
                 {{- toYaml $job.environmentVariables | nindent 16 }}
               args:
                 {{- toYaml $job.args | nindent 16 }}
-                - --sub_category
+                - --sub-category
                 - {{ $subCategory }}
 {{- end }}
 {{- end }}

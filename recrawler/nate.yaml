@@ -25,21 +25,22 @@ environmentVariables:
         key: http_auth
 
 jobs:
-  - name: nate-economy-2020
+  - name: nate-economy
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_ECONOMY)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "economy"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -51,21 +52,22 @@ jobs:
       - "경제/국제경제"
       - "경제/경제 일반"
 
-  - name: nate-entertainment-2020
+  - name: nate-entertainment
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_ENTERTAINMENT)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "entertainment"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -74,21 +76,22 @@ jobs:
       - "연예/방송가요"
       - "연예/해외연예"
 
-  - name: nate-international-2020
+  - name: nate-international
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_INTERNATIONAL)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "international"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -99,21 +102,22 @@ jobs:
       - "세계/해외화제"
       - "세계/일반"
 
-  - name: nate-it-2020
+  - name: nate-it
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_IT)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "it"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -124,21 +128,22 @@ jobs:
       - "IT/게임"
       - "IT/IT/과학 일반"
 
-  - name: nate-politics-2020
+  - name: nate-politics
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_POLITICS)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "politics"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -149,21 +154,22 @@ jobs:
       - "정치/행정"
       - "정치/정치 일반"
 
-  - name: nate-society-2020
+  - name: nate-society
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_SOCIETY)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "society"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
@@ -178,21 +184,22 @@ jobs:
       - "사회/인물"
       - "사회/일반"
 
-  - name: nate-sports-2020
+  - name: nate-sports
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_SPORTS)
     configMapRef: nate
     args:
       - "python3"
-      - "batch.py"
+      - "module/web_news/web_news.py"
+      - "--overwrite"
       - "--skip-check-history"
       - "--category"
       - "nate"
       - "--job-id"
       - "sports"
-      - "--date_range"
-      - "2020-10-22~2020-10-23"
+      - "--date-range"
+      - "2021-01-01~2021-01-12"
       - "--sleep"
       - "10"
     subSategory:
