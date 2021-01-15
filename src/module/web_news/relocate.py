@@ -51,25 +51,25 @@ class RelocateWebNews(object):
 
         return document
 
-    def remove_docs(self, doc_list: list, elastic: ElasticSearchUtils) -> None:
+    @staticmethod
+    def remove_docs(doc_list: list, elastic: ElasticSearchUtils) -> None:
         bulk = []
         for doc in doc_list:
             # False 라면 source -> target 으로 이동후 삭제
             if doc['_target']['exists'] is False:
+                #     bulk += [
+                #         {
+                #             'update': {
+                #                 '_id': doc['_id'],
+                #                 '_index': doc['_target']['_index'],
+                #             }
+                #         },
+                #         {
+                #             'doc': self.parse_json(document=doc['_source']),
+                #             'doc_as_upsert': True,
+                #         }
+                #     ]
                 continue
-
-            #     bulk += [
-            #         {
-            #             'update': {
-            #                 '_id': doc['_id'],
-            #                 '_index': doc['_target']['_index'],
-            #             }
-            #         },
-            #         {
-            #             'doc': self.parse_json(document=doc['_source']),
-            #             'doc_as_upsert': True,
-            #         }
-            #     ]
 
             # target_exists 가 True 라면 source 에서 삭제
             bulk += [

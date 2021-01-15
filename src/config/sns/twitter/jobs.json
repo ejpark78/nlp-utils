@@ -1,8 +1,4 @@
 {
-  "_id": "twitter",
-  "daemon": {
-    "sleep": 1800
-  },
   "trace_list": {
     "host": "https://corpus.ncsoft.com:9200",
     "http_auth": "crawler:crawler2019",

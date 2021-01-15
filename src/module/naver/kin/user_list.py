@@ -31,13 +31,13 @@ class UserList(WebNewsBase):
 
         self.sleep_time = sleep_time
 
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
     def daemon(self):
         """batch를 무한 반복한다."""
         while True:
             # batch 시작전 설정 변경 사항을 업데이트 한다.
-            self.update_config()
+            self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
             daemon_info = self.cfg.job_info['daemon']
 

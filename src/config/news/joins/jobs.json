@@ -1,0 +1,73 @@
+{
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
+  "trace_list": [
+    {
+      "host": "https://corpus.ncsoft.com:9200",
+      "http_auth": "crawler:crawler2019",
+      "index": "crawler-major_press-joins",
+      "sleep": 2,
+      "list": [
+        {
+          "url_frame": "http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}",
+          "date_format": "%Y-%m-%d",
+          "category": "야구"
+        }
+      ],
+      "article": {
+        "document_id": {
+          "type": "path",
+          "replace": [
+            {
+              "from": "/article/",
+              "to": ""
+            }
+          ]
+        }
+      },
+      "post_process": [
+        {
+          "name": "RabbitMQ 메세지 전송",
+          "module": "rabbit_mq",
+          "exchange": {
+            "type": "topic",
+            "name": "crawler.major_press"
+          },
+          "host": {
+            "name": "mq_server",
+            "port": 5672,
+            "user_name": "user",
+            "user_password": "nlplab!"
+          },
+          "payload": {
+            "post_mq": false,
+            "elastic": {
+              "host": "https://corpus.ncsoft.com:9200",
+              "http_auth": "crawler:crawler2019",
+              "index": "corpus_process-major_press-joins"
+            },
+            "module": [
+              {
+                "name": "sp/pos_tagger",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "pos_tagged"
+              },
+              {
+                "name": "sp/ne_tagger",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "named_entity"
+              },
+              {
+                "name": "nc/ne_tagger_v2",
+                "domain": "baseball",
+                "column": "html_content",
+                "result": "named_entity_v2"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

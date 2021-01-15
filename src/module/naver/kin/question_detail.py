@@ -32,22 +32,9 @@ class QuestionDetail(WebNewsBase):
 
         self.sleep_time = sleep_time
 
-    def daemon(self, column, match_phrase='{}'):
-        """데몬으로 실행"""
-        while True:
-            self.batch(column=column, match_phrase=match_phrase)
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '데몬 슬립',
-                'sleep_time': 60,
-            })
-
-            sleep(self.sleep_time)
-
     def batch(self, column, match_phrase):
         """상세 페이지를 크롤링한다."""
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=column)
 
         elastic_utils = ElasticSearchUtils(
             host=self.job_info['host'],

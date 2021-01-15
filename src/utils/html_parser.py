@@ -21,13 +21,12 @@ class HtmlParser(object):
     """HTML 파싱"""
 
     def __init__(self):
-        """ 생성자 """
-        self.timezone = pytz.timezone('Asia/Seoul')
-
         self.logger = Logger()
 
+        self.timezone = pytz.timezone('Asia/Seoul')
+
     @staticmethod
-    def merge_values(item):
+    def merge_values(item: dict) -> dict:
         """key 에 . 이 들어있는 컬럼을 합친다."""
         # key 에 . 이 들어있는 컬럼 분리
         new_item = {}
@@ -70,7 +69,7 @@ class HtmlParser(object):
         return item
 
     @staticmethod
-    def parse_html(html, parser_type):
+    def parse_html(html: str, parser_type: str) -> BeautifulSoup:
         """html 문서를 파싱한다."""
         soup = None
 
@@ -89,7 +88,7 @@ class HtmlParser(object):
 
         return soup
 
-    def parse(self, parsing_info, base_url, html=None, soup=None):
+    def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None) -> dict:
         """ 상세 정보 HTML 을 파싱한다."""
         if html is not None:
             from bs4 import BeautifulSoup
@@ -218,7 +217,7 @@ class HtmlParser(object):
 
         return result
 
-    def trace_tag(self, soup, tag_list, index, result):
+    def trace_tag(self, soup: BeautifulSoup, tag_list: list, index: int, result: list) -> None:
         """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다."""
         if soup is None:
             return
@@ -244,7 +243,7 @@ class HtmlParser(object):
 
         return
 
-    def parse_date(self, str_date):
+    def parse_date(self, str_date: str) -> datetime or None:
         """날짜를 변환한다."""
         try:
             if '오전' in str_date:
@@ -276,12 +275,12 @@ class HtmlParser(object):
                 'exception': str(e),
             })
 
-            return str_date
+            return None
 
         return date
 
     @staticmethod
-    def replace_tag(html_tag, tag_list, replacement='', attribute=None):
+    def replace_tag(html_tag: BeautifulSoup, tag_list: list, replacement: str = '', attribute: dict = None) -> bool:
         """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ... """
         if html_tag is None:
             return False
@@ -296,7 +295,7 @@ class HtmlParser(object):
         return True
 
     @staticmethod
-    def remove_comment(soup):
+    def remove_comment(soup: BeautifulSoup) -> bool:
         """ html 태그 중에서 주석 태그를 제거한다."""
         from bs4 import Comment
 
@@ -306,7 +305,7 @@ class HtmlParser(object):
         return True
 
     @staticmethod
-    def remove_banner(soup):
+    def remove_banner(soup: BeautifulSoup) -> BeautifulSoup:
         """ 베너 삭제를 삭제한다. """
         tag_list = soup.findAll('div', {'id': 'suicidalPreventionBanner'})
         for tag in tag_list:
@@ -315,7 +314,7 @@ class HtmlParser(object):
         return soup
 
     @staticmethod
-    def remove_attribute(soup, attribute_list):
+    def remove_attribute(soup: BeautifulSoup, attribute_list: list) -> BeautifulSoup:
         """ 속성을 삭제한다. """
         for tag in soup.findAll(True):
             if len(tag.attrs) == 0:
@@ -336,7 +335,7 @@ class HtmlParser(object):
         return soup
 
     @staticmethod
-    def parse_url(url):
+    def parse_url(url: str):
         """url 에서 쿼리문을 반환한다."""
         from urllib.parse import urlparse, parse_qs
 
@@ -350,7 +349,7 @@ class HtmlParser(object):
         return query, base_url, url_info
 
     @staticmethod
-    def get_meta_value(soup):
+    def get_meta_value(soup: BeautifulSoup) -> dict:
         """ 메타 정보를 추출한다. """
         result = {}
         for meta in soup.findAll('meta'):
@@ -377,10 +376,8 @@ class HtmlParser(object):
         return result
 
     @staticmethod
-    def get_encoding_type(html_body):
+    def get_encoding_type(html_body: str) -> (BeautifulSoup, str):
         """ 메타 정보에서 인코딩 정보 반환한다."""
-        from bs4 import BeautifulSoup
-
         soup = BeautifulSoup(html_body, 'html5lib')
 
         if soup.meta is None:
@@ -393,6 +390,9 @@ class HtmlParser(object):
             if encoding is None:
                 content = soup.meta.get('content', None)
 
+                if content is None:
+                    content = html_body
+
                 match = re.search('charset=(.*)', content)
                 if match:
                     encoding = match.group(1)
@@ -402,19 +402,19 @@ class HtmlParser(object):
         return soup, encoding
 
     @staticmethod
-    def get_tag_text(tag):
+    def get_tag_text(tag: BeautifulSoup) -> str:
         """텍스트 반환"""
-        import bs4
+        from bs4.element import NavigableString
 
         if tag is None:
             return ''
 
-        if isinstance(tag, bs4.element.NavigableString) is True:
+        if isinstance(tag, NavigableString) is True:
             return str(tag).strip()
 
         return tag.get_text().strip()
 
-    def extract_image(self, soup, base_url, delete_caption=False):
+    def extract_image(self, soup: BeautifulSoup, base_url: str, delete_caption: bool = False) -> list:
         """기사 본문에서 이미지와 캡션 추출"""
 
         result = []
@@ -479,7 +479,7 @@ class HtmlParser(object):
         return result
 
     @staticmethod
-    def parse_json(resp, url_info):
+    def parse_json(resp: dict, url_info: dict) -> dict:
         """json 본문을 파싱한다."""
         item = resp
 

@@ -59,11 +59,8 @@ class TwitterCrawler(WebNewsBase):
             # 현재 크롤링 위치 저장
             self.status['category'] = category
 
-            self.cfg.save_status()
-
         # 크롤링 위치 초기화
         del self.status['category']
-        self.cfg.save_status()
 
         return
 
@@ -264,7 +261,7 @@ class TwitterCrawler(WebNewsBase):
 
     def batch(self):
         """카테고리 하위 목록을 크롤링한다."""
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
         # 이전 카테고리를 찾는다.
         category_id = None

@@ -1,7 +1,4 @@
 {
-  "daemon": {
-    "sleep": 3600
-  },
   "question_list": {
     "sleep": 10,
     "host": "https://corpus.ncsoft.com:9200",

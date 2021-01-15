@@ -31,26 +31,24 @@ class TermList(WebNewsBase):
 
         self.job_sub_category = []
 
+        self.status = {}
+
     def batch(self, sub_category):
         """카테고리 하위 목록을 크롤링한다."""
         self.job_sub_category = sub_category.split(',') if sub_category != '' else []
 
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
-        # 이전 카테고리를 찾는다.
         category_id = None
-        if self.status is not None and 'category' in self.status:
-            category_id = self.status['category']['id']
 
-        if self.status is None:
+        # 카테고리 하위 목록을 크롤링한다.
+        for c in self.job_info['category']:
             self.status = {
                 'start': 1,
                 'end': 100000,
                 'step': 1,
             }
 
-        # 카테고리 하위 목록을 크롤링한다.
-        for c in self.job_info['category']:
             if len(self.job_sub_category) > 0 and c['name'] not in self.job_sub_category:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
@@ -110,8 +108,6 @@ class TermList(WebNewsBase):
             self.status['start'] = page
             self.status['category'] = category
 
-            self.cfg.save_status()
-
             # 현재 상태 로그 표시
             self.logger.info(msg={
                 'name': category['name'],
@@ -124,13 +120,6 @@ class TermList(WebNewsBase):
                 break
 
             sleep(self.sleep_time)
-
-        # 위치 초기화
-        self.status['start'] = 1
-        if 'category' in self.status:
-            del self.status['category']
-
-        self.cfg.save_status()
 
         return
 

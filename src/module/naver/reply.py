@@ -405,7 +405,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         step = -1
 
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
         # 날짜 범위 추출
         if self.env.date_range is None:

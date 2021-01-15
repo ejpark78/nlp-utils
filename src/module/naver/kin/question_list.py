@@ -34,7 +34,7 @@ class QuestionList(WebNewsBase):
         """batch를 무한 반복한다."""
         while True:
             # batch 시작전 설정 변경 사항을 업데이트 한다.
-            self.update_config()
+            self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
             daemon_info = self.cfg.job_info['daemon']
 
@@ -51,19 +51,19 @@ class QuestionList(WebNewsBase):
 
     def batch(self, column):
         """ 질문 목록 전부를 가져온다. """
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
         for c in self.job_info['category']:
             # 답변 목록
             if column == 'answer':
                 self.column = 'answer_list'
-                self.update_config()
+                self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
                 self.get_answer_list(category=c)
             else:
                 # 질문 목록
                 self.column = 'question_list'
-                self.update_config()
+                self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
                 self.get_question_list(category=c)
 

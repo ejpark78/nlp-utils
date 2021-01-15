@@ -1,22 +1,19 @@
 {
-  "_id": "mk",
-  "daemon": {
-    "sleep": 1800
-  },
+  "#trace_list": "기사 목록 정보, 기사를 저장할 위치/인덱스, 슬립타임 설정",
   "trace_list": [
     {
       "host": "https://corpus.ncsoft.com:9200",
       "http_auth": "crawler:crawler2019",
-      "index": "crawler-news-mk",
+      "index": "crawler-news-donga",
       "split_index": true,
       "sleep": 2,
-      "step": 1,
-      "end": 5001,
+      "step": 20,
+      "end": 3000,
       "start": 1,
       "list": [
         {
-          "url_frame": "https://www.mk.co.kr/news/society/general/?page={page}",
-          "category": "사회/일반"
+          "url_frame": "http://www.donga.com/news/List/Society/Weather?prod=news&ymd=&m=&p={page}",
+          "category": "사회/날씨"
         }
       ],
       "article": {
@@ -24,19 +21,19 @@
           "type": "path",
           "replace": [
             {
+              "from": "/List/SocietyWeather",
+              "to": ""
+            },
+            {
               "from": "/news",
               "to": ""
             },
             {
-              "from": "/sports",
+              "from": "/article",
               "to": ""
             },
             {
-              "from": "/view",
-              "to": ""
-            },
-            {
-              "from": "/society",
+              "from": "/all",
               "to": ""
             },
             {
@@ -54,6 +51,7 @@
           ]
         }
       },
+      "#post_process": "기사를 저장후, 실행하는 작업",
       "post_process": []
     }
   ]

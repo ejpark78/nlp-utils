@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import re
 from datetime import datetime
 from time import sleep
 
@@ -29,14 +28,7 @@ class WebNewsBase(object):
     """크롤러 베이스"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
-
-        self.job_category = ''
-        self.job_id = ''
-        self.column = ''
-
-        self.config = None
 
         self.parser = HtmlParser()
         self.post_process_utils = PostProcessUtils()
@@ -73,44 +65,15 @@ class WebNewsBase(object):
 
         self.logger = Logger()
 
-    def update_date_range(self):
+    def update_date_range(self) -> None:
         """날짜를 갱신한다."""
         today = datetime.now(self.timezone)
 
         self.date_range = {
             'end': today,
             'start': today,
-            # 'start': today + relativedelta(weeks=-1),
         }
         return
-
-    @staticmethod
-    def get_encoding_type(html_body):
-        """ 메타 정보에서 인코딩 정보 반환한다."""
-        from bs4 import BeautifulSoup
-
-        soup = BeautifulSoup(html_body, 'html5lib')
-
-        if soup.meta is None:
-            return soup, None
-
-        encoding = soup.meta.get('charset', None)
-        if encoding is None:
-            encoding = soup.meta.get('content-type', None)
-
-            if encoding is None:
-                content = soup.meta.get('content', None)
-
-                if content is None:
-                    content = html_body
-
-                match = re.search('charset=(.*)', content)
-                if match:
-                    encoding = match.group(1)
-                else:
-                    return soup, None
-
-        return soup, encoding
 
     def get_html_page(self, url_info: dict, tags: str) -> None or str:
         """웹 문서를 조회한다."""
@@ -202,12 +165,12 @@ class WebNewsBase(object):
         # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
         encoding = None
 
-        result = resp.text
+        result = resp.text.strip()
         if encoding is None:
-            soup, encoding = self.get_encoding_type(result)
+            soup, encoding = self.parser.get_encoding_type(result)
 
         if encoding is not None:
-            result = resp.content.decode(encoding, 'ignore')
+            result = resp.content.decode(encoding, 'ignore').strip()
 
         self.save_raw_html(
             url_info=url_info,
@@ -261,12 +224,12 @@ class WebNewsBase(object):
 
         return
 
-    def set_history(self, value, name) -> None:
+    def set_history(self, value: str, name: str) -> None:
         """문서 아이디 이력을 저장한다."""
         self.cache.set(name, value, timeout=600)
         return
 
-    def get_history(self, name, default):
+    def get_history(self, name: str, default: dict) -> str:
         """문서 아이디 이력을 반환한다."""
         value = self.cache.get(name)
 
@@ -295,7 +258,7 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history, reply_info=None):
+    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history, reply_info=None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
@@ -339,36 +302,25 @@ class WebNewsBase(object):
 
         return True
 
-    def update_config(self):
+    def update_config(self, filename: str or None, job_id: str, job_category: str, column: str) -> None:
         """설정 정보를 읽어 드린다."""
         self.cfg = Config(
-            config=self.config,
-            job_id=self.job_id,
-            job_category=self.job_category,
+            config=filename,
+            job_id=job_id,
+            job_category=job_category,
         )
 
         # request 헤더 정보
         self.headers = self.cfg.headers
 
-        if self.cfg.parsing_info is not None and self.column in self.cfg.parsing_info:
-            self.parsing_info = self.cfg.parsing_info[self.column]
+        if self.cfg.parsing_info is not None and column in self.cfg.parsing_info:
+            self.parsing_info = self.cfg.parsing_info[column]
 
         # crawler job 정보
-        if self.column in self.cfg.job_info:
-            self.job_info = self.cfg.job_info[self.column]
+        if column in self.cfg.job_info:
+            self.job_info = self.cfg.job_info[column]
 
             if 'sleep' in self.job_info:
                 self.sleep_time = self.job_info['sleep']
-
-        # 크롤링 상태 정보
-        if self.column in self.cfg.status:
-            self.status = self.cfg.status[self.column]
-
-        if self.page_range is not None and 'trace_list' in self.cfg.status:
-            self.cfg.status['trace_list'].update(self.page_range)
-
-        # 후처리 정보
-        if 'post_process' in self.job_info:
-            self.post_process_list = self.job_info['post_process']
 
         return

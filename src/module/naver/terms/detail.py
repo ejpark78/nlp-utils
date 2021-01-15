@@ -26,7 +26,7 @@ class TermDetail(WebNewsBase):
         self.job_id = 'naver_terms'
         self.column = 'detail'
 
-        self.update_config()
+        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
 
     def batch(self):
         """전체 상세 페이지를 크롤링한다."""
