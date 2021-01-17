@@ -234,6 +234,22 @@ RUN echo && echo "# kakao/khaiii 설치" \
     \
     && rm -rf ${BUILD_HOME}/khaiii ${HOME}/.hunter ${BUILD_HOME}/khaiii.tar.gz /tmp/*
 
+RUN echo && echo "oh my zsh 설정" \
+    && sed -i -r 's/^plugins=\(/plugins=\(kubectl kube-ps1 /' ${HOME}/.zshrc \
+    && echo "if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi" >> ${HOME}/.zshrc
+    
+RUN echo && echo "kubernetes utils: k9s" \
+    && wget https://github.com/derailed/k9s/releases/download/v0.24.2/k9s_Linux_x86_64.tar.gz \
+    && tar xvfz k9s_Linux_x86_64.tar.gz -C /tmp \
+    && mv /tmp/k9s /usr/bin/ \
+    && rm k9s_Linux_x86_64.tar.gz /tmp/* 
+
+RUN echo && echo "kubernetes utils: helm" \
+    && wget https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz \
+    && tar xvfz helm-v3.4.2-linux-amd64.tar.gz -C /tmp \
+    && sudo mv /tmp/linux-amd64/helm /usr/bin/ \
+    && rm -rf helm-v3.4.2-linux-amd64.tar.gz /tmp/*
+
 WORKDIR /home/jovyan
 
 ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''

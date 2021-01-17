@@ -12,7 +12,9 @@ GIT_COMMIT_ID = $(shell git rev-parse --short HEAD)
 BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 
 # 도커 이미지
-DOCKER_REGISTRY = registry.nlp-utils
+#DOCKER_REGISTRY = registry.nlp-utils
+#DOCKER_REGISTRY = kubeflow-registry.default.svc.cluster.local:30000
+DOCKER_REGISTRY = registry
 
 IMAGE_TAG = 2.3.0
 #IMAGE_TAG = 2.3.0-gpu
@@ -50,6 +52,7 @@ MIRROR += --build-arg "APT_MIRROR=$(APT_MIRROR)"
 MIRROR += --build-arg "APT_CODE_NAME=$(APT_CODE_NAME)"
 MIRROR += --build-arg "PIP_MIRROR=$(PIP_MIRROR)"
 MIRROR += --build-arg "PIP_TRUST_HOST=$(PIP_TRUST_HOST)"
+MIRROR =
 
 # 공통 도커 빌드 옵션
 MINIO_URI = "http://$(shell hostname -I | cut -f1 -d' '):9000"
@@ -207,7 +210,7 @@ dev:
 		-t $(IMAGE_DEV)	\
 		.
 
-	docker save $(IMAGE_MLFLOW) | gzip - > dev.$(IMAGE_TAG).tar.gz
+	docker save $(IMAGE_DEV) | gzip - > dev.$(IMAGE_TAG).tar.gz
 
 .ONESHELL:
 push:

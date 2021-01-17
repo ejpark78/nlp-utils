@@ -87,19 +87,23 @@ RUN echo && echo "# pip 저장소 설정" \
         wheel \
     && rm -rf /tmp/*
 
-RUN echo && echo "# kubeflow 설치" \
+RUN echo && echo "# kubeflow pre 설치" \
     && pip3 install --no-cache-dir \
+        cloudpickle==1.1.1 \
         dill \
+        keras \
         kfp \
         kfserving \
-        kubeflow-fairing \
-        kubeflow-kale \
-        msrestazure \
-        keras \
         konlpy \
+        msrestazure \
         qgrid \
         six \
-        cloudpickle==1.1.1 \
+    && rm -rf /tmp/*
+
+RUN echo && echo "# kubeflow 설치" \
+    && pip3 install --no-cache-dir \
+        kubeflow-fairing \
+        kubeflow-kale \
     && rm -rf /tmp/*
 
 RUN echo && echo "# DL 설치" \
@@ -116,9 +120,9 @@ RUN echo && echo "# DL 설치" \
 ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
 RUN echo && echo "# torch 설치" \
     && pip3 install --no-cache-dir --find-links ${PYTORCH_URL} \
-        torch==1.6.0+cu101 \
+        torch==1.7.0+cu101 \
         torchtext \
-        torchvision==0.7.0+cu101 \
+        torchvision==0.8.1+cu101 \
     && rm -rf /tmp/*
 
 RUN echo && echo "# transformers 설치" \
@@ -128,25 +132,31 @@ RUN echo && echo "# transformers 설치" \
 
 RUN echo && echo "oh my zsh 설정" \
     && sed -i -r 's/^plugins=\(/plugins=\(kubectl kube-ps1 /' ${HOME}/.zshrc \
-    && echo "if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi" >> ${HOME}/.zshrc \
-    \
-    && echo && echo "kubernetes utils: k9s" \
-    && wget https://github.com/derailed/k9s/releases/download/v0.22.1/k9s_Linux_x86_64.tar.gz \
+    && echo "if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi" >> ${HOME}/.zshrc
+    
+RUN echo && echo "kubernetes utils: k9s" \
+    && wget https://github.com/derailed/k9s/releases/download/v0.24.2/k9s_Linux_x86_64.tar.gz \
     && tar xvfz k9s_Linux_x86_64.tar.gz -C /tmp \
     && mv /tmp/k9s /usr/bin/ \
-    && rm k9s_Linux_x86_64.tar.gz /tmp/* \
-    \
-	&& echo && echo "kubernetes utils: krew" \
-    && curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" \
-    && tar zxvf krew.tar.gz -C /tmp \
-    && mv /tmp/krew-linux_amd64 /usr/bin/krew \
-    && rm krew.tar.gz /tmp/* \
-    && chmod +x /usr/bin/krew \
-    && krew install krew \
-    && export PATH="${HOME}/.krew/bin:$PATH" \
-    && kubectl krew update \
-    && kubectl krew install ctx \
-    && kubectl krew install ns
+    && rm k9s_Linux_x86_64.tar.gz /tmp/* 
+
+RUN echo && echo "kubernetes utils: helm" \
+    && wget https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz \
+    && tar xvfz helm-v3.4.2-linux-amd64.tar.gz -C /tmp \
+    && sudo mv /tmp/linux-amd64/helm /usr/bin/ \
+    && rm -rf helm-v3.4.2-linux-amd64.tar.gz /tmp/*
+
+# RUN echo && echo "kubernetes utils: krew" \
+#     && curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" \
+#     && tar zxvf krew.tar.gz -C /tmp \
+#     && mv /tmp/krew-linux_amd64 /usr/bin/krew \
+#     && rm krew.tar.gz /tmp/* \
+#     && chmod +x /usr/bin/krew \
+#     && krew install krew \
+#     && export PATH="${HOME}/.krew/bin:$PATH" \
+#     && kubectl krew update \
+#     && kubectl krew install ctx \
+#     && kubectl krew install ns
 
 ARG MINIO_URI="http://minio-service.kubeflow.svc.cluster.local:9000"
 ARG MINIO_ACCESS_KEY="minio"

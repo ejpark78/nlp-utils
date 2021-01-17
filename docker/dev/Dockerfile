@@ -81,9 +81,9 @@ RUN echo && echo "# DL 설치" \
 ARG PYTORCH_URL="https://download.pytorch.org/whl/torch_stable.html"
 RUN echo && echo "# torch 설치" \
     && pip3 install --no-cache-dir --find-links ${PYTORCH_URL} \
-        torch==1.6.0+cu101 \
+        torch==1.7.0+cu101 \
         torchtext \
-        torchvision==0.7.0+cu101 \
+        torchvision==0.8.1+cu101 \
     && rm -rf /tmp/*
 
 RUN echo && echo "# transformers 설치" \
