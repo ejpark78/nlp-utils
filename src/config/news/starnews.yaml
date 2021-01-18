@@ -1,0 +1,137 @@
+---
+jobs:
+- '#post_process': 기사를 저장후, 실행하는 작업
+  article:
+    document_id:
+      frame: '{no}'
+      type: query
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-major_press-starnews
+  list:
+  - category: 야구
+    url_frame: http://star.mt.co.kr/newsList.html?type=1&comd=&pDepth=news&pDepth1=sports&pDepth2=baseball1&page={page}
+  post_process:
+  - exchange:
+      name: crawler.major_press
+      type: topic
+    host:
+      name: mq_server
+      port: 5672
+      user_name: user
+      user_password: nlplab!
+    module: rabbit_mq
+    name: RabbitMQ 메세지 전송
+    payload:
+      elastic:
+        host: https://corpus.ncsoft.com:9200
+        http_auth: crawler:crawler2019
+        index: corpus_process-major_press-starnews
+      module:
+      - column: html_content
+        domain: baseball
+        name: sp/pos_tagger
+        result: pos_tagged
+      - column: html_content
+        domain: baseball
+        name: sp/ne_tagger
+        result: named_entity
+      - column: html_content
+        domain: baseball
+        name: nc/ne_tagger_v2
+        result: named_entity_v2
+      post_mq: false
+  sleep: 2
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: article_area
+      name: div
+    - attribute:
+        class: at_tit2 mgt30
+      name: h1
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.+([1-2][09][0-9][0-9][.\- :0-9]+).+$
+      to: \g<1>
+    tag:
+    - attribute:
+        class: write mgt11
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    tag:
+    - attribute:
+        title: 기자의 다른기사보기
+      name: a
+    type: text
+  - comment: html 본문
+    key: html_content
+    remove:
+    - attribute:
+        id: uniqubeAd_area
+      name: div
+    - name: iframe
+    tag:
+    - attribute:
+        itemprop: articleBody
+      name: div
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: img
+      name: td
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: img
+      name: td
+    - name: img
+    type: alt
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        itemprop: articleBody
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - name: a
+    type: text
+    value_type: single
+  - comment: url
+    key: url
+    tag:
+    - name: a
+    type: href
+    value_type: single
+  parser: html5lib
+  trace:
+  - attribute:
+      class: bundle
+    name: li
+  - attribute:
+      class: tit
+    name: strong

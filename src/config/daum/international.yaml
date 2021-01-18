@@ -1,0 +1,173 @@
+---
+jobs:
+- article:
+    document_id:
+      replace:
+      - from: /v/
+        to: ''
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-daum-international
+  list:
+  - category: 국제/일본
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/japan?regDate={date}&page={page}
+  - category: 국제/중국
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/china?regDate={date}&page={page}
+  - category: 국제/아시아/대양주
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/asia?regDate={date}&page={page}
+  - category: 국제/미주/아메리카
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/america?regDate={date}&page={page}
+  - category: 국제/유럽
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/europe?regDate={date}&page={page}
+  - category: 국제/중동/아프리카
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/africa?regDate={date}&page={page}
+  - category: 국제/영어뉴스
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/englishnews?regDate={date}&page={page}
+  - category: 국제/해외화제
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/topic?regDate={date}&page={page}
+  - category: 국제/국제일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/foreign/others?regDate={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: tit_view
+      name: h3
+    type: text
+  - comment: 기사 원문
+    key: source
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - name: img
+    type: alt
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.*입력
+      to: ''
+    - from: ^.*수정
+      to: ''
+    - from: 댓글.+$
+      to: ''
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: info_view
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    replace:
+    - from: 입력.+$
+      to: ''
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: info_view
+      name: span
+    type: text
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    type: html
+    value_type: merge
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    - name: figcaption
+    type: text
+  - comment: VOD
+    key: vod
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: iframe
+    type: html
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    type: text
+    value_type: merge
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: link_txt
+      name: a
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - attribute:
+        class: link_txt
+      name: a
+    type: href
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_news2 list_allnews
+    name: ul
+  - name: li

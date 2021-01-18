@@ -1,0 +1,53 @@
+---
+jobs:
+- article:
+    document_id:
+      replace:
+      - from: /view/
+        to: ''
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-nate-tv
+  list:
+  - category: TV/SBS
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0903&cp=sv&type=t&date={date}&page={page}
+  - category: TV/JTBC
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0908&cp=jt&type=t&date={date}&page={page}
+  - category: TV/YTN
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0904&cp=yn&type=t&date={date}&page={page}
+  - category: TV/MBN
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0911&cp=nt&type=t&date={date}&page={page}
+  - category: TV/연합뉴스TV
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0905&cp=ny&type=t&date={date}&page={page}
+  - category: TV/OBS TV
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0914&cp=ob&type=t&date={date}&page={page}
+  - category: TV/SBSCNBC
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0912&cp=cn&type=t&date={date}&page={page}
+  - category: TV/한국경제TV
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0913&cp=ht&type=t&date={date}&page={page}
+  - category: TV/KTV국민방송
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/recentTV?mid=n0915&cp=kv&type=t&date={date}&page={page}
+  - category: TV/실시간 중계
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/liveNews?mid=n0910&type=t&date={date}&page={page}
+  post_process: []
+  split_index: true

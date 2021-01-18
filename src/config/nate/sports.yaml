@@ -1,0 +1,157 @@
+---
+jobs:
+- article:
+    document_id:
+      replace:
+      - from: /view/
+        to: ''
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-nate-sports
+  list:
+  - category: 스포츠/야구
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}
+  - category: 스포츠/해외야구
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/abrbaseball/recent?&type=t&date={date}&page={page}
+  - category: 스포츠/축구
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/soccer/recent?&type=t&date={date}&page={page}
+  - category: 스포츠/해외축구
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/abrsoccer/recent?&type=t&date={date}&page={page}
+  - category: 스포츠/농구-배구
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/basketvolley/recent?&type=t&date={date}&page={page}
+  - category: 스포츠/스포츠-일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://sports.news.nate.com/general/recent?&type=t&date={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        id: cntArea
+      name: div
+    - attribute:
+        class: viewTite
+      name: h3
+    type: text
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: articleInfo
+      name: dl
+    - name: dd
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 출처
+    key: source
+    tag:
+    - attribute:
+        class: articleInfo
+      name: dl
+    - name: img
+    type: alt
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: caption
+    - name: script
+    - name: sclink
+    - name: iframe
+    - attribute:
+        style: margin:0;padding:0;
+      name: p
+    - attribute:
+        style: margin:0 0 20px 0;padding:0;
+      name: p
+    tag:
+    - attribute:
+        id: articleContetns
+      name: div
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        id: articleContetns
+      name: div
+    - attribute:
+        alt: 기사 이미지
+      name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        id: articleContetns
+      name: div
+    - attribute:
+        class: caption
+      name: td
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    remove:
+    - name: caption
+    - name: script
+    - name: sclink
+    - name: iframe
+    - attribute:
+        style: margin:0;padding:0;
+      name: p
+    - attribute:
+        style: margin:0 0 20px 0;padding:0;
+      name: p
+    tag:
+    - attribute:
+        id: articleContetns
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: origin
+      name: span
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
+  parser: lxml
+  trace:
+  - attribute:
+      class: postSubject
+    name: div
+  - name: li

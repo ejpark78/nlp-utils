@@ -1,0 +1,173 @@
+---
+jobs:
+- article:
+    document_id:
+      frame: '{oid}-{aid}'
+      type: query
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-naver-politics
+  list:
+  - category: 정치/청와대
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=264&listType=title&date={date}&page={page}
+  - category: 정치/국회정당
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=265&listType=title&date={date}&page={page}
+  - category: 정치/북한
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=268&listType=title&date={date}&page={page}
+  - category: 정치/행정
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=266&listType=title&date={date}&page={page}
+  - category: 정치/국방외교
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=267&listType=title&date={date}&page={page}
+  - category: 정치/정치일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=100&sid2=269&listType=title&date={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: article_info
+      name: div
+    - attribute:
+        id: articleTitle
+      name: h3
+    type: text
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: article_info
+      name: div
+    - attribute:
+        class: t11
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 지면 정보
+    key: paper
+    remove:
+    - attribute:
+        class: picon
+      name: i
+    tag:
+    - attribute:
+        class: article_info
+      name: div
+    - attribute:
+        class: sponsor_newspaper
+      name: span
+    type: text
+  - comment: 출처
+    key: source_url
+    tag:
+    - attribute:
+        class: sponsor
+      name: div
+    - name: a
+    type: href
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: script
+    tag:
+    - attribute:
+        id: articleBodyContents
+      name: div
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: end_photo_org
+      name: span
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: end_photo_org
+      name: span
+    - attribute:
+        class: img_desc
+      name: em
+    type: text
+  - comment: 동영상
+    key: vod
+    tag:
+    - attribute:
+        id: articleBodyContents
+      name: div
+    - name: iframe
+    type: html
+  - comment: 원래 섹션
+    key: source_section
+    tag:
+    - attribute:
+        class: guide_categorization
+      name: div
+    - attribute:
+        class: guide_categorization_item
+      name: em
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        id: articleBodyContents
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: date
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 출처
+    key: source
+    tag:
+    - attribute:
+        class: writing
+      name: span
+    type: text
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_body newsflash_body
+    name: div
+  - name: li

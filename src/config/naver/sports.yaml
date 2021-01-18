@@ -1,0 +1,216 @@
+---
+jobs:
+- article:
+    document_id:
+      frame: '{oid}-{aid}'
+      type: query
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-naver-sports
+  list:
+  - category: 스포츠/야구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /kbaseball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/해외야구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /wbaseball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/wbaseball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/게임
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /esports/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/esports/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/축구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /kfootball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/해외축구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /wfootball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/wfootball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/농구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /basketball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/basketball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/배구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /volleyball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/volleyball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/골프
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /golf/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/golf/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/축구
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /kfootball/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
+  - category: 스포츠/스포츠-일반
+    check_id: true
+    date_format: '%Y%m%d'
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: /general/news/read.nhn?oid={oid}&aid={aid}
+    parser: json
+    trace: list
+    url_frame: https://sports.news.naver.com/general/news/list.nhn?isphoto=&date={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: news_headline
+      name: div
+    - attribute:
+        class: title
+      name: h4
+    type: text
+  - comment: 기사 원문 주소
+    key: source_url
+    tag:
+    - attribute:
+        class: news_headline
+      name: div
+    - attribute:
+        class: info
+      name: div
+    - attribute:
+        class: press_link
+      name: a
+    type: href
+  - comment: 날짜
+    key: date
+    remove:
+    - attribute:
+        class: press_link
+      name: a
+    replace:
+    - from: 기사입력
+      to: ''
+    - from: ^.+최종수정
+      to: ''
+    tag:
+    - attribute:
+        class: news_headline
+      name: div
+    - attribute:
+        class: info
+      name: div
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - attribute:
+        class: source
+      name: p
+    tag:
+    - attribute:
+        id: newsEndContents
+      name: div
+    type: html
+    value_type: merge
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        id: newsEndContents
+      name: div
+    - attribute:
+        class: end_photo_org
+      name: span
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        id: newsEndContents
+      name: div
+    - attribute:
+        class: end_photo_org
+      name: span
+    - attribute:
+        class: img_desc
+      name: em
+    type: text
+  - comment: 동영상
+    key: vod
+    tag:
+    - attribute:
+        id: newsEndContents
+      name: div
+    - name: iframe
+    type: html
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        id: newsEndContents
+      name: div
+    type: text
+    value_type: merge
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+  list: {}
+  parser: html5lib
+  trace: {}

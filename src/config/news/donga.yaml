@@ -1,0 +1,207 @@
+---
+jobs:
+- '#post_process': 기사를 저장후, 실행하는 작업
+  article:
+    document_id:
+      replace:
+      - from: /List/SportsBase/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-major_press-donga
+  list:
+  - category: 스포츠
+    url_frame: http://news.donga.com/List/Sports/Base?prod=news&ymd=&m=NP&p={page}
+  post_process:
+  - exchange:
+      name: crawler.major_press
+      type: topic
+    host:
+      name: mq_server
+      port: 5672
+      user_name: user
+      user_password: nlplab!
+    module: rabbit_mq
+    name: RabbitMQ 메세지 전송
+    payload:
+      elastic:
+        host: https://corpus.ncsoft.com:9200
+        http_auth: crawler:crawler2019
+        index: corpus_process-major_press-donga
+      module:
+      - column: html_content
+        domain: baseball
+        name: sp/pos_tagger
+        result: pos_tagged
+      - column: html_content
+        domain: baseball
+        name: sp/ne_tagger
+        result: named_entity
+      - column: html_content
+        domain: baseball
+        name: nc/ne_tagger_v2
+        result: named_entity_v2
+      post_mq: false
+  sleep: 2
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: article_title
+      name: div
+    - attribute:
+        class: title
+      name: h2
+    type: text
+  - comment: 날짜
+    key: date
+    replace:
+    - from: 입력[ ]*|수정[ ]*
+      to: ''
+    tag:
+    - attribute:
+        class: article_title
+      name: div
+    - attribute:
+        class: date01
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    tag:
+    - attribute:
+        class: article_title
+      name: div
+    - attribute:
+        class: report
+      name: span
+    type: text
+  - comment: html 본문
+    key: html_content
+    remove:
+    - attribute:
+        class: article_relation
+      name: div
+    - attribute:
+        id: bestnews_layer
+      name: div
+    - attribute:
+        id: adBox
+      name: div
+    - attribute:
+        class: article_issue
+      name: div
+    tag:
+    - attribute:
+        class: article_txt
+      name: div
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: articlePhotoL
+      name: div
+    - name: img
+    type: src
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: articlePhotoR
+      name: div
+    - name: img
+    type: src
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: articlePhotoC
+      name: div
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: articlePhotoR
+      name: div
+    type: text
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: articlePhotoL
+      name: div
+    type: text
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: articlePhotoC
+      name: div
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        class: article_txt
+      name: div
+    type: text
+  - comment: 키워드
+    key: keyword
+    tag:
+    - attribute:
+        class: article_keyword
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: rightList
+      name: div
+    - attribute:
+        class: tit
+      name: span
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - attribute:
+        class: rightList
+      name: div
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: rightList
+      name: div
+    - attribute:
+        class: date
+      name: div
+    type: text
+    type_convert: date
+    value_type: single
+  parser: lxml
+  trace:
+  - attribute:
+      class: articleList
+    name: div

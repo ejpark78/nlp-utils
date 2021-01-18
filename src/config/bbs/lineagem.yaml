@@ -1,0 +1,64 @@
+---
+jobs:
+- article:
+    document_id:
+      frame: '{articleId}'
+      type: value
+    headers:
+      Content-Type: application/json
+    mapping:
+      article: /
+      category: /
+      communityLevelName: ''
+      hasAttachment: ''
+      hasThumbnail: ''
+      html_content: '{contents}'
+      isScrapArticle: ''
+      nextArticle: ''
+      prevNextArticleEntries: ''
+      reserved1: ''
+      reserved2: ''
+      reserved3: ''
+      reserved4: ''
+      userAgent: ''
+      userPlatform: ''
+      voteContents: ''
+      writer: /
+    parser: json
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-bbs-lineagem
+  list:
+  - category: all
+    check_id: true
+    headers:
+      Content-Type: application/json
+    mapping:
+      date: '{postDate}'
+      hasAttachment: ''
+      hasThumbnail: ''
+      reserved1: ''
+      reserved2: ''
+      reserved3: ''
+      reserved4: ''
+      url: https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}.json
+      userAgent: ''
+      userPlatform: ''
+      writer: /
+    parser: json
+    trace: articleList
+    url_frame: https://lineagem.plaync.com/board/all/articles.json?page={page}&isReferer=false&isVote=true&size=20&query=&searchType=&categoryId=&summary=true
+  post_process: []
+  post_request:
+  - field: commentList
+    key: reply_list
+    method: GET
+    response_type: json
+    url_frame: https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
+  sleep: 3
+parsing:
+  article: []
+  comment: []
+  list: {}
+  parser: html5lib
+  trace: {}

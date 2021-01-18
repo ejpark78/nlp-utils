@@ -3,9 +3,7 @@ setuptools
 twine
 python-dateutil
 boto3
-bs4
 elasticsearch
-lxml
 requests
 requests[socks]
 requests[security]
@@ -13,13 +11,10 @@ requests-oauthlib
 requests-html
 selenium
 selenium-wire
-html5lib
-openpyxl
 jsonlines
 urllib3
 tqdm
 pytz
-pandas
 pycurl
 pyjwt
 PySocks
@@ -27,9 +22,19 @@ certifi
 cachelib
 brotlipy
 psutil
-xlsxwriter
 minio
 dotty_dict
+
+bs4
+lxml
+html5lib
+
+pandas
+xlsxwriter
+openpyxl
+
+PyYAML
+
 nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev

@@ -753,7 +753,7 @@ class WebNewsCrawler(WebNewsBase):
                     host=elastic_utils.host,
                     index=elastic_utils.index,
                 ),
-                'doc_info': doc_info,
+                **doc_info,
             })
 
         return doc

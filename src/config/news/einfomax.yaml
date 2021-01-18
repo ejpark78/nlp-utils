@@ -1,0 +1,147 @@
+---
+jobs:
+- '#post_process': 기사를 저장후, 실행하는 작업
+  article:
+    document_id:
+      frame: '{idxno}'
+      type: query
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-major_press-einfomax
+  list:
+  - category: 정책/금융
+    url_frame: http://news.einfomax.co.kr/news/articleList.html?sc_section_code=S1N15&sc_order_by=R&page={page}
+  post_process:
+  - exchange:
+      name: crawler.major_press
+      type: topic
+    host:
+      name: mq_server
+      port: 5672
+      user_name: user
+      user_password: nlplab!
+    module: rabbit_mq
+    name: RabbitMQ 메세지 전송
+    payload:
+      elastic:
+        host: https://corpus.ncsoft.com:9200
+        http_auth: crawler:crawler2019
+        index: corpus_process-major_press-einfomax
+      module:
+      - column: html_content
+        domain: general
+        name: sp/pos_tagger
+        result: pos_tagged
+      - column: html_content
+        domain: economy
+        name: sp/ne_tagger
+        result: named_entity
+      - column: economy
+        domain: general
+        name: nc/ne_tagger_v2
+        result: named_entity_v2
+      post_mq: false
+  sleep: 2
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: article-head-title
+      name: div
+    type: text
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.*승인
+      to: ''
+    - from: 댓글.*$
+      to: ''
+    - from: '[|]'
+      to: ''
+    tag:
+    - attribute:
+        class: info-text
+      name: div
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    replace:
+    - from: 승인.+$
+      to: ''
+    tag:
+    - attribute:
+        class: info-text
+      name: div
+    type: text
+  - comment: html 본문
+    key: html_content
+    remove:
+    - attribute:
+        class: view-copyright
+      name: div
+    - attribute:
+        class: view-editors
+      name: div
+    tag:
+    - attribute:
+        itemprop: articleBody
+      name: div
+    type: html
+  - comment: 텍스트 본문
+    key: content
+    remove:
+    - attribute:
+        class: view-copyright
+      name: div
+    - attribute:
+        class: view-editors
+      name: div
+    tag:
+    - attribute:
+        itemprop: articleBody
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: list-titles table-cell
+      name: div
+    - name: strong
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - attribute:
+        class: list-titles table-cell
+      name: div
+    - attribute:
+        class: links
+      name: a
+    type: href
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.+([1-2][089][0-9][0-9][.\- :0-9]+).+$
+      to: \g<1>
+    tag:
+    - attribute:
+        class: list-dated table-cell
+      name: div
+    type: text
+    type_convert: date
+    value_type: single
+  parser: lxml
+  trace:
+  - attribute:
+      class: table-row
+    name: div

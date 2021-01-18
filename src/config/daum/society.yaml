@@ -1,0 +1,209 @@
+---
+jobs:
+- article:
+    document_id:
+      replace:
+      - from: /v/
+        to: ''
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-daum-society
+  list:
+  - category: 사회/사건사고
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/affair?regDate={date}&page={page}
+  - category: 사회/충청
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/chungcheong?regDate={date}&page={page}
+  - category: 사회/교육
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/education?regDate={date}&page={page}
+  - category: 사회/환경
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/environment?regDate={date}&page={page}
+  - category: 사회/강원
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/gangwon?regDate={date}&page={page}
+  - category: 사회/경상
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/gyeongsang?regDate={date}&page={page}
+  - category: 사회/제주
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/jeju?regDate={date}&page={page}
+  - category: 사회/전라
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/jeolla?regDate={date}&page={page}
+  - category: 사회/노동
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/labor?regDate={date}&page={page}
+  - category: 사회/미디어
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/media?regDate={date}&page={page}
+  - category: 사회/수도권
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/metro?regDate={date}&page={page}
+  - category: 사회/전국
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/nation?regDate={date}&page={page}
+  - category: 사회/지역일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/nation_others?regDate={date}&page={page}
+  - category: 사회/사회일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/others?regDate={date}&page={page}
+  - category: 사회/인물
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/people?regDate={date}&page={page}
+  - category: 사회/서울
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/seoul?regDate={date}&page={page}
+  - category: 사회/복지
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/welfare?regDate={date}&page={page}
+  - category: 사회/여성
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.daum.net/breakingnews/society/woman?regDate={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: tit_view
+      name: h3
+    type: text
+  - comment: 기사 원문
+    key: source
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - name: img
+    type: alt
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.*입력
+      to: ''
+    - from: ^.*수정
+      to: ''
+    - from: 댓글.+$
+      to: ''
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: info_view
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    replace:
+    - from: 입력.+$
+      to: ''
+    tag:
+    - attribute:
+        class: head_view
+      name: div
+    - attribute:
+        class: info_view
+      name: span
+    type: text
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    type: html
+    value_type: merge
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    - name: figcaption
+    type: text
+  - comment: VOD
+    key: vod
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: iframe
+    type: html
+  - comment: 텍스트 본문
+    key: content
+    tag:
+    - attribute:
+        class: article_view
+      name: div
+    - name: section
+    type: text
+    value_type: merge
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        class: link_txt
+      name: a
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - attribute:
+        class: link_txt
+      name: a
+    type: href
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_news2 list_allnews
+    name: ul
+  - name: li

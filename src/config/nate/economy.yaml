@@ -1,0 +1,163 @@
+---
+jobs:
+- article:
+    document_id:
+      replace:
+      - from: /view/
+        to: ''
+      type: path
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  index: crawler-nate-economy
+  list:
+  - category: 경제/생활 경제
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0302&type=t&date={date}&page={page}
+  - category: 경제/부동산
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0303&type=t&date={date}&page={page}
+  - category: 경제/금융/증권
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0304&type=t&date={date}&page={page}
+  - category: 경제/산업/기업
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0305&type=t&date={date}&page={page}
+  - category: 경제/취업/창업
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0306&type=t&date={date}&page={page}
+  - category: 경제/국제경제
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0307&type=t&date={date}&page={page}
+  - category: 경제/경제 일반
+    check_id: true
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/subsection?mid=n0308&type=t&date={date}&page={page}
+  post_process: []
+  split_index: true
+parsing:
+  article:
+  - comment: 제목
+    key: title
+    tag:
+    - attribute:
+        id: articleView
+      name: div
+    - attribute:
+        class: articleSubecjt
+      name: h3
+    type: text
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: firstDate
+      name: span
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 출처
+    key: source
+    replace:
+    - from: 원문
+      to: ''
+    tag:
+    - attribute:
+        class: articleInfo
+      name: p
+    - attribute:
+        class: link
+      name: span
+    type: text
+  - comment: 출처 주소
+    key: source_url
+    tag:
+    - attribute:
+        class: articleInfo
+      name: p
+    - attribute:
+        title: 원문보기
+      name: a
+    type: href
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: script
+    - name: sclink
+    - attribute:
+        title: 광고
+      name: iframe
+    tag:
+    - attribute:
+        id: realArtcContents
+      name: div
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    tag:
+    - attribute:
+        id: realArtcContents
+      name: div
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    tag:
+    - attribute:
+        id: realArtcContents
+      name: div
+    - attribute:
+        class: p_caption
+      name: p
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    remove:
+    - name: script
+    - name: sclink
+    - attribute:
+        title: 광고
+      name: iframe
+    tag:
+    - attribute:
+        id: realArtcContents
+      name: div
+    type: text
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  list:
+  - comment: 제목
+    key: title
+    tag:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    tag:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    tag:
+    - attribute:
+        class: origin
+      name: span
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
+  parser: lxml
+  trace:
+  - attribute:
+      class: postSubject
+    name: div
+  - name: li
