@@ -50,7 +50,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: article_title
       name: div
@@ -63,7 +63,7 @@ parsing:
     replace:
     - from: 입력[ ]*|수정[ ]*
       to: ''
-    tag:
+    value:
     - attribute:
         class: article_title
       name: div
@@ -75,7 +75,7 @@ parsing:
     value_type: single
   - comment: 글쓴이
     key: author
-    tag:
+    value:
     - attribute:
         class: article_title
       name: div
@@ -98,14 +98,14 @@ parsing:
     - attribute:
         class: article_issue
       name: div
-    tag:
+    value:
     - attribute:
         class: article_txt
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: articlePhotoL
       name: div
@@ -113,7 +113,7 @@ parsing:
     type: src
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: articlePhotoR
       name: div
@@ -121,7 +121,7 @@ parsing:
     type: src
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: articlePhotoC
       name: div
@@ -130,7 +130,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: articlePhotoR
       name: div
@@ -138,7 +138,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: articlePhotoL
       name: div
@@ -146,21 +146,21 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: articlePhotoC
       name: div
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         class: article_txt
       name: div
     type: text
   - comment: 키워드
     key: keyword
-    tag:
+    value:
     - attribute:
         class: article_keyword
       name: div
@@ -172,7 +172,7 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: rightList
       name: div
@@ -182,7 +182,7 @@ parsing:
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: rightList
       name: div
@@ -190,7 +190,7 @@ parsing:
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: rightList
       name: div

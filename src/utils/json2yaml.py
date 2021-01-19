@@ -69,7 +69,7 @@ class Json2Yaml(object):
         return
 
     def batch(self) -> None:
-        for path in glob('config/bbs/*'):
+        for path in glob('config/udemy/*'):
             if isdir(path) is False:
                 continue
 

@@ -46,7 +46,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: article_tbx mgt8 w970
       name: div
@@ -57,7 +57,7 @@ parsing:
     replace:
     - from: 등록[ ]+
       to: ''
-    tag:
+    value:
     - attribute:
         class: date
       name: div
@@ -68,14 +68,14 @@ parsing:
     key: html_content
     remove:
     - name: iframe
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: article_photo center
       name: table
@@ -84,7 +84,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: article_photo center
       name: table
@@ -94,7 +94,7 @@ parsing:
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
@@ -106,12 +106,12 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: a
     type: href
   - comment: author
@@ -119,7 +119,7 @@ parsing:
     replace:
     - from: '[|].+$'
       to: ''
-    tag:
+    value:
     - attribute:
         class: date
       name: span

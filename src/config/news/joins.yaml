@@ -48,7 +48,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: article_title
       name: h1
@@ -62,7 +62,7 @@ parsing:
       to: ''
     - from: '[|].+$'
       to: ''
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
@@ -78,14 +78,14 @@ parsing:
       to: ''
     - from: '[|].+$'
       to: ''
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
     type: text
   - comment: 지면
     key: paper_url
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
@@ -93,7 +93,7 @@ parsing:
     type: href
   - comment: 지면
     key: paper_page
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
@@ -102,7 +102,7 @@ parsing:
     type: text
   - comment: 글쓴이
     key: author
-    tag:
+    value:
     - attribute:
         class: profile
       name: span
@@ -118,7 +118,7 @@ parsing:
     - attribute:
         id: criteo_network
       name: div
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
@@ -126,7 +126,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: image
       name: div
@@ -135,14 +135,14 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: caption
       name: p
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
@@ -155,7 +155,7 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: headline mg
       name: strong
@@ -163,7 +163,7 @@ parsing:
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: headline mg
       name: strong
@@ -174,7 +174,7 @@ parsing:
     replace:
     - from: ^.+[|]
       to: ''
-    tag:
+    value:
     - attribute:
         class: byline
       name: span

@@ -36,7 +36,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: head_view
       name: div
@@ -46,7 +46,7 @@ parsing:
     type: text
   - comment: 기사 원문
     key: source
-    tag:
+    value:
     - attribute:
         class: head_view
       name: div
@@ -61,7 +61,7 @@ parsing:
       to: ''
     - from: 댓글.+$
       to: ''
-    tag:
+    value:
     - attribute:
         class: head_view
       name: div
@@ -76,7 +76,7 @@ parsing:
     replace:
     - from: 입력.+$
       to: ''
-    tag:
+    value:
     - attribute:
         class: head_view
       name: div
@@ -87,7 +87,7 @@ parsing:
     value_type: single
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - attribute:
         class: article_view
       name: div
@@ -96,7 +96,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: article_view
       name: div
@@ -106,7 +106,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: article_view
       name: div
@@ -115,7 +115,7 @@ parsing:
     type: text
   - comment: VOD
     key: vod
-    tag:
+    value:
     - attribute:
         class: article_view
       name: div
@@ -123,7 +123,7 @@ parsing:
     type: html
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         class: article_view
       name: div
@@ -137,14 +137,14 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: link_txt
       name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: link_txt
       name: a

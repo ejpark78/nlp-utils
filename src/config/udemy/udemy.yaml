@@ -1,0 +1,44 @@
+---
+_id: udemy
+category_name: free_3rd
+data_path: data/udemy-downloading
+sleep: 2
+token: Yw6tVlBB5kJAtrfz4BV8uogaj1QdqRF2sQ7MZYxn
+url_info:
+  announcements:
+    query:
+    - courseId=1034400&is_promotional=false
+    - fields[course_announcement]=@default,comment_thread
+    - fields[announcement_group]=@default,user
+    - fields[comment_thread]=@min,num_comments
+    - fields[user]=@min,image_50x50,initials,url
+    url: https://www.udemy.com/api-2.0/courses/{course_id}/announcements/?{query}
+  asset:
+    article: https://www.udemy.com/api-2.0/assets/{asset_id}?fields[asset]=@min,status,delayed_asset_message,processing_errors,body
+    file: https://www.udemy.com/api-2.0/users/me/subscribed-courses/{course_id}/lectures/{lecture_id}/supplementary-assets/{asset_id}/?fields[asset]=download_urls
+    video: https://www.udemy.com/api-2.0/assets/{asset_id}?fields[asset]=@min,status,delayed_asset_message,processing_errors,time_estimation,stream_urls,thumbnail_url,captions,thumbnail_sprite&fields[caption]=@default,is_translation
+  content:
+    url: https://www.udemy.com/{content}/learn/v4/content
+  discussions:
+    query:
+    - fields%5Bcourse%5D=id,published_title
+    - fields%5Bcourse_discussion%5D=@default,user,course,related_object,is_following,is_instructor,num_replies,created,num_follows
+    - fields%5Blecture%5D=@min,title,object_index
+    - fields%5Bpractice%5D=@min,title,object_index
+    - fields%5Bquiz%5D=@min,title,object_index
+    - fields%5Buser%5D=@min,image_50x50,initials,url
+    - ordering=-is_me,-created
+    - page=1
+    - page_size=15
+    url: https://www.udemy.com/api-2.0/courses/{course_id}/discussions?{query}
+  list:
+    query:
+    - page_size=1400
+    - fields[lecture]=@min,object_index,asset,supplementary_assets,sort_order,is_published,is_free
+    - fields[quiz]=@min,object_index,title,sort_order,is_published
+    - fields[practice]=@min,object_index,title,sort_order,is_published
+    - fields[chapter]=@min,description,object_index,title,sort_order,is_published
+    - fields[asset]=@min,title,filename,asset_type,external_url,length,status
+    url: https://www.udemy.com/api-2.0/courses/{course_id}/cached-subscriber-curriculum-items/?{query}
+  overview:
+    url: https://www.udemy.com/{home}/learn/v4/overview

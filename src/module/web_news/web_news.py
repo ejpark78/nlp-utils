@@ -97,15 +97,10 @@ class WebNewsCrawler(WebNewsBase):
         """카테고리 하위 목록을 크롤링한다."""
         self.set_env(env=self.init_arguments())
 
-        self.update_config(
-            filename=self.env.config,
-            column=self.env.column,
-            job_id=self.env.job_id,
-            job_category=self.env.category,
-        )
+        self.open_config(filename=self.env.config)
 
         # 카테고리 하위 목록을 크롤링한다.
-        for job in self.job_info:
+        for job in self.config['jobs']:
             # override elasticsearch config
             job['host'] = self.cache_info['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
             job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
@@ -245,7 +240,7 @@ class WebNewsCrawler(WebNewsBase):
                 resp=trace,
                 url_info=url_info,
                 base_url=url_info['url'],
-                parsing_info=self.parsing_info['list'],
+                parsing_info=self.config['parsing']['list'],
             )
             if item is None or 'url' not in item:
                 continue
@@ -324,7 +319,7 @@ class WebNewsCrawler(WebNewsBase):
             return True, trace_list
 
         # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default={})
+        doc_history = self.get_history(name='doc_history', default=set())
 
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
@@ -338,7 +333,7 @@ class WebNewsCrawler(WebNewsBase):
                 resp=trace,
                 url_info=url_info,
                 base_url=base_url,
-                parsing_info=self.parsing_info['list'],
+                parsing_info=self.config['parsing']['list'],
             )
             if item is None or 'url' not in item:
                 continue
@@ -400,7 +395,7 @@ class WebNewsCrawler(WebNewsBase):
                     elastic_utils=elastic_utils,
                 )
 
-            doc_history[doc_id] = 1
+            doc_history.add(doc_id)
 
             # 후처리 작업 실행
             if 'post_process' not in job:
@@ -464,7 +459,7 @@ class WebNewsCrawler(WebNewsBase):
             resp=resp,
             base_url=item['url'],
             url_info=article_url,
-            parsing_info=self.parsing_info['article'],
+            parsing_info=self.config['parsing']['article'],
         )
 
         if article is None:
@@ -581,7 +576,7 @@ class WebNewsCrawler(WebNewsBase):
 
     def trace_next_page(self, html, url_info, job, date) -> None:
         """다음 페이지를 따라간다."""
-        if 'trace_next_page' not in self.parsing_info:
+        if 'trace_next_page' not in self.config['parsing']:
             return
 
         # html 이 json 인 경우
@@ -589,7 +584,7 @@ class WebNewsCrawler(WebNewsBase):
             return
 
         # 한번에 따라갈 깊이
-        trace_tag = self.parsing_info['trace_next_page']
+        trace_tag = self.config['parsing']['trace_next_page']
         if trace_tag['max_trace'] > 0:
             if trace_tag['max_trace'] < self.trace_depth:
                 self.trace_depth = 0
@@ -601,7 +596,7 @@ class WebNewsCrawler(WebNewsBase):
         trace_list = []
         soup = self.parser.parse_html(
             html=html,
-            parser_type=self.parsing_info['parser'],
+            parser_type=self.config['parsing']['parser'],
         )
         self.parser.trace_tag(
             soup=soup,
@@ -619,10 +614,10 @@ class WebNewsCrawler(WebNewsBase):
                 for pattern in trace_tag['replace']:
                     url = re.sub(pattern['from'], pattern['to'], url, flags=re.DOTALL)
 
-            next_url = self.parsing_info
+            next_url = self.config['parsing']
             next_url['url'] = url
 
-            resp = self.get_html_page(url_info=self.parsing_info, tags='#article #next_page')
+            resp = self.get_html_page(url_info=self.config['parsing'], tags='#article #next_page')
             if resp is None:
                 continue
 
@@ -841,14 +836,14 @@ class WebNewsCrawler(WebNewsBase):
         else:
             soup = self.parser.parse_html(
                 html=html,
-                parser_type=self.parsing_info['parser'],
+                parser_type=self.config['parsing']['parser'],
             )
 
             self.parser.trace_tag(
                 soup=soup,
                 index=0,
                 result=trace_list,
-                tag_list=self.parsing_info['trace'],
+                tag_list=self.config['parsing']['trace'],
             )
 
             str_trace_list = ''
@@ -904,7 +899,7 @@ class WebNewsCrawler(WebNewsBase):
             if isinstance(resp, str) or isinstance(resp, bytes):
                 resp = self.parser.parse_html(
                     html=resp,
-                    parser_type=self.parsing_info['parser'],
+                    parser_type=self.config['parsing']['parser'],
                 )
 
             # 목록에서 기사 본문 링크 추출
@@ -980,10 +975,8 @@ class WebNewsCrawler(WebNewsBase):
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
-        parser.add_argument('--column', default='trace_list', help='config 컬럼이름 (trace_list)')
-
         # 설정파일
-        parser.add_argument('--config', default=None, help='설정 파일 정보')
+        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
 
         parser.add_argument('--update-category-only', action='store_true', default=False, help='category 정보만 업데이트')
 

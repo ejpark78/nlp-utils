@@ -139,7 +139,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: detailTitle
       name: div
@@ -147,7 +147,7 @@ parsing:
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: detailTitle
       name: div
@@ -180,7 +180,7 @@ parsing:
     - attribute:
         class: content-inner__banner
       name: div
-    tag:
+    value:
     - attribute:
         class: detailView
       name: div
@@ -189,14 +189,14 @@ parsing:
   - comment: 이미지
     delete: true
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: view_photo up
       name: img
     type: src
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         class: detailView
       name: div

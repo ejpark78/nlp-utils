@@ -45,7 +45,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: article_info
       name: div
@@ -55,7 +55,7 @@ parsing:
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: article_info
       name: div
@@ -71,7 +71,7 @@ parsing:
     - attribute:
         class: picon
       name: i
-    tag:
+    value:
     - attribute:
         class: article_info
       name: div
@@ -81,7 +81,7 @@ parsing:
     type: text
   - comment: 출처
     key: source_url
-    tag:
+    value:
     - attribute:
         class: sponsor
       name: div
@@ -92,14 +92,14 @@ parsing:
     key: html_content
     remove:
     - name: script
-    tag:
+    value:
     - attribute:
         id: articleBodyContents
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: end_photo_org
       name: span
@@ -108,7 +108,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: end_photo_org
       name: span
@@ -118,7 +118,7 @@ parsing:
     type: text
   - comment: 동영상
     key: vod
-    tag:
+    value:
     - attribute:
         id: articleBodyContents
       name: div
@@ -126,7 +126,7 @@ parsing:
     type: html
   - comment: 원래 섹션
     key: source_section
-    tag:
+    value:
     - attribute:
         class: guide_categorization
       name: div
@@ -136,7 +136,7 @@ parsing:
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         id: articleBodyContents
       name: div
@@ -148,17 +148,17 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: a
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: date
       name: span
@@ -167,7 +167,7 @@ parsing:
     value_type: single
   - comment: 출처
     key: source
-    tag:
+    value:
     - attribute:
         class: writing
       name: span

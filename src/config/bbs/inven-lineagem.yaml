@@ -72,17 +72,17 @@ parsing:
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
-    tag:
+    value:
     - select: div.articleCategory
     type: text
   - comment: 사용자명
     key: writer
-    tag:
+    value:
     - select: div.articleWriter
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - select: div.articleDate
     type: text
     type_convert: date
@@ -92,28 +92,28 @@ parsing:
     replace:
     - from: ^.*조회:.*([0-9]+).*$
       to: \g<1>
-    tag:
+    value:
     - select: div.articleHit
     type: text
   - comment: 추천수
     key: recommend_count
-    tag:
+    value:
     - select: span#bbsRecommendNum1
     type: text
   - comment: 제목
     key: title
-    tag:
+    value:
     - select: div.articleTitle
     type: text
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - select: div#tbArticle
     type: html
     value_type: merge
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - select: div#powerbbsContent
     type: text
     value_type: merge
@@ -124,13 +124,13 @@ parsing:
   list:
   - comment: 게시글 아이디
     key: article_id
-    tag:
+    value:
     - select: td.bbsNo
     type: text
     value_type: single
   - comment: 제목
     key: title
-    tag:
+    value:
     - select: td.bbsSubject a.sj_ln
     type: text
     value_type: single
@@ -139,34 +139,34 @@ parsing:
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
-    tag:
+    value:
     - select: td.bbsSubject a.sj_ln
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - select: td.bbsSubject a.sj_ln
     type: href
     value_type: single
   - comment: 사용자명
     key: writer
-    tag:
+    value:
     - select: td.bbsNick
     type: text
     value_type: single
   - comment: 날짜
     key: date
-    tag:
+    value:
     - select: td.date
     type: text
   - comment: 조회수
     key: view_count
-    tag:
+    value:
     - select: td.hit
     type: text
   - comment: 추천수
     key: recommend_count
-    tag:
+    value:
     - select: td.req
     type: text
   parser: html5lib

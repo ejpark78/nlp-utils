@@ -85,7 +85,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
         )
 
         # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default={})
+        doc_history = self.get_history(name='doc_history', default=set())
 
         for doc_id in id_list:
             # 중복 확인
@@ -203,7 +203,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
     def trace_reply_list(self, url_frame, date, elastic):
         """특정 날짜의 뉴스 목록을 따라간다."""
         # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default={})
+        doc_history = self.get_history(name='doc_history', default=set())
 
         headers = deepcopy(self.headers['desktop'])
 
@@ -405,7 +405,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         step = -1
 
-        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
+        self.open_config(filename=None)
 
         # 날짜 범위 추출
         if self.env.date_range is None:

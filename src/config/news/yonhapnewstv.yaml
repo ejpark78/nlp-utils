@@ -48,7 +48,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: inner
       name: div
@@ -58,7 +58,7 @@ parsing:
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: section-content
       name: div
@@ -70,21 +70,21 @@ parsing:
     value_type: single
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
     type: html
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
     type: text
   - comment: 비디오
     key: video
-    tag:
+    value:
     - attribute:
         class: single_featured_video
       name: div
@@ -99,14 +99,14 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: clip-link
       name: a
     type: title
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: clip-link
       name: a

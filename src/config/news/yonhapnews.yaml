@@ -52,7 +52,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: articleWrap
       name: div
@@ -65,7 +65,7 @@ parsing:
     replace:
     - from: 송고시간[ ]+[|][ ]+
       to: ''
-    tag:
+    value:
     - attribute:
         id: articleWrap
       name: div
@@ -76,7 +76,7 @@ parsing:
     type_convert: date
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - attribute:
         id: articleWrap
       name: div
@@ -86,7 +86,7 @@ parsing:
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: article-img
       name: div
@@ -95,14 +95,14 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: img-info
       name: div
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         id: articleWrap
       name: div
@@ -117,7 +117,7 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: news-tl
       name: strong
@@ -125,7 +125,7 @@ parsing:
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: news-tl
       name: strong

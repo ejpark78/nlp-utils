@@ -50,7 +50,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: article_tit
       name: div
@@ -61,7 +61,7 @@ parsing:
     replace:
     - from: ^.*입력
       to: ''
-    tag:
+    value:
     - attribute:
         class: write_info
       name: div
@@ -76,7 +76,7 @@ parsing:
     replace:
     - from: ^.*수정
       to: ''
-    tag:
+    value:
     - attribute:
         class: write_info
       name: div
@@ -88,7 +88,7 @@ parsing:
     value_type: single
   - comment: 출처
     key: source
-    tag:
+    value:
     - attribute:
         class: write_info
       name: div
@@ -98,7 +98,7 @@ parsing:
     type: text
   - comment: 지면
     key: paper_url
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
@@ -115,7 +115,7 @@ parsing:
     - attribute:
         class: article_msn_ad
       name: div
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
@@ -123,7 +123,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: image
       name: div
@@ -132,14 +132,14 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: caption
       name: p
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         itemprop: articleBody
       name: div
@@ -152,7 +152,7 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: dt
     - attribute:
         class: title_cr
@@ -160,7 +160,7 @@ parsing:
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: dt
     - attribute:
         class: title_cr
@@ -168,7 +168,7 @@ parsing:
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - name: dd
     - attribute:
         class: date
@@ -178,7 +178,7 @@ parsing:
     value_type: single
   - comment: 출처
     key: source
-    tag:
+    value:
     - name: dd
     - attribute:
         class: provide

@@ -40,7 +40,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: articleView
       name: div
@@ -50,7 +50,7 @@ parsing:
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: firstDate
       name: span
@@ -63,7 +63,7 @@ parsing:
     replace:
     - from: 원문
       to: ''
-    tag:
+    value:
     - attribute:
         class: articleInfo
       name: p
@@ -73,7 +73,7 @@ parsing:
     type: text
   - comment: 출처 주소
     key: source_url
-    tag:
+    value:
     - attribute:
         class: articleInfo
       name: p
@@ -89,14 +89,14 @@ parsing:
     - attribute:
         title: 광고
       name: iframe
-    tag:
+    value:
     - attribute:
         id: realArtcContents
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         id: realArtcContents
       name: div
@@ -105,7 +105,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         id: realArtcContents
       name: div
@@ -121,7 +121,7 @@ parsing:
     - attribute:
         title: 광고
       name: iframe
-    tag:
+    value:
     - attribute:
         id: realArtcContents
       name: div
@@ -133,17 +133,17 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: a
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: origin
       name: span

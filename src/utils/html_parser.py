@@ -7,8 +7,9 @@ from __future__ import print_function
 
 import re
 from datetime import datetime
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, parse_qs, ParseResult
 
+import bs4
 import pytz
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
@@ -88,41 +89,39 @@ class HtmlParser(object):
 
         return soup
 
-    def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None) -> dict:
+    def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None) -> dict or None:
         """ 상세 정보 HTML 을 파싱한다."""
         if html is not None:
-            from bs4 import BeautifulSoup
-
             soup = BeautifulSoup(html, 'html5lib')
 
         if soup is None:
             return None
 
         # 태그 정리
-        self.replace_tag(soup, ['script', 'javascript', 'style'])
+        self.replace_tag(soup=soup, tag_list=['script', 'javascript', 'style'], replacement='')
 
-        self.remove_comment(soup)
+        self.remove_comment(soup=soup)
         self.remove_banner(soup=soup)
-        self.remove_attribute(soup, ['onclick', 'role', 'style', 'data-log'])
+        self.remove_attribute(soup, attribute_list=['onclick', 'role', 'style', 'data-log'])
 
         result = {}
-        for item in parsing_info:
+        for conf in parsing_info:
             tag_list = []
-            self.trace_tag(soup=soup, tag_list=item['tag'], index=0, result=tag_list)
+            self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)
 
             value_list = []
             for tag in tag_list:
                 # 이미 값이 있는 경우
-                if item['key'] in result:
-                    val = result[item['key']]
+                if conf['key'] in result:
+                    val = result[conf['key']]
                     if isinstance(val, str) and len(val) > 0:
                         continue
 
                     continue
 
                 # 태그 삭제
-                if 'remove' in item:
-                    for pattern in item['remove']:
+                if 'remove' in conf:
+                    for pattern in conf['remove']:
                         target_list = []
                         self.trace_tag(soup=tag, tag_list=[pattern], index=0, result=target_list)
 
@@ -130,10 +129,10 @@ class HtmlParser(object):
                             target.extract()
 
                 # 값 추출
-                if item['type'] == 'text':
+                if conf['type'] == 'text':
                     value = tag.get_text().strip()
                     value = re.sub('[ ]+', ' ', value)
-                elif item['type'] == 'html':
+                elif conf['type'] == 'html':
                     try:
                         value = str(tag)
                     except Exception as e:
@@ -153,30 +152,30 @@ class HtmlParser(object):
                             'exception': str(e),
                         })
                 else:
-                    if tag.has_attr(item['type']):
-                        value = tag[item['type']]
+                    if tag.has_attr(conf['type']):
+                        value = tag[conf['type']]
                     else:
                         value = str(tag.prettify())
 
                     # url 일 경우: urljoin
-                    if item['type'] == 'src' or item['type'] == 'href':
+                    if conf['type'] == 'src' or conf['type'] == 'href':
                         value = urljoin(base_url, value)
 
                 # 태그 삭제
-                if 'delete' in item and item['delete'] is True:
+                if 'delete' in conf and conf['delete'] is True:
                     tag.extract()
 
                 # 문자열 치환
-                if 'replace' in item:
-                    for pattern in item['replace']:
+                if 'replace' in conf:
+                    for pattern in conf['replace']:
                         value = re.sub('\r?\n', ' ', value, flags=re.MULTILINE)
                         value = re.sub(pattern['from'], pattern['to'], value, flags=re.DOTALL)
 
                         value = value.strip()
 
                 # 타입 변환
-                if 'type_convert' in item:
-                    if item['type_convert'] == 'date':
+                if 'type_convert' in conf:
+                    if conf['type_convert'] == 'date':
                         value = self.parse_date(value)
 
                         # 날짜 파싱이 안된 경우
@@ -186,17 +185,17 @@ class HtmlParser(object):
                 value_list.append(value)
 
             # 타입 제약: 디폴트 목록형
-            if 'value_type' in item:
-                if item['value_type'] == 'single':
+            if 'value_type' in conf:
+                if conf['value_type'] == 'single':
                     if len(value_list) > 0:
                         value_list = value_list[0]
                     else:
                         value_list = ''
 
-                if item['value_type'] == 'merge':
+                if conf['value_type'] == 'merge':
                     value_list = '\n'.join(value_list)
 
-                if item['value_type'] == 'unique':
+                if conf['value_type'] == 'unique':
                     value_list = list(set(value_list))
 
             # 값의 개수가 하나인 경우, 스칼라로 변경한다.
@@ -208,12 +207,12 @@ class HtmlParser(object):
                     if value_list[0] == '':
                         continue
 
-                    result[item['key']] = value_list[0]
+                    result[conf['key']] = value_list[0]
                     continue
             elif value_list == '':
                 continue
 
-            result[item['key']] = value_list
+            result[conf['key']] = value_list
 
         return result
 
@@ -280,13 +279,13 @@ class HtmlParser(object):
         return date
 
     @staticmethod
-    def replace_tag(html_tag: BeautifulSoup, tag_list: list, replacement: str = '', attribute: dict = None) -> bool:
+    def replace_tag(soup: BeautifulSoup, tag_list: list, replacement: str = '', attribute: dict = None) -> bool:
         """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ... """
-        if html_tag is None:
+        if soup is None:
             return False
 
         for tag_name in tag_list:
-            for tag in html_tag.find_all(tag_name, attrs=attribute):
+            for tag in soup.find_all(tag_name, attrs=attribute):
                 if replacement == '':
                     tag.extract()
                 else:
@@ -297,9 +296,7 @@ class HtmlParser(object):
     @staticmethod
     def remove_comment(soup: BeautifulSoup) -> bool:
         """ html 태그 중에서 주석 태그를 제거한다."""
-        from bs4 import Comment
-
-        for element in soup(text=lambda text: isinstance(text, Comment)):
+        for element in soup(text=lambda text: isinstance(text, bs4.Comment)):
             element.extract()
 
         return True
@@ -335,10 +332,8 @@ class HtmlParser(object):
         return soup
 
     @staticmethod
-    def parse_url(url: str):
+    def parse_url(url: str) -> (dict, str, ParseResult):
         """url 에서 쿼리문을 반환한다."""
-        from urllib.parse import urlparse, parse_qs
-
         url_info = urlparse(url)
         query = parse_qs(url_info.query)
         for key in query:

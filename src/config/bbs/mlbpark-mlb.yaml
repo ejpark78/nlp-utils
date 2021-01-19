@@ -18,7 +18,7 @@ parsing:
   article:
   - comment: 제목 헤더
     key: title_header
-    tag:
+    value:
     - select: div.left_cont div.titles span.word
     type: text
   - comment: 제목
@@ -27,12 +27,12 @@ parsing:
     - attribute:
         class: word
       name: span
-    tag:
+    value:
     - select: div.left_cont div.titles
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - select: ul.view_head div.text div.text_right div.text3 span.val
     type: text
     type_convert: date
@@ -42,7 +42,7 @@ parsing:
     replace:
     - from: ^.*추천 ([0-9]+).*$
       to: \g<1>
-    tag:
+    value:
     - select: ul.view_head div.text div.text_left div.text2
     type: text
   - comment: 조회수
@@ -50,7 +50,7 @@ parsing:
     replace:
     - from: ^.*조회 ([0-9]+).*$
       to: \g<1>
-    tag:
+    value:
     - select: ul.view_head div.text div.text_left div.text2
     type: text
   - comment: 글쓴이
@@ -58,34 +58,34 @@ parsing:
     replace:
     - from: 입력.+$
       to: ''
-    tag:
+    value:
     - select: ul.view_head div.text div.text_left span.nick
     type: text
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - select: div.contents div.left_cont
     type: html
     value_type: merge
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - select: div.view_context div#contentDetail
     type: text
     value_type: merge
   - comment: 댓글 텍스트
     key: reply_list.text
-    tag:
+    value:
     - select: div.reply_list div.txt_box span.re_txt
     type: text
   - comment: 댓글 사용자
     key: reply_list.author
-    tag:
+    value:
     - select: div.reply_list div.txt_box span.name
     type: text
   - comment: 댓글 시간
     key: reply_list.date
-    tag:
+    value:
     - select: div.reply_list div.txt_box span.date
     type: text
     type_convert: date
@@ -96,19 +96,19 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: a
     type: title
     value_type: single
   - comment: url
     key: url
-    tag:
+    value:
     - name: a
     type: href
     value_type: single
   - comment: 제목 헤더
     key: title_header
-    tag:
+    value:
     - select: span.word
     type: text
   - comment: 댓글수
@@ -118,7 +118,7 @@ parsing:
       to: ''
     - from: '[]]'
       to: ''
-    tag:
+    value:
     - select: span.replycnt
     type: text
   parser: html5lib

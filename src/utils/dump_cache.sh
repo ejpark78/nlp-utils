@@ -64,7 +64,7 @@ cp "${filename}" "${dump_filename}"
 sync
 
 echo "데이터 덤프: ${dump_filename} => json,xlsx"
-PYTHONPATH=. python3 "${export_scripts}" \
+PYTHONPATH=src python3 "src/${export_scripts}" \
   --export \
   --cache "${dump_filename}"
 sync
@@ -73,13 +73,13 @@ echo "데이터셋 업로드"
 cp "${meta_filename}" "${dump_meta}"
 sync
 
-PYTHONPATH=. python3 "${export_scripts}" \
+PYTHONPATH=src python3 "src/${export_scripts}" \
   --upload \
   --meta "${dump_meta}"
 sync
 
 echo "sql 덤프"
-utils/sql_dump.sh "${dump_filename}"
+src/utils/sql_dump.sh "${dump_filename}"
 sync
 
 #rm "${dump_filename}"

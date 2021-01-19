@@ -50,7 +50,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: article_top
       name: div
@@ -63,7 +63,7 @@ parsing:
       to: ''
     - from: ^.+최종수정
       to: ''
-    tag:
+    value:
     - attribute:
         class: info-view
       name: p
@@ -78,14 +78,14 @@ parsing:
     remove:
     - name: iframe
     - name: script
-    tag:
+    value:
     - attribute:
         class: news_content
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: news_content
       name: div
@@ -95,7 +95,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: news_content
       name: div
@@ -106,7 +106,7 @@ parsing:
     value_type: unique
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         class: news_content
       name: div
@@ -118,19 +118,19 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: dt
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: dt
     - name: a
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - name: dd
     - name: span
     type: text

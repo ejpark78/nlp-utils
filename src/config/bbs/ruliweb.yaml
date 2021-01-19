@@ -29,7 +29,7 @@ parsing:
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
-    tag:
+    value:
     - select: h4.subject span.subject_text
     type: text
   - comment: 제목
@@ -37,7 +37,7 @@ parsing:
     replace:
     - from: ^.*[[].+?[]](.+)$
       to: \g<1>
-    tag:
+    value:
     - select: h4.subject span.subject_text
     type: text
   - comment: 댓글수
@@ -45,12 +45,12 @@ parsing:
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
-    tag:
+    value:
     - select: h4.subject strong.reply_count
     type: text
   - comment: 작성자
     key: writer
-    tag:
+    value:
     - select: div.user_info strong.nick
     type: text
   - comment: 작성자 srl
@@ -58,27 +58,27 @@ parsing:
     replace:
     - from: ^.*[(](.+?)[)].*$
       to: \g<1>
-    tag:
+    value:
     - select: div.user_info span.member_srl
     type: text
   - comment: 출석일수
     key: attend
-    tag:
+    value:
     - select: div.user_info span.attend
     type: text
   - comment: 출석일수
     key: level
-    tag:
+    value:
     - select: div.user_info span.level
     type: text
   - comment: 사용자 경험지수
     key: experience
-    tag:
+    value:
     - select: div.user_info span.exp_text
     type: text
   - comment: 추천수
     key: like_count
-    tag:
+    value:
     - select: div.user_info span.like
     type: text
   - comment: 날짜
@@ -86,31 +86,31 @@ parsing:
     replace:
     - from: '[(](.+?)[)]'
       to: \g<1>
-    tag:
+    value:
     - select: div.user_info span.regdate
     type: text
     type_convert: date
     value_type: single
   - comment: html 본문
     key: html_content
-    tag:
+    value:
     - select: div.board_main_view > div.view_content
     type: html
     value_type: merge
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - select: div.board_main_view > div.view_content
     type: text
     value_type: merge
   - comment: 댓글 목록
     key: reply_html_content
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element
     type: html
   - comment: 댓글 작성자
     key: reply_list.writer
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.user div.nick
     type: text
   - comment: 댓글 작성자 srl
@@ -118,17 +118,17 @@ parsing:
     replace:
     - from: ^.*[(](.+?)[)].*$
       to: \g<1>
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.user span.member_srl
     type: text
   - comment: 댓글 텍스트
     key: reply_list.text
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.comment span.text
     type: text
   - comment: 댓글 작성 시간
     key: reply_list.date
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         span.time
     type: text
@@ -136,13 +136,13 @@ parsing:
     value_type: single
   - comment: 댓글 좋아요 수량
     key: reply_list.like_count
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_like span.num
     type: text
   - comment: 댓글 싫어요 수량
     key: reply_list.dislike_count
-    tag:
+    value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_dislike span.num
     type: text
@@ -153,50 +153,50 @@ parsing:
   list:
   - comment: 게시글 아이디
     key: article_id
-    tag:
+    value:
     - select: td.id
     type: text
     value_type: single
   - comment: 제목
     key: title
-    tag:
+    value:
     - select: td.subject a.deco
     type: text
     value_type: single
   - comment: url
     key: url
-    tag:
+    value:
     - select: td.subject a.deco
     type: href
     value_type: single
   - comment: 소분류
     key: sub_category
-    tag:
+    value:
     - select: td.divsn
     type: text
   - comment: 사용자명
     key: writer
-    tag:
+    value:
     - select: td.writer
     type: text
   - comment: 댓글수
     key: reply_count
-    tag:
+    value:
     - select: td.subject span.num
     type: text
   - comment: 추천수
     key: recommend_count
-    tag:
+    value:
     - select: td.recomd
     type: text
   - comment: 조회수
     key: view_count
-    tag:
+    value:
     - select: td.hit
     type: text
   - comment: 날짜
     key: date
-    tag:
+    value:
     - select: td.time
     type: text
   parser: html5lib

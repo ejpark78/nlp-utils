@@ -46,7 +46,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: container
       name: div
@@ -59,7 +59,7 @@ parsing:
     replace:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
-    tag:
+    value:
     - attribute:
         class: byline
       name: div
@@ -67,7 +67,7 @@ parsing:
     type_convert: date
   - comment: 글쓴이
     key: author
-    tag:
+    value:
     - attribute:
         class: info_byline
       name: p
@@ -81,14 +81,14 @@ parsing:
     - attribute:
         id: photoAD
       name: div
-    tag:
+    value:
     - attribute:
         id: articleBody
       name: div
     type: html
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: art_photo_wrap
       name: div
@@ -97,7 +97,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: art_photo_wrap
       name: div
@@ -106,7 +106,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: art_photo_wrap
       name: div
@@ -116,14 +116,14 @@ parsing:
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         id: articleBody
       name: div
     type: text
   - comment: 기사 문단
     key: content_text
-    tag:
+    value:
     - attribute:
         class: content_text
       name: p
@@ -135,12 +135,12 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: a
     type: href
   parser: lxml

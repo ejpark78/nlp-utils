@@ -51,7 +51,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: news_title_text_id
       name: h1
@@ -63,7 +63,7 @@ parsing:
       to: ''
     - from: ^.+수정
       to: ''
-    tag:
+    value:
     - attribute:
         class: news_date
       name: div
@@ -72,7 +72,7 @@ parsing:
     value_type: single
   - comment: 글쓴이
     key: author
-    tag:
+    value:
     - attribute:
         class: news_title_author
       name: div
@@ -82,7 +82,7 @@ parsing:
     type: text
   - comment: 글쓴이 소속
     key: author_source
-    tag:
+    value:
     - attribute:
         class: author_source
       name: span
@@ -92,7 +92,7 @@ parsing:
     remove:
     - name: iframe
     - name: script
-    tag:
+    value:
     - attribute:
         class: par
       name: div
@@ -100,7 +100,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: news_imgbox
       name: div
@@ -109,14 +109,14 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: news_imgbox
       name: div
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         class: par
       name: div
@@ -124,7 +124,7 @@ parsing:
     value_type: merge
   - comment: 다국어 기사
     key: language_list
-    tag:
+    value:
     - attribute:
         class: news_lang
       name: div
@@ -137,13 +137,13 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - name: dt
     - name: a
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - name: dt
     - name: a
     type: href
@@ -152,7 +152,7 @@ parsing:
     replace:
     - from: '[(].+[)]'
       to: ''
-    tag:
+    value:
     - attribute:
         class: date_author
       name: dd

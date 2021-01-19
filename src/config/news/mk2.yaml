@@ -49,7 +49,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         id: view_tit
       name: div
@@ -62,7 +62,7 @@ parsing:
     replace:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
-    tag:
+    value:
     - attribute:
         id: view_tit
       name: div
@@ -83,7 +83,7 @@ parsing:
     - attribute:
         target: _blank
       name: a
-    tag:
+    value:
     - attribute:
         id: artText
       name: div
@@ -91,7 +91,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         class: center_image
       name: div
@@ -100,7 +100,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         class: center_image
       name: div
@@ -108,7 +108,7 @@ parsing:
     type: text
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         id: artText
       name: div
@@ -125,7 +125,7 @@ parsing:
   list:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: tit
       name: dt
@@ -133,7 +133,7 @@ parsing:
     type: text
   - comment: url
     key: url
-    tag:
+    value:
     - attribute:
         class: tit
       name: dt
@@ -141,7 +141,7 @@ parsing:
     type: href
   - comment: 날짜
     key: date
-    tag:
+    value:
     - attribute:
         class: date
       name: span
@@ -159,7 +159,7 @@ parsing:
     replace:
     - from: cm=.+?&
       to: ''
-    tag:
+    value:
     - attribute:
         class: list_paging
       name: div

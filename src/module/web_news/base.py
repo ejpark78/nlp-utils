@@ -7,14 +7,15 @@ from __future__ import print_function
 
 import json
 from datetime import datetime
+from os import getenv
 from time import sleep
 
 import pytz
 import requests
 import urllib3
+import yaml
 from cachelib import SimpleCache
 
-from module.web_news.config import Config
 from module.web_news.post_process import PostProcessUtils
 from utils.elasticsearch_utils import ElasticSearchUtils
 from utils.html_parser import HtmlParser
@@ -30,24 +31,30 @@ class WebNewsBase(object):
     def __init__(self):
         super().__init__()
 
+        self.debug = int(getenv('DEBUG', 0))
+
+        self.config = None
+
         self.parser = HtmlParser()
         self.post_process_utils = PostProcessUtils()
 
-        self.cfg = None
-        self.headers = None
+        self.headers = {
+            'mobile': {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                              'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                              'Version/11.0 Mobile/15A372 Safari/604.1'
+            },
+            'desktop': {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/87.0.4280.141 Safari/537.36'
+            }
+        }
 
-        self.parsing_info = None
-
-        # crawler job 정보
-        self.job_info = None
         self.sleep_time = 2
-
-        # 크롤링 상태 정보
-        self.status = None
 
         # 후처리 정보
         self.post_process_list = None
-        self.cache = SimpleCache()
 
         # 로컬 시간 정보
         self.timezone = pytz.timezone('Asia/Seoul')
@@ -55,6 +62,8 @@ class WebNewsBase(object):
         # 날짜 범위
         self.date_range = None
         self.page_range = None
+
+        self.cache = SimpleCache()
 
         # elasticsearch
         self.cache_info = {
@@ -64,6 +73,12 @@ class WebNewsBase(object):
         }
 
         self.logger = Logger()
+
+    def open_config(self, filename: str) -> dict:
+        with open(filename, 'r') as fp:
+            self.config = dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
+
+        return self.config
 
     def update_date_range(self) -> None:
         """날짜를 갱신한다."""
@@ -224,12 +239,12 @@ class WebNewsBase(object):
 
         return
 
-    def set_history(self, value: str, name: str) -> None:
+    def set_history(self, value: set, name: str) -> None:
         """문서 아이디 이력을 저장한다."""
         self.cache.set(name, value, timeout=600)
         return
 
-    def get_history(self, name: str, default: dict) -> str:
+    def get_history(self, name: str, default: set) -> set:
         """문서 아이디 이력을 반환한다."""
         value = self.cache.get(name)
 
@@ -258,7 +273,7 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history, reply_info=None) -> bool:
+    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history: set, reply_info=None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:
@@ -291,7 +306,7 @@ class WebNewsBase(object):
             if doc[field_name] != reply_info['count']:
                 return False
 
-        doc_history[doc_id] = 1
+        doc_history.add(doc_id)
 
         self.logger.info(msg={
             'level': 'INFO',
@@ -301,26 +316,3 @@ class WebNewsBase(object):
         })
 
         return True
-
-    def update_config(self, filename: str or None, job_id: str, job_category: str, column: str) -> None:
-        """설정 정보를 읽어 드린다."""
-        self.cfg = Config(
-            config=filename,
-            job_id=job_id,
-            job_category=job_category,
-        )
-
-        # request 헤더 정보
-        self.headers = self.cfg.headers
-
-        if self.cfg.parsing_info is not None and column in self.cfg.parsing_info:
-            self.parsing_info = self.cfg.parsing_info[column]
-
-        # crawler job 정보
-        if column in self.cfg.job_info:
-            self.job_info = self.cfg.job_info[column]
-
-            if 'sleep' in self.job_info:
-                self.sleep_time = self.job_info['sleep']
-
-        return

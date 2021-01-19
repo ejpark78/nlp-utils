@@ -114,7 +114,7 @@ parsing:
   article:
   - comment: 제목
     key: title
-    tag:
+    value:
     - attribute:
         class: news_headline
       name: div
@@ -124,7 +124,7 @@ parsing:
     type: text
   - comment: 기사 원문 주소
     key: source_url
-    tag:
+    value:
     - attribute:
         class: news_headline
       name: div
@@ -146,7 +146,7 @@ parsing:
       to: ''
     - from: ^.+최종수정
       to: ''
-    tag:
+    value:
     - attribute:
         class: news_headline
       name: div
@@ -162,7 +162,7 @@ parsing:
     - attribute:
         class: source
       name: p
-    tag:
+    value:
     - attribute:
         id: newsEndContents
       name: div
@@ -170,7 +170,7 @@ parsing:
     value_type: merge
   - comment: 이미지
     key: image_list.image
-    tag:
+    value:
     - attribute:
         id: newsEndContents
       name: div
@@ -182,7 +182,7 @@ parsing:
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
-    tag:
+    value:
     - attribute:
         id: newsEndContents
       name: div
@@ -195,7 +195,7 @@ parsing:
     type: text
   - comment: 동영상
     key: vod
-    tag:
+    value:
     - attribute:
         id: newsEndContents
       name: div
@@ -203,7 +203,7 @@ parsing:
     type: html
   - comment: 텍스트 본문
     key: content
-    tag:
+    value:
     - attribute:
         id: newsEndContents
       name: div
