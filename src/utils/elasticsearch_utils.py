@@ -6,11 +6,11 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import pickle
 import ssl
+import sys
 from datetime import datetime
 from os import makedirs
-from os.path import isfile, isdir
+from os.path import isdir
 
 import pytz
 import urllib3
@@ -26,9 +26,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
-    def __init__(self, host, index, insert=True, http_auth='crawler:crawler2019', bulk_size=1000,
-                 tag=None, split_index=False, log_path='log'):
-        """ 생성자 """
+    def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = 'crawler:crawler2019',
+                 bulk_size: int = 1000, tag: str = None, split_index: bool = False, log_path: str = 'log'):
         self.host = host
         self.http_auth = (http_auth.split(':'))
 
@@ -57,7 +56,7 @@ class ElasticSearchUtils(object):
         if self.host is not None:
             self.open()
 
-    def create_index(self, elastic, index=None):
+    def create_index(self, elastic, index: str = None) -> bool:
         """인덱스를 생성한다."""
         if elastic is None:
             return False
@@ -81,11 +80,11 @@ class ElasticSearchUtils(object):
                 'index': self.index,
                 'exception': str(e),
             })
-            return
+            return False
 
         return True
 
-    def convert_datetime(self, document):
+    def convert_datetime(self, document: dict) -> dict or None:
         """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
         if document is None:
             return None
@@ -101,7 +100,7 @@ class ElasticSearchUtils(object):
 
         return document
 
-    def get_index_year_tag(self, date):
+    def get_index_year_tag(self, date: datetime or str) -> int:
         """인덱스의 년도 태그를 반환한다."""
         from dateutil.parser import parse as parse_date
 
@@ -109,10 +108,11 @@ class ElasticSearchUtils(object):
             date = parse_date(date)
             if date.tzinfo is None:
                 date = self.timezone.localize(date)
+
         return date.year
 
     @staticmethod
-    def get_target_index(index, split_index=False, tag=None):
+    def get_target_index(index: str, split_index: bool = False, tag: str = None) -> str or None:
         """복사 대상의 인덱스를 반환한다."""
         if index is None:
             return None
@@ -138,7 +138,7 @@ class ElasticSearchUtils(object):
 
         return ssl_context
 
-    def open(self):
+    def open(self) -> None:
         """서버에 접속한다."""
 
         # host 접속
@@ -442,82 +442,71 @@ class ElasticSearchUtils(object):
 
         return
 
-    def dump(self, index=None, query=None, size=1000, limit=-1, only_source=True, stdout=False):
-        """문서를 덤프 받는다."""
-        if index is None:
-            index = self.index
+    def dump_index(self, index: str, size: int = 1000) -> None:
+        if index is None or index == '':
+            return
 
         count = 1
         sum_count = 0
         scroll_id = ''
 
-        p_bar = None
+        # save settings/mapping
+        settings = {
+            **self.conn.indices.get_settings(index)[index],
+            **self.conn.indices.get_mapping(index)[index]
+        }
+        print(json.dumps(settings, ensure_ascii=False), flush=True)
 
-        result = []
+        p_bar = None
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(
-                index=index,
-                size=size,
-                query=query,
-                scroll_id=scroll_id,
-            )
+            resp = self.scroll(index=index, size=size, scroll_id=scroll_id)
+
+            count = len(resp['hits'])
+            scroll_id = resp['scroll_id']
 
             if p_bar is None:
                 p_bar = tqdm(
-                    total=total,
-                    desc='dump doc id list {index}'.format(index=index),
+                    desc=index,
+                    total=resp['total'],
+                    unit_scale=True,
                     dynamic_ncols=True
                 )
-            p_bar.update(count)
 
+            p_bar.update(count)
             sum_count += count
 
-            self.logger.info(msg={
-                'level': 'INFO',
-                'index': index,
-                'count': count,
-                'sum_count': sum_count,
-                'total': total,
-            })
+            for item in resp['hits']:
+                doc = item['_source']
 
-            for item in hits:
-                if stdout is True:
-                    str_doc = json.dumps(item['_source'], ensure_ascii=False)
-                    print(str_doc, flush=True)
+                doc.update({
+                    '_id': item['_id'],
+                    '_index': item['_index'],
+                })
 
-                if only_source is True:
-                    result.append(item['_source'])
-                else:
-                    result.append(item)
+                print(json.dumps(doc, ensure_ascii=False), flush=True)
 
-            if 0 < limit < sum_count:
-                break
+        return
 
-            # 종료 조건
-            if count < size:
-                break
-
-        return result
-
-    def scroll(self, scroll_id, query, index=None, size=1000):
-        """스크롤 방식으로 데이터를 조회한다."""
-        if index is None:
-            index = self.index
+    def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None, query: dict = None) -> dict:
+        params = {
+            'request_timeout': 10 * 60
+        }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
             search_result = self.conn.search(
                 index=index,
-                body=query,
                 scroll='2m',
                 size=size,
-                params=self.params,
+                query=query,
+                params=params,
+                _source=source,
             )
         else:
             search_result = self.conn.scroll(
                 scroll_id=scroll_id,
                 scroll='2m',
-                params=self.params,
+                params=params,
             )
 
         # 검색 결과 추출
@@ -529,9 +518,11 @@ class ElasticSearchUtils(object):
         if isinstance(total, dict) and 'value' in total:
             total = total['value']
 
-        count = len(hits['hits'])
-
-        return hits['hits'], scroll_id, count, total
+        return {
+            'hits': hits['hits'],
+            'total': total,
+            'scroll_id': scroll_id,
+        }
 
     def get_by_ids(self, id_list, index, source, result):
         """ 문서 아이디로 문서를 가져온다."""
@@ -573,7 +564,7 @@ class ElasticSearchUtils(object):
         p_bar = None
 
         while count > 0:
-            hits, scroll_id, count, total = self.scroll(
+            resp = self.scroll(
                 index=index,
                 size=size,
                 query=query,
@@ -582,7 +573,7 @@ class ElasticSearchUtils(object):
 
             if p_bar is None:
                 p_bar = tqdm(
-                    total=total,
+                    total=resp['total'],
                     desc='dump doc id list {index}'.format(index=index),
                     dynamic_ncols=True
                 )
@@ -595,11 +586,11 @@ class ElasticSearchUtils(object):
                 'index': index,
                 'count': count,
                 'sum_count': sum_count,
-                'total': total,
+                'total': resp['total'],
             }
             self.logger.info(msg=log_msg)
 
-            for item in hits:
+            for item in resp['hits']:
                 document_id = item['_id']
 
                 if len(item['_source']) == 0:
@@ -613,83 +604,6 @@ class ElasticSearchUtils(object):
 
             if count < size:
                 break
-
-        return result
-
-    def get_url_list(self, index, size=1000, date_range=None, query='', query_field=''):
-        """ elastic search 에서 url 목록을 조회한다. """
-        result = []
-
-        count = 1
-        sum_count = 0
-        scroll_id = ''
-
-        scroll_query = {}
-        if query != '':
-            scroll_query = json.loads(query)
-        elif date_range is not None:
-            token = date_range.split('~')
-
-            scroll_query = {
-                'query': {
-                    'bool': {
-                        'must': [
-                            {
-                                'range': {
-                                    query_field: {
-                                        'format': 'yyyy-MM-dd',
-                                        'gte': token[0],
-                                        'lte': token[1]
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-
-        while count > 0:
-            hits, scroll_id, count, total = self.scroll(
-                index=index,
-                size=size,
-                query=scroll_query,
-                scroll_id=scroll_id,
-            )
-
-            sum_count += count
-
-            self.logger.info(msg={
-                'level': 'INFO',
-                'index': index,
-                'count': count,
-                'sum_count': sum_count,
-                'total': total,
-            })
-
-            for item in hits:
-                result.append(item['_source'])
-
-            # 종료 조건
-            if count < size:
-                break
-
-        return result
-
-    @staticmethod
-    def save_cache(filename, cache_data):
-        """데이를 피클로 저장한다."""
-        with open(filename, 'wb') as fp:
-            pickle.dump(cache_data, fp)
-
-        return
-
-    @staticmethod
-    def load_cache(filename):
-        """피클로 저장된 데이터를 반환한다."""
-        result = {}
-        if isfile(filename):
-            with open(filename, 'rb') as fp:
-                result = pickle.load(fp)
 
         return result
 
@@ -820,215 +734,102 @@ class ElasticSearchUtils(object):
 
         return False
 
-    def batch(self):
-        """ 배치 작업을 수행한다."""
-        args = self.init_arguments()
-
-        self.host = args.host
-        self.index = args.index
-        self.http_auth = 'crawler:crawler2019'
-
-        self.open()
-
-        if args.export:
-            self.dump(index=args.index, stdout=True)
-
-        return
-
-    def import_data(self, index, id_field=None, use_year_tag=False):
+    def restore_index(self, index: str, size: int = 1000) -> None:
         """데이터를 서버에 저장한다."""
-        import sys
-        from dateutil.parser import parse as parse_date
+        p_bar = None
 
-        idx_cache = {}
-
-        count = 0
+        bulk = []
         for line in sys.stdin:
-            doc = json.loads(line)
+            if line.strip() == '' or line[0] == '#':
+                continue
 
+            doc = json.loads(line)
             if doc is None:
                 continue
 
-            count += 1
-            if count % 1000 == 0:
-                print('{} {:,}'.format(index, count))
-
-            if id_field is not None and id_field in doc:
-                doc['_id'] = doc[id_field]
-
-            # 날짜 변환
-            for k in ['date', 'curl_date', 'update_date', 'insert_date', '@timestamp']:
-                if k not in doc:
-                    continue
-
-                if isinstance(doc[k], dict) and '$date' in doc[k]:
-                    doc[k] = doc[k]['$date']
-
-                if isinstance(doc[k], str):
-                    if doc[k] == '' or doc[k] == '|':
-                        del doc[k]
-                        continue
-
-                    dt = parse_date(doc[k])
-
-                    # 시간대를 변경한다.
-                    if dt.tzinfo is not None:
-                        dt = dt.astimezone(self.timezone)
-                    elif doc[k].find('+00:00') > 0:
-                        dt = dt.astimezone(self.timezone)
-                    elif doc[k].find('+09:00') < 0:
-                        dt = self.timezone.localize(dt)
-
-                    doc[k] = dt
-
-            target_idx = index
-            if use_year_tag is True:
-                try:
-                    target_idx = '{index}-{year}'.format(index=index, year=doc['date'].year)
-
-                    if target_idx not in idx_cache:
-                        idx_cache[target_idx] = self.get_id_list(index=target_idx)
-
-                    # 중복 아이디 확인
-                    if doc['document_id'] in idx_cache[target_idx]:
-                        continue
-                except Exception as e:
-                    print(e)
-
-            self.save_document(document=doc, index=target_idx)
-
-        self.flush()
-
-        return
-
-    def delete_doc_by_id(self, index, id_list):
-        """아이디로 문서를 삭제한다."""
-        self.conn.delete_by_query(
-            index=index,
-            body={
-                'query': {
-                    'ids': {
-                        'values': id_list
-                    }
-                }
-            }
-        )
-
-        return
-
-    def rename_docs(self, error_ids, index):
-        """ """
-
-        def parse_url(url):
-            from urllib.parse import urlparse, parse_qs
-
-            url_info = urlparse(url)
-
-            query = parse_qs(url_info.query)
-            for key in query:
-                query[key] = query[key][0]
-
-            return query
-
-        step = 500
-        size = len(error_ids)
-
-        for i in tqdm(range(0, size, step), dynamic_ncols=True):
-            st, en = (i, i + step - 1)
-            if en > size:
-                en = size + 1
-
-            doc_list = []
-            self.conn.get_by_ids(
-                id_list=error_ids[st:en],
-                index=index,
-                source=None,
-                result=doc_list,
-            )
-
-            bulk_data = []
-            for doc in doc_list:
-                if 'url' not in doc:
-                    continue
-
-                # src_id 삭제
-                bulk_data.append({
-                    'delete': {
-                        '_id': doc['document_id'],
-                        '_index': index,
-                    }
-                })
-
-                doc_id = '{oid}-{aid}'.format(**parse_url(doc['url']))
-                flag = self.conn.exists(index=index, id=doc_id, doc_type='_doc')
-                if flag is True:
-                    continue
-
-                # 문서 저장
-                doc['document_id'] = doc_id
-
-                bulk_data.append({
-                    'update': {
-                        '_id': doc_id,
-                        '_index': index,
-                    }
-                })
-
-                bulk_data.append({
-                    'doc': doc,
-                    'doc_as_upsert': True,
-                })
-
-            self.bulk_data[self.conn.host] = bulk_data
-            self.flush()
-
-        return
-
-    @staticmethod
-    def simplify_nlu_wrapper(doc_list):
-        """ """
-        result = []
-        for doc in tqdm(doc_list):
-            if 'nlu_wrapper' not in doc:
+            if 'settings' in doc and 'mappings' in doc:
                 continue
 
-            for k in doc['nlu_wrapper']:
-                buf = {}
-                for item in doc['nlu_wrapper'][k]:
-                    for c in item:
-                        if c not in buf:
-                            buf[c] = ''
+            if p_bar is None:
+                p_bar = tqdm(
+                    desc=index,
+                    unit_scale=True,
+                    dynamic_ncols=True
+                )
 
-                        if isinstance(item[c], list):
-                            buf[c] += '\n'.join(item[c])
-                        else:
-                            buf[c] += item[c]
+            p_bar.update()
 
-                row = {
-                    'document_id': doc['document_id'],
-                    'date': doc['date'],
-                    'column': k,
-                }
-                row.update(buf)
+            doc_info = {
+                '_index': index
+            }
+            if '_id' in doc:
+                doc_info['_id'] = doc['_id']
+                del doc['_id']
 
-                result.append(row)
+            if '_index' in doc:
+                del doc['_index']
 
-        return result
+            bulk += [
+                {
+                    'index': doc_info
+                },
+                doc
+            ]
+
+            if len(bulk) > size:
+                _ = self.conn.bulk(
+                    index=index,
+                    body=bulk,
+                    refresh=True,
+                    params=self.params,
+                )
+
+                bulk = []
+
+        if len(bulk) > size:
+            _ = self.conn.bulk(
+                index=index,
+                body=bulk,
+                refresh=True,
+                params=self.params,
+            )
+
+        return
+
+    def batch(self):
+        env = self.init_arguments()
+
+        self.host = env.host
+        self.index = env.index
+        self.http_auth = env.http_auth
+
+        self.open()
+
+        if env.dump:
+            self.dump_index(index=env.index, size=env.size)
+
+        if env.restore:
+            self.restore_index(index=env.index, size=env.size)
+
+        return
 
     @staticmethod
     def init_arguments():
-        """ 옵션 설정"""
         import argparse
 
         parser = argparse.ArgumentParser(description='')
 
-        parser.add_argument('-export', action='store_true', default=False, help='')
+        parser.add_argument('--dump', action='store_true', default=False, help='')
+        parser.add_argument('--restore', action='store_true', default=False, help='')
 
-        parser.add_argument('-host', default='http://corpus.ncsoft.com:9200', help='elastic search 주소')
-        parser.add_argument('-index', default=None, help='인덱스명')
+        parser.add_argument('--host', default=None, help='elastic search 주소')
+        parser.add_argument('--http-auth', default=None, help='elastic auth')
+        parser.add_argument('--index', default=None, help='인덱스명')
+
+        parser.add_argument('--size', default=1000, type=int, help='인덱스명')
 
         return parser.parse_args()
 
 
 if __name__ == '__main__':
-    ElasticSearchUtils(host=None, index=None).batch()
+    ElasticSearchUtils().batch()

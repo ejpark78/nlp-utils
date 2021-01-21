@@ -5,8 +5,6 @@ LABEL maintainer="ejpark@ncsoft.co.kr"
 
 ENV APP_HOME=/app
 
-ADD app.tar.gz ${APP_HOME}
-
 ADD ssl/*.crt /usr/share/ca-certificates/
 
 RUN echo "" >> /etc/ca-certificates.conf \
@@ -14,6 +12,7 @@ RUN echo "" >> /etc/ca-certificates.conf \
     && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
     && update-ca-certificates
 
+ADD app.tar.gz ${APP_HOME}
 RUN echo && echo "# pip 저장소 설정" \
     && pip3 install --no-cache-dir -r ${APP_HOME}/requirements.txt
 
