@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -32,13 +32,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "economy"
+      - "--config"
+      - "/config/naver/economy.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -60,13 +59,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "international"
+      - "--config"
+      - "/config/naver/international.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -85,13 +83,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "it"
+      - "--config"
+      - "/config/naver/it.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -113,13 +110,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "living"
+      - "--config"
+      - "/config/naver/living.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -144,13 +140,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "opinion"
+      - "--config"
+      - "/config/naver/opinion.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -165,13 +160,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "politics"
+      - "--config"
+      - "/config/naver/politics.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -191,13 +185,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "society"
+      - "--config"
+      - "/config/naver/society.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -221,13 +214,12 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "sports"
+      - "--config"
+      - "/config/naver/sports.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
@@ -251,38 +243,15 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "tv"
+      - "--config"
+      - "/config/naver/tv.yaml"
       - "--date-range"
       - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
       - "TV"
-
-#  - name: naver-weather-2020
-#    environmentVariables:
-#      - name: ELASTIC_SEARCH_INDEX
-#        value: $(INDEX_WEATHER)
-#    configMapRef: naver
-#    args:
-#      - "python3"
-#      - "module/web_news/web_news.py"
-#      - "--overwrite"
-#      - "--skip-check-history"
-#      - "--category"
-#      - "naver"
-#      - "--job-id"
-#      - "weather"
-#      - "--date-range"
-#      - "2021-01-13~2021-01-13"
-#      - "--sleep"
-#      - "10"
-#    subSategory:
-#      - "날씨"
-#
