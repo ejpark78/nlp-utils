@@ -16,10 +16,10 @@ import urllib3
 import yaml
 from cachelib import SimpleCache
 
-from .post_process import PostProcessUtils
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
+from crawler.web_news.post_process import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -254,7 +254,7 @@ class WebNewsBase(object):
 
         return value
 
-    def get_dict_value(self, data, key_list, result) -> None:
+    def get_dict_value(self, data: list or dict, key_list: list, result: list) -> None:
         """commentlist.list 형태의 키 값을 찾아서 반환한다."""
         if len(key_list) == 0:
             if isinstance(data, list):
@@ -273,7 +273,8 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id, elastic_utils, url, index, doc_history: set, reply_info=None) -> bool:
+    def check_doc_id(self, doc_id: str, elastic_utils: ElasticSearchUtils, url: str, index: str, doc_history: set,
+                     reply_info: dict = None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if doc_id in doc_history:

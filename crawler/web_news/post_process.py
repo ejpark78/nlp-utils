@@ -9,8 +9,10 @@ import bz2
 import json
 import pickle
 import queue
+import socket
 import threading
 from datetime import datetime
+from time import sleep
 
 import pytz
 import requests
@@ -23,17 +25,16 @@ class PostProcessUtils(object):
     """후처리 함수"""
 
     def __init__(self):
-        """ 생성자 """
+        self.logger = Logger()
+
         self.parser = HtmlParser()
         self.job_queue = queue.Queue()
 
         self.is_reachable = False
 
         self.timezone = pytz.timezone('Asia/Seoul')
-        
-        self.logger = Logger()
 
-    def insert_job(self, document, post_process_list, job):
+    def insert_job(self, document: dict, post_process_list: list, job: dict) -> None:
         """스레드 큐에 문서와 할일을 저장한다."""
 
         if document is None:
@@ -76,7 +77,7 @@ class PostProcessUtils(object):
 
         return
 
-    def batch(self):
+    def batch(self) -> bool:
         """후처리 모듈을 실행한다."""
 
         if self.job_queue.empty() is True:
@@ -98,14 +99,10 @@ class PostProcessUtils(object):
                 elif item['module'] == 'rabbit_mq':
                     self.rabbit_mq(document=document, info=item)
 
-        return
+        return True
 
-    def wait_mq_init(self, host, port):
+    def wait_mq_init(self, host: str, port: str) -> None:
         """mq가 초기화될 때까지 기다린다."""
-        import socket
-
-        from time import sleep
-
         if self.is_reachable is True:
             return
 
@@ -129,7 +126,7 @@ class PostProcessUtils(object):
 
         return
 
-    def rabbit_mq(self, document, info):
+    def rabbit_mq(self, document: dict, info: dict) -> bool:
         """ Rabbit MQ로 메세지를 보낸다. """
         import pika
 
@@ -226,7 +223,7 @@ class PostProcessUtils(object):
         return True
 
     @staticmethod
-    def convert_datetime(document):
+    def convert_datetime(document: dict) -> dict:
         """ 입력받은 문서에서 데이터 타입이 datetime 를 문자열로 변환한다."""
         for k in document:
             item = document[k]
@@ -236,7 +233,7 @@ class PostProcessUtils(object):
 
         return document
 
-    def corpus_process(self, document, info):
+    def corpus_process(self, document: dict, info: dict) -> bool:
         """ 코퍼스 저처리 분석 데몬에 문서를 전달한다. """
         if document is None:
             return False

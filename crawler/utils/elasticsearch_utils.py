@@ -8,9 +8,11 @@ from __future__ import print_function
 import json
 import ssl
 import sys
+from argparse import Namespace
 from datetime import datetime
 from os import makedirs
 from os.path import isdir
+from ssl import SSLContext
 
 import pytz
 import urllib3
@@ -56,13 +58,13 @@ class ElasticSearchUtils(object):
         if self.host is not None:
             self.open()
 
-    def create_index(self, elastic, index: str = None) -> bool:
+    def create_index(self, conn: Elasticsearch, index: str = None) -> bool:
         """인덱스를 생성한다."""
-        if elastic is None:
+        if conn is None:
             return False
 
         try:
-            elastic.indices.create(
+            conn.indices.create(
                 index=index,
                 body={
                     'settings': {
@@ -100,7 +102,7 @@ class ElasticSearchUtils(object):
 
         return document
 
-    def get_index_year_tag(self, date: datetime or str) -> int:
+    def get_index_year_tag(self, date: datetime or str) -> str:
         """인덱스의 년도 태그를 반환한다."""
         from dateutil.parser import parse as parse_date
 
@@ -109,7 +111,7 @@ class ElasticSearchUtils(object):
             if date.tzinfo is None:
                 date = self.timezone.localize(date)
 
-        return date.year
+        return str(date.year)
 
     @staticmethod
     def get_target_index(index: str, split_index: bool = False, tag: str = None) -> str or None:
@@ -128,7 +130,7 @@ class ElasticSearchUtils(object):
         return '{index}-{tag}'.format(index=index, tag=tag)
 
     @staticmethod
-    def get_ssl_verify_mode():
+    def get_ssl_verify_mode() -> SSLContext:
         """ssl 모드 설정을 반환한다."""
         # https://github.com/elastic/elasticsearch-py/issues/712
         ssl_context = create_ssl_context()
@@ -167,7 +169,7 @@ class ElasticSearchUtils(object):
         # 인덱스가 없는 경우, 생성함
         try:
             if self.conn.indices.exists(index=self.index) is False:
-                self.create_index(self.conn, self.index)
+                self.create_index(conn=self.conn, index=self.index)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -179,11 +181,11 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_index_list(self):
+    def get_index_list(self) -> list:
         """모든 인덱스 목록을 반환한다."""
         return [v for v in self.conn.indices.get('*') if v[0] != '.']
 
-    def get_column_list(self, index_list, column_type=None):
+    def get_column_list(self, index_list: str or list, column_type=None) -> list:
         """index 내의 field 목록을 반환한다."""
         result = []
 
@@ -203,7 +205,7 @@ class ElasticSearchUtils(object):
 
         return list(set(result))
 
-    def update_document(self, document, doc_id, field, value, index):
+    def update_document(self, document: dict, doc_id: str, field, value: str, index: str) -> bool:
         """문서를 저장한다."""
         # 서버 접속
         if self.conn is None:
@@ -242,7 +244,7 @@ class ElasticSearchUtils(object):
 
         return True
 
-    def save_document(self, document, index=None, delete=True):
+    def save_document(self, document: dict, index: str = None, delete: bool = True) -> bool:
         """문서를 저장한다."""
         # 서버 접속
         if self.conn is None:
@@ -314,7 +316,7 @@ class ElasticSearchUtils(object):
 
         raise TypeError('not JSON serializable')
 
-    def flush(self):
+    def flush(self) -> None or bool:
         """버퍼에 남은 문서를 저장한다."""
         if self.conn is None:
             return None
@@ -421,7 +423,7 @@ class ElasticSearchUtils(object):
 
         return True
 
-    def save_logs(self, doc_list, error_msg):
+    def save_logs(self, doc_list: list, error_msg: dict) -> None:
         """ 저장 에러나는 문서를 로컬에 저장한다."""
         if isdir(self.log_path) is False:
             makedirs(self.log_path)
@@ -524,7 +526,7 @@ class ElasticSearchUtils(object):
             'scroll_id': scroll_id,
         }
 
-    def get_by_ids(self, id_list, index, source, result):
+    def get_by_ids(self, id_list: list, index: str, result: list, source: list = None) -> None:
         """ 문서 아이디로 문서를 가져온다."""
         if len(id_list) == 0:
             return
@@ -545,7 +547,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_id_list(self, index, size=5000, query_cond=None, limit=-1):
+    def get_id_list(self, index: str, size=5000, query_cond=None, limit=-1) -> dict:
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         result = {}
         if self.conn.indices.exists(index) is False:
@@ -607,7 +609,8 @@ class ElasticSearchUtils(object):
 
         return result
 
-    def move_document(self, source_index, target_index, document_id, source_id=None, merge_column=None):
+    def move_document(self, source_index: str, target_index: str, document_id: str, source_id: str = None,
+                      merge_column: str = None) -> None:
         """ 문서를 이동한다."""
         if source_id is None:
             source_id = document_id
@@ -673,7 +676,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def merge_doc(self, index, doc, column):
+    def merge_doc(self, index: str, doc: dict, column: str) -> dict:
         """이전에 수집한 문서와 병합"""
         doc_id = doc['_id']
 
@@ -714,7 +717,7 @@ class ElasticSearchUtils(object):
 
         return prev_doc
 
-    def exists(self, index, doc_id, list_index, list_id, merge_column=None):
+    def exists(self, index: str, doc_id: str, list_index, list_id, merge_column: str = None) -> bool:
         """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
         exists_doc = self.conn.exists(
             id=doc_id,
@@ -796,7 +799,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def batch(self):
+    def batch(self) -> None:
         env = self.init_arguments()
 
         self.host = env.host
@@ -814,7 +817,7 @@ class ElasticSearchUtils(object):
         return
 
     @staticmethod
-    def init_arguments():
+    def init_arguments() -> Namespace:
         import argparse
 
         parser = argparse.ArgumentParser(description='')

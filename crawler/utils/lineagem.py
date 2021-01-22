@@ -325,7 +325,7 @@ class LineageMBbsUtils(object):
     @staticmethod
     def import_data(host, index, filename, mapping):
         """데이터를 elasticsearch에 입력한다."""
-        from utils import ElasticSearchUtils
+        from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 
         elastic = ElasticSearchUtils(host=host)
 
@@ -342,8 +342,8 @@ class LineageMBbsUtils(object):
 
         elastic.open()
 
-        elastic.delete_index(elastic=elastic.conn, index=index)
-        elastic.create_index(elastic=elastic.conn, index=index, filename=mapping)
+        elastic.delete_index(conn=elastic.conn, index=index)
+        elastic.create_index(conn=elastic.conn, index=index)
 
         with bz2.open(filename, 'rb') as fp:
             bfp = BufferedReader(fp)

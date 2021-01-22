@@ -10,7 +10,7 @@ import json
 from nlplab.utils.elasticsearch_utils import ElasticSearchUtils
 from tqdm import tqdm
 
-from .cache_utils import CacheUtils
+from crawler.web_news.cache_utils import CacheUtils
 
 
 class RelocateWebNews(object):

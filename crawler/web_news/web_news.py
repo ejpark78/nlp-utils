@@ -22,7 +22,7 @@ from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
-from .base import WebNewsBase
+from crawler.web_news.base import WebNewsBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -78,7 +78,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.page_range = {
             'start': 1,
-            'end': 500,
+            'end': 900,
             'step': env.page_step
         }
 
@@ -118,11 +118,6 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             if len(self.job_sub_category) > 0 and 'category' in url and url['category'] not in self.job_sub_category:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': 'skip 카테고리',
-                    'category': url['category'],
-                })
                 continue
 
             if url['url_frame'].find('date') < 0:
@@ -868,7 +863,7 @@ class WebNewsCrawler(WebNewsBase):
             return trace_list
 
         # trace_list 이력 조회
-        trace_list_history = self.get_history(name='trace_list', default={})
+        trace_list_history = self.get_history(name='trace_list', default=set())
         if isinstance(trace_list_history, str) is True:
             if str_trace_list == trace_list_history:
                 self.logger.log(msg={
@@ -883,7 +878,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.set_history(
             name='trace_list',
-            value=str_trace_list,
+            value=set(str_trace_list),
         )
 
         return trace_list
