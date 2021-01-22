@@ -2,8 +2,10 @@
 ## 영화 리뷰 크롤러 개발 
 
 ```bash
-PYTHONPATH=. python3 module/movie_reviews/daum.py --use-cache --movie-reviews
-PYTHONPATH=. python3 module/movie_reviews/naver.py --use-cache --movie-reviews
+python3 -m crawler.movie_reviews.daum.daum --use-cache --movie-reviews
+
+python3 -m crawler.movie_reviews.naver.naver --use-cache --movie-reviews
+
 ```
 
 ## 테이블 목록 조회

@@ -11,7 +11,7 @@ from urllib.parse import unquote
 
 import pytz
 
-from .base import YoutubeBase
+from crawler.youtube.base import YoutubeBase
 
 
 class YoutubeLiveChat(YoutubeBase):

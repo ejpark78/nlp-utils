@@ -9,16 +9,16 @@ from os.path import splitext
 
 import urllib3
 
-from .cache_utils import CacheUtils
-from .naver.movie_code import NaverMovieCode
-from .naver.reviews import NaverMovieReviews
+from crawler.movie_reviews.cache_utils import CacheUtils
+from crawler.movie_reviews.daum.movie_code import DaumMovieCode
+from crawler.movie_reviews.daum.reviews import DaumMovieReviews
 from crawler.utils.dataset_utils import DataSetUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NaverMovieReviewCrawler(object):
+class DaumMovieReviewCrawler(object):
 
     def __init__(self):
         super().__init__()
@@ -27,16 +27,22 @@ class NaverMovieReviewCrawler(object):
 
     def export(self):
         alias = {
-            'score': 'rating',
             'code': 'movie_code',
-            'comment': 'text',
-            'author': 'username',
-            'sympathy': 'like',
-            'not_sympathy': 'dislike',
+            'content': 'text',
+            'postId': 'post_id',
+            'id': 'reply_id',
+            'userId': 'username',
+            'user.displayName': 'username',
+            'createdAt': 'date',
+            'likeCount': 'like',
+            'dislikeCount': 'dislike',
+            'recommendCount': 'recommend',
+            'childCount': 'reply',
         }
 
         columns = list(set(
-            'title,movie_code,username,date,rating,text,like,dislike'.split(',')
+            'title,movie_code,username,date,post_id,rating,text,'
+            'reply,like,dislike,recommend'.split(',')
         ))
 
         db = CacheUtils(filename=self.params.cache)
@@ -71,10 +77,10 @@ class NaverMovieReviewCrawler(object):
 
     def batch(self):
         if self.params.movie_code is True:
-            NaverMovieCode(params=self.params).batch()
+            DaumMovieCode(params=self.params).batch()
 
         if self.params.movie_reviews is True:
-            NaverMovieReviews(params=self.params).batch()
+            DaumMovieReviews(params=self.params).batch()
 
         if self.params.upload is True:
             DataSetUtils().upload(filename=self.params.meta)
@@ -91,20 +97,21 @@ class NaverMovieReviewCrawler(object):
         parser = argparse.ArgumentParser()
 
         parser.add_argument('--movie-code', action='store_true', default=False, help='영화 코드 크롤링')
+        parser.add_argument('--movie-info', action='store_true', default=False, help='영화 정보 크롤링')
         parser.add_argument('--movie-reviews', action='store_true', default=False, help='리뷰 크롤링')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
         parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
-        parser.add_argument('--cache', default='data/movie_reviews/naver.db', help='파일명')
+        parser.add_argument('--cache', default='data/movie_reviews/daum.db', help='파일명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--sleep', default=15, type=float, help='sleep time')
 
-        parser.add_argument('--meta', default='./data/movie_reviews/naver-meta.json', help='메타 파일명')
+        parser.add_argument('--meta', default='./data/movie_reviews/daum-meta.json', help='메타 파일명')
 
         return parser.parse_args()
 
 
 if __name__ == '__main__':
-    NaverMovieReviewCrawler().batch()
+    DaumMovieReviewCrawler().batch()

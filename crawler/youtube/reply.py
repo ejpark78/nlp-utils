@@ -7,7 +7,7 @@ from __future__ import print_function
 
 from time import sleep
 
-from .base import YoutubeBase
+from crawler.youtube.base import YoutubeBase
 
 
 class YoutubeReply(YoutubeBase):

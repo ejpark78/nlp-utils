@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from .cache_utils import CacheUtils
+from crawler.youtube.cache_utils import CacheUtils
 from crawler.utils.logger import Logger
 from crawler.utils.selenium_wire_utils import SeleniumWireUtils
 

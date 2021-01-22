@@ -14,6 +14,18 @@ tmux new -s youtube-bns
 tmux new -s youtube-news
 tmux new -s youtube-mtd
 
+
+python3 -m crawler.youtube.youtube \
+    --headless --reply \
+    --cache data/youtube/news.db \
+    --channel-list config/youtube/news.json
+
+python3 -m crawler.youtube.youtube \
+    --headless --reply \
+    --cache data/youtube/mtd.db \
+    --channel-list config/youtube/mtd.json
+
+
 PYTHONPATH=. python3 module/youtube/youtube.py \
     --headless \
     --videos \
@@ -21,33 +33,6 @@ PYTHONPATH=. python3 module/youtube/youtube.py \
     --filename data/youtube/bns.db \
     --channel-list config/youtube/bns.json
 
-PYTHONPATH=. python3 module/youtube/youtube.py \
-    --headless \
-    --videos \
-    --reply \
-    --filename data/youtube/mtd.db \
-    --channel-list config/youtube/mtd.json
-
-PYTHONPATH=. python3 module/youtube/youtube.py \
-    --headless \
-    --videos \
-    --reply \
-    --filename data/youtube/news.db \
-    --channel-list config/youtube/news.json 
-```
-
-```bash
-PYTHONPATH=. python3 module/youtube/youtube.py \
-    --headless \
-    --reply \
-    --filename data/youtube/mtd.db \
-    --channel-list config/youtube/mtd.json
-
-PYTHONPATH=. python3 module/youtube/youtube.py \
-    --headless \
-    --reply \
-    --filename data/youtube/news.db \
-    --channel-list config/youtube/news.json 
 ```
 
 ## sql 구문 변환

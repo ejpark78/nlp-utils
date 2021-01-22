@@ -7,10 +7,10 @@ from __future__ import print_function
 
 from os.path import splitext
 
-from .cache_utils import CacheUtils
-from .live_chat import YoutubeLiveChat
-from .reply import YoutubeReply
-from .video_list import YoutubeVideoList
+from crawler.youtube.cache_utils import CacheUtils
+from crawler.youtube.live_chat import YoutubeLiveChat
+from crawler.youtube.reply import YoutubeReply
+from crawler.youtube.video_list import YoutubeVideoList
 from crawler.utils.logger import Logger
 from crawler.utils.selenium_wire_utils import SeleniumWireUtils
 from crawler.utils.dataset_utils import DataSetUtils

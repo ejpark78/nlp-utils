@@ -8,7 +8,7 @@ from __future__ import print_function
 import json
 from time import sleep
 
-from .base import YoutubeBase
+from crawler.youtube.base import YoutubeBase
 
 
 class YoutubeVideoList(YoutubeBase):
