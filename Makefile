@@ -8,12 +8,17 @@ GIT_COMMIT = $(shell git rev-list --count HEAD)
 reinstall: clean build uninstall install
 
 .ONESHELL:
-build:
+install:
+	echo $(GIT_TAG).$(GIT_COMMIT) > version
+	python3 setup.py install
+
+.ONESHELL:
+wheel:
 	echo $(GIT_TAG).$(GIT_COMMIT) > version
 	python3 setup.py bdist_wheel
 
 .ONESHELL:
-install:
+wheel-install:
 	pip3 install dist/*.whl
 
 .ONESHELL:
@@ -32,6 +37,6 @@ uninstall:
 
 .ONESHELL:
 clean:
-	rm -rf build dist *.egg-info
+	rm -rf build dist crawler.egg-info
 
 # pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

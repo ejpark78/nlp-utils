@@ -18,7 +18,7 @@ from dateutil.parser import parse as parse_date
 from dotty_dict import dotty
 from tqdm import tqdm
 
-from utils.logger import Logger
+from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

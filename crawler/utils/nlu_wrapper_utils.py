@@ -11,7 +11,7 @@ import sys
 import requests
 import urllib3
 
-from utils.logger import LogMessage as LogMsg
+from crawler.utils.logger import LogMessage as LogMsg
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -195,7 +195,7 @@ class NLUWrapperUtils(object):
 
             p = pool.apply_async(
                 self.batch,
-                args=(self, i, text_list, option, timeout, url, )
+                args=(self, i, text_list, option, timeout, url,)
             )
             pool_list.append(p)
 

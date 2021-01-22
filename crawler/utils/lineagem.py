@@ -16,7 +16,7 @@ from io import BufferedReader
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from utils.logger import LogMessage as LogMsg
+from crawler.utils.logger import LogMessage as LogMsg
 
 MESSAGE = 25
 

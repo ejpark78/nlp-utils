@@ -18,7 +18,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
 
-from utils.logger import Logger
+from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
