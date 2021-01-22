@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH

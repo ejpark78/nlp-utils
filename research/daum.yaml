@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -38,12 +38,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "culture"
+      - "--config"
+      - "/config/daum/culture.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -67,12 +66,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "economy"
+      - "--config"
+      - "/config/daum/economy.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -99,12 +97,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "international"
+      - "--config"
+      - "/config/daum/international.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -126,12 +123,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "it"
+      - "--config"
+      - "/config/daum/it.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -150,12 +146,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "opinion"
+      - "--config"
+      - "/config/daum/opinion.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -173,12 +168,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "politics"
+      - "--config"
+      - "/config/daum/politics.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -197,12 +191,11 @@ jobs:
     configMapRef: daum
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "daum"
-      - "--job-id"
-      - "society"
+      - "--config"
+      - "/config/daum/society.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -233,12 +226,11 @@ jobs:
 #    configMapRef: daum
 #    args:
 #      - "python3"
-#      - "module/web_news/web_news.py"
+#      - "-m"
+#      - "crawler.web_news.web_news"
 #      - "--skip-check-history"
-#      - "--category"
-#      - "daum"
-#      - "--job-id"
-#      - "sports"
+#      - "--config"
+#      - "/config/daum/sports.yaml"
 #      - "--sleep"
 #      - "20"
 #    subSategory:

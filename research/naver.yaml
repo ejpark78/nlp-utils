@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -38,12 +38,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "economy"
+      - "--config"
+      - "/config/naver/economy.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -64,12 +63,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "international"
+      - "--config"
+      - "/config/naver/international.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -87,12 +85,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "it"
+      - "--config"
+      - "/config/naver/it.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -113,12 +110,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "living"
+      - "--config"
+      - "/config/naver/living.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -142,12 +138,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "opinion"
+      - "--config"
+      - "/config/naver/opinion.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -161,12 +156,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "politics"
+      - "--config"
+      - "/config/naver/politics.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -185,12 +179,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "society"
+      - "--config"
+      - "/config/naver/society.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -213,12 +206,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "sports"
+      - "--config"
+      - "/config/naver/sports.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -241,12 +233,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "tv"
+      - "--config"
+      - "/config/naver/tv.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -260,12 +251,11 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "naver"
-      - "--job-id"
-      - "weather"
+      - "--config"
+      - "/config/naver/weather.yaml"
       - "--sleep"
       - "20"
     subSategory:

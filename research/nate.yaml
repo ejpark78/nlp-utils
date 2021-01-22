@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 100Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -38,12 +38,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "economy"
+      - "--config"
+      - "/config/nate/economy.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -63,12 +62,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "entertainment"
+      - "--config"
+      - "/config/nate/entertainment.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -85,12 +83,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "international"
+      - "--config"
+      - "/config/nate/international.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -109,12 +106,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "it"
+      - "--config"
+      - "/config/nate/it.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -133,12 +129,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "politics"
+      - "--config"
+      - "/config/nate/politics.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -157,12 +152,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "society"
+      - "--config"
+      - "/config/nate/society.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -185,12 +179,11 @@ jobs:
     configMapRef: nate
     args:
       - "python3"
-      - "module/web_news/web_news.py"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--skip-check-history"
-      - "--category"
-      - "nate"
-      - "--job-id"
-      - "sports"
+      - "--config"
+      - "/config/nate/sports.yaml"
       - "--sleep"
       - "20"
     subSategory:

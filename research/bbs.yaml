@@ -1,10 +1,10 @@
 resources:
   requests:
     cpu: 200m
-    memory: 256Mi
+    memory: 128Mi
   limits:
     cpu: 200m
-    memory: 256Mi
+    memory: 128Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -38,13 +38,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "mlbpark-kbo"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/mlbpark-kbo.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -58,13 +57,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "mlbpark-mlb"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/mlbpark-mlb.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -78,13 +76,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "mlbpark-bullpen"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/mlbpark-bullpen.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -98,13 +95,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "ruliweb"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/ruliweb.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -118,13 +114,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "inven-lineagem"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/inven-lineagem.yaml"
       - "--sleep"
       - "20"
       - "--page-range"
@@ -142,13 +137,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "lineagem"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/lineagem.yaml"
       - "--sleep"
       - "20"
       - "--page-range"
@@ -166,13 +160,12 @@ jobs:
     configMapRef: bbs
     args:
       - "python3"
-      - "module/web_news/web_news.py"
-      - "--skip-check-history"
+      - "-m"
+      - "crawler.web_news.web_news"
       - "--overwrite"
-      - "--category"
-      - "bbs"
-      - "--job-id"
-      - "lineage2m"
+      - "--skip-check-history"
+      - "--config"
+      - "/config/bbs/lineage2m.yaml"
       - "--sleep"
       - "20"
       - "--page-range"
