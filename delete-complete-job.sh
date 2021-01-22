@@ -1,0 +1,1 @@
+kubectl delete jobs --field-selector status.successful=1 

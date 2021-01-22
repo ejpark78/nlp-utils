@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 256Mi
   limits:
     cpu: 200m
-    memory: 200Mi
+    memory: 256Mi
 
 imagePullSecrets: registry
 
@@ -40,7 +40,7 @@ jobs:
       - "--job-id"
       - "economy"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -68,7 +68,7 @@ jobs:
       - "--job-id"
       - "international"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -93,7 +93,7 @@ jobs:
       - "--job-id"
       - "it"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -121,7 +121,7 @@ jobs:
       - "--job-id"
       - "living"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -152,7 +152,7 @@ jobs:
       - "--job-id"
       - "opinion"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -173,7 +173,7 @@ jobs:
       - "--job-id"
       - "politics"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -199,7 +199,7 @@ jobs:
       - "--job-id"
       - "society"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -229,7 +229,7 @@ jobs:
       - "--job-id"
       - "sports"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -259,7 +259,7 @@ jobs:
       - "--job-id"
       - "tv"
       - "--date-range"
-      - "2021-01-01~2021-01-12"
+      - "2021-01-13~2021-01-13"
       - "--sleep"
       - "10"
     subSategory:
@@ -280,7 +280,7 @@ jobs:
 #      - "--job-id"
 #      - "weather"
 #      - "--date-range"
-#      - "2021-01-01~2021-01-12"
+#      - "2021-01-13~2021-01-13"
 #      - "--sleep"
 #      - "10"
 #    subSategory:

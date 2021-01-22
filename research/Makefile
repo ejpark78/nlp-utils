@@ -20,12 +20,25 @@ stop-all:
 	make NAME=naver-reply stop
 
 .ONESHELL:
+upgrade-all:
+	make NAME=bbs upgrade
+	make NAME=nate upgrade
+	make NAME=daum upgrade
+	make NAME=naver upgrade
+	make NAME=naver-kin upgrade
+	make NAME=naver-reply upgrade
+
+.ONESHELL:
 config:
 	kubectl apply -f configmap.yaml
 
 .ONESHELL:
 start:
 	helm install $(NAME) . -f $(NAME).yaml
+
+.ONESHELL:
+upgrade:
+	helm upgrade $(NAME) . -f $(NAME).yaml
 
 .ONESHELL:
 stop:

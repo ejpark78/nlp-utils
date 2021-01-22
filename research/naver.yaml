@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 256Mi
   limits:
     cpu: 200m
-    memory: 200Mi
+    memory: 256Mi
 
 imagePullSecrets: registry
 
@@ -27,7 +27,7 @@ environmentVariables:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
+  successfulJobsHistoryLimit: 2
 
 jobs:
   - name: naver-economy

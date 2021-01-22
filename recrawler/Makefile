@@ -8,13 +8,13 @@ start-all:
 	make NAME=naver start
 	make NAME=daum start
 	make NAME=nate start
-	make NAME=naver-terms start
+	#make NAME=naver-terms start
 
 stop-all:
 	make NAME=naver stop
 	make NAME=daum stop
 	make NAME=nate stop
-	make NAME=naver-terms stop
+	#make NAME=naver-terms stop
 
 start:
 	helm install $(NAME) . -f $(NAME).yaml

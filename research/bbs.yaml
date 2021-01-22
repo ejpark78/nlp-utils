@@ -1,10 +1,10 @@
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 256Mi
   limits:
     cpu: 200m
-    memory: 200Mi
+    memory: 256Mi
 
 imagePullSecrets: registry
 
@@ -27,7 +27,7 @@ environmentVariables:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 0
+  successfulJobsHistoryLimit: 2
 
 jobs:
   - name: bbs-mlbpark-kbo
@@ -127,9 +127,9 @@ jobs:
       - "inven-lineagem"
       - "--sleep"
       - "20"
-      - "--page_range"
+      - "--page-range"
       - "1~20"
-      - "--page_step"
+      - "--page-step"
       - "1"
     subSategory:
       - "''"
@@ -151,9 +151,9 @@ jobs:
       - "lineagem"
       - "--sleep"
       - "20"
-      - "--page_range"
+      - "--page-range"
       - "1~100"
-      - "--page_step"
+      - "--page-step"
       - "1"
     subSategory:
       - "''"
@@ -175,9 +175,9 @@ jobs:
       - "lineage2m"
       - "--sleep"
       - "20"
-      - "--page_range"
+      - "--page-range"
       - "1~100"
-      - "--page_step"
+      - "--page-step"
       - "1"
     subSategory:
       - "''"
