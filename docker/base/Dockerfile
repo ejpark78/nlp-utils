@@ -35,14 +35,12 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         apt-transport-https \
         apt-utils \
 		bash \
-        bridge-utils \
         build-essential \
         ca-certificates \
         curl \
         git \
         gnupg \
         gpg-agent \
-        jq \
         libcurl4-openssl-dev \
         libdb-dev \
         libssl-dev \
@@ -53,26 +51,22 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3-lxml \
         python3-pip \
         software-properties-common \
-        tmux \
         tzdata \
         wget \
         unzip \
-        zsh \
     && apt install -yq ${APT_OPTS} \
+        freerdp2-x11 \
         xorg-video-abi-24 \
+        xorgxrdp \
+        xrdp \
         xserver-xorg-core \
         xserver-xorg-input-all \
-        xrdp \
-        xorgxrdp \
-        freerdp2-x11 \
     && echo && echo "# xrdp 설정" \
     && adduser xrdp ssl-cert \
     && echo env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS cinnamon-session > ~/.xsession \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
-    && echo && echo "# oh my zsh 설치" \
-    && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -99,13 +93,7 @@ RUN echo && echo "chrome, webdriver 설치" \
     && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
     && rm -rf /tmp/* /var/tmp/*
 
-RUN echo && echo "nodejs 설치" \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt update -yq ${APT_OPTS} \
-    && apt install -yq ${APT_OPTS} \
-        nodejs \
-    && echo && echo "# 저장소 정리" \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ENV PYTHONWARNINGS "ignore:Unverified HTTPS request"
 
 # 파이썬 라이브러리 설치
 RUN echo && echo "# pip 저장소 설정" \
@@ -134,14 +122,10 @@ RUN echo && echo "# pip 저장소 설정" \
         html5lib \
         jsonlines \
         lxml \
-        minio \
-        openpyxl \
-        pandas \
         psutil \
         pycurl \
         pyjwt \
         python-dateutil \
-        qgrid \
         requests \
         requests-html \
         requests-oauthlib \
@@ -150,50 +134,7 @@ RUN echo && echo "# pip 저장소 설정" \
         selenium \
         selenium-wire \
         urllib3 \
-        xlsxwriter \
     && rm -rf /tmp/*
-
-RUN echo && echo "# jupyter 설치" \
-    && pip3 install --upgrade --no-cache-dir \
-		autopep8 \
-		bash_kernel \
-        jupyter \
-        jupyterlab \
-        jupyterthemes \
-        sshkernel \
-    && rm -rf /tmp/*
-
-RUN echo && echo "jupyter kernel 설치" \
-    && python3 -m sshkernel install \
-    && python3 -m bash_kernel.install
-
-RUN echo && echo "nbextension enable 설정" \
-	&& jupyter nbextension enable --py --sys-prefix qgrid \
-    && jupyter nbextension enable --py --sys-prefix widgetsnbextension \
-	\
-    && jupyter serverextension enable --py jupyterlab --sys-prefix \
-	\
-	&& echo && echo "jupyter notebook 테마 설정" \
-	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150
-
-WORKDIR /home/jovyan
-
-ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
-
-CMD ["bash", "-c", "\
-    jupyter lab \
-        --no-browser \
-        --ip=0.0.0.0 \
-        --port=${PORT} \
-        --allow-root \
-        --LabApp.token=${NB_TOKEN} \
-        --LabApp.password=${NB_PASSWD} \
-        --LabApp.allow_origin='*' \
-        --LabApp.base_url=${NB_PREFIX} \
-        --notebook-dir=/home/jovyan \
-        --NotebookApp.iopub_data_rate_limit=10000000 \
-        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
-"]
 
 ARG docker_image
 ARG docker_tag

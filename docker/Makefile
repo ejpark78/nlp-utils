@@ -65,10 +65,18 @@ base:
 
 .ONESHELL:
 build:
-	cd ../src/
-	tar cvfz ../docker/app.tar.gz \
+	cd ../
+	tar cvfz ./docker/app.tar.gz \
+		--exclude=.git* \
+		--exclude=ops \
+		--exclude=venv \
+		--exclude=data \
+		--exclude=dist \
+		--exclude=cache \
+		--exclude=build \
+		--exclude=notebook \
 		--exclude=__pycache__ \
-		. ../requirements.txt
+		.
 
 	cd -
 	docker build \
@@ -98,7 +106,7 @@ pull:
 push:
 	docker push $(IMAGE):$(MAJOR_VERSION)
 	docker push $(IMAGE):$(IMAGE_TAG)
-	docker push $(IMAGE):latest
+	#docker push $(IMAGE):latest
 
 .ONESHELL:
 check-ip:

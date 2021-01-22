@@ -104,7 +104,7 @@ class DictionaryEntrySearchCrawler(DictionaryUtils):
                              'searchPhoneticSymbolList']:
                         continue
 
-                    if item[k] is None or item[k] is 0 or item[k] is '':
+                    if item[k] is None or item[k] == 0 or item[k] == '':
                         continue
 
                     if isinstance(item[k], int) is False and len(item[k]) == 0:

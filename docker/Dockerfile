@@ -3,8 +3,6 @@ FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
 
-ENV APP_HOME=/app
-
 ADD ssl/*.crt /usr/share/ca-certificates/
 
 RUN echo "" >> /etc/ca-certificates.conf \
@@ -12,32 +10,21 @@ RUN echo "" >> /etc/ca-certificates.conf \
     && echo "SSLVACERT_ECC.crt" >> /etc/ca-certificates.conf \
     && update-ca-certificates
 
-ADD app.tar.gz ${APP_HOME}
-RUN echo && echo "# pip 저장소 설정" \
-    && pip3 install --no-cache-dir -r ${APP_HOME}/requirements.txt
+ENV PYTHONWARNINGS "ignore:Unverified HTTPS request"
 
-WORKDIR ${APP_HOME}
+RUN mkdir -p /src
+WORKDIR /src
 
-ENV PORT=8888 NB_USER=jovyan NB_UID=1000 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
-EXPOSE ${PORT}
+ADD app.tar.gz /src
+RUN echo && echo "크롤러 설치" \
+    && pip3 install -r requirements.txt \
+    && make install \
+    && mv crawler/config / \
+    && rm -rf /src
 
-CMD ["bash", "-c", "\
-    jupyter lab \
-        --no-browser \
-        --ip=0.0.0.0 \
-        --port=${PORT} \
-        --allow-root \
-        --LabApp.token=${NB_TOKEN} \
-        --LabApp.password=${NB_PASSWD} \
-        --LabApp.allow_origin='*' \
-        --LabApp.base_url=${NB_PREFIX} \
-        --notebook-dir=/home/jovyan \
-        --NotebookApp.iopub_data_rate_limit=10000000 \
-        --NotebookApp.terminado_settings=\"{'shell_command': ['/usr/bin/zsh']}\" \
-"]
+WORKDIR /app
 
 ENV CURL_CA_BUNDLE=""
-ENV PYTHONPATH=${APP_HOME}
 
 ARG docker_image
 ARG docker_tag
