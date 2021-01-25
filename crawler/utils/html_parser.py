@@ -113,76 +113,13 @@ class HtmlParser(object):
             for tag in tag_list:
                 # 이미 값이 있는 경우
                 if conf['key'] in result:
-                    val = result[conf['key']]
-                    if isinstance(val, str) and len(val) > 0:
-                        continue
-
                     continue
 
-                # 태그 삭제
-                if 'remove' in conf:
-                    for pattern in conf['remove']:
-                        target_list = []
-                        self.trace_tag(soup=tag, tag_list=[pattern], index=0, result=target_list)
+                val = self.extract_value(tag=tag, conf=conf, base_url=base_url)
+                if val is None:
+                    continue
 
-                        for target in target_list:
-                            target.extract()
-
-                # 값 추출
-                if conf['type'] == 'text':
-                    value = tag.get_text().strip()
-                    value = re.sub('[ ]+', ' ', value)
-                elif conf['type'] == 'html':
-                    try:
-                        value = str(tag)
-                    except Exception as e:
-                        self.logger.error(msg={
-                            'level': 'ERROR',
-                            'message': 'html 추출 에러',
-                            'exception': str(e),
-                        })
-                        continue
-
-                    try:
-                        value = str(tag.prettify())
-                    except Exception as e:
-                        self.logger.error(msg={
-                            'level': 'ERROR',
-                            'message': 'html prettify 에러',
-                            'exception': str(e),
-                        })
-                else:
-                    if tag.has_attr(conf['type']):
-                        value = tag[conf['type']]
-                    else:
-                        value = str(tag.prettify())
-
-                    # url 일 경우: urljoin
-                    if conf['type'] == 'src' or conf['type'] == 'href':
-                        value = urljoin(base_url, value)
-
-                # 태그 삭제
-                if 'delete' in conf and conf['delete'] is True:
-                    tag.extract()
-
-                # 문자열 치환
-                if 'replace' in conf:
-                    for pattern in conf['replace']:
-                        value = re.sub('\r?\n', ' ', value, flags=re.MULTILINE)
-                        value = re.sub(pattern['from'], pattern['to'], value, flags=re.DOTALL)
-
-                        value = value.strip()
-
-                # 타입 변환
-                if 'type_convert' in conf:
-                    if conf['type_convert'] == 'date':
-                        value = self.parse_date(value)
-
-                        # 날짜 파싱이 안된 경우
-                        if isinstance(value, datetime) is False:
-                            continue
-
-                value_list.append(value)
+                value_list.append(val)
 
             # 타입 제약: 디폴트 목록형
             if 'value_type' in conf:
@@ -215,6 +152,71 @@ class HtmlParser(object):
             result[conf['key']] = value_list
 
         return result
+
+    def extract_value(self, tag: BeautifulSoup, conf: dict, base_url: str):
+        # 태그 삭제
+        if 'remove' in conf:
+            for pattern in conf['remove']:
+                target_list = []
+                self.trace_tag(soup=tag, tag_list=[pattern], index=0, result=target_list)
+
+                for target in target_list:
+                    target.extract()
+
+        # 값 추출
+        if conf['type'] == 'text':
+            value = tag.get_text().strip()
+            value = re.sub('[ ]+', ' ', value)
+        elif conf['type'] == 'html':
+            try:
+                value = str(tag)
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'html 추출 에러',
+                    'exception': str(e),
+                })
+                return None
+
+            try:
+                value = str(tag.prettify())
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'html prettify 에러',
+                    'exception': str(e),
+                })
+        else:
+            if tag.has_attr(conf['type']):
+                value = tag[conf['type']]
+            else:
+                value = str(tag.prettify())
+
+            # url 일 경우: urljoin
+            if conf['type'] == 'src' or conf['type'] == 'href':
+                value = urljoin(base_url, value)
+
+        # 태그 삭제
+        if 'delete' in conf and conf['delete'] is True:
+            tag.extract()
+
+        # 문자열 치환
+        if 'replace' in conf:
+            for pattern in conf['replace']:
+                value = re.sub('\r?\n', ' ', value, flags=re.MULTILINE)
+                value = re.sub(pattern['from'], pattern['to'], value, flags=re.DOTALL)
+
+                value = value.strip()
+
+        # 타입 변환
+        if 'type_convert' in conf and conf['type_convert'] == 'date':
+            value = self.parse_date(value)
+
+            # 날짜 파싱이 안된 경우
+            if isinstance(value, datetime) is False:
+                return None
+
+        return value
 
     def trace_tag(self, soup: BeautifulSoup, tag_list: list, index: int, result: list) -> None:
         """ 전체 HTML 문서에서 원하는 값을 가진 태그를 찾는다."""

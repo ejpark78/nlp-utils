@@ -119,6 +119,9 @@ class ElasticSearchUtils(object):
         if index is None:
             return None
 
+        if '{year}' in index and tag is not None:
+            return index.format(year=tag)
+
         if split_index is False or tag is None:
             return index
 

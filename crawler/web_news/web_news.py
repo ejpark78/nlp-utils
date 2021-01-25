@@ -40,10 +40,11 @@ class WebNewsCrawler(WebNewsBase):
         self.trace_depth = 0
         self.trace_list_count = -1
 
-        self.job_sub_category = None
         self.date_step = 1
 
         self.update_date = False
+
+        self.job_sub_category = None
 
     def set_env(self, env: Namespace) -> None:
         self.env = env
@@ -241,8 +242,6 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             item['url'] = urljoin(url_info['url'], item['url'])
-
-            # 카테고리 업데이트
             item['category'] = job['category']
 
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
@@ -478,7 +477,7 @@ class WebNewsCrawler(WebNewsBase):
                     req_params=req_params,
                 )
 
-        return article, resp
+        return article, str(resp)
 
     def post_request(self, req_params: dict, url_info: dict, article: dict) -> dict:
         """댓글을 요청한다."""
@@ -678,6 +677,8 @@ class WebNewsCrawler(WebNewsBase):
         # 파싱 에러 처리
         if 'html_content' in article and len(article['html_content']) != 0:
             doc.update(article)
+        elif 'html' in article and len(article['html']) != 0:
+            doc.update(article)
         else:
             doc['parsing_error'] = True
             doc['raw_html'] = str(html)
@@ -714,7 +715,7 @@ class WebNewsCrawler(WebNewsBase):
             return doc
 
         # 인덱스 변경
-        if 'date' in doc and elastic_utils.split_index is True:
+        if 'date' in doc:
             elastic_utils.index = elastic_utils.get_target_index(
                 tag=elastic_utils.get_index_year_tag(date=doc['date']),
                 index=elastic_utils.index,
