@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -38,7 +38,10 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/naver/kin/kin.py"
+      - "-m"
+      - "crawler.naver.kin.kin"
+      - "--config"
+      - "/config/naver/kin.yaml"
       - "--question-list"
       - "--sleep"
       - "20"
@@ -53,7 +56,10 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/naver/kin/kin.py"
+      - "-m"
+      - "crawler.naver.kin.kin"
+      - "--config"
+      - "/config/naver/kin.yaml"
       - "--answer-list"
       - "--sleep"
       - "20"
@@ -68,7 +74,10 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/naver/kin/kin.py"
+      - "-m"
+      - "crawler.naver.kin.kin"
+      - "--config"
+      - "/config/naver/kin.yaml"
       - "--question"
       - "--sleep"
       - "20"
@@ -83,7 +92,10 @@ jobs:
     configMapRef: naver
     args:
       - "python3"
-      - "module/naver/kin/kin.py"
+      - "-m"
+      - "crawler.naver.kin.kin"
+      - "--config"
+      - "/config/naver/kin.yaml"
       - "--answer"
       - "--sleep"
       - "20"

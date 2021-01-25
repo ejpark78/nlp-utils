@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:2
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -54,9 +54,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "society-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/society-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -70,9 +71,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "tv-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/tv-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -86,9 +88,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "economy-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/economy-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -102,9 +105,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "international-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/international-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -118,9 +122,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "it-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/it-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -134,9 +139,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "living-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/living-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -150,9 +156,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "opinion-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/opinion-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
@@ -166,9 +173,10 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "sports-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/sports-reply.yaml"
       - "--sleep"
       - "20"
     subSategory:
