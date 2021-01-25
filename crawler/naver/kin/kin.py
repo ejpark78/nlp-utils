@@ -38,9 +38,6 @@ class NaverKinCrawler(object):
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
-        # dummy
-        parser.add_argument('--sub-category', default='', help='하위 카테고리')
-
         return parser.parse_args()
 
     def batch(self):
