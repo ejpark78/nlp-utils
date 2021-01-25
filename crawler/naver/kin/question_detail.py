@@ -12,7 +12,6 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 from requests import Response
-from tqdm import tqdm
 
 from crawler.naver.kin.base import NaverKinBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
@@ -60,7 +59,7 @@ class QuestionDetail(NaverKinBase):
         i = -1
         size = len(doc_list)
 
-        for doc in tqdm(doc_list):
+        for doc in doc_list:
             # 문서 아이디 생성
             if 'd1Id' not in doc:
                 doc['d1Id'] = str(doc['dirId'])[0]
@@ -207,7 +206,7 @@ class QuestionDetail(NaverKinBase):
             result=doc_list,
             source='d1Id,dirId,docId'.split(','),
             size=100,
-            limit=1000,
+            limit=10000,
         )
 
         return doc_list

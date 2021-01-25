@@ -11,26 +11,33 @@ from copy import deepcopy
 from datetime import datetime
 from time import sleep
 from urllib.parse import urljoin
+from urllib.parse import urlparse, parse_qs
 
+import pytz
 import requests
 import urllib3
+import yaml
+from cachelib import SimpleCache
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
-from crawler.web_news.base import WebNewsBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NaverNewsReplyCrawler(WebNewsBase):
+class NaverNewsReplyCrawler(object):
     """네이버 뉴스 댓글 수집기"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
+
+        self.env = None
+
+        self.timezone = pytz.timezone('Asia/Seoul')
 
         self.stop_columns = [
             'idType', 'lang', 'country', 'idProvider', 'visible', 'containText',
@@ -38,29 +45,41 @@ class NaverNewsReplyCrawler(WebNewsBase):
             'modTimeGmt', 'templateId', 'userProfileImage',
         ]
 
-        self.env = None
-        self.config = None
-        self.overwrite = False
-
-        self.job_category = ''
-        self.job_id = ''
-        self.column = ''
-
         self.sleep_time = 10
 
-    def set_env(self, env):
-        self.env = env
+        self.headers = {
+            'mobile': {
+                'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) '
+                              'AppleWebKit/604.1.38 (KHTML, like Gecko) '
+                              'Version/11.0 Mobile/15A372 Safari/604.1'
+            },
+            'desktop': {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/87.0.4280.141 Safari/537.36'
+            }
+        }
 
-        self.config = env.config
-        self.overwrite = env.overwrite
+        self.cache = SimpleCache()
 
-        self.job_category = 'naver'
-        self.job_id = env.job_id
-        self.column = env.column
+        self.logger = Logger()
 
-        self.sleep_time = env.sleep
+    def set_history(self, value: set, name: str) -> None:
+        """문서 아이디 이력을 저장한다."""
+        self.cache.set(name, value, timeout=600)
+        return
 
-    def trace_elasticsearch(self, url_frame, date, elastic):
+    def get_history(self, name: str, default: set) -> set:
+        """문서 아이디 이력을 반환한다."""
+        value = self.cache.get(name)
+
+        if value is None:
+            value = default
+            self.cache.set(name, value, timeout=600)
+
+        return value
+
+    def trace_elasticsearch(self, url_frame: dict, date: datetime, elastic: dict) -> None:
         """특정 날짜의 뉴스 목록을 따라간다."""
         query_cond = {
             'query': {
@@ -119,9 +138,10 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return
 
-    def is_dup_reply(self, url_frame, news, elastic_utils, index, doc_id, doc_history):
+    def is_dup_reply(self, url_frame: dict, news: dict, elastic_utils: ElasticSearchUtils, index: str, doc_id: str,
+                     doc_history) -> bool:
         """특정 날짜의 뉴스 목록을 따라간다."""
-        if self.overwrite is True:
+        if self.env.overwrite is True:
             return False
 
         if 'check_id' in url_frame and url_frame['check_id'] is False:
@@ -152,8 +172,52 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return False
 
+    def check_doc_id(self, doc_id: str, elastic_utils: ElasticSearchUtils, url: str, index: str, doc_history: set,
+                     reply_info: dict = None) -> bool:
+        """문서 아이디를 이전 기록과 비교한다."""
+        # 캐쉬에 저장된 문서가 있는지 조회
+        if doc_id in doc_history:
+            self.logger.info(msg={
+                'level': 'INFO',
+                'message': '중복 문서, 건너뜀',
+                'doc_id': doc_id,
+                'url': url,
+            })
+            return True
+
+        # 문서가 있는지 조회
+        is_exists = elastic_utils.conn.exists(index=index, id=doc_id)
+        if is_exists is False:
+            return False
+
+        # 댓글 정보 추가 확인
+        if reply_info is not None:
+            field_name = reply_info['source']
+            doc = elastic_utils.conn.get(
+                id=doc_id,
+                index=index,
+                _source=[field_name],
+            )['_source']
+
+            if field_name not in doc:
+                return False
+
+            if doc[field_name] != reply_info['count']:
+                return False
+
+        doc_history.add(doc_id)
+
+        self.logger.info(msg={
+            'level': 'INFO',
+            'message': 'elasticsearch 에 존재함, 건너뜀',
+            'doc_id': doc_id,
+            'url': url,
+        })
+
+        return True
+
     @staticmethod
-    def open_elasticsearch(date, job, url_frame):
+    def open_elasticsearch(date: datetime, job: dict, url_frame: dict) -> dict:
         """elasticsearch 연결"""
         index_tag = None
         if date is not None:
@@ -182,7 +246,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
             'news': elastic_news_list
         }
 
-    def get_news(self, elastic, doc_id):
+    def get_news(self, elastic: ElasticSearchUtils, doc_id: str) -> dict:
         """원문 기사를 가져온다."""
         try:
             return elastic.conn.get(
@@ -199,7 +263,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return {}
 
-    def trace_reply_list(self, url_frame, date, elastic):
+    def trace_reply_list(self, url_frame: dict, date: datetime, elastic: dict) -> None:
         """특정 날짜의 뉴스 목록을 따라간다."""
         # url 저장 이력 조회
         doc_history = self.get_history(name='doc_history', default=set())
@@ -277,8 +341,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return
 
-    def save_reply(self, elastic_utils, news, doc_id, date):
-        """ """
+    def save_reply(self, elastic_utils: ElasticSearchUtils, news: dict, doc_id: str, date: datetime) -> None:
         news['_id'] = doc_id
         news['date'] = date
 
@@ -297,7 +360,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return
 
-    def get_reply(self, news, url_frame):
+    def get_reply(self, news: dict, url_frame: dict) -> dict:
         """댓글을 가져온다."""
         result = []
 
@@ -330,7 +393,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return news
 
-    def extract_reply_list(self, base_url, query, url_frame):
+    def extract_reply_list(self, base_url: str, query: dict, url_frame: dict) -> (list, int):
         """댓글 목록을 추출해서 반환한다."""
         headers = deepcopy(self.headers['desktop'])
 
@@ -387,10 +450,8 @@ class NaverNewsReplyCrawler(WebNewsBase):
         return result, callback['result']['pageModel']['totalPages']
 
     @staticmethod
-    def get_query(url):
+    def get_query(url: str) -> dict:
         """ url 에서 쿼리문을 반환 """
-        from urllib.parse import urlparse, parse_qs
-
         url_info = urlparse(url)
         result = parse_qs(url_info.query)
         for key in result:
@@ -398,13 +459,18 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         return result
 
-    def batch(self):
+    @staticmethod
+    def open_config(filename: str) -> dict:
+        with open(filename, 'r') as fp:
+            return dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
+
+    def batch(self) -> None:
         """날짜 범위에 있는 댓글을 수집한다."""
-        self.set_env(env=self.init_arguments())
+        self.env = self.init_arguments()
+
+        config = self.open_config(filename=self.env.config)
 
         step = -1
-
-        self.open_config(filename=None)
 
         # 날짜 범위 추출
         if self.env.date_range is None:
@@ -433,7 +499,7 @@ class NaverNewsReplyCrawler(WebNewsBase):
                 'date': str(dt)
             })
 
-            for job in self.job_info:
+            for job in config['jobs']:
                 if 'split_index' not in job:
                     job['split_index'] = False
 
@@ -455,17 +521,10 @@ class NaverNewsReplyCrawler(WebNewsBase):
 
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
-        # 작업 아이디
-        parser.add_argument('--job-id', default='', help='작업 아이디')
-        parser.add_argument('--sub-category', default='', help='하위 카테고리')
-
         parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
-        parser.add_argument('--column', default='trace_list', help='config 컬럼이름 (trace_list)')
-
-        # 설정파일
         parser.add_argument('--config', default=None, help='설정 파일 정보')
 
         return parser.parse_args()
