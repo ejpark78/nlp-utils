@@ -166,6 +166,9 @@ class ElasticSearchUtils(object):
         if self.split_index is True:
             return
 
+        if self.index is None:
+            return
+
         # 인덱스가 없는 경우, 생성함
         try:
             if self.conn.indices.exists(index=self.index) is False:

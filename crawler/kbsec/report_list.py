@@ -10,7 +10,7 @@ from time import sleep
 import requests
 import urllib3
 
-from .base import KBSecBase
+from crawler.kbsec.base import KBSecBase
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

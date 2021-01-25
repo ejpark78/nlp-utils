@@ -1,0 +1,45 @@
+---
+jobs:
+- index: raw-apnews-{year}
+  index_list: raw-apnews-list-{year}
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+  list:
+  - category: politics
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/politics.json.gz
+  - category: election 2020
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/election-2020.json.gz
+  - category: science
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/science.json.gz
+  - category: health
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/health.json.gz
+  - category: us news
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/us-news.json.gz
+  - category: business
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/business.json.gz
+  - category: ap fact check
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/ap-fact-check.json.gz
+  - category: technology
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/technology.json.gz
+  - category: travel
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/travel.json.gz
+  - category: photography
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/photography.json.gz
+  - category: oddities
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/oddities.json.gz
+  - category: lifestyle
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/lifestyle.json.gz
+  - category: entertainment
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/entertainment.json.gz
+  - category: sports
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/sports.json.gz
+  - category: international news
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/international-news.json.gz
+  - category: religion
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/religion.json.gz
+  - category: podcasts
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/podcasts.json.gz
+  - category: press releases
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/press-releases.json.gz
+  - category: landing
+    url_frame: https://storage.googleapis.com/afs-prod/feeds/landing.json.gz

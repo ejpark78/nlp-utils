@@ -20,7 +20,6 @@ class YoutubeCrawler(object):
     """유튜브 크롤러"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
         self.logger = Logger()

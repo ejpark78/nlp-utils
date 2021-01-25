@@ -10,9 +10,9 @@ from time import sleep
 
 import urllib3
 
-from .cache_utils import CacheUtils
-from .report_list import KBSecReportList
-from .reports import KBSecReports
+from crawler.kbsec.cache_utils import CacheUtils
+from crawler.kbsec.report_list import KBSecReportList
+from crawler.kbsec.reports import KBSecReports
 from crawler.utils.dataset_utils import DataSetUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
