@@ -46,8 +46,6 @@ jobs:
       - "/config/bbs/mlbpark-kbo.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: bbs-mlbpark-mlb
     schedule: "10,40 * * * *"
@@ -65,8 +63,6 @@ jobs:
       - "/config/bbs/mlbpark-mlb.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: bbs-mlbpark-bullpen
     schedule: "20,50 * * * *"
@@ -84,8 +80,6 @@ jobs:
       - "/config/bbs/mlbpark-bullpen.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: bbs-ruliweb
     schedule: "0,30 * * * *"
@@ -103,8 +97,6 @@ jobs:
       - "/config/bbs/ruliweb.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: bbs-inven-lineagem
     schedule: "0,30 * * * *"
@@ -126,8 +118,6 @@ jobs:
       - "1~20"
       - "--page-step"
       - "1"
-    subSategory:
-      - "''"
 
   - name: bbs-lineagem
     schedule: "0,30 * * * *"
@@ -149,8 +139,6 @@ jobs:
       - "1~100"
       - "--page-step"
       - "1"
-    subSategory:
-      - "''"
 
   - name: bbs-lineage2m
     schedule: "0,30 * * * *"
@@ -172,5 +160,3 @@ jobs:
       - "1~100"
       - "--page-step"
       - "1"
-    subSategory:
-      - "''"

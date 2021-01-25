@@ -45,8 +45,6 @@ jobs:
       - "--question-list"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-kin-answer-list
     schedule: "20 * * * *"
@@ -63,8 +61,6 @@ jobs:
       - "--answer-list"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-kin-detail-question
     schedule: "40 * * * *"
@@ -81,8 +77,6 @@ jobs:
       - "--question"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-kin-detail-answer
     schedule: "50 * * * *"
@@ -99,5 +93,3 @@ jobs:
       - "--answer"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"

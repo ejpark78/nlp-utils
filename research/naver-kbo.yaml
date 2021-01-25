@@ -41,5 +41,3 @@ jobs:
       - "module/naver/kbo/game_center_utils.py"
       - "--game-info"
       - "--trace-comments"
-    subSategory:
-      - "''"

@@ -38,13 +38,12 @@ jobs:
     configMapRef: naver-reply
     args:
       - "python3"
-      - "module/naver/reply.py"
-      - "--job-id"
-      - "politics-reply"
+      - "-m"
+      - "crawler.naver.reply"
+      - "--config"
+      - "/config/naver/politics-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-society
     schedule: "5 * * * *"
@@ -60,8 +59,6 @@ jobs:
       - "/config/naver/society-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-tv
     schedule: "10 * * * *"
@@ -77,8 +74,6 @@ jobs:
       - "/config/naver/tv-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-economy
     schedule: "15 * * * *"
@@ -94,8 +89,6 @@ jobs:
       - "/config/naver/economy-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-international
     schedule: "20 * * * *"
@@ -111,8 +104,6 @@ jobs:
       - "/config/naver/international-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-it
     schedule: "25 * * * *"
@@ -128,8 +119,6 @@ jobs:
       - "/config/naver/it-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-living
     schedule: "30 * * * *"
@@ -145,8 +134,6 @@ jobs:
       - "/config/naver/living-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-opinion
     schedule: "35 * * * *"
@@ -162,8 +149,6 @@ jobs:
       - "/config/naver/opinion-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
   - name: naver-reply-sports
     schedule: "40 * * * *"
@@ -179,6 +164,4 @@ jobs:
       - "/config/naver/sports-reply.yaml"
       - "--sleep"
       - "20"
-    subSategory:
-      - "''"
 
