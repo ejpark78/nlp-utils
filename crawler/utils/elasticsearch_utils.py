@@ -231,7 +231,6 @@ class ElasticSearchUtils(object):
 
             self.conn.update(
                 index=index,
-                doc_type='doc',
                 id=doc_id,
                 body=body
             )
@@ -444,7 +443,8 @@ class ElasticSearchUtils(object):
 
         return
 
-    def dump_index(self, index: str, size: int = 1000) -> None:
+    def dump_index(self, index: str, size: int = 1000, query: dict = None, result: list = None,
+                   limit: int = -1, source: list = None) -> None:
         if index is None or index == '':
             return
 
@@ -453,15 +453,22 @@ class ElasticSearchUtils(object):
         scroll_id = ''
 
         # save settings/mapping
-        settings = {
-            **self.conn.indices.get_settings(index)[index],
-            **self.conn.indices.get_mapping(index)[index]
-        }
-        print(json.dumps(settings, ensure_ascii=False), flush=True)
+        if result is None:
+            settings = {
+                **self.conn.indices.get_settings(index)[index],
+                **self.conn.indices.get_mapping(index)[index]
+            }
+            print(json.dumps(settings, ensure_ascii=False), flush=True)
 
         p_bar = None
         while count > 0:
-            resp = self.scroll(index=index, size=size, scroll_id=scroll_id)
+            resp = self.scroll(
+                index=index,
+                size=size,
+                scroll_id=scroll_id,
+                query=query,
+                source=source
+            )
 
             count = len(resp['hits'])
             scroll_id = resp['scroll_id']
@@ -485,7 +492,13 @@ class ElasticSearchUtils(object):
                     '_index': item['_index'],
                 })
 
-                print(json.dumps(doc, ensure_ascii=False), flush=True)
+                if result is None:
+                    print(json.dumps(doc, ensure_ascii=False), flush=True)
+                else:
+                    result.append(doc)
+
+            if 0 < limit < sum_count:
+                break
 
         return
 
@@ -500,7 +513,7 @@ class ElasticSearchUtils(object):
                 index=index,
                 scroll='2m',
                 size=size,
-                query=query,
+                body=query,
                 params=params,
                 _source=source,
             )
@@ -617,7 +630,7 @@ class ElasticSearchUtils(object):
 
         # 원본 문서 확인
         try:
-            exists = self.conn.exists(index=source_index, doc_type='doc', id=source_id)
+            exists = self.conn.exists(index=source_index, id=source_id)
             if exists is False:
                 self.logger.info(msg={
                     'level': 'INFO',
@@ -639,7 +652,7 @@ class ElasticSearchUtils(object):
 
         # 원본 문서 읽기
         try:
-            document = self.conn.get(index=source_index, doc_type='_doc', id=source_id)
+            document = self.conn.get(index=source_index, id=source_id)
 
             if source_id != document_id:
                 document['_source']['_id'] = document_id
@@ -663,7 +676,7 @@ class ElasticSearchUtils(object):
 
         # 기존 문서 삭제
         try:
-            self.conn.delete(index=source_index, doc_type='doc', id=source_id)
+            self.conn.delete(index=source_index, id=source_id)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -680,12 +693,12 @@ class ElasticSearchUtils(object):
         """이전에 수집한 문서와 병합"""
         doc_id = doc['_id']
 
-        exists = self.conn.exists(index=index, doc_type='_doc', id=doc_id)
+        exists = self.conn.exists(index=index, id=doc_id)
         if exists is False:
             return doc
 
         try:
-            resp = self.conn.get(index=index, doc_type='_doc', id=doc_id)
+            resp = self.conn.get(index=index, id=doc_id)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -719,11 +732,7 @@ class ElasticSearchUtils(object):
 
     def exists(self, index: str, doc_id: str, list_index, list_id, merge_column: str = None) -> bool:
         """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
-        exists_doc = self.conn.exists(
-            id=doc_id,
-            index=index,
-            doc_type='doc',
-        )
+        exists_doc = self.conn.exists(id=doc_id, index=index)
 
         if exists_doc is True:
             self.move_document(

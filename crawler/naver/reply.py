@@ -189,7 +189,6 @@ class NaverNewsReplyCrawler(WebNewsBase):
                 id=doc_id,
                 index=elastic.index,
                 _source=['url', 'title', 'date'],
-                doc_type='_doc',
             )['_source']
         except Exception as e:
             self.logger.error(msg={

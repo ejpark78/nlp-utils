@@ -11,29 +11,24 @@ import logging
 import sys
 from os import listdir
 from os.path import isdir, join
+import yaml
 
-from crawler.web_news.config import Config
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
-
-MESSAGE = 25
-logging_opt = {
-    'format': '[%(levelname)-s] %(message)s',
-    'handlers': [logging.StreamHandler()],
-    'level': MESSAGE,
-
-}
-
-logging.addLevelName(MESSAGE, 'MESSAGE')
-logging.basicConfig(**logging_opt)
 
 
 class CorpusUtils(object):
     """크롤링 결과 추출"""
 
     def __init__(self):
-        """ 생성자 """
-        self.job_id = 'naver_kin'
-        self.cfg = Config(job_category='naver', job_id=self.job_id)
+        super().__init__()
+
+        self.config = None
+
+    def open_config(self, filename: str) -> dict:
+        with open(filename, 'r') as fp:
+            self.config = dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
+
+        return self.config
 
     def merge_question(self, data_path='detail.json.bz2', result_filename='detail.xlsx'):
         """ 네이버 지식인 질문 목록 결과를 취합한다. """

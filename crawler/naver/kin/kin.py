@@ -5,16 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from .question_detail import QuestionDetail as NaverKinQuestionDetail
-from .question_list import QuestionList as NaverKinQuestionList
-from .user_list import UserList as NaverKinUserList
+from crawler.naver.kin.question_detail import QuestionDetail as NaverKinQuestionDetail
+from crawler.naver.kin.question_list import QuestionList as NaverKinQuestionList
+from crawler.naver.kin.user_list import UserList as NaverKinUserList
 
 
 class NaverKinCrawler(object):
     """네이버 백과사전 크롤러"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
     @staticmethod
@@ -24,9 +23,13 @@ class NaverKinCrawler(object):
 
         parser = argparse.ArgumentParser()
 
+        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
+
         parser.add_argument('--user-list', action='store_true', default=False)
+
         parser.add_argument('--question-list', action='store_true', default=False)
         parser.add_argument('--answer-list', action='store_true', default=False)
+
         parser.add_argument('--question', action='store_true', default=False)
         parser.add_argument('--answer', action='store_true', default=False)
 
@@ -41,28 +44,42 @@ class NaverKinCrawler(object):
         return parser.parse_args()
 
     def batch(self):
-        """메인"""
         env = self.init_arguments()
 
         if env.question_list is True:
-            NaverKinQuestionList(sleep_time=env.sleep).batch(column='question')
+            NaverKinQuestionList().batch(
+                sleep_time=env.sleep,
+                config=env.config,
+                column='question_list'
+            )
             return
         elif env.answer_list is True:
-            NaverKinQuestionList(sleep_time=env.sleep).batch(column='answer')
+            NaverKinQuestionList().batch(
+                sleep_time=env.sleep,
+                config=env.config,
+                column='answer_list'
+            )
             return
         elif env.user_list is True:
-            NaverKinUserList(sleep_time=env.sleep).batch()
+            NaverKinUserList().batch(
+                sleep_time=env.sleep,
+                config=env.config
+            )
             return
         elif env.question is True:
-            NaverKinQuestionDetail(sleep_time=env.sleep).batch(
+            NaverKinQuestionDetail().batch(
+                sleep_time=env.sleep,
                 column='question',
                 match_phrase=env.match_phrase,
+                config=env.config
             )
             return
         elif env.answer is True:
-            NaverKinQuestionDetail(sleep_time=env.sleep).batch(
+            NaverKinQuestionDetail().batch(
+                sleep_time=env.sleep,
                 column='answer',
                 match_phrase=env.match_phrase,
+                config=env.config
             )
             return
 

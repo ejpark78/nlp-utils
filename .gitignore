@@ -19,6 +19,7 @@ dist
 *.jar
 *.log
 *.db
+*.egg-info/
 
 app.tar.gz
 venv

@@ -11,46 +11,48 @@ from time import sleep
 import requests
 import urllib3
 from bs4 import BeautifulSoup
+from requests import Response
+from tqdm import tqdm
 
-from crawler.web_news.base import WebNewsBase
+from crawler.naver.kin.base import NaverKinBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.html_parser import HtmlParser
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class QuestionDetail(WebNewsBase):
+class QuestionDetail(NaverKinBase):
     """질문 상세 페이지 크롤링"""
 
-    def __init__(self, sleep_time):
-        """ 생성자 """
+    def __init__(self):
         super().__init__()
 
-        self.job_category = 'naver'
-        self.job_id = 'naver_kin'
-        self.column = 'detail'
+        self.job_info = {}
+        self.sleep_time = 10
 
+        self.parser = HtmlParser()
+
+    def batch(self, sleep_time: float, column: str, match_phrase: str, config: str) -> None:
+        """상세 페이지를 크롤링한다."""
+        self.config = self.open_config(filename=config)
+        self.job_info = self.config['detail']
         self.sleep_time = sleep_time
 
-    def batch(self, column, match_phrase):
-        """상세 페이지를 크롤링한다."""
-        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=column)
+        self.job_info['index'] = 'crawler-naver-kin-answer_list'
+        if column == 'question':
+            self.job_info['index'] = 'crawler-naver-kin-question_list'
 
         elastic_utils = ElasticSearchUtils(
-            host=self.job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=self.job_info['index'],
             bulk_size=10,
-            http_auth=self.job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
-
-        if column == 'question':
-            index = 'crawler-naver-kin-question_list'
-        else:
-            index = 'crawler-naver-kin-answer_list'
 
         # 질문 목록 조회
         doc_list = self.get_doc_list(
-            index=index,
+            index=self.job_info['index'],
             elastic_utils=elastic_utils,
             match_phrase=match_phrase,
         )
@@ -58,23 +60,21 @@ class QuestionDetail(WebNewsBase):
         i = -1
         size = len(doc_list)
 
-        for item in doc_list:
-            q = item['_source']
-
+        for doc in tqdm(doc_list):
             # 문서 아이디 생성
-            if 'd1Id' not in q:
-                q['d1Id'] = str(q['dirId'])[0]
+            if 'd1Id' not in doc:
+                doc['d1Id'] = str(doc['dirId'])[0]
 
             i += 1
-            doc_id = '{}-{}-{}'.format(q['d1Id'], q['dirId'], q['docId'])
+            doc_id = '{d1Id}-{dirId}-{docId}'.format(**doc)
 
             # 이미 받은 항목인지 검사
-            if index.find('question_list') > 0 or index.find('answer_list') > 0:
+            if self.job_info['index'].find('question_list') > 0 or self.job_info['index'].find('answer_list') > 0:
                 is_skip = elastic_utils.exists(
                     index=self.job_info['index'],
-                    list_index=index,
+                    list_index=self.job_info['index'],
                     doc_id=doc_id,
-                    list_id=item['_id'],
+                    list_id=doc['_id'],
                 )
 
                 if is_skip is True:
@@ -87,7 +87,7 @@ class QuestionDetail(WebNewsBase):
                     continue
 
             # 질문 상세 페이지 크롤링
-            request_url = self.job_info['url_frame'].format(**q)
+            request_url = self.job_info['url_frame'].format(**doc)
 
             resp = requests.get(
                 url=request_url,
@@ -109,16 +109,16 @@ class QuestionDetail(WebNewsBase):
             # 저장
             self.save_doc(
                 resp=resp,
-                index=index,
+                index=self.job_info['index'],
                 doc_id=doc_id,
-                list_id=item['_id'],
+                list_id=doc['_id'],
                 base_url=request_url,
                 elastic_utils=elastic_utils,
             )
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '데몬 슬립',
+                'message': '슬립',
                 'sleep_time': self.sleep_time,
             })
 
@@ -126,9 +126,10 @@ class QuestionDetail(WebNewsBase):
 
         return
 
-    def save_doc(self, resp, elastic_utils, index, doc_id, list_id, base_url):
+    def save_doc(self, resp: Response, elastic_utils: ElasticSearchUtils, index: str, doc_id: str, list_id: str,
+                 base_url: str) -> None:
         """크롤링 문서를 저장한다."""
-        soup, encoding = self.get_encoding_type(resp.text)
+        soup, encoding = self.parser.get_encoding_type(resp.text)
 
         html = resp.text
         if encoding is not None:
@@ -142,7 +143,7 @@ class QuestionDetail(WebNewsBase):
             doc = self.parser.parse(
                 html=None,
                 soup=soup,
-                parsing_info=self.parsing_info['values'],
+                parsing_info=self.config['detail']['parsing'],
                 base_url=base_url
             )
 
@@ -187,15 +188,11 @@ class QuestionDetail(WebNewsBase):
         return
 
     @staticmethod
-    def get_doc_list(elastic_utils, index, match_phrase):
+    def get_doc_list(elastic_utils: ElasticSearchUtils, index: str, match_phrase: str) -> list:
         """질문 목록을 조회한다."""
-        query = {
-            '_source': 'd1Id,dirId,docId'.split(','),
-            'size': 100000
-        }
-
+        query = None
         if match_phrase is not None and isinstance(match_phrase, str) and match_phrase != '{}':
-            query['query'] = {
+            query = {
                 'bool': {
                     'must': {
                         'match_phrase': json.loads(match_phrase)
@@ -203,10 +200,14 @@ class QuestionDetail(WebNewsBase):
                 }
             }
 
-        result = elastic_utils.dump(
+        doc_list = []
+        elastic_utils.dump_index(
             index=index,
             query=query,
-            only_source=False,
-            limit=5000,
+            result=doc_list,
+            source='d1Id,dirId,docId'.split(','),
+            size=100,
+            limit=1000,
         )
-        return result
+
+        return doc_list

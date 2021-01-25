@@ -6,79 +6,52 @@ from __future__ import division
 from __future__ import print_function
 
 from time import sleep
+from urllib.parse import unquote, urljoin
 
 import requests
 import urllib3
 
-from crawler.web_news.base import WebNewsBase
+from crawler.naver.kin.base import NaverKinBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class QuestionList(WebNewsBase):
+class QuestionList(NaverKinBase):
     """질문 목록 크롤링"""
 
-    def __init__(self, sleep_time):
-        """ 생성자 """
+    def __init__(self):
         super().__init__()
 
-        self.job_category = 'naver'
-        self.job_id = 'naver_kin'
-        self.column = 'question_list'
+        self.job_info = {}
+        self.sleep_time = 10
 
-        self.sleep_time = sleep_time
-
-    def daemon(self, column):
-        """batch를 무한 반복한다."""
-        while True:
-            # batch 시작전 설정 변경 사항을 업데이트 한다.
-            self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
-
-            daemon_info = self.cfg.job_info['daemon']
-
-            # 시작
-            self.batch(column=column)
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '데몬 슬립',
-                'sleep_time': daemon_info['sleep'],
-            })
-
-            sleep(daemon_info['sleep'])
-
-    def batch(self, column):
+    def batch(self, sleep_time: float, column: str, config: str) -> None:
         """ 질문 목록 전부를 가져온다. """
-        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
+        self.config = self.open_config(filename=config)
+        self.job_info = self.config[column]
+        self.sleep_time = sleep_time
 
         for c in self.job_info['category']:
             # 답변 목록
-            if column == 'answer':
-                self.column = 'answer_list'
-                self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
-
-                self.get_answer_list(category=c)
+            if column == 'answer_list':
+                self.get_answer_list()
             else:
                 # 질문 목록
-                self.column = 'question_list'
-                self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
-
                 self.get_question_list(category=c)
 
         return
 
-    def get_answer_list(self, category):
+    def get_answer_list(self) -> None:
         """ 사용자별 답변 목록를 가져온다. """
-        from urllib.parse import unquote
         # https://m.kin.naver.com/mobile/user/answerList.nhn?page=3&countPerPage=20&dirId=0&u=LOLmw2nTPw02cmSW5fzHYaVycqNwxX3QNy3VuztCb6c%3D
 
         elastic_utils = ElasticSearchUtils(
-            host=self.job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=self.job_info['index'],
             bulk_size=10,
-            http_auth=self.job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
 
         query = {
@@ -90,9 +63,11 @@ class QuestionList(WebNewsBase):
             }
         }
 
-        user_list = elastic_utils.dump(
+        user_list = []
+        elastic_utils.dump_index(
             index='crawler-naver-kin-rank_user_list,crawler-naver-kin-partner_list',
             query=query,
+            result=user_list,
         )
 
         for doc in user_list:
@@ -127,13 +102,13 @@ class QuestionList(WebNewsBase):
 
         return
 
-    def get_question_list(self, category, size=20):
+    def get_question_list(self, category: dict, size: int = 20) -> None:
         """ 네이버 지식인 경제 분야 질문 목록을 크롤링한다."""
         elastic_utils = ElasticSearchUtils(
-            host=self.job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=self.job_info['index'],
             bulk_size=50,
-            http_auth=self.job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
 
         query = {
@@ -164,8 +139,8 @@ class QuestionList(WebNewsBase):
 
         return
 
-    def get_page(self, url, elastic_utils):
-        """한 페이지를 가져온다."""
+    def get_page(self, url: str, elastic_utils: ElasticSearchUtils) -> (bool, int):
+        """한 페이지를 조회한다."""
         total_page = -1
 
         try:
@@ -217,10 +192,8 @@ class QuestionList(WebNewsBase):
 
         return False, total_page
 
-    def save_doc(self, url, result, elastic_utils):
+    def save_doc(self, url: str, result: dict, elastic_utils: ElasticSearchUtils) -> bool:
         """크롤링 결과를 저장한다."""
-        from urllib.parse import urljoin
-
         result_list = []
         if 'answerList' in result:
             result_list = result['answerList']

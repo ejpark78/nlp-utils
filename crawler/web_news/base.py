@@ -74,11 +74,10 @@ class WebNewsBase(object):
 
         self.logger = Logger()
 
-    def open_config(self, filename: str) -> dict:
+    @staticmethod
+    def open_config(filename: str) -> dict:
         with open(filename, 'r') as fp:
-            self.config = dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
-
-        return self.config
+            return dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
 
     def update_date_range(self) -> None:
         """날짜를 갱신한다."""
@@ -287,7 +286,7 @@ class WebNewsBase(object):
             return True
 
         # 문서가 있는지 조회
-        is_exists = elastic_utils.conn.exists(index=index, doc_type='_doc', id=doc_id)
+        is_exists = elastic_utils.conn.exists(index=index, id=doc_id)
         if is_exists is False:
             return False
 
@@ -298,7 +297,6 @@ class WebNewsBase(object):
                 id=doc_id,
                 index=index,
                 _source=[field_name],
-                doc_type='_doc',
             )['_source']
 
             if field_name not in doc:

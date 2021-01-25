@@ -1,16 +1,17 @@
 ---
+elasticsearch:
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
 answer_list:
   category:
   - id: '0'
     name: 전체
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-answer_list
   sleep: 10
   url_frame: https://m.kin.naver.com/mobile/user/answerList.nhn?page={page}&countPerPage=20&u={user_id}
 detail:
-  trace: {}
-  values:
+  url_frame: https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId},
+  parsing:
   - key: html
     value:
     - attribute:
@@ -105,15 +106,11 @@ detail:
       name: a
     type: data-u
 elite_user_list:
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-elite_user_list
   sleep: 10
   url_frame: https://kin.naver.com/ajax/eliteUserAjax.nhn?year={year}&month={month}&page={page}
   url_list: https://kin.naver.com/hall/eliteUser.nhn?year={year}
 expert_list:
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-expert_user_list
   sleep: 10
   url_frame: https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0
@@ -179,8 +176,6 @@ partner_list:
     name: 고민Q&A/아동,미성년 상담/학업, 진로
   - id: '200107'
     name: 고민Q&A/아동,미성년 상담/가족, 이웃
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-partner_list
   sleep: 10
   url_frame: https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId={dir_id}
@@ -562,8 +557,6 @@ question_list:
     name: 고민Q&A/성인상담/가족, 이웃
   - id: '200210'
     name: 고민Q&A/성인상담/비디오, DVD
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-question_list
   sleep: 10
   url_frame: https://m.kin.naver.com/mobile/qna/kinupList.nhn?sortType=writeTime&resultMode=json&dirId={dir_id}&countPerPage={size}&page={page}
@@ -699,8 +692,6 @@ rank_user_list:
     name: 경제 동향, 이론
   - id: '410'
     name: 경제 기관, 단체
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   index: crawler-naver-kin-rank_user_list
   sleep: 10
   url_frame:

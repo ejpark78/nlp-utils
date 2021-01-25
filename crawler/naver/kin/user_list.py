@@ -11,49 +11,27 @@ from urllib.parse import unquote
 import requests
 import urllib3
 
-from crawler.web_news.base import WebNewsBase
+from crawler.naver.kin.base import NaverKinBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class UserList(WebNewsBase):
+class UserList(NaverKinBase):
     """답변 목록을 중심으로 크롤링"""
 
-    def __init__(self, sleep_time):
-        """ 생성자 """
+    def __init__(self):
         super().__init__()
 
-        self.job_category = 'naver'
-        self.job_id = 'naver_kin'
-        self.column = 'partner_list'
+        self.config = None
+        self.sleep_time = 10
 
+    def batch(self, sleep_time: int, config: str) -> None:
+        """ 질문 목록 전부를 가져온다. """
+        self.config = self.open_config(filename=config)
         self.sleep_time = sleep_time
 
-        self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
-
-    def daemon(self):
-        """batch를 무한 반복한다."""
-        while True:
-            # batch 시작전 설정 변경 사항을 업데이트 한다.
-            self.update_config(filename=None, job_id=self.job_id, job_category=self.job_category, column=self.env.column)
-
-            daemon_info = self.cfg.job_info['daemon']
-
-            # 시작
-            self.batch()
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '데몬 슬립',
-                'sleep_time': daemon_info['sleep'],
-            })
-
-            sleep(daemon_info['sleep'])
-
-    def batch(self):
-        """ 질문 목록 전부를 가져온다. """
         self.get_rank_user_list()
         self.get_elite_user_list()
         self.get_partner_list()
@@ -61,15 +39,15 @@ class UserList(WebNewsBase):
 
         return
 
-    def get_partner_list(self):
+    def get_partner_list(self) -> None:
         """지식 파트너 목록을 크롤링한다."""
-        job_info = self.cfg.job_info['partner_list']
+        job_info = self.config['partner_list']
 
         elastic_utils = ElasticSearchUtils(
-            host=job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=job_info['index'],
             bulk_size=10,
-            http_auth=job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
 
         category_list = job_info['category']
@@ -112,7 +90,6 @@ class UserList(WebNewsBase):
 
                         doc_exists = elastic_utils.conn.exists(
                             index=job_info['index'],
-                            doc_type='doc',
                             id=doc_id)
 
                         if doc_exists is True:
@@ -135,15 +112,15 @@ class UserList(WebNewsBase):
 
         return
 
-    def get_expert_list(self):
+    def get_expert_list(self) -> None:
         """분야별 전문가 목록을 크롤링한다."""
-        job_info = self.cfg.job_info['expert_list']
+        job_info = self.config['expert_list']
 
         elastic_utils = ElasticSearchUtils(
-            host=job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=job_info['index'],
             bulk_size=10,
-            http_auth=job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
 
         expert_type_list = ['doctor', 'lawyer', 'labor', 'animaldoctor', 'pharmacist', 'taxacc', 'dietitian']
@@ -189,18 +166,18 @@ class UserList(WebNewsBase):
 
         return
 
-    def get_elite_user_list(self):
+    def get_elite_user_list(self) -> None:
         """ 명예의 전당 채택과 년도별 사용자 목록을 가져온다. """
-        job_info = self.cfg.job_info['elite_user_list']
+        job_info = self.config['elite_user_list']
 
         month = 0
         for year in range(2019, 2012, -1):
             index = '{}_{}'.format(job_info['index'], year)
             elastic_utils = ElasticSearchUtils(
-                host=job_info['host'],
+                host=self.config['elasticsearch']['host'],
                 index=index,
                 bulk_size=10,
-                http_auth=job_info['http_auth'],
+                http_auth=self.config['elasticsearch']['http_auth'],
             )
 
             url = job_info['url_list'].format(year=year)
@@ -273,15 +250,15 @@ class UserList(WebNewsBase):
 
         return
 
-    def get_rank_user_list(self):
+    def get_rank_user_list(self) -> None:
         """ 분야별 전문가 목록을 추출한다. """
-        job_info = self.cfg.job_info['rank_user_list']
+        job_info = self.config['rank_user_list']
 
         elastic_utils = ElasticSearchUtils(
-            host=job_info['host'],
+            host=self.config['elasticsearch']['host'],
             index=job_info['index'],
             bulk_size=10,
-            http_auth=job_info['http_auth'],
+            http_auth=self.config['elasticsearch']['http_auth'],
         )
 
         category_list = job_info['category']
@@ -362,7 +339,6 @@ class UserList(WebNewsBase):
 
                         doc_exists = elastic_utils.conn.exists(
                             index=job_info['index'],
-                            doc_type='doc',
                             id=doc_id)
 
                         if doc_exists is True:

@@ -171,7 +171,6 @@ class TermList(WebNewsBase):
                 # 문서가 있는지 조회
                 is_exists = elastic_utils.conn.exists(
                     index=job_info['index'] + '_done',
-                    doc_type='_doc',
                     id=doc['_id']
                 )
                 if is_exists is False:

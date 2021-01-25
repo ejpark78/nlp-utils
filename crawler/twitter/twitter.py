@@ -186,11 +186,11 @@ class TwitterCrawler(WebNewsBase):
         """이전에 수집한 문서와 병합"""
         tweet_id = tweet['id']
 
-        exists = elastic_utils.conn.exists(index=index, doc_type='_doc', id=tweet_id)
+        exists = elastic_utils.conn.exists(index=index, id=tweet_id)
         if exists is False:
             return tweet
 
-        doc = elastic_utils.conn.get(index=index, doc_type='_doc', id=tweet_id)
+        doc = elastic_utils.conn.get(index=index, id=tweet_id)
         if '_source' not in doc:
             return tweet
 

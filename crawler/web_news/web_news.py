@@ -97,7 +97,7 @@ class WebNewsCrawler(WebNewsBase):
         """카테고리 하위 목록을 크롤링한다."""
         self.set_env(env=self.init_arguments())
 
-        self.open_config(filename=self.env.config)
+        self.config = self.open_config(filename=self.env.config)
 
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.config['jobs']:
