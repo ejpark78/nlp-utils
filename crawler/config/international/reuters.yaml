@@ -87,13 +87,3 @@ parsing:
     value:
     - select: div.ArticleBodyWrapper
     type: text
-#  - comment: 날짜
-#    key: date
-#    value:
-#    - name: div
-#      attribute:
-#        dir: ltr
-#    - name: time
-#    type: text
-#    value_type: merge
-#    type_convert: date

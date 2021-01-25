@@ -312,6 +312,11 @@ class WebNewsBase(object):
             'message': 'elasticsearch 에 존재함, 건너뜀',
             'doc_id': doc_id,
             'url': url,
+            'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
+                id=doc_id,
+                host=elastic_utils.host,
+                index=elastic_utils.index,
+            ),
         })
 
         return True

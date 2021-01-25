@@ -8,13 +8,12 @@ from __future__ import print_function
 import json
 import os
 import re
+from argparse import Namespace
 from copy import deepcopy
 from datetime import datetime, timedelta
 from time import sleep
 from urllib.parse import parse_qs
 from urllib.parse import urljoin
-
-from argparse import Namespace
 
 import requests
 import urllib3
@@ -22,8 +21,8 @@ from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
-from crawler.web_news.base import WebNewsBase
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.web_news.base import WebNewsBase
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -163,10 +162,9 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '뉴스 목록 크롤링',
-                'url_info': url,
+                'url': url['url'],
                 'query': q,
-                'job': job,
-                'date': dt.strftime('%Y-%m-%d') if dt is not None else ''
+                'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
             })
 
             # 기사 목록 조회
@@ -175,10 +173,9 @@ class WebNewsCrawler(WebNewsBase):
                 self.logger.error(msg={
                     'level': 'ERROR',
                     'message': '뉴스 목록 조회 에러',
-                    'url_info': url,
+                    'url': url['url'],
                     'query': q,
-                    'job': job,
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else ''
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
                 })
                 continue
 
@@ -218,7 +215,10 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def update_category(self, html: str, url_info: dict, job: dict, date: datetime) -> bool:
-        """개별 뉴스를 따라간다."""
+        """카테고리 정보를 갱신한다."""
+        if date is None and job['index'].find('{year}') > 0:
+            return False
+
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
@@ -251,6 +251,12 @@ class WebNewsCrawler(WebNewsBase):
             bulk_data[doc_id] = item
 
         doc_list = []
+        elastic_utils.index = elastic_utils.get_target_index(
+            tag=elastic_utils.get_index_year_tag(date=date),
+            index=job['index'],
+            split_index=job['split_index'],
+        )
+
         elastic_utils.get_by_ids(
             id_list=list(doc_ids),
             index=elastic_utils.index,
@@ -299,7 +305,7 @@ class WebNewsCrawler(WebNewsBase):
         return ElasticSearchUtils(
             tag=index_tag,
             host=job['host'],
-            index=job['index'],
+            index=None,
             bulk_size=20,
             http_auth=job['http_auth'],
             split_index=job['split_index'],
@@ -344,6 +350,12 @@ class WebNewsCrawler(WebNewsBase):
 
             is_skip = False
             if self.env.overwrite is False:
+                elastic_utils.index = elastic_utils.get_target_index(
+                    tag=elastic_utils.get_index_year_tag(date=date),
+                    index=job['index'],
+                    split_index=job['split_index'],
+                )
+
                 is_skip = self.check_doc_id(
                     url=item['url'],
                     index=elastic_utils.index,
@@ -378,7 +390,10 @@ class WebNewsCrawler(WebNewsBase):
                 item['_id'] = doc_id
                 item['raw_html'] = article_html
 
-                elastic_utils.save_document(document=item, index=job['index'] + '-error')
+                elastic_utils.save_document(
+                    document=item,
+                    index=job['index'].replace('-{year}') + '-error'
+                )
                 elastic_utils.flush()
             else:
                 self.save_article(
@@ -710,7 +725,10 @@ class WebNewsCrawler(WebNewsBase):
         if error is True:
             doc['raw_html'] = str(html)
 
-            elastic_utils.save_document(document=doc, index=job['index'] + '-error')
+            elastic_utils.save_document(
+                document=doc,
+                index=job['index'].replace('-{year}', '') + '-error'
+            )
             elastic_utils.flush()
             return doc
 
@@ -718,8 +736,8 @@ class WebNewsCrawler(WebNewsBase):
         if 'date' in doc:
             elastic_utils.index = elastic_utils.get_target_index(
                 tag=elastic_utils.get_index_year_tag(date=doc['date']),
-                index=elastic_utils.index,
-                split_index=elastic_utils.split_index,
+                index=job['index'],
+                split_index=job['split_index'],
             )
 
         # category 필드 병합

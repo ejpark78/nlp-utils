@@ -71,7 +71,6 @@ class ElasticSearchUtils(object):
                         'number_of_shards': 3,
                         'number_of_replicas': 3
                     },
-                    # 'mapping.total_fields.limit': 900000
                 }
             )
         except Exception as e:
