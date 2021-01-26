@@ -95,11 +95,7 @@ class NewsCrawler(object):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
-                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
-                    id=doc['document_id'],
-                    host=elastic.host,
-                    index=index,
-                ),
+                'doc_url': elastic.get_doc_url(document_id=doc['document_id']),
                 **{k: doc[k] for k in ['updated', 'headline'] if k in doc},
             })
 

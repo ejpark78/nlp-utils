@@ -375,11 +375,7 @@ class ElasticSearchUtils(object):
                         self.logger.info(msg={
                             'level': 'INFO',
                             'message': '저장 성공',
-                            'url': '{host}/{index}/_doc/{id}?pretty'.format(
-                                host=self.host,
-                                index=self.index,
-                                id=doc_id,
-                            ),
+                            'url': self.get_doc_url(document_id=doc_id),
                         })
         except Exception as e:
             self.logger.error(msg={
@@ -812,6 +808,13 @@ class ElasticSearchUtils(object):
             )
 
         return
+
+    def get_doc_url(self, document_id) -> str:
+        return '{host}/{index}/_doc/{doc_id}?pretty'.format(
+            doc_id=document_id,
+            host=self.host,
+            index=self.index,
+        )
 
     def batch(self) -> None:
         env = self.init_arguments()

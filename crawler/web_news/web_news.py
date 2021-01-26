@@ -12,11 +12,11 @@ from argparse import Namespace
 from copy import deepcopy
 from datetime import datetime, timedelta
 from time import sleep
-from urllib.parse import parse_qs
-from urllib.parse import urljoin
+from urllib.parse import parse_qs, urljoin
 
 import requests
 import urllib3
+from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
@@ -348,6 +348,9 @@ class WebNewsCrawler(WebNewsBase):
             if doc_id is None:
                 continue
 
+            if date is None and 'date' in item:
+                date = item['date']
+
             is_skip = False
             if self.env.overwrite is False:
                 elastic_utils.index = elastic_utils.get_target_index(
@@ -373,6 +376,7 @@ class WebNewsCrawler(WebNewsBase):
                     'message': '크롤링된 뉴스가 있음',
                     'doc_id': doc_id,
                     'url': item['url'],
+                    'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
                 })
                 continue
 
@@ -757,11 +761,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
-                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
-                    id=doc['document_id'],
-                    host=elastic_utils.host,
-                    index=elastic_utils.index,
-                ),
+                'doc_url': elastic_utils.get_doc_url(document_id=doc['document_id']),
                 **doc_info,
             })
 
@@ -878,23 +878,6 @@ class WebNewsCrawler(WebNewsBase):
         if self.env.update_category_only is True:
             return trace_list
 
-        if self.env.skip_check_history is True:
-            return trace_list
-
-        # trace_list 이력 조회
-        trace_list_history = self.get_history(name='trace_list', default=set())
-        if isinstance(trace_list_history, str) is True:
-            if str_trace_list == trace_list_history:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': '기사 본문 조회: 이전 목록과 일치함, 조기 종료',
-                    'trace_size': len(trace_list),
-                    'sleep_time': self.env.sleep,
-                })
-
-                sleep(self.env.sleep)
-                return None
-
         self.set_history(
             name='trace_list',
             value=set(str_trace_list),
@@ -904,8 +887,6 @@ class WebNewsCrawler(WebNewsBase):
 
     def parse_tag(self, resp, url_info: dict, parsing_info: list, base_url: str):
         """trace tag 하나를 파싱해서 반환한다."""
-        from bs4 import BeautifulSoup
-
         # json 인 경우 맵핑값 매칭
         if 'parser' in url_info and url_info['parser'] == 'json':
             item = self.parser.parse_json(resp=resp, url_info=url_info)

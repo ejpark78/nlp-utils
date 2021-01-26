@@ -112,11 +112,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                     'message': '본문 저장',
                     '_id': doc['document_id'],
                     'subject': doc['subject'],
-                    'url': '{host}/{index}/_doc/{id}?pretty'.format(
-                        host=self.elastic.host,
-                        index=self.elastic.index,
-                        id=doc['document_id'],
-                    )
+                    'url': self.elastic.get_doc_url(document_id=doc['document_id'])
                 }
                 if 'status' in doc:
                     msg['status'] = doc['status']

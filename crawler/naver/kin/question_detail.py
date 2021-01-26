@@ -169,11 +169,7 @@ class QuestionDetail(NaverKinBase):
                 'level': 'MESSAGE',
                 'message': '상세 답변 저장 성공',
                 'question': doc['question'],
-                'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
-                    host=elastic_utils.host,
-                    index=elastic_utils.index,
-                    id=doc_id,
-                )
+                'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
             })
 
         # 질문 목록에서 완료 목록으로 이동

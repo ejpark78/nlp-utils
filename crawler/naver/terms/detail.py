@@ -197,11 +197,7 @@ class TermDetail(WebNewsBase):
                 'level': 'INFO',
                 'message': '문서 저장',
                 'doc_id': doc_id,
-                'url': '{host}/{index}/_doc/{id}?pretty'.format(
-                    host=self.job_info['host'],
-                    index=self.job_info['index'],
-                    id=doc_id,
-                ),
+                'url': elastic_utils.get_doc_url(document_id=doc_id),
             }
 
             if 'title' in doc:

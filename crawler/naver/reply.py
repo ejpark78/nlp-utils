@@ -351,11 +351,7 @@ class NaverNewsReplyCrawler(object):
         self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '문서 저장 성공',
-            'doc_url': '{host}/{index}/_doc/{id}?pretty'.format(
-                host=elastic_utils.host,
-                index=elastic_utils.index,
-                id=doc_id,
-            ),
+            'doc_url': elastic_utils.get_doc_url(document_id=doc_id),
         })
 
         return
