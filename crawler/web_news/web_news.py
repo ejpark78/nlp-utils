@@ -549,15 +549,6 @@ class WebNewsCrawler(WebNewsBase):
             })
             return article
 
-        self.save_raw_html(
-            url_info=url_info,
-            status_code=0,
-            error='',
-            content=json.dumps(req_result, ensure_ascii=False),
-            content_type='json',
-            tags='#reply'
-        )
-
         result = []
         self.get_dict_value(
             data=req_result,

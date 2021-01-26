@@ -115,15 +115,6 @@ class WebNewsBase(object):
                 'exception': str(e),
             })
 
-            self.save_raw_html(
-                url_info=url_info,
-                status_code=0,
-                error='html 페이지 조회 에러',
-                content='',
-                content_type='',
-                tags=tags
-            )
-
             sleep(sleep_time)
             return None
 
@@ -140,15 +131,6 @@ class WebNewsBase(object):
                 'status_code': status_code,
             })
 
-            self.save_raw_html(
-                url_info=url_info,
-                status_code=resp.status_code,
-                error='status_code 에러',
-                content='',
-                content_type='',
-                tags=tags,
-            )
-
             sleep(sleep_time)
             return None
 
@@ -156,15 +138,6 @@ class WebNewsBase(object):
             if 'parser' in url_info and url_info['parser'] == 'json':
                 try:
                     result = resp.json()
-
-                    self.save_raw_html(
-                        url_info=url_info,
-                        status_code=resp.status_code,
-                        error='',
-                        content=json.dumps(result, ensure_ascii=False),
-                        content_type='json',
-                        tags=tags
-                    )
 
                     return result
                 except Exception as e:
@@ -186,57 +159,7 @@ class WebNewsBase(object):
         if encoding is not None:
             result = resp.content.decode(encoding, 'ignore').strip()
 
-        self.save_raw_html(
-            url_info=url_info,
-            status_code=resp.status_code,
-            error='',
-            content=result,
-            content_type='html',
-            tags=tags
-        )
-
         return result
-
-    def save_raw_html(self, url_info: dict, status_code: int, content: str, content_type: str, tags: str,
-                      error: str = '') -> None:
-        if self.cache_info['host'] is None:
-            return
-
-        try:
-            ElasticSearchUtils(
-                host=self.cache_info['host'],
-                index=self.cache_info['index'],
-                http_auth=self.cache_info['http_auth'],
-                split_index=False,
-            ).conn.bulk(
-                index=self.cache_info['index'],
-                body=[
-                    {
-                        'index': {
-                            '_index': self.cache_info['index'],
-                        }
-                    },
-                    {
-                        'url': url_info['url'],
-                        'status_code': status_code,
-                        'date': datetime.now(self.timezone).isoformat(),
-                        'type': content_type,
-                        'content': content,
-                        'error': error,
-                        'tags': tags,
-                        'url_info': url_info
-                    }
-                ],
-                refresh=True,
-                params={'request_timeout': 620},
-            )
-        except Exception as e:
-            self.logger.error(msg={
-                'LEVEL': 'ERROR',
-                'e': str(e)
-            })
-
-        return
 
     def set_history(self, value: set, name: str) -> None:
         """문서 아이디 이력을 저장한다."""
