@@ -229,7 +229,6 @@ class NaverNewsReplyCrawler(object):
             index=job['index'],
             bulk_size=20,
             http_auth=job['http_auth'],
-            split_index=job['split_index'],
         )
 
         elastic_news_list = ElasticSearchUtils(
@@ -238,7 +237,6 @@ class NaverNewsReplyCrawler(object):
             index=url_frame['list_index'],
             bulk_size=20,
             http_auth=job['http_auth'],
-            split_index=job['split_index'],
         )
 
         return {
@@ -496,9 +494,6 @@ class NaverNewsReplyCrawler(object):
             })
 
             for job in config['jobs']:
-                if 'split_index' not in job:
-                    job['split_index'] = False
-
                 for url_frame in job['list']:
                     elastic = self.open_elasticsearch(date=dt, job=job, url_frame=url_frame)
 

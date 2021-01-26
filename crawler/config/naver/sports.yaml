@@ -99,6 +99,7 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/general/news/list.nhn?isphoto=&date={date}&page={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
   parser: html5lib

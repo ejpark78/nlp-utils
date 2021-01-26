@@ -89,7 +89,8 @@ class HtmlParser(object):
 
         return soup
 
-    def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None) -> dict or None:
+    def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None,
+              parser_version: str = None) -> dict or None:
         """ 상세 정보 HTML 을 파싱한다."""
         if html is not None:
             soup = BeautifulSoup(html, 'html5lib')
@@ -105,6 +106,9 @@ class HtmlParser(object):
         self.remove_attribute(soup, attribute_list=['onclick', 'role', 'style', 'data-log'])
 
         result = {}
+        if parser_version is not None:
+            result['parser_version'] = parser_version
+
         for conf in parsing_info:
             tag_list = []
             self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)

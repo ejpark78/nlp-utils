@@ -40,7 +40,6 @@ class LineageMBBSEng(object):
             'host': 'https://corpus.ncsoft.com:9200',
             'index': 'crawler-bbs-game-multilingual',
             'http_auth': 'crawler:crawler2019',
-            'split_index': True,
         }
 
         self.elastic = ElasticSearchUtils(**host_info)

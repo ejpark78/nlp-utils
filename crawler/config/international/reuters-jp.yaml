@@ -8,22 +8,10 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: raw-reuters-{year}
+  index: raw-reuters-jp-{year}
   list:
   - category: worldnews
     url_frame: https://www.reuters.com/news/archive/worldnews?view=page&page={page}&pageSize=10
-  - category: finance
-    url_frame: https://www.reuters.com/news/archive/finance?view=page&page={page}&pageSize=10
-  - category: markets
-    url_frame: https://www.reuters.com/news/archive/markets?view=page&page={page}&pageSize=10
-  - category: breakingviews
-    url_frame: https://www.reuters.com/news/archive/breakingviews?view=page&page={page}&pageSize=10
-  - category: technology
-    url_frame: https://www.reuters.com/news/archive/technology?view=page&page={page}&pageSize=10
-  - category: lifestyle
-    url_frame: https://www.reuters.com/news/archive/lifestyle?view=page&page={page}&pageSize=10
-  - category: pictures
-    url_frame: https://www.reuters.com/news/pictures/archive?page={page}&pageSize=9
 parsing:
   version: v2021-01-26
   descriptions:

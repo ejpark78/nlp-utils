@@ -29,18 +29,13 @@ class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
     def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = 'crawler:crawler2019',
-                 bulk_size: int = 1000, tag: str = None, split_index: bool = False, log_path: str = 'log'):
+                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log'):
         self.host = host
         self.http_auth = (http_auth.split(':'))
 
         self.conn = None
-        self.split_index = split_index
 
-        self.index = self.get_target_index(
-            tag=tag,
-            index=index,
-            split_index=split_index,
-        )
+        self.index = self.get_target_index(tag=tag, index=index)
 
         self.bulk_data = {}
         self.bulk_size = bulk_size
@@ -113,7 +108,7 @@ class ElasticSearchUtils(object):
         return str(date.year)
 
     @staticmethod
-    def get_target_index(index: str, split_index: bool = False, tag: str = None) -> str or None:
+    def get_target_index(index: str, tag: str = None) -> str or None:
         """복사 대상의 인덱스를 반환한다."""
         if index is None:
             return None
@@ -121,15 +116,7 @@ class ElasticSearchUtils(object):
         if '{year}' in index and tag is not None:
             return index.format(year=tag)
 
-        if split_index is False or tag is None:
-            return index
-
-        # 인덱스에서 crawler-naver-sports-2018 연도를 삭제한다.
-        token = index.rsplit('-', maxsplit=1)
-        if len(token) == 2 and token[-1].isdecimal() is True:
-            index = token[0]
-
-        return '{index}-{tag}'.format(index=index, tag=tag)
+        return index
 
     @staticmethod
     def get_ssl_verify_mode() -> SSLContext:
@@ -163,9 +150,6 @@ class ElasticSearchUtils(object):
                 'host': self.host,
                 'exception': str(e),
             })
-            return
-
-        if self.split_index is True:
             return
 
         if self.index is None:
@@ -313,7 +297,7 @@ class ElasticSearchUtils(object):
         return True
 
     @staticmethod
-    def json_default(value):
+    def json_default(value: datetime) -> str:
         """ 날자형을 문자로 변환한다."""
         if isinstance(value, datetime):
             return value.isoformat()

@@ -418,9 +418,9 @@ jobs:
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
   index: crawler-naver-terms-list
-  sleep: 10
   url_frame: https://m.terms.naver.com/listAjax.nhn?categoryId={categoryId}&so=st3.asc&index=&page={page}&viewType=list
 parsing:
+  version: v2021-01-26
   trace:
     key: html_content
     value:

@@ -42,6 +42,7 @@ jobs:
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=103&sid2=245&listType=title&date={date}&page={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보

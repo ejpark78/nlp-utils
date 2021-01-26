@@ -139,13 +139,6 @@ class TermDetail(WebNewsBase):
             'request_url': request_url,
         })
 
-        # 후처리 작업 실행
-        self.post_process_utils.insert_job(
-            job=None,
-            document=doc,
-            post_process_list=self.post_process_list
-        )
-
         return False
 
     def save_doc(self, html, elastic_utils, list_index, list_doc, doc_id, list_id, base_url):

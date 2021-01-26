@@ -85,6 +85,7 @@ jobs:
   post_process: []
   split_index: true
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
   parser: html5lib

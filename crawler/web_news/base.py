@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 from datetime import datetime
 from os import getenv
 from time import sleep
@@ -15,11 +14,12 @@ import requests
 import urllib3
 import yaml
 from cachelib import SimpleCache
+from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
-from crawler.web_news.post_process import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -36,7 +36,6 @@ class WebNewsBase(object):
         self.config = None
 
         self.parser = HtmlParser()
-        self.post_process_utils = PostProcessUtils()
 
         self.headers = {
             'mobile': {
@@ -65,13 +64,6 @@ class WebNewsBase(object):
 
         self.cache = SimpleCache()
 
-        # elasticsearch
-        self.cache_info = {
-            'host': None,
-            'index': 'crawler-web_news-cache',
-            'http_auth': None,
-        }
-
         self.logger = Logger()
 
     @staticmethod
@@ -79,15 +71,56 @@ class WebNewsBase(object):
         with open(filename, 'r') as fp:
             return dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
 
-    def update_date_range(self) -> None:
-        """날짜를 갱신한다."""
-        today = datetime.now(self.timezone)
+    @staticmethod
+    def update_page_range(page_range: str = None, step: int = 1) -> dict:
+        """페이지 범위를 갱신한다."""
+        result = {
+            'start': 1,
+            'end': 900,
+            'step': step
+        }
 
-        self.date_range = {
+        if page_range is None:
+            return result
+
+        pg_start, pg_end = page_range.split('~', maxsplit=1)
+        return {
+            'start': int(pg_start),
+            'end': int(pg_end),
+            'step': step
+        }
+
+    def update_date_range(self, date_range: str = None, step: int = 1) -> dict:
+        """날짜 범위를 갱신한다."""
+        today = datetime.now(self.timezone)
+        result = {
             'end': today,
             'start': today,
+            'step': step,
         }
-        return
+
+        if date_range is None:
+            return result
+
+        token = date_range.split('~', maxsplit=1)
+
+        dt_start = parse_date(token[0])
+        dt_end = dt_start + relativedelta(months=1)
+
+        if len(token) > 1:
+            dt_end = parse_date(token[1])
+
+        result = {
+            'end': self.timezone.localize(dt_end),
+            'start': self.timezone.localize(dt_start),
+            'step': step,
+        }
+
+        today = datetime.now(self.timezone)
+        if result['end'] > today:
+            result['end'] = today
+
+        return result
 
     def get_html_page(self, url_info: dict, tags: str) -> None or str:
         """웹 문서를 조회한다."""

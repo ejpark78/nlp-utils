@@ -6,12 +6,9 @@ jobs:
       type: query
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-naver-economy-reply
+  index: crawler-naver-economy-reply-{year}
   list:
   - Referer: https://news.naver.com/main/read.nhn?m_view=1&includeAllCount=true&mode=LSD&mid=shm&sid1={sid1}&oid={oid}&aid={aid}
-    check_id: true
     list: elasticsearch
     list_index: crawler-naver-economy
     reply: https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=news&templateId=default_world&pool=cbox5&lang=ko&country=KR&objectId=news{oid},{aid}&categoryId=&pageSize=20&indexSize=10&groupId=&listType=OBJECT&pageType=more&page={page}&initialize=true&userType=&useAltSort=true&replyPageSize=20&moveTo=&sort=favorite&includeAllStatus=true
-  post_process: []
-  split_index: true

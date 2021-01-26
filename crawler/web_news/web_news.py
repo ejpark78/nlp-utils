@@ -18,7 +18,6 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
-from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
@@ -34,81 +33,14 @@ class WebNewsCrawler(WebNewsBase):
     def __init__(self):
         super().__init__()
 
-        self.env = None
+        self.params = None
 
         self.trace_depth = 0
         self.trace_list_count = -1
-
-        self.date_step = 1
 
         self.update_date = False
 
         self.job_sub_category = None
-
-    def set_env(self, env: Namespace) -> None:
-        self.env = env
-
-        self.trace_depth = 0
-        self.trace_list_count = -1
-
-        self.job_sub_category = env.sub_category.split(',') if env.sub_category != '' else []
-
-        self.date_step = env.date_step
-
-        if env.date_range is None:
-            self.update_date = True
-            self.update_date_range()
-        else:
-            token = env.date_range.split('~', maxsplit=1)
-
-            dt_start = parse_date(token[0])
-            dt_end = dt_start + relativedelta(months=1)
-
-            if len(token) > 1:
-                dt_end = parse_date(token[1])
-
-            self.date_range = {
-                'end': self.timezone.localize(dt_end),
-                'start': self.timezone.localize(dt_start),
-            }
-
-            today = datetime.now(self.timezone)
-            if self.date_range['end'] > today:
-                self.date_range['end'] = today
-
-        self.page_range = {
-            'start': 1,
-            'end': 900,
-            'step': env.page_step
-        }
-
-        if env.page_range is not None:
-            pg_start, pg_end = env.page_range.split('~', maxsplit=1)
-
-            self.page_range = {
-                'start': int(pg_start),
-                'end': int(pg_end),
-                'step': env.page_step
-            }
-
-        return
-
-    def batch(self) -> None:
-        """카테고리 하위 목록을 크롤링한다."""
-        self.set_env(env=self.init_arguments())
-
-        self.config = self.open_config(filename=self.env.config)
-
-        # 카테고리 하위 목록을 크롤링한다.
-        for job in self.config['jobs']:
-            # override elasticsearch config
-            job['host'] = self.cache_info['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
-            job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
-            job['http_auth'] = self.cache_info['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
-
-            self.trace_url_list(job=job)
-
-        return
 
     def trace_url_list(self, job: dict) -> None:
         """url_frame 목록을 반복한다."""
@@ -128,7 +60,7 @@ class WebNewsCrawler(WebNewsBase):
             # 날짜 지정시
             date_list = list(rrule(DAILY, dtstart=self.date_range['start'], until=self.date_range['end']))
 
-            if self.date_step < 0:
+            if self.date_range['step'] < 0:
                 date_list = sorted(date_list, reverse=True)
 
             for dt in date_list:
@@ -181,11 +113,11 @@ class WebNewsCrawler(WebNewsBase):
 
             # category 만 업데이트할 경우
             early_stop = self.update_category(html=resp, url_info=url, job=job, date=dt)
-            if self.env.update_category_only is True:
+            if self.params.update_category_only is True:
                 if early_stop is True:
                     break
 
-                sleep(self.env.sleep)
+                sleep(self.params.sleep)
                 continue
 
             # 문서 저장
@@ -210,7 +142,7 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 break
 
-            sleep(self.env.sleep)
+            sleep(self.params.sleep)
 
         return
 
@@ -254,7 +186,6 @@ class WebNewsCrawler(WebNewsBase):
         elastic_utils.index = elastic_utils.get_target_index(
             tag=elastic_utils.get_index_year_tag(date=date),
             index=job['index'],
-            split_index=job['split_index'],
         )
 
         elastic_utils.get_by_ids(
@@ -299,16 +230,12 @@ class WebNewsCrawler(WebNewsBase):
         if date is not None:
             index_tag = date.year
 
-        if 'split_index' not in job:
-            job['split_index'] = False
-
         return ElasticSearchUtils(
             tag=index_tag,
             host=job['host'],
             index=None,
             bulk_size=20,
             http_auth=job['http_auth'],
-            split_index=job['split_index'],
         )
 
     def trace_news(self, html: str, url_info: dict, job: dict, date: datetime) -> (bool, list):
@@ -352,11 +279,10 @@ class WebNewsCrawler(WebNewsBase):
                 date = item['date']
 
             is_skip = False
-            if self.env.overwrite is False:
+            if self.params.overwrite is False:
                 elastic_utils.index = elastic_utils.get_target_index(
                     tag=elastic_utils.get_index_year_tag(date=date),
                     index=job['index'],
-                    split_index=job['split_index'],
                 )
 
                 is_skip = self.check_doc_id(
@@ -389,7 +315,8 @@ class WebNewsCrawler(WebNewsBase):
             if article is None:
                 # 에러난 url 기록
                 item['_id'] = doc_id
-                item['raw_html'] = article_html
+                if 'html' not in item or item['html'] == '':
+                    item['html'] = article_html
 
                 elastic_utils.save_document(
                     document=item,
@@ -408,25 +335,12 @@ class WebNewsCrawler(WebNewsBase):
 
             doc_history.add(doc_id)
 
-            # 후처리 작업 실행
-            if 'post_process' not in job:
-                job['post_process'] = None
-
-            if self.env.skip_post_process is True:
-                job['post_process'] = None
-
-            self.post_process_utils.insert_job(
-                job=job,
-                document=article,
-                post_process_list=job['post_process'],
-            )
-
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '뉴스 본문 크롤링: 슬립',
-                'sleep_time': self.env.sleep,
+                'sleep_time': self.params.sleep,
             })
-            sleep(self.env.sleep)
+            sleep(self.params.sleep)
 
         # 목록 길이 저장
         if self.trace_list_count < 0:
@@ -450,8 +364,8 @@ class WebNewsCrawler(WebNewsBase):
             article_url['url'] = item['url']
 
         if offline is True:
-            if 'raw_html' in item:
-                resp = item['raw_html']
+            if 'html' in item:
+                resp = item['html']
             elif 'html_content' not in item:
                 return None, ''
             else:
@@ -626,10 +540,10 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '다음페이지 크롤링: 슬립',
-                'sleep_time': self.env.sleep,
+                'sleep_time': self.params.sleep,
             })
 
-            sleep(self.env.sleep)
+            sleep(self.params.sleep)
 
             self.trace_news(html=resp, url_info=url_info, job=job, date=date)
 
@@ -660,7 +574,8 @@ class WebNewsCrawler(WebNewsBase):
 
         if parsing_error is True:
             doc['parsing_error'] = True
-            doc['raw_html'] = str(html)
+            if 'html' not in doc or doc['html'] == '':
+                doc['html'] = str(html)
 
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -683,30 +598,20 @@ class WebNewsCrawler(WebNewsBase):
         error = False
 
         # 파싱 에러 처리
-        if 'html_content' in article and len(article['html_content']) != 0:
+        if 'html' in article and len(article['html']) != 0:
             doc.update(article)
-        elif 'html' in article and len(article['html']) != 0:
+        elif 'html_content' in article and len(article['html_content']) != 0:
             doc.update(article)
         else:
-            doc['parsing_error'] = True
-            doc['raw_html'] = str(html)
+            doc['status'] = 'parsing_error'
+            if 'html' not in doc or doc['html'] == '':
+                doc['html'] = str(html)
 
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html_content 필드가 없음',
                 'url': doc['url'],
             })
-
-        if 'parsing_error' not in doc:
-            if 'title' not in doc or len(doc['title']) == 0:
-                doc['parsing_error'] = True
-                doc['raw_html'] = str(html)
-
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': 'title 필드가 없음',
-                    'url': doc['url'],
-                })
 
         # 날짜 필드 오류 처리
         self.remove_date_column(doc=doc, html=html)
@@ -716,7 +621,8 @@ class WebNewsCrawler(WebNewsBase):
 
         # 에러인 경우
         if error is True:
-            doc['raw_html'] = str(html)
+            if 'html' not in doc or doc['html'] == '':
+                doc['html'] = str(html)
 
             elastic_utils.save_document(
                 document=doc,
@@ -731,7 +637,6 @@ class WebNewsCrawler(WebNewsBase):
             elastic_utils.index = elastic_utils.get_target_index(
                 tag=elastic_utils.get_index_year_tag(date=doc['date']),
                 index=job['index'],
-                split_index=job['split_index'],
             )
 
         # category 필드 병합
@@ -743,16 +648,11 @@ class WebNewsCrawler(WebNewsBase):
 
         # 성공 로그 표시
         if flag is True:
-            doc_info = {}
-            for k in ['document_id', 'date', 'title']:
-                if k in doc:
-                    doc_info[k] = doc[k]
-
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
                 'doc_url': elastic_utils.get_doc_url(document_id=doc['document_id']),
-                **doc_info,
+                **{x: doc[x] for x in ['document_id', 'date', 'title'] if x in doc},
             })
 
         return doc
@@ -804,7 +704,7 @@ class WebNewsCrawler(WebNewsBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
-            if self.env.overwrite is False and len(q) == 0:
+            if self.params.overwrite is False and len(q) == 0:
                 self.logger.info(msg={
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',
@@ -859,13 +759,13 @@ class WebNewsCrawler(WebNewsBase):
                 'level': 'ERROR',
                 'message': 'trace_list 가 없음',
                 'trace_size': len(trace_list),
-                'sleep_time': self.env.sleep,
+                'sleep_time': self.params.sleep,
             })
 
-            sleep(self.env.sleep)
+            sleep(self.params.sleep)
             return None
 
-        if self.env.update_category_only is True:
+        if self.params.update_category_only is True:
             return trace_list
 
         self.set_history(
@@ -893,6 +793,7 @@ class WebNewsCrawler(WebNewsBase):
                 soup=resp,
                 base_url=base_url,
                 parsing_info=parsing_info,
+                parser_version=self.config['parsing']['version'] if 'version' in self.config['parsing'] else None,
             )
 
         # url 추출
@@ -939,6 +840,35 @@ class WebNewsCrawler(WebNewsBase):
 
         return item
 
+    def batch(self) -> None:
+        self.params = self.init_arguments()
+
+        self.config = self.open_config(filename=self.params.config)
+
+        self.date_range = self.update_date_range(date_range=self.params.date_range, step=self.params.date_step)
+        self.page_range = self.update_page_range(page_range=self.params.page_range, step=self.params.page_step)
+
+        self.job_sub_category = self.params.sub_category.split(',') if self.params.sub_category != '' else []
+
+        # 카테고리 하위 목록을 크롤링한다.
+        for job in self.config['jobs']:
+            # override elasticsearch config
+            job['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
+            job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
+            job['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
+
+            if 'host' not in job or 'index' not in job:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'elasticsearch 저장 정보 없음',
+                    **job
+                })
+                break
+
+            self.trace_url_list(job=job)
+
+        return
+
     @staticmethod
     def init_arguments() -> Namespace:
         import argparse
@@ -948,8 +878,6 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
         # 작업 아이디
-        parser.add_argument('--category', default='', help='작업 카테고리')
-        parser.add_argument('--job-id', default='', help='작업 아이디')
         parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
@@ -960,13 +888,9 @@ class WebNewsCrawler(WebNewsBase):
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
-        # 설정파일
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
 
         parser.add_argument('--update-category-only', action='store_true', default=False, help='category 정보만 업데이트')
-
-        parser.add_argument('--skip-post-process', action='store_true', default=False, help='후처리 사용 여부')
-        parser.add_argument('--skip-check-history', action='store_true', default=False, help='히스토리 점검 여부')
 
         return parser.parse_args()
 

@@ -109,7 +109,6 @@ class GameVn(ForumUtils):
             'host': os.getenv('ELASTIC_SEARCH_HOST', 'https://corpus.ncsoft.com:9200'),
             'index': 'crawler-bbs-game-lineage-vi',
             'http_auth': 'crawler:crawler2019',
-            'split_index': True,
         }
 
         self.elastic = ElasticSearchUtils(**self.host_info)

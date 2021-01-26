@@ -11,6 +11,7 @@ answer_list:
   url_frame: https://m.kin.naver.com/mobile/user/answerList.nhn?page={page}&countPerPage=20&u={user_id}
 detail:
   url_frame: https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId},
+  version: v2021-01-26
   parsing:
   - key: html
     value:

@@ -152,7 +152,7 @@ class SeleniumCrawler(SeleniumUtils):
         item['files'] = [urljoin(item['url'], v['href']) for v in soup.select('div.files ul li a') if
                          v.has_attr('href')]
 
-        item['raw_html'] = soup.prettify()
+        item['html'] = soup.prettify()
 
         return
 

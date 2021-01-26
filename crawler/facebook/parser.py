@@ -35,7 +35,7 @@ class FBParser(object):
                 attrs = json.loads(v)
                 post.update(attrs)
 
-            post['raw_html'] = str(tag)
+            post['html'] = str(tag)
 
             # 메세지 추출
             span_list = tag.find_all('span', {'data-sigil': 'more'})
@@ -105,7 +105,7 @@ class FBParser(object):
             'reply_to': reply_to,
             'reply_id': tag['data-commentid'],
             'text': tag.get_text(separator='\n'),
-            'raw_html': raw_html,
+            'html': raw_html,
         }
 
         return result
