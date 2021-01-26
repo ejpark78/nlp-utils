@@ -6,16 +6,54 @@ jobs:
       type: query
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-bbs-mlbpark_bullpen
+  index: crawler-bbs-mlbpark_bullpen-{year}
   list:
   - category: BULLPEN
-    check_id: false
     url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=bullpen&query=&select=&user=
-  post_process: []
-  sleep: 3
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: table.tbl_type01 tr
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: a.bullpenbox
+    type: title
+  - comment: url
+    key: url
+    value:
+    - select: a.bullpenbox
+    type: href
+  - comment: 제목 헤더
+    key: title_header
+    value:
+    - select: span.word_bullpen
+    type: text
+  - comment: 댓글수
+    key: reply_count
+    replace:
+    - from: '[[]'
+      to: ''
+    - from: '[]]'
+      to: ''
+    value:
+    - select: span.replycnt
+    type: text
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목 헤더
     key: title_header
     value:
@@ -89,36 +127,3 @@ parsing:
     - select: div.reply_list div.txt_box span.date
     type: text
     type_convert: date
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - select: a.bullpenbox
-    type: title
-  - comment: url
-    key: url
-    value:
-    - select: a.bullpenbox
-    type: href
-  - comment: 제목 헤더
-    key: title_header
-    value:
-    - select: span.word_bullpen
-    type: text
-  - comment: 댓글수
-    key: reply_count
-    replace:
-    - from: '[[]'
-      to: ''
-    - from: '[]]'
-      to: ''
-    value:
-    - select: span.replycnt
-    type: text
-  parser: html5lib
-  trace:
-  - select: table.tbl_type01 tr

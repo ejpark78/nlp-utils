@@ -11,25 +11,18 @@ jobs:
   index: raw-reuters-{year}
   list:
   - category: worldnews
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/worldnews?view=page&page={page}&pageSize=10
   - category: finance
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/finance?view=page&page={page}&pageSize=10
   - category: markets
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/markets?view=page&page={page}&pageSize=10
   - category: breakingviews
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/breakingviews?view=page&page={page}&pageSize=10
   - category: technology
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/technology?view=page&page={page}&pageSize=10
   - category: lifestyle
-    check_id: true
     url_frame: https://www.reuters.com/news/archive/lifestyle?view=page&page={page}&pageSize=10
   - category: pictures
-    check_id: true
     url_frame: https://www.reuters.com/news/pictures/archive?page={page}&pageSize=9
 parsing:
   descriptions:

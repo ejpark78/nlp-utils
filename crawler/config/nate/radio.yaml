@@ -8,15 +8,11 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-nate-radio
+  index: crawler-nate-radio-{year}
   list:
   - category: 라디오/김성준의 시사전망대
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/radio/list?mid=n1701&page={page}
   - category: 라디오/김현정의 뉴스 쇼
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/radio/list?mid=n1702&page={page}
-  post_process: []
-  split_index: true

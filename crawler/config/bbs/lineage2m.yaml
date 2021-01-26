@@ -50,14 +50,12 @@ jobs:
     parser: json
     trace: articleList
     url_frame: https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId={articleId}&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
-  post_process: []
   post_request:
   - field: commentList
     key: reply_list
     method: GET
     response_type: json
     url_frame: https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
-  sleep: 3
 parsing:
   article: []
   comment: []

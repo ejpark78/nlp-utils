@@ -6,10 +6,9 @@ jobs:
       type: query
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-naver-sports
+  index: crawler-naver-sports-{year}
   list:
   - category: 스포츠/야구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -19,7 +18,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/해외야구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -29,7 +27,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/wbaseball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/게임
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -39,7 +36,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/esports/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/축구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -49,7 +45,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/해외축구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -59,7 +54,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/wfootball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/농구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -69,7 +63,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/basketball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/배구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -79,7 +72,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/volleyball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/골프
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -89,7 +81,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/golf/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/축구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -99,7 +90,6 @@ jobs:
     trace: list
     url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
   - category: 스포츠/스포츠-일반
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -108,10 +98,22 @@ jobs:
     parser: json
     trace: list
     url_frame: https://sports.news.naver.com/general/news/list.nhn?isphoto=&date={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+  parser: html5lib
+  trace: {}
+  list: {}
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -209,8 +211,3 @@ parsing:
       name: div
     type: text
     value_type: merge
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-  list: {}
-  parser: html5lib
-  trace: {}

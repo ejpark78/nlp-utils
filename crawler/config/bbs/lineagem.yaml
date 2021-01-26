@@ -48,14 +48,12 @@ jobs:
     parser: json
     trace: articleList
     url_frame: https://lineagem.plaync.com/board/all/articles.json?page={page}&isReferer=false&isVote=true&size=20&query=&searchType=&categoryId=&summary=true
-  post_process: []
   post_request:
   - field: commentList
     key: reply_list
     method: GET
     response_type: json
     url_frame: https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
-  sleep: 3
 parsing:
   article: []
   comment: []

@@ -8,28 +8,62 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-nate-entertainment
+  index: crawler-nate-entertainment-{year}
   list:
   - category: 연예/영화
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/ent/subsection?mid=e1300&type=t&date={date}&page={page}
   - category: 연예/연예가 화제
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/ent/subsection?mid=e1100&type=t&date={date}&page={page}
   - category: 연예/방송가요
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/ent/subsection?mid=e1200&type=t&date={date}&page={page}
   - category: 연예/해외연예
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/ent/subsection?mid=e1400&type=t&date={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: lxml
+  trace:
+  - attribute:
+      class: postSubject
+    name: div
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - attribute:
+        class: origin
+      name: span
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -118,34 +152,3 @@ parsing:
         id: realArtcContents
       name: div
     type: text
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - name: a
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - attribute:
-        class: origin
-      name: span
-    - name: em
-    type: text
-    type_convert: date
-    value_type: single
-  parser: lxml
-  trace:
-  - attribute:
-      class: postSubject
-    name: div
-  - name: li

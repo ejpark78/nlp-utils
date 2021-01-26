@@ -8,10 +8,9 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-daum-sports
+  index: crawler-daum-sports-{year}
   list:
   - category: 스포츠/야구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -21,7 +20,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1028&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/해외야구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -31,7 +29,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1015&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/게임
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -41,7 +38,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1079&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/축구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -51,7 +47,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1027&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/해외축구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -61,7 +56,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=100032&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/골프
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -71,7 +65,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=5000&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/농구&배구
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -81,7 +74,6 @@ jobs:
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1029&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/일반
-    check_id: true
     date_format: '%Y%m%d'
     headers:
       Content-Type: application/json
@@ -93,7 +85,21 @@ jobs:
   post_process: []
   split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+  parser: html5lib
+  trace: {}
+  list: {}
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -190,8 +196,3 @@ parsing:
     - name: section
     type: text
     value_type: merge
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-  list: {}
-  parser: html5lib
-  trace: {}

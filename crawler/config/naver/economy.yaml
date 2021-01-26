@@ -6,48 +6,43 @@ jobs:
       type: query
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-naver-economy
+  index: crawler-naver-economy-{year}
   list:
   - category: 경제/증권
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=258&listType=title&date={date}&page={page}
   - category: 경제/금융
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=259&listType=title&date={date}&page={page}
   - category: 경제/부동산
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=260&listType=title&date={date}&page={page}
   - category: 경제/산업/재계
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=261&listType=title&date={date}&page={page}
   - category: 경제/글로벌 경제
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=262&listType=title&date={date}&page={page}
   - category: 경제/경제 일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=263&listType=title&date={date}&page={page}
   - category: 경제/생활경제
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=310&listType=title&date={date}&page={page}
   - category: 경제/중기/벤처
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=101&sid2=771&listType=title&date={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+  trace:
+  - attribute:
+      class: list_body newsflash_body
+    name: div
+  - name: li
   list:
   - comment: 제목
     key: title
@@ -75,12 +70,16 @@ parsing:
         class: writing
       name: span
     type: text
-  trace:
-  - attribute:
-      class: list_body newsflash_body
-    name: div
-  - name: li
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:

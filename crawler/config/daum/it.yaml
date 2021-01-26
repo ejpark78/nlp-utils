@@ -8,36 +8,62 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-daum-it
+  index: crawler-daum-it-{year}
   list:
   - category: IT/IT기기
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/device?regDate={date}&page={page}
   - category: IT/통신모바일
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/mobile?regDate={date}&page={page}
   - category: IT/소프트웨어
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/software?regDate={date}&page={page}
   - category: IT/인터넷
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/internet?regDate={date}&page={page}
   - category: IT/게임
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/game?regDate={date}&page={page}
   - category: IT/IT일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://media.daum.net/breakingnews/digital/others?regDate={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_news2 list_allnews
+    name: ul
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: href
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -134,28 +160,3 @@ parsing:
     - name: section
     type: text
     value_type: merge
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: href
-  parser: html5lib
-  trace:
-  - attribute:
-      class: list_news2 list_allnews
-    name: ul
-  - name: li

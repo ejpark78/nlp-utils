@@ -8,36 +8,68 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-nate-politics
+  index: crawler-nate-politics-{year}
   list:
   - category: 정치/청와대
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}
   - category: 정치/국회/정당
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}
   - category: 정치/외교/국방
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}
   - category: 정치/북한
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}
   - category: 정치/행정
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}
   - category: 정치/정치 일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: lxml
+  trace:
+  - attribute:
+      class: postSubject
+    name: div
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - attribute:
+        class: origin
+      name: span
+    - name: em
+    type: text
+    type_convert: date
+    value_type: single
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -126,34 +158,3 @@ parsing:
         id: realArtcContents
       name: div
     type: text
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - name: a
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - attribute:
-        class: origin
-      name: span
-    - name: em
-    type: text
-    type_convert: date
-    value_type: single
-  parser: lxml
-  trace:
-  - attribute:
-      class: postSubject
-    name: div
-  - name: li

@@ -8,15 +8,11 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-nate-opinion
+  index: crawler-nate-opinion-{year}
   list:
   - category: 사설/사설
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/columnList?mid=n0702&type=t&date={date}&page={page}
   - category: 사설/칼럼
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.nate.com/columnList?mid=n0704&type=t&date={date}&page={page}
-  post_process: []
-  split_index: true

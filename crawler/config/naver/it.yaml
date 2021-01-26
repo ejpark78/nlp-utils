@@ -6,44 +6,80 @@ jobs:
       type: query
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-naver-it
+  index: crawler-naver-it-{year}
   list:
   - category: IT/모바일
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=731&listType=title&date={date}&page={page}
   - category: IT/인터넷/SNS
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=226&listType=title&date={date}&page={page}
   - category: IT/통신/뉴미디어
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=227&listType=title&date={date}&page={page}
   - category: IT/IT 일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=230&listType=title&date={date}&page={page}
   - category: IT/보안/해킹
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=732&listType=title&date={date}&page={page}
   - category: IT/컴퓨터
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=283&listType=title&date={date}&page={page}
   - category: IT/게임/리뷰
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=229&listType=title&date={date}&page={page}
   - category: IT/과학 일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=105&sid2=228&listType=title&date={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_body newsflash_body
+    name: div
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - attribute:
+        class: date
+      name: span
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 출처
+    key: source
+    value:
+    - attribute:
+        class: writing
+      name: span
+    type: text
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -142,40 +178,3 @@ parsing:
         id: articleBodyContents
       name: div
     type: text
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - name: a
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - attribute:
-        class: date
-      name: span
-    type: text
-    type_convert: date
-    value_type: single
-  - comment: 출처
-    key: source
-    value:
-    - attribute:
-        class: writing
-      name: span
-    type: text
-  parser: html5lib
-  trace:
-  - attribute:
-      class: list_body newsflash_body
-    name: div
-  - name: li

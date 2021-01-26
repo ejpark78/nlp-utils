@@ -8,68 +8,86 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-daum-economy
+  index: crawler-daum-economy-{year}
   list:
   - category: 경제/부동산
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/estate?regDate={date}&page={page}
   - category: 경제/생활경제
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/consumer?regDate={date}&page={page}
   - category: 경제/금융
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/finance?regDate={date}&page={page}
   - category: 경제/기업산업
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/industry?regDate={date}&page={page}
   - category: 경제/취업직장인
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/employ?regDate={date}&page={page}
   - category: 경제/국제경제
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/world?regDate={date}&page={page}
   - category: 경제/자동차
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/autos?regDate={date}&page={page}
   - category: 경제/경제일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/others?regDate={date}&page={page}
   - category: 경제/주식
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/stock?regDate={date}&page={page}
   - category: 경제/시황분석
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/publicnotice?regDate={date}&page={page}
   - category: 경제/해외증시
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/worldstock?regDate={date}&page={page}
   - category: 경제/채권선물
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/bondsfutures?regDate={date}&page={page}
   - category: 경제/외환
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/fx?regDate={date}&page={page}
   - category: 경제/주식일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/economic/stock_others?regDate={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_news2 list_allnews
+    name: ul
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: href
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -166,28 +184,3 @@ parsing:
     - name: section
     type: text
     value_type: merge
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: href
-  parser: html5lib
-  trace:
-  - attribute:
-      class: list_news2 list_allnews
-    name: ul
-  - name: li

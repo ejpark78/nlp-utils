@@ -8,22 +8,81 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-bbs-ruliweb
+  index: crawler-bbs-ruliweb-{year}
   list:
   - category: 고민상담
-    check_id: false
     url_frame: https://bbs.ruliweb.com/community/board/300147?page={page}
   - category: 질문게시판
-    check_id: false
     url_frame: https://bbs.ruliweb.com/community/board/300142?page={page}
   - category: 토론게시판
-    check_id: false
     url_frame: https://bbs.ruliweb.com/community/board/300152?page={page}
-  post_process: []
-  sleep: 3
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: table.board_list_table tr.table_body
+  list:
+  - comment: 게시글 아이디
+    key: article_id
+    value:
+    - select: td.id
+    type: text
+    value_type: single
+  - comment: 제목
+    key: title
+    value:
+    - select: td.subject a.deco
+    type: text
+    value_type: single
+  - comment: url
+    key: url
+    value:
+    - select: td.subject a.deco
+    type: href
+    value_type: single
+  - comment: 소분류
+    key: sub_category
+    value:
+    - select: td.divsn
+    type: text
+  - comment: 사용자명
+    key: writer
+    value:
+    - select: td.writer
+    type: text
+  - comment: 댓글수
+    key: reply_count
+    value:
+    - select: td.subject span.num
+    type: text
+  - comment: 추천수
+    key: recommend_count
+    value:
+    - select: td.recomd
+    type: text
+  - comment: 조회수
+    key: view_count
+    value:
+    - select: td.hit
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: td.time
+    type: text
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 소분류
     key: sub_category
     replace:
@@ -146,59 +205,3 @@ parsing:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_dislike span.num
     type: text
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 게시글 아이디
-    key: article_id
-    value:
-    - select: td.id
-    type: text
-    value_type: single
-  - comment: 제목
-    key: title
-    value:
-    - select: td.subject a.deco
-    type: text
-    value_type: single
-  - comment: url
-    key: url
-    value:
-    - select: td.subject a.deco
-    type: href
-    value_type: single
-  - comment: 소분류
-    key: sub_category
-    value:
-    - select: td.divsn
-    type: text
-  - comment: 사용자명
-    key: writer
-    value:
-    - select: td.writer
-    type: text
-  - comment: 댓글수
-    key: reply_count
-    value:
-    - select: td.subject span.num
-    type: text
-  - comment: 추천수
-    key: recommend_count
-    value:
-    - select: td.recomd
-    type: text
-  - comment: 조회수
-    key: view_count
-    value:
-    - select: td.hit
-    type: text
-  - comment: 날짜
-    key: date
-    value:
-    - select: td.time
-    type: text
-  parser: html5lib
-  trace:
-  - select: table.board_list_table tr.table_body

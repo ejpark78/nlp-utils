@@ -8,56 +8,77 @@ jobs:
       type: path
   host: https://corpus.ncsoft.com:9200
   http_auth: crawler:crawler2019
-  index: crawler-daum-culture
+  index: crawler-daum-culture-{year}
   list:
   - category: 문화/공연전시
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/art?regDate={date}&page={page}
   - category: 문화/책
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/book?regDate={date}&page={page}
   - category: 문화/뷰티패션
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/fashion?regDate={date}&page={page}
   - category: 문화/음식맛집
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/food?regDate={date}&page={page}
   - category: 문화/건강
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/health?regDate={date}&page={page}
   - category: 문화/가정육아
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/home?regDate={date}&page={page}
   - category: 문화/여행레저
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/leisure?regDate={date}&page={page}
   - category: 문화/생활정보
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/life?regDate={date}&page={page}
   - category: 문화/생활일반
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/others?regDate={date}&page={page}
   - category: 문화/종교
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/religion?regDate={date}&page={page}
   - category: 문화/날씨
-    check_id: true
     date_format: '%Y%m%d'
     url_frame: https://news.daum.net/breakingnews/culture/weather?regDate={date}&page={page}
-  post_process: []
-  split_index: true
 parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - attribute:
+      class: list_news2 list_allnews
+    name: ul
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - attribute:
+        class: link_txt
+      name: a
+    type: href
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
@@ -154,28 +175,3 @@ parsing:
     - name: section
     type: text
     value_type: merge
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
-  list:
-  - comment: 제목
-    key: title
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - attribute:
-        class: link_txt
-      name: a
-    type: href
-  parser: html5lib
-  trace:
-  - attribute:
-      class: list_news2 list_allnews
-    name: ul
-  - name: li

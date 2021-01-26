@@ -367,9 +367,6 @@ class WebNewsCrawler(WebNewsBase):
                     elastic_utils=elastic_utils,
                 )
 
-                if 'check_id' not in url_info or url_info['check_id'] is False:
-                    is_skip = False
-
             if is_skip is True:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
@@ -396,7 +393,8 @@ class WebNewsCrawler(WebNewsBase):
 
                 elastic_utils.save_document(
                     document=item,
-                    index=job['index'].replace('-{year}') + '-error'
+                    index=job['index'].replace('-{year}') + '-error',
+                    delete=False,
                 )
                 elastic_utils.flush()
             else:
@@ -731,7 +729,8 @@ class WebNewsCrawler(WebNewsBase):
 
             elastic_utils.save_document(
                 document=doc,
-                index=job['index'].replace('-{year}', '') + '-error'
+                index=job['index'].replace('-{year}', '') + '-error',
+                delete=False,
             )
             elastic_utils.flush()
             return doc
@@ -748,7 +747,7 @@ class WebNewsCrawler(WebNewsBase):
         doc = self.merge_category(doc=doc, elastic_utils=elastic_utils)
 
         # 문서 저장
-        elastic_utils.save_document(document=doc)
+        elastic_utils.save_document(document=doc, delete=False)
         flag = elastic_utils.flush()
 
         # 성공 로그 표시
