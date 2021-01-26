@@ -10,8 +10,10 @@ jobs:
   http_auth: crawler:crawler2019
   index: raw-reuters-jp-{year}
   list:
-  - category: worldnews
-    url_frame: https://www.reuters.com/news/archive/worldnews?view=page&page={page}&pageSize=10
+  - category: jp_USnews
+    url_frame: https://jp.reuters.com/news/archive/jp_USnews?view=page&page={page}&pageSize=10
+  - category: stocksNews
+    url_frame: https://jp.reuters.com/news/archive/stocksNews?view=page&page={page}&pageSize=10
 parsing:
   version: v2021-01-26
   descriptions:

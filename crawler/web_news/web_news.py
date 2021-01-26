@@ -100,7 +100,7 @@ class WebNewsCrawler(WebNewsBase):
             })
 
             # 기사 목록 조회
-            resp = self.get_html_page(url_info=url, tags='#list')
+            resp = self.get_html_page(url_info=url)
             if resp is None:
                 self.logger.error(msg={
                     'level': 'ERROR',
@@ -373,9 +373,9 @@ class WebNewsCrawler(WebNewsBase):
 
             # 추출된 html_contents 가 없는 경우: 다시 크롤링
             if isinstance(resp, list):
-                resp = self.get_html_page(url_info=article_url, tags='#article')
+                resp = self.get_html_page(url_info=article_url)
         else:
-            resp = self.get_html_page(url_info=article_url, tags='#article')
+            resp = self.get_html_page(url_info=article_url)
             if resp is None:
                 return None, ''
 
@@ -533,7 +533,7 @@ class WebNewsCrawler(WebNewsBase):
             next_url = self.config['parsing']
             next_url['url'] = url
 
-            resp = self.get_html_page(url_info=self.config['parsing'], tags='#article #next_page')
+            resp = self.get_html_page(url_info=self.config['parsing'])
             if resp is None:
                 continue
 
@@ -651,6 +651,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
+                'url': doc['url'],
                 'doc_url': elastic_utils.get_doc_url(document_id=doc['document_id']),
                 **{x: doc[x] for x in ['document_id', 'date', 'title'] if x in doc},
             })
@@ -765,9 +766,6 @@ class WebNewsCrawler(WebNewsBase):
             sleep(self.params.sleep)
             return None
 
-        if self.params.update_category_only is True:
-            return trace_list
-
         self.set_history(
             name='trace_list',
             value=set(str_trace_list),
@@ -853,9 +851,14 @@ class WebNewsCrawler(WebNewsBase):
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.config['jobs']:
             # override elasticsearch config
-            job['host'] = os.getenv('ELASTIC_SEARCH_HOST', job['host'])
-            job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', job['index'])
-            job['http_auth'] = os.getenv('ELASTIC_SEARCH_AUTH', job['http_auth'])
+            job['host'] = os.getenv('ELASTIC_SEARCH_HOST', default=job['host'] if 'host' in job else None)
+
+            job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', default=job['index'] if 'index' in job else None)
+
+            job['http_auth'] = os.getenv(
+                'ELASTIC_SEARCH_AUTH',
+                default=job['http_auth'] if 'http_auth' in job else None
+            )
 
             if 'host' not in job or 'index' not in job:
                 self.logger.error(msg={

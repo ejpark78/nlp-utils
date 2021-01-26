@@ -122,7 +122,7 @@ class WebNewsBase(object):
 
         return result
 
-    def get_html_page(self, url_info: dict, tags: str) -> None or str:
+    def get_html_page(self, url_info: dict) -> None or str:
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
         if 'headers' in url_info:
@@ -167,20 +167,17 @@ class WebNewsBase(object):
             sleep(sleep_time)
             return None
 
-        if url_info is not None:
-            if 'parser' in url_info and url_info['parser'] == 'json':
-                try:
-                    result = resp.json()
-
-                    return result
-                except Exception as e:
-                    self.logger.error(msg={
-                        'level': 'ERROR',
-                        'message': 'json 파싱 에러',
-                        'e': str(e),
-                        'resp': str(resp.content),
-                    })
-                    return None
+        if 'parser' in url_info and url_info['parser'] == 'json':
+            try:
+                return resp.json()
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'json 파싱 에러',
+                    'e': str(e),
+                    'resp': str(resp.content),
+                })
+                return None
 
         # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
         encoding = None

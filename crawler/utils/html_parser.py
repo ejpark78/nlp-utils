@@ -263,12 +263,27 @@ class HtmlParser(object):
             if '일전' in str_date:
                 offset = int(str_date.replace('일전', ''))
                 date += relativedelta(days=-offset)
+            elif '주전' in str_date:
+                offset = int(str_date.replace('주전', ''))
+                date += relativedelta(weeks=-offset)
             elif '분전' in str_date:
                 offset = int(str_date.replace('분전', ''))
                 date += relativedelta(minutes=-offset)
             elif '시간전' in str_date:
                 offset = int(str_date.replace('시간전', ''))
                 date += relativedelta(hours=-offset)
+            elif 'days ago' in str_date or 'day ago' in str_date:
+                offset = int(str_date.replace('days ago', '').replace('day ago', ''))
+                date += relativedelta(days=-offset)
+            elif 'weeks ago' in str_date or 'week ago' in str_date:
+                offset = int(str_date.replace('weeks ago', '').replace('week ago', ''))
+                date += relativedelta(weeks=-offset)
+            elif 'hours ago' in str_date or 'hour ago' in str_date:
+                offset = int(str_date.replace('hours ago', '').replace('hour ago', ''))
+                date += relativedelta(hours=-offset)
+            elif 'minutes ago' in str_date or 'minute ago' in str_date:
+                offset = int(str_date.replace('minutes ago', '').replace('minute ago', ''))
+                date += relativedelta(minutes=-offset)
             elif str_date != '':
                 dt = parse_date(str_date)
                 date = self.timezone.localize(dt)
