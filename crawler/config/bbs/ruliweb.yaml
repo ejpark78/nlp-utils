@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-bbs-ruliweb-{year}
+  article:
     document_id:
       replace:
       - from: ^.+/board/([0-9]+)/read/([0-9]+)[^0-9]*$
         to: \g<1>-\g<2>
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-bbs-ruliweb-{year}
   list:
   - category: 고민상담
     url_frame: https://bbs.ruliweb.com/community/board/300147?page={page}

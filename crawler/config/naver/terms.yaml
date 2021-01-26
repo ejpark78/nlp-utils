@@ -1,5 +1,6 @@
 ---
 jobs:
+  index: crawler-naver-terms-list
   category:
   - id: '50281'
     name: 용어해설/인문과학
@@ -415,9 +416,6 @@ jobs:
     name: 두산백과/여행
   - id: '34704'
     name: 두산백과/지역
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-terms-list
   url_frame: https://m.terms.naver.com/listAjax.nhn?categoryId={categoryId}&so=st3.asc&index=&page={page}&viewType=list
 parsing:
   version: v2021-01-26

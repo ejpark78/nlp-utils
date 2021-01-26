@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-nate-opinion-{year}
+  article:
     document_id:
       replace:
       - from: /view/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-nate-opinion-{year}
   list:
   - category: 사설/사설
     date_format: '%Y%m%d'

@@ -1,13 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-society-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  check_id: true
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-society-{year}
   list:
   - category: 사회/사건사고
     date_format: '%Y%m%d'

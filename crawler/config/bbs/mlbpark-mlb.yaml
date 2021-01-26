@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-bbs-mlbpark_mlb-{year}
+  article:
     document_id:
       frame: '{id}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-bbs-mlbpark_mlb-{year}
   list:
   - category: MLB
     check_id: false

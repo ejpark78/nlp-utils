@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-sports-reply-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-sports-reply-{year}
   list:
   - Referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date={date}&page={page}
     date_format: '%Y%m%d'

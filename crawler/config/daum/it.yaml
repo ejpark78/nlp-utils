@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-daum-it-{year}
+  article:
     document_id:
       replace:
       - from: /v/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-daum-it-{year}
   list:
   - category: IT/IT기기
     date_format: '%Y%m%d'

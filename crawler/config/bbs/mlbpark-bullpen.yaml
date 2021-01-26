@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-bbs-mlbpark_bullpen-{year}
+  article:
     document_id:
       frame: '{id}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-bbs-mlbpark_bullpen-{year}
   list:
   - category: BULLPEN
     url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=bullpen&query=&select=&user=

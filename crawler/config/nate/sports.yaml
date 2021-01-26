@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-nate-sports-{year}
+  article:
     document_id:
       replace:
       - from: /view/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-nate-sports-{year}
   list:
   - category: 스포츠/야구
     date_format: '%Y%m%d'

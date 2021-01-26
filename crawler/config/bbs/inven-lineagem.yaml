@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-bbs-inven-{year}
+  article:
     document_id:
       replace:
       - from: ^.+/lineagem/([0-9]+)/([0-9]+)[^0-9]*$
         to: \g<1>-\g<2>
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-bbs-inven-{year}
   list:
   - category: 자유게시판
     url_frame: http://www.inven.co.kr/board/lineagem/5019?sort=PID&p={page}

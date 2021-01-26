@@ -16,6 +16,7 @@ from ssl import SSLContext
 
 import pytz
 import urllib3
+from dateutil.parser import parse as parse_date
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
@@ -98,7 +99,8 @@ class ElasticSearchUtils(object):
 
     def get_index_year_tag(self, date: datetime or str) -> str:
         """인덱스의 년도 태그를 반환한다."""
-        from dateutil.parser import parse as parse_date
+        if date is None:
+            return ''
 
         if isinstance(date, str):
             date = parse_date(date)

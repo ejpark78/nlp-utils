@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-daum-sports-{year}
+  article:
     document_id:
       replace:
       - from: /v/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-daum-sports-{year}
   list:
   - category: 스포츠/야구
     date_format: '%Y%m%d'
@@ -82,8 +80,6 @@ jobs:
     parser: json
     trace: content
     url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1031&pageSize=20&pageNumber={page}&date={date}
-  post_process: []
-  split_index: true
 parsing:
   version: v2021-01-26
   descriptions:

@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-tv-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-tv-{year}
   list:
   - category: TV
     date_format: '%Y%m%d'

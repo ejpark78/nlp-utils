@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-daum-opinion-{year}
+  article:
     document_id:
       replace:
       - from: /v/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-daum-opinion-{year}
   list:
   - category: 칼럼-칼럼
     date_format: '%Y%m%d'

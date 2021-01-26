@@ -2,8 +2,6 @@
 jobs:
 - index: raw-apnews-{year}
   index_list: raw-apnews-list-{year}
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
   list:
   - category: politics
     url_frame: https://storage.googleapis.com/afs-prod/feeds/politics.json.gz

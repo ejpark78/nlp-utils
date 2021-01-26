@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-politics-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-politics-{year}
   list:
   - category: 정치/청와대
     date_format: '%Y%m%d'

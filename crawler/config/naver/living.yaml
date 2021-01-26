@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-living-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-living-{year}
   list:
   - category: 생활/건강정보
     date_format: '%Y%m%d'

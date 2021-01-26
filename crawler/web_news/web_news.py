@@ -94,7 +94,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '뉴스 목록 크롤링',
-                'url': url['url'],
+                'url': url['url'] if 'url' in url else '',
                 'query': q,
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
             })
@@ -105,7 +105,7 @@ class WebNewsCrawler(WebNewsBase):
                 self.logger.error(msg={
                     'level': 'ERROR',
                     'message': '뉴스 목록 조회 에러',
-                    'url': url['url'],
+                    'url': url['url'] if 'url' in url else '',
                     'query': q,
                     'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
                 })
@@ -126,7 +126,7 @@ class WebNewsCrawler(WebNewsBase):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': 'trace_list 가 없음: 마지막 페이지',
-                    'url': url['url'],
+                    'url': url['url'] if 'url' in url else '',
                     'category': job['category'],
                     'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
                 })
@@ -136,7 +136,7 @@ class WebNewsCrawler(WebNewsBase):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '기사 목록 끝에 도달: 종료',
-                    'url': url['url'],
+                    'url': url['url'] if 'url' in url else '',
                     'category': job['category'],
                     'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
                 })

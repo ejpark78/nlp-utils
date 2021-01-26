@@ -1,5 +1,6 @@
 ---
 jobs:
+  index: crawler-twitter
   access_token:
     secret: zCKSG14s45QFIr6r3p9vDJwrpGiQmAJBzv8nsGIajWWK7
     token: 125595204-SmpvXrJNeSyRI5zopOcFFP3OlcTbhdDP1JNU5BoC
@@ -283,10 +284,6 @@ jobs:
   - id: kyunghyang
     job: 언론사
     name: 경향신문
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-twitter
-  sleep: 2
   url_frame:
     user_timeline: https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={screen_name}
 parsing:

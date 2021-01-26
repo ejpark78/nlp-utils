@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-nate-economy-{year}
+  article:
     document_id:
       replace:
       - from: /view/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-nate-economy-{year}
   list:
   - category: 경제/생활 경제
     date_format: '%Y%m%d'

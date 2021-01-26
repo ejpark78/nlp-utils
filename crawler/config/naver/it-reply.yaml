@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-it-reply-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-it-reply-{year}
   list:
   - Referer: https://news.naver.com/main/read.nhn?m_view=1&includeAllCount=true&mode=LSD&mid=shm&sid1={sid1}&oid={oid}&aid={aid}
     list: elasticsearch

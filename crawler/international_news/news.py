@@ -5,14 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 from argparse import Namespace
+from datetime import datetime
 from time import sleep
 
+import pytz
 import requests
 import urllib3
 import yaml
-import pytz
-from datetime import datetime
 from dateutil.parser import parse as parse_date
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
@@ -41,6 +42,15 @@ class NewsCrawler(object):
             return dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
 
     def trace_list(self, job: dict, url_info: dict) -> None:
+        job['host'] = os.getenv('ELASTIC_SEARCH_HOST', default=job['host'] if 'host' in job else None)
+
+        job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', default=job['index'] if 'index' in job else None)
+
+        job['http_auth'] = os.getenv(
+            'ELASTIC_SEARCH_AUTH',
+            default=job['http_auth'] if 'http_auth' in job else None
+        )
+
         self.logger.log(msg=url_info)
 
         elastic = ElasticSearchUtils(
@@ -92,6 +102,8 @@ class NewsCrawler(object):
 
         # 성공 로그 표시
         if flag is True:
+            elastic.index = index
+
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',

@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: raw-reuters-{year}
+  article:
     document_id:
       replace:
       - from: ^.+/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: raw-reuters-{year}
   list:
   - category: worldnews
     url_frame: https://www.reuters.com/news/archive/worldnews?view=page&page={page}&pageSize=10

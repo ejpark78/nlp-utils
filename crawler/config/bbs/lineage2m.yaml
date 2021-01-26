@@ -1,6 +1,7 @@
 ---
 jobs:
-- article:
+- index: crawler-bbs-lineage2m-{year}
+  article:
     document_id:
       frame: '{articleId}'
       type: value
@@ -25,9 +26,6 @@ jobs:
       voteContents: ''
       writer: /
     parser: json
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-bbs-lineage2m
   list:
   - category: all
     check_id: true

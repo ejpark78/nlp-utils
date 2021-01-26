@@ -1,14 +1,12 @@
 ---
 jobs:
-- article:
+- index: crawler-nate-tv-{year}
+  article:
     document_id:
       replace:
       - from: /view/
         to: ''
       type: path
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-nate-tv-{year}
   list:
   - category: TV/SBS
     date_format: '%Y%m%d'

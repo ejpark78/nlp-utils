@@ -1,12 +1,10 @@
 ---
 jobs:
-- article:
+- index: crawler-naver-weather-{year}
+  article:
     document_id:
       frame: '{oid}-{aid}'
       type: query
-  host: https://corpus.ncsoft.com:9200
-  http_auth: crawler:crawler2019
-  index: crawler-naver-weather-{year}
   list:
   - category: 날씨
     date_format: '%Y%m%d'
