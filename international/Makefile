@@ -3,15 +3,15 @@ NAME=naver
 
 .ONESHELL:
 start-all:
-	make NAME=international-news start
+	make NAME=news start
 
 .ONESHELL:
 stop-all:
-	make NAME=international-news stop
+	make NAME=news stop
 
 .ONESHELL:
 upgrade-all:
-	make NAME=international-news upgrade
+	make NAME=news upgrade
 
 .ONESHELL:
 config:
@@ -19,11 +19,11 @@ config:
 
 .ONESHELL:
 start:
-	helm install $(NAME) . -f $(NAME).yaml
+	helm install $(NAME) . -f values.yaml
 
 .ONESHELL:
 upgrade:
-	helm upgrade $(NAME) . -f $(NAME).yaml
+	helm upgrade $(NAME) . -f values.yaml
 
 .ONESHELL:
 stop:
@@ -31,7 +31,7 @@ stop:
 
 .ONESHELL:
 test:
-	helm template . -f $(NAME).yaml
+	helm template . -f values.yaml
 
 .ONESHELL:
 list:

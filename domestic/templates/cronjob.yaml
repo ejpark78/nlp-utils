@@ -26,6 +26,9 @@ spec:
                 {{- toYaml $.Values.resources | nindent 16 }}
               image: {{ $.Values.image }}
               imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: {{ $job.configMapRef }}
               env:
                 {{- toYaml $.Values.environmentVariables | nindent 16 }}
               args:

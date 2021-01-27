@@ -1,0 +1,117 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+imagePullSecrets: registry
+
+restartPolicy: OnFailure
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+image: registry.nlp-utils/crawler:2
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 2
+
+jobs:
+  - name: apnews
+    schedule: "0 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.international_news.news"
+      - "--config"
+      - "/config/international/apnews.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: reuters
+    schedule: "10 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/reuters.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: upi
+    schedule: "20 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/upi.yaml"
+      - "--page-range"
+      - "1~7"
+      - "--sleep"
+      - "15"
+
+  - name: 47news
+    schedule: "30 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/47news.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: ansa
+    schedule: "30 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/ansa.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: belga
+    schedule: "30 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/belga.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: afp
+    schedule: "30 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/afp.yaml"
+      - "--sleep"
+      - "15"

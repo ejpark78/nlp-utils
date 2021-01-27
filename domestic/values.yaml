@@ -1,0 +1,109 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+imagePullSecrets: registry
+
+restartPolicy: OnFailure
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+image: registry.nlp-utils/crawler:2
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 2
+
+jobs:
+  - name: donga
+    schedule: "0 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/donga.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: donga-en
+    schedule: "10 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/donga-en.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: donga-cn
+    schedule: "20 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/donga-cn.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: donga-jp
+    schedule: "30 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/donga-jp.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: joins
+    schedule: "0 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/joins.yaml"
+      - "--page-range"
+      - "1~100"
+      - "--sleep"
+      - "15"
