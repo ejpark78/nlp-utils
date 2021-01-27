@@ -1,17 +1,35 @@
 ---
 jobs:
-- index: crawler-major_press-donga
+- index: raw-donga-{year}
   article:
     document_id:
       replace:
-      - from: /List/SportsBase/
+      - from: /news/
+        to: '/'
+      - from: /article/
+        to: '/'
+      - from: /all/
+        to: '/'
+      - from: ^/
         to: ''
       - from: /
         to: '-'
       type: path
   list:
-  - category: 스포츠
-    url_frame: http://news.donga.com/List/Sports/Base?prod=news&ymd=&m=NP&p={page}
+  - category: Politics
+    url_frame: https://www.donga.com/news/List/Politics?p={page}&prod=news&ymd=&m=NP
+  - category: Economy
+    url_frame: https://www.donga.com/news/List/Economy?p={page}&prod=news&ymd=&m=NP
+  - category: Inter
+    url_frame: https://www.donga.com/news/List/Inter?p={page}&prod=news&ymd=&m=NP
+  - category: Society
+    url_frame: https://www.donga.com/news/List/Society?p={page}&prod=news&ymd=&m=NP
+  - category: Culture
+    url_frame: https://www.donga.com/news/List/Culture?p={page}&prod=news&ymd=&m=NP
+  - category: Entertainment
+    url_frame: https://www.donga.com/news/List/Entertainment?p={page}&prod=news&ymd=&m=NP
+  - category: Sports
+    url_frame: https://www.donga.com/news/List/Sports?p={page}&prod=news&ymd=&m=NP
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
@@ -19,155 +37,110 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
   trace:
-  - name: div
-    attribute:
-      class: articleList
+  - select: div.articleList
   list:
   - comment: 제목
     key: title
     value:
-    - name: div
-      attribute:
-        class: rightList
-    - name: span
-      attribute:
-        class: tit
+    - select: div.rightList span.tit
     type: text
   - comment: url
     key: url
     value:
-    - name: div
-      attribute:
-        class: rightList
-    - name: a
+    - select: div.rightList a
     type: href
   - comment: 날짜
     key: date
     value:
-    - name: div
-      attribute:
-        class: rightList
-    - name: div
-      attribute:
-        class: date
+    - select: div.rightList span.date
     type: text
     type_convert: date
     value_type: single
+  - comment: 요약
+    key: summary
+    value:
+    - select: div.rightList span.txt
+    type: text
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
-    - name: div
-      attribute:
-        class: article_title
-    - name: h2
-      attribute:
-        class: title
+    - select: div.article_title h2.title
     type: text
   - comment: 날짜
     key: date
+    value:
+    - select: div.article_title span.date01
     replace:
     - from: 입력[ ]*|수정[ ]*
       to: ''
-    value:
-    - name: div
-      attribute:
-        class: article_title
-    - name: span
-      attribute:
-        class: date01
     type: text
     type_convert: date
     value_type: single
   - comment: 글쓴이
     key: author
     value:
-    - name: div
-      attribute:
-        class: article_title
-    - name: span
-      attribute:
-        class: report
+    - select: div.article_title span.report
     type: text
   - comment: html 본문
     key: html_content
     remove:
-    - name: div
-      attribute:
-        class: article_relation
-    - name: div
-      attribute:
-        id: bestnews_layer
-    - name: div
-      attribute:
-        id: adBox
-    - name: div
-      attribute:
-        class: article_issue
+    - select: div.article_relation
+    - select: div#bestnews_layer
+    - select: div#adBox
+    - select: div#article_issue
     value:
-    - name: div
-      attribute:
-        class: article_txt
+    - select: div.article_txt
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - name: div
-      attribute:
-        class: articlePhotoL
-    - name: img
+    - select: div.articlePhotoL img
     type: src
   - comment: 이미지
     key: image_list.image
     value:
-    - name: div
-      attribute:
-        class: articlePhotoR
-    - name: img
+    - select: div.articlePhotoR img
     type: src
   - comment: 이미지
     key: image_list.image
     value:
-    - name: div
-      attribute:
-        class: articlePhotoC
-    - name: img
+    - select: div.articlePhotoC img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - name: div
-      attribute:
-        class: articlePhotoR
+    - select: div.articlePhotoR
     type: text
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - name: div
-      attribute:
-        class: articlePhotoL
+    - select: div.articlePhotoL
     type: text
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - name: div
-      attribute:
-        class: articlePhotoC
+    - select: div.articlePhotoC
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - name: div
-      attribute:
-        class: article_txt
+    - select: div.article_txt
     type: text
   - comment: 키워드
     key: keyword
     value:
-    - name: div
-      attribute:
-        class: article_keyword
+    - select: div.article_keyword
     type: text

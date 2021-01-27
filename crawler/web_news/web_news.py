@@ -645,6 +645,12 @@ class WebNewsCrawler(WebNewsBase):
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
         if trace_list is None:
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': 'trace_list 가 없음',
+                'url': url_info['url'] if 'url' in url_info else '',
+                **job,
+            })
             return True, trace_list
 
         # url 저장 이력 조회
@@ -711,8 +717,8 @@ class WebNewsCrawler(WebNewsBase):
 
             doc_history.add(doc_id)
 
-            self.logger.info(msg={
-                'level': 'INFO',
+            self.logger.log(msg={
+                'level': 'MESSAGE',
                 'message': '뉴스 본문 크롤링: 슬립',
                 'sleep_time': self.params.sleep,
             })
@@ -758,15 +764,8 @@ class WebNewsCrawler(WebNewsBase):
             })
 
             # 기사 목록 조회
-            resp = self.get_html_page(url_info=url_info)
+            resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
             if resp is None:
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': '뉴스 목록 조회 에러',
-                    'url': url_info['url'] if 'url' in url_info else '',
-                    'query': q,
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                })
                 continue
 
             # category 만 업데이트할 경우
@@ -781,13 +780,6 @@ class WebNewsCrawler(WebNewsBase):
             # 문서 저장
             early_stop, trace_list = self.trace_news(html=resp, url_info=url_info, job=job, date=dt)
             if trace_list is None:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': 'trace_list 가 없음: 마지막 페이지',
-                    'url': url_info['url'] if 'url' in url_info else '',
-                    'category': job['category'],
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                })
                 break
 
             if early_stop is True:

@@ -39,14 +39,14 @@ DOCKER_LABEL += --label "git.branch=$(GIT_BRANCH)"
 DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
 DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
 DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
-DOCKER_LABEL += --build-arg "docker_tag=$(IMAGE_TAG)"
-DOCKER_LABEL += --build-arg "docker_image=$(IMAGE_BASE)"
-DOCKER_LABEL += --build-arg "build_date='$(BUILD_DATE)'"
-DOCKER_LABEL += --build-arg "git_url=$(GIT_URL)"
-DOCKER_LABEL += --build-arg "git_branch=$(GIT_BRANCH)"
-DOCKER_LABEL += --build-arg "git_tag=$(GIT_TAG)"
-DOCKER_LABEL += --build-arg "git_commit_id=$(GIT_COMMIT_ID)"
-DOCKER_LABEL += --build-arg "git_commit_count=$(GIT_COMMIT)"
+DOCKER_LABEL += --build-arg "DOCKER_TAG=$(IMAGE_TAG)"
+DOCKER_LABEL += --build-arg "DOCKER_IMAGE=$(IMAGE_BASE)"
+DOCKER_LABEL += --build-arg "BUILD_DATE='$(BUILD_DATE)'"
+DOCKER_LABEL += --build-arg "GIT_URL=$(GIT_URL)"
+DOCKER_LABEL += --build-arg "GIT_BRANCH=$(GIT_BRANCH)"
+DOCKER_LABEL += --build-arg "GIT_TAG=$(GIT_TAG)"
+DOCKER_LABEL += --build-arg "GIT_COMMIT_ID=$(GIT_COMMIT_ID)"
+DOCKER_LABEL += --build-arg "GIT_COMMIT_COUNT=$(GIT_COMMIT)"
 
 DOCKER_BUILD_OPT =
 DOCKER_BUILD_OPT += --network=host
@@ -68,6 +68,8 @@ build:
 	cd ../
 	tar cvfz ./docker/app.tar.gz \
 		--exclude=.git* \
+		--exclude=.idea \
+		--exclude=log \
 		--exclude=ops \
 		--exclude=venv \
 		--exclude=data \

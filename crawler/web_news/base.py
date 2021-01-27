@@ -24,6 +24,8 @@ from crawler.utils.logger import Logger
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
+urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
+
 
 class WebNewsBase(object):
     """크롤러 베이스"""
@@ -180,14 +182,17 @@ class WebNewsBase(object):
 
         return resp.json()
 
-    def get_html_page(self, url_info: dict) -> None or str:
+    def get_html_page(self, url_info: dict, log_msg: dict = None) -> None or str:
         """웹 문서를 조회한다."""
+        log_msg = log_msg if log_msg is not None else {}
+
         headers = self.headers['desktop']
         if 'headers' in url_info:
             headers.update(url_info['headers'])
 
         if 'url' not in url_info:
             self.logger.error(msg={
+                **log_msg,
                 'level': 'ERROR',
                 'message': 'url 정보가 없음',
                 **url_info,
@@ -208,6 +213,7 @@ class WebNewsBase(object):
             sleep_time = 10
 
             self.logger.error(msg={
+                **log_msg,
                 'level': 'ERROR',
                 'message': 'html 페이지 조회 에러',
                 'sleep_time': sleep_time,
@@ -224,6 +230,7 @@ class WebNewsBase(object):
             sleep_time = 10
 
             self.logger.error(msg={
+                **log_msg,
                 'level': 'ERROR',
                 'message': 'url 조회 상태 코드 에러',
                 'sleep_time': sleep_time,
@@ -239,6 +246,7 @@ class WebNewsBase(object):
                 return resp.json()
             except Exception as e:
                 self.logger.error(msg={
+                    **log_msg,
                     'level': 'ERROR',
                     'message': 'json 파싱 에러',
                     'e': str(e),
