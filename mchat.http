@@ -228,7 +228,23 @@ Accept: application/json
 
 ###
 
+POST {{host}}/log_gamechat_cache/_doc/users
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mchat/users.json
+
+###
+
 GET {{host}}/log_gamechat_cache/_doc/room_list
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/log_gamechat_cache/_doc/users
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
