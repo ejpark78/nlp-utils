@@ -101,9 +101,9 @@ class HtmlParser(object):
         # 태그 정리
         self.replace_tag(soup=soup, tag_list=['script', 'javascript', 'style'], replacement='')
 
+        # self.remove_banner(soup=soup)
         self.remove_comment(soup=soup)
-        self.remove_banner(soup=soup)
-        self.remove_attribute(soup, attribute_list=['onclick', 'role', 'style', 'data-log'])
+        self.remove_attribute(soup, attribute_list=['onclick', 'style', 'data-log'])
 
         result = {}
         if parser_version is not None:
@@ -113,49 +113,56 @@ class HtmlParser(object):
             tag_list = []
             self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)
 
-            value_list = []
-            for tag in tag_list:
-                # 이미 값이 있는 경우
-                if conf['key'] in result:
-                    continue
-
-                val = self.extract_value(tag=tag, conf=conf, base_url=base_url)
-                if val is None:
-                    continue
-
-                value_list.append(val)
-
-            # 타입 제약: 디폴트 목록형
-            if 'value_type' in conf:
-                if conf['value_type'] == 'single':
-                    if len(value_list) > 0:
-                        value_list = value_list[0]
-                    else:
-                        value_list = ''
-
-                if conf['value_type'] == 'merge':
-                    value_list = '\n'.join(value_list)
-
-                if conf['value_type'] == 'unique':
-                    value_list = list(set(value_list))
-
-            # 값의 개수가 하나인 경우, 스칼라로 변경한다.
-            if isinstance(value_list, list):
-                if len(value_list) == 0:
-                    continue
-
-                if len(value_list) == 1:
-                    if value_list[0] == '':
-                        continue
-
-                    result[conf['key']] = value_list[0]
-                    continue
-            elif value_list == '':
+            value_list = self.get_value_list(conf=conf, result=result, tag_list=tag_list, base_url=base_url)
+            if value_list is None:
                 continue
 
             result[conf['key']] = value_list
 
         return result
+
+    def get_value_list(self, conf: dict, result: dict, tag_list: list, base_url: str) -> list or None:
+        value_list = []
+        for tag in tag_list:
+            # 이미 값이 있는 경우
+            if conf['key'] in result:
+                continue
+
+            val = self.extract_value(tag=tag, conf=conf, base_url=base_url)
+            if val is None:
+                continue
+
+            value_list.append(val)
+
+        # 타입 제약: 디폴트 목록형
+        if 'value_type' in conf:
+            if conf['value_type'] == 'single':
+                if len(value_list) > 0:
+                    value_list = value_list[0]
+                else:
+                    value_list = ''
+
+            if conf['value_type'] == 'merge':
+                value_list = '\n'.join(value_list)
+
+            if conf['value_type'] == 'unique':
+                value_list = list(set(value_list))
+
+        # 값의 개수가 하나인 경우, 스칼라로 변경한다.
+        if isinstance(value_list, list):
+            if len(value_list) == 0:
+                return None
+
+            if len(value_list) == 1:
+                if value_list[0] == '':
+                    return None
+
+                result[conf['key']] = value_list[0]
+                return None
+        elif value_list == '':
+            return None
+
+        return value_list
 
     def extract_value(self, tag: BeautifulSoup, conf: dict, base_url: str):
         # 태그 삭제
@@ -285,16 +292,30 @@ class HtmlParser(object):
                 offset = int(str_date.replace('minutes ago', '').replace('minute ago', ''))
                 date += relativedelta(minutes=-offset)
             elif str_date != '':
-                dt = parse_date(str_date)
-                date = self.timezone.localize(dt)
+                date = parse_date(str_date)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html 날짜 변환 에러',
-                'date': str_date,
+                'str_date': str_date,
                 'exception': str(e),
             })
 
+            return None
+
+        try:
+            date = self.timezone.localize(date)
+        except Exception as e:
+            if 'tzinfo is already set' in str(e):
+                return date
+
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'datetime localize 에러',
+                'date': date,
+                'str_date': str_date,
+                'exception': str(e),
+            })
             return None
 
         return date
