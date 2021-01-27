@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-major_press-joins
+- index: raw-joins-{year}
   article:
     document_id:
       replace:
@@ -8,9 +8,24 @@ jobs:
         to: ''
       type: path
   list:
-  - category: 야구
-    date_format: '%Y-%m-%d'
-    url_frame: http://news.joins.com/sports/baseball/list/{page}?filter=All&date={date}
+  - category: politics
+    url_frame: https://news.joins.com/politics?page={page}
+  - category: money
+    url_frame: https://news.joins.com/money?page={page}
+  - category: society
+    url_frame: https://news.joins.com/society?page={page}
+  - category: world
+    url_frame: https://news.joins.com/world?page={page}
+  - category: culture
+    url_frame: https://news.joins.com/culture?page={page}
+  - category: sports
+    url_frame: https://news.joins.com/sports?page={page}
+  - category: people
+    url_frame: https://news.joins.com/people?page={page}
+  - category: lifestyle
+    url_frame: https://news.joins.com/lifestyle?page={page}
+  - category: travel
+    url_frame: https://news.joins.com/travel?page={page}
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
@@ -18,49 +33,44 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - name: div
-    attribute:
-      class: list_basic
-  - name: li
+  - select: div.list_basic li
   list:
   - comment: 제목
     key: title
     value:
-    - name: strong
-      attribute:
-        class: headline mg
-    - name: a
+    - select: h2.headline a
     type: text
   - comment: url
     key: url
     value:
-    - name: strong
-      attribute:
-        class: headline mg
-    - name: a
+    - select: h2.headline a
     type: href
   - comment: 날짜
     key: date
-    replace:
-    - from: ^.+[|]
-      to: ''
     value:
-    - name: span
-      attribute:
-        class: byline
+    - select: span.byline
     type: text
     type_convert: date
     value_type: single
   article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
   - comment: 제목
     key: title
     value:
-    - name: h1
-      attribute:
-        id: article_title
+    - select: h1#article_title
     type: text
   - comment: 날짜
     key: date
+    value:
+    - select: div.byline em
     replace:
     - from: ^.*입력
       to: ''
@@ -68,89 +78,12 @@ parsing:
       to: ''
     - from: '[|].+$'
       to: ''
-    value:
-    - name: div
-      attribute:
-        class: byline
     type: text
     type_convert: date
     value_type: single
-  - comment: 출처
-    key: source
-    replace:
-    - from: 입력.+$
-      to: ''
-    - from: ^.+수정
-      to: ''
-    - from: '[|].+$'
-      to: ''
-    value:
-    - name: div
-      attribute:
-        class: byline
-    type: text
-  - comment: 지면
-    key: paper_url
-    value:
-    - name: div
-      attribute:
-        class: byline
-    - name: a
-    type: href
-  - comment: 지면
-    key: paper_page
-    value:
-    - name: div
-      attribute:
-        class: byline
-    - name: a
-    - name: strong
-    type: text
-  - comment: 글쓴이
-    key: author
-    value:
-    - name: span
-      attribute:
-        class: profile
-    - name: strong
-      attribute:
-        class: mg
-    type: text
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: iframe
-    - name: script
-    - name: div
-      attribute:
-        id: criteo_network
-    value:
-    - name: div
-      attribute:
-        itemprop: articleBody
-    type: html
-    value_type: merge
-  - comment: 이미지
-    key: image_list.image
-    value:
-    - name: div
-      attribute:
-        class: image
-    - name: img
-    type: src
-  - comment: 이미지 캡션
-    delete: true
-    key: image_list.caption
-    value:
-    - name: p
-      attribute:
-        class: caption
-    type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - name: div
-      attribute:
-        itemprop: articleBody
+    - select: div#content
     type: text
     value_type: merge

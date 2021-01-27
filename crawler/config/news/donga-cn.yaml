@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-donga-en-{year}
+- index: raw-donga-cn-{year}
   article:
     document_id:
       replace:
@@ -25,21 +25,21 @@ jobs:
       type: path
   list:
   - category: Business
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=02
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=02
   - category: National
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=04
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=04
   - category: Politics
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=01
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=01
   - category: International
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=03
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=03
   - category: Sports
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=06
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=06
   - category: Culture
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=08
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=08
   - category: Editorial
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=0501
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=0501
   - category: Op-ed
-    url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=0502
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=0502
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
