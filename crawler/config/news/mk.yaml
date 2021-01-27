@@ -30,33 +30,33 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: list_area
-    name: div
   - name: dl
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: dt
+      attribute:
         class: tit
-      name: dt
     - name: a
     type: text
   - comment: url
     key: url
     value:
-    - attribute:
+    - name: dt
+      attribute:
         class: tit
-      name: dt
     - name: a
     type: href
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: date
-      name: span
     type: text
     type_convert: date
     value_type: single
@@ -64,26 +64,26 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: view_tit
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: head_tit
-      name: span
     type: text
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: h1
+      attribute:
         class: top_title
-      name: h1
     type: text
   - comment: 부제목
     key: sub_title
     value:
-    - attribute:
+    - name: h2
+      attribute:
         class: sub_title1
-      name: h2
     type: text
   - comment: 날짜
     key: date
@@ -91,26 +91,26 @@ parsing:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
     value:
-    - attribute:
+    - name: li
+      attribute:
         class: lasttime1
-      name: li
     type: text
     type_convert: date
     value_type: single
   - comment: html 본문
     key: html_content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: article_body
-      name: div
     type: html
     value_type: merge
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: img_center
-      name: div
     - name: img
     type: src
   - comment: 이미지 캡션
@@ -123,8 +123,8 @@ parsing:
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: article_body
-      name: div
     type: text
     value_type: merge

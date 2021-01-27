@@ -17,71 +17,71 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: nag cf
-    name: div
-  - attribute:
+  - name: div
+    attribute:
       class: thumb
-    name: div
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: clip-link
-      name: a
     type: title
   - comment: url
     key: url
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: clip-link
-      name: a
     type: href
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: inner
-      name: div
-    - attribute:
+    - name: h1
+      attribute:
         id: title
-      name: h1
     type: text
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: section-content
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: time
-      name: span
     type: text
     type_convert: date
     value_type: single
   - comment: html 본문
     key: html_content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: html
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: text
   - comment: 비디오
     key: video
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: single_featured_video
-      name: div
-    - attribute:
+    - name: a
+      attribute:
         class: single_video_btn
-      name: a
     type: href

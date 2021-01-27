@@ -9,7 +9,6 @@ import json
 import os
 import re
 from argparse import Namespace
-from copy import deepcopy
 from datetime import datetime, timedelta
 from time import sleep
 from urllib.parse import parse_qs, urljoin
@@ -19,6 +18,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, DAILY
+from dotty_dict import dotty
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.web_news.base import WebNewsBase
@@ -42,109 +42,20 @@ class WebNewsCrawler(WebNewsBase):
 
         self.job_sub_category = None
 
-    def trace_url_list(self, job: dict) -> None:
-        """url_frame 목록을 반복한다."""
-        # url 목록 반복
-        for url in job['list']:
-            if url['url_frame'][0] == '#':
-                continue
+    @staticmethod
+    def open_elasticsearch(date: datetime, job: dict) -> ElasticSearchUtils:
+        """디비에 연결한다."""
+        index_tag = None
+        if date is not None:
+            index_tag = date.year
 
-            if len(self.job_sub_category) > 0 and 'category' in url and url['category'] not in self.job_sub_category:
-                continue
-
-            if url['url_frame'].find('date') < 0:
-                # page 단위로 크롤링한다.
-                self.trace_page_list(url=url, job=job, dt=None)
-                continue
-
-            # 날짜 지정시
-            date_list = list(rrule(DAILY, dtstart=self.date_range['start'], until=self.date_range['end']))
-
-            if self.date_range['step'] < 0:
-                date_list = sorted(date_list, reverse=True)
-
-            for dt in date_list:
-                date_now = datetime.now(self.timezone)
-                if dt > date_now + timedelta(1):
-                    break
-
-                # page 단위로 크롤링한다.
-                self.trace_page_list(url=url, job=job, dt=dt)
-
-        return
-
-    def trace_page_list(self, url: dict, job: dict, dt: datetime = None) -> None:
-        """뉴스 목록을 크롤링한다."""
-        self.trace_depth = 0
-        self.trace_list_count = -1
-
-        # start 부터 end 까지 반복한다.
-        for page in range(self.page_range['start'], self.page_range['end'] + 1, self.page_range['step']):
-            # 쿼리 url 생성
-            q = dict(page=page)
-            if dt is not None:
-                q['date'] = dt.strftime(url['date_format'])
-
-            if url['url_frame'].find('{page}') > 0:
-                url['url'] = url['url_frame'].format(**q)
-
-            if 'category' in url:
-                job['category'] = url['category']
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '뉴스 목록 크롤링',
-                'url': url['url'] if 'url' in url else '',
-                'query': q,
-                'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-            })
-
-            # 기사 목록 조회
-            resp = self.get_html_page(url_info=url)
-            if resp is None:
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': '뉴스 목록 조회 에러',
-                    'url': url['url'] if 'url' in url else '',
-                    'query': q,
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                })
-                continue
-
-            # category 만 업데이트할 경우
-            early_stop = self.update_category(html=resp, url_info=url, job=job, date=dt)
-            if self.params.update_category_only is True:
-                if early_stop is True:
-                    break
-
-                sleep(self.params.sleep)
-                continue
-
-            # 문서 저장
-            early_stop, trace_list = self.trace_news(html=resp, url_info=url, job=job, date=dt)
-            if trace_list is None:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': 'trace_list 가 없음: 마지막 페이지',
-                    'url': url['url'] if 'url' in url else '',
-                    'category': job['category'],
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                })
-                break
-
-            if early_stop is True:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': '기사 목록 끝에 도달: 종료',
-                    'url': url['url'] if 'url' in url else '',
-                    'category': job['category'],
-                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                })
-                break
-
-            sleep(self.params.sleep)
-
-        return
+        return ElasticSearchUtils(
+            tag=index_tag,
+            host=job['host'],
+            index=None,
+            bulk_size=20,
+            http_auth=job['http_auth'],
+        )
 
     def update_category(self, html: str, url_info: dict, job: dict, date: datetime) -> bool:
         """카테고리 정보를 갱신한다."""
@@ -223,257 +134,98 @@ class WebNewsCrawler(WebNewsBase):
 
         return False
 
-    @staticmethod
-    def open_elasticsearch(date: datetime, job: dict) -> ElasticSearchUtils:
-        """디비에 연결한다."""
-        index_tag = None
-        if date is not None:
-            index_tag = date.year
-
-        return ElasticSearchUtils(
-            tag=index_tag,
-            host=job['host'],
-            index=None,
-            bulk_size=20,
-            http_auth=job['http_auth'],
-        )
-
-    def trace_news(self, html: str, url_info: dict, job: dict, date: datetime) -> (bool, list):
-        """개별 뉴스를 따라간다."""
-        # 기사 목록을 추출한다.
-        trace_list = self.get_trace_list(html=html, url_info=url_info)
-        if trace_list is None:
-            return True, trace_list
-
-        # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default=set())
-
-        # 베이스 url 추출
-        base_url = self.parser.parse_url(url_info['url'])[1]
-
-        # 디비에 연결한다.
-        elastic_utils = self.open_elasticsearch(date=date, job=job)
-
-        # 개별 뉴스를 따라간다.
-        for trace in trace_list:
-            item = self.parse_tag(
-                resp=trace,
-                url_info=url_info,
-                base_url=base_url,
-                parsing_info=self.config['parsing']['list'],
-            )
-            if item is None or 'url' not in item:
-                continue
-
-            item['url'] = urljoin(base_url, item['url'])
-
-            # 카테고리 업데이트
-            item['category'] = job['category']
-
-            # 기존 크롤링된 문서를 확인한다.
-            doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-            if doc_id is None:
-                continue
-
-            if date is None and 'date' in item:
-                date = item['date']
-
-            is_skip = False
-            if self.params.overwrite is False:
-                elastic_utils.index = elastic_utils.get_target_index(
-                    tag=elastic_utils.get_index_year_tag(date=date),
-                    index=job['index'],
-                )
-
-                is_skip = self.check_doc_id(
-                    url=item['url'],
-                    index=elastic_utils.index,
-                    doc_id=doc_id,
-                    doc_history=doc_history,
-                    elastic_utils=elastic_utils,
-                )
-
-            if is_skip is True:
-                self.logger.log(msg={
-                    'level': 'MESSAGE',
-                    'message': '크롤링된 뉴스가 있음',
-                    'doc_id': doc_id,
-                    'url': item['url'],
-                    'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
-                })
-                continue
-
-            # 기사 본문 조회
-            article, article_html = self.get_article(
-                job=job,
-                item=item,
-                doc_id=doc_id,
-                offline=False,
-            )
-
-            # 기사 저장
-            if article is None:
-                # 에러난 url 기록
-                item['_id'] = doc_id
-                if 'html' not in item or item['html'] == '':
-                    item['html'] = article_html
-
-                elastic_utils.save_document(
-                    document=item,
-                    index=job['index'].replace('-{year}') + '-error',
-                    delete=False,
-                )
-                elastic_utils.flush()
-            else:
-                self.save_article(
-                    job=job,
-                    doc=item,
-                    html=article_html,
-                    article=article,
-                    elastic_utils=elastic_utils,
-                )
-
-            doc_history.add(doc_id)
-
-            self.logger.info(msg={
-                'level': 'INFO',
-                'message': '뉴스 본문 크롤링: 슬립',
-                'sleep_time': self.params.sleep,
-            })
-            sleep(self.params.sleep)
-
-        # 목록 길이 저장
-        if self.trace_list_count < 0:
-            self.trace_list_count = len(trace_list)
-        elif self.trace_list_count > len(trace_list) + 3:
-            return True, trace_list
-
-        # 캐쉬 저장
-        self.set_history(value=doc_history, name='doc_history')
-
-        # 다음 페이지 정보가 있는 경우
-        self.trace_next_page(html=html, url_info=url_info, job=job, date=date)
-
-        return False, trace_list
-
-    def get_article(self, doc_id: str, item: dict, job: dict, offline: bool = False) -> (dict, str):
+    def get_article_page(self, item: dict, offline: bool = False) -> str:
         """기사 본문을 조회한다."""
-        article_url = None
-        if 'article' in job:
-            article_url = job['article']
-            article_url['url'] = item['url']
-
+        resp = None
         if offline is True:
             if 'html' in item:
                 resp = item['html']
-            elif 'html_content' not in item:
-                return None, ''
-            else:
+            elif 'html_content' in item:
                 resp = item['html_content']
-
-            # 추출된 html_contents 가 없는 경우: 다시 크롤링
-            if isinstance(resp, list):
-                resp = self.get_html_page(url_info=article_url)
-        else:
-            resp = self.get_html_page(url_info=article_url)
-            if resp is None:
-                return None, ''
-
-        # 문서 저장
-        article = self.parse_tag(
-            resp=resp,
-            base_url=item['url'],
-            url_info=article_url,
-            parsing_info=self.config['parsing']['article'],
-        )
-
-        if article is None:
-            return None, str(resp)
-
-        if len(article) == 0:
-            # 삭제된 기사
-            return None, str(resp)
-
-        article['_id'] = doc_id
-
-        # 댓글 post process 처리
-        if 'post_request' in job:
-            req_params = deepcopy(item)
-            req_params.update(article)
-
-            for request_info in job['post_request']:
-                self.post_request(
-                    article=article,
-                    url_info=request_info,
-                    req_params=req_params,
-                )
-
-        return article, str(resp)
-
-    def post_request(self, req_params: dict, url_info: dict, article: dict) -> dict:
-        """댓글을 요청한다."""
-        if url_info['response_type'] != 'json':
-            return article
-
-        headers = self.headers['desktop']
-        if 'headers' in url_info:
-            headers.update(url_info['headers'])
-
-        url = url_info['url_frame'].format(**req_params)
-
-        try:
-            if url_info['method'] != "POST":
-                resp = requests.get(
-                    url=url,
-                    verify=False,
-                    timeout=60,
-                    headers=headers,
-                    allow_redirects=True,
-                )
             else:
-                body = url_info['data'].format(**req_params)
-                body = parse_qs(body)
+                return ''
 
-                resp = requests.post(
-                    url=url,
-                    data=body,
-                    verify=False,
-                    timeout=60,
-                    headers=headers,
-                    allow_redirects=True,
-                )
-        except Exception as e:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'post request 조회 에러',
-                'url': url,
-                'exception': str(e),
-            })
-            return article
+        if resp is None:
+            resp = self.get_html_page(url_info=item)
 
-        # 결과 파싱
-        try:
-            req_result = resp.json()
-        except Exception as e:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'post request 파싱 에러',
-                'url': url,
-                'exception': str(e),
-            })
-            return article
+        if resp is None:
+            return ''
 
-        result = []
-        self.get_dict_value(
-            data=req_result,
-            result=result,
-            key_list=url_info['field'].split('.'),
-        )
+        return resp
 
-        if len(result) > 0:
-            article[url_info['key']] = result
+    def post_request(self, job: dict, article: dict, item: dict) -> None:
+        """댓글을 요청한다."""
+        if 'post_request' not in job:
+            return
 
-        return article
+        req_params = {
+            **json.loads(json.dumps(item)),
+            **json.loads(json.dumps(article)),
+        }
+
+        for url_info in job['post_request']:
+            if url_info['response_type'] != 'json':
+                return
+
+            headers = self.headers['desktop']
+            if 'headers' in url_info:
+                headers.update(url_info['headers'])
+
+            url = url_info['url_frame'].format(**req_params)
+
+            try:
+                if url_info['method'] != "POST":
+                    resp = requests.get(
+                        url=url,
+                        verify=False,
+                        timeout=60,
+                        headers=headers,
+                        allow_redirects=True,
+                    )
+                else:
+                    body = url_info['data'].format(**req_params)
+                    body = parse_qs(body)
+
+                    resp = requests.post(
+                        url=url,
+                        data=body,
+                        verify=False,
+                        timeout=60,
+                        headers=headers,
+                        allow_redirects=True,
+                    )
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'post request 조회 에러',
+                    'url': url,
+                    'exception': str(e),
+                })
+                return
+
+            # 결과 파싱
+            try:
+                req_result = resp.json()
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'post request 파싱 에러',
+                    'url': url,
+                    'exception': str(e),
+                })
+                return
+
+            result = []
+            self.get_dict_value(
+                data=req_result,
+                result=result,
+                key_list=url_info['field'].split('.'),
+            )
+
+            if len(result) > 0:
+                article[url_info['key']] = result
+
+        return
 
     def set_timezone_at_reply_date(self, doc: dict) -> dict:
         """댓글 날짜에 timezone 정보를 설정한다."""
@@ -490,7 +242,7 @@ class WebNewsCrawler(WebNewsBase):
 
         return doc
 
-    def trace_next_page(self, html, url_info, job, date) -> None:
+    def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime) -> None:
         """다음 페이지를 따라간다."""
         if 'trace_next_page' not in self.config['parsing']:
             return
@@ -499,8 +251,12 @@ class WebNewsCrawler(WebNewsBase):
         if isinstance(html, dict) or isinstance(html, list):
             return
 
-        # 한번에 따라갈 깊이
         trace_tag = self.config['parsing']['trace_next_page']
+
+        if len(trace_tag) == 0:
+            return
+
+        # 한번에 따라갈 깊이
         if trace_tag['max_trace'] > 0:
             if trace_tag['max_trace'] < self.trace_depth:
                 self.trace_depth = 0
@@ -509,16 +265,17 @@ class WebNewsCrawler(WebNewsBase):
         self.trace_depth += 1
 
         # 다음 페이지 url 추출
-        trace_list = []
         soup = self.parser.parse_html(
             html=html,
             parser_type=self.config['parsing']['parser'],
         )
+
+        trace_list = []
         self.parser.trace_tag(
             soup=soup,
             index=0,
             result=trace_list,
-            tag_list=trace_tag['tag'],
+            tag_list=trace_tag['value'],
         )
 
         for tag in trace_list:
@@ -537,8 +294,8 @@ class WebNewsCrawler(WebNewsBase):
             if resp is None:
                 continue
 
-            self.logger.info(msg={
-                'level': 'INFO',
+            self.logger.log(msg={
+                'level': 'MESSAGE',
                 'message': '다음페이지 크롤링: 슬립',
                 'sleep_time': self.params.sleep,
             })
@@ -549,7 +306,7 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
-    def remove_date_column(self, doc: dict, html: str) -> None:
+    def remove_date_column(self, doc: dict) -> None:
         """날짜 필드를 확인해서 날짜 파싱 오류일 경우, 날짜 필드를 삭제한다."""
         if 'date' not in doc:
             self.logger.error(msg={
@@ -558,34 +315,24 @@ class WebNewsCrawler(WebNewsBase):
             })
             return
 
-        str_e = ''
-        parsing_error = False
-        if doc['date'] == '':
-            str_e = 'date missing'
-            parsing_error = True
+        if isinstance(doc['date'], str) and doc['date'] == '':
+            del doc['date']
+            return
 
-        if parsing_error is False and isinstance(doc['date'], str):
+        if isinstance(doc['date'], str):
             try:
                 doc['date'] = parse_date(doc['date'])
                 doc['date'] = doc['date'].astimezone(tz=self.timezone)
             except Exception as e:
-                parsing_error = True
-                str_e = str(e)
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '날짜 파싱 에러: date 필드 삭제',
+                    'exception': str(e),
+                    'date': doc['date'],
+                })
 
-        if parsing_error is True:
-            doc['parsing_error'] = True
-            if 'html' not in doc or doc['html'] == '':
-                doc['html'] = str(html)
-
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': '날짜 파싱 에러: date 필드 삭제',
-                'exception': str_e,
-                'date': doc['date'],
-            })
-
-            if 'date' in doc:
                 del doc['date']
+                return
 
         return
 
@@ -614,10 +361,10 @@ class WebNewsCrawler(WebNewsBase):
             })
 
         # 날짜 필드 오류 처리
-        self.remove_date_column(doc=doc, html=html)
+        self.remove_date_column(doc=doc)
 
         # 문서 아이디 추출
-        doc['curl_date'] = datetime.now(self.timezone).isoformat()
+        doc['@timestamp'] = datetime.now(self.timezone).isoformat()
 
         # 에러인 경우
         if error is True:
@@ -626,7 +373,7 @@ class WebNewsCrawler(WebNewsBase):
 
             elastic_utils.save_document(
                 document=doc,
-                index=job['index'].replace('-{year}', '') + '-error',
+                index=job['index'].replace('-{year}', ''),
                 delete=False,
             )
             elastic_utils.flush()
@@ -729,13 +476,38 @@ class WebNewsCrawler(WebNewsBase):
 
         return result.strip()
 
-    def get_trace_list(self, html: str, url_info: dict) -> list or None:
+    @staticmethod
+    def flatten(trace_list) -> list:
+        result = []
+
+        for item in trace_list:
+            if isinstance(item, dict):
+                result.append(item)
+                continue
+
+            new_item = {}
+            for x in item:
+                if x is None:
+                    continue
+
+                new_item = {
+                    **new_item,
+                    **x
+                }
+
+            result.append(new_item)
+
+        return result
+
+    def get_trace_list(self, html: str or dict, url_info: dict) -> list or None:
         """trace tag 목록을 추출해서 반환한다."""
         trace_list = []
         if 'parser' in url_info and url_info['parser'] == 'json':
             column = url_info['trace']
-            if column in html:
-                trace_list = html[column]
+
+            dot = dotty(html)
+            trace_list = list(dot[column]) if column in dot else []
+            trace_list = self.flatten(trace_list=trace_list)
 
             str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
         else:
@@ -838,6 +610,229 @@ class WebNewsCrawler(WebNewsBase):
 
         return item
 
+    def is_skip(self, elastic_utils: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str,
+                doc_history: set) -> bool:
+        if self.params.overwrite is True:
+            return False
+
+        elastic_utils.index = elastic_utils.get_target_index(
+            tag=elastic_utils.get_index_year_tag(date=date),
+            index=job['index'],
+        )
+
+        is_skip = self.check_doc_id(
+            url=url,
+            index=elastic_utils.index,
+            doc_id=doc_id,
+            doc_history=doc_history,
+            elastic_utils=elastic_utils,
+        )
+        if is_skip is True:
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '크롤링된 뉴스가 있음',
+                'doc_id': doc_id,
+                'url': url,
+                'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
+            })
+
+            return True
+
+        return False
+
+    def trace_news(self, html: str, url_info: dict, job: dict, date: datetime) -> (bool, list):
+        """개별 뉴스를 따라간다."""
+        # 기사 목록을 추출한다.
+        trace_list = self.get_trace_list(html=html, url_info=url_info)
+        if trace_list is None:
+            return True, trace_list
+
+        # url 저장 이력 조회
+        doc_history = self.get_history(name='doc_history', default=set())
+
+        # 디비에 연결한다.
+        elastic_utils = self.open_elasticsearch(date=date, job=job)
+
+        # 베이스 url 추출
+        base_url = self.parser.parse_url(url_info['url'])[1]
+
+        # 개별 뉴스를 따라간다.
+        for trace in trace_list:
+            item = self.parse_tag(
+                resp=trace,
+                url_info=url_info,
+                base_url=base_url,
+                parsing_info=self.config['parsing']['list'],
+            )
+            if item is None or 'url' not in item:
+                continue
+
+            item['url'] = urljoin(base_url, item['url'])
+            item['category'] = job['category']
+
+            if date is None and 'date' in item:
+                date = item['date']
+
+            # 기존 크롤링된 문서를 확인한다.
+            doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
+            if doc_id is None:
+                continue
+
+            if self.is_skip(elastic_utils=elastic_utils, date=date, job=job, url=item['url'], doc_id=doc_id,
+                            doc_history=doc_history) is True:
+                continue
+
+            # 기사 본문 조회
+            article_html = self.get_article_page(item=item, offline=False)
+
+            # 문서 저장
+            article = self.parse_tag(
+                resp=article_html,
+                url_info=item,
+                base_url=item['url'],
+                parsing_info=self.config['parsing']['article'],
+            )
+            if article is None or len(article) == 0:
+                continue
+
+            article['_id'] = doc_id
+
+            # 댓글 post process 처리
+            self.post_request(article=article, job=job, item=item)
+
+            # 기사 저장
+            self.save_article(
+                job=job,
+                doc=item,
+                html=article_html,
+                article=article,
+                elastic_utils=elastic_utils,
+            )
+
+            doc_history.add(doc_id)
+
+            self.logger.info(msg={
+                'level': 'INFO',
+                'message': '뉴스 본문 크롤링: 슬립',
+                'sleep_time': self.params.sleep,
+            })
+            sleep(self.params.sleep)
+
+        # 목록 길이 저장
+        if self.trace_list_count < 0:
+            self.trace_list_count = len(trace_list)
+        elif self.trace_list_count > len(trace_list) + 3:
+            return True, trace_list
+
+        # 캐쉬 저장
+        self.set_history(value=doc_history, name='doc_history')
+
+        # 다음 페이지 정보가 있는 경우
+        self.trace_next_page(html=html, url_info=url_info, job=job, date=date)
+
+        return False, trace_list
+
+    def trace_page(self, url_info: dict, job: dict, dt: datetime = None) -> None:
+        """뉴스 목록을 크롤링한다."""
+        self.trace_depth = 0
+        self.trace_list_count = -1
+
+        # start 부터 end 까지 반복한다.
+        for page in range(self.page_range['start'], self.page_range['end'] + 1, self.page_range['step']):
+            # 쿼리 url 생성
+            q = dict(page=page)
+            if dt is not None:
+                q['date'] = dt.strftime(url_info['date_format'])
+
+            url_info['url'] = url_info['url_frame'].format(**q)
+
+            if 'category' in url_info:
+                job['category'] = url_info['category']
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '뉴스 목록 크롤링',
+                'url': url_info['url'] if 'url' in url_info else '',
+                'query': q,
+                'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+            })
+
+            # 기사 목록 조회
+            resp = self.get_html_page(url_info=url_info)
+            if resp is None:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '뉴스 목록 조회 에러',
+                    'url': url_info['url'] if 'url' in url_info else '',
+                    'query': q,
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                })
+                continue
+
+            # category 만 업데이트할 경우
+            early_stop = self.update_category(html=resp, url_info=url_info, job=job, date=dt)
+            if self.params.update_category_only is True:
+                if early_stop is True:
+                    break
+
+                sleep(self.params.sleep)
+                continue
+
+            # 문서 저장
+            early_stop, trace_list = self.trace_news(html=resp, url_info=url_info, job=job, date=dt)
+            if trace_list is None:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': 'trace_list 가 없음: 마지막 페이지',
+                    'url': url_info['url'] if 'url' in url_info else '',
+                    'category': job['category'],
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                })
+                break
+
+            if early_stop is True:
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': '기사 목록 끝에 도달: 종료',
+                    'url': url_info['url'] if 'url' in url_info else '',
+                    'category': job['category'],
+                    'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                })
+                break
+
+            sleep(self.params.sleep)
+
+        return
+
+    def trace_category(self, job: dict) -> None:
+        """url_frame 목록을 반복한다."""
+        # url 목록 반복
+        for url_info in job['list']:
+            if len(self.job_sub_category) > 0 and 'category' in url_info and \
+                    url_info['category'] not in self.job_sub_category:
+                continue
+
+            if url_info['url_frame'].find('date') < 0:
+                # page 단위로 크롤링한다.
+                self.trace_page(url_info=url_info, job=job, dt=None)
+                continue
+
+            # 날짜 지정시
+            date_list = list(rrule(DAILY, dtstart=self.date_range['start'], until=self.date_range['end']))
+
+            if self.date_range['step'] < 0:
+                date_list = sorted(date_list, reverse=True)
+
+            for dt in date_list:
+                date_now = datetime.now(self.timezone)
+                if dt > date_now + timedelta(1):
+                    break
+
+                # page 단위로 크롤링한다.
+                self.trace_page(url_info=url_info, job=job, dt=dt)
+
+        return
+
     def batch(self) -> None:
         self.params = self.init_arguments()
 
@@ -851,10 +846,14 @@ class WebNewsCrawler(WebNewsBase):
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.config['jobs']:
             # override elasticsearch config
-            job['host'] = os.getenv('ELASTIC_SEARCH_HOST', default=job['host'] if 'host' in job else None)
-
-            job['index'] = os.getenv('ELASTIC_SEARCH_INDEX', default=job['index'] if 'index' in job else None)
-
+            job['host'] = os.getenv(
+                'ELASTIC_SEARCH_HOST',
+                default=job['host'] if 'host' in job else None
+            )
+            job['index'] = os.getenv(
+                'ELASTIC_SEARCH_INDEX',
+                default=job['index'] if 'index' in job else None
+            )
             job['http_auth'] = os.getenv(
                 'ELASTIC_SEARCH_AUTH',
                 default=job['http_auth'] if 'http_auth' in job else None
@@ -868,7 +867,7 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 break
 
-            self.trace_url_list(job=job)
+            self.trace_category(job=job)
 
         return
 

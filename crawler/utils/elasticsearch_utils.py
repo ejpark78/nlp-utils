@@ -102,10 +102,22 @@ class ElasticSearchUtils(object):
         if date is None:
             return ''
 
-        if isinstance(date, str):
+        if isinstance(date, datetime):
+            return str(date.year)
+
+        try:
             date = parse_date(date)
-            if date.tzinfo is None:
-                date = self.timezone.localize(date)
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': '인덱스 년도 정보 추출 에러',
+                'date': date,
+                'exception': str(e),
+            })
+            return ''
+
+        if date.tzinfo is None:
+            date = self.timezone.localize(date)
 
         return str(date.year)
 
@@ -116,6 +128,9 @@ class ElasticSearchUtils(object):
             return None
 
         if '{year}' in index and tag is not None:
+            if tag == '':
+                return index.replace('-{year}', '')
+
             return index.format(year=tag)
 
         return index

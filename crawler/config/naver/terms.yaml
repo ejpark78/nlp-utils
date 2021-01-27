@@ -431,16 +431,16 @@ parsing:
     - from: 조회[ ]*
       to: ''
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: info hit_view
-      name: span
     type: text
   - comment: 좋아요
     key: like_count
     value:
-    - attribute:
+    - name: em
+      attribute:
         class: u_cnt _count
-      name: em
     type: text
   - comment: 표제어
     key: name
@@ -455,7 +455,7 @@ parsing:
   - comment: 본문으로 이동
     key: detail_link
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: category_link __persist
-      name: a
     type: href

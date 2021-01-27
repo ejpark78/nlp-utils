@@ -122,11 +122,78 @@ class WebNewsBase(object):
 
         return result
 
+    def get_post_page(self, url_info: dict) -> None or str:
+        headers = self.headers['desktop']
+        if 'headers' in url_info:
+            headers.update({
+                'Content-Type': 'application/json'
+            })
+
+        if 'url' not in url_info:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url 정보가 없음',
+                **url_info,
+            })
+
+            return None
+
+        # 페이지 조회
+        try:
+            resp = requests.post(
+                url=url_info['url'],
+                verify=False,
+                timeout=60,
+                headers=headers,
+                json=url_info['post_data'],
+                allow_redirects=True,
+            )
+        except Exception as e:
+            sleep_time = 10
+
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'html 페이지 조회 에러',
+                'sleep_time': sleep_time,
+                'exception': str(e),
+                **url_info,
+            })
+
+            sleep(sleep_time)
+            return None
+
+        # 상태 코드 확인
+        status_code = resp.status_code
+        if status_code // 100 != 2:
+            sleep_time = 10
+
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url 조회 상태 코드 에러',
+                'sleep_time': sleep_time,
+                'status_code': status_code,
+                **url_info,
+            })
+
+            sleep(sleep_time)
+            return None
+
+        return resp.json()
+
     def get_html_page(self, url_info: dict) -> None or str:
         """웹 문서를 조회한다."""
         headers = self.headers['desktop']
         if 'headers' in url_info:
             headers.update(url_info['headers'])
+
+        if 'url' not in url_info:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'url 정보가 없음',
+                **url_info,
+            })
+
+            return None
 
         # 페이지 조회
         try:
@@ -143,9 +210,9 @@ class WebNewsBase(object):
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'html 페이지 조회 에러',
-                'url_info': url_info,
                 'sleep_time': sleep_time,
                 'exception': str(e),
+                **url_info,
             })
 
             sleep(sleep_time)
@@ -159,9 +226,9 @@ class WebNewsBase(object):
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'url 조회 상태 코드 에러',
-                'url_info': url_info,
                 'sleep_time': sleep_time,
                 'status_code': status_code,
+                **url_info,
             })
 
             sleep(sleep_time)

@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import os
 from argparse import Namespace
 from datetime import datetime
@@ -15,6 +16,7 @@ import requests
 import urllib3
 import yaml
 from dateutil.parser import parse as parse_date
+from bs4 import BeautifulSoup
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.logger import Logger
@@ -51,7 +53,11 @@ class NewsCrawler(object):
             default=job['http_auth'] if 'http_auth' in job else None
         )
 
-        self.logger.log(msg=url_info)
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': 'trace_list',
+            **url_info
+        })
 
         elastic = ElasticSearchUtils(
             host=job['host'],
@@ -65,10 +71,18 @@ class NewsCrawler(object):
         doc = resp.json()
         for card in doc['cards']:
             for item in card['contents']:
-                item['_id'] = item['etag']
+                dt = parse_date(item['updated'])
+                doc = {
+                    '_id': item['etag'],
+                    'title': item['headline'],
+                    'content': BeautifulSoup(item['storyHTML']).find('html').get_text(),
+                    'date': dt.isoformat(),
+                    'json': json.dumps(item, ensure_ascii=False),
+                    '@timestamp': datetime.now(self.timezone).isoformat()
+                }
 
-                index = job['index_list'].format(year=parse_date(item['updated']).year)
-                elastic.save_document(document=item, index=index)
+                index = job['index_list'].format(year=dt.year)
+                elastic.save_document(document=doc, index=index, delete=True)
 
                 self.logger.log(msg={
                     'level': 'MESSAGE',
@@ -78,7 +92,7 @@ class NewsCrawler(object):
                 })
                 sleep(self.params.sleep)
 
-                self.get_article(job=job, list_info=item, elastic=elastic)
+                self.get_article(job=job, url=item['gcsUrl'], date=dt, elastic=elastic)
 
                 self.logger.log(msg={
                     'level': 'MESSAGE',
@@ -89,19 +103,23 @@ class NewsCrawler(object):
 
         return
 
-    def get_article(self, job: dict, list_info: dict, elastic: ElasticSearchUtils) -> None:
-        resp = requests.get(url=list_info['gcsUrl'])
-        doc = resp.json()
+    def get_article(self, job: dict, url: str, date: datetime, elastic: ElasticSearchUtils) -> None:
+        resp = requests.get(url=url).json()
 
-        doc['_id'] = doc['etag']
+        doc = {
+            '_id': resp['etag'],
+            'title': resp['headline'],
+            'content': BeautifulSoup(resp['storyHTML']).find('html').get_text(),
+            'date': date.isoformat(),
+            'json': json.dumps(resp, ensure_ascii=False),
+            '@timestamp': datetime.now(self.timezone).isoformat()
+        }
 
-        index = job['index'].format(year=parse_date(list_info['updated']).year)
-        elastic.save_document(document=doc, index=index)
-
-        flag = elastic.flush()
+        index = job['index'].format(year=date.year)
+        elastic.save_document(document=doc, index=index, delete=True)
 
         # 성공 로그 표시
-        if flag is True:
+        if elastic.flush() is True:
             elastic.index = index
 
             self.logger.log(msg={

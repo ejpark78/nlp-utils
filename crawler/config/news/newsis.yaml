@@ -15,12 +15,12 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
   trace:
-  - attribute:
+  - name: li
+    attribute:
       class: p1_bundle
-    name: li
-  - attribute:
+  - name: div
+    attribute:
       class: area
-    name: div
   list:
   - comment: 제목
     key: title
@@ -38,17 +38,17 @@ parsing:
     - from: '[|].+$'
       to: ''
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: date
-      name: span
     type: text
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_tbx mgt8 w970
-      name: div
     - name: h1
     type: text
   - comment: 날짜
@@ -57,9 +57,9 @@ parsing:
     - from: 등록[ ]+
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: date
-      name: div
     type: text
     type_convert: date
     value_type: single
@@ -68,33 +68,33 @@ parsing:
     remove:
     - name: iframe
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: table
+      attribute:
         class: article_photo center
-      name: table
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: table
+      attribute:
         class: article_photo center
-      name: table
-    - attribute:
+    - name: td
+      attribute:
         class: desc
-      name: td
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: text

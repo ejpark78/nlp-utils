@@ -11,19 +11,19 @@ jobs:
 parsing:
   parser: lxml
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: summary_list
-    name: div
-  - attribute:
+  - name: li
+    attribute:
       class: li title
-    name: li
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: title_a
-      name: a
     type: text
   - comment: url
     key: url
@@ -36,21 +36,21 @@ parsing:
     - from: ^.+([1-2][09][0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
     value:
-    - attribute:
+    - name: p
+      attribute:
         class: date
-      name: p
     type: text
     type_convert: date
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: arl_view_box
-      name: div
-    - attribute:
+    - name: h1
+      attribute:
         class: arl_view_title
-      name: h1
     type: text
   - comment: 글쓴이
     key: author
@@ -58,43 +58,43 @@ parsing:
     - from: ' 기자.+$'
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: arl_view_box
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: arl_view_writer
-      name: span
     type: text
   - comment: html 본문
     key: html_content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: table
+      attribute:
         class: news_photo_table
-      name: table
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: table
+      attribute:
         class: news_photo_table
-      name: table
-    - attribute:
+    - name: td
+      attribute:
         class: news_photo_table_caption
-      name: td
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: text

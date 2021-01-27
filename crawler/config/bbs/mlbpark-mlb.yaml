@@ -7,7 +7,6 @@ jobs:
       type: query
   list:
   - category: MLB
-    check_id: false
     url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=
 parsing:
   descriptions:
@@ -63,9 +62,9 @@ parsing:
   - comment: 제목
     key: title
     remove:
-    - attribute:
+    - name: span
+      attribute:
         class: word
-      name: span
     value:
     - select: div.left_cont div.titles
     type: text

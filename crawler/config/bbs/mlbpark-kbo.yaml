@@ -15,9 +15,9 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: table
+    attribute:
       class: tbl_type01
-    name: table
   - name: tr
   list:
   - comment: 제목
@@ -65,9 +65,9 @@ parsing:
   - comment: 제목
     key: title
     remove:
-    - attribute:
+    - name: span
+      attribute:
         class: word
-      name: span
     value:
     - select: div.left_cont div.titles
     type: text

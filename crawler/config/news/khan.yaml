@@ -15,37 +15,37 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: news_list
-    name: div
   - name: li
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: strong
+      attribute:
         class: hd_title
-      name: strong
     - name: a
     type: text
   - comment: url
     key: url
     value:
-    - attribute:
+    - name: strong
+      attribute:
         class: hd_title
-      name: strong
     - name: a
     type: href
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: container
-      name: div
-    - attribute:
+    - name: h1
+      attribute:
         id: article_title
-      name: h1
     type: text
   - comment: 날짜
     key: date
@@ -53,74 +53,74 @@ parsing:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: byline
-      name: div
     type: text
     type_convert: date
   - comment: 글쓴이
     key: author
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: subject
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: name
-      name: span
     type: text
   - comment: html 본문
     key: html_content
     remove:
-    - attribute:
+    - name: div
+      attribute:
         class: article_bottom_ad
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         id: photoAD
-      name: div
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleBody
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: art_photo_wrap
-      name: div
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: art_photo_wrap
-      name: div
     - name: img
     type: alt
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: art_photo_wrap
-      name: div
-    - attribute:
+    - name: p
+      attribute:
         class: caption
-      name: p
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleBody
-      name: div
     type: text
   - comment: 텍스트 본문
     key: content_text
     value:
-    - attribute:
+    - name: p
+      attribute:
         class: content_text
-      name: p
     type: text

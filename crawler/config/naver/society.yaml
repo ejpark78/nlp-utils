@@ -44,9 +44,9 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: list_body newsflash_body
-    name: div
   - name: li
   list:
   - comment: 제목
@@ -62,18 +62,18 @@ parsing:
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: date
-      name: span
     type: text
     type_convert: date
     value_type: single
   - comment: 출처
     key: source
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: writing
-      name: span
     type: text
   article:
   - comment: html
@@ -88,45 +88,45 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_info
-      name: div
-    - attribute:
+    - name: h3
+      attribute:
         id: articleTitle
-      name: h3
     type: text
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_info
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: t11
-      name: span
     type: text
     type_convert: date
     value_type: single
   - comment: 지면 정보
     key: paper
     remove:
-    - attribute:
+    - name: i
+      attribute:
         class: picon
-      name: i
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_info
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: sponsor_newspaper
-      name: span
     type: text
   - comment: 출처
     key: source_url
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sponsor
-      name: div
     - name: a
     type: href
     value_type: single
@@ -135,51 +135,51 @@ parsing:
     remove:
     - name: script
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleBodyContents
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: end_photo_org
-      name: span
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: end_photo_org
-      name: span
-    - attribute:
+    - name: em
+      attribute:
         class: img_desc
-      name: em
     type: text
   - comment: 동영상
     key: vod
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleBodyContents
-      name: div
     - name: iframe
     type: html
   - comment: 원래 섹션
     key: source_section
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: guide_categorization
-      name: div
-    - attribute:
+    - name: em
+      attribute:
         class: guide_categorization_item
-      name: em
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleBodyContents
-      name: div
     type: text

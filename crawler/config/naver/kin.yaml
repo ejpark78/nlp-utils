@@ -15,96 +15,96 @@ detail:
   parsing:
   - key: html
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
     type: html
   - key: category
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: depth depth2
-      name: div
     type: text
   - key: question
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: title_wrapper
-      name: div
     type: text
   - key: info
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: _questionArea
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: info_zone
-      name: div
     type: text
   - key: reply_count
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: a
+      attribute:
         class: reply_count
-      name: a
-    - attribute:
+    - name: em
+      attribute:
         class: count_number
-      name: em
     type: text
   - key: detail_question
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: _questionArea
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: user_content
-      name: div
     type: text
   - key: answer
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: _answer
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: user_content
-      name: div
     type: text
   - key: answer_user
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: _answer
-      name: div
-    - attribute:
+    - name: h3
+      attribute:
         class: heading
-      name: h3
     type: text
   - key: user_uid
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: sec_col1
-      name: div
-    - attribute:
+    - name: a
+      attribute:
         class: button_friend
-      name: a
     type: data-u
 elite_user_list:
   index: crawler-naver-kin-elite_user_list

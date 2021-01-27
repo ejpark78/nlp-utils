@@ -58,24 +58,24 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: ul
+    attribute:
       class: list_news2 list_allnews
-    name: ul
   - name: li
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: link_txt
-      name: a
     type: text
   - comment: url
     key: url
     value:
-    - attribute:
+    - name: a
+      attribute:
         class: link_txt
-      name: a
     type: href
   article:
   - comment: html
@@ -90,19 +90,19 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: head_view
-      name: div
-    - attribute:
+    - name: h3
+      attribute:
         class: tit_view
-      name: h3
     type: text
   - comment: 기사 원문
     key: source
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: head_view
-      name: div
     - name: img
     type: alt
   - comment: 날짜
@@ -115,12 +115,12 @@ parsing:
     - from: 댓글.+$
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: head_view
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: info_view
-      name: span
     type: text
     type_convert: date
     value_type: single
@@ -130,29 +130,29 @@ parsing:
     - from: 입력.+$
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: head_view
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: info_view
-      name: span
     type: text
     value_type: single
   - comment: html 본문
     key: html_content
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_view
-      name: div
     - name: section
     type: html
     value_type: merge
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_view
-      name: div
     - name: section
     - name: img
     type: src
@@ -160,26 +160,26 @@ parsing:
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_view
-      name: div
     - name: section
     - name: figcaption
     type: text
   - comment: VOD
     key: vod
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_view
-      name: div
     - name: iframe
     type: html
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_view
-      name: div
     - name: section
     type: text
     value_type: merge

@@ -290,35 +290,35 @@ parsing:
   trace:
     key: html_content
     value:
-    - attribute:
+    - name: ol
+      attribute:
         class: stream-items
-      name: ol
     type: html
   values:
   - comment: 댓글
     key: reply.text
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: js-tweet-text-container
-      name: div
     type: text
   - comment: 댓글러
     key: reply.name
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: stream-item-header
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: FullNameGroup
-      name: span
     type: text
   - comment: 댓글러
     key: reply.id
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: stream-item-header
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: username u-dir u-textTruncate
-      name: span
     type: text

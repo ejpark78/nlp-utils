@@ -34,9 +34,9 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: postSubject
-    name: div
   - name: li
   list:
   - comment: 제목
@@ -52,9 +52,9 @@ parsing:
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: span
+      attribute:
         class: origin
-      name: span
     - name: em
     type: text
     type_convert: date
@@ -72,19 +72,19 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: cntArea
-      name: div
-    - attribute:
+    - name: h3
+      attribute:
         class: viewTite
-      name: h3
     type: text
   - comment: 날짜
     key: date
     value:
-    - attribute:
+    - name: dl
+      attribute:
         class: articleInfo
-      name: dl
     - name: dd
     - name: em
     type: text
@@ -93,9 +93,9 @@ parsing:
   - comment: 출처
     key: source
     value:
-    - attribute:
+    - name: dl
+      attribute:
         class: articleInfo
-      name: dl
     - name: img
     type: alt
   - comment: html 본문
@@ -105,37 +105,37 @@ parsing:
     - name: script
     - name: sclink
     - name: iframe
-    - attribute:
+    - name: p
+      attribute:
         style: margin:0;padding:0;
-      name: p
-    - attribute:
+    - name: p
+      attribute:
         style: margin:0 0 20px 0;padding:0;
-      name: p
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleContetns
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleContetns
-      name: div
-    - attribute:
+    - name: img
+      attribute:
         alt: 기사 이미지
-      name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleContetns
-      name: div
-    - attribute:
+    - name: td
+      attribute:
         class: caption
-      name: td
     type: text
   - comment: 텍스트 본문
     key: content
@@ -144,14 +144,14 @@ parsing:
     - name: script
     - name: sclink
     - name: iframe
-    - attribute:
+    - name: p
+      attribute:
         style: margin:0;padding:0;
-      name: p
-    - attribute:
+    - name: p
+      attribute:
         style: margin:0 0 20px 0;padding:0;
-      name: p
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleContetns
-      name: div
     type: text

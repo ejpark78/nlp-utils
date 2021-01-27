@@ -15,9 +15,9 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: list_rbox
-    name: div
   - name: dl
   list:
   - comment: 제목
@@ -44,9 +44,9 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_top
-      name: div
     - name: h3
     type: text
   - comment: 날짜
@@ -57,12 +57,12 @@ parsing:
     - from: ^.+최종수정
       to: ''
     value:
-    - attribute:
+    - name: p
+      attribute:
         class: info-view
-      name: p
-    - attribute:
+    - name: span
+      attribute:
         class: article-day
-      name: span
     type: text
     type_convert: date
     value_type: single
@@ -72,16 +72,16 @@ parsing:
     - name: iframe
     - name: script
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: news_content
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: news_content
-      name: div
     - name: img
     type: src
     value_type: unique
@@ -89,18 +89,18 @@ parsing:
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: news_content
-      name: div
-    - attribute:
+    - name: td
+      attribute:
         class: caption
-      name: td
     type: text
     value_type: unique
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: news_content
-      name: div
     type: text

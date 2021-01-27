@@ -17,39 +17,39 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: li
+    attribute:
       class: section02
-    name: li
-  - attribute:
+  - name: div
+    attribute:
       class: con
-    name: div
   list:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: strong
+      attribute:
         class: news-tl
-      name: strong
     - name: a
     type: text
   - comment: url
     key: url
     value:
-    - attribute:
+    - name: strong
+      attribute:
         class: news-tl
-      name: strong
     - name: a
     type: href
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleWrap
-      name: div
-    - attribute:
+    - name: h1
+      attribute:
         class: tit-article
-      name: h1
     type: text
   - comment: 날짜
     key: date
@@ -57,47 +57,47 @@ parsing:
     - from: 송고시간[ ]+[|][ ]+
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleWrap
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: tt
-      name: span
     type: text
     type_convert: date
   - comment: html 본문
     key: html_content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleWrap
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: article
-      name: div
     type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article-img
-      name: div
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: img-info
-      name: div
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         id: articleWrap
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: article
-      name: div
     type: text

@@ -1,0 +1,65 @@
+---
+jobs:
+- index: raw-afp-{year}
+  article:
+    document_id:
+      replace:
+      - from: ^.+/
+        to: ''
+      type: path
+  list:
+  - category: inside-afp
+    url_frame: https://www.afp.com/en/inside-afp?page={page}
+parsing:
+  version: v2021-01-26
+  descriptions:
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    article: 기사 본문에서 추출해야하는 tag 정보
+  parser: html5lib
+  trace:
+  - select: div.archive_list div.archive_list_item
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: div a span.wrap span.inner
+    type: text
+  - comment: div a
+    key: url
+    value:
+    - select: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - select: span > span
+    type: content
+    type_convert: date
+    value_type: single
+  - comment: 요약
+    key: summary
+    value:
+    - select: div p
+    type: text
+    value_type: merge
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.article_content h3 span
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.article_content
+    type: text

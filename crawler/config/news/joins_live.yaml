@@ -16,37 +16,37 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - attribute:
+  - name: div
+    attribute:
       class: news_list
-    name: div
-  - attribute:
+  - name: div
+    attribute:
       class: bd
-    name: div
   - name: li
   list:
   - comment: 제목
     key: title
     value:
     - name: dt
-    - attribute:
+    - name: a
+      attribute:
         class: title_cr
-      name: a
     type: text
   - comment: url
     key: url
     value:
     - name: dt
-    - attribute:
+    - name: a
+      attribute:
         class: title_cr
-      name: a
     type: href
   - comment: 날짜
     key: date
     value:
     - name: dd
-    - attribute:
+    - name: span
+      attribute:
         class: date
-      name: span
     type: text
     type_convert: date
     value_type: single
@@ -54,17 +54,17 @@ parsing:
     key: source
     value:
     - name: dd
-    - attribute:
+    - name: em
+      attribute:
         class: provide
-      name: em
     type: text
   article:
   - comment: 제목
     key: title
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: article_tit
-      name: div
     - name: h2
     type: text
   - comment: 날짜
@@ -73,12 +73,12 @@ parsing:
     - from: ^.*입력
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: write_info
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: write
-      name: span
     type: text
     type_convert: date
     value_type: single
@@ -88,31 +88,31 @@ parsing:
     - from: ^.*수정
       to: ''
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: write_info
-      name: div
-    - attribute:
+    - name: span
+      attribute:
         class: modify
-      name: span
     type: text
     type_convert: date
     value_type: single
   - comment: 출처
     key: source
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: write_info
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: provider
-      name: div
     type: text
   - comment: 지면
     key: paper_url
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: byline
-      name: div
     - name: a
     type: href
   - comment: html 본문
@@ -120,39 +120,39 @@ parsing:
     remove:
     - name: iframe
     - name: script
-    - attribute:
+    - name: div
+      attribute:
         id: top_ad
-      name: div
-    - attribute:
+    - name: div
+      attribute:
         class: article_msn_ad
-      name: div
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: html
     value_type: merge
   - comment: 이미지
     key: image_list.image
     value:
-    - attribute:
+    - name: div
+      attribute:
         class: image
-      name: div
     - name: img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - attribute:
+    - name: p
+      attribute:
         class: caption
-      name: p
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - attribute:
+    - name: div
+      attribute:
         itemprop: articleBody
-      name: div
     type: text
     value_type: merge
