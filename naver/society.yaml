@@ -1,0 +1,185 @@
+---
+jobs:
+- index: crawler-naver-society-{year}
+  article:
+    document_id:
+      frame: '{oid}-{aid}'
+      type: query
+  list:
+  - category: 사회/사건사고
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=249&listType=title&date={date}&page={page}
+  - category: 사회/교육
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=250&listType=title&date={date}&page={page}
+  - category: 사회/노동
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=251&listType=title&date={date}&page={page}
+  - category: 사회/언론
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=254&listType=title&date={date}&page={page}
+  - category: 사회/환경
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=252&listType=title&date={date}&page={page}
+  - category: 사회/인권복지
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=59b&listType=title&date={date}&page={page}
+  - category: 사회/식품의료
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=255&listType=title&date={date}&page={page}
+  - category: 사회/지역
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=256&listType=title&date={date}&page={page}
+  - category: 사회/인물
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=276&listType=title&date={date}&page={page}
+  - category: 사회/사회일반
+    date_format: '%Y%m%d'
+    url_frame: https://news.naver.com/main/list.nhn?mode=LS2D&mid=shm&sid1=102&sid2=257&listType=title&date={date}&page={page}
+parsing:
+  version: v2021-01-26
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - name: div
+    attribute:
+      class: list_body newsflash_body
+  - name: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - name: span
+      attribute:
+        class: date
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 출처
+    key: source
+    value:
+    - name: span
+      attribute:
+        class: writing
+    type: text
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        class: article_info
+    - name: h3
+      attribute:
+        id: articleTitle
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - name: div
+      attribute:
+        class: article_info
+    - name: span
+      attribute:
+        class: t11
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 지면 정보
+    key: paper
+    remove:
+    - name: i
+      attribute:
+        class: picon
+    value:
+    - name: div
+      attribute:
+        class: article_info
+    - name: span
+      attribute:
+        class: sponsor_newspaper
+    type: text
+  - comment: 출처
+    key: source_url
+    value:
+    - name: div
+      attribute:
+        class: sponsor
+    - name: a
+    type: href
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: script
+    value:
+    - name: div
+      attribute:
+        id: articleBodyContents
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - name: span
+      attribute:
+        class: end_photo_org
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - name: span
+      attribute:
+        class: end_photo_org
+    - name: em
+      attribute:
+        class: img_desc
+    type: text
+  - comment: 동영상
+    key: vod
+    value:
+    - name: div
+      attribute:
+        id: articleBodyContents
+    - name: iframe
+    type: html
+  - comment: 원래 섹션
+    key: source_section
+    value:
+    - name: div
+      attribute:
+        class: guide_categorization
+    - name: em
+      attribute:
+        class: guide_categorization_item
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        id: articleBodyContents
+    type: text

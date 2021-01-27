@@ -1,0 +1,109 @@
+---
+jobs:
+- index: raw-donga-cn-{year}
+  article:
+    document_id:
+      replace:
+      - from: /news/
+        to: '/'
+      - from: /article/
+        to: '/'
+      - from: /all/
+        to: '/'
+      - from: /home/
+        to: '/'
+      - from: /en/
+        to: '/'
+      - from: /cn/
+        to: '/'
+      - from: /jp/
+        to: '/'
+      - from: ^/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  list:
+  - category: Business
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=02
+  - category: National
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=04
+  - category: Politics
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=01
+  - category: International
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=03
+  - category: Sports
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=06
+  - category: Culture
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=08
+  - category: Editorial
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=0501
+  - category: Op-ed
+    url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=0502
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: lxml
+  trace:
+  - select: li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: span.title
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: span.title a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - select: span.date
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 요약
+    key: summary
+    value:
+    - select: span.text
+    type: text
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div#view_title h1
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: div#view_title p.date
+    replace:
+    - from: Posted[ ]*|Updated[ ]*
+      to: ''
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 한국어 원문
+    key: source_ko
+    value:
+    - select: div.etc a.ko
+    type: href
+    value_type: single
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div#view_contents
+    type: text

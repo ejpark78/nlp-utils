@@ -1,0 +1,174 @@
+---
+jobs:
+- index: crawler-major_press-osen
+  article:
+    document_id:
+      replace:
+      - from: /article/
+        to: ''
+      type: path
+  list:
+  - category: 야구/삼성
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/lions?offset={page}
+  - category: 야구/넥센
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/heroes?offset={page}
+  - category: 야구/NC
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/dinos?offset={page}
+  - category: 야구/LG
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/twins?offset={page}
+  - category: 야구/SK
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/wyverns?offset={page}
+  - category: 야구/두산
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/bears?offset={page}
+  - category: 야구/롯데
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/giants?offset={page}
+  - category: 야구/KIA
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/tigers?offset={page}
+  - category: 야구/한화
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/eagles?offset={page}
+  - category: 야구/KT
+    headers:
+      Content-Type: application/json
+    mapping:
+      title: '{TITLE}'
+      url: http://osen.mt.co.kr/article/{GISANO}
+    parser: json
+    trace: rows
+    url_frame: http://osen.mt.co.kr/api/probaseball/team_news/wiz?offset={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace: {}
+  list: {}
+  article:
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        class: detailTitle
+    - name: h1
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - name: div
+      attribute:
+        class: detailTitle
+    - name: div
+      attribute:
+        class: detailTitle__post-infos
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    - name: script
+    - name: div
+      attribute:
+        class: news-copyright
+    - name: div
+      attribute:
+        class: realtime-session
+    - name: div
+      attribute:
+        id: taboola-organic-below-article-thumbnails
+    - name: div
+      attribute:
+        id: taboola-below-article-thumbnails
+    - name: div
+      attribute:
+        id: divBox
+    - name: div
+      attribute:
+        class: content-inner__banner
+    value:
+    - name: div
+      attribute:
+        class: detailView
+    type: html
+    value_type: merge
+  - comment: 이미지
+    delete: true
+    key: image_list.image
+    value:
+    - name: img
+      attribute:
+        class: view_photo up
+    type: src
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        class: detailView
+    type: text
+    value_type: merge

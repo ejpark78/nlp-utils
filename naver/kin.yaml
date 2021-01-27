@@ -1,0 +1,701 @@
+---
+elasticsearch:
+  host: https://corpus.ncsoft.com:9200
+  http_auth: crawler:crawler2019
+answer_list:
+  category:
+  - id: '0'
+    name: 전체
+  index: crawler-naver-kin-answer_list
+  sleep: 10
+  url_frame: https://m.kin.naver.com/mobile/user/answerList.nhn?page={page}&countPerPage=20&u={user_id}
+detail:
+  url_frame: https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId},
+  version: v2021-01-26
+  parsing:
+  - key: html
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    type: html
+  - key: category
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: depth depth2
+    type: text
+  - key: question
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: title_wrapper
+    type: text
+  - key: info
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: _questionArea
+    - name: div
+      attribute:
+        class: info_zone
+    type: text
+  - key: reply_count
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: a
+      attribute:
+        class: reply_count
+    - name: em
+      attribute:
+        class: count_number
+    type: text
+  - key: detail_question
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: _questionArea
+    - name: div
+      attribute:
+        class: user_content
+    type: text
+  - key: answer
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: _answer
+    - name: div
+      attribute:
+        class: user_content
+    type: text
+  - key: answer_user
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: div
+      attribute:
+        class: _answer
+    - name: h3
+      attribute:
+        class: heading
+    type: text
+  - key: user_uid
+    value:
+    - name: div
+      attribute:
+        class: sec_col1
+    - name: a
+      attribute:
+        class: button_friend
+    type: data-u
+elite_user_list:
+  index: crawler-naver-kin-elite_user_list
+  sleep: 10
+  url_frame: https://kin.naver.com/ajax/eliteUserAjax.nhn?year={year}&month={month}&page={page}
+  url_list: https://kin.naver.com/hall/eliteUser.nhn?year={year}
+expert_list:
+  index: crawler-naver-kin-expert_user_list
+  sleep: 10
+  url_frame: https://m.kin.naver.com/mobile/ajax/getExpertListAjax.nhn?resultMode=json&m=getExpertListAjax&expertType={expert_type}&page={page}&all=0
+open_dict_list:
+  category:
+  - id: '1'
+    name: 오픈사전/오픈백과/컴퓨터통신
+  - id: '10'
+    name: 오픈사전/오픈백과/스포츠, 레저
+  - id: '11'
+    name: 오픈사전/오픈백과/교육, 학문
+  - id: '2'
+    name: 오픈사전/오픈백과/게임
+  - id: '3'
+    name: 오픈사전/오픈백과/엔터테인먼트, 예술
+  - id: '4'
+    name: 오픈사전/오픈백과/경제
+  - id: '5'
+    name: 오픈사전/오픈백과/쇼핑
+  - id: '6'
+    name: 오픈사전/오픈백과/사회, 정치
+  - id: '7'
+    name: 오픈사전/오픈백과/건강
+  - id: '8'
+    name: 오픈사전/오픈백과/생활
+  - id: '9'
+    name: 오픈사전/오픈백과/여행
+  - id: '1'
+    name: 오픈사전/노하우/요리
+  - id: '10'
+    name: 오픈사전/노하우/수험/학습
+  - id: '2'
+    name: 오픈사전/노하우/쇼핑
+  - id: '3'
+    name: 오픈사전/노하우/게임
+  - id: '4'
+    name: 오픈사전/노하우/장소/맛집
+  - id: '5'
+    name: 오픈사전/노하우/생활상식
+  - id: '6'
+    name: 오픈사전/노하우/인간관계
+  - id: '7'
+    name: 오픈사전/노하우/재테크
+  - id: '8'
+    name: 오픈사전/노하우/IT
+  - id: '9'
+    name: 오픈사전/노하우/멋내기
+partner_list:
+  category:
+  - id: '2001'
+    name: 고민Q&A
+  - id: '200101'
+    name: 고민Q&A/아동,미성년 상담/외모
+  - id: '200102'
+    name: 고민Q&A/아동,미성년 상담/성격, 버릇
+  - id: '200103'
+    name: 고민Q&A/아동,미성년 상담/친구, 우정
+  - id: '200104'
+    name: 고민Q&A/아동,미성년 상담/이성, 연애 상담
+  - id: '200105'
+    name: 고민Q&A/아동,미성년 상담/성, 신체변화
+  - id: '200106'
+    name: 고민Q&A/아동,미성년 상담/학업, 진로
+  - id: '200107'
+    name: 고민Q&A/아동,미성년 상담/가족, 이웃
+  index: crawler-naver-kin-partner_list
+  sleep: 10
+  url_frame: https://m.kin.naver.com/mobile/people/partnerList.nhn?resultMode=json&m=partnerList&page={page}&dirId={dir_id}
+question_list:
+  category:
+  - id: '401'
+    name: 경제/금융
+  - id: '402'
+    name: 경제/부동산
+  - id: '403'
+    name: 경제/세금, 세무
+  - id: '404'
+    name: 경제/경영
+  - id: '405'
+    name: 경제/무역
+  - id: '406'
+    name: 경제/직업, 취업
+  - id: '407'
+    name: 경제/창업
+  - id: '408'
+    name: 경제/경제 정책, 제도
+  - id: '409'
+    name: 경제/경제 동향, 이론
+  - id: '410'
+    name: 경제/경제 기관, 단체
+  - id: '101'
+    name: 컴퓨터통신/컴퓨터, 하드웨어
+  - id: '102'
+    name: 컴퓨터통신/소프트웨어
+  - id: '103'
+    name: 컴퓨터통신/운영체제(OS)
+  - id: '104'
+    name: 컴퓨터통신/프로그래밍
+  - id: '105'
+    name: 컴퓨터통신/웹사이트 제작, 운영
+  - id: '106'
+    name: 컴퓨터통신/인터넷
+  - id: '10601'
+    name: 컴퓨터통신/@네이버사용법
+  - id: '107'
+    name: 컴퓨터통신/전화통신
+  - id: '10704'
+    name: 컴퓨터통신/@스마트폰
+  - id: '108'
+    name: 컴퓨터통신/통신 네트워크
+  - id: '109'
+    name: 컴퓨터통신/방송통신
+  - id: '110'
+    name: 컴퓨터통신/보안
+  - id: '111'
+    name: 컴퓨터통신/컴퓨터 자격증, 학원
+  - id: '113'
+    name: 컴퓨터통신/오픈API
+  - id: '201'
+    name: 게임/롤플레잉게임
+  - id: '202'
+    name: 게임/시뮬레이션게임
+  - id: '203'
+    name: 게임/FPS, 슈팅게임
+  - id: '204'
+    name: 게임/액션, 어드벤처 게임
+  - id: '205'
+    name: 게임/레이싱게임
+  - id: '206'
+    name: 게임/스포츠게임
+  - id: '207'
+    name: 게임/보드, 퍼즐 게임
+  - id: '208'
+    name: 게임/모바일게임
+  - id: '209'
+    name: 게임/비디오게임
+  - id: '210'
+    name: 게임/게임리그, 게이머
+  - id: '211'
+    name: 게임/게임사, 게임사이트
+  - id: '212'
+    name: 게임/게임 제작, 기획
+  - id: '213'
+    name: 게임/인디게임
+  - id: '301'
+    name: 엔터테인먼트, 예술/TV, 라디오 방송
+  - id: '302'
+    name: 엔터테인먼트, 예술/음악
+  - id: '303'
+    name: 엔터테인먼트, 예술/영화
+  - id: '304'
+    name: 엔터테인먼트, 예술/애니메이션
+  - id: '305'
+    name: 엔터테인먼트, 예술/만화
+  - id: '306'
+    name: 엔터테인먼트, 예술/비디오, DVD
+  - id: '307'
+    name: 엔터테인먼트, 예술/문학
+  - id: '308'
+    name: 엔터테인먼트, 예술/연극
+  - id: '309'
+    name: 엔터테인먼트, 예술/뮤지컬
+  - id: '310'
+    name: 엔터테인먼트, 예술/오페라
+  - id: '311'
+    name: 엔터테인먼트, 예술/무용, 춤
+  - id: '312'
+    name: 엔터테인먼트, 예술/미술
+  - id: '313'
+    name: 엔터테인먼트, 예술/디자인
+  - id: '314'
+    name: 엔터테인먼트, 예술/사진
+  - id: '315'
+    name: 엔터테인먼트, 예술/운세
+  - id: '316'
+    name: 엔터테인먼트, 예술/초자연현상
+  - id: '801'
+    name: 생활/가족
+  - id: '802'
+    name: 생활/음식
+  - id: '803'
+    name: 생활/미용
+  - id: '804'
+    name: 생활/패션스타일
+  - id: '805'
+    name: 생활/반려동물
+  - id: '806'
+    name: 생활/취미
+  - id: '807'
+    name: 생활/오락
+  - id: '808'
+    name: 생활/인테리어
+  - id: '809'
+    name: 생활/주거살림
+  - id: '810'
+    name: 생활/이사
+  - id: '811'
+    name: 생활/자동차
+  - id: '812'
+    name: 생활/교통, 길찾기
+  - id: '813'
+    name: 생활/우편택배
+  - id: '814'
+    name: 생활/기타
+  - id: '815'
+    name: 생활/날씨
+  - id: '816'
+    name: 생활/외국인 한국생활
+  - id: '701'
+    name: 건강/건강상담
+  - id: '702'
+    name: 건강/치의학, 치과
+  - id: '703'
+    name: 건강/한의학
+  - id: '704'
+    name: 건강/약학
+  - id: '705'
+    name: 건강/대체의학
+  - id: '706'
+    name: 건강/식생활, 식습관
+  - id: '707'
+    name: 건강/운동
+  - id: '708'
+    name: 건강/인체건강상식
+  - id: '709'
+    name: 건강/의료보건제도
+  - id: '710'
+    name: 건강/의료기관, 의료인
+  - id: '711'
+    name: 건강/영양학
+  - id: '601'
+    name: 사회, 정치/민원, 행정
+  - id: '602'
+    name: 사회, 정치/법, 법률
+  - id: '603'
+    name: 사회, 정치/병역
+  - id: '604'
+    name: 사회, 정치/국방
+  - id: '605'
+    name: 사회, 정치/외교
+  - id: '606'
+    name: 사회, 정치/통일
+  - id: '607'
+    name: 사회, 정치/선거
+  - id: '608'
+    name: 사회, 정치/고용, 노동
+  - id: '609'
+    name: 사회, 정치/종교
+  - id: '610'
+    name: 사회, 정치/복지
+  - id: '611'
+    name: 사회, 정치/환경
+  - id: '612'
+    name: 사회, 정치/재난재해
+  - id: '613'
+    name: 사회, 정치/사회문화
+  - id: '614'
+    name: 사회, 정치/기관, 단체, 인물
+  - id: '901'
+    name: 여행/국내여행
+  - id: '902'
+    name: '여행/해외여행 '
+  - id: '1001'
+    name: '스포츠, 레저/구기스포츠 '
+  - id: '1002'
+    name: '스포츠, 레저/육상, 수상 스포츠 '
+  - id: '1003'
+    name: '스포츠, 레저/겨울스포츠 '
+  - id: '1004'
+    name: '스포츠, 레저/무예투기 '
+  - id: '1005'
+    name: '스포츠, 레저/레저 '
+  - id: '1006'
+    name: '스포츠, 레저/종합스포츠 '
+  - id: '1007'
+    name: '스포츠, 레저/스포츠기타 '
+  - id: '501'
+    name: 쇼핑/가전제품
+  - id: '502'
+    name: 쇼핑/컴퓨터
+  - id: '503'
+    name: 쇼핑/미용
+  - id: '504'
+    name: 쇼핑/패션
+  - id: '505'
+    name: 쇼핑/가구, 식품, 살림
+  - id: '506'
+    name: 쇼핑/취미, 오락, 문구류
+  - id: '507'
+    name: 쇼핑/자동차용품
+  - id: '508'
+    name: 쇼핑/건강의료용품
+  - id: '509'
+    name: 쇼핑/스포츠, 레저용품
+  - id: '510'
+    name: 쇼핑/예약, 예매
+  - id: '511'
+    name: 쇼핑/쇼핑몰, 시장
+  - id: '512'
+    name: 쇼핑/해외직구
+  - id: '1301'
+    name: 쥬니버Q&A/교육
+  - id: '1302'
+    name: 쥬니버Q&A/컴퓨터통신
+  - id: '1303'
+    name: 쥬니버Q&A/게임
+  - id: '1304'
+    name: 쥬니버Q&A/엔터테인먼트, 예술
+  - id: '1305'
+    name: 쥬니버Q&A/생활
+  - id: '1306'
+    name: 쥬니버Q&A/여행
+  - id: '1307'
+    name: 쥬니버Q&A/스포츠
+  - id: '1201'
+    name: 지역&플레이스/서울특별시
+  - id: '1202'
+    name: 지역&플레이스/부산광역시
+  - id: '1203'
+    name: 지역&플레이스/대구광역시
+  - id: '1204'
+    name: 지역&플레이스/인천광역시
+  - id: '1205'
+    name: 지역&플레이스/광주광역시
+  - id: '1206'
+    name: 지역&플레이스/대전광역시
+  - id: '1207'
+    name: 지역&플레이스/울산광역시
+  - id: '1208'
+    name: 지역&플레이스/강원도
+  - id: '1209'
+    name: 지역&플레이스/경기도
+  - id: '1210'
+    name: 지역&플레이스/경상남도
+  - id: '1211'
+    name: 지역&플레이스/경상북도
+  - id: '1212'
+    name: 지역&플레이스/전라남도
+  - id: '1213'
+    name: 지역&플레이스/전라북도
+  - id: '1214'
+    name: 지역&플레이스/제주특별자치도
+  - id: '1215'
+    name: 지역&플레이스/충청남도
+  - id: '1216'
+    name: 지역&플레이스/충청북도
+  - id: '1217'
+    name: 지역&플레이스/세종특별자치시
+  - id: '1101'
+    name: 교육, 학문/영유아교육
+  - id: '1102'
+    name: 교육, 학문/초등학교교육
+  - id: '1103'
+    name: 교육, 학문/중학교교육
+  - id: '1104'
+    name: 교육, 학문/고등학교교육
+  - id: '1105'
+    name: 교육, 학문/대학교육
+  - id: '1106'
+    name: 교육, 학문/유학
+  - id: '1107'
+    name: 교육, 학문/평생교육
+  - id: '1108'
+    name: 교육, 학문/어학, 외국어
+  - id: '1110'
+    name: 교육, 학문/역사학
+  - id: '1111'
+    name: 교육, 학문/철학, 심리철학
+  - id: '1112'
+    name: 교육, 학문/사회학
+  - id: '1113'
+    name: 교육, 학문/수학
+  - id: '1114'
+    name: 교육, 학문/물리학
+  - id: '1115'
+    name: 교육, 학문/화학, 화학공학
+  - id: '1116'
+    name: 교육, 학문/생물학, 생명공학
+  - id: '1117'
+    name: 교육, 학문/지구과학
+  - id: '1118'
+    name: 교육, 학문/전기, 전자 공학
+  - id: '1119'
+    name: 교육, 학문/건축학
+  - id: '1120'
+    name: 교육, 학문/농학
+  - id: '1121'
+    name: 교육, 학문/교육 정책, 이슈
+  - id: '1122'
+    name: 교육, 학문/환경공학
+  - id: '1124'
+    name: 교육, 학문/축산학
+  - id: '1125'
+    name: 교육, 학문/해양학
+  - id: '1126'
+    name: 교육, 학문/기계공학
+  - id: '1127'
+    name: 교육, 학문/정치외교학
+  - id: '1128'
+    name: 교육, 학문/통계학
+  - id: '1129'
+    name: 교육, 학문/천문우주학
+  - id: '1130'
+    name: 교육, 학문/심리학
+  - id: '1131'
+    name: 교육, 학문/공학
+  - id: '1132'
+    name: 교육, 학문/경시대회
+  - id: '1133'
+    name: 교육, 학문/과학
+  - id: '307'
+    name: 교육, 학문/@ 문학
+  - id: '200101'
+    name: 고민Q&A/아동,미성년 상담/외모
+  - id: '200102'
+    name: 고민Q&A/아동,미성년 상담/성격, 버릇
+  - id: '200103'
+    name: 고민Q&A/아동,미성년 상담/친구, 우정
+  - id: '200104'
+    name: 고민Q&A/아동,미성년 상담/이성, 연애 상담
+  - id: '200105'
+    name: 고민Q&A/아동,미성년 상담/성, 신체변화
+  - id: '200106'
+    name: 고민Q&A/아동,미성년 상담/학업, 진로
+  - id: '200107'
+    name: 고민Q&A/아동,미성년 상담/가족, 이웃
+  - id: '200201'
+    name: 고민Q&A/성인상담/외모
+  - id: '200202'
+    name: 고민Q&A/성인상담/성격, 버릇
+  - id: '200203'
+    name: 고민Q&A/성인상담/이성, 연애 상담
+  - id: '200204'
+    name: 고민Q&A/성인상담/부부
+  - id: '200205'
+    name: 고민Q&A/성인상담/성 고민
+  - id: '200206'
+    name: 고민Q&A/성인상담/친구, 우정
+  - id: '200207'
+    name: 고민Q&A/성인상담/취업, 직장생활
+  - id: '200208'
+    name: 고민Q&A/성인상담/군대
+  - id: '200209'
+    name: 고민Q&A/성인상담/가족, 이웃
+  - id: '200210'
+    name: 고민Q&A/성인상담/비디오, DVD
+  index: crawler-naver-kin-question_list
+  sleep: 10
+  url_frame: https://m.kin.naver.com/mobile/qna/kinupList.nhn?sortType=writeTime&resultMode=json&dirId={dir_id}&countPerPage={size}&page={page}
+rank_user_list:
+  category:
+  - id: '2001'
+    name: 고민Q&A > 아동, 미성년 상담
+  - id: '200101'
+    name: 고민Q&A > 아동, 미성년 상담 > 외모
+  - id: '200102'
+    name: 고민Q&A > 아동, 미성년 상담 > 성격, 버릇
+  - id: '200103'
+    name: 고민Q&A > 아동, 미성년 상담 > 친구, 우정
+  - id: '200104'
+    name: 고민Q&A > 아동, 미성년 상담 > 이성, 연애 상담
+  - id: '200105'
+    name: 고민Q&A > 아동, 미성년 상담 > 성, 신체변화
+  - id: '200106'
+    name: 고민Q&A > 아동, 미성년 상담 > 학업, 진로
+  - id: '200107'
+    name: 고민Q&A > 아동, 미성년 상담 > 가족, 이웃
+  - id: '401'
+    name: 금융
+  - id: '40101'
+    name: 예금, 적금
+  - id: '40102'
+    name: 주식, 증권
+  - id: '40103'
+    name: 보험
+  - id: '40104'
+    name: 신용카드
+  - id: '40105'
+    name: 대출
+  - id: '40106'
+    name: 개인 신용, 회복
+  - id: '40107'
+    name: 뱅킹, 금융업무
+  - id: '40108'
+    name: 가상화폐
+  - id: '402'
+    name: 부동산
+  - id: '40201'
+    name: 매매
+  - id: '40202'
+    name: 임대차
+  - id: '40203'
+    name: 분양, 청약
+  - id: '40204'
+    name: 경매
+  - id: '403'
+    name: 세금, 세무
+  - id: '40301'
+    name: 소득세
+  - id: '40302'
+    name: 법인세
+  - id: '40303'
+    name: 상속세, 증여세
+  - id: '40304'
+    name: 부가가치세
+  - id: '40305'
+    name: 종합부동산세
+  - id: '40306'
+    name: 취득세, 등록세
+  - id: '40307'
+    name: 재산세
+  - id: '40308'
+    name: 자동차세
+  - id: '40309'
+    name: 세금 정책, 제도
+  - id: '40310'
+    name: 관세
+  - id: '40311'
+    name: 연말정산
+  - id: '404'
+    name: 경영
+  - id: '40401'
+    name: 마케팅, 영업
+  - id: '40402'
+    name: 회계, 감사, 재무 관리
+  - id: '40403'
+    name: 인사, 조직 관리
+  - id: '40404'
+    name: 연구개발, 생산, 물류
+  - id: '40405'
+    name: 경영정보시스템
+  - id: '405'
+    name: 무역
+  - id: '40501'
+    name: 수출
+  - id: '40502'
+    name: 수입
+  - id: '406'
+    name: 직업, 취업
+  - id: '40601'
+    name: 공무원
+  - id: '40602'
+    name: 교육, 연구, 학문
+  - id: '40603'
+    name: 의료, 법률, 금융
+  - id: '40604'
+    name: 복지, 종교
+  - id: '40605'
+    name: 문화, 예술
+  - id: '40606'
+    name: 관광, 요식업, 스포츠
+  - id: '40607'
+    name: 유통, 판매, 영업
+  - id: '40608'
+    name: 컴퓨터, 프로그래밍
+  - id: '40609'
+    name: 생산, 기술
+  - id: '40610'
+    name: 사무지원
+  - id: '40611'
+    name: 아르바이트
+  - id: '40612'
+    name: 취업 정책, 제도
+  - id: '40613'
+    name: 구인구직사이트
+  - id: '407'
+    name: 창업
+  - id: '40701'
+    name: 판매, 유통업
+  - id: '40702'
+    name: 관광, 요식업
+  - id: '40703'
+    name: 서비스업
+  - id: '40704'
+    name: 창업성장
+  - id: '408'
+    name: 경제 정책, 제도
+  - id: '409'
+    name: 경제 동향, 이론
+  - id: '410'
+    name: 경제 기관, 단체
+  index: crawler-naver-kin-rank_user_list
+  sleep: 10
+  url_frame:
+  - https://kin.naver.com/ajax/qnaWeekRankAjax.nhn?requestId=weekRank&dirId={dir_id}&page={page}
+  - https://kin.naver.com/ajax/qnaTotalRankAjax.nhn?requestId=totalRank&dirId={dir_id}&page={page}
+  url_list: https://kin.naver.com/qna/directoryExpertList.nhn?dirId={dir_id}

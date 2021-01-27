@@ -1,0 +1,132 @@
+---
+jobs:
+- index: crawler-bbs-mlbpark_kbo-{year}
+  article:
+    document_id:
+      frame: '{id}'
+      type: query
+  list:
+  - category: KBO
+    url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=kbotown&query=&select=&user=
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - name: table
+    attribute:
+      class: tbl_type01
+  - name: tr
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: title
+    value_type: single
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+    value_type: single
+  - comment: 제목 헤더
+    key: title_header
+    value:
+    - select: span.word
+    type: text
+  - comment: 댓글수
+    key: reply_count
+    replace:
+    - from: '[[]'
+      to: ''
+    - from: '[]]'
+      to: ''
+    value:
+    - select: span.replycnt
+    type: text
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목 헤더
+    key: title_header
+    value:
+    - select: div.left_cont div.titles span.word
+    type: text
+  - comment: 제목
+    key: title
+    remove:
+    - name: span
+      attribute:
+        class: word
+    value:
+    - select: div.left_cont div.titles
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: ul.view_head div.text div.text_right div.text3 span.val
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 추천수
+    key: good_count
+    replace:
+    - from: ^.*추천 ([0-9]+).*$
+      to: \g<1>
+    value:
+    - select: ul.view_head div.text div.text_left div.text2
+    type: text
+  - comment: 조회수
+    key: view_count
+    replace:
+    - from: ^.*조회 ([0-9]+).*$
+      to: \g<1>
+    value:
+    - select: ul.view_head div.text div.text_left div.text2
+    type: text
+  - comment: 글쓴이
+    key: author
+    replace:
+    - from: 입력.+$
+      to: ''
+    value:
+    - select: ul.view_head div.text div.text_left span.nick
+    type: text
+  - comment: html 본문
+    key: html_content
+    value:
+    - select: div.contents div.left_cont
+    type: html
+    value_type: merge
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div#contentDetail
+    type: text
+    value_type: merge
+  - comment: 댓글 텍스트
+    key: reply_list.text
+    value:
+    - select: div.reply_list div.txt_box span.re_txt
+    type: text
+  - comment: 댓글 사용자
+    key: reply_list.author
+    value:
+    - select: div.reply_list div.txt_box span.name
+    type: text
+  - comment: 댓글 시간
+    key: reply_list.date
+    value:
+    - select: div.reply_list div.txt_box span.date
+    type: text
+    type_convert: date

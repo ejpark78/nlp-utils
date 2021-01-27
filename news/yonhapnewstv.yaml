@@ -1,0 +1,87 @@
+---
+jobs:
+- index: crawler-major_press-yonhapnewstv
+  article:
+    document_id:
+      replace:
+      - from: /
+        to: ''
+      type: path
+  list:
+  - category: 스포츠
+    url_frame: http://www.yonhapnewstv.co.kr/category/news/sports/page/{page}/
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: lxml
+  trace:
+  - name: div
+    attribute:
+      class: nag cf
+  - name: div
+    attribute:
+      class: thumb
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+      attribute:
+        class: clip-link
+    type: title
+  - comment: url
+    key: url
+    value:
+    - name: a
+      attribute:
+        class: clip-link
+    type: href
+  article:
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        class: inner
+    - name: h1
+      attribute:
+        id: title
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - name: div
+      attribute:
+        class: section-content
+    - name: span
+      attribute:
+        class: time
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    value:
+    - name: div
+      attribute:
+        itemprop: articleBody
+    type: html
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        itemprop: articleBody
+    type: text
+  - comment: 비디오
+    key: video
+    value:
+    - name: div
+      attribute:
+        class: single_featured_video
+    - name: a
+      attribute:
+        class: single_video_btn
+    type: href

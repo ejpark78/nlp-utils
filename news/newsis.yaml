@@ -1,0 +1,100 @@
+---
+jobs:
+- index: crawler-major_press-newsis
+  article:
+    document_id:
+      frame: '{cid}-{id}'
+      type: query
+  list:
+  - category: 스포츠
+    url_frame: http://www.newsis.com/spo/list/?cid=10500&scid=10502&page={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: lxml
+  trace:
+  - name: li
+    attribute:
+      class: p1_bundle
+  - name: div
+    attribute:
+      class: area
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  - comment: author
+    key: author
+    replace:
+    - from: '[|].+$'
+      to: ''
+    value:
+    - name: span
+      attribute:
+        class: date
+    type: text
+  article:
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        class: article_tbx mgt8 w970
+    - name: h1
+    type: text
+  - comment: 날짜
+    key: date
+    replace:
+    - from: 등록[ ]+
+      to: ''
+    value:
+    - name: div
+      attribute:
+        class: date
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    value:
+    - name: div
+      attribute:
+        itemprop: articleBody
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - name: table
+      attribute:
+        class: article_photo center
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - name: table
+      attribute:
+        class: article_photo center
+    - name: td
+      attribute:
+        class: desc
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        itemprop: articleBody
+    type: text

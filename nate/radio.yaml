@@ -1,0 +1,16 @@
+---
+jobs:
+- index: crawler-nate-radio-{year}
+  article:
+    document_id:
+      replace:
+      - from: /view/
+        to: ''
+      type: path
+  list:
+  - category: 라디오/김성준의 시사전망대
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/radio/list?mid=n1701&page={page}
+  - category: 라디오/김현정의 뉴스 쇼
+    date_format: '%Y%m%d'
+    url_frame: https://news.nate.com/radio/list?mid=n1702&page={page}

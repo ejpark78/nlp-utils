@@ -1,0 +1,68 @@
+---
+jobs:
+- index: raw-tass-{year}
+  article:
+    document_id:
+      replace:
+      - from: ^.+?/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  list:
+  - category: v-strane
+    url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=v-strane&type=all&step=1&tuplesLimit=20&newsOffset={page}
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: https://tass.ru/{slug}/{id}
+      date: '{dateLabel}'
+    parser: json
+    trace: data.news
+  - category: politika
+    url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=politika&type=all&step=1&tuplesLimit=20&newsOffset={page}
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: https://tass.ru/{slug}/{id}
+      date: '{dateLabel}'
+    parser: json
+    trace: data.news
+  - category: mezhdunarodnaya-panorama
+    url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=mezhdunarodnaya-panorama&type=all&step=1&tuplesLimit=20&newsOffset={page}
+    headers:
+      Content-Type: application/json
+    mapping:
+      url: https://tass.ru/{slug}/{id}
+      date: '{dateLabel}'
+    parser: json
+    trace: data.news
+parsing:
+  version: v2021-01-26
+  descriptions:
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    article: 기사 본문에서 추출해야하는 tag 정보
+  parser: html5lib
+  trace: []
+  list: []
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.news div.news-hader h1
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.news div.text-content
+    type: text

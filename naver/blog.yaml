@@ -1,0 +1,132 @@
+---
+jobs:
+  - list:
+    - blogId: jjiaeya
+      name: 피예뜨 지야 가죽공방
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: kismen
+      name: CUCIRE -Leather Craft Atelier
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: et6000
+      name: 시로가네 취미공간
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: miya9833
+      name: 나비코 가죽공방
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: unicorndream
+      name: 명품미싱 드림킹 / 유니콘드림 공식 블로그
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: ys2000
+      name: 존아저씨공방 은공예
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: 1theglobal
+      name: 이탈리아 가죽 공예 장비
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: a_vec
+      name: 송예진 가죽공예 학원
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: choiys2200
+      name: 경산가죽공방 스티치
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: clickmihee
+      name: Leather 愛
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: countryateli
+      name: Country Atelier
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: craftshop_dameum
+      name: 담음 레더하우스
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: custommake
+      name: 커스텀메이크
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: dagi92
+      name: 귤율
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: dev4unet
+      name: 버섯돌이의 정보 공유
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: everadro
+      name: 은빛가방속 이야기
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: g1still
+      name: JL
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: gpwnwjd
+      name: 델리카-Delicat
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: gyeongkook
+      name: 지케이컴퍼니 [위드살롱아찌 & 레더비앙]
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: jinhi721
+      name: 코코지니의 재봉틀 놀이
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: knix008
+      name: '[ 프로페셔널 프로그래머 ]'
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: leathertool
+      name: My Leather Tool
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: redjudy
+      name: 제이아이앤 디자인 스튜디오 since 2013
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: samwoo6131
+      name: 삼우 오렌지미싱
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: seokcm123
+      name: The Leather Shop
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: ssak0106
+      name: 대우미싱 둘째딸 (면목동)
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: studio-pl
+      name: 스튜디오피엘
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: valen1002n
+      name: 마유라 팩토리
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: verocuoio
+      name: VERO CUOIO
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: whdgnl100
+      name: 흥청망청 후이로그
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: wunjo373
+      name: 홍대 가죽공방 운조
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: yeonpill9
+      name: 아코자인가죽공방
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: yongil1405
+      name: 용일피혁
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: neces2
+      name: 네세스의 IT STORY
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: sorang226
+      name: 게임 만드는 원소랑
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: tjcksqja3669
+      name: 아RI랑 아즈텍
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: greedady
+      name: 인포머의 웨어하우스
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: jinjioni
+      name: 진지오니의 게임공략소
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: ps3player
+      name: 스파이크의 무한 잡설 공간
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: relectric39
+      name: 폰캣의 프린세스 커넥트! 공략
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: sachiel5
+      name: 사키엘의 블로그
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: ychoboda
+      name: 직딩의리니지m
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0
+    - blogId: cestbon0729
+      name: 긍꽁이 일상
+      url: https://m.blog.naver.com/PostList.nhn?blogId={blogId}&categoryNo=0&currentPage={page}&logCode=0

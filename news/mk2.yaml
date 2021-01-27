@@ -1,0 +1,131 @@
+---
+jobs:
+- index: crawler-major_press-mk
+  article:
+    document_id:
+      frame: '{sc}-{mc}-{year}-{no}'
+      type: query
+  list:
+  - category: 야구
+    url_frame: http://sports.mk.co.kr/list.php?sc=71000002&mc=B
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+    trace_next_page: 다음 페이지를 따라간다.
+  parser: html5lib
+  trace:
+  - name: div
+    attribute:
+      class: list_area
+  - name: dl
+  trace_next_page:
+    max_trace: 10
+    replace:
+    - from: cm=.+?&
+      to: ''
+    value:
+    - name: div
+      attribute:
+        class: list_paging
+    - name: a
+      attribute:
+        class: next
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: dt
+      attribute:
+        class: tit
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: dt
+      attribute:
+        class: tit
+    - name: a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - name: span
+      attribute:
+        class: date
+    type: text
+    type_convert: date
+    value_type: single
+  article:
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        id: view_tit
+    - name: span
+      attribute:
+        class: head_tit
+    type: text
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
+      to: \g<1>
+    value:
+    - name: div
+      attribute:
+        id: view_tit
+    - name: span
+      attribute:
+        class: sm_num
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    - name: script
+    - name: div
+      attribute:
+        id: slot6
+    - name: a
+      attribute:
+        target: _blank
+    value:
+    - name: div
+      attribute:
+        id: artText
+    type: html
+    value_type: merge
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - name: div
+      attribute:
+        class: center_image
+    - name: img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - name: div
+      attribute:
+        class: center_image
+    - name: p
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        id: artText
+    - name: div
+      attribute:
+        class: read_txt
+    type: text
+    value_type: merge

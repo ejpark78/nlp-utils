@@ -1,0 +1,97 @@
+---
+jobs:
+- index: crawler-major_press-moneytoday
+  article:
+    document_id:
+      frame: '{no}'
+      type: query
+  list:
+  - category: 스포츠
+    url_frame: http://news.mt.co.kr/newsList.html?type=1&comd=&pDepth=enter&pDepth1=sports&pDepth2=Stotal&vgb=sports&page={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - name: li
+    attribute:
+      class: bundle
+  - name: strong
+    attribute:
+      class: subject
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - name: a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - name: a
+    type: href
+  article:
+  - comment: 제목
+    key: title
+    value:
+    - name: div
+      attribute:
+        class: view_top
+    - name: h1
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    replace:
+    - from: ^.+([1-2][089][0-9][0-9][.\- :0-9]+).+$
+      to: \g<1>
+    value:
+    - name: ul
+      attribute:
+        class: info2
+    - name: li
+      attribute:
+        class: date
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 글쓴이
+    key: author
+    value:
+    - name: a
+      attribute:
+        title: 기자의 다른기사보기
+    type: text
+  - comment: html 본문
+    key: html_content
+    value:
+    - name: div
+      attribute:
+        id: textBody
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - name: td
+      attribute:
+        class: img
+    - name: img
+    type: src
+  - comment: 이미지 갭션
+    delete: true
+    key: image_list.caption
+    value:
+    - name: td
+      attribute:
+        class: img
+    - name: img
+    type: alt
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - name: div
+      attribute:
+        id: textBody
+    type: text
