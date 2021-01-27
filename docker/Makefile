@@ -39,14 +39,16 @@ DOCKER_LABEL += --label "git.branch=$(GIT_BRANCH)"
 DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
 DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
 DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
-DOCKER_LABEL += --build-arg "DOCKER_TAG=$(IMAGE_TAG)"
-DOCKER_LABEL += --build-arg "DOCKER_IMAGE=$(IMAGE)"
-DOCKER_LABEL += --build-arg "BUILD_DATE='$(BUILD_DATE)'"
-DOCKER_LABEL += --build-arg "GIT_URL=$(GIT_URL)"
-DOCKER_LABEL += --build-arg "GIT_BRANCH=$(GIT_BRANCH)"
-DOCKER_LABEL += --build-arg "GIT_TAG=$(GIT_TAG)"
-DOCKER_LABEL += --build-arg "GIT_COMMIT_ID=$(GIT_COMMIT_ID)"
-DOCKER_LABEL += --build-arg "GIT_COMMIT_COUNT=$(GIT_COMMIT)"
+
+DOCKER_ARGS =
+DOCKER_ARGS += --build-arg "DOCKER_TAG=$(IMAGE_TAG)"
+DOCKER_ARGS += --build-arg "DOCKER_IMAGE=$(IMAGE)"
+DOCKER_ARGS += --build-arg "BUILD_DATE='$(BUILD_DATE)'"
+DOCKER_ARGS += --build-arg "GIT_URL=$(GIT_URL)"
+DOCKER_ARGS += --build-arg "GIT_BRANCH=$(GIT_BRANCH)"
+DOCKER_ARGS += --build-arg "GIT_TAG=$(GIT_TAG)"
+DOCKER_ARGS += --build-arg "GIT_COMMIT_ID=$(GIT_COMMIT_ID)"
+DOCKER_ARGS += --build-arg "GIT_COMMIT_COUNT=$(GIT_COMMIT)"
 
 DOCKER_BUILD_OPT =
 DOCKER_BUILD_OPT += --network=host
@@ -84,6 +86,7 @@ build:
 	cd -
 	docker build \
 		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):$(IMAGE_TAG) \
 		-f Dockerfile \
