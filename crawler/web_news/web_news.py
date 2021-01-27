@@ -9,6 +9,7 @@ import json
 import os
 import re
 from argparse import Namespace
+from copy import deepcopy
 from datetime import datetime, timedelta
 from time import sleep
 from urllib.parse import parse_qs, urljoin
@@ -159,8 +160,8 @@ class WebNewsCrawler(WebNewsBase):
             return
 
         req_params = {
-            **json.loads(json.dumps(item)),
-            **json.loads(json.dumps(article)),
+            **deepcopy(item),
+            **deepcopy(article)
         }
 
         for url_info in job['post_request']:

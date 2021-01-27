@@ -40,7 +40,7 @@ DOCKER_LABEL += --label "git.tag=$(GIT_TAG)"
 DOCKER_LABEL += --label "git.commit.id=$(GIT_COMMIT_ID)"
 DOCKER_LABEL += --label "git.commit.count=$(GIT_COMMIT)"
 DOCKER_LABEL += --build-arg "DOCKER_TAG=$(IMAGE_TAG)"
-DOCKER_LABEL += --build-arg "DOCKER_IMAGE=$(IMAGE_BASE)"
+DOCKER_LABEL += --build-arg "DOCKER_IMAGE=$(IMAGE)"
 DOCKER_LABEL += --build-arg "BUILD_DATE='$(BUILD_DATE)'"
 DOCKER_LABEL += --build-arg "GIT_URL=$(GIT_URL)"
 DOCKER_LABEL += --build-arg "GIT_BRANCH=$(GIT_BRANCH)"
@@ -58,6 +58,7 @@ batch: build push
 base:
 	docker build \
 		$(MIRROR) \
+		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(BASE_IMAGE):base \
 		-f base/Dockerfile \

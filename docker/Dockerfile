@@ -42,6 +42,7 @@ RUN echo && echo "크롤러 설치" \
     && echo ${GIT_TAG}.${GIT_COMMIT_COUNT} | tee version \
 	&& python3 setup.py install \
     && mv crawler/config / \
+    && pip3 show crawler \
     && rm -rf /src
 
 WORKDIR /app
