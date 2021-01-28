@@ -13,8 +13,6 @@ data
 core
 build
 dist
-ops
-config
 
 *.json.gz
 *.model
@@ -27,4 +25,3 @@ app.tar.gz
 venv
 cache
 /log/
-status
