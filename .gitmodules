@@ -4,4 +4,4 @@
 
 [submodule "config"]
 	path = config
-	url = http://galadriel02.korea.ncsoft.corp/searchtf/crawler-config.git
+	url = http://galadriel02.korea.ncsoft.corp/crawler/config.git

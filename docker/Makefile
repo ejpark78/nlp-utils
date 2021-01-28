@@ -53,6 +53,7 @@ DOCKER_ARGS += --build-arg "GIT_COMMIT_COUNT=$(GIT_COMMIT)"
 DOCKER_BUILD_OPT =
 DOCKER_BUILD_OPT += --network=host
 DOCKER_BUILD_OPT += --add-host "nlp-utils:172.19.153.41"
+DOCKER_BUILD_OPT += --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
 
 batch: build push
 
@@ -68,22 +69,22 @@ base:
 
 .ONESHELL:
 build:
-	cd ../
-	tar cvfz ./docker/app.tar.gz \
-		--exclude=.git* \
-		--exclude=.idea \
-		--exclude=log \
-		--exclude=ops \
-		--exclude=venv \
-		--exclude=data \
-		--exclude=dist \
-		--exclude=cache \
-		--exclude=build \
-		--exclude=notebook \
-		--exclude=__pycache__ \
-		.
-
-	cd -
+#	cd ../
+#	tar cvfz ./docker/app.tar.gz \
+#		--exclude=.git* \
+#		--exclude=.idea \
+#		--exclude=log \
+#		--exclude=ops \
+#		--exclude=venv \
+#		--exclude=data \
+#		--exclude=dist \
+#		--exclude=cache \
+#		--exclude=build \
+#		--exclude=notebook \
+#		--exclude=__pycache__ \
+#		.
+#
+#	cd -
 	docker build \
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
@@ -93,10 +94,10 @@ build:
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
 		.
 
-	rm app.tar.gz
+#	rm app.tar.gz
 
-	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):$(MAJOR_VERSION)
-	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
+#	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):$(MAJOR_VERSION)
+#	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
 
 .ONESHELL:
 pull:

@@ -32,18 +32,27 @@ ENV GIT_TAG=${GIT_TAG}
 ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
 ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
 
-RUN mkdir -p /src
-WORKDIR /src
-
-ADD app.tar.gz /src
-
 RUN echo && echo "크롤러 설치" \
-    && pip3 install -r requirements.txt \
-    && echo ${GIT_TAG}.${GIT_COMMIT_COUNT} | tee version \
-	&& python3 setup.py install \
-    && mv config /config \
-    && pip3 show crawler \
-    && rm -rf /src
+    && git clone http://galadriel02.korea.ncsoft.corp/crawler/crawler.git /src \
+    && cd /src \
+    && git submodule init \
+    && git submodule update --recursive \
+    && git submodule foreach git checkout master \
+    && git submodule foreach git pull origin master \
+    && find . -type f
+
+# RUN mkdir -p /src
+# WORKDIR /src
+
+# ADD app.tar.gz /src
+
+# RUN echo && echo "크롤러 설치" \
+#     && pip3 install -r requirements.txt \
+#     && echo ${GIT_TAG}.${GIT_COMMIT_COUNT} | tee version \
+# 	&& python3 setup.py install \
+#     && mv config /config \
+#     && pip3 show crawler \
+#     && rm -rf /src
 
 WORKDIR /app
 
