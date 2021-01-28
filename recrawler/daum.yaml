@@ -1,9 +1,9 @@
 resources:
   requests:
-    cpu: 100m
+    cpu: 200m
     memory: 100Mi
   limits:
-    cpu: 100m
+    cpu: 200m
     memory: 100Mi
 
 imagePullSecrets: registry
@@ -39,7 +39,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "문화/공연전시"
       - "문화/책"
@@ -67,7 +67,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "경제/부동산"
       - "경제/생활경제"
@@ -98,7 +98,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "국제/일본"
       - "국제/중국"
@@ -124,7 +124,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "IT/IT기기"
       - "IT/통신모바일"
@@ -147,7 +147,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "칼럼-칼럼"
       - "칼럼-사설"
@@ -169,7 +169,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "정치/행정지자체"
       - "정치/국회정당"
@@ -192,7 +192,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "사회/사건사고"
       - "사회/충청"
@@ -227,7 +227,7 @@ jobs:
 #      - "--date-range"
 #      - "2021-01-01~2021-01-28"
 #      - "--sleep"
-#      - "15"
+#      - "10"
 #    subSategory:
 #      - "스포츠/야구"
 #      - "스포츠/해외야구"

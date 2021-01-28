@@ -114,42 +114,42 @@ jobs:
       - "--page-step"
       - "1"
 
-  - name: bbs-lineagem
-    schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_LINEAGEM)
-    configMapRef: bbs
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
-      - "--config"
-      - "/config/bbs/lineagem.yaml"
-      - "--sleep"
-      - "20"
-      - "--page-range"
-      - "1~100"
-      - "--page-step"
-      - "1"
-
-  - name: bbs-lineage2m
-    schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_LINEAGE2M)
-    configMapRef: bbs
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
-      - "--config"
-      - "/config/bbs/lineage2m.yaml"
-      - "--sleep"
-      - "20"
-      - "--page-range"
-      - "1~100"
-      - "--page-step"
-      - "1"
+#  - name: bbs-lineagem
+#    schedule: "0,30 * * * *"
+#    environmentVariables:
+#      - name: ELASTIC_SEARCH_INDEX
+#        value: $(INDEX_LINEAGEM)
+#    configMapRef: bbs
+#    args:
+#      - "python3"
+#      - "-m"
+#      - "crawler.web_news.web_news"
+#      - "--overwrite"
+#      - "--config"
+#      - "/config/bbs/lineagem.yaml"
+#      - "--sleep"
+#      - "20"
+#      - "--page-range"
+#      - "1~100"
+#      - "--page-step"
+#      - "1"
+#
+#  - name: bbs-lineage2m
+#    schedule: "0,30 * * * *"
+#    environmentVariables:
+#      - name: ELASTIC_SEARCH_INDEX
+#        value: $(INDEX_LINEAGE2M)
+#    configMapRef: bbs
+#    args:
+#      - "python3"
+#      - "-m"
+#      - "crawler.web_news.web_news"
+#      - "--overwrite"
+#      - "--config"
+#      - "/config/bbs/lineage2m.yaml"
+#      - "--sleep"
+#      - "20"
+#      - "--page-range"
+#      - "1~100"
+#      - "--page-step"
+#      - "1"

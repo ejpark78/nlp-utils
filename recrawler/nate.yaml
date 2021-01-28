@@ -1,9 +1,9 @@
 resources:
   requests:
-    cpu: 100m
+    cpu: 200m
     memory: 100Mi
   limits:
-    cpu: 100m
+    cpu: 200m
     memory: 100Mi
 
 imagePullSecrets: registry
@@ -39,7 +39,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "경제/생활 경제"
       - "경제/부동산"
@@ -63,7 +63,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "연예/영화"
       - "연예/연예가 화제"
@@ -84,7 +84,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -107,7 +107,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "IT/과학"
       - "IT/디지털"
@@ -130,7 +130,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "정치/청와대"
       - "정치/국회/정당"
@@ -153,7 +153,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "사회/사건사고"
       - "사회/교육학교"
@@ -180,7 +180,7 @@ jobs:
       - "--date-range"
       - "2021-01-01~2021-01-28"
       - "--sleep"
-      - "15"
+      - "10"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"

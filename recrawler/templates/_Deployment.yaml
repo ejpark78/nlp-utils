@@ -1,0 +1,39 @@
+{{- range $jobIndex, $job := .Values.jobs }}
+{{- range $CategoryIndex, $subCategory := $job.subSategory }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $job.name }}-{{ $CategoryIndex }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $job.name }}-{{ $CategoryIndex }}
+  template:
+    metadata:
+      labels:
+        app: {{ $job.name }}-{{ $CategoryIndex }}
+    spec:
+      hostAliases:
+        {{- toYaml $.Values.hostAliases | nindent 8 }}
+      imagePullSecrets:
+      - name: {{ $.Values.imagePullSecrets }}
+      containers:
+      - name: default
+        resources:
+          {{- toYaml $.Values.resources | nindent 9 }}
+        image: {{ $.Values.image }}
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: {{ $job.configMapRef }}
+        env:
+          {{- toYaml $.Values.environmentVariables | nindent 8 }}
+          {{- toYaml $job.environmentVariables | nindent 8 }}
+        args:
+        {{- toYaml $job.args | nindent 8 }}
+        - --sub-category
+        - {{ $subCategory }}
+{{- end }}
+{{- end }}
