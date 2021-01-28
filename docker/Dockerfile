@@ -33,7 +33,7 @@ ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
 ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
 
 RUN echo && echo "크롤러 config 설치" \
-    && git clone -b live/latest http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
+    && git clone -b live http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
 
 RUN echo && echo "크롤러 설치 (pypi)" \
     && pip3 install -U crawler \

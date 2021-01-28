@@ -611,22 +611,22 @@ class WebNewsCrawler(WebNewsBase):
 
         return item
 
-    def is_skip(self, elastic_utils: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str,
+    def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str,
                 doc_history: set) -> bool:
         if self.params.overwrite is True:
             return False
 
-        elastic_utils.index = elastic_utils.get_target_index(
-            tag=elastic_utils.get_index_year_tag(date=date),
+        es.index = es.get_target_index(
+            tag=es.get_index_year_tag(date=date),
             index=job['index'],
         )
 
         is_skip = self.check_doc_id(
             url=url,
-            index=elastic_utils.index,
+            index=es.index,
             doc_id=doc_id,
             doc_history=doc_history,
-            elastic_utils=elastic_utils,
+            es=es,
         )
         if is_skip is True:
             self.logger.log(msg={
@@ -634,7 +634,7 @@ class WebNewsCrawler(WebNewsBase):
                 'message': '크롤링된 뉴스가 있음',
                 'doc_id': doc_id,
                 'url': url,
-                'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
+                'doc_url': es.get_doc_url(document_id=doc_id)
             })
 
             return True
@@ -685,7 +685,7 @@ class WebNewsCrawler(WebNewsBase):
             if doc_id is None:
                 continue
 
-            if self.is_skip(elastic_utils=elastic_utils, date=date, job=job, url=item['url'], doc_id=doc_id,
+            if self.is_skip(es=elastic_utils, date=date, job=job, url=item['url'], doc_id=doc_id,
                             doc_history=doc_history) is True:
                 continue
 

@@ -300,7 +300,7 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id: str, elastic_utils: ElasticSearchUtils, url: str, index: str, doc_history: set,
+    def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str, doc_history: set,
                      reply_info: dict = None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
@@ -314,14 +314,19 @@ class WebNewsBase(object):
             return True
 
         # 문서가 있는지 조회
-        is_exists = elastic_utils.conn.exists(index=index, id=doc_id)
+        is_exists = es.conn.exists(index=index, id=doc_id)
         if is_exists is False:
+            return False
+
+        # html 필드가 있는지 조회
+        doc = es.conn.get(index=index, id=doc_id, _source=['html'])
+        if 'html' not in doc['_source']:
             return False
 
         # 댓글 정보 추가 확인
         if reply_info is not None:
             field_name = reply_info['source']
-            doc = elastic_utils.conn.get(
+            doc = es.conn.get(
                 id=doc_id,
                 index=index,
                 _source=[field_name],
@@ -340,7 +345,7 @@ class WebNewsBase(object):
             'message': 'elasticsearch 에 존재함, 건너뜀',
             'doc_id': doc_id,
             'url': url,
-            'doc_url': elastic_utils.get_doc_url(document_id=doc_id)
+            'doc_url': es.get_doc_url(document_id=doc_id)
         })
 
         return True

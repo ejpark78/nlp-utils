@@ -105,6 +105,8 @@ dev:
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
 		.
 
+	rm app.tar.gz
+
 .ONESHELL:
 live: build
 	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):live
