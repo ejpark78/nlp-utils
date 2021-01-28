@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-upi-{year}
+- index: raw-bbs-{year}
   article:
     document_id:
       replace:
@@ -18,52 +18,58 @@ jobs:
     url_frame: https://www.bbc.com/news/live/world-47639450/page/{page}
   - category: world/asia
     url_frame: https://www.bbc.com/news/live/world-asia-47639453/page/{page}
-  - category: technology
-    url_frame: https://www.bbc.com/news/live/technology-47078793/page/{page}
+  - category: world/uk
+    url_frame: https://www.bbc.com/news/live/uk-48270993/page/{page}
   - category: business
     url_frame: https://www.bbc.com/news/live/business-47737521/page/{page}
+  - category: technology
+    url_frame: https://www.bbc.com/news/live/technology-47078793/page/{page}
+  - category: science-environment
+    url_frame: https://www.bbc.com/news/live/science-environment-47179475/page/{page}
+  - category: entertainment-arts
+    url_frame: https://www.bbc.com/news/live/entertainment-arts-47639448/page/{page}
+  - category: health
+    url_frame: https://www.bbc.com/news/live/health-47160630/page/{page}
+  - category: reality-check
+    url_frame: https://www.bbc.com/news/live/world-48190034/page/{page}
+  - category: reporters
+    url_frame: https://www.bbc.com/news/live/uk-47539591/page/{page}
+  - category: coronavirus
+    url_frame: https://www.bbc.com/news/live/explainers-51871385/page/{page}
 parsing:
   version: v2021-01-26
   descriptions:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
     article: 기사 본문에서 추출해야하는 tag 정보
-  parser: html5lib
+  parser: lxml
   trace:
   - select: ol li article
   list:
   - comment: 제목
     key: title
     value:
-    - select: div.col-md-8 div.title
+    - select: header a > span
     type: text
-  - comment: 카테고리
-    key: list_category
-    value:
-    - select: div.col-md-8 div.category
-    type: text
-    replace:
-    - from: /+.+$
-      to: ''
   - comment: url
     key: url
     value:
-    - select: a
+    - select: header a
     type: href
   - comment: 날짜
     key: date
     value:
-    - select: div.col-md-8 div.category i.time-ago
+    - select: div time > span
     type: text
     type_convert: date
     value_type: single
     replace:
-    - from: /+
+    - from: Posted at
       to: ''
   - comment: 요약
     key: summary
     value:
-    - select: div.content
+    - select: div div div p
     type: text
   article:
   - comment: html
@@ -78,32 +84,24 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - select: div.news-head h1.headline
-    type: text
-  - comment: 하위 카테고리
-    key: sub_category
-    value:
-    - select: div.news-head div.breadcrumb
+    - select: article header h1#main-heading
     type: text
   - comment: 날짜
     key: date
     value:
-    - select: div.news-head div.article-date
-    type: text
+    - select: dd time
+    type: datetime
     type_convert: date
     value_type: single
-    replace:
-    - from: /+
-      to: ''
-    - from: ^.+Updated
-      to: ''
   - comment: 작성자
     key: author
     value:
-    - select: div.news-head div.author div
+    - select: article header p span strong
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - select: article[itemprop=articleBody]
+    - select: article
     type: text
+    remove:
+    - name: header
