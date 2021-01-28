@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import os
 import re
 from copy import deepcopy
 from datetime import datetime
@@ -494,6 +495,20 @@ class NaverNewsReplyCrawler(object):
             })
 
             for job in config['jobs']:
+                # override elasticsearch config
+                job['host'] = os.getenv(
+                    'ELASTIC_SEARCH_HOST',
+                    default=job['host'] if 'host' in job else None
+                )
+                job['index'] = os.getenv(
+                    'ELASTIC_SEARCH_INDEX',
+                    default=job['index'] if 'index' in job else None
+                )
+                job['http_auth'] = os.getenv(
+                    'ELASTIC_SEARCH_AUTH',
+                    default=job['http_auth'] if 'http_auth' in job else None
+                )
+
                 for url_frame in job['list']:
                     elastic = self.open_elasticsearch(date=dt, job=job, url_frame=url_frame)
 

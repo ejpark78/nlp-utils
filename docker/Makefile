@@ -69,22 +69,6 @@ base:
 
 .ONESHELL:
 build:
-#	cd ../
-#	tar cvfz ./docker/app.tar.gz \
-#		--exclude=.git* \
-#		--exclude=.idea \
-#		--exclude=log \
-#		--exclude=ops \
-#		--exclude=venv \
-#		--exclude=data \
-#		--exclude=dist \
-#		--exclude=cache \
-#		--exclude=build \
-#		--exclude=notebook \
-#		--exclude=__pycache__ \
-#		.
-#
-#	cd -
 	docker build \
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
@@ -94,26 +78,19 @@ build:
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
 		.
 
-#	rm app.tar.gz
-
-#	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):$(MAJOR_VERSION)
-#	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):latest
+.ONESHELL:
+dev: build
+	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):dev
 
 .ONESHELL:
-pull:
-	docker pull $(IMAGE):$(IMAGE_TAG)
-	docker pull $(IMAGE):latest
-
-	source $(ENV_FILE)
-
-	docker pull $$CRAWLER_IMAGE
-	docker pull $$CORPUS_PROCESSOR_IMAGE
+live: build
+	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):live
 
 .ONESHELL:
 push:
-	docker push $(IMAGE):$(MAJOR_VERSION)
+	docker push $(IMAGE):dev
+	docker push $(IMAGE):live
 	docker push $(IMAGE):$(IMAGE_TAG)
-	#docker push $(IMAGE):latest
 
 .ONESHELL:
 check-ip:

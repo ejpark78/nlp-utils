@@ -22,7 +22,10 @@ wheel-install:
 	pip3 install dist/*.whl
 
 .ONESHELL:
-upload:
+upload: wheel
+	curl -s -k -u k8s:nlplab -X DELETE \
+		"https://nlp-utils/service/rest/v1/components/$(shell curl -s -k -u k8s:nlplab -X GET 'https://nlp-utils/service/rest/v1/search?repository=pypi-hosted&name=crawler' | jq -r '.items[].id')"
+
 	CURL_CA_BUNDLE="" \
 		twine upload \
 			--repository-url https://nlp-utils/repository/pypi-hosted/ \
