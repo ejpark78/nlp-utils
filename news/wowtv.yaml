@@ -78,7 +78,7 @@ parsing:
   - comment: 날짜
     key: date
     value:
-    - select: div.news-aside span.text-number
+    - select: p.news-aside span.text-number
     type: text
     type_convert: date
     value_type: single
