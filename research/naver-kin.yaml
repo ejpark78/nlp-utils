@@ -8,14 +8,14 @@ resources:
 
 imagePullSecrets: registry
 
-restartPolicy: OnFailure
+restartPolicy: Never
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:2
+image: registry.nlp-utils/crawler:live
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -26,8 +26,8 @@ environmentVariables:
 
 schedule:
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 jobs:
   - name: naver-kin-question-list

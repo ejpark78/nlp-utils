@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:2
+image: registry.nlp-utils/crawler:dev
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -34,11 +34,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/culture.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -63,11 +62,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/economy.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -95,11 +93,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/international.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -122,11 +119,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/it.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -146,11 +142,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/opinion.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -169,11 +164,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/politics.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -193,11 +187,10 @@ jobs:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/daum/society.yaml"
       - "--date-range"
-      - "2018-01-01~2021-01-26"
+      - "2021-01-01~2021-01-28"
       - "--sleep"
       - "15"
     subSategory:
@@ -229,11 +222,10 @@ jobs:
 #      - "python3"
 #      - "-m"
 #      - "crawler.web_news.web_news"
-#      - "--overwrite"
-#      - "--config"
+##      - "--config"
 #      - "/config/daum/sports.yaml"
 #      - "--date-range"
-#      - "2018-01-01~2021-01-26"
+#      - "2021-01-01~2021-01-28"
 #      - "--sleep"
 #      - "15"
 #    subSategory:

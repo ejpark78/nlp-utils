@@ -1,10 +1,10 @@
 resources:
   requests:
     cpu: 200m
-    memory: 256Mi
+    memory: 200Mi
   limits:
     cpu: 200m
-    memory: 256Mi
+    memory: 200Mi
 
 imagePullSecrets: registry
 
@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -26,18 +26,20 @@ environmentVariables:
 
 schedule:
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: naver-game-center
-    schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: ""
-    configMapRef: game-center
+  - name: bbc
+    schedule: "0 * * * *"
+    configMapRef: international
     args:
       - "python3"
-      - "module/naver/kbo/game_center_utils.py"
-      - "--game-info"
-      - "--trace-comments"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/bbc.yaml"
+      - "--page-range"
+      - "1~50"
+      - "--sleep"
+      - "15"

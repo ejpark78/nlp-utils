@@ -8,14 +8,14 @@ resources:
 
 imagePullSecrets: registry
 
-restartPolicy: OnFailure
+restartPolicy: Never
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:2
+image: registry.nlp-utils/crawler:live
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -26,11 +26,11 @@ environmentVariables:
 
 schedule:
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: daum-culture-2020
+  - name: daum-culture
     schedule: "0 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -57,7 +57,7 @@ jobs:
       - "문화/종교"
       - "문화/날씨"
 
-  - name: daum-economy-2020
+  - name: daum-economy
     schedule: "5 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -87,7 +87,7 @@ jobs:
       - "경제/외환"
       - "경제/주식일반"
 
-  - name: daum-international-2020
+  - name: daum-international
     schedule: "10 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -112,7 +112,7 @@ jobs:
       - "국제/해외화제"
       - "국제/국제일반"
 
-  - name: daum-it-2020
+  - name: daum-it
     schedule: "15 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -134,7 +134,7 @@ jobs:
       - "IT/게임"
       - "IT/IT일반"
 
-  - name: daum-opinion-2020
+  - name: daum-opinion
     schedule: "20 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -155,7 +155,7 @@ jobs:
       - "칼럼-만평"
       - "칼럼"
 
-  - name: daum-politics-2020
+  - name: daum-politics
     schedule: "25 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -177,7 +177,7 @@ jobs:
       - "정치/정치일반"
       - "정치/청와대"
 
-  - name: daum-society-2020
+  - name: daum-society
     schedule: "30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -211,7 +211,7 @@ jobs:
       - "사회/복지"
       - "사회/여성"
 
-#  - name: daum-sports-2020
+#  - name: daum-sports
 #    schedule: "35 * * * *"
 #    environmentVariables:
 #      - name: ELASTIC_SEARCH_INDEX

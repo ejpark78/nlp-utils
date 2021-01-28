@@ -1,0 +1,47 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+image: registry.nlp-utils/crawler:dev
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+
+jobs:
+  - name: wowtv
+    schedule: "0 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/wowtv.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"

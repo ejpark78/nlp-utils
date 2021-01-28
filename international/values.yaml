@@ -1,21 +1,21 @@
 resources:
   requests:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 200m
+    memory: 150Mi
   limits:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 200m
+    memory: 150Mi
 
 imagePullSecrets: registry
 
-restartPolicy: OnFailure
+restartPolicy: Never
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:2
+image: registry.nlp-utils/crawler:live
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -26,8 +26,8 @@ environmentVariables:
 
 schedule:
   concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 3
-  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 jobs:
   - name: apnews

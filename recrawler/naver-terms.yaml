@@ -15,7 +15,7 @@ hostAliases:
     hostnames:
       - "corpus.ncsoft.com"
 
-image: registry.nlp-utils/crawler:latest
+image: registry.nlp-utils/crawler:dev
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
