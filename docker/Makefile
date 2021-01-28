@@ -79,8 +79,31 @@ build:
 		.
 
 .ONESHELL:
-dev: build
-	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):dev
+dev:
+	cd ../
+	tar cvfz ./docker/app.tar.gz \
+		--exclude=.git* \
+		--exclude=.idea \
+		--exclude=log \
+		--exclude=ops \
+		--exclude=venv \
+		--exclude=data \
+		--exclude=dist \
+		--exclude=cache \
+		--exclude=build \
+		--exclude=notebook \
+		--exclude=__pycache__ \
+		.
+
+	cd -
+	docker build \
+		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
+		$(DOCKER_BUILD_OPT) \
+		-t $(IMAGE):dev \
+		-f dev/Dockerfile \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
+		.
 
 .ONESHELL:
 live: build
