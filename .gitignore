@@ -13,6 +13,7 @@ data
 core
 build
 dist
+config
 
 *.json.gz
 *.model
