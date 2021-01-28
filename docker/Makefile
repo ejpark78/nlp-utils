@@ -108,6 +108,16 @@ dev:
 	rm app.tar.gz
 
 .ONESHELL:
+jupyter: dev
+	docker build \
+		$(DOCKER_LABEL) \
+		$(DOCKER_BUILD_OPT) \
+		-t $(IMAGE):jupyter \
+		-f jupyter/Dockerfile \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):dev \
+		.
+
+.ONESHELL:
 live: build
 	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):live
 
@@ -115,6 +125,7 @@ live: build
 push:
 	docker push $(IMAGE):dev
 	docker push $(IMAGE):live
+	docker push $(IMAGE):jupyter
 	docker push $(IMAGE):$(IMAGE_TAG)
 
 .ONESHELL:
@@ -127,13 +138,12 @@ check-ip:
 
 .ONESHELL:
 run:
-	docker run -d \
-		--hostname crawler_dev \
-		--name crawler_dev \
+	docker run \
+		--rm \
+		--name crawler \
+		--network host \
 		-e PORT=8888 \
-		-p 7777:8888 \
-		-v $(shell realpath ../):/home/jovyan \
-		$(BASE_IMAGE):base
+		$(IMAGE):jupyter
 
 prune:
 	cat /etc/hosts \

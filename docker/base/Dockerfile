@@ -136,24 +136,6 @@ RUN echo && echo "# pip 저장소 설정" \
         urllib3 \
     && rm -rf /tmp/*
 
-# ARG DOCKER_IMAGE
-# ARG DOCKER_TAG
-# ARG BUILD_DATE
-# ARG GIT_URL
-# ARG GIT_BRANCH
-# ARG GIT_TAG
-# ARG GIT_COMMIT_ID
-# ARG GIT_COMMIT_COUNT
-#
-# ENV DOCKER_IMAGE=${DOCKER_IMAGE}
-# ENV DOCKER_TAG=${DOCKER_TAG}
-# ENV BUILD_DATE=${BUILD_DATE}
-# ENV GIT_URL=${GIT_URL}
-# ENV GIT_BRANCH=${GIT_BRANCH}
-# ENV GIT_TAG=${GIT_TAG}
-# ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
-# ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
-
 # selenium-hub : https://medium.com/@HoussemDellai/run-selenium-ui-tests-in-docker-containers-f41ae2796b8d
 # https://stackoverflow.com/questions/62011537/how-can-i-run-selenium-tests-in-a-docker-container-with-a-visible-browser
 
