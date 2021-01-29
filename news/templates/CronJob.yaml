@@ -6,8 +6,8 @@ metadata:
   name: {{ $job.name }}
   labels:
     app: {{ $job.name }}
-    release-name: {{ $.Release.Name }}
-    release-namespace: {{ $.Release.Namespace }}
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 spec:
   schedule: {{ $job.schedule }}
   concurrencyPolicy: {{ $.Values.schedule.concurrencyPolicy }}
@@ -21,13 +21,13 @@ spec:
           hostAliases:
             {{- toYaml $.Values.hostAliases | nindent 12 }}
           imagePullSecrets:
-            - name: {{ $.Values.imagePullSecrets }}
+            - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
           initContainers:
             - name: config-sync
               image: alpine/git
               envFrom:
                 - configMapRef:
-                    name: {{ $.Values.gitSyncConfigMap }}
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
               command:
                 - git
                 - clone
@@ -48,7 +48,7 @@ spec:
                 {{- toYaml $.Values.environmentVariables | nindent 16 }}
               envFrom:
                 - configMapRef:
-                    name: {{ $job.configMapRef }}
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}"
               args:
                 {{- toYaml $job.args | nindent 16 }}
               volumeMounts:

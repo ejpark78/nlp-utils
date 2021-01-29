@@ -6,7 +6,6 @@ metadata:
   name: elasticsearch-auth
 data:
   http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
-#echo -n crawler:crawler2019 | base64
 
 ---
 apiVersion: v1

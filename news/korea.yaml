@@ -6,11 +6,11 @@ restartPolicy: Never
 
 resources:
   requests:
-    cpu: 200m
-    memory: 300Mi
+    cpu: 100m
+    memory: 150Mi
   limits:
-    cpu: 200m
-    memory: 300Mi
+    cpu: 100m
+    memory: 150Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -20,7 +20,15 @@ hostAliases:
     hostnames:
       - "galadriel02.korea.ncsoft.corp"
 
-gitSyncConfigMap: config-sync
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    name: korea-news
+    authName: elasticsearch-auth
+    host: "https://corpus.ncsoft.com:9200"
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -35,114 +43,112 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: apnews
+  - name: donga
     schedule: "0 * * * *"
-    configMapRef: international
     args:
       - "python3"
       - "-m"
-      - "crawler.international_news.news"
+      - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/apnews.yaml"
+      - "/config/news/donga.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
       - "--sleep"
       - "15"
 
-  - name: reuters
+  - name: donga-en
     schedule: "10 * * * *"
-    configMapRef: international
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/reuters.yaml"
+      - "/config/news/donga-en.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
       - "--sleep"
       - "15"
 
-  - name: upi
+  - name: donga-cn
     schedule: "20 * * * *"
-    configMapRef: international
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/upi.yaml"
+      - "/config/news/donga-cn.yaml"
       - "--page-range"
-      - "1~7"
+      - "1~2000"
+      - "--page-step"
+      - "20"
       - "--sleep"
       - "15"
 
-  - name: 47news
+  - name: donga-jp
     schedule: "30 * * * *"
-    configMapRef: international
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/47news.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: ansa
-    schedule: "30 * * * *"
-    configMapRef: international
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/international/ansa.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: belga
-    schedule: "30 * * * *"
-    configMapRef: international
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/international/belga.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: afp
-    schedule: "30 * * * *"
-    configMapRef: international
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/international/afp.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: bbc
-    schedule: "0 * * * *"
-    configMapRef: international
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/international/bbc.yaml"
+      - "/config/news/donga-jp.yaml"
       - "--page-range"
-      - "1~50"
+      - "1~2000"
+      - "--page-step"
+      - "20"
       - "--sleep"
       - "15"
 
-  - name: xinhuanet
+  - name: joins
     schedule: "0 * * * *"
-    configMapRef: international
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/xinhuanet.yaml"
+      - "/config/news/joins.yaml"
+      - "--page-range"
+      - "1~100"
+      - "--sleep"
+      - "15"
+
+  - name: wowtv
+    schedule: "0 * * * *"
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/wowtv.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: chosun-biz
+    schedule: "0 * * * *"
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/chosun-biz.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: sbs-biz
+    schedule: "0 * * * *"
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/sbs-biz.yaml"
       - "--sleep"
       - "15"
