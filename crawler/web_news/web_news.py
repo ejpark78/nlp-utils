@@ -630,6 +630,7 @@ class WebNewsCrawler(WebNewsBase):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, url_info=url_info)
+        # CHECK: parsing.trace
         if trace_list is None:
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -653,6 +654,7 @@ class WebNewsCrawler(WebNewsBase):
                 base_url=base_url,
                 parsing_info=self.config['parsing']['list'],
             )
+            # CHECK: parsing.list
             if item is None or 'url' not in item:
                 continue
 
@@ -664,6 +666,7 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
+            # CHECK: jobs.article.document_id
             if doc_id is None:
                 continue
 
@@ -681,6 +684,7 @@ class WebNewsCrawler(WebNewsBase):
                 base_url=item['url'],
                 parsing_info=self.config['parsing']['article'],
             )
+            # CHECK: parsing.article
             if article is None or len(article) == 0:
                 continue
 
