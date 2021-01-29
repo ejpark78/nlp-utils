@@ -10,83 +10,56 @@ jobs:
   list:
   - category: 스포츠/야구
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1028&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1028&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/해외야구
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1015&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1015&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/게임
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1079&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1079&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/축구
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1027&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1027&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/해외축구
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=100032&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=100032&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/골프
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=5000&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=5000&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/농구&배구
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1029&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1029&pageSize=20&pageNumber={page}&date={date}
   - category: 스포츠/일반
     date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1031&pageSize=20&pageNumber={page}&date={date}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://sports.v.daum.net/v/{newsId}
-    parser: json
-    trace: content
-    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1031&pageSize=20&pageNumber={page}&date={date}
 parsing:
   version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
   parser: html5lib
-  trace: {}
-  list: {}
+  trace:
+  - parser: json
+    column: content
+  list:
+  - parser: json
+    mapping:
+      url: https://sports.v.daum.net/v/{newsId}
   article:
   - comment: html
     key: html
