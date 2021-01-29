@@ -38,11 +38,6 @@ parsing:
   trace:
   - parser: json
     column: data.list
-    mapping:
-      url: '{LinkUrl}'
-      title: '{Title}'
-      source: '{SourceName}'
-      date: '{PubTime}'
   list:
   - parser: json
     mapping:
