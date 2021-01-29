@@ -1,5 +1,5 @@
-[submodule "ops"]
-	path = ops
+[submodule "helm"]
+	path = helm
 	url = http://galadriel02.korea.ncsoft.corp/searchtf/sapphire-server/nlp-cloud/crawler.git
 
 [submodule "config"]
