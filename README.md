@@ -32,7 +32,7 @@ python3 -m crawler.web_news.web_news \
 ```python
  def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
         """개별 뉴스를 따라간다."""
-        trace_list = self.get_trace_list(html=html, url_info=url_info)
+        trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
         # CHECK: parsing.trace
         if trace_list is None:
             self.logger.log(msg={
@@ -101,5 +101,65 @@ python3 -m crawler.web_news.web_news \
         self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es)
 
         return False
+
+```
+
+## pypi upload wheel
+
+```bash
+make upload clean
+```
+
+## config push
+
+```bash
+cd config 
+
+❯ git checkout live            
+Switched to branch 'live'
+Your branch is up to date with 'origin/live'.
+
+❯ git commit -am 'add 조선비즈'
+On branch live
+Your branch is ahead of 'origin/live' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+❯ git merge master 
+Updating 463e5f5..4c7f314
+Fast-forward
+ news/chosun-biz.yaml | 121 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 345 insertions(+)
+ create mode 100644 news/chosun-biz.yaml
+
+❯ git push origin live         
+Total 0 (delta 0), reused 0 (delta 0)
+remote: 
+remote: To create a merge request for live, visit:
+remote:   http://galadriel02.korea.ncsoft.corp/crawler/config/-/merge_requests/new?merge_request%5Bsource_branch%5D=live
+remote: 
+To http://galadriel02.korea.ncsoft.corp/crawler/config.git
+   463e5f5..4c7f314  live -> live
+```
+
+## build docker image
+
+```bash
+cd docker
+
+make live dev push
+```
+
+## ops
+
+```bash
+cd ops/domestic
+
+kubectl ns domestic
+
+helm list 
+
+helm upgrade dev . -f dev.yaml
 
 ```

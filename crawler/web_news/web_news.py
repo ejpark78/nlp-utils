@@ -64,7 +64,7 @@ class WebNewsCrawler(WebNewsBase):
             return False
 
         # 기사 목록을 추출한다.
-        trace_list = self.get_trace_list(html=html, url_info=url_info)
+        trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
         if trace_list is None:
             return True
 
@@ -418,13 +418,17 @@ class WebNewsCrawler(WebNewsBase):
 
         return result
 
-    def get_trace_list(self, html: str or dict, url_info: dict) -> list or None:
+    def get_trace_list(self, html: str, parsing_info: dict = None) -> list or None:
         """trace tag 목록을 추출해서 반환한다."""
         trace_list = []
-        if 'parser' in url_info and url_info['parser'] == 'json':
-            column = url_info['trace']
+        if len(parsing_info) > 0 and 'parser' in parsing_info[0] and parsing_info[0]['parser'] == 'json':
+            if isinstance(html, str):
+                html = json.loads(html)
 
             dot = dotty(html)
+
+            column = parsing_info[0]['column']
+
             trace_list = list(dot[column]) if column in dot else []
             trace_list = self.flatten(trace_list=trace_list)
 
@@ -467,8 +471,15 @@ class WebNewsCrawler(WebNewsBase):
     def parse_tag(self, resp, url_info: dict, parsing_info: list, base_url: str):
         """trace tag 하나를 파싱해서 반환한다."""
         # json 인 경우 맵핑값 매칭
-        if 'parser' in url_info and url_info['parser'] == 'json':
-            item = self.parser.parse_json(resp=resp, url_info=url_info)
+        first_item = deepcopy(parsing_info[0]) if len(parsing_info) > 0 else {}
+        if 'mapping' in url_info:
+            if 'mapping' not in first_item:
+                first_item['mapping'] = {}
+
+            first_item['mapping'].update(url_info['mapping'])
+
+        if 'parser' in first_item and first_item['parser'] == 'json':
+            item = self.parser.parse_json(resp=resp, mapping_info=first_item['mapping'])
         else:
             if isinstance(resp, str) or isinstance(resp, bytes):
                 resp = self.parser.parse_html(
@@ -629,7 +640,7 @@ class WebNewsCrawler(WebNewsBase):
     def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
-        trace_list = self.get_trace_list(html=html, url_info=url_info)
+        trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
         # CHECK: parsing.trace
         if trace_list is None:
             self.logger.log(msg={

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import re
 from datetime import datetime
 from urllib.parse import urljoin, urlparse, parse_qs, ParseResult
@@ -515,37 +515,30 @@ class HtmlParser(object):
 
         return result
 
-    @staticmethod
-    def parse_json(resp: dict, url_info: dict) -> dict:
+    def parse_json(self, resp: dict, mapping_info: dict) -> dict:
         """json 본문을 파싱한다."""
-        item = resp
-
-        mapping_info = {}
-        if 'mapping' in url_info:
-            mapping_info = url_info['mapping']
+        result = {
+            'json': json.dumps(resp, ensure_ascii=False)
+        }
 
         for k in mapping_info:
-            if k[0] == '_':
-                continue
-
-            v = mapping_info[k]
-            if v == '' and k in item:
-                del item[k]
-                continue
-
-            if v == '/' and k in item:
-                item.update(item[k])
-                del item[k]
-                continue
-
-        for k in mapping_info:
-            if k[0] == '_':
-                continue
-
             v = mapping_info[k]
             if v.find('{') < 0:
                 continue
 
-            item[k] = v.format(**resp)
+            result[k] = v.format(**resp)
 
-        return item
+            if k != 'date' or isinstance(result[k], datetime):
+                continue
+
+            try:
+                result[k] = parse_date(result[k])
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'date 변환 에러',
+                    'date': result[k],
+                    'exception': str(e),
+                })
+
+        return result

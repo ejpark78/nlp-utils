@@ -241,18 +241,18 @@ class WebNewsBase(object):
             sleep(sleep_time)
             return None
 
-        if 'parser' in url_info and url_info['parser'] == 'json':
-            try:
-                return resp.json()
-            except Exception as e:
-                self.logger.error(msg={
-                    **log_msg,
-                    'level': 'ERROR',
-                    'message': 'json 파싱 에러',
-                    'e': str(e),
-                    'resp': str(resp.content),
-                })
-                return None
+        # if 'parser' in url_info and url_info['parser'] == 'json':
+        #     try:
+        #         return resp.json()
+        #     except Exception as e:
+        #         self.logger.error(msg={
+        #             **log_msg,
+        #             'level': 'ERROR',
+        #             'message': 'json 파싱 에러',
+        #             'e': str(e),
+        #             'resp': str(resp.content),
+        #         })
+        #         return None
 
         # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
         encoding = None
