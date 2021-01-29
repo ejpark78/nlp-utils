@@ -21,6 +21,15 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: git-sync
+data:
+  GIT_SYNC_REPO: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+  GIT_SYNC_BRANCH: "live"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: bbs
 data:
   ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"

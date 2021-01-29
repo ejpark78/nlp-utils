@@ -16,6 +16,11 @@ hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+gitSyncConfigMap: config-sync
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -127,5 +132,17 @@ jobs:
       - "/config/international/bbc.yaml"
       - "--page-range"
       - "1~50"
+      - "--sleep"
+      - "15"
+
+  - name: xinhuanet
+    schedule: "0 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/xinhuanet.yaml"
       - "--sleep"
       - "15"

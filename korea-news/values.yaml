@@ -7,15 +7,20 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 100m
-    memory: 100Mi
+    memory: 150Mi
   limits:
     cpu: 100m
-    memory: 100Mi
+    memory: 150Mi
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+gitSyncConfigMap: config-sync
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
@@ -32,7 +37,7 @@ schedule:
 jobs:
   - name: donga
     schedule: "0 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -48,7 +53,7 @@ jobs:
 
   - name: donga-en
     schedule: "10 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -64,7 +69,7 @@ jobs:
 
   - name: donga-cn
     schedule: "20 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -80,7 +85,7 @@ jobs:
 
   - name: donga-jp
     schedule: "30 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -96,7 +101,7 @@ jobs:
 
   - name: joins
     schedule: "0 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -110,7 +115,7 @@ jobs:
 
   - name: wowtv
     schedule: "0 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -126,7 +131,7 @@ jobs:
 
   - name: chosun-biz
     schedule: "0 * * * *"
-    configMapRef: domestic
+    configMapRef: news-ko
     args:
       - "python3"
       - "-m"
@@ -136,3 +141,14 @@ jobs:
       - "--sleep"
       - "15"
 
+  - name: sbs-biz
+    schedule: "0 * * * *"
+    configMapRef: news-ko
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/sbs-biz.yaml"
+      - "--sleep"
+      - "15"

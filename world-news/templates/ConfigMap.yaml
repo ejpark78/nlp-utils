@@ -1,0 +1,23 @@
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-sync
+  labels:
+    release-name: {{ $.Release.Name }}
+    release-namespace: {{ $.Release.Namespace }}
+data:
+  GIT_SYNC_REPO: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+  GIT_SYNC_BRANCH: "live"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: international
+  labels:
+    release-name: {{ $.Release.Name }}
+    release-namespace: {{ $.Release.Namespace }}
+data:
+  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"

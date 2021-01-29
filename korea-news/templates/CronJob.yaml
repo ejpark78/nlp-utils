@@ -6,6 +6,8 @@ metadata:
   name: {{ $job.name }}
   labels:
     app: {{ $job.name }}
+    release-name: {{ $.Release.Name }}
+    release-namespace: {{ $.Release.Namespace }}
 spec:
   schedule: {{ $job.schedule }}
   concurrencyPolicy: {{ $.Values.schedule.concurrencyPolicy }}
@@ -20,17 +22,39 @@ spec:
             {{- toYaml $.Values.hostAliases | nindent 12 }}
           imagePullSecrets:
             - name: {{ $.Values.imagePullSecrets }}
+          initContainers:
+            - name: config-sync
+              image: alpine/git
+              envFrom:
+                - configMapRef:
+                    name: {{ $.Values.gitSyncConfigMap }}
+              command:
+                - git
+                - clone
+                - -b
+                - $(GIT_SYNC_BRANCH)
+                - $(GIT_SYNC_REPO)
+                - /config
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
           containers:
-            - name: default
+            - name: app
               resources:
                 {{- toYaml $.Values.resources | nindent 16 }}
               image: {{ $.Values.image }}
               imagePullPolicy: Always
+              env:
+                {{- toYaml $.Values.environmentVariables | nindent 16 }}
               envFrom:
                 - configMapRef:
                     name: {{ $job.configMapRef }}
-              env:
-                {{- toYaml $.Values.environmentVariables | nindent 16 }}
               args:
                 {{- toYaml $job.args | nindent 16 }}
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
+          volumes:
+            - name: config
+              emptyDir: {}
 {{- end }}
