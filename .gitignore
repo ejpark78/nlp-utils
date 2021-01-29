@@ -9,9 +9,6 @@
 
 __pycache__
 
-helm
-config
-
 data
 core
 build
