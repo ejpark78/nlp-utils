@@ -73,6 +73,16 @@ jobs:
       type: path
 ```
 
+* value
+
+```yaml
+jobs:
+- article:
+    document_id:
+      frame: '{document_id}'
+      type: value
+```
+
 ## 신문 기사 섹션(분류) 목록: jobs.list
 
 * 크롤러 실행 옵션
@@ -106,13 +116,8 @@ jobs:
 - list:
   - category: 야구/삼성
     url_frame: http://osen.mt.co.kr/api/probaseball/team_news/lions?offset={page}
-    parser: json
-    trace: rows
     headers:
       Content-Type: application/json
-    mapping:
-      title: '{TITLE}'
-      url: http://osen.mt.co.kr/article/{GISANO}
 ```
 
 * POST 조회 -> html 형식 응답
@@ -187,6 +192,10 @@ parsing:
     - name: script
     - name: style
     - name: comment
+    - name: div
+      attribue:
+        role: date
+    - select: div[role=date]
     type: html
   - comment: 제목
     key: title
