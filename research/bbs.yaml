@@ -1,3 +1,9 @@
+image: registry.nlp-utils/crawler:live
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
 resources:
   requests:
     cpu: 200m
@@ -6,16 +12,10 @@ resources:
     cpu: 200m
     memory: 128Mi
 
-imagePullSecrets: registry
-
-restartPolicy: Never
-
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
-
-image: registry.nlp-utils/crawler:live
 
 environmentVariables:
   - name: ELASTIC_SEARCH_AUTH
