@@ -84,7 +84,7 @@ class HtmlParser(object):
 
         if parser_type == 'lxml':
             soup = BeautifulSoup(html, 'lxml')
-        elif parser_type == 'html5lib':
+        else:
             soup = BeautifulSoup(html, 'html5lib')
 
         return soup
