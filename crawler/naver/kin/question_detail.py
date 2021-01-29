@@ -128,7 +128,7 @@ class QuestionDetail(NaverKinBase):
     def save_doc(self, resp: Response, elastic_utils: ElasticSearchUtils, index: str, doc_id: str, list_id: str,
                  base_url: str) -> None:
         """크롤링 문서를 저장한다."""
-        soup, encoding = self.parser.get_encoding_type(resp.text)
+        soup, encoding = self.parser.get_encoding_type(html_body=resp.text)
 
         html = resp.text
         if encoding is not None:

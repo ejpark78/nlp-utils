@@ -259,7 +259,7 @@ class WebNewsBase(object):
 
         result = resp.text.strip()
         if encoding is None:
-            soup, encoding = self.parser.get_encoding_type(result)
+            soup, encoding = self.parser.get_encoding_type(html_body=result)
 
         if encoding is not None:
             result = resp.content.decode(encoding, 'ignore').strip()

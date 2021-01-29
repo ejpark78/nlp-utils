@@ -8,6 +8,7 @@ import json
 import re
 from datetime import datetime
 from urllib.parse import urljoin, urlparse, parse_qs, ParseResult
+from dotty_dict import dotty
 
 import bs4
 import pytz
@@ -417,26 +418,25 @@ class HtmlParser(object):
         """ 메타 정보에서 인코딩 정보 반환한다."""
         soup = BeautifulSoup(html_body, 'html5lib')
 
-        if soup.meta is None:
-            return soup, None
+        for x in soup.select('meta[charset]'):
+            if x.has_attr('charset') is False:
+                continue
 
-        encoding = soup.meta.get('charset', None)
-        if encoding is None:
-            encoding = soup.meta.get('content-type', None)
+            return soup, x['charset']
 
-            if encoding is None:
-                content = soup.meta.get('content', None)
+        for x in soup.select('meta[content-type]'):
+            if x.has_attr('content-type') is False:
+                continue
 
-                if content is None:
-                    content = html_body
+            return soup, x['content-type']
 
-                match = re.search('charset=(.*)', content)
-                if match:
-                    encoding = match.group(1)
-                else:
-                    return soup, None
+        for x in soup.select('meta[content]'):
+            if x.has_attr('content') is False:
+                continue
 
-        return soup, encoding
+            return soup, x['content']
+
+        return soup, None
 
     @staticmethod
     def get_tag_text(tag: BeautifulSoup) -> str:
@@ -521,8 +521,15 @@ class HtmlParser(object):
             'json': json.dumps(resp, ensure_ascii=False)
         }
 
+        dot = dotty(resp)
+
         for k in mapping_info:
             v = mapping_info[k]
+
+            if dot.get(v) is not None and isinstance(dot[v], str):
+                result[k] = dot[v]
+                continue
+
             if v.find('{') < 0:
                 continue
 

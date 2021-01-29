@@ -261,6 +261,16 @@ class WebNewsCrawler(WebNewsBase):
         doc = self.parser.merge_values(item=doc)
         article = self.parser.merge_values(item=article)
 
+        # json merge
+        if 'json' in doc and 'json' in article:
+            m_json = {
+                **json.loads(doc['json']),
+                **json.loads(article['json'])
+            }
+
+            del doc['json']
+            article['json'] = json.dumps(m_json)
+
         error = False
 
         # 파싱 에러 처리
@@ -479,6 +489,9 @@ class WebNewsCrawler(WebNewsBase):
             first_item['mapping'].update(url_info['mapping'])
 
         if 'parser' in first_item and first_item['parser'] == 'json':
+            if isinstance(resp, str):
+                resp = json.loads(resp)
+
             item = self.parser.parse_json(resp=resp, mapping_info=first_item['mapping'])
         else:
             if isinstance(resp, str) or isinstance(resp, bytes):
