@@ -428,13 +428,13 @@ class HtmlParser(object):
             if x.has_attr('content-type') is False:
                 continue
 
-            return soup, x['content-type']
+            return soup, re.sub('^.+charset=', '', x['content-type'])
 
-        for x in soup.select('meta[content]'):
-            if x.has_attr('content') is False:
-                continue
-
-            return soup, x['content']
+        # for x in soup.select('meta[content]'):
+        #     if x.has_attr('content') is False:
+        #         continue
+        #
+        #     return soup, x['content']
 
         return soup, None
 
