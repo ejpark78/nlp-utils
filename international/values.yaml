@@ -7,10 +7,10 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 200m
-    memory: 200Mi
+    memory: 300Mi
   limits:
     cpu: 200m
-    memory: 200Mi
+    memory: 300Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -113,5 +113,19 @@ jobs:
       - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/afp.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: bbc
+    schedule: "0 * * * *"
+    configMapRef: international
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/international/bbc.yaml"
+      - "--page-range"
+      - "1~50"
       - "--sleep"
       - "15"

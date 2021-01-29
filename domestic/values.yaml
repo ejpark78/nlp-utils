@@ -107,3 +107,32 @@ jobs:
       - "1~100"
       - "--sleep"
       - "15"
+
+  - name: wowtv
+    schedule: "0 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/wowtv.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+      - "--sleep"
+      - "15"
+
+  - name: chosun-biz
+    schedule: "0 * * * *"
+    configMapRef: domestic
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.web_news.web_news"
+      - "--config"
+      - "/config/news/chosun-biz.yaml"
+      - "--sleep"
+      - "15"
+

@@ -30,7 +30,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: wowtv
+  - name: sbs-biz
     schedule: "0 * * * *"
     configMapRef: domestic
     args:
@@ -38,10 +38,6 @@ jobs:
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/wowtv.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
+      - "/config/news/sbs-biz.yaml"
       - "--sleep"
       - "15"

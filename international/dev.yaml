@@ -30,7 +30,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: bbc
+  - name: xinhuanet
     schedule: "0 * * * *"
     configMapRef: international
     args:
@@ -38,8 +38,6 @@ jobs:
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/international/bbc.yaml"
-      - "--page-range"
-      - "1~50"
+      - "/config/international/xinhuanet.yaml"
       - "--sleep"
       - "15"
