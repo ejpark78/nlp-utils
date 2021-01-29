@@ -14,29 +14,14 @@ jobs:
     url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=v-strane&type=all&step=1&tuplesLimit=20&newsOffset={page}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://tass.ru/{slug}/{id}
-      date: '{dateLabel}'
-    parser: json
-    trace: data.news
   - category: politika
     url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=politika&type=all&step=1&tuplesLimit=20&newsOffset={page}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://tass.ru/{slug}/{id}
-      date: '{dateLabel}'
-    parser: json
-    trace: data.news
   - category: mezhdunarodnaya-panorama
     url_frame: https://tass.ru/rubric/api/v1/rubric-articles?slug=mezhdunarodnaya-panorama&type=all&step=1&tuplesLimit=20&newsOffset={page}
     headers:
       Content-Type: application/json
-    mapping:
-      url: https://tass.ru/{slug}/{id}
-      date: '{dateLabel}'
-    parser: json
-    trace: data.news
 parsing:
   version: v2021-01-26
   descriptions:
@@ -44,8 +29,14 @@ parsing:
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
     article: 기사 본문에서 추출해야하는 tag 정보
   parser: html5lib
-  trace: []
-  list: []
+  trace:
+  - parser: json
+    column: data.news
+  list:
+  - parser: json
+    mapping:
+      url: https://tass.ru/{slug}/{id}
+      date: '{dateLabel}'
   article:
   - comment: html
     key: html

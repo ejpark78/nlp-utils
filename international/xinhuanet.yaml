@@ -1,0 +1,72 @@
+---
+jobs:
+- index: raw-xinhuanet-{year}
+  article:
+    document_id:
+      replace:
+      - from: .htm
+        to: ''
+      - from: ^/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  list:
+  - category: politics/rdzt
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11227474&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: politics/szlb
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=113351&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: politics/ytgz
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11227473&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: world
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=113667&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: money
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11228127&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: food
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11228041&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: tech
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11228028&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+  - category: tech/info
+    url_frame: http://da.wa.news.cn/nodeart/page?nid=11229501&pgnum={page}&cnt=10&attr=&tp=1&orderby=1
+parsing:
+  version: v2021-01-26
+  descriptions:
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    article: 기사 본문에서 추출해야하는 tag 정보
+  parser: lxml
+  trace:
+  - parser: json
+    column: data.list
+    mapping:
+      url: '{LinkUrl}'
+      title: '{Title}'
+      source: '{SourceName}'
+      date: '{PubTime}'
+  list:
+  - parser: json
+    mapping:
+      url: '{LinkUrl}'
+      title: '{Title}'
+      source: '{SourceName}'
+      date: '{PubTime}'
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.head-line span.title
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.main div#detail
+    type: text
