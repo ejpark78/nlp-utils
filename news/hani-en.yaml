@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-hani-{year}
+- index: raw-hani-en-{year}
   article:
     document_id:
       replace:
