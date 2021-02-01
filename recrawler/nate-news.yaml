@@ -31,21 +31,17 @@ configMap:
     host: "https://corpus.ncsoft.com:9200"
   envFrom: nate
 
-schedule:
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
-
 args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--date-range"
+  - "2020-12-01~2020-12-31"
   - "--sleep"
   - "10"
 
 jobs:
   - name: economy
-    schedule: "0 * * * *"
     index: $(INDEX_ECONOMY)
     args:
       - "--config"
@@ -60,7 +56,6 @@ jobs:
       - "경제/경제 일반"
 
   - name: entertainment
-    schedule: "10 * * * *"
     index: $(INDEX_ENTERTAINMENT)
     args:
       - "--config"
@@ -72,7 +67,6 @@ jobs:
       - "연예/해외연예"
 
   - name: international
-    schedule: "20 * * * *"
     index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
@@ -86,7 +80,6 @@ jobs:
       - "세계/일반"
 
   - name: it
-    schedule: "30 * * * *"
     index: $(INDEX_IT)
     args:
       - "--config"
@@ -100,8 +93,8 @@ jobs:
       - "IT/IT/과학 일반"
 
   - name: politics
-    schedule: "40 * * * *"
     index: $(INDEX_POLITICS)
+    configMapRef: nate
     args:
       - "--config"
       - "/config/nate/politics.yaml"
@@ -114,7 +107,6 @@ jobs:
       - "정치/정치 일반"
 
   - name: society
-    schedule: "50 * * * *"
     index: $(INDEX_SOCIETY)
     args:
       - "--config"
@@ -132,7 +124,6 @@ jobs:
       - "사회/일반"
 
   - name: sports
-    schedule: "55 * * * *"
     index: $(INDEX_SPORTS)
     args:
       - "--config"

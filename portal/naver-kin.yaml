@@ -29,73 +29,55 @@ configMap:
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
+  envFrom: naver
 
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
+args:
+  - "python3"
+  - "-m"
+  - "crawler.naver.kin.kin"
+  - "--sleep"
+  - "10"
+
 jobs:
   - name: question-list
     schedule: "0 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: ""
-    configMapRef: naver
+    index: ""
     args:
-      - "python3"
-      - "-m"
-      - "crawler.naver.kin.kin"
+      - "--question-list"
       - "--config"
       - "/config/naver/kin.yaml"
-      - "--question-list"
-      - "--sleep"
-      - "20"
 
   - name: answer-list
     schedule: "20 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: ""
-    configMapRef: naver
     args:
-      - "python3"
-      - "-m"
-      - "crawler.naver.kin.kin"
+      - "--answer-list"
       - "--config"
       - "/config/naver/kin.yaml"
-      - "--answer-list"
-      - "--sleep"
-      - "20"
 
   - name: detail-question
     schedule: "40 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: ""
-    configMapRef: naver
     args:
-      - "python3"
-      - "-m"
-      - "crawler.naver.kin.kin"
+      - "--question"
       - "--config"
       - "/config/naver/kin.yaml"
-      - "--question"
-      - "--sleep"
-      - "20"
 
   - name: detail-answer
     schedule: "50 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: ""
-    configMapRef: naver
     args:
-      - "python3"
-      - "-m"
-      - "crawler.naver.kin.kin"
+      - "--answer"
       - "--config"
       - "/config/naver/kin.yaml"
-      - "--answer"
-      - "--sleep"
-      - "20"

@@ -27,23 +27,25 @@ configMap:
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
     branch: "live"
   elasticsearch:
-    name: korea-news
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
+  envFrom: korea-news
 
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "10"
+
 jobs:
   - name: ansa
     schedule: "30 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/ansa.yaml"
-      - "--sleep"
-      - "15"

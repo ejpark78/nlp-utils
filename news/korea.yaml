@@ -27,82 +27,66 @@ configMap:
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
     branch: "live"
   elasticsearch:
-    name: korea-news
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
+  envFrom: korea-news
 
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "10"
+
 jobs:
   - name: donga
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/donga.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
-      - "--sleep"
-      - "15"
 
   - name: donga-en
     schedule: "10 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/donga-en.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
-      - "--sleep"
-      - "15"
 
   - name: donga-cn
     schedule: "20 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/donga-cn.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
-      - "--sleep"
-      - "15"
 
   - name: donga-jp
     schedule: "30 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/donga-jp.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
-      - "--sleep"
-      - "15"
 
   - name: joins
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/joins.yaml"
       - "--page-range"
@@ -113,36 +97,21 @@ jobs:
   - name: wowtv
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/wowtv.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
-      - "--sleep"
-      - "15"
 
   - name: chosun-biz
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/chosun-biz.yaml"
-      - "--sleep"
-      - "15"
 
   - name: sbs-biz
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/news/sbs-biz.yaml"
-      - "--sleep"
-      - "15"

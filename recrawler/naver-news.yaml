@@ -8,10 +8,10 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 100m
-    memory: 100Mi
+    memory: 200Mi
   limits:
     cpu: 100m
-    memory: 100Mi
+    memory: 200Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -31,21 +31,17 @@ configMap:
     host: "https://corpus.ncsoft.com:9200"
   envFrom: naver
 
-schedule:
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
-
 args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--date-range"
+  - "2020-12-01~2020-12-31"
   - "--sleep"
   - "10"
 
 jobs:
   - name: economy
-    schedule: "0 * * * *"
     index: $(INDEX_ECONOMY)
     args:
       - "--config"
@@ -61,7 +57,6 @@ jobs:
       - "경제/중기/벤처"
 
   - name: international
-    schedule: "5 * * * *"
     index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
@@ -74,7 +69,6 @@ jobs:
       - "세계/일반"
 
   - name: it
-    schedule: "10 * * * *"
     index: $(INDEX_IT)
     args:
       - "--config"
@@ -90,7 +84,6 @@ jobs:
       - "IT/과학 일반"
 
   - name: living
-    schedule: "15 * * * *"
     index: $(INDEX_LIVING)
     args:
       - "--config"
@@ -109,7 +102,6 @@ jobs:
       - "생활/일반"
 
   - name: opinion
-    schedule: "20 * * * *"
     index: $(INDEX_OPINION)
     args:
       - "--config"
@@ -118,7 +110,6 @@ jobs:
       - "오피니언"
 
   - name: politics
-    schedule: "25 * * * *"
     index: $(INDEX_POLITICS)
     args:
       - "--config"
@@ -132,7 +123,6 @@ jobs:
       - "정치/정치일반"
 
   - name: society
-    schedule: "30 * * * *"
     index: $(INDEX_SOCIETY)
     args:
       - "--config"
@@ -150,7 +140,6 @@ jobs:
       - "사회/사회일반"
 
   - name: sports
-    schedule: "35 * * * *"
     index: $(INDEX_SPORTS)
     args:
       - "--config"
@@ -168,19 +157,9 @@ jobs:
       - "스포츠/스포츠-일반"
 
   - name: tv
-    schedule: "40 * * * *"
     index: $(INDEX_TV)
     args:
       - "--config"
       - "/config/naver/tv.yaml"
     subSategory:
       - "TV"
-
-  - name: weather
-    schedule: "45 * * * *"
-    index: $(INDEX_WEATHER)
-    args:
-      - "--config"
-      - "/config/naver/weather.yaml"
-    subSategory:
-      - "날씨"

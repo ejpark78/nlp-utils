@@ -15,7 +15,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-bbs
+  name: "{{ $.Release.Name }}-bbs"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
   ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_INVEN: "crawler-bbs-inven"
@@ -30,7 +33,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-daum
+  name: "{{ $.Release.Name }}-daum"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
   ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_CULTURE: "crawler-daum-culture"
@@ -46,7 +52,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-nate
+  name: "{{ $.Release.Name }}-nate"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
   ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-nate-entertainment"
@@ -62,7 +71,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-naver
+  name: "{{ $.Release.Name }}-naver"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
   ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
@@ -80,18 +92,10 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-game-center
-data:
-  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
-  ELASTIC_SEARCH_INDEX_COMMENTS: "crawler-naver-kbo_game_center_comments"
-  ELASTIC_SEARCH_INDEX_GAME_INFO: "crawler-naver-kbo_game_center_game_info"
-  ELASTIC_SEARCH_INDEX_RELAY_TEXT: "crawler-naver-kbo_game_center_relay_text"
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ $.Release.Name }}-naver-reply
+  name: "{{ $.Release.Name }}-naver-reply"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
   ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
@@ -104,3 +108,17 @@ data:
   INDEX_SPORTS: "crawler-naver-sports-reply"
   INDEX_TV: "crawler-naver-tv-reply"
   INDEX_LIVING: "crawler-naver-living-reply"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $.Release.Name }}-game-center"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
+data:
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
+  ELASTIC_SEARCH_INDEX_COMMENTS: "crawler-naver-kbo_game_center_comments"
+  ELASTIC_SEARCH_INDEX_GAME_INFO: "crawler-naver-kbo_game_center_game_info"
+  ELASTIC_SEARCH_INDEX_RELAY_TEXT: "crawler-naver-kbo_game_center_relay_text"

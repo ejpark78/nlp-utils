@@ -31,21 +31,17 @@ configMap:
     host: "https://corpus.ncsoft.com:9200"
   envFrom: daum
 
-schedule:
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
-
 args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--date-range"
+  - "2020-12-01~2020-12-31"
   - "--sleep"
   - "10"
 
 jobs:
   - name: culture
-    schedule: "0 * * * *"
     index: $(INDEX_CULTURE)
     args:
       - "--config"
@@ -64,7 +60,6 @@ jobs:
       - "문화/날씨"
 
   - name: economy
-    schedule: "5 * * * *"
     index: $(INDEX_ECONOMY)
     args:
       - "--config"
@@ -86,7 +81,6 @@ jobs:
       - "경제/주식일반"
 
   - name: international
-    schedule: "10 * * * *"
     index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
@@ -103,7 +97,6 @@ jobs:
       - "국제/국제일반"
 
   - name: it
-    schedule: "15 * * * *"
     index: $(INDEX_IT)
     args:
       - "--config"
@@ -117,7 +110,6 @@ jobs:
       - "IT/IT일반"
 
   - name: opinion
-    schedule: "20 * * * *"
     index: $(INDEX_OPINION)
     args:
       - "--config"
@@ -130,7 +122,6 @@ jobs:
       - "칼럼"
 
   - name: politics
-    schedule: "25 * * * *"
     index: $(INDEX_POLITICS)
     args:
       - "--config"
@@ -144,7 +135,6 @@ jobs:
       - "정치/청와대"
 
   - name: society
-    schedule: "30 * * * *"
     index: $(INDEX_SOCIETY)
     args:
       - "--config"

@@ -66,8 +66,9 @@ spec:
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
               args:
+                {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}
               volumeMounts:
                 - name: config

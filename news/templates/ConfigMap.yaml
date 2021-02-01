@@ -15,7 +15,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}"
+  name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
   labels:
     release: {{ $.Release.Name }}
     namespace: {{ $.Release.Namespace }}

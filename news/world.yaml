@@ -27,93 +27,65 @@ configMap:
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
     branch: "live"
   elasticsearch:
-    name: korea-news
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
+  envFrom: news
 
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "10"
+
 jobs:
   - name: reuters
     schedule: "10 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/reuters.yaml"
-      - "--sleep"
-      - "15"
 
   - name: upi
     schedule: "20 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/upi.yaml"
       - "--page-range"
       - "1~7"
-      - "--sleep"
-      - "15"
 
   - name: 47news
     schedule: "30 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/47news.yaml"
-      - "--sleep"
-      - "15"
 
   - name: belga
     schedule: "30 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/belga.yaml"
-      - "--sleep"
-      - "15"
 
   - name: afp
     schedule: "30 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/afp.yaml"
-      - "--sleep"
-      - "15"
 
   - name: bbc
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/bbc.yaml"
       - "--page-range"
       - "1~50"
-      - "--sleep"
-      - "15"
 
   - name: xinhuanet
     schedule: "0 * * * *"
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/xinhuanet.yaml"
-      - "--sleep"
-      - "15"

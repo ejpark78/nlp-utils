@@ -54,11 +54,13 @@ spec:
                     secretKeyRef:
                       name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
                       key: http_auth
-                {{- toYaml $job.environmentVariables | nindent 16 }}
+                - name: ELASTIC_SEARCH_INDEX
+                  value: {{ $job.index }}
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $job.configMapRef }}"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
               args:
+                {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}
                 - --sub-category
                 - {{ $subCategory }}
@@ -123,11 +125,13 @@ spec:
                     secretKeyRef:
                       name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
                       key: http_auth
-                {{- toYaml $job.environmentVariables | nindent 16 }}
+                - name: ELASTIC_SEARCH_INDEX
+                  value: {{ $job.index }}
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $job.configMapRef }}"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
               args:
+                {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}
               volumeMounts:
                 - name: config

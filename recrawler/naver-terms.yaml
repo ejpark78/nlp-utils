@@ -1,4 +1,5 @@
-image: registry.nlp-utils/crawler:dev
+image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -7,25 +8,35 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 200m
-    memory: 250Mi
+    memory: 300Mi
   limits:
     cpu: 200m
-    memory: 250Mi
+    memory: 300Mi
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
 
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: naver-terms-list
+  - name: terms-list
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_ECONOMY)
@@ -76,7 +87,7 @@ jobs:
       - "네이버캐스트/건축기행,네이버캐스트/게임의 세계,네이버캐스트/공연스테이지,네이버캐스트/교양 경제학,네이버캐스트/교양 인문학,네이버캐스트/매일의 디자인,네이버캐스트/문학 광장,네이버캐스트/문화유산,네이버캐스트/미술의 세계,네이버캐스트/상식백과,네이버캐스트/스포츠월드,네이버캐스트/아름다운 한국,네이버캐스트/오늘의 과학,네이버캐스트/음식과 요리,네이버캐스트/음악의 선율,네이버캐스트/인물과 역사,네이버캐스트/일상의 심리학,네이버캐스트/지구촌 산책,네이버캐스트/철학의 숲,네이버캐스트/취미의 발견,네이버캐스트/테크놀로지월드,네이버캐스트/화제의 인물,네이버캐스트/파워라이터 ON,네이버캐스트/지서재, 지금의 나를 만든 서재,네이버캐스트/헬로! 아티스트"
       - "두산백과/경제·경영,두산백과/스포츠,두산백과/생활,두산백과/교통·통신,두산백과/순수과학,두산백과/기술과학,두산백과/동물,두산백과/식물,두산백과/의학,두산백과/IT,두산백과/문화예술,두산백과/자연지리,두산백과/역사,두산백과/문화유적,두산백과/세계지명,두산백과/인물,두산백과/기관·단체,두산백과/철학,두산백과/종교,두산백과/사회과학,두산백과/여행,두산백과/지역"
 
-  - name: naver-terms-detail
+  - name: terms-detail
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: $(INDEX_ECONOMY)

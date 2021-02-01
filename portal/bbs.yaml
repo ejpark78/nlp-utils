@@ -29,92 +29,56 @@ configMap:
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
+  envFrom: bbs
 
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 1
 
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--overwrite"
+  - "--sleep"
+  - "20"
+
 jobs:
   - name: mlbpark-kbo
     schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_MLBPARK_KBO)
-    configMapRef: bbs
+    index: $(INDEX_MLBPARK_KBO)
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/bbs/mlbpark-kbo.yaml"
-      - "--sleep"
-      - "20"
 
   - name: mlbpark-mlb
     schedule: "10,40 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_MLBPARK_MLB)
-    configMapRef: bbs
+    index: $(INDEX_MLBPARK_MLB)
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/bbs/mlbpark-mlb.yaml"
-      - "--sleep"
-      - "20"
 
   - name: mlbpark-bullpen
     schedule: "20,50 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_MLBPARK_BULLPEN)
-    configMapRef: bbs
+    index: $(INDEX_MLBPARK_BULLPEN)
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/bbs/mlbpark-bullpen.yaml"
-      - "--sleep"
-      - "20"
 
   - name: ruliweb
     schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_RULIWEB)
-    configMapRef: bbs
+    index: $(INDEX_RULIWEB)
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/bbs/ruliweb.yaml"
-      - "--sleep"
-      - "20"
 
   - name: inven-lineagem
     schedule: "0,30 * * * *"
-    environmentVariables:
-      - name: ELASTIC_SEARCH_INDEX
-        value: $(INDEX_INVEN)
-    configMapRef: bbs
+    index: $(INDEX_INVEN)
     args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--overwrite"
       - "--config"
       - "/config/bbs/inven-lineagem.yaml"
-      - "--sleep"
-      - "20"
       - "--page-range"
       - "1~20"
       - "--page-step"
@@ -122,19 +86,10 @@ jobs:
 
 #  - name: lineagem
 #    schedule: "0,30 * * * *"
-#    environmentVariables:
-#      - name: ELASTIC_SEARCH_INDEX
-#        value: $(INDEX_LINEAGEM)
-#    configMapRef: bbs
+#    index: $(INDEX_LINEAGEM)
 #    args:
-#      - "python3"
-#      - "-m"
-#      - "crawler.web_news.web_news"
-#      - "--overwrite"
 #      - "--config"
 #      - "/config/bbs/lineagem.yaml"
-#      - "--sleep"
-#      - "20"
 #      - "--page-range"
 #      - "1~100"
 #      - "--page-step"
@@ -142,19 +97,10 @@ jobs:
 #
 #  - name: lineage2m
 #    schedule: "0,30 * * * *"
-#    environmentVariables:
-#      - name: ELASTIC_SEARCH_INDEX
-#        value: $(INDEX_LINEAGE2M)
-#    configMapRef: bbs
+#    index: $(INDEX_LINEAGE2M)
 #    args:
-#      - "python3"
-#      - "-m"
-#      - "crawler.web_news.web_news"
-#      - "--overwrite"
 #      - "--config"
 #      - "/config/bbs/lineage2m.yaml"
-#      - "--sleep"
-#      - "20"
 #      - "--page-range"
 #      - "1~100"
 #      - "--page-step"
