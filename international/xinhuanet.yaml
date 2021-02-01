@@ -41,10 +41,10 @@ parsing:
   list:
   - parser: json
     mapping:
-      url: '{LinkUrl}'
-      title: '{Title}'
-      source: '{SourceName}'
-      date: '{PubTime}'
+      url: LinkUrl
+      title: Title
+      source: SourceName
+      date: PubTime
   article:
   - comment: html
     key: html

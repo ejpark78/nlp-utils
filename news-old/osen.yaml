@@ -12,7 +12,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -21,7 +21,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -30,7 +30,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -39,7 +39,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -48,7 +48,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -57,7 +57,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -66,7 +66,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -75,7 +75,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -84,7 +84,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows
@@ -93,7 +93,7 @@ jobs:
     headers:
       Content-Type: application/json
     mapping:
-      title: '{TITLE}'
+      title: TITLE
       url: http://osen.mt.co.kr/article/{GISANO}
     parser: json
     trace: rows

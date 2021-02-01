@@ -36,7 +36,7 @@ parsing:
   - parser: json
     mapping:
       url: https://tass.ru/{slug}/{id}
-      date: '{dateLabel}'
+      date: dateLabel
   article:
   - comment: html
     key: html

@@ -96,7 +96,7 @@ parsing:
     type: text
     type_convert: date
     value_type: single
-  - comment: 한국어 원문
+  - comment: 한국어 기사
     key: source_ko
     value:
     - select: div.etc a.ko
