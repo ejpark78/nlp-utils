@@ -1,0 +1,97 @@
+---
+jobs:
+- index: raw-hani-cn-{year}
+  article:
+    document_id:
+      replace:
+      - from: /arti/
+        to: '/'
+      - from: .html
+        to: ''
+      - from: ^/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  list:
+  - category: 全部
+    url_frame: http://china.hani.co.kr/arti/?cline={page}
+  - category: 政治·社会
+    url_frame: http://china.hani.co.kr/arti/politics/?cline={page}
+  - category: 财经新闻
+    url_frame: http://china.hani.co.kr/arti/economy/?cline={page}
+  - category: 中国·国际
+    url_frame: http://china.hani.co.kr/arti/international/?cline={page}
+  - category: 朝鲜消息
+    url_frame: http://china.hani.co.kr/arti/northkorea/?cline={page}
+  - category: 文化·韩流
+    url_frame: http://china.hani.co.kr/arti/culture/?cline={page}
+  - category: 评论专栏
+    url_frame: http://china.hani.co.kr/arti/opinion/?cline={page}
+  - category: 图片视频
+    url_frame: http://china.hani.co.kr/arti/multimedia/?cline={page}
+  - category: 济州&
+    url_frame: http://china.hani.co.kr/arti/jejuand/?cline={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div#container ul li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: span.article-tit
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: span.article-time
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: url
+    key: url
+    value:
+    - select: a
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.article-headline .headline-tit
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: '.headline-data'
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: "^.+登录[ ]*[^0-9] "
+      to: ''
+    - from: "^.+修改[ ]*[^0-9] "
+      to: ''
+  - comment: 한국어 기사
+    key: source_ko
+    value:
+    - select: 'a#inner_originArticle'
+    type: href
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.article-view
+    type: text
+    value_type: merge
