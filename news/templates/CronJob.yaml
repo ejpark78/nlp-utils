@@ -3,7 +3,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ $job.name }}
+  name: "{{ $.Release.Name }}-{{ $job.name }}"
   labels:
     app: {{ $job.name }}
     release: {{ $.Release.Name }}
@@ -24,13 +24,15 @@ spec:
             - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
           initContainers:
             - name: config-sync
-              image: alpine/git
+              image: {{ $.Values.gitImage }}
+              imagePullPolicy: IfNotPresent
               envFrom:
                 - configMapRef:
                     name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
               command:
                 - git
                 - clone
+                - --progress
                 - -b
                 - $(GIT_SYNC_BRANCH)
                 - $(GIT_SYNC_REPO)
@@ -38,14 +40,30 @@ spec:
               volumeMounts:
                 - name: config
                   mountPath: "/config"
+            - name: check-config
+              image: {{ $.Values.gitImage }}
+              imagePullPolicy: IfNotPresent
+              command:
+                - find
+                - /config
+                - -type
+                - f
+                - -print
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
           containers:
             - name: app
-              resources:
-                {{- toYaml $.Values.resources | nindent 16 }}
               image: {{ $.Values.image }}
               imagePullPolicy: Always
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
               env:
-                {{- toYaml $.Values.environmentVariables | nindent 16 }}
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+                      key: http_auth
               envFrom:
                 - configMapRef:
                     name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}"

@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -8,10 +8,10 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 100m
-    memory: 150Mi
+    memory: 300Mi
   limits:
     cpu: 100m
-    memory: 150Mi
+    memory: 300Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -25,7 +25,7 @@ configMap:
   gitSync:
     name: config-sync
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
+    branch: "dev"
   elasticsearch:
     name: korea-news
     authName: es-auth
@@ -37,112 +37,79 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: donga
+  - name: apnews
+    schedule: "0 * * * *"
+    args:
+      - "python3"
+      - "-m"
+      - "crawler.international_news.news"
+      - "--config"
+      - "/config/international/apnews.yaml"
+      - "--sleep"
+      - "15"
+
+  - name: heni
     schedule: "0 * * * *"
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/donga.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
+      - "/config/news/hani.yaml"
       - "--sleep"
       - "15"
 
-  - name: donga-en
+  - name: heni-en
     schedule: "10 * * * *"
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/donga-en.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
+      - "/config/news/hani-en.yaml"
       - "--sleep"
       - "15"
 
-  - name: donga-cn
-    schedule: "20 * * * *"
+  - name: heni-jp
+    schedule: "10 * * * *"
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/donga-cn.yaml"
+      - "/config/news/hani-jp.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
-      - "20"
+      - "10"
       - "--sleep"
       - "15"
 
-  - name: donga-jp
-    schedule: "30 * * * *"
+  - name: heni-cn
+    schedule: "10 * * * *"
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/donga-jp.yaml"
+      - "/config/news/hani-cn.yaml"
       - "--page-range"
       - "1~2000"
       - "--page-step"
-      - "20"
+      - "10"
       - "--sleep"
       - "15"
 
-  - name: joins
+  - name: newspeppermint
     schedule: "0 * * * *"
     args:
       - "python3"
       - "-m"
       - "crawler.web_news.web_news"
       - "--config"
-      - "/config/news/joins.yaml"
+      - "/config/news/newspeppermint.yaml"
       - "--page-range"
-      - "1~100"
+      - "1~10"
       - "--sleep"
       - "15"
 
-  - name: wowtv
-    schedule: "0 * * * *"
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/news/wowtv.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
-      - "--sleep"
-      - "15"
-
-  - name: chosun-biz
-    schedule: "0 * * * *"
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/news/chosun-biz.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: sbs-biz
-    schedule: "0 * * * *"
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/news/sbs-biz.yaml"
-      - "--sleep"
-      - "15"

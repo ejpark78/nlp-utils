@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}
+  name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
   labels:
     release: {{ $.Release.Name }}
     namespace: {{ $.Release.Namespace }}
@@ -15,9 +15,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}
+  name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.name }}"
   labels:
     release: {{ $.Release.Name }}
     namespace: {{ $.Release.Namespace }}
 data:
-  ELASTIC_SEARCH_HOST: $.Values.configMap.elasticsearch.host
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}

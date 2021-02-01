@@ -1,4 +1,5 @@
 image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -27,15 +28,8 @@ configMap:
     branch: "live"
   elasticsearch:
     name: korea-news
-    authName: elasticsearch-auth
+    authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
-
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
 
 schedule:
   concurrencyPolicy: Forbid
@@ -43,17 +37,6 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: apnews
-    schedule: "0 * * * *"
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.international_news.news"
-      - "--config"
-      - "/config/international/apnews.yaml"
-      - "--sleep"
-      - "15"
-
   - name: reuters
     schedule: "10 * * * *"
     args:
@@ -86,17 +69,6 @@ jobs:
       - "crawler.web_news.web_news"
       - "--config"
       - "/config/international/47news.yaml"
-      - "--sleep"
-      - "15"
-
-  - name: ansa
-    schedule: "30 * * * *"
-    args:
-      - "python3"
-      - "-m"
-      - "crawler.web_news.web_news"
-      - "--config"
-      - "/config/international/ansa.yaml"
       - "--sleep"
       - "15"
 
