@@ -50,6 +50,7 @@ parsing:
     value:
     - name: html
     remove:
+    - name: script
     - name: style
     - name: comment
     type: html
