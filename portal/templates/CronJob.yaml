@@ -1,0 +1,139 @@
+{{- range $jobIndex, $job := .Values.jobs }}
+  {{- if $job.subSategory }}
+    {{- range $categoryIndex, $subCategory := $job.subSategory }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ $.Release.Name }}-{{ $job.name }}-{{ $categoryIndex }}"
+  labels:
+    app: {{ $job.name }}
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
+spec:
+  schedule: {{ $job.schedule }}
+  concurrencyPolicy: {{ $.Values.schedule.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ $.Values.schedule.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $.Values.schedule.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: {{ $.Values.restartPolicy }}
+          hostAliases:
+            {{- toYaml $.Values.hostAliases | nindent 12 }}
+          imagePullSecrets:
+            - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
+          initContainers:
+            - name: config-sync
+              image: {{ $.Values.gitImage }}
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
+              command:
+                - git
+                - clone
+                - --progress
+                - -b
+                - $(GIT_SYNC_BRANCH)
+                - $(GIT_SYNC_REPO)
+                - /config
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
+          containers:
+            - name: app
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
+              image: {{ $.Values.image }}
+              imagePullPolicy: Always
+              env:
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+                      key: http_auth
+                {{- toYaml $job.environmentVariables | nindent 16 }}
+              envFrom:
+                - configMapRef:
+                    name: "{{ $.Release.Name }}-{{ $job.configMapRef }}"
+              args:
+                {{- toYaml $job.args | nindent 16 }}
+                - --sub-category
+                - {{ $subCategory }}
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
+          volumes:
+            - name: config
+              emptyDir: {}
+    {{- end }}
+  {{- else }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ $.Release.Name }}-{{ $job.name }}"
+  labels:
+    app: {{ $job.name }}
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
+spec:
+  schedule: {{ $job.schedule }}
+  concurrencyPolicy: {{ $.Values.schedule.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ $.Values.schedule.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $.Values.schedule.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: {{ $.Values.restartPolicy }}
+          hostAliases:
+            {{- toYaml $.Values.hostAliases | nindent 12 }}
+          imagePullSecrets:
+            - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
+          initContainers:
+            - name: config-sync
+              image: {{ $.Values.gitImage }}
+              imagePullPolicy: IfNotPresent
+              envFrom:
+                - configMapRef:
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
+              command:
+                - git
+                - clone
+                - --progress
+                - -b
+                - $(GIT_SYNC_BRANCH)
+                - $(GIT_SYNC_REPO)
+                - /config
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
+          containers:
+            - name: app
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
+              image: {{ $.Values.image }}
+              imagePullPolicy: Always
+              env:
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+                      key: http_auth
+                {{- toYaml $job.environmentVariables | nindent 16 }}
+              envFrom:
+                - configMapRef:
+                    name: "{{ $.Release.Name }}-{{ $job.configMapRef }}"
+              args:
+                {{- toYaml $job.args | nindent 16 }}
+              volumeMounts:
+                - name: config
+                  mountPath: "/config"
+          volumes:
+            - name: config
+              emptyDir: {}
+  {{- end }}
+{{- end }}

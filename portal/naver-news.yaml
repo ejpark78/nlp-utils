@@ -1,4 +1,5 @@
 image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -16,13 +17,18 @@ hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
 
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
 
 schedule:
   concurrencyPolicy: Forbid
@@ -30,7 +36,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: naver-economy
+  - name: economy
     schedule: "0 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -54,7 +60,7 @@ jobs:
       - "경제/생활경제"
       - "경제/중기/벤처"
 
-  - name: naver-international
+  - name: international
     schedule: "5 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -75,7 +81,7 @@ jobs:
       - "세계/중동아프리카"
       - "세계/일반"
 
-  - name: naver-it
+  - name: it
     schedule: "10 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -99,7 +105,7 @@ jobs:
       - "IT/게임/리뷰"
       - "IT/과학 일반"
 
-  - name: naver-living
+  - name: living
     schedule: "15 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -126,7 +132,7 @@ jobs:
       - "생활/날씨"
       - "생활/일반"
 
-  - name: naver-opinion
+  - name: opinion
     schedule: "20 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -143,7 +149,7 @@ jobs:
     subSategory:
       - "오피니언"
 
-  - name: naver-politics
+  - name: politics
     schedule: "25 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -165,7 +171,7 @@ jobs:
       - "정치/국방외교"
       - "정치/정치일반"
 
-  - name: naver-society
+  - name: society
     schedule: "30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -191,7 +197,7 @@ jobs:
       - "사회/인물"
       - "사회/사회일반"
 
-  - name: naver-sports
+  - name: sports
     schedule: "35 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -217,7 +223,7 @@ jobs:
       - "스포츠/축구"
       - "스포츠/스포츠-일반"
 
-  - name: naver-tv
+  - name: tv
     schedule: "40 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -234,7 +240,7 @@ jobs:
     subSategory:
       - "TV"
 
-  - name: naver-weather
+  - name: weather
     schedule: "45 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX

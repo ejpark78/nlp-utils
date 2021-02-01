@@ -1,4 +1,5 @@
 image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -16,13 +17,18 @@ hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
 
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
 
 schedule:
   concurrencyPolicy: Forbid
@@ -30,7 +36,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: naver-kin-question-list
+  - name: question-list
     schedule: "0 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -46,7 +52,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: naver-kin-answer-list
+  - name: answer-list
     schedule: "20 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -62,7 +68,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: naver-kin-detail-question
+  - name: detail-question
     schedule: "40 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -78,7 +84,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: naver-kin-detail-answer
+  - name: detail-answer
     schedule: "50 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX

@@ -1,4 +1,5 @@
 image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -16,13 +17,18 @@ hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
 
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
 
 schedule:
   concurrencyPolicy: Forbid
@@ -30,7 +36,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: nate-economy
+  - name: economy
     schedule: "0 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -53,7 +59,7 @@ jobs:
       - "경제/국제경제"
       - "경제/경제 일반"
 
-  - name: nate-entertainment
+  - name: entertainment
     schedule: "10 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -73,7 +79,7 @@ jobs:
       - "연예/방송가요"
       - "연예/해외연예"
 
-  - name: nate-international
+  - name: international
     schedule: "20 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -95,7 +101,7 @@ jobs:
       - "세계/해외화제"
       - "세계/일반"
 
-  - name: nate-it
+  - name: it
     schedule: "30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -117,7 +123,7 @@ jobs:
       - "IT/게임"
       - "IT/IT/과학 일반"
 
-  - name: nate-politics
+  - name: politics
     schedule: "40 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -139,7 +145,7 @@ jobs:
       - "정치/행정"
       - "정치/정치 일반"
 
-  - name: nate-society
+  - name: society
     schedule: "50 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -165,7 +171,7 @@ jobs:
       - "사회/인물"
       - "사회/일반"
 
-  - name: nate-sports
+  - name: sports
     schedule: "55 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX

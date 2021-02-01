@@ -1,37 +1,23 @@
----
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: elasticsearch-auth
-data:
-  http_auth: Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==
-
----
-apiVersion: v1
-type: kubernetes.io/dockerconfigjson
-kind: Secret
-metadata:
-  name: registry
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5ubHAtdXRpbHMiOnsidXNlcm5hbWUiOiJrOHMiLCJwYXNzd29yZCI6Im5scGxhYiIsImVtYWlsIjoiZWpwYXJrNzhAZ21haWwuY29tIiwiYXV0aCI6ImF6aHpPbTVzY0d4aFlnPT0ifX19
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: git-sync
+  name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
+  labels:
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
 data:
-  GIT_SYNC_REPO: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-  GIT_SYNC_BRANCH: "live"
+  GIT_SYNC_REPO: {{ $.Values.configMap.gitSync.repo }}
+  GIT_SYNC_BRANCH: {{ $.Values.configMap.gitSync.branch }}
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: bbs
+  name: {{ $.Release.Name }}-bbs
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_INVEN: "crawler-bbs-inven"
   INDEX_LINEAGEM: "crawler-bbs-lineagem"
   INDEX_LINEAGE2M: "crawler-bbs-lineage2m"
@@ -44,9 +30,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: daum
+  name: {{ $.Release.Name }}-daum
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_CULTURE: "crawler-daum-culture"
   INDEX_ECONOMY: "crawler-daum-economy"
   INDEX_INTERNATIONAL: "crawler-daum-international"
@@ -60,9 +46,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nate
+  name: {{ $.Release.Name }}-nate
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-nate-entertainment"
   INDEX_ECONOMY: "crawler-nate-economy"
   INDEX_INTERNATIONAL: "crawler-nate-international"
@@ -76,9 +62,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: naver
+  name: {{ $.Release.Name }}-naver
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-naver-entertainment"
   INDEX_ECONOMY: "crawler-naver-economy"
   INDEX_INTERNATIONAL: "crawler-naver-international"
@@ -94,9 +80,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: game-center
+  name: {{ $.Release.Name }}-game-center
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   ELASTIC_SEARCH_INDEX_COMMENTS: "crawler-naver-kbo_game_center_comments"
   ELASTIC_SEARCH_INDEX_GAME_INFO: "crawler-naver-kbo_game_center_game_info"
   ELASTIC_SEARCH_INDEX_RELAY_TEXT: "crawler-naver-kbo_game_center_relay_text"
@@ -105,9 +91,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: naver-reply
+  name: {{ $.Release.Name }}-naver-reply
 data:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+  ELASTIC_SEARCH_HOST: {{ $.Values.configMap.elasticsearch.host }}
   INDEX_ENTERTAINMENT: "crawler-naver-entertainment-reply"
   INDEX_ECONOMY: "crawler-naver-economy-reply"
   INDEX_INTERNATIONAL: "crawler-naver-international-reply"

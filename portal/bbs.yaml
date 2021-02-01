@@ -1,4 +1,5 @@
 image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -7,22 +8,27 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 200m
-    memory: 128Mi
+    memory: 200Mi
   limits:
     cpu: 200m
-    memory: 128Mi
+    memory: 200Mi
 
 hostAliases:
   - ip: "172.20.93.112"
     hostnames:
       - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
 
-environmentVariables:
-  - name: ELASTIC_SEARCH_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: elasticsearch-auth
-        key: http_auth
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
 
 schedule:
   concurrencyPolicy: Forbid
@@ -30,7 +36,7 @@ schedule:
   successfulJobsHistoryLimit: 1
 
 jobs:
-  - name: bbs-mlbpark-kbo
+  - name: mlbpark-kbo
     schedule: "0,30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -46,7 +52,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: bbs-mlbpark-mlb
+  - name: mlbpark-mlb
     schedule: "10,40 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -62,7 +68,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: bbs-mlbpark-bullpen
+  - name: mlbpark-bullpen
     schedule: "20,50 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -78,7 +84,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: bbs-ruliweb
+  - name: ruliweb
     schedule: "0,30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -94,7 +100,7 @@ jobs:
       - "--sleep"
       - "20"
 
-  - name: bbs-inven-lineagem
+  - name: inven-lineagem
     schedule: "0,30 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
@@ -114,7 +120,7 @@ jobs:
       - "--page-step"
       - "1"
 
-#  - name: bbs-lineagem
+#  - name: lineagem
 #    schedule: "0,30 * * * *"
 #    environmentVariables:
 #      - name: ELASTIC_SEARCH_INDEX
@@ -134,7 +140,7 @@ jobs:
 #      - "--page-step"
 #      - "1"
 #
-#  - name: bbs-lineage2m
+#  - name: lineage2m
 #    schedule: "0,30 * * * *"
 #    environmentVariables:
 #      - name: ELASTIC_SEARCH_INDEX
