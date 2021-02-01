@@ -24,6 +24,7 @@ brotlipy
 psutil
 minio
 dotty_dict
+jsonfinder
 
 bs4
 lxml

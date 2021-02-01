@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 
-cache=$1
+cache="$1"
 
-youtube_scripts="module/youtube/youtube.py"
-facebook_scripts="module/facebook/facebook.py"
+youtube_scripts="crawler/youtube/youtube.py"
+facebook_scripts="crawler/facebook/facebook.py"
+daum_scripts="crawler/movie_reviews/daum/daum.py"
+naver_scripts="crawler/movie_reviews/naver/naver.py"
+kbsec_scripts="crawler/kbsec/kbsec.py"
+sql_dump_scripts="crawler/utils/sql_dump.sh"
 
 case ${cache} in
   daum)
     filename="data/movie_reviews/daum.db"
     meta_filename="data/movie_reviews/daum-meta.json"
-    export_scripts="module/movie_reviews/daum.py"
+    export_scripts=${daum_scripts}
     ;;
   naver)
     filename="data/movie_reviews/naver.db"
     meta_filename="data/movie_reviews/naver-meta.json"
-    export_scripts="module/movie_reviews/naver.py"
+    export_scripts=${naver_scripts}
     ;;
   youtube-bns)
     filename="data/youtube/bns.db"
@@ -34,7 +38,7 @@ case ${cache} in
   kbsec)
     filename="data/kbsec/kbsec.db"
     meta_filename="data/kbsec/kbsec-meta.json"
-    export_scripts="module/kbsec/kbsec.py"
+    export_scripts=${kbsec_scripts}
     ;;
   facebook)
     filename="data/facebook/facebook.db"
@@ -64,7 +68,7 @@ cp "${filename}" "${dump_filename}"
 sync
 
 echo "데이터 덤프: ${dump_filename} => json,xlsx"
-PYTHONPATH=src python3 "src/${export_scripts}" \
+PYTHONPATH=. python3 "${export_scripts}" \
   --export \
   --cache "${dump_filename}"
 sync
@@ -73,13 +77,13 @@ echo "데이터셋 업로드"
 cp "${meta_filename}" "${dump_meta}"
 sync
 
-PYTHONPATH=src python3 "src/${export_scripts}" \
+PYTHONPATH=. python3 "${export_scripts}" \
   --upload \
   --meta "${dump_meta}"
 sync
 
 echo "sql 덤프"
-src/utils/sql_dump.sh "${dump_filename}"
+${sql_dump_scripts} "${dump_filename}"
 sync
 
 #rm "${dump_filename}"

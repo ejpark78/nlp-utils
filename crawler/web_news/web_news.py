@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from jsonfinder import jsonfinder
+
 import json
 import os
 import re
@@ -138,8 +140,8 @@ class WebNewsCrawler(WebNewsBase):
         if offline is True:
             if 'html' in item:
                 resp = item['html']
-            elif 'html_content' in item:
-                resp = item['html_content']
+            elif 'json' in item:
+                resp = item['json']
             else:
                 return ''
 
@@ -276,7 +278,7 @@ class WebNewsCrawler(WebNewsBase):
         # 파싱 에러 처리
         if 'html' in article and len(article['html']) != 0:
             doc.update(article)
-        elif 'html_content' in article and len(article['html_content']) != 0:
+        elif 'json' in article and len(article['json']) != 0:
             doc.update(article)
         else:
             doc['status'] = 'parsing_error'
@@ -285,7 +287,7 @@ class WebNewsCrawler(WebNewsBase):
 
             self.logger.error(msg={
                 'level': 'ERROR',
-                'message': 'html_content 필드가 없음',
+                'message': 'html or json 필드가 없음',
                 'url': doc['url'],
             })
 
@@ -431,16 +433,27 @@ class WebNewsCrawler(WebNewsBase):
     def get_trace_list(self, html: str, parsing_info: dict = None) -> list or None:
         """trace tag 목록을 추출해서 반환한다."""
         trace_list = []
-        if len(parsing_info) > 0 and 'parser' in parsing_info[0] and parsing_info[0]['parser'] == 'json':
-            if isinstance(html, str):
-                html = json.loads(html)
+        if len(parsing_info) > 0 and 'parser' in parsing_info[0]:
+            parsing = parsing_info[0]
 
-            dot = dotty(html)
+            soup = html
+            if parsing['parser'] == 'json':
+                if isinstance(html, str):
+                    soup = json.loads(html)
 
-            column = parsing_info[0]['column']
+                dot = dotty(soup)
 
-            trace_list = list(dot[column]) if column in dot else []
-            trace_list = self.flatten(trace_list=trace_list)
+                column = parsing['column']
+
+                trace_list = list(dot[column]) if column in dot else []
+                trace_list = self.flatten(trace_list=trace_list)
+            elif parsing['parser'] == 'javascript':
+                if isinstance(html, str):
+                    soup = BeautifulSoup(html)
+
+                js = [''.join(x.contents) for x in soup.find_all('script') if 'list:' in ''.join(x.contents)][0]
+
+                trace_list = [x for _, _, x in jsonfinder(js) if x is not None][0]
 
             str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
         else:

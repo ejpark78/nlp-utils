@@ -72,10 +72,12 @@ class NewsCrawler(object):
         for card in doc['cards']:
             for item in card['contents']:
                 dt = parse_date(item['updated'])
+                html = BeautifulSoup(item['storyHTML']).find('html')
+
                 doc = {
                     '_id': item['etag'],
                     'title': item['headline'],
-                    'content': BeautifulSoup(item['storyHTML']).find('html').get_text(),
+                    'content': html.get_text() if html is not None else '',
                     'date': dt.isoformat(),
                     'json': json.dumps(item, ensure_ascii=False),
                     '@timestamp': datetime.now(self.timezone).isoformat()
@@ -105,11 +107,12 @@ class NewsCrawler(object):
 
     def get_article(self, job: dict, url: str, date: datetime, elastic: ElasticSearchUtils) -> None:
         resp = requests.get(url=url).json()
+        html = BeautifulSoup(resp['storyHTML']).find('html')
 
         doc = {
             '_id': resp['etag'],
             'title': resp['headline'],
-            'content': BeautifulSoup(resp['storyHTML']).find('html').get_text(),
+            'content': html.get_text() if html is not None else '',
             'date': date.isoformat(),
             'json': json.dumps(resp, ensure_ascii=False),
             '@timestamp': datetime.now(self.timezone).isoformat()
