@@ -1,0 +1,237 @@
+---
+jobs:
+- index: raw-hani-{year}
+  article:
+    document_id:
+      replace:
+      - from: /arti/
+        to: '/'
+      - from: .html
+        to: ''
+      - from: ^/
+        to: ''
+      - from: /
+        to: '-'
+      type: path
+  list:
+  - category: 정치일반
+    url_frame: http://www.hani.co.kr/arti/politics/politics_general/list{page}.html
+  - category: 청와대
+    url_frame: http://www.hani.co.kr/arti/politics/bluehouse/list{page}.html
+  - category: 국회·정당
+    url_frame: http://www.hani.co.kr/arti/politics/assembly/list{page}.html
+  - category: 행정·자치
+    url_frame: http://www.hani.co.kr/arti/politics/administration/list{page}.html
+  - category: 국방·북한
+    url_frame: http://www.hani.co.kr/arti/politics/defense/list{page}.html
+  - category: 외교
+    url_frame: http://www.hani.co.kr/arti/politics/diplomacy/list{page}.html
+
+  - category: 사회일반
+    url_frame: http://www.hani.co.kr/arti/society/society_general/list{page}.html
+  - category: 여성
+    url_frame: http://www.hani.co.kr/arti/society/women/list{page}.html
+  - category: 노동
+    url_frame: http://www.hani.co.kr/arti/society/labor/list{page}.html
+  - category: 환경
+    url_frame: http://www.hani.co.kr/arti/society/environment/list{page}.html
+  - category: 장애인
+    url_frame: http://www.hani.co.kr/arti/society/handicapped/list{page}.html
+  - category: 인권·복지
+    url_frame: http://www.hani.co.kr/arti/society/rights/list{page}.html
+  - category: 의료·건강
+    url_frame: http://www.hani.co.kr/arti/society/health/list{page}.html
+  - category: 미디어
+    url_frame: http://www.hani.co.kr/arti/society/media/list{page}.html
+  - category: 궂긴소식
+    url_frame: http://www.hani.co.kr/arti/society/obituary/list{page}.html
+  - category: 인사
+    url_frame: http://www.hani.co.kr/arti/society/internalmove/list{page}.html
+  - category: 엔지오
+    url_frame: http://www.hani.co.kr/arti/society/ngo/list{page}.html
+  - category: 교육
+    url_frame: http://www.hani.co.kr/arti/society/schooling/list{page}.html
+  - category: 종교
+    url_frame: http://www.hani.co.kr/arti/society/religious/list{page}.html
+
+  - category: 전국일반
+    url_frame: http://www.hani.co.kr/arti/area/area_general/list{page}.html
+  - category: 제주
+    url_frame: http://www.hani.co.kr/arti/area/jeju/list{page}.html
+  - category: 호남
+    url_frame: http://www.hani.co.kr/arti/area/honam/list{page}.html
+  - category: 영남
+    url_frame: http://www.hani.co.kr/arti/area/yeongnam/list{page}.html
+  - category: 충청
+    url_frame: http://www.hani.co.kr/arti/area/chungcheong/list{page}.html
+  - category: 강원
+    url_frame: http://www.hani.co.kr/arti/area/gangwon/list{page}.html
+  - category: 수도권
+    url_frame: http://www.hani.co.kr/arti/area/capital/list{page}.html
+
+  - category: 경제일반
+    url_frame: http://www.hani.co.kr/arti/economy/economy_general/list{page}.html
+  - category: 금융·증권
+    url_frame: http://www.hani.co.kr/arti/economy/finance/list{page}.html
+  - category: 산업·재계
+    url_frame: http://www.hani.co.kr/arti/economy/marketing/list{page}.html
+  - category: 자동차
+    url_frame: http://www.hani.co.kr/arti/economy/car/list{page}.html
+  - category: 부동산
+    url_frame: http://www.hani.co.kr/arti/economy/property/list{page}.html
+  - category: 쇼핑·소비자
+    url_frame: http://www.hani.co.kr/arti/economy/consumer/list{page}.html
+  - category: IT
+    url_frame: http://www.hani.co.kr/arti/economy/it/list{page}.html
+  - category: 직장·취업
+    url_frame: http://www.hani.co.kr/arti/economy/working/list{page}.html
+  - category: 중기·스타트업
+    url_frame: http://www.hani.co.kr/arti/economy/startup/list{page}.html
+  - category: 기업PR
+    url_frame: http://www.hani.co.kr/arti/economy/biznews/list{page}.html
+  - category: 글로벌워치
+    url_frame: http://www.hani.co.kr/arti/economy/global/list{page}.html
+
+  - category: 국제일반
+    url_frame: http://www.hani.co.kr/arti/international/international_general/list{page}.html
+  - category: 해외토픽
+    url_frame: http://www.hani.co.kr/arti/international/globaltopic/list{page}.html
+  - category: 아시아·태평양
+    url_frame: http://www.hani.co.kr/arti/international/asiapacific/list{page}.html
+  - category: 미국·중남미
+    url_frame: http://www.hani.co.kr/arti/international/america/list{page}.html
+  - category: 유럽
+    url_frame: http://www.hani.co.kr/arti/international/europe/list{page}.html
+  - category: 중국
+    url_frame: http://www.hani.co.kr/arti/international/china/list{page}.html
+  - category: 일본
+    url_frame: http://www.hani.co.kr/arti/international/japan/list{page}.html
+  - category: 중동·아프리카
+    url_frame: http://www.hani.co.kr/arti/international/arabafrica/list{page}.html
+  - category: 국제기구·회의
+    url_frame: http://www.hani.co.kr/arti/international/internationalunit/list{page}.html
+  - category: 국제경제
+    url_frame: http://www.hani.co.kr/arti/international/globaleconomy/list{page}.html
+
+  - category: 문화일반
+    url_frame: http://www.hani.co.kr/arti/culture/culture_general/list{page}.html
+  - category: 영화·애니
+    url_frame: http://www.hani.co.kr/arti/culture/movie/list{page}.html
+  - category: 방송·연예
+    url_frame: http://www.hani.co.kr/arti/culture/entertainment/list{page}.html
+  - category: 여행·여가
+    url_frame: http://www.hani.co.kr/arti/culture/travel/list{page}.html
+  - category: 음악·공연·전시
+    url_frame: http://www.hani.co.kr/arti/culture/music/list{page}.html
+  - category: 학술
+    url_frame: http://www.hani.co.kr/arti/culture/religion/list{page}.html
+  - category: 책&생각
+    url_frame: http://www.hani.co.kr/arti/culture/book/list{page}.html
+  - category: 제주&
+    url_frame: http://www.hani.co.kr/arti/culture/jejuand/list{page}.html
+
+  - category: 스포츠일반
+    url_frame: http://www.hani.co.kr/arti/sports/sports_general/list{page}.html
+  - category: 축구·해외리그
+    url_frame: http://www.hani.co.kr/arti/sports/soccer/list{page}.html
+  - category: 야구·MLB
+    url_frame: http://www.hani.co.kr/arti/sports/baseball/list{page}.html
+  - category: 골프
+    url_frame: http://www.hani.co.kr/arti/sports/golf/list{page}.html
+  - category: 경기일정
+    url_frame: http://www.hani.co.kr/arti/sports/gameschedule/list{page}.html
+  - category: 경기결과
+    url_frame: http://www.hani.co.kr/arti/sports/scoreboard/list{page}.html
+  - category: 바둑
+    url_frame: http://www.hani.co.kr/arti/sports/baduk/list{page}.html
+
+  - category: 미래
+    url_frame: http://www.hani.co.kr/arti/future/list{page}.html
+  - category: 과학
+    url_frame: http://www.hani.co.kr/arti/science_general/list{page}.html
+  - category: 기술
+    url_frame: http://www.hani.co.kr/arti/science/technology/list{page}.html
+  - category: 환경
+    url_frame: http://www.hani.co.kr/arti/society/environment/list{page}.html
+  - category: 시각
+    url_frame: http://www.hani.co.kr/arti/issue/list{page}.html
+
+  - category: 야생동물
+    url_frame: http://www.hani.co.kr/arti/animalpeople/wild_animal/list{page}.html
+  - category: 반려동물
+    url_frame: http://www.hani.co.kr/arti/animalpeople/companion_animal/list{page}.html
+  - category: 농장동물
+    url_frame: http://www.hani.co.kr/arti/animalpeople/farm_animal/list{page}.html
+  - category: 인간과동물
+    url_frame: http://www.hani.co.kr/arti/animalpeople/human_animal/list{page}.html
+  - category: 생태와진화
+    url_frame: http://www.hani.co.kr/arti/animalpeople/ecology_evolution/list{page}.html
+
+  - category: 사설
+    url_frame: http://www.hani.co.kr/arti/opinion/editorial/list{page}.html
+  - category: 칼럼
+    url_frame: http://www.hani.co.kr/arti/opinion/column/list{page}.html
+  - category: 왜냐면
+    url_frame: http://www.hani.co.kr/arti/opinion/because/list{page}.html
+  - category: 포토에세이
+    url_frame: http://www.hani.co.kr/arti/opinion/dica/list{page}.html
+  - category: 옵스큐라
+    url_frame: http://www.hani.co.kr/arti/SERIES/1194/list{page}.html
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div.section-list-area div.list
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: .article-title a
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: span.date
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: url
+    key: url
+    value:
+    - select: '.article-title a'
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: span.title
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    value:
+    - select: p.date-time
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: "^.+수정 :"
+      to: ''
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: '#article-text'
+    type: text
+    value_type: merge
