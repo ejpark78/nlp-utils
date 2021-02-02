@@ -24,6 +24,7 @@ from tqdm.autonotebook import tqdm
 from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(UserWarning)
 
 
 class ElasticSearchUtils(object):

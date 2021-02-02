@@ -25,7 +25,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class NewsCrawler(object):
+class ApNewsCrawler(object):
     """뉴스 크롤러"""
 
     def __init__(self):
@@ -166,4 +166,4 @@ class NewsCrawler(object):
 
 
 if __name__ == '__main__':
-    NewsCrawler().batch()
+    ApNewsCrawler().batch()

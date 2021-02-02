@@ -8,6 +8,10 @@ from __future__ import print_function
 from os.path import isfile
 
 import urllib3
+from exchangelib import ServiceAccount, Configuration, Account, DELEGATE
+from exchangelib import Message, Mailbox, HTMLBody
+from exchangelib.protocol import BaseProtocol, NoVerifyHTTPAdapter
+from exchangelib import FileAttachment
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -22,15 +26,11 @@ class EmailUtils(object):
     @staticmethod
     def open(user_id, user_password):
         """메일에 연결한다.
-
         * 참고자료
         - https://stackoverflow.com/questions/43491673
             /read-emails-and-download-attachment-from-microsoft-exchange-server/45438174#45438174
         - https://pypi.org/project/exchangelib/
         """
-        from exchangelib import ServiceAccount, Configuration, Account, DELEGATE
-        from exchangelib.protocol import BaseProtocol, NoVerifyHTTPAdapter
-
         BaseProtocol.HTTP_ADAPTER_CLS = NoVerifyHTTPAdapter
 
         cfg = {
@@ -59,8 +59,6 @@ class EmailUtils(object):
 
     def send_mail(self, subject, body, email_list, user_id, user_password):
         """메일을 보낸다."""
-        from exchangelib import Message, Mailbox, HTMLBody
-
         # 메일 연결
         account = self.open(user_id, user_password)
 
@@ -85,8 +83,6 @@ class EmailUtils(object):
     @staticmethod
     def attach_file(message, filename):
         """파일을 첨부한다."""
-        from exchangelib import FileAttachment
-
         if isfile(filename) is False:
             return message
 

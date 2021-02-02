@@ -168,15 +168,15 @@ cd docker
 make live dev push
 ```
 
-## ops
+## helm
 
 ```bash
-cd ops/domestic
+cd helm
 
-kubectl ns domestic
+kubectl ns dev
 
 helm list 
 
-helm upgrade dev . -f dev.yaml
+helm upgrade dev ./news -f dev.yaml -n dev
 
 ```
