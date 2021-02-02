@@ -1,10 +1,74 @@
 # crawler
 
+## venv 방식  
+
+### 설치 
+
+```bash
+
+python3 -m venv --copies venv       
+
+source venv/bin/activate
+
+pip3 install git+http://galadriel02.korea.ncsoft.corp/crawler/crawler.git          
+```
+
+### 패키지 정보 확인 
+
+```bash
+pip3 show crawler    
+                                                    
+Name: crawler
+Version: 2.47.452
+Summary: 검색팀 크롤러
+Home-page: http://galadriel02.korea.ncsoft.corp/crawler/crawler
+Author: ejpark
+Author-email: ejpark@ncsoft.com
+License: Apache License Version 2.0
+Location: /home/ejpark/tmp/venv/lib/python3.8/site-packages
+Requires: PySocks, PyYAML, boto3, brotlipy, bs4, cachelib, certifi, dotty-dict, elasticsearch, html5lib, jsonfinder, jsonlines, lxml, minio, openpyxl, pandas, psutil, pycurl, pyjwt, python-dateutil, pytz, requests, requests-html, requests-oauthlib, requests, requests, selenium, selenium-wire, setuptools, tqdm, twine, urllib3, wheel, xlsxwriter
+Required-by: 
+```
+
+### 실행 테스트
+
+```bash
+python3 -m crawler.web_news.web_news --help
+
+usage: web_news.py [-h] [--overwrite] [--sub-category SUB_CATEGORY] [--date-range DATE_RANGE] [--date-step DATE_STEP] [--page-range PAGE_RANGE]
+                   [--page-step PAGE_STEP] [--sleep SLEEP] [--config CONFIG] [--update-category-only]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --overwrite           덮어쓰기
+  --sub-category SUB_CATEGORY
+                        하위 카테고리
+  --date-range DATE_RANGE
+                        date 날짜 범위: 2000-01-01~2019-04-10
+  --date-step DATE_STEP
+                        date step
+  --page-range PAGE_RANGE
+                        page 범위: 1~100
+  --page-step PAGE_STEP
+                        page step
+  --sleep SLEEP         sleep time
+  --config CONFIG       설정 파일 정보
+  --update-category-only
+                        category 정보만 업데이트
+
+```
+
+### config clone  
+
+```bash
+git clone http://galadriel02.korea.ncsoft.corp/crawler/config.git config 
+```
+
 ## git clone
 
 ```bash
 
-git clone http://galadriel02.korea.ncsoft.corp/crawler.git crawler
+git clone http://galadriel02.korea.ncsoft.corp/crawler/crawler.git crawler
 
 cd crawler
 
