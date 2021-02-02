@@ -18,7 +18,6 @@ class LogMessage(object):
     """구조화된 로깅"""
 
     def __init__(self, message, **kwargs):
-        """생성자"""
         self.message = message
         self.kwargs = kwargs
 
@@ -29,8 +28,8 @@ class LogMessage(object):
         self.message.update(self.kwargs)
 
         try:
-            if 'logging_date' not in self.message:
-                self.message['logging_date'] = datetime.now(self.timezone).isoformat()
+            if '@timestemp' not in self.message:
+                self.message['@timestemp'] = datetime.now(self.timezone).isoformat()
 
             return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
         except Exception as e:
@@ -38,25 +37,21 @@ class LogMessage(object):
 
 
 class Logger(object):
-    """ """
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
         self.MESSAGE = 25
         self.logger = self.get_logger()
 
-    def __del__(self):
-        pass
-
     def get_logger(self):
         """로거를 반환한다."""
+        # file_handler = logging.FileHandler(filename='tmp.log')
+
         logging_opt = {
             'format': '[%(levelname)-s] %(message)s',
-            'handlers': [logging.StreamHandler()],
+            'handlers': [logging.StreamHandler(sys.stderr)],
             'level': self.MESSAGE,
-
         }
 
         logging.addLevelName(self.MESSAGE, 'MESSAGE')
@@ -65,7 +60,7 @@ class Logger(object):
         self.logger = logging.getLogger()
 
         self.logger.setLevel(self.MESSAGE)
-        self.logger.handlers = [logging.StreamHandler(sys.stderr)]
+        # self.logger.handlers = [logging.StreamHandler(sys.stdout)]
 
         return self.logger
 
@@ -82,4 +77,9 @@ class Logger(object):
     def log(self, msg):
         """ 로그 메세지를 출력한다."""
         self.logger.log(level=self.MESSAGE, msg=LogMessage(msg))
+        return
+
+    def debug(self, msg):
+        """ 로그 메세지를 출력한다."""
+        self.logger.debug(msg=LogMessage(msg))
         return

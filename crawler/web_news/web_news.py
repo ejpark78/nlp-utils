@@ -5,8 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from jsonfinder import jsonfinder
-
 import json
 import os
 import re
@@ -22,6 +20,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.rrule import rrule, DAILY
 from dotty_dict import dotty
+from jsonfinder import jsonfinder
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.web_news.base import WebNewsBase
@@ -663,11 +662,25 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
+    @staticmethod
+    def simplify(doc: list or dict, size: int = 30) -> list or dict:
+        if isinstance(doc, dict) is False:
+            return str(doc)[:size] + ' ...'
+
+        result = {}
+        for col in doc:
+            result[col] = str(doc[col])[:size] + ' ...'
+
+        return result
+
     def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
-        # CHECK: parsing.trace
+        if self.params.config_debug:
+            self.logger.log(msg={'CONFIG_DEBUG': 'trace_list', 'trace_list': self.simplify(trace_list)})
+            sleep(self.params.sleep)
+
         if trace_list is None:
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -691,7 +704,15 @@ class WebNewsCrawler(WebNewsBase):
                 base_url=base_url,
                 parsing_info=self.config['parsing']['list'],
             )
-            # CHECK: parsing.list
+
+            if self.params.config_debug:
+                self.logger.log(msg={
+                    'CONFIG_DEBUG': 'list info',
+                    'trace': self.simplify(trace),
+                    'item': self.simplify(item)
+                })
+                sleep(self.params.sleep)
+
             if item is None or 'url' not in item:
                 continue
 
@@ -703,7 +724,11 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-            # CHECK: jobs.article.document_id
+
+            if self.params.config_debug:
+                self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
+                sleep(self.params.sleep)
+
             if doc_id is None:
                 continue
 
@@ -721,7 +746,11 @@ class WebNewsCrawler(WebNewsBase):
                 base_url=item['url'],
                 parsing_info=self.config['parsing']['article'],
             )
-            # CHECK: parsing.article
+
+            if self.params.config_debug:
+                self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
+                sleep(self.params.sleep)
+
             if article is None or len(article) == 0:
                 continue
 
@@ -799,17 +828,16 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기사 목록 조회
             resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
+
+            if self.params.config_debug:
+                self.logger.log(msg={'CONFIG_DEBUG': 'list page', 'url': url_info['url']})
+                sleep(self.params.sleep)
+
             if resp is None:
                 continue
 
-            # category 만 업데이트할 경우
-            early_stop = self.update_category(html=resp, url_info=url_info, job=job, date=dt, es=es)
-            if self.params.update_category_only is True:
-                if early_stop is True:
-                    break
-
-                sleep(self.params.sleep)
-                continue
+            # category 업데이트
+            self.update_category(html=resp, url_info=url_info, job=job, date=dt, es=es)
 
             # 문서 저장
             early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es)
@@ -893,9 +921,10 @@ class WebNewsCrawler(WebNewsBase):
 
         parser = argparse.ArgumentParser()
 
+        parser.add_argument('--config-debug', action='store_true', default=False, help='config 파일 개발')
+
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
-        # 작업 아이디
         parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
         parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
@@ -907,8 +936,6 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
-
-        parser.add_argument('--update-category-only', action='store_true', default=False, help='category 정보만 업데이트')
 
         return parser.parse_args()
 
