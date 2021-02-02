@@ -71,19 +71,17 @@ ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \
 ELASTIC_SEARCH_AUTH=crawler:crawler2019 \
    python3 -m crawler.web_news.web_news \
      --config config/naver/economy.yaml
-
 ```
 
 ## git clone
 
 ```bash
-
 git clone http://galadriel02.korea.ncsoft.corp/crawler/crawler.git crawler
 
 cd crawler
 
-git submodule add http://galadriel02.korea.ncsoft.corp/crawler/config.git config
-git submodule add http://galadriel02.korea.ncsoft.corp/searchtf/sapphire-server/nlp-cloud/crawler.git helm
+git submodule init
+git submodule update
 ```
 
 ## runtime
