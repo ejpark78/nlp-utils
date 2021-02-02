@@ -64,6 +64,16 @@ optional arguments:
 git clone http://galadriel02.korea.ncsoft.corp/crawler/config.git config 
 ```
 
+### 실행  
+
+```bash
+ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \
+ELASTIC_SEARCH_AUTH=crawler:crawler2019 \
+   python3 -m crawler.web_news.web_news \
+     --config config/naver/economy.yaml
+
+```
+
 ## git clone
 
 ```bash
