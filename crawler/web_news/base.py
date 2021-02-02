@@ -71,7 +71,8 @@ class WebNewsBase(object):
     @staticmethod
     def open_config(filename: str) -> dict:
         with open(filename, 'r') as fp:
-            return dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
+            data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+            return dict(data)
 
     @staticmethod
     def update_page_range(page_range: str = None, step: int = 1) -> dict:
