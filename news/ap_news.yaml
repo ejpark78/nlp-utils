@@ -7,11 +7,11 @@ restartPolicy: Never
 
 resources:
   requests:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 200m
+    memory: 300Mi
   limits:
-    cpu: 100m
-    memory: 100Mi
+    cpu: 200m
+    memory: 300Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -29,7 +29,7 @@ configMap:
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
-  envFrom: korea-news
+  envFrom: news
 
 schedule:
   concurrencyPolicy: Forbid
@@ -39,18 +39,15 @@ schedule:
 args:
   - "python3"
   - "-m"
-  - "crawler.web_news.web_news"
+  - "crawler.world_news.ap_news"
   - "--sleep"
   - "10"
 
 jobs:
-  - name: dailian
-    schedule: "10 * * * *"
-    index: "raw-dailian-{year}"
+  - name: apnews
+    schedule: "0 * * * *"
+    index: "raw-apnews-{year}"
     args:
       - "--config"
-      - "/config/news/dailian.yaml"
-      - "--page-range"
-      - "0~5000"
-      - "--page-step"
-      - "100"
+      - "/config/world_news/ap_news.yaml"
+

@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -8,10 +8,10 @@ restartPolicy: Never
 resources:
   requests:
     cpu: 200m
-    memory: 500Mi
+    memory: 200Mi
   limits:
     cpu: 200m
-    memory: 500Mi
+    memory: 200Mi
 
 hostAliases:
   - ip: "172.20.93.112"
@@ -25,11 +25,11 @@ configMap:
   gitSync:
     name: config-sync
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
+    branch: "dev"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
-  envFrom: korea-news
+  envFrom: news
 
 schedule:
   concurrencyPolicy: Forbid
@@ -46,6 +46,7 @@ args:
 jobs:
   - name: ansa
     schedule: "30 * * * *"
+    index: "raw-ansa-{year}"
     args:
       - "--config"
-      - "/config/international/ansa.yaml"
+      - "/config/world_news/ansa.yaml"

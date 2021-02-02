@@ -46,6 +46,7 @@ args:
 jobs:
   - name: donga
     schedule: "0 * * * *"
+    index: "raw-donga-{year}"
     args:
       - "--config"
       - "/config/news/donga.yaml"
@@ -56,6 +57,7 @@ jobs:
 
   - name: donga-en
     schedule: "10 * * * *"
+    index: "raw-donga-en-{year}"
     args:
       - "--config"
       - "/config/news/donga-en.yaml"
@@ -66,6 +68,7 @@ jobs:
 
   - name: donga-cn
     schedule: "20 * * * *"
+    index: "raw-donga-cn-{year}"
     args:
       - "--config"
       - "/config/news/donga-cn.yaml"
@@ -76,6 +79,7 @@ jobs:
 
   - name: donga-jp
     schedule: "30 * * * *"
+    index: "raw-donga-jp-{year}"
     args:
       - "--config"
       - "/config/news/donga-jp.yaml"
@@ -86,6 +90,7 @@ jobs:
 
   - name: joins
     schedule: "0 * * * *"
+    index: "raw-joins-{year}"
     args:
       - "--config"
       - "/config/news/joins.yaml"
@@ -96,6 +101,7 @@ jobs:
 
   - name: wowtv
     schedule: "0 * * * *"
+    index: "raw-wowtv-{year}"
     args:
       - "--config"
       - "/config/news/wowtv.yaml"
@@ -106,12 +112,59 @@ jobs:
 
   - name: chosun-biz
     schedule: "0 * * * *"
+    index: "raw-chosun-biz-{year}"
     args:
       - "--config"
       - "/config/news/chosun-biz.yaml"
 
   - name: sbs-biz
     schedule: "0 * * * *"
+    index: "raw-sbs-biz-{year}"
     args:
       - "--config"
       - "/config/news/sbs-biz.yaml"
+
+  - name: hani
+    schedule: "0 * * * *"
+    index: "raw-hani-{year}"
+    args:
+      - "--config"
+      - "/config/news/hani.yaml"
+
+  - name: hani-en
+    schedule: "10 * * * *"
+    index: "raw-hani-en-{year}"
+    args:
+      - "--config"
+      - "/config/news/hani-en.yaml"
+
+  - name: hani-jp
+    schedule: "10 * * * *"
+    index: "raw-hani-jp-{year}"
+    args:
+      - "--config"
+      - "/config/news/hani-jp.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "10"
+
+  - name: hani-cn
+    schedule: "10 * * * *"
+    index: "raw-hani-cn-{year}"
+    args:
+      - "--config"
+      - "/config/news/hani-cn.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "10"
+
+  - name: newspeppermint
+    schedule: "0 * * * *"
+    index: "raw-newspeppermint-{year}"
+    args:
+      - "--config"
+      - "/config/news/newspeppermint.yaml"
+      - "--page-range"
+      - "1~10"

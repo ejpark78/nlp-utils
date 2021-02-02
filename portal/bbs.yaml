@@ -73,16 +73,16 @@ jobs:
       - "--config"
       - "/config/bbs/ruliweb.yaml"
 
-  - name: inven-lineagem
-    schedule: "0,30 * * * *"
-    index: $(INDEX_INVEN)
-    args:
-      - "--config"
-      - "/config/bbs/inven-lineagem.yaml"
-      - "--page-range"
-      - "1~20"
-      - "--page-step"
-      - "1"
+#  - name: inven-lineagem
+#    schedule: "0,30 * * * *"
+#    index: $(INDEX_INVEN)
+#    args:
+#      - "--config"
+#      - "/config/bbs/inven-lineagem.yaml"
+#      - "--page-range"
+#      - "1~20"
+#      - "--page-step"
+#      - "1"
 
 #  - name: lineagem
 #    schedule: "0,30 * * * *"
