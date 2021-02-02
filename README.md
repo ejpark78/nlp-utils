@@ -84,6 +84,17 @@ git submodule init
 git submodule update
 ```
 
+### debug
+
+```bash
+ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \
+ELASTIC_SEARCH_AUTH=crawler:crawler2019 \
+   python3 -m crawler.web_news.web_news \
+      --overwrite  \
+      --config-debug \
+      --config config/naver/economy.yaml 
+```
+
 ## runtime
 
 ```bash
