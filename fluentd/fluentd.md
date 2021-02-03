@@ -9,6 +9,18 @@
 wget https://raw.githubusercontent.com/fluent/fluentd-kubernetes-daemonset/master/fluentd-daemonset-elasticsearch-rbac.yaml
 ```
 
+## NC CLOUD Security Group 설정
+
+* nlp-crawler outbound 설정
+
+> port: 9200
+> IP: 172.19.169.47
+
+* rook-elk inbound 설정
+
+> port: 9200 
+> Group: NCC Work_Dev 4 (NCC Work_Dev 4)
+
 ## ConfigMap
 
 ```yaml
