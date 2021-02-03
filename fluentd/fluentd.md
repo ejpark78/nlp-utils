@@ -19,7 +19,7 @@ wget https://raw.githubusercontent.com/fluent/fluentd-kubernetes-daemonset/maste
 * rook-elk inbound 설정
 
 > port: 9200 
-> Group: NCC Work_Dev 4 (NCC Work_Dev 4)
+> Group: NCC Work_Dev 4 (172.19.168.0/22)
 
 ## ConfigMap
 
