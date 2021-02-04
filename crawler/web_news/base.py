@@ -64,9 +64,20 @@ class WebNewsBase(object):
         self.date_range = None
         self.page_range = None
 
-        self.cache = SimpleCache(threshold=500, default_timeout=600)
+        self.cache = SimpleCache(threshold=200, default_timeout=600)
 
         self.logger = Logger()
+
+    @staticmethod
+    def simplify(doc: list or dict, size: int = 30) -> list or dict:
+        if isinstance(doc, dict) is False:
+            return str(doc)[:size] + ' ...'
+
+        result = {}
+        for col in doc:
+            result[col] = str(doc[col])[:size] + ' ...'
+
+        return result
 
     @staticmethod
     def open_config(filename: str) -> dict:
@@ -102,7 +113,7 @@ class WebNewsBase(object):
             'step': step,
         }
 
-        if date_range is None:
+        if date_range is None or date_range == 'today':
             return result
 
         token = date_range.split('~', maxsplit=1)

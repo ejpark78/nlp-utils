@@ -649,16 +649,28 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
-    @staticmethod
-    def simplify(doc: list or dict, size: int = 30) -> list or dict:
-        if isinstance(doc, dict) is False:
-            return str(doc)[:size] + ' ...'
+    def check_date_range(self, doc) -> bool:
+        if self.params.date_range is None or self.params.date_range != 'today':
+            return True
 
-        result = {}
-        for col in doc:
-            result[col] = str(doc[col])[:size] + ' ...'
+        if 'date' not in doc:
+            return True
 
-        return result
+        dt = doc['date']
+        if isinstance(doc['date'], str):
+            dt = parse_date(doc['date'])
+
+        today = datetime.now(self.timezone)
+        if dt.strftime('%Y%m%d') != today.strftime('%Y%m%d'):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '날짜 범위 넘어감',
+                'date': dt.strftime('%Y%m%d'),
+                'today': today.strftime('%Y%m%d'),
+            })
+            return False
+
+        return True
 
     def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
         """개별 뉴스를 따라간다."""
@@ -705,6 +717,9 @@ class WebNewsCrawler(WebNewsBase):
 
             if date is None and 'date' in item:
                 date = item['date']
+
+            if self.check_date_range(doc=item) is False:
+                return True
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
