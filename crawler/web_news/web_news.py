@@ -453,8 +453,6 @@ class WebNewsCrawler(WebNewsBase):
                 js = [''.join(x.contents) for x in soup.find_all('script') if 'list:' in ''.join(x.contents)][0]
 
                 trace_list = [x for _, _, x in jsonfinder(js) if x is not None][0]
-
-            str_trace_list = json.dumps(trace_list, ensure_ascii=False, sort_keys=True)
         else:
             soup = self.parser.parse_html(
                 html=html,
@@ -468,10 +466,6 @@ class WebNewsCrawler(WebNewsBase):
                 tag_list=self.config['parsing']['trace'],
             )
 
-            str_trace_list = ''
-            for item in trace_list:
-                str_trace_list += str(item)
-
         if len(trace_list) == 0:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -482,11 +476,6 @@ class WebNewsCrawler(WebNewsBase):
 
             sleep(self.params.sleep)
             return None
-
-        self.set_history(
-            name='trace_list',
-            value=set(str_trace_list),
-        )
 
         return trace_list
 
@@ -557,7 +546,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'HTML 파싱 에러',
-                'resp': str(resp)[:200],
+                'resp': str(resp)[:200] + ' ...',
                 'text': text,
                 'url': url_info['url'],
             })
@@ -566,8 +555,7 @@ class WebNewsCrawler(WebNewsBase):
 
         return item
 
-    def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str,
-                doc_history: set) -> bool:
+    def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str) -> bool:
         if self.params.overwrite is True:
             return False
 
@@ -580,7 +568,6 @@ class WebNewsCrawler(WebNewsBase):
             url=url,
             index=es.index,
             doc_id=doc_id,
-            doc_history=doc_history,
             es=es,
         )
         if is_skip is True:
@@ -690,9 +677,6 @@ class WebNewsCrawler(WebNewsBase):
             })
             return True
 
-        # url 저장 이력 조회
-        doc_history = self.get_history(name='doc_history', default=set())
-
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
@@ -732,8 +716,7 @@ class WebNewsCrawler(WebNewsBase):
             if doc_id is None:
                 continue
 
-            if self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id,
-                            doc_history=doc_history) is True:
+            if self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id) is True:
                 continue
 
             # 기사 본문 조회
@@ -768,7 +751,7 @@ class WebNewsCrawler(WebNewsBase):
                 es=es,
             )
 
-            doc_history.add(doc_id)
+            self.cache.set(key=doc_id, value=True)
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -784,14 +767,11 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 목록 끝에 도달함: 조기 종료',
-                'trace_list_count': '{} > {}'.format(self.trace_list_count, len(trace_list)),
                 'url': url_info['url'] if 'url' in url_info else '',
+                'trace_list_count': '{} > {}'.format(self.trace_list_count, len(trace_list)),
                 **job,
             })
             return True
-
-        # 캐쉬 저장
-        self.set_history(value=doc_history, name='doc_history')
 
         # 다음 페이지 정보가 있는 경우
         self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es)

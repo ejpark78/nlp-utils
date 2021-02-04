@@ -64,7 +64,7 @@ class WebNewsBase(object):
         self.date_range = None
         self.page_range = None
 
-        self.cache = SimpleCache()
+        self.cache = SimpleCache(threshold=500, default_timeout=600)
 
         self.logger = Logger()
 
@@ -254,21 +254,6 @@ class WebNewsBase(object):
 
         return result
 
-    def set_history(self, value: set, name: str) -> None:
-        """문서 아이디 이력을 저장한다."""
-        self.cache.set(name, value, timeout=600)
-        return
-
-    def get_history(self, name: str, default: set) -> set:
-        """문서 아이디 이력을 반환한다."""
-        value = self.cache.get(name)
-
-        if value is None:
-            value = default
-            self.cache.set(name, value, timeout=600)
-
-        return value
-
     def get_dict_value(self, data: list or dict, key_list: list, result: list) -> None:
         """commentlist.list 형태의 키 값을 찾아서 반환한다."""
         if len(key_list) == 0:
@@ -288,11 +273,10 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str, doc_history: set,
-                     reply_info: dict = None) -> bool:
+    def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str, reply_info: dict = None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
-        if doc_id in doc_history:
+        if self.cache.has(key=doc_id) is True:
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '중복 문서, 건너뜀',
@@ -326,7 +310,7 @@ class WebNewsBase(object):
             if doc[field_name] != reply_info['count']:
                 return False
 
-        doc_history.add(doc_id)
+        self.cache.set(key=doc_id, value=True)
 
         self.logger.info(msg={
             'level': 'INFO',
