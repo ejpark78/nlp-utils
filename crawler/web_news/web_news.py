@@ -583,7 +583,8 @@ class WebNewsCrawler(WebNewsBase):
 
         return False
 
-    def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> None:
+    def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
+                        query: dict) -> None:
         """다음 페이지를 따라간다."""
         if 'trace_next_page' not in self.config['parsing']:
             return
@@ -643,17 +644,20 @@ class WebNewsCrawler(WebNewsBase):
 
             sleep(self.params.sleep)
 
-            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=date, es=es)
+            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=date, es=es, query=query)
             if early_stop is True:
                 break
 
         return
 
-    def check_date_range(self, doc) -> bool:
+    def check_date_range(self, doc: dict, query: dict) -> bool:
         if self.params.date_range is None or self.params.date_range != 'today':
             return True
 
         if 'date' not in doc:
+            return True
+
+        if 'page' in query and query['page'] < 3:
             return True
 
         dt = doc['date']
@@ -672,7 +676,8 @@ class WebNewsCrawler(WebNewsBase):
 
         return True
 
-    def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
+    def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
+                   query: dict) -> bool:
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
@@ -720,7 +725,7 @@ class WebNewsCrawler(WebNewsBase):
             if date is None and 'date' in item:
                 date = item['date']
 
-            if self.check_date_range(doc=item) is False:
+            if self.check_date_range(doc=item, query=query) is False:
                 is_date_range_stop = True
                 break
 
@@ -799,7 +804,7 @@ class WebNewsCrawler(WebNewsBase):
             return True
 
         # 다음 페이지 정보가 있는 경우
-        self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es)
+        self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es, query=query)
 
         return False
 
@@ -845,7 +850,7 @@ class WebNewsCrawler(WebNewsBase):
             self.update_category(html=resp, url_info=url_info, job=job, date=dt, es=es)
 
             # 문서 저장
-            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es)
+            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es, query=q)
             if early_stop is True:
                 break
 
