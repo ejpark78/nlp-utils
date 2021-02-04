@@ -5,11 +5,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import bz2
+import json
+
 import urllib3
-from dateutil.parser import parse as parse_date
 from tqdm import tqdm
+
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
@@ -17,10 +18,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class Jisikman(object):
+class UpdateIndex(object):
 
     def __init__(self):
         self.logger = Logger()
+
+        self.es = ElasticSearchUtils(host='https://corpus.ncsoft.com:9200', http_auth='crawler:crawler2019')
 
     @staticmethod
     def mapping_col(doc: dict, col_mapping: dict) -> dict:
@@ -36,16 +39,9 @@ class Jisikman(object):
 
         return doc
 
-    def upload_data(self, filename: str) -> None:
+    def upload_data(self, filename: str, size: int = 3000) -> None:
         q_index = 'raw-jisikman-question'
         a_index = 'raw-jisikman-answer'
-
-        es = ElasticSearchUtils(
-            host='https://corpus.ncsoft.com:9200',
-            index=None,
-            insert=True,
-            http_auth='crawler:crawler2019'
-        )
 
         col_mapping = {
             'answer_count': 'count',
@@ -55,8 +51,6 @@ class Jisikman(object):
             'tag_string': 'tags',
             **{x: '' for x in '_id,_index,content_id,document_id,detail_answers,reg_date'.split(',')},
         }
-
-        size = 3000
 
         bulk = []
         with bz2.open(filename, 'rt') as fp:
@@ -109,23 +103,23 @@ class Jisikman(object):
                     ]
 
                 if len(bulk) > size:
-                    _ = es.conn.bulk(index=q_index, body=bulk, refresh=True)
+                    _ = self.es.conn.bulk(index=q_index, body=bulk, refresh=True)
                     bulk = []
 
-            if len(bulk) > size:
-                _ = es.conn.bulk(index=q_index, body=bulk, refresh=True)
+            if len(bulk) > 0:
+                _ = self.es.conn.bulk(index=q_index, body=bulk, refresh=True)
 
         return
 
     def batch(self) -> None:
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2018.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2017.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2016.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2015.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2014.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2013.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2012.json.bz2')
-        # self.upload_data(filename='data/news/jisikman/crawler-jisikman-2011.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2018.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2017.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2016.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2015.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2014.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2013.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2012.json.bz2')
+        self.upload_data(filename='data/news/jisikman/crawler-jisikman-2011.json.bz2')
         self.upload_data(filename='data/news/jisikman/crawler-jisikman-2010.json.bz2')
         self.upload_data(filename='data/news/jisikman/crawler-jisikman-2009.json.bz2')
         self.upload_data(filename='data/news/jisikman/crawler-jisikman-2008.json.bz2')
@@ -135,4 +129,4 @@ class Jisikman(object):
 
 
 if __name__ == '__main__':
-    Jisikman().batch()
+    UpdateIndex().batch()

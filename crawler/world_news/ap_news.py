@@ -15,8 +15,8 @@ import pytz
 import requests
 import urllib3
 import yaml
-from dateutil.parser import parse as parse_date
 from bs4 import BeautifulSoup
+from dateutil.parser import parse as parse_date
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.logger import Logger
@@ -68,8 +68,18 @@ class ApNewsCrawler(object):
 
         resp = requests.get(url=url_info['url_frame'])
 
-        doc = resp.json()
-        for card in doc['cards']:
+        try:
+            card_list = resp.json()['cards']
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'resp json 파싱 에러 ',
+                'resp': resp.text,
+                'exception': str(e),
+            })
+            return
+
+        for card in card_list:
             for item in card['contents']:
                 dt = parse_date(item['updated'])
                 html = BeautifulSoup(item['storyHTML']).find('html')
