@@ -42,11 +42,11 @@ args:
   - "crawler.web_news.web_news"
   - "--overwrite"
   - "--sleep"
-  - "20"
+  - "10"
 
 jobs:
   - name: mlbpark-kbo
-    schedule: "0,30 * * * *"
+    schedule: "7,34 * * * *"
     index: $(INDEX_MLBPARK_KBO)
     args:
       - "--config"
@@ -67,14 +67,14 @@ jobs:
       - "/config/bbs/mlbpark-bullpen.yaml"
 
   - name: ruliweb
-    schedule: "0,30 * * * *"
+    schedule: "7,34 * * * *"
     index: $(INDEX_RULIWEB)
     args:
       - "--config"
       - "/config/bbs/ruliweb.yaml"
 
 #  - name: inven-lineagem
-#    schedule: "0,30 * * * *"
+#    schedule: "7,34 * * * *"
 #    index: $(INDEX_INVEN)
 #    args:
 #      - "--config"
@@ -85,7 +85,7 @@ jobs:
 #      - "1"
 
 #  - name: lineagem
-#    schedule: "0,30 * * * *"
+#    schedule: "7,34 * * * *"
 #    index: $(INDEX_LINEAGEM)
 #    args:
 #      - "--config"
@@ -96,7 +96,7 @@ jobs:
 #      - "1"
 #
 #  - name: lineage2m
-#    schedule: "0,30 * * * *"
+#    schedule: "7,34 * * * *"
 #    index: $(INDEX_LINEAGE2M)
 #    args:
 #      - "--config"

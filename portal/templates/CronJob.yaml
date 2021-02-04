@@ -19,6 +19,9 @@ spec:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/master
+              effect: NoSchedule
           restartPolicy: {{ $.Values.restartPolicy }}
           hostAliases:
             {{- toYaml $.Values.hostAliases | nindent 12 }}

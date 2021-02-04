@@ -41,11 +41,11 @@ args:
   - "-m"
   - "crawler.world_news.ap_news"
   - "--sleep"
-  - "10"
+  - "5"
 
 jobs:
   - name: apnews
-    schedule: "0 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-apnews-{year}"
     args:
       - "--config"

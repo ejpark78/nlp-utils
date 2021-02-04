@@ -17,6 +17,9 @@ spec:
     spec:
       template:
         spec:
+          tolerations:
+            - key: node-role.kubernetes.io/master
+              effect: NoSchedule
           restartPolicy: {{ $.Values.restartPolicy }}
           hostAliases:
             {{- toYaml $.Values.hostAliases | nindent 12 }}
@@ -37,18 +40,6 @@ spec:
                 - $(GIT_SYNC_BRANCH)
                 - $(GIT_SYNC_REPO)
                 - /config
-              volumeMounts:
-                - name: config
-                  mountPath: "/config"
-            - name: check-config
-              image: {{ $.Values.gitImage }}
-              imagePullPolicy: IfNotPresent
-              command:
-                - find
-                - /config
-                - -type
-                - f
-                - -print
               volumeMounts:
                 - name: config
                   mountPath: "/config"

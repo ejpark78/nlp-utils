@@ -41,58 +41,72 @@ args:
   - "-m"
   - "crawler.web_news.web_news"
   - "--sleep"
-  - "10"
+  - "5"
 
 jobs:
   - name: reuters
-    schedule: "10 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-reuters-{year}"
     args:
       - "--config"
       - "/config/world_news/reuters.yaml"
+      - "--date-range"
+      - "today"
 
   - name: upi
-    schedule: "20 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-upi-{year}"
     args:
       - "--config"
       - "/config/world_news/upi.yaml"
+      - "--date-range"
+      - "today"
       - "--page-range"
       - "1~7"
 
   - name: 47news
-    schedule: "30 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-47news-{year}"
     args:
       - "--config"
       - "/config/world_news/47news.yaml"
+      - "--date-range"
+      - "today"
 
   - name: belga
-    schedule: "30 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-belga-{year}"
     args:
       - "--config"
       - "/config/world_news/belga.yaml"
+      - "--date-range"
+      - "today"
 
   - name: afp
-    schedule: "30 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-afp-{year}"
     args:
       - "--config"
       - "/config/world_news/afp.yaml"
+      - "--date-range"
+      - "today"
 
   - name: bbc
-    schedule: "0 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-bbc-{year}"
     args:
       - "--config"
       - "/config/world_news/bbc.yaml"
+      - "--date-range"
+      - "today"
       - "--page-range"
       - "1~50"
 
   - name: xinhuanet
-    schedule: "0 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-xinhuanet-{year}"
     args:
       - "--config"
       - "/config/world_news/xinhuanet.yaml"
+      - "--date-range"
+      - "today"

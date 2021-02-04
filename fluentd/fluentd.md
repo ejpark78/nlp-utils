@@ -1,5 +1,5 @@
 
-# fluentd daemonset 설치 방법
+# fluentd DaemonSet 설치 방법
 
 * https://github.com/fluent/fluentd-kubernetes-daemonset
 * https://medium.com/kubernetes-tutorials/cluster-level-logging-in-kubernetes-with-fluentd-e59aa2b6093a
@@ -60,7 +60,7 @@ data:
 
 ```
 
-## Daemonset config 
+## DaemonSet config 
 
 ```yaml
 ---

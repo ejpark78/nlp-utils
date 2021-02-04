@@ -6,7 +6,7 @@
 #  labels:
 #    app: crawler-yahoo-tw
 #spec:
-#  schedule: "0,30 * * * *"
+#  schedule: "7,34 * * * *"
 #  concurrencyPolicy: Forbid
 #  failedJobsHistoryLimit: 3
 #  successfulJobsHistoryLimit: 0

@@ -10,6 +10,9 @@ metadata:
     release: {{ $.Release.Name }}
     namespace: {{ $.Release.Namespace }}
 spec:
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
   restartPolicy: {{ $.Values.restartPolicy }}
   hostAliases:
     {{- toYaml $.Values.hostAliases | nindent 2 }}

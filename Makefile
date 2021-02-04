@@ -10,8 +10,6 @@ ls:
 .ONESHELL:
 upgrade:
 	helm upgrade dev ./news -f news/dev.yaml -n dev
-
-	helm upgrade ansa ./news -f news/ansa.yaml -n dev
 	helm upgrade ap-news ./news -f news/ap_news.yaml -n dev
 
 	helm upgrade world-news ./news -f news/world.yaml -n world-news
@@ -29,8 +27,6 @@ upgrade:
 .ONESHELL:
 install:
 	helm install dev ./news -f news/dev.yaml -n dev
-
-	helm install ansa ./news -f news/ansa.yaml -n dev
 	helm install ap-news ./news -f news/ap_news.yaml -n dev
 
 	helm install world-news ./news -f news/world.yaml -n world-news

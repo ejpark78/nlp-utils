@@ -41,16 +41,27 @@ args:
   - "-m"
   - "crawler.web_news.web_news"
   - "--sleep"
-  - "10"
+  - "5"
 
 jobs:
   - name: dailian
-    schedule: "10 * * * *"
+    schedule: "7,34 * * * *"
     index: "raw-dailian-{year}"
     args:
       - "--config"
       - "/config/news/dailian.yaml"
+      - "--date-range"
+      - "today"
       - "--page-range"
       - "0~5000"
       - "--page-step"
       - "100"
+
+  - name: ansa
+    schedule: "7,34 * * * *"
+    index: "raw-ansa-{year}"
+    args:
+      - "--config"
+      - "/config/world_news/ansa.yaml"
+      - "--date-range"
+      - "today"

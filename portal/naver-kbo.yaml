@@ -31,7 +31,7 @@ schedule:
 
 jobs:
   - name: naver-game-center
-    schedule: "0,30 * * * *"
+    schedule: "7,34 * * * *"
     environmentVariables:
       - name: ELASTIC_SEARCH_INDEX
         value: ""
