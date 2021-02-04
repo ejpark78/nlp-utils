@@ -692,6 +692,8 @@ class WebNewsCrawler(WebNewsBase):
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
+        is_date_range_stop = False
+
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
             item = self.parse_tag(
@@ -719,7 +721,8 @@ class WebNewsCrawler(WebNewsBase):
                 date = item['date']
 
             if self.check_date_range(doc=item) is False:
-                return True
+                is_date_range_stop = True
+                break
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
@@ -774,6 +777,13 @@ class WebNewsCrawler(WebNewsBase):
                 'sleep_time': self.params.sleep,
             })
             sleep(self.params.sleep)
+
+        if is_date_range_stop is True:
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '날짜 범위 넘어감: 조기 종료',
+            })
+            return True
 
         # 목록 길이 저장
         if self.trace_list_count < 0:
