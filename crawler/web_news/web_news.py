@@ -440,9 +440,14 @@ class WebNewsCrawler(WebNewsBase):
                 if isinstance(html, str):
                     soup = json.loads(html)
 
-                dot = dotty(soup)
-
                 column = parsing['column']
+
+                if column == '*':
+                    soup = {
+                        '*': soup
+                    }
+
+                dot = dotty(soup)
 
                 trace_list = list(dot[column]) if column in dot else []
                 trace_list = self.flatten(trace_list=trace_list)
