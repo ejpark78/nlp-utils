@@ -571,8 +571,8 @@ class WebNewsCrawler(WebNewsBase):
             es=es,
         )
         if is_skip is True:
-            self.logger.log(msg={
-                'level': 'MESSAGE',
+            self.logger.info(msg={
+                'level': 'INFO',
                 'message': '크롤링된 뉴스가 있음',
                 'doc_id': doc_id,
                 'url': url,
@@ -636,8 +636,8 @@ class WebNewsCrawler(WebNewsBase):
             if resp is None:
                 continue
 
-            self.logger.log(msg={
-                'level': 'MESSAGE',
+            self.logger.info(msg={
+                'level': 'INFO',
                 'message': '다음페이지 크롤링: 슬립',
                 'sleep_time': self.params.sleep,
             })
@@ -669,8 +669,8 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '날짜 범위 넘어감',
-                'date': dt.strftime('%Y%m%d'),
-                'today': today.strftime('%Y%m%d'),
+                'date': dt.strftime('%Y-%m-%d'),
+                'today': today.strftime('%Y-%m-%d'),
             })
             return False
 
@@ -776,8 +776,8 @@ class WebNewsCrawler(WebNewsBase):
 
             self.cache.set(key=doc_id, value=True)
 
-            self.logger.log(msg={
-                'level': 'MESSAGE',
+            self.logger.info(msg={
+                'level': 'INFO',
                 'message': '뉴스 본문 크롤링: 슬립',
                 'sleep_time': self.params.sleep,
             })
