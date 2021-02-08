@@ -10,7 +10,7 @@ from airflow.utils.dates import days_ago
 ## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
 dag = DAG(
-    dag_id='dag',
+    dag_id='pod-op',
     description='kubernetes pod operator',
     default_args={
         'owner': 'Airflow',
