@@ -54,7 +54,7 @@ configmaps = [
 start = DummyOperator(task_id="start", dag=dag)
 
 run = KubernetesPodOperator(
-    task_id="kubernetes-pod-operator",
+    task_id="k8s-pod-operator",
     namespace='airflow',
     image='registry.nlp-utils/crawler:dev',
     secrets=[
