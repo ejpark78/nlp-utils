@@ -4,13 +4,9 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
-from kubernetes.client.models import V1Container
-from airflow.kubernetes.volume_mount import VolumeMount
-## ref: https://bomwo.cc/posts/kubernetespodoperator/
-## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
 dag = DAG(
-    dag_id='crawler',
+    dag_id='naver-economy',
     description='kubernetes pod operator',
     default_args={
         'owner': 'Airflow',
@@ -51,8 +47,8 @@ dag = DAG(
 start = DummyOperator(task_id='start', dag=dag)
 
 run = KubernetesPodOperator(
-    name='economy',
-    task_id='naver',
+    name='app',
+    task_id='stock',
     namespace='airflow',
     image='registry.nlp-utils/crawler:live',
     is_delete_operator_pod=False,
