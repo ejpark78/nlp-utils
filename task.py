@@ -28,10 +28,10 @@ dag = DAG(
 )
 
 secret_list = [
-    Secret(deploy_type='env', deploy_target='GIT_SYNC_REPO', secret='http://galadriel02.korea.ncsoft.corp/crawler/config.git'),
-    Secret(deploy_type='env', deploy_target='GIT_SYNC_BRANCH', secret='live'),
-    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_HOST', secret='https://corpus.ncsoft.com:9200'),
-    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_AUTH', secret='crawler:crawler2019'),
+    # Secret(deploy_type='env', deploy_target='GIT_SYNC_REPO', secret='http://galadriel02.korea.ncsoft.corp/crawler/config.git'),
+    # Secret(deploy_type='env', deploy_target='GIT_SYNC_BRANCH', secret='live'),
+    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_HOST', secret='https://corpus.ncsoft.com:9200', key='ELASTIC_SEARCH_HOST'),
+    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_AUTH', secret='crawler:crawler2019', key='ELASTIC_SEARCH_AUTH'),
 ]
 
 start = DummyOperator(task_id='start', dag=dag)
