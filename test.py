@@ -101,7 +101,7 @@ with DAG(
         python_callable=print_stuff,
         executor_config={
             "KubernetesExecutor": {
-                "namespace": "test-namespace",
+                "namespace": "airflow",
                 "labels": {
                     "release": "stable"
                 }
