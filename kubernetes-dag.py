@@ -12,18 +12,6 @@ from kubernetes.client import models as k8s
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
 ## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
-import os
-from glob import glob
-
-print('getcwd:      ', os.getcwd())
-print('__file__:    ', __file__)
-
-
-print(glob('./*'))
-
-
-dag_id = 'dag'
-
 task_default_args = {
     'owner': 'Airflow',
     'retries': 3,
@@ -37,7 +25,7 @@ task_default_args = {
 }
 
 dag = DAG(
-    dag_id=dag_id,
+    dag_id='dag',
     description='kubernetes pod operator',
     default_args=task_default_args,
     schedule_interval='5 16 * * *',
