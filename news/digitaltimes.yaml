@@ -1,0 +1,48 @@
+---
+jobs:
+- index: raw-digitaltimes-{year}
+  article:
+    document_id:
+      frame: '{article_no}'
+      type: value
+  list:
+  - category: 정치
+    url_frame: http://www.dt.co.kr/section.html?section_num=2400&cpage={page}
+  - category: 국제
+    url_frame: http://www.dt.co.kr/section.html?section_num=2300&cpage={page}
+  - category: 경제
+    url_frame: http://www.dt.co.kr/section.html?section_num=3200&cpage={page}
+  - category: 금융
+    url_frame: http://www.dt.co.kr/section.html?section_num=3100&cpage={page}
+  - category: 산업
+    url_frame: http://www.dt.co.kr/section.html?section_num=2200&cpage={page}
+  - category: 부동산
+    url_frame: http://www.dt.co.kr/section.html?section_num=3500&cpage={page}
+  - category: 증권
+    url_frame: http://www.dt.co.kr/section.html?section_num=3400&cpage={page}
+  - category: ICT과학
+    url_frame: http://www.dt.co.kr/section.html?section_num=2000&cpage={page}
+  - category: 피플
+    url_frame: http://www.dt.co.kr/section.html?section_num=0300&cpage={page}
+  - category: 전체
+    url_frame: http://www.dt.co.kr/section.html?section_num=2900&cpage={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div.list_area div.article-news-list
+    column: list
+#   list:
+#   - parser: json
+#     mapping:
+#       document_id: mediaid
+#       title: title
+#       url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
+#       date: broaddate
+#   article:
+#   - parser: json
+#     mapping:
+#       content: clip.info.synopsis
