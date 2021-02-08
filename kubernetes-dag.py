@@ -10,6 +10,7 @@ from airflow.utils.dates import days_ago
 from kubernetes.client import models as k8s
 
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
+## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
 dag_id = 'kubernetes-dag'
 
@@ -63,7 +64,7 @@ run = KubernetesPodOperator(
     name="job",
     is_delete_operator_pod=True,
     get_logs=True,
-    resources=pod_resources,
+    # resources=pod_resources,
     env_from=configmaps,
     dag=dag,
 )
