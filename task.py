@@ -27,26 +27,26 @@ dag = DAG(
     max_active_runs=1
 )
 
-init_container = V1Container(
-    command=['git'],
-    args=[
-        'clone',
-        '--progress',
-        '-b',
-        '$(GIT_SYNC_BRANCH)',
-        '$(GIT_SYNC_REPO)',
-        '/config',
-    ],
-    env={
-        'GIT_SYNC_REPO': 'http://172.20.92.245/crawler/config.git',
-        'GIT_SYNC_BRANCH': 'live',
-    },
-    image='registry.nlp-utils/alpine/git:v2.30.0',
-    image_pull_policy='IfNotPresent',
-    name='git-sync',
-    volume_devices=None,
-    volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
-)
+# init_container = V1Container(
+#     command=['git'],
+#     args=[
+#         'clone',
+#         '--progress',
+#         '-b',
+#         '$(GIT_SYNC_BRANCH)',
+#         '$(GIT_SYNC_REPO)',
+#         '/config',
+#     ],
+#     env={
+#         'GIT_SYNC_REPO': 'http://172.20.92.245/crawler/config.git',
+#         'GIT_SYNC_BRANCH': 'live',
+#     },
+#     image='registry.nlp-utils/alpine/git:v2.30.0',
+#     image_pull_policy='IfNotPresent',
+#     name='git-sync',
+#     volume_devices=None,
+#     volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
+# )
 
 start = DummyOperator(task_id='start', dag=dag)
 
@@ -75,8 +75,8 @@ run = KubernetesPodOperator(
         '--sub-category',
         '경제/증권',
     ],
-    init_containers=[init_container],
-    volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
+    # init_containers=[init_container],
+    # volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
 )
 
 end = DummyOperator(task_id='end', dag=dag)
