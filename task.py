@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from airflow.kubernetes.secret import Secret
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
@@ -26,15 +27,24 @@ dag = DAG(
     max_active_runs=1
 )
 
+secrets = [
+    Secret(deploy_type='env', deploy_target='GIT_SYNC_REPO', secret='http://galadriel02.korea.ncsoft.corp/crawler/config.git'),
+    Secret(deploy_type='env', deploy_target='GIT_SYNC_BRANCH', secret='live'),
+    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_HOST', secret='https://corpus.ncsoft.com:9200'),
+    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_AUTH', secret='crawler:crawler2019'),
+]
+
 start = DummyOperator(task_id='start', dag=dag)
 
 run = KubernetesPodOperator(
-    name="economy",
-    task_id="naver",
+    name='economy',
+    task_id='naver',
     namespace='airflow',
-    image='registry.nlp-utils/crawler:dev',
+    image='registry.nlp-utils/crawler:live',
     is_delete_operator_pod=False,
+    image_pull_policy='Always',
     image_pull_secrets='registry',
+    secrets=secrets,
     get_logs=True,
     dag=dag,
     cmds=["python3"],
