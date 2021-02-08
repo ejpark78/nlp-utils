@@ -35,7 +35,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id='example_kubernetes_executor_config',
+    dag_id='test_kubernetes_executor_config',
     default_args=default_args,
     schedule_interval=None
 ) as dag:
