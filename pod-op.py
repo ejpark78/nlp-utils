@@ -40,4 +40,6 @@ run = KubernetesPodOperator(
     dag=dag,
 )
 
-start >> run
+end = DummyOperator(task_id='end', dag=dag)
+
+start >> run >> end
