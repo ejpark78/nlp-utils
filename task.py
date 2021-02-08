@@ -34,6 +34,7 @@ run = KubernetesPodOperator(
     namespace='airflow',
     image='registry.nlp-utils/crawler:live',
     is_delete_operator_pod=False,
+    hostnetwork=True,
     image_pull_policy='Always',
     image_pull_secrets='registry',
     env_vars={
