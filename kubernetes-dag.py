@@ -5,8 +5,8 @@ from airflow.models import DAG, Variable
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.kubernetes.secret import Secret
 from airflow.kubernetes.pod import Resources
-#from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
-from airflow.contrib.operatos.Kubernetes_pod_operator import KubernetesPodOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+#from airflow.contrib.operatos.Kubernetes_pod_operator import KubernetesPodOperator
 
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
 
