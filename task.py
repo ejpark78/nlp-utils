@@ -4,7 +4,8 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
-
+from kubernetes.client.models import V1Container
+from airflow.kubernetes.volume_mount import VolumeMount
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
 ## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
@@ -26,6 +27,27 @@ dag = DAG(
     max_active_runs=1
 )
 
+init_container = V1Container(
+    command=['git'],
+    args=[
+        'clone',
+        '--progress',
+        '-b',
+        '$(GIT_SYNC_BRANCH)',
+        '$(GIT_SYNC_REPO)',
+        '/config',
+    ],
+    env={
+        'GIT_SYNC_REPO': 'http://172.20.92.245/crawler/config.git',
+        'GIT_SYNC_BRANCH': 'live',
+    },
+    image='registry.nlp-utils/alpine/git:v2.30.0',
+    image_pull_policy='IfNotPresent',
+    name='git-sync',
+    volume_devices=None,
+    volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
+)
+
 start = DummyOperator(task_id='start', dag=dag)
 
 run = KubernetesPodOperator(
@@ -39,22 +61,22 @@ run = KubernetesPodOperator(
     env_vars={
         'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
         'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
-        'GIT_SYNC_REPO': 'http://galadriel02.korea.ncsoft.corp/crawler/config.git',
-        'GIT_SYNC_BRANCH': 'live',
     },
     get_logs=True,
     dag=dag,
-    cmds=["python3"],
+    cmds=['python3'],
     arguments=[
-        "-m",
-        "crawler.web_news.web_news",
-        "--sleep",
-        "10",
-        "--config",
-        "/config/naver/economy.yaml",
-        "--sub-category",
-        "경제/증권",
+        '-m',
+        'crawler.web_news.web_news',
+        '--sleep',
+        '10',
+        '--config',
+        '/config/naver/economy.yaml',
+        '--sub-category',
+        '경제/증권',
     ],
+    init_containers=[init_container],
+    volume_mounts=[VolumeMount('config', mount_path='/config', sub_path=None, read_only=False)],
 )
 
 end = DummyOperator(task_id='end', dag=dag)
