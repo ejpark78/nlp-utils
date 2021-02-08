@@ -1,6 +1,7 @@
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.utils.dates import days_ago
 
 dag = DAG(
     dag_id='task',
@@ -8,6 +9,7 @@ dag = DAG(
     default_args={
         'owner': 'Airflow',
         'retries': 3,
+        'start_date': days_ago(1),
         'depends_on_past': False,
         'email': ['ejpark@ncsoft.com'],
         'email_on_retry': False,
