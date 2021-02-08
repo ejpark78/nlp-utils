@@ -33,11 +33,12 @@ run = KubernetesPodOperator(
     task_id="naver",
     namespace='airflow',
     image='registry.nlp-utils/crawler:dev',
-    is_delete_operator_pod=True,
+    is_delete_operator_pod=False,
     image_pull_secrets='registry',
     get_logs=True,
     dag=dag,
-    cmds=[
+    cmds=["bash", "-cx"],
+    arguments=[
         "python3",
         "-m",
         "crawler.web_news.web_news",
