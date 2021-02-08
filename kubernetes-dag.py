@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from kubernetes.client import models as k8s
-from airflow.models import DAG, Variable
-from airflow.operators.dummy_operator import DummyOperator
-from airflow.kubernetes.secret import Secret
 from airflow.kubernetes.pod import Resources
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
-#from airflow.contrib.operatos.Kubernetes_pod_operator import KubernetesPodOperator
+from airflow.kubernetes.secret import Secret
+from airflow.models import DAG
+from airflow.operators.dummy_operator import DummyOperator
+# from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from airflow.utils.dates import days_ago
+from kubernetes.client import models as k8s
 
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
 
@@ -44,7 +45,6 @@ pod_resources.request_cpu = '200m'
 pod_resources.request_memory = '100Mi'
 pod_resources.limit_cpu = '200m'
 pod_resources.limit_memory = '100Mi'
-
 
 configmaps = [
     k8s.V1EnvFromSource(config_map_ref=k8s.V1ConfigMapEnvSource(name='registry')),
