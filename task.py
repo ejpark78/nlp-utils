@@ -27,7 +27,7 @@ dag = DAG(
     max_active_runs=1
 )
 
-secrets = [
+secret_list = [
     Secret(deploy_type='env', deploy_target='GIT_SYNC_REPO', secret='http://galadriel02.korea.ncsoft.corp/crawler/config.git'),
     Secret(deploy_type='env', deploy_target='GIT_SYNC_BRANCH', secret='live'),
     Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_HOST', secret='https://corpus.ncsoft.com:9200'),
@@ -44,7 +44,7 @@ run = KubernetesPodOperator(
     is_delete_operator_pod=False,
     image_pull_policy='Always',
     image_pull_secrets='registry',
-    secrets=secrets,
+    secrets=secret_list,
     get_logs=True,
     dag=dag,
     cmds=["python3"],
