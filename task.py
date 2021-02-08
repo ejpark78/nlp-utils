@@ -37,9 +37,8 @@ run = KubernetesPodOperator(
     image_pull_secrets='registry',
     get_logs=True,
     dag=dag,
-    cmds=["bash", "-cx"],
+    cmds=["python3"],
     arguments=[
-        "python3",
         "-m",
         "crawler.web_news.web_news",
         "--sleep",
