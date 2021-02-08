@@ -9,7 +9,7 @@ from airflow.utils.dates import days_ago
 ## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
 dag = DAG(
-    dag_id='task',
+    dag_id='crawler',
     description='kubernetes pod operator',
     default_args={
         'owner': 'Airflow',
@@ -29,14 +29,25 @@ dag = DAG(
 start = DummyOperator(task_id='start', dag=dag)
 
 run = KubernetesPodOperator(
-    name="job",
-    task_id="task",
+    name="economy",
+    task_id="naver",
     namespace='airflow',
     image='registry.nlp-utils/crawler:dev',
     is_delete_operator_pod=True,
     image_pull_secrets='registry',
     get_logs=True,
     dag=dag,
+    cmds=[
+        "python3",
+        "-m",
+        "crawler.web_news.web_news",
+        "--sleep",
+        "10",
+        "--config",
+        "/config/naver/economy.yaml",
+        "--sub-category",
+        "경제/증권",
+    ],
 )
 
 end = DummyOperator(task_id='end', dag=dag)
