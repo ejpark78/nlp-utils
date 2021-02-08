@@ -12,7 +12,7 @@ from kubernetes.client import models as k8s
 ## ref: https://bomwo.cc/posts/kubernetespodoperator/
 ## https://stackoverflow.com/questions/56296775/airflow-modulenotfounderror-no-module-named-kubernetes
 
-dag_id = 'kubernetes-dag'
+dag_id = 'dag'
 
 task_default_args = {
     'owner': 'Airflow',
@@ -54,7 +54,7 @@ configmaps = [
 start = DummyOperator(task_id="start", dag=dag)
 
 run = KubernetesPodOperator(
-    task_id="k8s-pod-operator",
+    task_id="pod-op",
     namespace='airflow',
     image='registry.nlp-utils/crawler:dev',
     secrets=[
