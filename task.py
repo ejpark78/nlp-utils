@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-from airflow.kubernetes.secret import Secret
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
@@ -27,13 +26,6 @@ dag = DAG(
     max_active_runs=1
 )
 
-secret_list = [
-    # Secret(deploy_type='env', deploy_target='GIT_SYNC_REPO', secret='http://galadriel02.korea.ncsoft.corp/crawler/config.git'),
-    # Secret(deploy_type='env', deploy_target='GIT_SYNC_BRANCH', secret='live'),
-    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_HOST', secret='https://corpus.ncsoft.com:9200', key='ELASTIC_SEARCH_HOST'),
-    Secret(deploy_type='env', deploy_target='ELASTIC_SEARCH_AUTH', secret='crawler:crawler2019', key='ELASTIC_SEARCH_AUTH'),
-]
-
 start = DummyOperator(task_id='start', dag=dag)
 
 run = KubernetesPodOperator(
@@ -44,7 +36,12 @@ run = KubernetesPodOperator(
     is_delete_operator_pod=False,
     image_pull_policy='Always',
     image_pull_secrets='registry',
-    secrets=secret_list,
+    env_vars={
+        'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
+        'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
+        'GIT_SYNC_REPO': 'http://galadriel02.korea.ncsoft.corp/crawler/config.git',
+        'GIT_SYNC_BRANCH': 'live',
+    },
     get_logs=True,
     dag=dag,
     cmds=["python3"],
