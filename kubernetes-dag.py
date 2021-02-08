@@ -60,7 +60,7 @@ run = KubernetesPodOperator(
     secrets=[
         env
     ],
-    image_pull_secrets=[k8s.V1LocalObjectReference('image_credential')],
+    image_pull_secrets=[k8s.V1LocalObjectReference('registry')],
     name="job",
     is_delete_operator_pod=True,
     get_logs=True,
