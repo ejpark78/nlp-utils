@@ -1,0 +1,88 @@
+---
+jobs:
+- index: raw-inews365-{year}
+  article:
+    document_id:
+      frame: '{no}'
+      type: query
+  list:
+  - category: 정치
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=12&page={page}
+  - category: 사회
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=45&page={page}
+  - category: 교육
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=51&page={page}
+  - category: 스포츠
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=54&page={page}
+  - category: 미디어/연예
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=109&page={page}
+
+  - category: 일반/도정
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=49&page={page}
+  - category: 청주시
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=46&page={page}
+  - category: 충주/제천/단양
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=71&page={page}
+  - category: 증평/진천/괴산/음성
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=70&page={page}
+  - category: 보은/옥천/영동
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=69&page={page}
+  - category: 대전/충남
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=68&page={page}
+
+  - category: 경제
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=19&page={page}
+  - category: 라이프
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=125&page={page}
+
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div#alt1 > ul.art_list > li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: li > a > h3
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: li > a
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.art_tit h2
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    value:
+    - select: div.art_sum ul li:nth-child(1)
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: "^.*웹출고시간"
+      to: ''
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.article
+    type: text
+    value_type: merge
