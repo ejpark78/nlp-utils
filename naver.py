@@ -65,6 +65,21 @@ sub_category = [
     {'category': 'economy', 'task_id': 'living', 'name': "경제/생활경제", 'config': '/config/naver/economy.yaml'},
     {'category': 'economy', 'task_id': 'venture', 'name': "경제/중기/벤처", 'config': '/config/naver/economy.yaml'},
 
+    {'category': 'international', 'task_id': 'asia', 'name': "세계/아시아호주", 'config': '/config/naver/international.yaml'},
+    {'category': 'international', 'task_id': 'western', 'name': "세계/미국중남미", 'config': '/config/naver/international.yaml'},
+    {'category': 'international', 'task_id': 'europe', 'name': "세계/유럽", 'config': '/config/naver/international.yaml'},
+    {'category': 'international', 'task_id': 'mideast', 'name': "세계/중동아프리카", 'config': '/config/naver/international.yaml'},
+    {'category': 'international', 'task_id': 'etc', 'name': "세계/일반", 'config': '/config/naver/international.yaml'},
+
+    {'category': 'it', 'task_id': 'mobile', 'name': "IT/모바일", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'sns', 'name': "IT/인터넷/SNS", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'new-media', 'name': "IT/통신/뉴미디어", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'etc', 'name': "IT/IT 일반", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'security', 'name': "IT/보안/해킹", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'computer', 'name': "IT/컴퓨터", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'review', 'name': "IT/게임/리뷰", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'etc', 'name': "IT/과학 일반", 'config': '/config/naver/it.yaml'},
+
     {'category': 'living', 'task_id': 'health', 'name': "생활/건강정보", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'car', 'name': "생활/자동차시승기", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'traffic', 'name': "생활/도로교통", 'config': '/config/naver/living.yaml'},
