@@ -4,7 +4,7 @@ jobs:
   article:
     document_id:
       frame: '{article_no}'
-      type: value
+      type: query
   list:
   - category: 정치
     url_frame: http://www.dt.co.kr/section.html?section_num=2400&cpage={page}
@@ -64,12 +64,14 @@ parsing:
   - comment: 날짜
     key: date
     value:
-    - select: div.wrap div.top_header div.news_title_text div.news_title_author li.lasttime
+    - select: li.lasttime
     type: text
     type_convert: date
     value_type: single
     replace:
-    - from: '^.+입력: '
+    - from: "^.*ÀÔ·Â:"
+      to: ''
+    - from: '^.*입력: '
       to: ''
   - comment: 텍스트 본문
     key: content

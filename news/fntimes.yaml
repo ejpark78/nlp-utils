@@ -8,6 +8,22 @@ jobs:
   list:
   - category: 증권
     url_frame: https://www.fntimes.com/html/list.php?ct=g0100&ssk=&nmd=1&pg={page}
+  - category: 채권/외환
+    url_frame: https://www.fntimes.com/html/list.php?ct=g1100&ssk=&nmd=1&pg={page}
+  - category: 산업
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0200&ssk=&nmd=1&pg={page}
+  - category: 유통/부동산
+    url_frame: https://www.fntimes.com/html/list.php?ct=g1200&ssk=&nmd=1&pg={page}
+  - category: 금융
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0300&ssk=&nmd=1&pg={page}
+  - category: 보험
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0400&ssk=&nmd=1&pg={page}
+  - category: 2금융
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0500&ssk=&nmd=1&pg={page}
+  - category: 경제/시사
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0700&ssk=&nmd=1&pg={page}
+  - category: 재테크/상품
+    url_frame: https://www.fntimes.com/html/list.php?ct=g0900&ssk=&nmd=1&pg={page}
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
