@@ -69,7 +69,7 @@ for task_id in 'economy,international,it,living,opinion,politics,society,sports,
 
     start >> category_list[task_id]
 
-sub_category = open_config(filename='config/naver.yaml')
+sub_category = open_config(filename='/opt/airflow/dags/repo/config/naver.yaml')
 
 for item in sub_category:
     task = KubernetesPodOperator(
