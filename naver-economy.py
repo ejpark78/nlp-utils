@@ -23,23 +23,28 @@ dag = DAG(
     max_active_runs=1
 )
 
+env_vars = {
+    'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
+    'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
+}
+
+params = {
+    'namespace': 'airflow',
+    'image': 'registry.nlp-utils/crawler:live',
+    'is_delete_operator_pod': False,
+    'image_pull_policy': 'Always',
+    'image_pull_secrets': 'registry',
+    'env_vars': env_vars,
+    'get_logs': True,
+    'cmds': ['python3'],
+}
+
 start = DummyOperator(task_id='start', dag=dag)
 
-run = KubernetesPodOperator(
+task1 = KubernetesPodOperator(
+    dag=dag,
     name='app',
     task_id='stock',
-    namespace='airflow',
-    image='registry.nlp-utils/crawler:live',
-    is_delete_operator_pod=False,
-    image_pull_policy='Always',
-    image_pull_secrets='registry',
-    env_vars={
-        'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
-        'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
-    },
-    get_logs=True,
-    dag=dag,
-    cmds=['python3'],
     arguments=[
         '-m',
         'crawler.web_news.web_news',
@@ -50,8 +55,27 @@ run = KubernetesPodOperator(
         '--sub-category',
         '경제/증권',
     ],
+    **params
+)
+
+task2 = KubernetesPodOperator(
+    dag=dag,
+    name='app',
+    task_id='stock',
+    arguments=[
+        '-m',
+        'crawler.web_news.web_news',
+        '--sleep',
+        '10',
+        '--config',
+        '/config/naver/economy.yaml',
+        '--sub-category',
+        '경제/금융',
+    ],
+    **params
 )
 
 end = DummyOperator(task_id='end', dag=dag)
 
-start >> run >> end
+start >> task1 >> end
+start >> task2 >> end
