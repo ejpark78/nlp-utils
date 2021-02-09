@@ -39,43 +39,44 @@ params = {
     'cmds': ['python3'],
 }
 
+args = [
+    '-m',
+    'crawler.web_news.web_news',
+    '--sleep',
+    '10',
+    '--config',
+    '/config/naver/economy.yaml',
+]
+
+sub_category = [
+    {'task_id': 'stock', 'name': "경제/증권"},
+    {'task_id': 'finance', 'name': "경제/금융"},
+    {'task_id': 'estate', 'name': "경제/부동산"},
+    {'task_id': 'industry', 'name': "경제/산업/재계"},
+    {'task_id': 'global', 'name': "경제/글로벌 경제"},
+    {'task_id': 'general', 'name': "경제/경제 일반"},
+    {'task_id': 'living', 'name': "경제/생활경제"},
+    {'task_id': 'venture', 'name': "경제/중기/벤처"},
+]
+
 start = DummyOperator(task_id='start', dag=dag)
 
-task1 = KubernetesPodOperator(
-    dag=dag,
-    name='app',
-    task_id='stock',
-    arguments=[
-        '-m',
-        'crawler.web_news.web_news',
-        '--sleep',
-        '10',
-        '--config',
-        '/config/naver/economy.yaml',
-        '--sub-category',
-        '경제/증권',
-    ],
-    **params
-)
+task_list = []
+for item in sub_category:
+    task = KubernetesPodOperator(
+        dag=dag,
+        name='app',
+        task_id=item['task_id'],
+        arguments=args + [
+            '--sub-category',
+            item['name'],
+        ],
+        **params
+    )
 
-task2 = KubernetesPodOperator(
-    dag=dag,
-    name='app',
-    task_id='finance',
-    arguments=[
-        '-m',
-        'crawler.web_news.web_news',
-        '--sleep',
-        '10',
-        '--config',
-        '/config/naver/economy.yaml',
-        '--sub-category',
-        '경제/금융',
-    ],
-    **params
-)
+    task_list.append(task)
 
 end = DummyOperator(task_id='end', dag=dag)
 
-start >> task1 >> end
-start >> task2 >> end
+for task in task_list:
+    start >> task >> end
