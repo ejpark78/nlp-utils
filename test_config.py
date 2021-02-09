@@ -99,5 +99,4 @@ class NaverCrawlerDags(object):
             category_list[category] >> task
 
 
-if __name__ == '__main__':
-    NaverCrawlerDags().batch()
+NaverCrawlerDags().batch()
