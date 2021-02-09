@@ -76,7 +76,7 @@ sub_category = [
     {'category': 'society', 'task_id': 'person', 'name': "사회/인물", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'etc', 'name': "사회/사회일반", 'config': '/config/naver/society.yaml'},
 
-    {'category': 'weather', 'task_id': 'weather', 'name': "날씨", 'config': '/config/naver/weather.yaml'},
+    {'category': 'weather', 'task_id': 'forecast', 'name': "날씨", 'config': '/config/naver/weather.yaml'},
 
     {'category': 'sports', 'task_id': 'baseball', 'name': "스포츠/야구", 'config': '/config/naver/sports.yaml'},
     {'category': 'sports', 'task_id': 'wbaseball', 'name': "스포츠/해외야구", 'config': '/config/naver/sports.yaml'},
