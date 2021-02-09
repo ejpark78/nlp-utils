@@ -23,6 +23,12 @@ dag = DAG(
     max_active_runs=1
 )
 
+start = DummyOperator(task_id='start', dag=dag)
+economy = DummyOperator(task_id='economy', dag=dag)
+end = DummyOperator(task_id='end', dag=dag)
+
+start >> economy
+
 env_vars = {
     'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
     'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
@@ -49,19 +55,16 @@ args = [
 ]
 
 sub_category = [
-    {'task_id': 'stock', 'name': "경제/증권"},
-    {'task_id': 'finance', 'name': "경제/금융"},
-    {'task_id': 'estate', 'name': "경제/부동산"},
-    {'task_id': 'industry', 'name': "경제/산업/재계"},
-    {'task_id': 'global', 'name': "경제/글로벌 경제"},
-    {'task_id': 'general', 'name': "경제/경제 일반"},
-    {'task_id': 'living', 'name': "경제/생활경제"},
-    {'task_id': 'venture', 'name': "경제/중기/벤처"},
+    {'category': economy, 'task_id': 'stock', 'name': "경제/증권"},
+    {'category': economy, 'task_id': 'finance', 'name': "경제/금융"},
+    {'category': economy, 'task_id': 'estate', 'name': "경제/부동산"},
+    {'category': economy, 'task_id': 'industry', 'name': "경제/산업/재계"},
+    {'category': economy, 'task_id': 'global', 'name': "경제/글로벌 경제"},
+    {'category': economy, 'task_id': 'general', 'name': "경제/경제 일반"},
+    {'category': economy, 'task_id': 'living', 'name': "경제/생활경제"},
+    {'category': economy, 'task_id': 'venture', 'name': "경제/중기/벤처"},
 ]
 
-start = DummyOperator(task_id='start', dag=dag)
-
-task_list = []
 for item in sub_category:
     task = KubernetesPodOperator(
         dag=dag,
@@ -74,9 +77,4 @@ for item in sub_category:
         **params
     )
 
-    task_list.append(task)
-
-end = DummyOperator(task_id='end', dag=dag)
-
-for task in task_list:
-    start >> task >> end
+    item['category'] >> task >> end
