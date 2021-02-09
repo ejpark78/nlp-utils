@@ -24,6 +24,7 @@ jobs:
     url_frame: https://www.fntimes.com/html/list.php?ct=g0700&ssk=&nmd=1&pg={page}
   - category: 재테크/상품
     url_frame: https://www.fntimes.com/html/list.php?ct=g0900&ssk=&nmd=1&pg={page}
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
