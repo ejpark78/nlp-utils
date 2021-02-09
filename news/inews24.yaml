@@ -39,6 +39,7 @@ jobs:
   - category: 연예스포츠
     date_format: '%Y%m'
     url_frame: http://inews24.com/list/entersport?date={date}&page={page}
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
