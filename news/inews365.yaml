@@ -5,7 +5,9 @@ jobs:
     document_id:
       frame: '{no}'
       type: query
-  list:
+  list: 
+  - category: 지역
+    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=11&page={page}
   - category: 정치
     url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=12&page={page}
   - category: 사회
@@ -16,20 +18,6 @@ jobs:
     url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=54&page={page}
   - category: 미디어/연예
     url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=109&page={page}
-
-  - category: 일반/도정
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=49&page={page}
-  - category: 청주시
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=46&page={page}
-  - category: 충주/제천/단양
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=71&page={page}
-  - category: 증평/진천/괴산/음성
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=70&page={page}
-  - category: 보은/옥천/영동
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=69&page={page}
-  - category: 대전/충남
-    url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=68&page={page}
-
   - category: 경제
     url_frame: https://www.inews365.com/news/section_list_all.html?sec_no=19&page={page}
   - category: 라이프
