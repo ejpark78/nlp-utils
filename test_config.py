@@ -63,26 +63,27 @@ args = [
 
 start = DummyOperator(task_id='start', dag=dag)
 
-category_list = {}
-for task_id in 'economy,international,it,living,opinion,politics,society,sports,tv,weather'.split(','):
-    category_list[task_id] = DummyOperator(task_id=task_id, dag=dag)
-
-    start >> category_list[task_id]
-
 sub_category = open_config(filename='/opt/airflow/dags/repo/config/naver.yaml')
 
+category_list = {}
 for item in sub_category:
+    category = item['category']
+    if category not in category_list:
+        category_list[category] = DummyOperator(task_id=category, dag=dag)
+
+        start >> category_list[category]
+
     task = KubernetesPodOperator(
         dag=dag,
         name='task',
         task_id=item['task_id'],
         arguments=args + [
             '--config',
-            '/config/naver/{}.yaml'.format(item['category']),
+            item['config'],
             '--sub-category',
             item['name'],
         ],
         **params
     )
 
-    category_list[item['category']] >> task
+    category_list[category] >> task
