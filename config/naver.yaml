@@ -241,10 +241,6 @@ tasks:
     task_id: sports-golf
   - category: sports
     config: /config/naver/sports.yaml
-    name: 스포츠/축구
-    task_id: sports-football
-  - category: sports
-    config: /config/naver/sports.yaml
     name: 스포츠/스포츠-일반
     task_id: sports-etc
   - category: international
