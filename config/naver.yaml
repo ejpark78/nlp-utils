@@ -177,11 +177,11 @@
 - category: opinion
   config: /config/naver/opinion.yaml
   name: 오피니언
-  task_id: opinion-0
+  task_id: opinion-opinion
 - category: tv
   config: /config/naver/tv.yaml
   name: TV
-  task_id: tv-0
+  task_id: tv-tv
 - category: sports
   config: /config/naver/sports.yaml
   name: 스포츠/야구
