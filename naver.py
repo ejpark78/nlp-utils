@@ -29,7 +29,7 @@ env_vars = {
 }
 
 params = {
-    'namespace': 'naver-news',
+    'namespace': 'airflow',
     'image': 'registry.nlp-utils/crawler:live',
     'image_pull_policy': 'Always',
     'image_pull_secrets': 'registry',
