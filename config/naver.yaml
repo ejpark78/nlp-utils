@@ -54,7 +54,7 @@ tasks:
   - category: it
     config: /config/naver/it.yaml
     name: IT/과학 일반
-    task_id: it-etc
+    task_id: it-science
   - category: economy
     config: /config/naver/economy.yaml
     name: 경제/증권
@@ -214,7 +214,7 @@ tasks:
   - category: sports
     config: /config/naver/sports.yaml
     name: 스포츠/해외야구
-    task_id: sports-baseball
+    task_id: sports-wbaseball
   - category: sports
     config: /config/naver/sports.yaml
     name: 스포츠/게임
@@ -226,7 +226,7 @@ tasks:
   - category: sports
     config: /config/naver/sports.yaml
     name: 스포츠/해외축구
-    task_id: sports-football
+    task_id: sports-wfootball
   - category: sports
     config: /config/naver/sports.yaml
     name: 스포츠/농구
