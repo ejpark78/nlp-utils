@@ -7,19 +7,19 @@ jobs:
       type: query
   list:
   - category: 정치/행정
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=92828&box_idxno=&sc_section_code=S1N3&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N3&view_type=tm
   - category: 경제/과학
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=123319&box_idxno=&sc_section_code=S1N4&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N4&view_type=tm
   - category: 사회
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=162384&box_idxno=&sc_section_code=S1N5&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N5&view_type=tm
   - category: 스포츠
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=48553&box_idxno=&sc_section_code=S1N6&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N6&view_type=tm
   - category: 문화
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=45468&box_idxno=&sc_section_code=S1N7&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N7&view_type=tm
   - category: 사람들
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=41391&box_idxno=&sc_section_code=S1N9&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N9&view_type=tm
   - category: 종합
-    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=7188&box_idxno=&sc_section_code=S1N12&view_type=tm
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N12&view_type=tm
     
 parsing:
   descriptions:
