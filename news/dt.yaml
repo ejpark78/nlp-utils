@@ -8,24 +8,34 @@ jobs:
   list:
   - category: 정치
     url_frame: http://www.dt.co.kr/section.html?section_num=2400&cpage={page}
+    encoding: 'euc-kr'
   - category: 국제
     url_frame: http://www.dt.co.kr/section.html?section_num=2300&cpage={page}
+    encoding: 'euc-kr'
   - category: 경제
     url_frame: http://www.dt.co.kr/section.html?section_num=3200&cpage={page}
+    encoding: 'euc-kr'
   - category: 금융
     url_frame: http://www.dt.co.kr/section.html?section_num=3100&cpage={page}
+    encoding: 'euc-kr'
   - category: 산업
     url_frame: http://www.dt.co.kr/section.html?section_num=2200&cpage={page}
+    encoding: 'euc-kr'
   - category: 부동산
     url_frame: http://www.dt.co.kr/section.html?section_num=3500&cpage={page}
+    encoding: 'euc-kr'
   - category: 증권
     url_frame: http://www.dt.co.kr/section.html?section_num=3400&cpage={page}
+    encoding: 'euc-kr'
   - category: ICT과학
     url_frame: http://www.dt.co.kr/section.html?section_num=2000&cpage={page}
+    encoding: 'euc-kr'
   - category: 피플
     url_frame: http://www.dt.co.kr/section.html?section_num=0300&cpage={page}
+    encoding: 'euc-kr'
   - category: 전체
     url_frame: http://www.dt.co.kr/section.html?section_num=2900&cpage={page}
+    encoding: 'euc-kr'
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
