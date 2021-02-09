@@ -111,4 +111,4 @@ for name in dag_info['category']:
     start >> dag_info['category'][name]
 
     for task in dag_info['operator'][name]:
-        dag_info['operator'][name] >> task
+        dag_info['category'][name] >> task
