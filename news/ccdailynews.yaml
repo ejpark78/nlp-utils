@@ -1,0 +1,74 @@
+---
+jobs:
+- index: raw-ccdailynews-{year}
+  article:
+    document_id:
+      frame: '{idxno}'
+      type: query
+  list:
+  - category: 정치
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N1&view_type=sm
+  - category: 경제
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N2&view_type=sm
+  - category: 사회
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N3&view_type=sm
+  - category: 교육
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N26&view_type=sm
+  - category: 문화
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N4&view_type=sm
+  - category: 연예
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N9&view_type=sm
+  - category: 스포츠
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N25&view_type=sm
+    
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div#sections section#section-list ul.type2 li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: li h4.titles
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: li a
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: header.article-view-header h3.heading
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    value:
+    - select: article.item ul li:nth-child(2)
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: "^.*입력 "
+      to: ''
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: 'div[itemprop=articleBody]'
+    type: text
+    value_type: merge
