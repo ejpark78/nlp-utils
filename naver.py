@@ -89,7 +89,7 @@ sub_category = [
     {'category': 'living', 'task_id': 'art', 'name': "생활/공연전시", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'book', 'name': "생활/책", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'religion', 'name': "생활/종교", 'config': '/config/naver/living.yaml'},
-    {'category': 'living', 'task_id': 'forecast', 'name': "생활/날씨", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'living-forecast', 'name': "생활/날씨", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'living-etc', 'name': "생활/일반", 'config': '/config/naver/living.yaml'},
 
     {'category': 'politics', 'task_id': 'blue-house', 'name': "정치/청와대", 'config': '/config/naver/politics.yaml'},
