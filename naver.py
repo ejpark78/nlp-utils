@@ -12,7 +12,7 @@ dag = DAG(
         'owner': 'Airflow',
         'retries': 3,
         'retry_delay': timedelta(minutes=10),
-        'start_date': days_ago(1),
+        'start_date': days_ago(n=0, hour=1),
         'depends_on_past': False,
         'email': ['ejpark@ncsoft.com'],
         'email_on_retry': False,
@@ -47,7 +47,6 @@ args = [
 ]
 
 start = DummyOperator(task_id='start', dag=dag)
-end = DummyOperator(task_id='end', dag=dag)
 
 category_list = {}
 for task_id in 'economy,international,it,living,opinion,politics,society,sports,tv,weather'.split(','):
@@ -96,7 +95,6 @@ sub_category = [
         'task_id': 'venture',
         'name': '경제/중기/벤처',
     },
-
     {
         'category': 'international',
         'task_id': 'asia',
@@ -122,7 +120,6 @@ sub_category = [
         'task_id': 'international-etc',
         'name': '세계/일반',
     },
-
     {
         'category': 'it',
         'task_id': 'mobile',
@@ -163,7 +160,6 @@ sub_category = [
         'task_id': 'science',
         'name': 'IT/과학 일반',
     },
-
     {
         'category': 'living',
         'task_id': 'health',
@@ -219,7 +215,6 @@ sub_category = [
         'task_id': 'living-etc',
         'name': '생활/일반',
     },
-
     {
         'category': 'politics',
         'task_id': 'blue-house',
@@ -250,7 +245,6 @@ sub_category = [
         'task_id': 'politics-etc',
         'name': '정치/정치일반',
     },
-
     {
         'category': 'society',
         'task_id': 'incident',
@@ -301,7 +295,6 @@ sub_category = [
         'task_id': 'society-etc',
         'name': '사회/사회일반',
     },
-
     {
         'category': 'weather',
         'task_id': 'forecast',
@@ -312,7 +305,6 @@ sub_category = [
         'task_id': 'opi',
         'name': '날씨',
     },
-
     {
         'category': 'sports',
         'task_id': 'baseball',
@@ -374,4 +366,4 @@ for item in sub_category:
         **params
     )
 
-    category_list[item['category']] >> task >> end
+    category_list[item['category']] >> task
