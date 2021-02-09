@@ -36,6 +36,7 @@ jobs:
   - category: 전체
     url_frame: http://www.dt.co.kr/section.html?section_num=2900&cpage={page}
     encoding: 'euc-kr'
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
