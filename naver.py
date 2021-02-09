@@ -65,6 +65,25 @@ sub_category = [
     {'category': 'economy', 'task_id': 'living', 'name': "경제/생활경제", 'config': '/config/naver/economy.yaml'},
     {'category': 'economy', 'task_id': 'venture', 'name': "경제/중기/벤처", 'config': '/config/naver/economy.yaml'},
 
+    {'category': 'living', 'task_id': 'health', 'name': "생활/건강정보", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'car', 'name': "생활/자동차시승기", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'traffic', 'name': "생활/도로교통", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'tour', 'name': "생활/여행/레저", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'food', 'name': "생활/음식맛집", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'beauty', 'name': "생활/패션뷰티", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'art', 'name': "생활/공연전시", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'book', 'name': "생활/책", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'religion', 'name': "생활/종교", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'forecast', 'name': "생활/날씨", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'etc', 'name': "생활/일반", 'config': '/config/naver/living.yaml'},
+
+    {'category': 'politics', 'task_id': 'blue-house', 'name': "정치/청와대", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'national-assembly', 'name': "정치/국회정당", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'north-korea', 'name': "정치/북한", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'administration', 'name': "정치/행정", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'national-defense', 'name': "정치/국방외교", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'etc', 'name': "정치/정치일반", 'config': '/config/naver/politics.yaml'},
+
     {'category': 'society', 'task_id': 'incident', 'name': "사회/사건사고", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'education', 'name': "사회/교육", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'labor', 'name': "사회/노동", 'config': '/config/naver/society.yaml'},
@@ -77,6 +96,7 @@ sub_category = [
     {'category': 'society', 'task_id': 'etc', 'name': "사회/사회일반", 'config': '/config/naver/society.yaml'},
 
     {'category': 'weather', 'task_id': 'forecast', 'name': "날씨", 'config': '/config/naver/weather.yaml'},
+    {'category': 'opinion', 'task_id': 'opi', 'name': "날씨", 'config': '/config/naver/opinion.yaml'},
 
     {'category': 'sports', 'task_id': 'baseball', 'name': "스포츠/야구", 'config': '/config/naver/sports.yaml'},
     {'category': 'sports', 'task_id': 'wbaseball', 'name': "스포츠/해외야구", 'config': '/config/naver/sports.yaml'},
