@@ -75,7 +75,7 @@ task2 = KubernetesPodOperator(
     **params
 )
 
-# end = DummyOperator(task_id='end', dag=dag)
+end = DummyOperator(task_id='end', dag=dag)
 
-start >> task1
-start >> task2
+start >> task1 >> end
+start >> task2 >> end
