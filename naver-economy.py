@@ -6,7 +6,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
 
 dag = DAG(
-    dag_id='naver-economy',
+    dag_id='naver',
     description='kubernetes pod operator',
     default_args={
         'owner': 'Airflow',
