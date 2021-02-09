@@ -69,16 +69,16 @@ sub_category = [
     {'category': 'international', 'task_id': 'western', 'name': "세계/미국중남미", 'config': '/config/naver/international.yaml'},
     {'category': 'international', 'task_id': 'europe', 'name': "세계/유럽", 'config': '/config/naver/international.yaml'},
     {'category': 'international', 'task_id': 'mideast', 'name': "세계/중동아프리카", 'config': '/config/naver/international.yaml'},
-    {'category': 'international', 'task_id': 'etc', 'name': "세계/일반", 'config': '/config/naver/international.yaml'},
+    {'category': 'international', 'task_id': 'international-etc', 'name': "세계/일반", 'config': '/config/naver/international.yaml'},
 
     {'category': 'it', 'task_id': 'mobile', 'name': "IT/모바일", 'config': '/config/naver/it.yaml'},
     {'category': 'it', 'task_id': 'sns', 'name': "IT/인터넷/SNS", 'config': '/config/naver/it.yaml'},
     {'category': 'it', 'task_id': 'new-media', 'name': "IT/통신/뉴미디어", 'config': '/config/naver/it.yaml'},
-    {'category': 'it', 'task_id': 'etc', 'name': "IT/IT 일반", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'it-etc', 'name': "IT/IT 일반", 'config': '/config/naver/it.yaml'},
     {'category': 'it', 'task_id': 'security', 'name': "IT/보안/해킹", 'config': '/config/naver/it.yaml'},
     {'category': 'it', 'task_id': 'computer', 'name': "IT/컴퓨터", 'config': '/config/naver/it.yaml'},
     {'category': 'it', 'task_id': 'review', 'name': "IT/게임/리뷰", 'config': '/config/naver/it.yaml'},
-    {'category': 'it', 'task_id': 'etc', 'name': "IT/과학 일반", 'config': '/config/naver/it.yaml'},
+    {'category': 'it', 'task_id': 'science', 'name': "IT/과학 일반", 'config': '/config/naver/it.yaml'},
 
     {'category': 'living', 'task_id': 'health', 'name': "생활/건강정보", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'car', 'name': "생활/자동차시승기", 'config': '/config/naver/living.yaml'},
@@ -90,14 +90,14 @@ sub_category = [
     {'category': 'living', 'task_id': 'book', 'name': "생활/책", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'religion', 'name': "생활/종교", 'config': '/config/naver/living.yaml'},
     {'category': 'living', 'task_id': 'forecast', 'name': "생활/날씨", 'config': '/config/naver/living.yaml'},
-    {'category': 'living', 'task_id': 'etc', 'name': "생활/일반", 'config': '/config/naver/living.yaml'},
+    {'category': 'living', 'task_id': 'living-etc', 'name': "생활/일반", 'config': '/config/naver/living.yaml'},
 
     {'category': 'politics', 'task_id': 'blue-house', 'name': "정치/청와대", 'config': '/config/naver/politics.yaml'},
     {'category': 'politics', 'task_id': 'national-assembly', 'name': "정치/국회정당", 'config': '/config/naver/politics.yaml'},
     {'category': 'politics', 'task_id': 'north-korea', 'name': "정치/북한", 'config': '/config/naver/politics.yaml'},
     {'category': 'politics', 'task_id': 'administration', 'name': "정치/행정", 'config': '/config/naver/politics.yaml'},
     {'category': 'politics', 'task_id': 'national-defense', 'name': "정치/국방외교", 'config': '/config/naver/politics.yaml'},
-    {'category': 'politics', 'task_id': 'etc', 'name': "정치/정치일반", 'config': '/config/naver/politics.yaml'},
+    {'category': 'politics', 'task_id': 'politics-etc', 'name': "정치/정치일반", 'config': '/config/naver/politics.yaml'},
 
     {'category': 'society', 'task_id': 'incident', 'name': "사회/사건사고", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'education', 'name': "사회/교육", 'config': '/config/naver/society.yaml'},
@@ -108,7 +108,7 @@ sub_category = [
     {'category': 'society', 'task_id': 'medical', 'name': "사회/식품의료", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'local', 'name': "사회/지역", 'config': '/config/naver/society.yaml'},
     {'category': 'society', 'task_id': 'person', 'name': "사회/인물", 'config': '/config/naver/society.yaml'},
-    {'category': 'society', 'task_id': 'etc', 'name': "사회/사회일반", 'config': '/config/naver/society.yaml'},
+    {'category': 'society', 'task_id': 'society-etc', 'name': "사회/사회일반", 'config': '/config/naver/society.yaml'},
 
     {'category': 'weather', 'task_id': 'forecast', 'name': "날씨", 'config': '/config/naver/weather.yaml'},
     {'category': 'opinion', 'task_id': 'opi', 'name': "날씨", 'config': '/config/naver/opinion.yaml'},
@@ -121,7 +121,7 @@ sub_category = [
     {'category': 'sports', 'task_id': 'basketball', 'name': "스포츠/농구", 'config': '/config/naver/sports.yaml'},
     {'category': 'sports', 'task_id': 'volleyball', 'name': "스포츠/배구", 'config': '/config/naver/sports.yaml'},
     {'category': 'sports', 'task_id': 'golf', 'name': "스포츠/골프", 'config': '/config/naver/sports.yaml'},
-    {'category': 'sports', 'task_id': 'etc', 'name': "스포츠/스포츠-일반", 'config': '/config/naver/sports.yaml'},
+    {'category': 'sports', 'task_id': 'sports-etc', 'name': "스포츠/스포츠-일반", 'config': '/config/naver/sports.yaml'},
 ]
 
 for item in sub_category:
