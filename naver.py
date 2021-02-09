@@ -62,7 +62,7 @@ sub_category = [
     {'category': 'economy', 'task_id': 'industry', 'name': "경제/산업/재계", 'config': '/config/naver/economy.yaml'},
     {'category': 'economy', 'task_id': 'global', 'name': "경제/글로벌 경제", 'config': '/config/naver/economy.yaml'},
     {'category': 'economy', 'task_id': 'general', 'name': "경제/경제 일반", 'config': '/config/naver/economy.yaml'},
-    {'category': 'economy', 'task_id': 'living', 'name': "경제/생활경제", 'config': '/config/naver/economy.yaml'},
+    {'category': 'economy', 'task_id': 'economy-living', 'name': "경제/생활경제", 'config': '/config/naver/economy.yaml'},
     {'category': 'economy', 'task_id': 'venture', 'name': "경제/중기/벤처", 'config': '/config/naver/economy.yaml'},
 
     {'category': 'international', 'task_id': 'asia', 'name': "세계/아시아호주", 'config': '/config/naver/international.yaml'},
