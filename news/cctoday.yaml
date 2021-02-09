@@ -20,6 +20,7 @@ jobs:
     url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=41391&box_idxno=&sc_section_code=S1N9&view_type=tm
   - category: 종합
     url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=7188&box_idxno=&sc_section_code=S1N12&view_type=tm
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
