@@ -24,6 +24,7 @@ jobs:
     url_frame: http://www.ihalla.com/section.html?section=121#{page}_L
   - category: 뉴스-in
     url_frame: http://www.ihalla.com/section.html?section=122#{page}_L
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
