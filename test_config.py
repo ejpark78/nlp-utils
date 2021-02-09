@@ -29,7 +29,7 @@ class NaverCrawlerDags(object):
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return dict(data)
 
-    def batch(self) -> None:
+    def batch(self) -> (DAG, dict, dict):
         config = self.open_config(filename='config/naver.yaml')
 
         dag = DAG(
@@ -73,17 +73,17 @@ class NaverCrawlerDags(object):
             '10',
         ]
 
-        start = DummyOperator(task_id='start', dag=dag)
-
+        op_list = {}
         category_list = {}
         for item in config['tasks']:
             category = item['category']
             if category not in category_list:
                 category_list[category] = DummyOperator(task_id=category, dag=dag)
 
-                start >> category_list[category]
+            if category not in op_list:
+                op_list[category] = []
 
-            task = KubernetesPodOperator(
+            op_list[category].append(KubernetesPodOperator(
                 dag=dag,
                 name='task',
                 task_id=item['task_id'],
@@ -94,9 +94,18 @@ class NaverCrawlerDags(object):
                     item['name'],
                 ],
                 **params
-            )
+            ))
 
+        return dag, category_list, op_list
+
+
+if __name__ == '__main__':
+    dag, category_list, op_list = NaverCrawlerDags().batch()
+
+    start = DummyOperator(task_id='start', dag=dag)
+
+    for category in category_list:
+        start >> category_list[category]
+
+        for task in op_list[category]:
             category_list[category] >> task
-
-
-NaverCrawlerDags().batch()
