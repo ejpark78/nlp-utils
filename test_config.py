@@ -6,16 +6,20 @@ from __future__ import division
 from __future__ import print_function
 
 from datetime import timedelta
+from os import getenv
 
+import yaml
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
-import yaml
 
 
 def open_config(filename: str) -> dict:
-    with open(filename, 'r') as fp:
+    path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', '/opt/airflow/dags')
+    sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
+
+    with open('{}/{}/{}'.format(path, sub_path, filename), 'r') as fp:
         data = yaml.load(stream=fp, Loader=yaml.FullLoader)
         return dict(data)['tasks']
 
@@ -63,7 +67,7 @@ args = [
 
 start = DummyOperator(task_id='start', dag=dag)
 
-sub_category = open_config(filename='/opt/airflow/dags/repo/config/naver.yaml')
+sub_category = open_config(filename='config/naver.yaml')
 
 category_list = {}
 for item in sub_category:
