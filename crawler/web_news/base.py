@@ -254,7 +254,7 @@ class WebNewsBase(object):
             return None
 
         # 인코딩 변환이 지정되어 있은 경우 인코딩을 변경함
-        encoding = None
+        encoding = url_info['encoding'] if 'encoding' in url_info else None
 
         result = resp.text.strip()
         if encoding is None:

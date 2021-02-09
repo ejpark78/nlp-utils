@@ -139,12 +139,12 @@ class HtmlParser(object):
         if 'value_type' in conf:
             if conf['value_type'] == 'single':
                 if len(value_list) > 0:
-                    value_list = value_list[0]
+                    value_list = value_list[0].strip() if isinstance(value_list, str) else value_list[0]
                 else:
                     value_list = ''
 
             if conf['value_type'] == 'merge':
-                value_list = '\n'.join(value_list)
+                value_list = '\n'.join(value_list).strip()
 
             if conf['value_type'] == 'unique':
                 value_list = list(set(value_list))
@@ -178,7 +178,7 @@ class HtmlParser(object):
         # 값 추출
         if conf['type'] == 'text':
             value = tag.get_text().strip()
-            value = re.sub('[ ]+', ' ', value)
+            value = re.sub('[ ]+', ' ', value).strip()
         elif conf['type'] == 'html':
             try:
                 value = str(tag)

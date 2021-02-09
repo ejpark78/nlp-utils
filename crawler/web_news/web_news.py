@@ -726,6 +726,7 @@ class WebNewsCrawler(WebNewsBase):
 
             item['url'] = urljoin(base_url, item['url'])
             item['category'] = job['category']
+            item['encoding'] = url_info['encoding'] if 'encoding' in url_info else None
 
             if date is None and 'date' in item:
                 date = item['date']
@@ -761,6 +762,10 @@ class WebNewsCrawler(WebNewsBase):
             if self.params.config_debug:
                 self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
                 sleep(self.params.sleep)
+
+            # 임시 변수 삭제
+            if 'encoding' in item:
+                del item['encoding']
 
             if article is None or len(article) == 0:
                 continue
