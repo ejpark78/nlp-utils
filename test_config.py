@@ -99,13 +99,12 @@ class NaverCrawlerDags(object):
         return dag, category_list, op_list
 
 
-if __name__ == '__main__':
-    dag, category_list, op_list = NaverCrawlerDags().batch()
+dag, category_list, op_list = NaverCrawlerDags().batch()
 
-    start = DummyOperator(task_id='start', dag=dag)
+start = DummyOperator(task_id='start', dag=dag)
 
-    for category in category_list:
-        start >> category_list[category]
+for category in category_list:
+    start >> category_list[category]
 
-        for task in op_list[category]:
-            category_list[category] >> task
+    for task in op_list[category]:
+        category_list[category] >> task
