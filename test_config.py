@@ -17,7 +17,7 @@ import yaml
 def open_config(filename: str) -> dict:
     with open(filename, 'r') as fp:
         data = yaml.load(stream=fp, Loader=yaml.FullLoader)
-        return dict(data)
+        return dict(data)['tasks']
 
 
 dag = DAG(

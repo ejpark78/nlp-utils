@@ -1,3 +1,4 @@
+tasks:
 - category: it
   config: /config/naver/it.yaml
   name: IT/모바일
