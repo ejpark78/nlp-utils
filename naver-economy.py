@@ -31,9 +31,9 @@ env_vars = {
 params = {
     'namespace': 'airflow',
     'image': 'registry.nlp-utils/crawler:live',
-    'is_delete_operator_pod': False,
     'image_pull_policy': 'Always',
     'image_pull_secrets': 'registry',
+    'is_delete_operator_pod': True,
     'env_vars': env_vars,
     'get_logs': True,
     'cmds': ['python3'],
@@ -61,7 +61,7 @@ task1 = KubernetesPodOperator(
 task2 = KubernetesPodOperator(
     dag=dag,
     name='app',
-    task_id='stock',
+    task_id='finance',
     arguments=[
         '-m',
         'crawler.web_news.web_news',
