@@ -51,7 +51,7 @@ with DAG(**config['dag'], default_args=default_args) as dag:
             category_list[name] = DummyOperator(task_id=name, dag=dag)
             start >> category_list[name]
 
-        task = KubernetesPodOperator(
+        category_list[name] >> KubernetesPodOperator(
             dag=dag,
             name='task',
             task_id=item['task_id'],
@@ -63,5 +63,3 @@ with DAG(**config['dag'], default_args=default_args) as dag:
             ],
             **config['operator']['params']
         )
-
-        category_list[name] >> task
