@@ -50,7 +50,7 @@ def batch() -> None:
         'cmds': ['python3'],
     }
 
-    category_list: {}
+    category_list = {}
 
     start = DummyOperator(task_id='start', dag=dag)
 
