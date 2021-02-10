@@ -10,6 +10,7 @@ import logging
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
+from airflow.contrib.example_dags.libs.helper import print_stuff
 
 default_args = {
     'owner': 'airflow',
@@ -28,6 +29,9 @@ try:
         tags=['example3'],
     ) as dag:
 
+        def dummy():
+            assert True
+
         # You can use annotations on your kubernetes pods!
         start_task = PythonOperator(
             task_id="start_task",
@@ -39,6 +43,7 @@ try:
         # [START task_with_sidecar]
         sidecar_task = PythonOperator(
             task_id="task_with_sidecar",
+            python_callable=print_stuff,
             executor_config={
                 "pod_override": k8s.V1Pod(
                     spec=k8s.V1PodSpec(
