@@ -43,15 +43,15 @@ default_args = {
 with DAG(**config['dag'], default_args=default_args) as dag:
     start = DummyOperator(task_id='start', dag=dag)
 
-    category_list = {}
+    category_operator = {}
     for item in config['tasks']:
         name = item['category']
 
-        if name not in category_list:
-            category_list[name] = DummyOperator(task_id=name, dag=dag)
-            start >> category_list[name]
+        if name not in category_operator:
+            category_operator[name] = DummyOperator(task_id=name, dag=dag)
+            start >> category_operator[name]
 
-        category_list[name] >> KubernetesPodOperator(
+        category_operator[name] >> KubernetesPodOperator(
             dag=dag,
             name='task',
             task_id=item['task_id'],
