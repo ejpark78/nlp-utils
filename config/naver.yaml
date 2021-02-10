@@ -1,6 +1,6 @@
 ---
 dag:
-  dag_id: 'config-test'
+  dag_id: 'naver'
   description: 'naver crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
