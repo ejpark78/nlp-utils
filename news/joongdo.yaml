@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-iusm-{year}
+- index: raw-joongdo-{year}
   tag: 중도일보
   article:
     document_id:
