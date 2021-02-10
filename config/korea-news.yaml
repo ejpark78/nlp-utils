@@ -35,6 +35,8 @@ tasks:
     task_id: fnnews
   - config: /config/news/hani-en.yaml
     task_id: hani-en
+  - config: /config/news/idaegu.yaml
+    task_id: idaegu
   - config: /config/news/donga.yaml
     task_id: donga
   - config: /config/news/hani-cn.yaml
@@ -43,16 +45,28 @@ tasks:
     task_id: donga-en
   - config: /config/news/newspeppermint.yaml
     task_id: newspeppermint
+  - config: /config/news/jemin.yaml
+    task_id: jemin
   - config: /config/news/knnews.yaml
     task_id: knnews
+  - config: /config/news/daejon.yaml
+    task_id: daejon
   - config: /config/news/asiae.yaml
     task_id: asiae
+  - config: /config/news/iusm.yaml
+    task_id: iusm
   - config: /config/news/ccdailynews.yaml
     task_id: ccdailynews
   - config: /config/news/ksilbo.yaml
     task_id: ksilbo
+  - config: /config/news/imaeil.yaml
+    task_id: imaeil
   - config: /config/news/hani-jp.yaml
     task_id: hani-jp
+  - config: /config/news/jjan.yaml
+    task_id: jjan
+  - config: /config/news/honam.yaml
+    task_id: honam
   - config: /config/news/wowtv.yaml
     task_id: wowtv
   - config: /config/news/chosun-biz.yaml
@@ -63,6 +77,8 @@ tasks:
     task_id: dt
   - config: /config/news/kwangju.yaml
     task_id: kwangju
+  - config: /config/news/jbdomin.yaml
+    task_id: jbdomin
   - config: /config/news/inews24.yaml
     task_id: inews24
   - config: /config/news/kjdaily.yaml
@@ -81,6 +97,8 @@ tasks:
     task_id: hani
   - config: /config/news/kookje.yaml
     task_id: kookje
+  - config: /config/news/jnilbo.yaml
+    task_id: jnilbo
   - config: /config/news/fntimes.yaml
     task_id: fntimes
   - config: /config/news/edaily.yaml
