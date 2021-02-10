@@ -1,31 +1,42 @@
 ---
 jobs:
-- index: raw-digitaltimes-{year}
+- index: raw-dt-{year}
   article:
     document_id:
       frame: '{article_no}'
-      type: value
+      type: query
   list:
   - category: 정치
     url_frame: http://www.dt.co.kr/section.html?section_num=2400&cpage={page}
+    encoding: 'euc-kr'
   - category: 국제
     url_frame: http://www.dt.co.kr/section.html?section_num=2300&cpage={page}
+    encoding: 'euc-kr'
   - category: 경제
     url_frame: http://www.dt.co.kr/section.html?section_num=3200&cpage={page}
+    encoding: 'euc-kr'
   - category: 금융
     url_frame: http://www.dt.co.kr/section.html?section_num=3100&cpage={page}
+    encoding: 'euc-kr'
   - category: 산업
     url_frame: http://www.dt.co.kr/section.html?section_num=2200&cpage={page}
+    encoding: 'euc-kr'
   - category: 부동산
     url_frame: http://www.dt.co.kr/section.html?section_num=3500&cpage={page}
+    encoding: 'euc-kr'
   - category: 증권
     url_frame: http://www.dt.co.kr/section.html?section_num=3400&cpage={page}
+    encoding: 'euc-kr'
   - category: ICT과학
     url_frame: http://www.dt.co.kr/section.html?section_num=2000&cpage={page}
+    encoding: 'euc-kr'
   - category: 피플
     url_frame: http://www.dt.co.kr/section.html?section_num=0300&cpage={page}
+    encoding: 'euc-kr'
   - category: 전체
     url_frame: http://www.dt.co.kr/section.html?section_num=2900&cpage={page}
+    encoding: 'euc-kr'
+    
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
@@ -33,16 +44,49 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - select: div.list_area div.article-news-list
-    column: list
-#   list:
-#   - parser: json
-#     mapping:
-#       document_id: mediaid
-#       title: title
-#       url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
-#       date: broaddate
-#   article:
-#   - parser: json
-#     mapping:
-#       content: clip.info.synopsis
+  - select: div.list_area dl
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: dl.article_list dt a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: dl.article_list dt a
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.wrap div.top_header div.news_title_text h1
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    value:
+    - select: li.lasttime
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: "^.*ÀÔ·Â:"
+      to: ''
+    - from: '^.*입력: '
+      to: ''
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.wrap div.Content div.art_txt
+    type: text
+    value_type: merge

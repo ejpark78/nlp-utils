@@ -14,6 +14,20 @@ jobs:
     url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=12100&page={page}&pagesize=20
   - category: 증권
     url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=16100&page={page}&pagesize=20
+  - category: 부동산
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=14000&page={page}&pagesize=20
+  - category: 정치
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=13100&page={page}&pagesize=20
+  - category: 연예
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=21000&page={page}&pagesize=20
+  - category: IT과학
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=12200&page={page}&pagesize=20
+  - category: 스포츠
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=22000&page={page}&pagesize=20
+  - category: 글로벌
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=13200&page={page}&pagesize=20
+  - category: 문화
+    url_frame: https://www.edaily.co.kr/article/MoreList?categoryCode=18000&page={page}&pagesize=20
 parsing:
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
@@ -43,7 +57,7 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - select: '#contents .article_news .news_titles'
+    - select: '#contents .article_news .news_titles h2'
     type: text
     value_type: single
   - comment: 날짜

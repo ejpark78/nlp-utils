@@ -1,0 +1,86 @@
+---
+jobs:
+- index: raw-cctoday-{year}
+  article:
+    document_id:
+      frame: '{idxno}'
+      type: query
+  list:
+  - category: 정치/행정
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N3&view_type=tm
+  - category: 경제/과학
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N4&view_type=tm
+  - category: 사회
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N5&view_type=tm
+  - category: 스포츠
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N6&view_type=tm
+  - category: 문화
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N7&view_type=tm
+  - category: 사람들
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N9&view_type=tm
+  - category: 종합
+    url_frame: https://www.cctoday.co.kr/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N12&view_type=tm
+    
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div.article-column
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: div.list-titles
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: a
+    type: href
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.article-head-title
+    type: text
+    value_type: single
+  - comment: 날짜
+    key: date
+    value:
+    - select: li.info-rows2
+    type: text
+    type_convert: date
+    value_type: single
+    replace:
+    - from: " "
+      to: ""
+    - from: "^.*승인"
+      to: ''
+    - from: "년"
+      to: '-'
+    - from: '월'
+      to: '-'
+    - from: '일'
+      to: 'T'
+    - from: "시"
+      to: ":"
+    - from: "분"
+      to: ""
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: 'div[itemprop=articleBody]'
+    type: text
+    value_type: merge
