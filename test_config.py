@@ -75,12 +75,13 @@ class NaverCrawlerDags(object):
 
         result = {
             'dag': dag,
+            'category': {},
             'operator': {},
-            'category': {}
         }
 
         for item in config['tasks']:
             category = item['category']
+
             if category not in result['category']:
                 result['category'][category] = DummyOperator(task_id=category, dag=dag)
 
