@@ -1,0 +1,70 @@
+---
+dag:
+  dag_id: 'naver-reply'
+  description: 'naver-reply crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: True
+    get_logs: True
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.naver.reply
+    - --sleep
+    - '10'
+tasks:
+  - task_id: politics
+    args:
+      - "--config"
+      - "/config/naver/politics-reply.yaml"
+  - task_id: society
+    args:
+      - "--config"
+      - "/config/naver/society-reply.yaml"
+  - task_id: tv
+    args:
+      - "--config"
+      - "/config/naver/tv-reply.yaml"
+  - task_id: economy
+    args:
+      - "--config"
+      - "/config/naver/economy-reply.yaml"
+  - task_id: international
+    args:
+      - "--config"
+      - "/config/naver/international-reply.yaml"
+  - task_id: it
+    args:
+      - "--config"
+      - "/config/naver/it-reply.yaml"
+  - task_id: living
+    args:
+      - "--config"
+      - "/config/naver/living-reply.yaml"
+  - task_id: opinion
+    args:
+      - "--config"
+      - "/config/naver/opinion-reply.yaml"
+  - task_id: sports
+    args:
+      - "--config"
+      - "/config/naver/sports-reply.yaml"
+
