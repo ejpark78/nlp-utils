@@ -5,9 +5,7 @@ jobs:
     document_id:
       frame: '{idxno}'
       type: query
-  list:
-  - category: 연예
-    url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N10&view_type=sm  
+  list: 
   - category: 경기
     url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N6&view_type=sm
   - category: 인천
@@ -21,7 +19,9 @@ jobs:
   - category: 문화
     url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N5&view_type=sm    
   - category: 스포츠
-    url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N7&view_type=sm    
+    url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N7&view_type=sm
+  - category: 연예
+    url_frame: http://www.joongboo.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N10&view_type=sm    
 
 parsing:
   descriptions:
