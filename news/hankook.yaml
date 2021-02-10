@@ -1,0 +1,159 @@
+---
+jobs:
+- index: raw-hankook-{year}
+  article:
+    document_id:
+      replace:
+      - from: /News/
+        to: '/'
+      - from: /Read/
+        to: ''
+      type: path
+  list:
+  - category: 문화/책
+    url_frame: https://www.hankookilbo.com/News/Culture/HE01?Page={page}
+  - category: 문화/공연/전시
+    url_frame: https://www.hankookilbo.com/News/Culture/HE02?Page={page}
+  - category: 연예/일반
+    url_frame: https://www.hankookilbo.com/News/Culture/HE99?Page={page}
+  - category: 연예/영화
+    url_frame: https://www.hankookilbo.com/News/Culture/HF02?Page={page}
+  - category: 연예/방송
+    url_frame: https://www.hankookilbo.com/News/Culture/HF03?Page={page}
+  - category: 연예/음악
+    url_frame: https://www.hankookilbo.com/News/Culture/HF04?Page={page}
+  - category: 연예/일반
+    url_frame: https://www.hankookilbo.com/News/Culture/HF99?Page={page}
+  - category: 경제/일반
+    url_frame: https://www.hankookilbo.com/News/Economy/HB99?Page={page}
+  - category: 경제/산업
+    url_frame: https://www.hankookilbo.com/News/Economy/HB02?Page={page}
+  - category: 경제/금융/증권
+    url_frame: https://www.hankookilbo.com/News/Economy/HB03?Page={page}
+  - category: 경제/부동산
+    url_frame: https://www.hankookilbo.com/News/Economy/HB04?Page={page}
+  - category: 국제/일반
+    url_frame: https://www.hankookilbo.com/News/World/HD99?Page={page}
+  - category: 국제/아시아/호주
+    url_frame: https://www.hankookilbo.com/News/World/HD01?Page={page}
+  - category: 국제/미국/중남미
+    url_frame: https://www.hankookilbo.com/News/World/HD02?Page={page}
+  - category: 국제/유럽
+    url_frame: https://www.hankookilbo.com/News/World/HD03?Page={page}
+  - category: 국제/중동/아프리카
+    url_frame: https://www.hankookilbo.com/News/World/HD04?Page={page}
+  - category: 국제/이슈
+    url_frame: https://www.hankookilbo.com/News/World/HD05?Page={page}
+  - category: IT/과학
+    url_frame: https://www.hankookilbo.com/News/Economy/HB05?Page={page}
+  - category: 리빙/음식
+    url_frame: https://www.hankookilbo.com/News/Life/HI01?Page={page}
+  - category: 리빙/여행
+    url_frame: https://www.hankookilbo.com/News/Life/HI02?Page={page}
+  - category: 리빙/건강
+    url_frame: https://www.hankookilbo.com/News/Life/HI03?Page={page}
+  - category: 리빙/일반
+    url_frame: https://www.hankookilbo.com/News/Life/HI99?Page={page}
+  - category: 리빙/날씨
+    url_frame: https://www.hankookilbo.com/News/Society/HC06?Page={page}
+  - category: 사설/인터뷰
+    url_frame: https://www.hankookilbo.com/News/People/HH01?Page={page}
+  - category: 사설/사설
+    url_frame: https://www.hankookilbo.com/Opinion/HK01?Page={page}
+  - category: 사설/칼럼
+    url_frame: https://www.hankookilbo.com/Opinion/HK02?Page={page}
+  - category: 정치/국회/정당
+    url_frame: https://www.hankookilbo.com/News/Politics/HA01?Page={page}
+  - category: 정치/청와대
+    url_frame: https://www.hankookilbo.com/News/Politics/HA02?Page={page}
+  - category: 정치/외교
+    url_frame: https://www.hankookilbo.com/News/Politics/HA03?Page={page}
+  - category: 정치/국방/북한
+    url_frame: https://www.hankookilbo.com/News/Politics/HA04?Page={page}
+  - category: 정치/일반
+    url_frame: https://www.hankookilbo.com/News/Politics/HA99?Page={page}
+  - category: 사회/사건/사고
+    url_frame: https://www.hankookilbo.com/News/Society/HC01?Page={page}
+  - category: 사회/법원/경찰
+    url_frame: https://www.hankookilbo.com/News/Society/HC02?Page={page}
+  - category: 사회/교육
+    url_frame: https://www.hankookilbo.com/News/Society/HC03?Page={page}
+  - category: 사회/노동
+    url_frame: https://www.hankookilbo.com/News/Society/HC04?Page={page}
+  - category: 사회/보건/복지
+    url_frame: https://www.hankookilbo.com/News/Society/HC05?Page={page}
+  - category: 사회/일반
+    url_frame: https://www.hankookilbo.com/News/Society/HC99?Page={page}
+  - category: 스포츠/야구
+    url_frame: https://www.hankookilbo.com/News/Sports/HG01?Page={page}
+  - category: 스포츠/축구
+    url_frame: https://www.hankookilbo.com/News/Sports/HG02?Page={page}
+  - category: 스포츠/농구
+    url_frame: https://www.hankookilbo.com/News/Sports/HG03?Page={page}
+  - category: 스포츠/배구
+    url_frame: https://www.hankookilbo.com/News/Sports/HG04?Page={page}
+  - category: 스포츠/골프
+    url_frame: https://www.hankookilbo.com/News/Sports/HG06?Page={page}
+  - category: 스포츠/일반
+    url_frame: https://www.hankookilbo.com/News/Sports/HG99?Page={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: ul.board-list.column-3 li
+  list:
+  - comment: 제목
+    key: title
+    value:
+    - select: div.text-box h3 a
+    type: text
+  - comment: url
+    key: url
+    value:
+    - select: div.text-box h3 a
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - select: div.cell-1 span.date
+    type: text
+    type_convert: date
+    value_type: single
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: div.col-main h2.title
+    type: text
+  - comment: 날짜
+    key: date
+    value:
+    - select: div.info dl dd
+    replace:
+    - from: ^.*입력
+      to: ''
+    - from: ^.*수정
+      to: ''
+    - from: '[|].+$'
+      to: ''
+    type: text
+    type_convert: date
+    value_type: single
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div.col-main
+    type: text
+    value_type: merge
