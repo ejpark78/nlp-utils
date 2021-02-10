@@ -4,6 +4,8 @@ dag:
   description: 'bbs crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+  tags:
+    - bbs
 default_args:
   owner: 'Airflow'
   retries: 0

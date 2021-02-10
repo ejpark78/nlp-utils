@@ -4,6 +4,9 @@ dag:
   description: 'world news crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+  tags:
+    - news
+    - world
 default_args:
   owner: 'Airflow'
   retries: 0

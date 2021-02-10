@@ -4,6 +4,9 @@ dag:
   description: 'daum crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+  tags:
+    - news
+    - daum
 default_args:
   owner: 'Airflow'
   retries: 0
