@@ -22,8 +22,8 @@ operator:
     image: 'registry.nlp-utils/crawler:live'
     image_pull_policy: 'Always'
     image_pull_secrets: 'registry'
-    is_delete_operator_pod: 'False'
-    get_logs: True
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
     cmds:
       - 'python3'
     env_vars:
