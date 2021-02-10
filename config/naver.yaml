@@ -6,7 +6,7 @@ dag:
   max_active_runs: 1
 default_args:
   owner: 'Airflow'
-  retries: 3
+  retries: 0
   depends_on_past: False
   email:
     - ejpark@ncsoft.com
