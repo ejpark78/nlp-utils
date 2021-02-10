@@ -134,23 +134,23 @@ tasks:
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/주식
-    task_id: economy-economy
+    task_id: economy-stock
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/시황분석
-    task_id: economy-economy
+    task_id: economy-market-condition
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/해외증시
-    task_id: economy-economy
+    task_id: economy-wmarket-condition
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/채권선물
-    task_id: economy-economy
+    task_id: economy-trading-bonds
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/외환
-    task_id: economy-economy
+    task_id: economy-foreign-exchange
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/주식일반
