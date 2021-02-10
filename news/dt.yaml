@@ -87,6 +87,6 @@ parsing:
   - comment: 텍스트 본문
     key: content
     value:
-    - select: div.wrap div.Content div.art_txt
+    - select: div#article_body div.art_txt
     type: text
     value_type: merge
