@@ -7,6 +7,4 @@ from __future__ import print_function
 
 from utils import open_config, build_dag
 
-config = open_config(filename='config/nate.yaml')
-
-build_dag(config=config)
+build_dag(config=open_config(filename='config/nate.yaml'))
