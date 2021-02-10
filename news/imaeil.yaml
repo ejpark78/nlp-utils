@@ -7,6 +7,8 @@ jobs:
       replace:
       - from: '/[a-zA-Z]+/'
         to: ''
+      - from: '[?]_source=html'
+        to: ''
       type: path
   list:
   - category: 정치/정치일반
