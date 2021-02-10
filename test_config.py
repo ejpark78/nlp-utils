@@ -106,6 +106,8 @@ class NaverCrawlerDags(object):
 
 dag_info = NaverCrawlerDags().batch()
 
+print(dag_info)
+
 start = DummyOperator(task_id='start', dag=dag_info['dag'])
 
 for name in dag_info['category']:
