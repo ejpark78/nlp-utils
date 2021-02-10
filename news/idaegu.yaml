@@ -1,0 +1,77 @@
+---
+jobs:
+- index: raw-idaegu-{year}
+  tag: 대구일보
+  article:
+    document_id:
+      replace:
+      - from: /newsView/
+        to: ''
+      type: path
+  list:
+  - category: 사람
+    url_frame: http://www.idaegu.com/newsList/idg001000000?page={page}
+  - category: 지역뉴스
+    url_frame: http://www.idaegu.com/newsList/idg002000000?page={page}
+  - category: 정치
+    url_frame: http://www.idaegu.com/newsList/idg003000000?page={page}
+  - category: 경제
+    url_frame: http://www.idaegu.com/newsList/idg004000000?page={page}
+  - category: 사회
+    url_frame: http://www.idaegu.com/newsList/idg005000000?page={page}
+  - category: 문화
+    url_frame: http://www.idaegu.com/newsList/idg006000000?page={page}
+  - category: 교육
+    url_frame: http://www.idaegu.com/newsList/idg007000000?page={page}
+  - category: 오피니언
+    url_frame: http://www.idaegu.com/newsList/idg008000000?page={page}
+  - category: 스포츠
+    url_frame: http://www.idaegu.com/newsList/idg009000000?page={page}
+  - category: 연예
+    url_frame: http://www.idaegu.com/newsList/idg010000000?page={page} 
+  - category: 포토
+    url_frame: http://www.idaegu.com/newsList/idg011000000?page={page}
+  - category: 특집
+    url_frame: http://www.idaegu.com/newsList/idg012000000?page={page}
+parsing:
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: div.listing article.listing-item
+  list:
+  - comment: url
+    key: url
+    value:
+    - select: h2.title a 
+    type: href
+  - comment: 날짜
+    key: date
+    value:
+    - select: span.date
+    type: text
+    type_convert: date
+    value_type: single
+  article:
+  - comment: html
+    key: html
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - comment: 제목
+    key: title
+    value:
+    - select: span#articleTitle
+    type: text
+  - comment: 텍스트 본문
+    key: content
+    value:
+    - select: div#article
+    type: text
+    value_type: merge
