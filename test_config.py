@@ -114,4 +114,5 @@ for name in dag_info['category']:
     start >> dag_info['category'][name]
 
     for task in dag_info['operator'][name]:
+        print(name, task)
         dag_info['category'][name] >> task
