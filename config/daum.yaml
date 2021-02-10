@@ -154,7 +154,7 @@ tasks:
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/주식일반
-    task_id: economy-etc
+    task_id: economy-stock-etc
   - category: society
     config: /config/daum/society.yaml
     name: 사회/사건사고
@@ -206,7 +206,7 @@ tasks:
   - category: society
     config: /config/daum/society.yaml
     name: 사회/지역일반
-    task_id: society-etc
+    task_id: society-local-etc
   - category: society
     config: /config/daum/society.yaml
     name: 사회/사회일반
