@@ -5,85 +5,82 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
 import os
 
-from airflow.contrib.example_dags.libs.helper import print_stuff
-from airflow.models import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow import DAG
+from airflow.example_dags.libs.helper import print_stuff
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
 default_args = {
-    'owner': 'Airflow',
-    'start_date': days_ago(2)
+    'owner': 'airflow',
 }
 
-with DAG(dag_id='test', default_args=default_args, schedule_interval=None) as dag:
-    def test_volume_mount():
-        with open('/foo/volume_mount_test.txt', 'w') as foo:
-            foo.write('Hello')
+log = logging.getLogger(__name__)
 
-        return_code = os.system("cat /foo/volume_mount_test.txt")
-        assert return_code == 0
+try:
+    from kubernetes.client import models as k8s
 
+    with DAG(
+        dag_id='example_kubernetes_executor_config',
+        default_args=default_args,
+        schedule_interval=None,
+        start_date=days_ago(2),
+        tags=['example3'],
+    ) as dag:
 
-    # You can use annotations on your kubernetes pods!
-    start_task = PythonOperator(
-        task_id="start_task",
-        python_callable=print_stuff,
-        executor_config={
-            "KubernetesExecutor": {
-                "annotations": {"test": "annotation"}
-            }
-        }
-    )
+        # You can use annotations on your kubernetes pods!
+        start_task = PythonOperator(
+            task_id="start_task",
+            python_callable=print_stuff,
+            executor_config={
+                "pod_override": k8s.V1Pod(metadata=k8s.V1ObjectMeta(annotations={"test": "annotation"}))
+            },
+        )
 
-    # You can mount volume or secret to the worker pod
-    second_task = PythonOperator(
-        task_id="four_task",
-        python_callable=test_volume_mount,
-        executor_config={
-            "KubernetesExecutor": {
-                "volumes": [
-                    {
-                        "name": "example-kubernetes-test-volume",
-                        "hostPath": {"path": "/tmp/"},
-                    },
-                ],
-                "volume_mounts": [
-                    {
-                        "mountPath": "/foo/",
-                        "name": "example-kubernetes-test-volume",
-                    },
-                ]
-            }
-        }
-    )
+        # [START task_with_sidecar]
+        sidecar_task = PythonOperator(
+            task_id="task_with_sidecar",
+            python_callable=print_stuff,
+            executor_config={
+                "pod_override": k8s.V1Pod(
+                    spec=k8s.V1PodSpec(
+                        containers=[
+                            k8s.V1Container(
+                                name="app",
+                                image="registry.nlp-utils/crawler:live",
+                                args=["ls /config/news/"],
+                                command=["bash", "-cx"]
+                            ),
+                        ]
+                    )
+                ),
+            },
+        )
+        # [END task_with_sidecar]
 
-    # Test that we can add labels to pods
-    third_task = PythonOperator(
-        task_id="non_root_task",
-        python_callable=print_stuff,
-        executor_config={
-            "KubernetesExecutor": {
-                "labels": {
-                    "release": "stable"
+        # Test that we can add labels to pods
+        third_task = PythonOperator(
+            task_id="non_root_task",
+            python_callable=print_stuff,
+            executor_config={
+                "pod_override": k8s.V1Pod(metadata=k8s.V1ObjectMeta(labels={"release": "stable"}))
+            },
+        )
+
+        other_ns_task = PythonOperator(
+            task_id="other_namespace_task",
+            python_callable=print_stuff,
+            executor_config={
+                "KubernetesExecutor": {
+                    "namespace": "test-namespace", "labels": {"release": "stable"}
                 }
-            }
-        }
-    )
+            },
+        )
 
-    other_ns_task = PythonOperator(
-        task_id="other_namespace_task",
-        python_callable=print_stuff,
-        executor_config={
-            "KubernetesExecutor": {
-                "namespace": "airflow",
-                "labels": {
-                    "release": "stable"
-                }
-            }
-        }
-    )
-
-    start_task >> second_task >> third_task
-    start_task >> other_ns_task
+        start_task >> other_ns_task
+        start_task >> sidecar_task
+except ImportError as e:
+    log.warning("Could not import DAGs in example_kubernetes_executor_config.py: %s", str(e))
+    log.warning("Install kubernetes dependencies with: pip install apache-airflow['cncf.kubernetes']")
