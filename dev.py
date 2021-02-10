@@ -44,12 +44,6 @@ def batch() -> None:
         },
     )
 
-    params = {
-        **config['operator']['params'],
-        'env_vars': config['operator']['env_vars'],
-        'cmds': ['python3'],
-    }
-
     category_list = {}
 
     start = DummyOperator(task_id='start', dag=dag)
@@ -71,7 +65,7 @@ def batch() -> None:
                 '--sub-category',
                 item['name'],
             ],
-            **params
+            **config['operator']['params']
         )
 
         category_list[name] >> task
