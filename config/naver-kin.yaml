@@ -1,0 +1,53 @@
+---
+dag:
+  dag_id: 'naver-kin'
+  description: 'naver-kin crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: True
+    get_logs: True
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.naver.kin.kin
+    - --sleep
+    - '10'
+tasks:
+  - task_id: question-list
+    args:
+      - "--question-list"
+      - "--config"
+      - "/config/naver/kin.yaml"
+  - task_id: answer-list
+    args:
+      - "--answer-list"
+      - "--config"
+      - "/config/naver/kin.yaml"
+  - task_id: detail-question
+    args:
+      - "--question"
+      - "--config"
+      - "/config/naver/kin.yaml"
+  - task_id: detail-answer
+    args:
+      - "--answer"
+      - "--config"
+      - "/config/naver/kin.yaml"
