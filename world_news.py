@@ -27,15 +27,10 @@ with DAG(**config['dag'], default_args=default_args) as dag:
     start = DummyOperator(task_id='start', dag=dag)
 
     for item in config['tasks']:
-        name = item['category']
-
         start >> KubernetesPodOperator(
             dag=dag,
             name='task',
             task_id=item['task_id'],
-            arguments=config['operator']['args'] + [
-                '--config',
-                item['config'],
-            ],
+            arguments=config['operator']['args'] + ['--config', item['config']],
             **config['operator']['params']
         )

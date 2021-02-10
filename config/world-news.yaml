@@ -31,36 +31,25 @@ operator:
     - --sleep
     - '10'
 tasks:
-  - category: bbc
-    config: /config/world_news/bbc.yaml
+  - config: /config/world_news/bbc.yaml
     task_id: bbc
-  - category: tass
-    config: /config/world_news/tass.yaml
+  - config: /config/world_news/tass.yaml
     task_id: tass
-  - category: xinhuanet
-    config: /config/world_news/xinhuanet.yaml
+  - config: /config/world_news/xinhuanet.yaml
     task_id: xinhuanet
-  - category: ansa
-    config: /config/world_news/ansa.yaml
+  - config: /config/world_news/ansa.yaml
     task_id: ansa
-  - category: upi
-    config: /config/world_news/upi.yaml
+  - config: /config/world_news/upi.yaml
     task_id: upi
-  - category: belga
-    config: /config/world_news/belga.yaml
+  - config: /config/world_news/belga.yaml
     task_id: belga
-  - category: cna
-    config: /config/world_news/cna.yaml
+  - config: /config/world_news/cna.yaml
     task_id: cna
-  - category: reuters-jp
-    config: /config/world_news/reuters-jp.yaml
+  - config: /config/world_news/reuters-jp.yaml
     task_id: reuters-jp
-  - category: afp
-    config: /config/world_news/afp.yaml
+  - config: /config/world_news/afp.yaml
     task_id: afp
-  - category: reuters
-    config: /config/world_news/reuters.yaml
+  - config: /config/world_news/reuters.yaml
     task_id: reuters
-  - category: 47news
-    config: /config/world_news/47news.yaml
+  - config: /config/world_news/47news.yaml
     task_id: 47news
