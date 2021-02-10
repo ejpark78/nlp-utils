@@ -30,8 +30,7 @@ def batch() -> None:
     config = open_config(filename='config/naver.yaml')
 
     dag = DAG(
-        dag_id='config-test',
-        description='naver crawler',
+        **config['dag'],
         default_args={
             'owner': 'Airflow',
             'retries': 3,
@@ -43,32 +42,13 @@ def batch() -> None:
             'email_on_failure': False,
             'execution_timeout': timedelta(hours=1)
         },
-        schedule_interval='0,30 * * * *',
-        max_active_runs=1
     )
 
-    env_vars = {
-        'ELASTIC_SEARCH_HOST': 'https://corpus.ncsoft.com:9200',
-        'ELASTIC_SEARCH_AUTH': 'crawler:crawler2019',
-    }
-
     params = {
-        'namespace': 'airflow',
-        'image': 'registry.nlp-utils/crawler:live',
-        'image_pull_policy': 'Always',
-        'image_pull_secrets': 'registry',
-        'is_delete_operator_pod': True,
-        'get_logs': True,
-        'env_vars': env_vars,
+        **config['operator']['params'],
+        'env_vars': config['operator']['env_vars'],
         'cmds': ['python3'],
     }
-
-    args = [
-        '-m',
-        'crawler.web_news.web_news',
-        '--sleep',
-        '10',
-    ]
 
     category_list: {}
 
@@ -85,7 +65,7 @@ def batch() -> None:
             dag=dag,
             name='task',
             task_id=item['task_id'],
-            arguments=args + [
+            arguments=config['operator']['args'] + [
                 '--config',
                 item['config'],
                 '--sub-category',
