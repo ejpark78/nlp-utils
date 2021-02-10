@@ -114,19 +114,19 @@ tasks:
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/기업산업
-    task_id: economy-economy
+    task_id: economy-company
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/취업직장인
-    task_id: economy-economy
+    task_id: economy-linkedin
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/국제경제
-    task_id: economy-economy
+    task_id: economy-weconomy
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/자동차
-    task_id: economy-economy
+    task_id: economy-car
   - category: economy
     config: /config/daum/economy.yaml
     name: 경제/경제일반
