@@ -28,42 +28,40 @@ def open_config(filename: str) -> dict:
 
 config = open_config(filename='config/naver.yaml')
 
-dag = DAG(
-    **config['dag'],
-    default_args={
-        'owner': 'Airflow',
-        'retries': 3,
-        'retry_delay': timedelta(minutes=10),
-        'start_date': days_ago(n=0, hour=1),
-        'depends_on_past': False,
-        'email': ['ejpark@ncsoft.com'],
-        'email_on_retry': False,
-        'email_on_failure': False,
-        'execution_timeout': timedelta(hours=1)
-    },
-)
+default_args = {
+    'owner': 'Airflow',
+    'retries': 3,
+    'retry_delay': timedelta(minutes=10),
+    'start_date': days_ago(n=0, hour=1),
+    'depends_on_past': False,
+    'email': ['ejpark@ncsoft.com'],
+    'email_on_retry': False,
+    'email_on_failure': False,
+    'execution_timeout': timedelta(hours=1)
+}
 
-start = DummyOperator(task_id='start', dag=dag)
+with DAG(**config['dag'], default_args=default_args) as dag:
+    start = DummyOperator(task_id='start', dag=dag)
 
-category_list = {}
-for item in config['tasks']:
-    name = item['category']
+    category_list = {}
+    for item in config['tasks']:
+        name = item['category']
 
-    if name not in category_list:
-        category_list[name] = DummyOperator(task_id=name, dag=dag)
-        start >> category_list[name]
+        if name not in category_list:
+            category_list[name] = DummyOperator(task_id=name, dag=dag)
+            start >> category_list[name]
 
-    task = KubernetesPodOperator(
-        dag=dag,
-        name='task',
-        task_id=item['task_id'],
-        arguments=config['operator']['args'] + [
-            '--config',
-            item['config'],
-            '--sub-category',
-            item['name'],
-        ],
-        **config['operator']['params']
-    )
+        task = KubernetesPodOperator(
+            dag=dag,
+            name='task',
+            task_id=item['task_id'],
+            arguments=config['operator']['args'] + [
+                '--config',
+                item['config'],
+                '--sub-category',
+                item['name'],
+            ],
+            **config['operator']['params']
+        )
 
-    category_list[name] >> task
+        category_list[name] >> task
