@@ -1,0 +1,42 @@
+---
+dag:
+  dag_id: 'bbs'
+  description: 'bbs crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: True
+    get_logs: True
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --overwrite
+tasks:
+  - config: /config/bbs/ruliweb.yaml
+    task_id: ruliweb
+  - config: /config/bbs/mlbpark-bullpen.yaml
+    task_id: mlbpark-bullpen
+  - config: /config/bbs/mlbpark-kbo.yaml
+    task_id: mlbpark-kbo
+  - config: /config/bbs/mlbpark-mlb.yaml
+    task_id: mlbpark-mlb
