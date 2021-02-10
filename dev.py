@@ -70,6 +70,8 @@ def batch() -> None:
 
         category_list[name] >> task
 
+    dag.run()
+
     return
 
 
