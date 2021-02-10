@@ -17,6 +17,8 @@ default_args:
   email_on_failure: False
 operator:
   params:
+    labels:
+      crawler: world-news
     namespace: 'airflow'
     image: 'registry.nlp-utils/crawler:live'
     image_pull_policy: 'Always'
