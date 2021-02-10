@@ -7,19 +7,19 @@ jobs:
       type: query
   list:
   - category: 정치
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N1&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N1&view_type=sm
   - category: 경제
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N2&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N2&view_type=sm
   - category: 사회
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N3&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N3&view_type=sm
   - category: 교육
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N26&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N26&view_type=sm
   - category: 문화
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N4&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N4&view_type=sm
   - category: 연예
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N9&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N9&view_type=sm
   - category: 스포츠
-    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=10000000&box_idxno=&sc_section_code=S1N25&view_type=sm
+    url_frame: http://www.ccdailynews.com/news/articleList.html?page={page}&total=100000&box_idxno=&sc_section_code=S1N25&view_type=sm
     
 parsing:
   descriptions:
@@ -69,6 +69,6 @@ parsing:
   - comment: 텍스트 본문
     key: content
     value:
-    - select: 'div[itemprop=articleBody]'
+    - select: div.article-body article#article-view-content-div
     type: text
     value_type: merge
