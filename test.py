@@ -35,6 +35,7 @@ try:
         # You can use annotations on your kubernetes pods!
         start_task = PythonOperator(
             task_id="start_task",
+            python_callable=print_stuff,
             executor_config={
                 "pod_override": k8s.V1Pod(metadata=k8s.V1ObjectMeta(annotations={"test": "annotation"}))
             },
