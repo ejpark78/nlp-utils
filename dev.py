@@ -20,12 +20,16 @@ class NaverCrawlerDags(object):
     def __init__(self):
         super().__init__()
 
-    @staticmethod
-    def open_config(filename: str) -> dict:
-        path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', '/opt/airflow/dags')
-        sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
+        self.debug = int(getenv('DEBUG', 0))
 
-        with open('{}/{}/{}'.format(path, sub_path, filename), 'r') as fp:
+    def open_config(self, filename: str) -> dict:
+        if self.debug != 1:
+            path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', '/opt/airflow/dags')
+            sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
+
+            filename = '{}/{}/{}'.format(path, sub_path, filename)
+
+        with open(filename, 'r') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return dict(data)
 
@@ -104,15 +108,14 @@ class NaverCrawlerDags(object):
         return result
 
 
-dag_info = NaverCrawlerDags().batch()
+if __name__ == '__main__':
+    dag_info = NaverCrawlerDags().batch()
 
-print(dag_info)
+    start = DummyOperator(task_id='start', dag=dag_info['dag'])
 
-start = DummyOperator(task_id='start', dag=dag_info['dag'])
+    for name in dag_info['category']:
+        start >> dag_info['category'][name]
 
-for name in dag_info['category']:
-    start >> dag_info['category'][name]
+        for task in dag_info['operator'][name]:
+            dag_info['category'][name] >> task
 
-    for task in dag_info['operator'][name]:
-        print(name, start, dag_info['category'][name], task)
-        dag_info['category'][name] >> task
