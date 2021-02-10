@@ -4,6 +4,14 @@ dag:
   description: 'naver crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
 operator:
   params:
     namespace: 'airflow'

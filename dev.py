@@ -29,14 +29,9 @@ def open_config(filename: str) -> dict:
 config = open_config(filename='config/naver.yaml')
 
 default_args = {
-    'owner': 'Airflow',
-    'retries': 3,
+    **config['default_args'],
     'retry_delay': timedelta(minutes=10),
     'start_date': days_ago(n=0, hour=1),
-    'depends_on_past': False,
-    'email': ['ejpark@ncsoft.com'],
-    'email_on_retry': False,
-    'email_on_failure': False,
     'execution_timeout': timedelta(hours=1)
 }
 
