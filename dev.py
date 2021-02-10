@@ -44,10 +44,9 @@ def batch() -> None:
         },
     )
 
-    category_list = {}
-
     start = DummyOperator(task_id='start', dag=dag)
 
+    category_list = {}
     for item in config['tasks']:
         name = item['category']
 
@@ -69,6 +68,8 @@ def batch() -> None:
         )
 
         category_list[name] >> task
+
+    dag.run()
 
     return
 
