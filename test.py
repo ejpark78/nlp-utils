@@ -29,9 +29,6 @@ try:
         tags=['example3'],
     ) as dag:
 
-        def dummy():
-            assert True
-
         # You can use annotations on your kubernetes pods!
         start_task = PythonOperator(
             task_id="start_task",
