@@ -44,7 +44,7 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - select: div.listsOfArticles div div
+  - select: div.listsOfArticles > div > div
   list:
   - comment: 제목
     key: title
