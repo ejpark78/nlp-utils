@@ -80,7 +80,9 @@ parsing:
     type_convert: date
     value_type: single
     replace:
-    - from: '^.+입력  '
+    - from: '^.*입력'
+      to: ''
+    - from: '^.*수정'
       to: ''
   - comment: 텍스트 본문
     key: content
