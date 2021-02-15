@@ -86,8 +86,11 @@ class WebNewsBase(object):
             return dict(data)
 
     @staticmethod
-    def update_page_range(page_range: str = None, step: int = 1) -> dict:
+    def update_page_range(page_range: str = None, step: int = 1, args: dict = None) -> dict:
         """페이지 범위를 갱신한다."""
+        step = int(args['page_step']) if step == 1 and 'page_step' in args else step
+        page_range = args['page_range'] if page_range is None and 'page_range' in args else page_range
+
         result = {
             'start': 1,
             'end': 900,
@@ -104,8 +107,11 @@ class WebNewsBase(object):
             'step': step
         }
 
-    def update_date_range(self, date_range: str = None, step: int = 1) -> dict:
+    def update_date_range(self, date_range: str = None, step: int = 1, args: dict = None) -> dict:
         """날짜 범위를 갱신한다."""
+        step = int(args['date_step']) if step == 1 and 'date_step' in args else step
+        date_range = args['date_range'] if date_range is None and 'date_range' in args else date_range
+
         today = datetime.now(self.timezone)
         result = {
             'end': today,

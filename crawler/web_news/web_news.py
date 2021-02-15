@@ -901,13 +901,26 @@ class WebNewsCrawler(WebNewsBase):
 
         self.config = self.open_config(filename=self.params.config)
 
-        self.date_range = self.update_date_range(date_range=self.params.date_range, step=self.params.date_step)
-        self.page_range = self.update_page_range(page_range=self.params.page_range, step=self.params.page_step)
-
         self.job_sub_category = self.params.sub_category.split(',') if self.params.sub_category != '' else []
 
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.config['jobs']:
+            # override args config
+            if 'args' not in job:
+                job['args'] = {}
+
+            self.date_range = self.update_date_range(
+                date_range=self.params.date_range,
+                step=self.params.date_step,
+                args=job['args']
+            )
+
+            self.page_range = self.update_page_range(
+                page_range=self.params.page_range,
+                step=self.params.page_step,
+                args=job['args']
+            )
+
             # override elasticsearch config
             job['host'] = os.getenv(
                 'ELASTIC_SEARCH_HOST',
