@@ -71,6 +71,10 @@ class Logger(object):
         self.logger.log(level=self.MESSAGE, msg=LogMessage(msg))
         return
 
+    def warning(self, msg: dict) -> None:
+        self.logger.warning(msg=LogMessage(msg))
+        return
+
     def debug(self, msg: dict) -> None:
         self.logger.debug(msg=LogMessage(msg))
         return

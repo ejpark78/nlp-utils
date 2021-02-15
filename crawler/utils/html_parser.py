@@ -295,9 +295,9 @@ class HtmlParser(object):
             elif str_date != '':
                 date = parse_date(str_date)
         except Exception as e:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'html 날짜 변환 에러',
+            self.logger.warning(msg={
+                'level': 'WARNING',
+                'message': 'html 날짜 변환 경고',
                 'str_date': str_date,
                 'exception': str(e),
             })
@@ -310,9 +310,9 @@ class HtmlParser(object):
             if 'tzinfo is already set' in str(e):
                 return date
 
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'datetime localize 에러',
+            self.logger.warning(msg={
+                'level': 'WARNING',
+                'message': 'datetime localize 경고',
                 'date': date,
                 'str_date': str_date,
                 'exception': str(e),
@@ -541,9 +541,9 @@ class HtmlParser(object):
             try:
                 result[k] = parse_date(result[k])
             except Exception as e:
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': 'date 변환 에러',
+                self.logger.warning(msg={
+                    'level': 'WARNING',
+                    'message': 'date 변환 경고',
                     'date': result[k],
                     'exception': str(e),
                 })

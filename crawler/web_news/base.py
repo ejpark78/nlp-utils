@@ -284,9 +284,37 @@ class WebNewsBase(object):
 
         return
 
+    @staticmethod
+    def doc_exists(index: str, doc_id: str, es: ElasticSearchUtils) -> (bool, str):
+        resp = es.conn.search(
+            index=index,
+            _source=['url', 'html'],
+            body={
+                'query': {
+                    'ids': {
+                        'values': [doc_id]
+                    }
+                }
+            }
+        )
+
+        if resp['hits']['total']['value'] == 0:
+            return False, None
+
+        for item in resp['hits']['hits']:
+            if 'html' not in item['_source']:
+                return False, item['_index']
+
+            if item['_source']['html'] != '':
+                return True, item['_index']
+
+        return False, None
+
     def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str,
-                     reply_info: dict = None) -> bool:
+                     reply_info: dict = None) -> (bool, str):
         """문서 아이디를 이전 기록과 비교한다."""
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html
+
         # 캐쉬에 저장된 문서가 있는지 조회
         if self.cache.has(key=doc_id) is True:
             self.logger.info(msg={
@@ -295,17 +323,18 @@ class WebNewsBase(object):
                 'doc_id': doc_id,
                 'url': url,
             })
-            return True
+            return True, index
 
         # 문서가 있는지 조회
-        is_exists = es.conn.exists(index=index, id=doc_id)
+        is_exists, doc_index = self.doc_exists(index=index, doc_id=doc_id, es=es)
+
         if is_exists is False:
-            return False
+            return False, doc_index
 
         # html 필드가 있는지 조회
-        doc = es.conn.get(index=index, id=doc_id, _source=['html'])
-        if 'html' not in doc['_source']:
-            return False
+        # doc = es.conn.get(index=index, id=doc_id, _source=['html'])
+        # if 'html' not in doc['_source']:
+        #     return False, index
 
         # 댓글 정보 추가 확인
         if reply_info is not None:
@@ -317,10 +346,10 @@ class WebNewsBase(object):
             )['_source']
 
             if field_name not in doc:
-                return False
+                return False, None
 
             if doc[field_name] != reply_info['count']:
-                return False
+                return False, None
 
         self.cache.set(key=doc_id, value=True)
 
@@ -332,4 +361,4 @@ class WebNewsBase(object):
             'doc_url': es.get_doc_url(document_id=doc_id)
         })
 
-        return True
+        return True, None

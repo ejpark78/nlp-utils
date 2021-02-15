@@ -560,18 +560,18 @@ class WebNewsCrawler(WebNewsBase):
 
         return item
 
-    def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str) -> bool:
+    def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str) -> (bool, str):
         if self.params.overwrite is True:
-            return False
+            return False, None
 
         es.index = es.get_target_index(
             tag=es.get_index_year_tag(date=date),
             index=job['index'],
         )
 
-        is_skip = self.check_doc_id(
+        is_skip, doc_index = self.check_doc_id(
             url=url,
-            index=job['alias_index'] if 'alias_index' in job else es.index,
+            index=job['index_group'] if 'index_group' in job else job['index'].replace('-{year}', '*'),
             doc_id=doc_id,
             es=es,
         )
@@ -584,9 +584,9 @@ class WebNewsCrawler(WebNewsBase):
                 'doc_url': es.get_doc_url(document_id=doc_id)
             })
 
-            return True
+            return True, doc_index
 
-        return False
+        return False, doc_index
 
     def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
                         query: dict) -> None:
@@ -745,7 +745,8 @@ class WebNewsCrawler(WebNewsBase):
             if doc_id is None:
                 continue
 
-            if self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id) is True:
+            is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
+            if is_skip is True:
                 continue
 
             # 기사 본문 조회
@@ -777,11 +778,11 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기사 저장
             self.save_article(
+                es=es,
                 job=job,
                 doc=item,
                 html=article_html,
                 article=article,
-                es=es,
             )
 
             self.cache.set(key=doc_id, value=True)
