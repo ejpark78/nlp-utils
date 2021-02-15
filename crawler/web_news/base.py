@@ -284,7 +284,8 @@ class WebNewsBase(object):
 
         return
 
-    def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str, reply_info: dict = None) -> bool:
+    def check_doc_id(self, doc_id: str, es: ElasticSearchUtils, url: str, index: str,
+                     reply_info: dict = None) -> bool:
         """문서 아이디를 이전 기록과 비교한다."""
         # 캐쉬에 저장된 문서가 있는지 조회
         if self.cache.has(key=doc_id) is True:

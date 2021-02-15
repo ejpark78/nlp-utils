@@ -571,7 +571,7 @@ class WebNewsCrawler(WebNewsBase):
 
         is_skip = self.check_doc_id(
             url=url,
-            index=es.index,
+            index=job['alias_index'] if 'alias_index' in job else es.index,
             doc_id=doc_id,
             es=es,
         )
@@ -830,7 +830,7 @@ class WebNewsCrawler(WebNewsBase):
         for page in range(self.page_range['start'], self.page_range['end'] + 1, self.page_range['step']):
             # 쿼리 url 생성
             q = dict(page=page)
-            if dt is not None:
+            if dt is not None and 'date_format' in url_info:
                 q['date'] = dt.strftime(url_info['date_format'])
 
             url_info['url'] = url_info['url_frame'].format(**q)

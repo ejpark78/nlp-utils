@@ -7,9 +7,9 @@ from __future__ import print_function
 
 import json
 
-from nlplab.utils.elasticsearch_utils import ElasticSearchUtils
 from tqdm import tqdm
 
+from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.web_news.cache_utils import CacheUtils
 
 
@@ -194,13 +194,6 @@ class RelocateWebNews(object):
     def batch(self) -> None:
         self.params = self.init_arguments()
 
-        if self.params.dump_index is True:
-            elastic = ElasticSearchUtils(host=self.params.host, http_auth=self.params.auth)
-            elastic.dump_index(index=self.params.index, size=self.params.size)
-
-        if self.params.json2db is True:
-            CacheUtils().json2db(filename=self.params.filename)
-
         if self.params.relocate is True:
             self.relocate()
 
@@ -212,9 +205,7 @@ class RelocateWebNews(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--dump-index', action='store_true', default=False)
         parser.add_argument('--relocate', action='store_true', default=False)
-        parser.add_argument('--json2db', action='store_true', default=False)
 
         parser.add_argument('--host', default='https://corpus.ncsoft.com:9200', help='elasticsearch url')
         parser.add_argument('--auth', default='elastic:nlplab', help='elasticsearch auth')

@@ -107,7 +107,7 @@ class FilloutHtmlColumn(object):
         # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2014.json.bz2', index=index)
         # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2013.json.bz2', index=index)
         # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2012.json.bz2', index=index)
-        self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2011.json.bz2', index=index)
+        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2011.json.bz2', index=index)
         self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2010.json.bz2', index=index)
         self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2009.json.bz2', index=index)
         self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2008.json.bz2', index=index)
