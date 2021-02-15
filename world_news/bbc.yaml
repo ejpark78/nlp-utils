@@ -13,6 +13,8 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "1~50"
   list:
   - category: world
     url_frame: https://www.bbc.com/news/live/world-47639450/page/{page}

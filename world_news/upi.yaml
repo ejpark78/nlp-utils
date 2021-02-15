@@ -11,6 +11,8 @@ jobs:
       - from: -$
         to: ''
       type: path
+  args:
+    page_range: "1~7"
   list:
   - category: TopNews/WorldNews
     url_frame: https://www.upi.com/Top_News/World-News/p{page}/
