@@ -13,6 +13,9 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "0~5000"
+    page_step: "100"
   list:
   - category: 경제
     url_frame: https://dailian.co.kr/economy?startPos={page}

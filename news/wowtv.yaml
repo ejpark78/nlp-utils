@@ -5,6 +5,9 @@ jobs:
     document_id:
       frame: '{articleId}'
       type: query
+  args:
+    page_range: "1~2000"
+    page_step: "20"
   list:
   - category: latest
     date_format: '%Y-%m-%d'

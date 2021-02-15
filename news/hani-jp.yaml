@@ -13,6 +13,9 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "1~9000"
+    page_step: "10"
   list:
   - category: 全体
     url_frame: http://japan.hani.co.kr/arti/?cline={page}

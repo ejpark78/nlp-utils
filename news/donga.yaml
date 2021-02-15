@@ -15,6 +15,9 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "0~2000"
+    page_step: "20"
   list:
   - category: Politics
     url_frame: https://www.donga.com/news/List/Politics?p={page}&prod=news&ymd=&m=NP

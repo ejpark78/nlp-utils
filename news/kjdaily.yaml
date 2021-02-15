@@ -6,6 +6,8 @@ jobs:
     document_id:
       frame: '{aid}'
       type: query
+  args:
+    page_range: "0~5000"
   list:
   - category: 정치/일반
     url_frame: http://www.kjdaily.com/section.html?section=2&page={page}

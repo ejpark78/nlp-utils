@@ -23,6 +23,9 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "0~2000"
+    page_step: "20"
   list:
   - category: Business
     url_frame: https://www.donga.com/cn/List?p0=j&p={page}&l=20&c=02

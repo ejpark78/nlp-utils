@@ -11,6 +11,8 @@ jobs:
       - from: /
         to: '-'
       type: path
+  args:
+    page_range: "1~20"
   list:
   - category: 세계
     url_frame: https://newspeppermint.com/category/world-politics/page/{page}/
