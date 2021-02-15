@@ -694,8 +694,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'trace_list 가 없음: 조기 종료',
-                'url': url_info['url'] if 'url' in url_info else '',
-                **job,
+                **url_info
             })
             return True
 
@@ -808,9 +807,8 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 목록 끝에 도달함: 조기 종료',
-                'url': url_info['url'] if 'url' in url_info else '',
                 'trace_list_count': '{} > {}'.format(self.trace_list_count, len(trace_list)),
-                **job,
+                **url_info
             })
             return True
 
@@ -928,7 +926,6 @@ class WebNewsCrawler(WebNewsBase):
                 self.logger.error(msg={
                     'level': 'ERROR',
                     'message': 'elasticsearch 저장 정보 없음',
-                    **job
                 })
                 break
 
