@@ -68,9 +68,9 @@ spec:
         image: registry.nlp-utils/fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
         env:
           - name:  FLUENT_ELASTICSEARCH_HOST
-            value: "172.19.169.47"
+            value: "172.19.169.238"
           - name:  FLUENT_ELASTICSEARCH_PORT
-            value: "9200"
+            value: "30101"
           - name: FLUENT_ELASTICSEARCH_SCHEME
             value: "https"
           # Option to configure elasticsearch plugin with self signed certs

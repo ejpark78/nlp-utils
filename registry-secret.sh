@@ -1,7 +1,7 @@
 SECRET_NAME=registry
 USER_ID=k8s
 USER_PW=nlplab
-USER_EMAIL=ejpark78@gmail.com
+USER_EMAIL=ejpark@ncsoft.com
 REGISTRY_NS=crawler
 
 kubectl create secret docker-registry \

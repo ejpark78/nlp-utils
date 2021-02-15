@@ -42,16 +42,61 @@ args:
   - "crawler.web_news.web_news"
   - "--sleep"
   - "3"
+  - "--date-range"
+  - "today"
 
 jobs:
+  - name: ajunews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ajunews.yaml"
+
+  - name: asiae
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ajunews.yaml"
+
+  - name: ccdailynews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ccdailynews.yaml"
+
+  - name: cctoday
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/cctoday.yaml"
+
+  - name: chosun-biz
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/chosun-biz.yaml"
+
+  - name: daejon
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/daejon.yaml"
+
+  - name: dailian
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/dailian.yaml"
+      - "--page-range"
+      - "0~5000"
+      - "--page-step"
+      - "100"
+
   - name: donga
     schedule: "7,34 * * * *"
-    index: "raw-donga-{year}"
     args:
       - "--config"
       - "/config/news/donga.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~2000"
       - "--page-step"
@@ -59,12 +104,9 @@ jobs:
 
   - name: donga-en
     schedule: "7,34 * * * *"
-    index: "raw-donga-en-{year}"
     args:
       - "--config"
       - "/config/news/donga-en.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~2000"
       - "--page-step"
@@ -72,12 +114,9 @@ jobs:
 
   - name: donga-cn
     schedule: "7,34 * * * *"
-    index: "raw-donga-cn-{year}"
     args:
       - "--config"
       - "/config/news/donga-cn.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~2000"
       - "--page-step"
@@ -85,85 +124,67 @@ jobs:
 
   - name: donga-jp
     schedule: "7,34 * * * *"
-    index: "raw-donga-jp-{year}"
     args:
       - "--config"
       - "/config/news/donga-jp.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~2000"
       - "--page-step"
       - "20"
 
-  - name: joins
+  - name: dt
     schedule: "7,34 * * * *"
-    index: "raw-joins-{year}"
     args:
       - "--config"
-      - "/config/news/joins.yaml"
-      - "--date-range"
-      - "today"
-      - "--page-range"
-      - "1~1500"
+      - "/config/news/dt.yaml"
 
-  - name: wowtv
+  - name: edaily
     schedule: "7,34 * * * *"
-    index: "raw-wowtv-{year}"
     args:
       - "--config"
-      - "/config/news/wowtv.yaml"
-      - "--date-range"
-      - "today"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
+      - "/config/news/edaily.yaml"
 
-  - name: chosun-biz
+  - name: etnews
     schedule: "7,34 * * * *"
-    index: "raw-chosun-biz-{year}"
     args:
       - "--config"
-      - "/config/news/chosun-biz.yaml"
-      - "--date-range"
-      - "today"
+      - "/config/news/etnews.yaml"
 
-  - name: sbs-biz
+  - name: fnnews
     schedule: "7,34 * * * *"
-    index: "raw-sbs-biz-{year}"
     args:
       - "--config"
-      - "/config/news/sbs-biz.yaml"
-      - "--date-range"
-      - "today"
+      - "/config/news/fnnews.yaml"
+
+  - name: fntimes
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/fntimes.yaml"
+
+  - name: gyeonghyang
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/gyeonghyang.yaml"
 
   - name: hani
     schedule: "7,34 * * * *"
-    index: "raw-hani-{year}"
     args:
       - "--config"
       - "/config/news/hani.yaml"
-      - "--date-range"
-      - "today"
 
   - name: hani-en
     schedule: "7,34 * * * *"
-    index: "raw-hani-en-{year}"
     args:
       - "--config"
       - "/config/news/hani-en.yaml"
-      - "--date-range"
-      - "today"
 
   - name: hani-jp
     schedule: "7,34 * * * *"
-    index: "raw-hani-jp-{year}"
     args:
       - "--config"
       - "/config/news/hani-jp.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~9000"
       - "--page-step"
@@ -171,24 +192,172 @@ jobs:
 
   - name: hani-cn
     schedule: "7,34 * * * *"
-    index: "raw-hani-cn-{year}"
     args:
       - "--config"
       - "/config/news/hani-cn.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~9000"
       - "--page-step"
       - "10"
 
+  - name: hankook
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hankook.yaml"
+
+  - name: honam
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/honam.yaml"
+
+  - name: idaegu
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/idaegu.yaml"
+
+  - name: imaeil
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/imaeil.yaml"
+
+  - name: inews24
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/inews24.yaml"
+
+  - name: inews365
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/inews365.yaml"
+
+  - name: iusm
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/iusm.yaml"
+
+  - name: jbdomin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jbdomin.yaml"
+
+  - name: jbnews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jbnews.yaml"
+
+  - name: jemin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jemin.yaml"
+
+  - name: jjan
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jjan.yaml"
+
+  - name: jnilbo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jnilbo.yaml"
+
+  - name: joins
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joins.yaml"
+      - "--page-range"
+      - "1~1500"
+
+  - name: joongboo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joongboo.yaml"
+
+  - name: joongdo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joongdo.yaml"
+
+  - name: kjdaily
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kjdaily.yaml"
+      - "--page-range"
+      - "0~5000"
+
+#  - name: knnews
+#    schedule: "7,34 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/news/knnews.yaml"
+
+  - name: kookje
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kookje.yaml"
+
+  - name: ksilbo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ksilbo.yaml"
+
+#  - name: kwangju
+#    schedule: "7,34 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/news/kwangju.yaml"
+
+  - name: kyeongin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kyeongin.yaml"
+
   - name: newspeppermint
     schedule: "7,34 * * * *"
-    index: "raw-newspeppermint-{year}"
     args:
       - "--config"
       - "/config/news/newspeppermint.yaml"
-      - "--date-range"
-      - "today"
       - "--page-range"
       - "1~20"
+
+  - name: sbs-biz
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/sbs-biz.yaml"
+
+  - name: wowtv
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/wowtv.yaml"
+      - "--page-range"
+      - "1~2000"
+      - "--page-step"
+      - "20"
+
+  - name: yeongnam
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/yeongnam.yaml"
+
+

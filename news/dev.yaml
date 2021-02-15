@@ -44,24 +44,35 @@ args:
   - "5"
 
 jobs:
-  - name: dailian
-    schedule: "7,34 * * * *"
-    index: "raw-dailian-{year}"
-    args:
-      - "--config"
-      - "/config/news/dailian.yaml"
-      - "--date-range"
-      - "today"
-      - "--page-range"
-      - "0~5000"
-      - "--page-step"
-      - "100"
+#  - name: dailian
+#    schedule: "7,34 * * * *"
+#    index: "raw-dailian-{year}"
+#    args:
+#      - "--config"
+#      - "/config/news/dailian.yaml"
+#      - "--date-range"
+#      - "today"
+#      - "--page-range"
+#      - "0~5000"
+#      - "--page-step"
+#      - "100"
+#
+#  - name: kjdaily
+#    schedule: "7,34 * * * *"
+#    index: "raw-kjdaily-{year}"
+#    args:
+#      - "--config"
+#      - "/config/news/kjdaily.yaml"
+#      - "--date-range"
+#      - "today"
+#      - "--page-range"
+#      - "0~5000"
 
-  - name: ansa
-    schedule: "7,34 * * * *"
-    index: "raw-ansa-{year}"
-    args:
-      - "--config"
-      - "/config/world_news/ansa.yaml"
-      - "--date-range"
-      - "today"
+#  - name: ansa
+#    schedule: "7,34 * * * *"
+#    index: "raw-ansa-{year}"
+#    args:
+#      - "--config"
+#      - "/config/world_news/ansa.yaml"
+#      - "--date-range"
+#      - "today"
