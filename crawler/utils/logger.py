@@ -44,7 +44,7 @@ class Logger(object):
 
     def get_logger(self):
         logging_opt = {
-            'format': '[%(levelname)-s] %(message)s',
+            'format': '%(message)s',
             'handlers': [logging.StreamHandler(sys.stderr)],
             'level': self.MESSAGE,
         }
