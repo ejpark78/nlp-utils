@@ -18,8 +18,8 @@ config = open_config(filename='config/naver-reply.yaml')
 
 default_args = {
     **config['default_args'],
+    'start_date': days_ago(n=1),
     'retry_delay': timedelta(minutes=10),
-    'start_date': days_ago(n=0, hour=1),
     'execution_timeout': timedelta(hours=1)
 }
 
