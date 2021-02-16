@@ -89,7 +89,7 @@ class ApNewsCrawler(object):
                     'title': item['headline'],
                     'content': html.get_text() if html is not None else '',
                     'date': dt.isoformat(),
-                    'json': json.dumps(item, ensure_ascii=False),
+                    'raw': json.dumps(item, ensure_ascii=False),
                     '@curl_date': datetime.now(self.timezone).isoformat()
                 }
 
@@ -124,7 +124,7 @@ class ApNewsCrawler(object):
             'title': resp['headline'],
             'content': html.get_text() if html is not None else '',
             'date': date.isoformat(),
-            'json': json.dumps(resp, ensure_ascii=False),
+            'raw': json.dumps(resp, ensure_ascii=False),
             '@curl_date': datetime.now(self.timezone).isoformat()
         }
 
