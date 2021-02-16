@@ -270,7 +270,7 @@ helm upgrade dev ./news -f dev.yaml -n dev
 
 cat data/news/index.list | xargs -I{} echo "python3 crawler/utils/dump_index.py --dump-index --index {} | bzip2 - > data/news/ing/{}.json.bz2; sync" > cmd.list
 
-parallel -j8 --ungroup -k -a cmd.list
+parallel -j4 --ungroup -k -a cmd.list
 
 
 

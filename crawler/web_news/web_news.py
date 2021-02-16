@@ -142,8 +142,8 @@ class WebNewsCrawler(WebNewsBase):
                 resp = item['html']
             elif 'json' in item:
                 resp = item['json']
-            elif 'original' in item:
-                resp = item['original']
+            elif 'raw' in item:
+                resp = item['raw']
             else:
                 return ''
 
@@ -282,11 +282,11 @@ class WebNewsCrawler(WebNewsBase):
             doc.update(article)
         elif 'json' in article and len(article['json']) != 0:
             doc.update(article)
-        elif 'original' in article and len(article['original']) != 0:
+        elif 'raw' in article and len(article['raw']) != 0:
             doc.update(article)
         else:
-            if 'original' not in doc or doc['original'] == '':
-                doc['original'] = str(html)
+            if 'raw' not in doc or doc['raw'] == '':
+                doc['raw'] = str(html)
 
             self.logger.error(msg={
                 'level': 'ERROR',
