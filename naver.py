@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import logging
 from datetime import timedelta
 
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
@@ -13,6 +14,8 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
 
 from utils import open_config
+
+log = logging.getLogger(__name__)
 
 config = open_config(filename='config/naver.yaml')
 

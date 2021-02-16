@@ -39,37 +39,37 @@ tasks:
   - task_id: politics
     args:
       - "--config"
-      - "/config/naver/politics-reply.yaml"
+      - "/config/naver-news-reply//politics-reply.yaml"
   - task_id: society
     args:
       - "--config"
-      - "/config/naver/society-reply.yaml"
+      - "/config/naver-news-reply//society-reply.yaml"
   - task_id: tv
     args:
       - "--config"
-      - "/config/naver/tv-reply.yaml"
+      - "/config/naver-news-reply//tv-reply.yaml"
   - task_id: economy
     args:
       - "--config"
-      - "/config/naver/economy-reply.yaml"
+      - "/config/naver-news-reply//economy-reply.yaml"
   - task_id: international
     args:
       - "--config"
-      - "/config/naver/international-reply.yaml"
+      - "/config/naver-news-reply//international-reply.yaml"
   - task_id: it
     args:
       - "--config"
-      - "/config/naver/it-reply.yaml"
+      - "/config/naver-news-reply//it-reply.yaml"
   - task_id: living
     args:
       - "--config"
-      - "/config/naver/living-reply.yaml"
+      - "/config/naver-news-reply//living-reply.yaml"
   - task_id: opinion
     args:
       - "--config"
-      - "/config/naver/opinion-reply.yaml"
+      - "/config/naver-news-reply//opinion-reply.yaml"
   - task_id: sports
     args:
       - "--config"
-      - "/config/naver/sports-reply.yaml"
+      - "/config/naver-news-reply//sports-reply.yaml"
 

@@ -37,310 +37,310 @@ operator:
     - '10'
 tasks:
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/IT기기
     task_id: it-device
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/통신모바일
     task_id: it-mobile
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/소프트웨어
     task_id: it-sw
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/인터넷
     task_id: it-internet
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/게임
     task_id: it-game
   - category: it
-    config: /config/daum/it.yaml
+    config: /config/daum-news/it.yaml
     name: IT/IT일반
     task_id: it-etc
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/공연전시
     task_id: culture-art
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/책
     task_id: culture-book
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/뷰티패션
     task_id: culture-beauty
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/음식맛집
     task_id: culture-food
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/건강
     task_id: culture-health
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/가정육아
     task_id: culture-child
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/여행레저
     task_id: culture-tour
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/생활정보
     task_id: culture-living
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/생활일반
     task_id: culture-etc
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/종교
     task_id: culture-religion
   - category: culture
-    config: /config/daum/culture.yaml
+    config: /config/daum-news/culture.yaml
     name: 문화/날씨
     task_id: culture-forecast
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/부동산
     task_id: economy-estate
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/생활경제
     task_id: economy-living
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/금융
     task_id: economy-finance
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/기업산업
     task_id: economy-company
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/취업직장인
     task_id: economy-linkedin
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/국제경제
     task_id: economy-weconomy
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/자동차
     task_id: economy-car
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/경제일반
     task_id: economy-etc
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/주식
     task_id: economy-stock
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/시황분석
     task_id: economy-market-condition
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/해외증시
     task_id: economy-wmarket-condition
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/채권선물
     task_id: economy-trading-bonds
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/외환
     task_id: economy-foreign-exchange
   - category: economy
-    config: /config/daum/economy.yaml
+    config: /config/daum-news/economy.yaml
     name: 경제/주식일반
     task_id: economy-stock-etc
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/사건사고
     task_id: society-incident
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/충청
     task_id: society-chungcheong
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/교육
     task_id: society-education
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/환경
     task_id: society-environment
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/강원
     task_id: society-gangwon
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/경상
     task_id: society-busan
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/제주
     task_id: society-jeju
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/전라
     task_id: society-jeolla
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/노동
     task_id: society-labor
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/미디어
     task_id: society-media
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/수도권
     task_id: society-capital
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/전국
     task_id: society-all
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/지역일반
     task_id: society-local-etc
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/사회일반
     task_id: society-etc
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/인물
     task_id: society-person
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/서울
     task_id: society-soul
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/복지
     task_id: society-welfare
   - category: society
-    config: /config/daum/society.yaml
+    config: /config/daum-news/society.yaml
     name: 사회/여성
     task_id: society-woman
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/행정지자체
     task_id: politics-administration
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/국회정당
     task_id: politics-national-assembly
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/외교국방
     task_id: politics-defence
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/북한
     task_id: politics-north-korea
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/정치일반
     task_id: politics-etc
   - category: politics
-    config: /config/daum/politics.yaml
+    config: /config/daum-news/politics.yaml
     name: 정치/청와대
     task_id: politics-blue-house
   - category: opinion
-    config: /config/daum/opinion.yaml
+    config: /config/daum-news/opinion.yaml
     name: 칼럼-칼럼
     task_id: opinion-col
   - category: opinion
-    config: /config/daum/opinion.yaml
+    config: /config/daum-news/opinion.yaml
     name: 칼럼-사설
     task_id: opinion-opi
   - category: opinion
-    config: /config/daum/opinion.yaml
+    config: /config/daum-news/opinion.yaml
     name: 칼럼-여론
     task_id: opinion-issue
   - category: opinion
-    config: /config/daum/opinion.yaml
+    config: /config/daum-news/opinion.yaml
     name: 칼럼-만평
     task_id: opinion-personal
   - category: opinion
-    config: /config/daum/opinion.yaml
+    config: /config/daum-news/opinion.yaml
     name: 칼럼
     task_id: opinion-column
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/야구
     task_id: sports-baseball
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/해외야구
     task_id: sports-wbaseball
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/게임
     task_id: sports-game
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/축구
     task_id: sports-football
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/해외축구
     task_id: sports-wfootball
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/골프
     task_id: sports-golf
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/농구&배구
     task_id: sports-basketball
   - category: sports
-    config: /config/daum/sports.yaml
+    config: /config/daum-news/sports.yaml
     name: 스포츠/일반
     task_id: sports-etc
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/일본
     task_id: international-jp
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/중국
     task_id: international-cn
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/아시아/대양주
     task_id: international-aisa
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/미주/아메리카
     task_id: international-usa
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/유럽
     task_id: international-europe
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/중동/아프리카
     task_id: international-mideast
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/영어뉴스
     task_id: international-english
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/해외화제
     task_id: international-world-issue
   - category: international
-    config: /config/daum/international.yaml
+    config: /config/daum-news/international.yaml
     name: 국제/국제일반
     task_id: international-etc

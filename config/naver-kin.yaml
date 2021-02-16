@@ -39,19 +39,19 @@ tasks:
     args:
       - "--question-list"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
   - task_id: answer-list
     args:
       - "--answer-list"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
   - task_id: detail-question
     args:
       - "--question"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
   - task_id: detail-answer
     args:
       - "--answer"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
