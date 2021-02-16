@@ -519,7 +519,7 @@ class HtmlParser(object):
     def parse_json(self, resp: dict, mapping_info: dict) -> dict:
         """json 본문을 파싱한다."""
         result = {
-            'json': json.dumps(resp, ensure_ascii=False)
+            'raw': json.dumps(resp, ensure_ascii=False)
         }
 
         dot = dotty(resp)
