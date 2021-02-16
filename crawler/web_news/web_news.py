@@ -142,6 +142,8 @@ class WebNewsCrawler(WebNewsBase):
                 resp = item['html']
             elif 'json' in item:
                 resp = item['json']
+            elif 'original' in item:
+                resp = item['original']
             else:
                 return ''
 
