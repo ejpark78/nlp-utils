@@ -2,7 +2,7 @@
 dag:
   dag_id: 'naver-reply'
   description: 'naver-reply crawler'
-  schedule_interval: '0,30 * * * *'
+  schedule_interval: '7,36 * * * *'
   max_active_runs: 1
   tags:
     - news
