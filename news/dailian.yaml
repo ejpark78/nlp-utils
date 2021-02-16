@@ -56,6 +56,12 @@ parsing:
     value:
     - select: div.textOflist a
     type: href
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -90,3 +96,9 @@ parsing:
     - select: '.contents .news-contents .article'
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

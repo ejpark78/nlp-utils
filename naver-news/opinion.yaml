@@ -17,10 +17,7 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - name: div
-    attribute:
-      class: list_body newsflash_body
-  - name: li
+  - select: div.list_body.newsflash_body li
   list:
   - comment: 제목
     key: title
@@ -35,19 +32,21 @@ parsing:
   - comment: 날짜
     key: date
     value:
-    - name: span
-      attribute:
-        class: date
+    - select: span.date
     type: text
     type_convert: date
     value_type: single
   - comment: 출처
     key: source
     value:
-    - name: span
-      attribute:
-        class: writing
+    - select: span.writing
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -61,32 +60,17 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - name: div
-      attribute:
-        class: article_info
-    - name: h3
-      attribute:
-        id: articleTitle
+    - select: div.article_info h3#articleTitle
     type: text
   - comment: '제목: 연합뉴스'
     key: title
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: h4
-      attribute:
-        class: title
+    - select: div.news_headline h4.title
     type: text
   - comment: 날짜
     key: date
     value:
-    - name: div
-      attribute:
-        class: article_info
-    - name: span
-      attribute:
-        class: t11
+    - select: div.article_info span.t11
     type: text
     type_convert: date
     value_type: single
@@ -98,116 +82,63 @@ parsing:
     - from: ^.+최종수정
       to: ''
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: div
-      attribute:
-        class: info
-    - name: span
+    - select: div.news_headline div.info span
     type: text
     type_convert: date
     value_type: single
   - comment: 지면 정보
     key: paper
     remove:
-    - name: i
-      attribute:
-        class: picon
+    - select: i.picon
     value:
-    - name: div
-      attribute:
-        class: article_info
-    - name: span
-      attribute:
-        class: sponsor_newspaper
+    - select: div.article_info span.sponsor_newspaper
     type: text
   - comment: 출처
     key: source_url
     value:
-    - name: div
-      attribute:
-        class: sponsor
-    - name: a
+    - select: div.sponsor a
     type: href
     value_type: single
   - comment: '출처: 연합뉴스'
     key: source_url
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: a
-      attribute:
-        class: press_link
+    - select: div.news_headline a.press_link
     type: href
     value_type: single
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: script
-    value:
-    - name: div
-      attribute:
-        id: articleBodyContents
-    type: html
-  - comment: 'html 본문: 연합뉴스'
-    key: html_content
-    remove:
-    - name: script
-    value:
-    - name: div
-      attribute:
-        id: newsEndContents
-    type: html
   - comment: 이미지
     key: image_list.image
     value:
-    - name: span
-      attribute:
-        class: end_photo_org
-    - name: img
+    - select: span.end_photo_org img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - name: span
-      attribute:
-        class: end_photo_org
-    - name: em
-      attribute:
-        class: img_desc
+    - select: span.end_photo_org em.img_desc
     type: text
   - comment: 동영상
     key: vod
     value:
-    - name: div
-      attribute:
-        id: articleBodyContents
-    - name: iframe
+    - select: div#articleBodyContents iframe
     type: html
   - comment: 원래 섹션
     key: source_section
     value:
-    - name: div
-      attribute:
-        class: guide_categorization
-    - name: em
-      attribute:
-        class: guide_categorization_item
+    - select: div.guide_categorization em.guide_categorization_item
     type: text
   - comment: 텍스트 본문
     key: content
     value:
-    - name: div
-      attribute:
-        id: articleBodyContents
+    - select: div#articleBodyContents
     type: text
   - comment: '텍스트 본문: 연합뉴스'
     key: content
     value:
-    - name: div
-      attribute:
-        id: newsEndContents
+    - select: div#newsEndContents
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

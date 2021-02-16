@@ -63,6 +63,12 @@ parsing:
     replace:
     - from: '(\d+)년 (\d+)월 (\d+)일\.'
       to: '\g<1>-\g<2>-\g<3>'
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -105,3 +111,9 @@ parsing:
     - select: 'div.container div.main-content div.column'
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

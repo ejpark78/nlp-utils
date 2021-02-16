@@ -99,97 +99,52 @@ parsing:
   - comment: 제목
     key: title
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: h4
-      attribute:
-        class: title
+    - select: div.news_headline h4.title
     type: text
   - comment: 기사 원문 주소
     key: source_url
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: div
-      attribute:
-        class: info
-    - name: a
-      attribute:
-        class: press_link
+    - select: div.news_headline div.info a.press_link
     type: href
   - comment: 날짜
     key: date
     remove:
-    - name: a
-      attribute:
-        class: press_link
+    - select: a.press_link
     replace:
     - from: 기사입력
       to: ''
     - from: ^.+최종수정
       to: ''
     value:
-    - name: div
-      attribute:
-        class: news_headline
-    - name: div
-      attribute:
-        class: info
+    - select: div.news_headline div.info
     type: text
     type_convert: date
     value_type: single
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: p
-      attribute:
-        class: source
-    value:
-    - name: div
-      attribute:
-        id: newsEndContents
-    type: html
-    value_type: merge
   - comment: 이미지
     key: image_list.image
     value:
-    - name: div
-      attribute:
-        id: newsEndContents
-    - name: span
-      attribute:
-        class: end_photo_org
-    - name: img
+    - select: div#newsEndContents span.end_photo_org img
     type: src
   - comment: 이미지 캡션
     delete: true
     key: image_list.caption
     value:
-    - name: div
-      attribute:
-        id: newsEndContents
-    - name: span
-      attribute:
-        class: end_photo_org
-    - name: em
-      attribute:
-        class: img_desc
+    - select: div#newsEndContents span.end_photo_org em.img_desc
     type: text
   - comment: 동영상
     key: vod
     value:
-    - name: div
-      attribute:
-        id: newsEndContents
-    - name: iframe
+    - select: div#newsEndContents iframe
     type: html
   - comment: 텍스트 본문
     key: content
     value:
-    - name: div
-      attribute:
-        id: newsEndContents
+    - select: div#newsEndContents
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

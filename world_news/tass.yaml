@@ -57,3 +57,9 @@ parsing:
     value:
     - select: div.news div.text-content
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

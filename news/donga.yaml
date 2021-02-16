@@ -64,6 +64,12 @@ parsing:
     value:
     - select: div.rightList span.txt
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -147,3 +153,9 @@ parsing:
     value:
     - select: div.article_keyword
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

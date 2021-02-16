@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-daum-it-{year}
+- index: crawler-daum-opinion-{year}
   article:
     document_id:
       replace:
@@ -8,24 +8,21 @@ jobs:
         to: ''
       type: path
   list:
-  - category: IT/IT기기
+  - category: 칼럼-칼럼
     date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/device?regDate={date}&page={page}
-  - category: IT/통신모바일
+    url_frame: https://news.daum.net/breakingnews/editorial/column?regDate={date}&page={page}
+  - category: 칼럼-사설
     date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/mobile?regDate={date}&page={page}
-  - category: IT/소프트웨어
+    url_frame: https://news.daum.net/breakingnews/editorial/editorial?regDate={date}&page={page}
+  - category: 칼럼-여론
     date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/software?regDate={date}&page={page}
-  - category: IT/인터넷
+    url_frame: https://news.daum.net/breakingnews/editorial/opinion?regDate={date}&page={page}
+  - category: 칼럼-만평
     date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/internet?regDate={date}&page={page}
-  - category: IT/게임
+    url_frame: https://news.daum.net/breakingnews/editorial/cartoon?regDate={date}&page={page}
+  - category: 칼럼
     date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/game?regDate={date}&page={page}
-  - category: IT/IT일반
-    date_format: '%Y%m%d'
-    url_frame: https://media.daum.net/breakingnews/digital/others?regDate={date}&page={page}
+    url_frame: https://news.daum.net/breakingnews/editorial?regDate={date}&page={page}
 parsing:
   version: v2021-01-26
   descriptions:
@@ -53,6 +50,12 @@ parsing:
       attribute:
         class: link_txt
     type: href
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -159,3 +162,9 @@ parsing:
     - name: section
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

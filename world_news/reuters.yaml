@@ -54,6 +54,12 @@ parsing:
     value:
     - select: div.story-content p
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -79,3 +85,9 @@ parsing:
     value:
     - select: div.ArticleBodyWrapper
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

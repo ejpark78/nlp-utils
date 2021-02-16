@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-daum-economy-{year}
+- index: crawler-daum-politics-{year}
   article:
     document_id:
       replace:
@@ -8,48 +8,24 @@ jobs:
         to: ''
       type: path
   list:
-  - category: 경제/부동산
+  - category: 정치/행정지자체
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/estate?regDate={date}&page={page}
-  - category: 경제/생활경제
+    url_frame: https://news.daum.net/breakingnews/politics/administration?regDate={date}&page={page}
+  - category: 정치/국회정당
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/consumer?regDate={date}&page={page}
-  - category: 경제/금융
+    url_frame: https://news.daum.net/breakingnews/politics/assembly?regDate={date}&page={page}
+  - category: 정치/외교국방
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/finance?regDate={date}&page={page}
-  - category: 경제/기업산업
+    url_frame: https://news.daum.net/breakingnews/politics/dipdefen?regDate={date}&page={page}
+  - category: 정치/북한
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/industry?regDate={date}&page={page}
-  - category: 경제/취업직장인
+    url_frame: https://news.daum.net/breakingnews/politics/north?regDate={date}&page={page}
+  - category: 정치/정치일반
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/employ?regDate={date}&page={page}
-  - category: 경제/국제경제
+    url_frame: https://news.daum.net/breakingnews/politics/others?regDate={date}&page={page}
+  - category: 정치/청와대
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/world?regDate={date}&page={page}
-  - category: 경제/자동차
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/autos?regDate={date}&page={page}
-  - category: 경제/경제일반
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/others?regDate={date}&page={page}
-  - category: 경제/주식
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/stock?regDate={date}&page={page}
-  - category: 경제/시황분석
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/publicnotice?regDate={date}&page={page}
-  - category: 경제/해외증시
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/worldstock?regDate={date}&page={page}
-  - category: 경제/채권선물
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/bondsfutures?regDate={date}&page={page}
-  - category: 경제/외환
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/fx?regDate={date}&page={page}
-  - category: 경제/주식일반
-    date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/economic/stock_others?regDate={date}&page={page}
+    url_frame: https://news.daum.net/breakingnews/politics/president?regDate={date}&page={page}
 parsing:
   version: v2021-01-26
   descriptions:
@@ -77,6 +53,12 @@ parsing:
       attribute:
         class: link_txt
     type: href
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+      - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -183,3 +165,9 @@ parsing:
     - name: section
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

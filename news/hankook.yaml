@@ -122,6 +122,12 @@ parsing:
     type: text
     type_convert: date
     value_type: single
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -157,3 +163,9 @@ parsing:
     - select: div.col-main
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

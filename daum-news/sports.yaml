@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-daum-politics-{year}
+- index: crawler-daum-sports-{year}
   article:
     document_id:
       replace:
@@ -8,51 +8,58 @@ jobs:
         to: ''
       type: path
   list:
-  - category: 정치/행정지자체
+  - category: 스포츠/야구
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/administration?regDate={date}&page={page}
-  - category: 정치/국회정당
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1028&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/해외야구
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/assembly?regDate={date}&page={page}
-  - category: 정치/외교국방
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1015&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/게임
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/dipdefen?regDate={date}&page={page}
-  - category: 정치/북한
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1079&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/축구
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/north?regDate={date}&page={page}
-  - category: 정치/정치일반
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1027&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/해외축구
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/others?regDate={date}&page={page}
-  - category: 정치/청와대
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=100032&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/골프
     date_format: '%Y%m%d'
-    url_frame: https://news.daum.net/breakingnews/politics/president?regDate={date}&page={page}
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=5000&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/농구&배구
+    date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1029&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
+  - category: 스포츠/일반
+    date_format: '%Y%m%d'
+    url_frame: https://sports.daum.net/sports/api/news/list.jsonp?cateIds=1031&pageSize=20&pageNumber={page}&date={date}
+    headers:
+      Content-Type: application/json
 parsing:
   version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - name: ul
-    attribute:
-      class: list_news2 list_allnews
-  - name: li
+  - parser: json
+    column: content
   list:
-  - comment: 제목
-    key: title
-    value:
-    - name: a
-      attribute:
-        class: link_txt
-    type: text
-  - comment: url
-    key: url
-    value:
-    - name: a
-      attribute:
-        class: link_txt
-    type: href
+  - parser: json
+    mapping:
+      url: https://sports.v.daum.net/v/{newsId}
   article:
   - comment: html
     key: html
@@ -159,3 +166,9 @@ parsing:
     - name: section
     type: text
     value_type: merge
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

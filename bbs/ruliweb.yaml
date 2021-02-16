@@ -71,6 +71,12 @@ parsing:
     value:
     - select: td.time
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -203,3 +209,9 @@ parsing:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_dislike span.num
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

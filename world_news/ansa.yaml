@@ -75,6 +75,12 @@ parsing:
     value:
     - select: p.news-abs
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -102,3 +108,9 @@ parsing:
     value:
     - select: div[itemprop=articleBody]
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date

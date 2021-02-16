@@ -42,6 +42,12 @@ parsing:
     value:
     - select: span.replycnt
     type: text
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
+    type: text
+    type_convert: date
   article:
   - comment: html
     key: html
@@ -123,5 +129,11 @@ parsing:
     key: reply_list.date
     value:
     - select: div.reply_list div.txt_box span.date
+    type: text
+    type_convert: date
+  - comment: 크롤링 시간
+    key: '@curl_date'
+    value:
+    - const: DATE_NOW
     type: text
     type_convert: date
