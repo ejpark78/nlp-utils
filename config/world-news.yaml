@@ -9,7 +9,7 @@ dag:
     - world
 default_args:
   owner: 'Airflow'
-  retries: 0
+  retries: 3
   depends_on_past: False
   email:
     - ejpark@ncsoft.com
