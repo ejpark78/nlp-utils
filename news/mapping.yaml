@@ -7,7 +7,7 @@ mappings:
     '@curl_date':
       type: date
     category:
-      ignore_above: 256
+      ignore_above: 50
       type: keyword
     content:
       type: text
