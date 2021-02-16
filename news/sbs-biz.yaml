@@ -3,7 +3,7 @@ jobs:
 - index: raw-sbs-biz-{year}
   article:
     document_id:
-      frame: '{document_id}'
+      frame: '{_id}'
       type: value
   list:
   - category: 경제정책
