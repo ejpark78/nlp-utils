@@ -11,11 +11,12 @@ import sys
 from argparse import Namespace
 from datetime import datetime
 from os import makedirs
-from os.path import isdir
+from os.path import isdir, isfile
 from ssl import SSLContext
 
 import pytz
 import urllib3
+import yaml
 from dateutil.parser import parse as parse_date
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
@@ -31,11 +32,13 @@ class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
     def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = 'crawler:crawler2019',
-                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log'):
+                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str = None):
         self.host = host
         self.http_auth = (http_auth.split(':'))
 
         self.conn = None
+
+        self.mapping = mapping
 
         self.index = self.get_target_index(tag=tag, index=index)
 
@@ -55,21 +58,41 @@ class ElasticSearchUtils(object):
         if self.host is not None:
             self.open()
 
+    @staticmethod
+    def open_mapping(filename: str) -> dict:
+        with open(filename, 'r') as fp:
+            data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+            return dict(data)
+
     def create_index(self, conn: Elasticsearch, index: str = None) -> bool:
         """인덱스를 생성한다."""
         if conn is None:
             return False
 
         try:
-            conn.indices.create(
-                index=index,
-                body={
-                    'settings': {
-                        'number_of_shards': 3,
-                        'number_of_replicas': 3
-                    },
-                }
-            )
+            if self.conn.indices.exists(index=self.index) is True:
+                return False
+        except Exception as e:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': '인덱스 확인 에러',
+                'host': self.host,
+                'exception': str(e),
+            })
+            return False
+
+        mapping = {
+            'settings': {
+                'number_of_shards': 3,
+                'number_of_replicas': 3
+            }
+        }
+
+        if self.mapping is not None and isfile(self.mapping):
+            mapping = self.open_mapping(self.mapping)
+
+        try:
+            conn.indices.create(index=index, body=mapping)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -174,17 +197,7 @@ class ElasticSearchUtils(object):
             return
 
         # 인덱스가 없는 경우, 생성함
-        try:
-            if self.conn.indices.exists(index=self.index) is False:
-                self.create_index(conn=self.conn, index=self.index)
-        except Exception as e:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': '인덱스 확인 에러',
-                'host': self.host,
-                'exception': str(e),
-            })
-            return
+        self.create_index(conn=self.conn, index=self.index)
 
         return
 
@@ -259,6 +272,8 @@ class ElasticSearchUtils(object):
         if index is None:
             index = self.index
 
+        self.create_index(conn=self.conn, index=index)
+
         # 버퍼링
         if document is not None:
             # 날짜 변환
@@ -273,7 +288,8 @@ class ElasticSearchUtils(object):
                 dt = datetime.now(self.timezone).isoformat()
                 document_id = dt.replace('+09:00', '').replace('-', '').replace(':', '').replace('.', '')
 
-            document['document_id'] = document_id
+            if 'document_id' in document:
+                del document['document_id']
 
             if self.host not in self.bulk_data:
                 self.bulk_data[self.host] = []
@@ -559,7 +575,7 @@ class ElasticSearchUtils(object):
             if '_source' not in n:
                 continue
 
-            result.append(n['_source'])
+            result.append({'_id': n['_id'], **n['_source']})
 
         return
 

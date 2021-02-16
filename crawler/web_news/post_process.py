@@ -262,14 +262,14 @@ class PostProcessUtils(object):
                 'level': 'MESSAGE',
                 'message': '코퍼스 전처리 전달',
                 'url': url,
-                'id': document['document_id'],
+                'id': document['_id'],
                 'title': document['title'],
             })
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': '코퍼스 전처리 에러 (api)',
-                'id': document['document_id'],
+                'id': document['_id'],
                 'exception': str(e),
             })
 

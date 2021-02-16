@@ -45,7 +45,7 @@ class WebNewsCrawler(WebNewsBase):
         self.job_sub_category = None
 
     @staticmethod
-    def open_elasticsearch(date: datetime, job: dict) -> ElasticSearchUtils:
+    def open_elasticsearch(date: datetime, job: dict, mapping: str = None) -> ElasticSearchUtils:
         """디비에 연결한다."""
         index_tag = None
         if date is not None:
@@ -57,6 +57,7 @@ class WebNewsCrawler(WebNewsBase):
             index=None,
             bulk_size=20,
             http_auth=job['http_auth'],
+            mapping=mapping,
         )
 
     def update_category(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
@@ -101,7 +102,7 @@ class WebNewsCrawler(WebNewsBase):
         es.get_by_ids(
             id_list=list(doc_ids),
             index=es.index,
-            source=['category', 'document_id'],
+            source=['category'],
             result=doc_list
         )
 
@@ -109,10 +110,10 @@ class WebNewsCrawler(WebNewsBase):
             if 'category' not in doc or doc['category'].strip() == '':
                 continue
 
-            if 'document_id' not in doc:
+            if '_id' not in doc:
                 continue
 
-            doc_id = doc['document_id']
+            doc_id = doc['_id']
 
             category = doc['category'].split(',')
             category += bulk_data[doc_id]['category'].split(',')
@@ -279,14 +280,15 @@ class WebNewsCrawler(WebNewsBase):
             doc.update(article)
         elif 'json' in article and len(article['json']) != 0:
             doc.update(article)
+        elif 'original' in article and len(article['original']) != 0:
+            doc.update(article)
         else:
-            doc['status'] = 'parsing_error'
-            if 'html' not in doc or doc['html'] == '':
-                doc['html'] = str(html)
+            if 'original' not in doc or doc['original'] == '':
+                doc['original'] = str(html)
 
             self.logger.error(msg={
                 'level': 'ERROR',
-                'message': 'html or json 필드가 없음',
+                'message': 'html, json, original 필드가 없음',
                 'url': doc['url'],
             })
 
@@ -317,6 +319,8 @@ class WebNewsCrawler(WebNewsBase):
         doc = self.merge_category(doc=doc, es=es)
 
         # 문서 저장
+        doc_id = doc['_id']
+
         es.save_document(document=doc, delete=False)
         flag = es.flush()
 
@@ -325,9 +329,10 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
+                '_id': doc_id,
                 'url': doc['url'],
-                'doc_url': es.get_doc_url(document_id=doc['document_id']),
-                **{x: doc[x] for x in ['document_id', 'date', 'title'] if x in doc},
+                'doc_url': es.get_doc_url(document_id=doc_id),
+                **{x: doc[x] for x in ['date', 'title'] if x in doc},
             })
 
         return doc
@@ -339,8 +344,7 @@ class WebNewsCrawler(WebNewsBase):
 
         if '_id' in doc:
             doc_id = doc['_id']
-
-        if 'document_id' in doc:
+        elif 'document_id' in doc:
             doc_id = doc['document_id']
 
         if doc_id is None:
@@ -835,7 +839,7 @@ class WebNewsCrawler(WebNewsBase):
         self.trace_list_count = -1
 
         # 디비에 연결한다.
-        es = self.open_elasticsearch(date=dt, job=job)
+        es = self.open_elasticsearch(date=dt, job=job, mapping=self.params.mapping)
 
         # start 부터 end 까지 반복한다.
         for page in range(self.page_range['start'], self.page_range['end'] + 1, self.page_range['step']):
@@ -979,6 +983,7 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
+        parser.add_argument('--mapping', default=None, type=str, help='인덱스 맵핑 파일 정보')
 
         return parser.parse_args()
 

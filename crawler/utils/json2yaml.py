@@ -5,10 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import yaml
 import json
-from os.path import isdir, exists
-from glob import glob
+import sys
+from os.path import exists
+
+import yaml
 
 
 class Json2Yaml(object):
@@ -69,12 +70,25 @@ class Json2Yaml(object):
         return
 
     def batch(self) -> None:
-        for path in glob('config/udemy/*'):
-            if isdir(path) is False:
-                continue
+        filename = 'config/raw-index-mapping.json'
 
-            print(path)
-            self.merge(path=path)
+        with open(filename, 'r') as fp:
+            data = json.load(fp=fp)
+
+            yaml.dump(
+                data=data,
+                stream=sys.stdout,
+                default_flow_style=False,
+                allow_unicode=True,
+                explicit_start=True,
+            )
+
+        # for path in glob('config/udemy/*'):
+        #     if isdir(path) is False:
+        #         continue
+        #
+        #     print(path)
+        #     self.merge(path=path)
 
         return
 
