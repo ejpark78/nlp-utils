@@ -53,6 +53,7 @@ jobs:
     response_type: json
     url_frame: https://lineagem.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
 parsing:
+  version: v2021-01-26
   article: []
   comment: []
   list: {}

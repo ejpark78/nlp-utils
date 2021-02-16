@@ -64,13 +64,6 @@ parsing:
       attribute:
         title: 기자의 다른기사보기
     type: text
-  - comment: html 본문
-    key: html_content
-    value:
-    - name: div
-      attribute:
-        id: textBody
-    type: html
   - comment: 이미지
     key: image_list.image
     value:

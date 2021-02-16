@@ -44,6 +44,7 @@ jobs:
   - category: Op-ed
     url_frame: https://www.donga.com/en/List?p0=j&p={page}&l=20&c=0502
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -82,7 +83,7 @@ parsing:
     type_convert: date
   article:
   - comment: html
-    key: html
+    key: original
     value:
     - name: html
     remove:
@@ -104,12 +105,6 @@ parsing:
       to: ''
     type: text
     type_convert: date
-    value_type: single
-  - comment: 한국어 기사
-    key: source_ko
-    value:
-    - select: div.etc a.ko
-    type: href
     value_type: single
   - comment: 텍스트 본문
     key: content

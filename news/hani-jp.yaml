@@ -32,6 +32,7 @@ jobs:
   - category: ハンギョレ21
     url_frame: http://japan.hani.co.kr/arti/h21/?cline={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -65,7 +66,7 @@ parsing:
     type_convert: date
   article:
   - comment: html
-    key: html
+    key: original
     value:
     - name: html
     remove:
@@ -89,11 +90,6 @@ parsing:
       to: ''
     - from: "^.+修正:"
       to: ''
-  - comment: 한국어 기사
-    key: source_ko
-    value:
-    - select: 'a#inner_originArticle'
-    type: href
   - comment: 텍스트 본문
     key: content
     value:

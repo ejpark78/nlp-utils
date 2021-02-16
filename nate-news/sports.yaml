@@ -104,24 +104,6 @@ parsing:
         class: articleInfo
     - name: img
     type: alt
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: caption
-    - name: script
-    - name: sclink
-    - name: iframe
-    - name: p
-      attribute:
-        style: margin:0;padding:0;
-    - name: p
-      attribute:
-        style: margin:0 0 20px 0;padding:0;
-    value:
-    - name: div
-      attribute:
-        id: articleContetns
-    type: html
   - comment: 이미지
     key: image_list.image
     value:

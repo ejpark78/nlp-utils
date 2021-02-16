@@ -9,6 +9,7 @@ jobs:
   - category: 야구
     url_frame: http://www.spotvnews.co.kr/?page={page}&mod=news&act=articleList&sc_code=1384128643&view_type=S
 parsing:
+  version: v2021-01-26
   parser: lxml
   trace:
   - name: div
@@ -65,13 +66,6 @@ parsing:
       attribute:
         class: arl_view_writer
     type: text
-  - comment: html 본문
-    key: html_content
-    value:
-    - name: div
-      attribute:
-        itemprop: articleBody
-    type: html
   - comment: 이미지
     key: image_list.image
     value:

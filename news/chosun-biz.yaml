@@ -41,6 +41,7 @@ jobs:
   - category: 전체
     url_frame: https://biz.chosun.com/svc/list_in/list.html?opt=t&pn={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -69,11 +70,6 @@ parsing:
     value:
     - select: dt a
     type: href
-  - comment: 작성자
-    key: author
-    value:
-    - select: dd.date_author span.author
-    type: text
   - comment: 크롤링 시간
     key: '@curl_date'
     value:
@@ -82,7 +78,7 @@ parsing:
     type_convert: date
   article:
   - comment: html
-    key: html
+    key: original
     value:
     - name: html
     remove:
@@ -94,16 +90,6 @@ parsing:
     key: title
     value:
     - select: div.news_title_text h1
-    type: text
-  - comment: 작성자
-    key: author
-    value:
-    - select: div.news_title_text div.news_title_author span.news_author li a
-    type: text
-  - comment: 출처
-    key: source
-    value:
-    - select: div.news_title_text div.news_title_author span.news_author span.author_source
     type: text
   - comment: 날짜
     key: date

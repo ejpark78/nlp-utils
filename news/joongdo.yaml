@@ -204,6 +204,7 @@ jobs:
   - category: 비주얼/인포그래픽
     url_frame: http://www.joongdo.co.kr/web/list_news.php?ncid=N20_03&page={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -230,7 +231,7 @@ parsing:
     type_convert: date
   article:
   - comment: html
-    key: html
+    key: original
     value:
     - name: html
     remove:

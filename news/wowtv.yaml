@@ -31,6 +31,7 @@ jobs:
     date_format: '%Y-%m-%d'
     url_frame: https://www.wowtv.co.kr/NewsCenter/News/NewsList?subMenu=job&menuSeq=589&searchComp=WO&currentIndex={page}&StartDate={date}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -58,11 +59,6 @@ parsing:
     value:
     - select: div.contian-news a
     type: href
-  - comment: 하위카테고리
-    key: sub_category
-    value:
-    - select: div.footer-text p.category-text
-    type: text
   - comment: 크롤링 시간
     key: '@curl_date'
     value:
@@ -71,7 +67,7 @@ parsing:
     type_convert: date
   article:
   - comment: html
-    key: html
+    key: original
     value:
     - name: html
     remove:

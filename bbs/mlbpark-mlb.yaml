@@ -9,6 +9,7 @@ jobs:
   - category: MLB
     url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -105,12 +106,6 @@ parsing:
     value:
     - select: ul.view_head div.text div.text_left span.nick
     type: text
-  - comment: html 본문
-    key: html_content
-    value:
-    - select: div.contents div.left_cont
-    type: html
-    value_type: merge
   - comment: 텍스트 본문
     key: content
     value:
