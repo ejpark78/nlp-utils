@@ -26,8 +26,8 @@ class LogMessage(object):
         self.message.update(self.kwargs)
 
         try:
-            if '@logging' not in self.message:
-                self.message['@logging'] = datetime.now(self.timezone).isoformat()
+            if 'logging_date' not in self.message:
+                self.message['logging_date'] = datetime.now(self.timezone).isoformat()
 
             return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
         except Exception as e:
