@@ -240,6 +240,13 @@ class HtmlParser(object):
             return
 
         tag_info = tag_list[index]
+        if 'const' in tag_info:
+            if tag_info['const'] == 'DATE_NOW':
+                dt = datetime.now(tz=self.timezone).isoformat()
+                result.append(BeautifulSoup(dt))
+
+            return
+
         if 'attribute' not in tag_info:
             tag_info['attribute'] = None
 
@@ -429,12 +436,6 @@ class HtmlParser(object):
                 continue
 
             return soup, re.sub('^.+charset=', '', x['content-type'])
-
-        # for x in soup.select('meta[content]'):
-        #     if x.has_attr('content') is False:
-        #         continue
-        #
-        #     return soup, x['content']
 
         return soup, None
 

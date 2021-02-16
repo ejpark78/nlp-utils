@@ -293,9 +293,6 @@ class WebNewsCrawler(WebNewsBase):
         # 날짜 필드 오류 처리
         self.remove_empty_date(doc=doc)
 
-        # 문서 아이디 추출
-        doc['@timestamp'] = datetime.now(self.timezone).isoformat()
-
         # 에러인 경우
         if error is True:
             if 'html' not in doc or doc['html'] == '':
@@ -701,6 +698,7 @@ class WebNewsCrawler(WebNewsBase):
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
+        skip_count = 0
         is_date_range_stop = False
 
         # 개별 뉴스를 따라간다.
@@ -721,6 +719,7 @@ class WebNewsCrawler(WebNewsBase):
                 sleep(self.params.sleep)
 
             if item is None or 'url' not in item:
+                skip_count += 1
                 continue
 
             item['url'] = urljoin(base_url, item['url'])
@@ -731,6 +730,7 @@ class WebNewsCrawler(WebNewsBase):
                 date = item['date']
 
             if self.check_date_range(doc=item, query=query) is False:
+                skip_count += 1
                 is_date_range_stop = True
                 break
 
@@ -742,10 +742,12 @@ class WebNewsCrawler(WebNewsBase):
                 sleep(self.params.sleep)
 
             if doc_id is None:
+                skip_count += 1
                 continue
 
             is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
             if is_skip is True:
+                skip_count += 1
                 continue
 
             # 기사 본문 조회
@@ -768,6 +770,7 @@ class WebNewsCrawler(WebNewsBase):
                 del item['encoding']
 
             if article is None or len(article) == 0:
+                skip_count += 1
                 continue
 
             article['_id'] = doc_id
@@ -800,6 +803,9 @@ class WebNewsCrawler(WebNewsBase):
             })
             return True
 
+        # 다음 페이지 정보가 있는 경우
+        self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es, query=query)
+
         # 목록 길이 저장
         if self.trace_list_count < 0:
             self.trace_list_count = len(trace_list)
@@ -812,8 +818,14 @@ class WebNewsCrawler(WebNewsBase):
             })
             return True
 
-        # 다음 페이지 정보가 있는 경우
-        self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es, query=query)
+        if skip_count == len(trace_list):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': 'skip_count 와 문서 목록이 동일함',
+                'skip_count': skip_count,
+                **url_info
+            })
+            return True
 
         return False
 
