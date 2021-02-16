@@ -16,7 +16,7 @@ jobs:
         to: '-'
       type: path
   args:
-    page_range: "0~2000"
+    page_range: "1~2000"
     page_step: "20"
   list:
   - category: Politics
