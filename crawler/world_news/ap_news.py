@@ -64,6 +64,7 @@ class ApNewsCrawler(object):
             index=None,
             bulk_size=20,
             http_auth=job['http_auth'],
+            mapping=self.params.mapping
         )
 
         resp = requests.get(url=url_info['url_frame'])
@@ -171,6 +172,7 @@ class ApNewsCrawler(object):
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
+        parser.add_argument('--mapping', default=None, type=str, help='인덱스 맵핑 파일 정보')
 
         return parser.parse_args()
 
