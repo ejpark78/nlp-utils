@@ -46,8 +46,8 @@ parsing:
       url: url
       date: wdate
   article:
-  - comment: html
-    key: original
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

@@ -46,8 +46,8 @@ parsing:
       title: HEADLINE
       date: ConfirmDateString
   article:
-  - comment: html
-    key: original
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

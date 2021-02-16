@@ -289,7 +289,7 @@ jobs:
 parsing:
   version: v2021-01-26
   trace:
-    key: html
+    key: raw
     value:
     - select: ol.stream-items
     type: html

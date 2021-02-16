@@ -13,7 +13,7 @@ mappings:
       type: text
     date:
       type: date
-    original:
+    raw:
       enabled: false
     parser_version:
       ignore_above: 50

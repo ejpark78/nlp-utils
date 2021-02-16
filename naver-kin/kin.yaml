@@ -13,7 +13,7 @@ detail:
   url_frame: https://m.kin.naver.com/mobile/qna/detail.nhn?dirId={dirId}&docId={docId},
   version: v2021-01-26
   parsing:
-  - key: html
+  - key: raw
     value:
     - name: div
       attribute:

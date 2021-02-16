@@ -61,8 +61,8 @@ parsing:
     mapping:
       url: https://sports.v.daum.net/v/{newsId}
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

@@ -35,7 +35,7 @@ parsing:
   list:
   - parser: json
     mapping:
-      document_id: mediaid
+      _id: mediaid
       title: title
       url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
       date: broaddate
