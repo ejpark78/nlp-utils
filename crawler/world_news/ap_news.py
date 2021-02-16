@@ -129,6 +129,8 @@ class ApNewsCrawler(object):
             '@curl_date': datetime.now(self.timezone).isoformat()
         }
 
+        doc_id = doc['_id']
+
         index = job['index'].format(year=date.year)
         elastic.save_document(document=doc, index=index, delete=True)
 
@@ -139,7 +141,7 @@ class ApNewsCrawler(object):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '기사 저장 성공',
-                'doc_url': elastic.get_doc_url(document_id=doc['document_id']),
+                'doc_url': elastic.get_doc_url(document_id=doc_id),
                 **{k: doc[k] for k in ['updated', 'headline'] if k in doc},
             })
 
