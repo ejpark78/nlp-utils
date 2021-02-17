@@ -40,7 +40,7 @@ tasks:
   - category: politics
     config: /config/news/hani.yaml
     name: 정치일반
-    task_id: hani-etc
+    task_id: hani-politics-etc
   - category: politics
     config: /config/news/hani.yaml
     name: 청와대
@@ -64,7 +64,7 @@ tasks:
   - category: society
     config: /config/news/hani.yaml
     name: 사회일반
-    task_id: hani-etc
+    task_id: hani-society-etc
   - category: society
     config: /config/news/hani.yaml
     name: 여성
