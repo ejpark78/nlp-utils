@@ -40,15 +40,15 @@ tasks:
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/사설
-    task_id: iusm-opinion
+    task_id: iusm-opinion-a
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/반구대
-    task_id: iusm-opinion
+    task_id: iusm-opinion-b
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/매일시론
-    task_id: iusm-opinion
+    task_id: iusm-opinion-c
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/경제칼럼
@@ -56,59 +56,59 @@ tasks:
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/자치시대
-    task_id: iusm-opinion
+    task_id: iusm-opinion-d
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/문화산책
-    task_id: iusm-book
+    task_id: iusm-book-b
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/현장소리
-    task_id: iusm-opinion
+    task_id: iusm-opinion-e
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/사는이야기
-    task_id: iusm-opinion
+    task_id: iusm-opinion-f
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/독자 기고
-    task_id: iusm-opinion
+    task_id: iusm-opinion-g
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/뉴스에세이
-    task_id: iusm-opinion
+    task_id: iusm-opinion-h
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/아침을 여는 시
-    task_id: iusm-opinion
+    task_id: iusm-opinion-i
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/데스크 칼럼
-    task_id: iusm-opinion
+    task_id: iusm-opinion-j
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/기자의 눈
-    task_id: iusm-opinion
+    task_id: iusm-opinion-k
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/울산의 창
-    task_id: iusm-opinion
+    task_id: iusm-opinion-l
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/남은우의 시산책
-    task_id: iusm-book
+    task_id: iusm-book-c
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/흑백사진 속으로
-    task_id: iusm-opinion
+    task_id: iusm-opinion-m
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/하주의 공연읽기
-    task_id: iusm-opinion
+    task_id: iusm-opinion-n
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/박용하의 문화읽기
-    task_id: iusm-culture
+    task_id: iusm-culture-a
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/김세진의 영화읽기
@@ -116,23 +116,23 @@ tasks:
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/기타
-    task_id: iusm-opinion
+    task_id: iusm-opinion-o
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/오나경의  21세기미술관
-    task_id: iusm-opinion
+    task_id: iusm-opinion-p
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/김병길주필 회상록
-    task_id: iusm-opinion
+    task_id: iusm-opinion-q
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/울매詩選
-    task_id: iusm-opinion
+    task_id: iusm-opinion-r
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/허명·이인호의 문화 줌인
-    task_id: iusm-culture
+    task_id: iusm-culture-b
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/예채영의 미술읽기
@@ -220,47 +220,47 @@ tasks:
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/자치단체
-    task_id: iusm-society
+    task_id: iusm-society-a
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/검찰·법조
-    task_id: iusm-society
+    task_id: iusm-society-b
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/사건·사고
-    task_id: iusm-society
+    task_id: iusm-society-c
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/사회단체
-    task_id: iusm-society
+    task_id: iusm-society-d
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/기타
-    task_id: iusm-society
+    task_id: iusm-society-e
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/공연
-    task_id: iusm-culture
+    task_id: iusm-culture-c
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/전시
-    task_id: iusm-culture
+    task_id: iusm-culture-d
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/축제·행사
-    task_id: iusm-culture
+    task_id: iusm-culture-e
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/향토문화사
-    task_id: iusm-culture
+    task_id: iusm-culture-f
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/문화재
-    task_id: iusm-culture
+    task_id: iusm-culture-g
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/문학·출판
-    task_id: iusm-culture
+    task_id: iusm-culture-h
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/영화
@@ -268,7 +268,7 @@ tasks:
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/울산맛집
-    task_id: iusm-culture
+    task_id: iusm-culture-i
   - category: religion
     config: /config/news/iusm.yaml
     name: 문화/종교
@@ -276,63 +276,63 @@ tasks:
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/울산 방송가
-    task_id: iusm-culture
+    task_id: iusm-culture-j
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/김일훈의 민속을 말하다
-    task_id: iusm-culture
+    task_id: iusm-culture-k
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/김창일의 울산 농어촌 사계
-    task_id: iusm-culture
+    task_id: iusm-culture-l
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/박영식 시인의 육필의 향기
-    task_id: iusm-culture
+    task_id: iusm-culture-m
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/드론으로 보는 울산의 문화재
-    task_id: iusm-culture
+    task_id: iusm-culture-n
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/민용기의 POP과 JAZZ
-    task_id: iusm-culture
+    task_id: iusm-culture-o
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/태화강재즈페스티벌
-    task_id: iusm-culture
+    task_id: iusm-culture-p
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/음악에세이
-    task_id: iusm-culture
+    task_id: iusm-culture-q
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/연재
-    task_id: iusm-culture
+    task_id: iusm-culture-r
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/문화정책
-    task_id: iusm-book
+    task_id: iusm-book-a
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/육필의 향기
-    task_id: iusm-culture
+    task_id: iusm-culture-s
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/렌즈속 이야기
-    task_id: iusm-culture
+    task_id: iusm-culture-t
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/기타
-    task_id: iusm-culture
+    task_id: iusm-culture-u
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/김태환 연재소설
-    task_id: iusm-culture
+    task_id: iusm-culture-aa
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/수상
-    task_id: iusm-culture
+    task_id: iusm-culture-ab
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/집콕문화생활즐기기
@@ -456,11 +456,11 @@ tasks:
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/방송
-    task_id: iusm-entertainment
+    task_id: iusm-entertainment-a
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/연예가
-    task_id: iusm-entertainment
+    task_id: iusm-entertainment-b
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/영화
@@ -468,11 +468,11 @@ tasks:
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/음악
-    task_id: iusm-entertainment
+    task_id: iusm-entertainment-c
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/기타
-    task_id: iusm-entertainment
+    task_id: iusm-entertainment-d
   - category: sports
     config: /config/news/iusm.yaml
     name: 스포츠/축구
@@ -492,11 +492,11 @@ tasks:
   - category: sports
     config: /config/news/iusm.yaml
     name: 스포츠/울산체육
-    task_id: iusm-sports
+    task_id: iusm-sports-a
   - category: sports
     config: /config/news/iusm.yaml
     name: 스포츠/기타
-    task_id: iusm-sports
+    task_id: iusm-sports-b
   - category: local
     config: /config/news/iusm.yaml
     name: 지방/부산
@@ -540,7 +540,7 @@ tasks:
   - category: special
     config: /config/news/iusm.yaml
     name: 기획/해오름 문화유산탐방
-    task_id: iusm-culture
+    task_id: iusm-culture-ee
   - category: special
     config: /config/news/iusm.yaml
     name: 기획/건강의료
