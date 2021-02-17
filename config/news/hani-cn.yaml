@@ -1,0 +1,75 @@
+---
+dag:
+  dag_id: 'hani-cn'
+  description: 'hani-cn crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - hani-cn
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: politics
+    config: /config/news/hani-cn.yaml
+    name: 全部
+    task_id: hani-cn-politics
+  - category: society
+    config: /config/news/hani-cn.yaml
+    name: 政治·社会
+    task_id: hani-cn-society
+  - category: economy
+    config: /config/news/hani-cn.yaml
+    name: 财经新闻
+    task_id: hani-cn-economy
+  - category: china
+    config: /config/news/hani-cn.yaml
+    name: 中国·国际
+    task_id: hani-cn-china
+  - category: korea
+    config: /config/news/hani-cn.yaml
+    name: 朝鲜消息
+    task_id: hani-cn-korea
+  - category: culture
+    config: /config/news/hani-cn.yaml
+    name: 文化·韩流
+    task_id: hani-cn-culture
+  - category: opinion
+    config: /config/news/hani-cn.yaml
+    name: 评论专栏
+    task_id: hani-cn-opinion
+  - category: radio
+    config: /config/news/hani-cn.yaml
+    name: 图片视频
+    task_id: hani-cn-radio
+  - category: jeju
+    config: /config/news/hani-cn.yaml
+    name: 济州
+    task_id: hani-cn-jeju
