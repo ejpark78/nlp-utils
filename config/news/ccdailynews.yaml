@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - ccdailynews
+    - 충청일보
 default_args:
   owner: 'Airflow'
   retries: 3

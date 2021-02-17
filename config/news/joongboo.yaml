@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - joongboo
+    - 중부일보
 default_args:
   owner: 'Airflow'
   retries: 3
