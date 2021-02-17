@@ -1,0 +1,319 @@
+---
+dag:
+  dag_id: 'yeongnam'
+  description: 'yeongnam crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - yeongnam
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 사회/사회일반
+    task_id: yeongnam-etc
+  - category: incident
+    config: /config/news/yeongnam.yaml
+    name: 사회/사건사고
+    task_id: yeongnam-incident
+  - category: labor
+    config: /config/news/yeongnam.yaml
+    name: 사회/복지·노동
+    task_id: yeongnam-labor
+  - category: society
+    config: /config/news/yeongnam.yaml
+    name: 사회/보건의료
+    task_id: yeongnam-society
+  - category: environment
+    config: /config/news/yeongnam.yaml
+    name: 사회/환경
+    task_id: yeongnam-environment
+  - category: society
+    config: /config/news/yeongnam.yaml
+    name: 사회/반려동물
+    task_id: yeongnam-society
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 정치/정치일반
+    task_id: yeongnam-etc
+  - category: blue-house
+    config: /config/news/yeongnam.yaml
+    name: 정치/청와대·중앙행정
+    task_id: yeongnam-blue-house
+  - category: administration
+    config: /config/news/yeongnam.yaml
+    name: 정치/대구·경북 행정
+    task_id: yeongnam-administration
+  - category: politics
+    config: /config/news/yeongnam.yaml
+    name: 정치/대구·경북의회
+    task_id: yeongnam-politics
+  - category: north-korea
+    config: /config/news/yeongnam.yaml
+    name: 정치/국방·북한
+    task_id: yeongnam-north-korea
+  - category: economy
+    config: /config/news/yeongnam.yaml
+    name: 경제/경제일반
+    task_id: yeongnam-economy
+  - category: finance
+    config: /config/news/yeongnam.yaml
+    name: 경제/증시·금융
+    task_id: yeongnam-finance
+  - category: estate
+    config: /config/news/yeongnam.yaml
+    name: 경제/부동산
+    task_id: yeongnam-estate
+  - category: economy
+    config: /config/news/yeongnam.yaml
+    name: 경제/자동차
+    task_id: yeongnam-economy
+  - category: economy
+    config: /config/news/yeongnam.yaml
+    name: 경제/취업·창업
+    task_id: yeongnam-economy
+  - category: mobile
+    config: /config/news/yeongnam.yaml
+    name: 경제/IT·모바일
+    task_id: yeongnam-mobile
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 스포츠/스포츠일반
+    task_id: yeongnam-etc
+  - category: baseball
+    config: /config/news/yeongnam.yaml
+    name: 스포츠/야구
+    task_id: yeongnam-baseball
+  - category: football
+    config: /config/news/yeongnam.yaml
+    name: 스포츠/축구
+    task_id: yeongnam-football
+  - category: basketball
+    config: /config/news/yeongnam.yaml
+    name: 스포츠/농구·배구·핸드볼
+    task_id: yeongnam-basketball
+  - category: golf
+    config: /config/news/yeongnam.yaml
+    name: 스포츠/골프
+    task_id: yeongnam-golf
+  - category: culture
+    config: /config/news/yeongnam.yaml
+    name: 문화/문화일반
+    task_id: yeongnam-culture
+  - category: culture
+    config: /config/news/yeongnam.yaml
+    name: 문화/공연·전시
+    task_id: yeongnam-culture
+  - category: book
+    config: /config/news/yeongnam.yaml
+    name: 문화/책
+    task_id: yeongnam-book
+  - category: culture
+    config: /config/news/yeongnam.yaml
+    name: 문화/운세
+    task_id: yeongnam-culture
+  - category: culture
+    config: /config/news/yeongnam.yaml
+    name: 문화/기타
+    task_id: yeongnam-culture
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 건강/건강일반
+    task_id: yeongnam-etc
+  - category: '28'
+    config: /config/news/yeongnam.yaml
+    name: 건강/병원소식
+    task_id: yeongnam-28
+  - category: '29'
+    config: /config/news/yeongnam.yaml
+    name: 건강/질환
+    task_id: yeongnam-29
+  - category: '30'
+    config: /config/news/yeongnam.yaml
+    name: 영상/영상뉴스
+    task_id: yeongnam-30
+  - category: '31'
+    config: /config/news/yeongnam.yaml
+    name: 영상/송국건의혼술
+    task_id: yeongnam-31
+  - category: '32'
+    config: /config/news/yeongnam.yaml
+    name: 영상/이지핏
+    task_id: yeongnam-32
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/위클리포유일반
+    task_id: yeongnam-etc
+  - category: travel
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/여행·레저
+    task_id: yeongnam-travel
+  - category: movie
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/위클리영화
+    task_id: yeongnam-movie
+  - category: '36'
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/패션·뷰티
+    task_id: yeongnam-36
+  - category: '37'
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/푸드
+    task_id: yeongnam-37
+  - category: '38'
+    config: /config/news/yeongnam.yaml
+    name: 위클리포유/칼럼
+    task_id: yeongnam-38
+  - category: '39'
+    config: /config/news/yeongnam.yaml
+    name: 에듀포유/대학·입시
+    task_id: yeongnam-39
+  - category: '40'
+    config: /config/news/yeongnam.yaml
+    name: 에듀포유/중·고등
+    task_id: yeongnam-40
+  - category: '41'
+    config: /config/news/yeongnam.yaml
+    name: 에듀포유/초등·유아
+    task_id: yeongnam-41
+  - category: education
+    config: /config/news/yeongnam.yaml
+    name: 에듀포유/대구경북교육청
+    task_id: yeongnam-education
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 에듀포유/에듀포유일반
+    task_id: yeongnam-etc
+  - category: '44'
+    config: /config/news/yeongnam.yaml
+    name: 포토/포토뉴스
+    task_id: yeongnam-44
+  - category: local
+    config: /config/news/yeongnam.yaml
+    name: 지역뉴스/경북동부
+    task_id: yeongnam-local
+  - category: local
+    config: /config/news/yeongnam.yaml
+    name: 지역뉴스/경북중부
+    task_id: yeongnam-local
+  - category: local
+    config: /config/news/yeongnam.yaml
+    name: 지역뉴스/경북북부
+    task_id: yeongnam-local
+  - category: local
+    config: /config/news/yeongnam.yaml
+    name: 지역뉴스/대구근교
+    task_id: yeongnam-local
+  - category: local
+    config: /config/news/yeongnam.yaml
+    name: 지역뉴스/대구
+    task_id: yeongnam-local
+  - category: science
+    config: /config/news/yeongnam.yaml
+    name: 교육/과학/교육
+    task_id: yeongnam-science
+  - category: science
+    config: /config/news/yeongnam.yaml
+    name: 교육/과학/과학
+    task_id: yeongnam-science
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 국제/국제일반
+    task_id: yeongnam-etc
+  - category: usa
+    config: /config/news/yeongnam.yaml
+    name: 국제/미국
+    task_id: yeongnam-usa
+  - category: '54'
+    config: /config/news/yeongnam.yaml
+    name: 국제/일본
+    task_id: yeongnam-54
+  - category: '55'
+    config: /config/news/yeongnam.yaml
+    name: 국제/중국
+    task_id: yeongnam-55
+  - category: europe
+    config: /config/news/yeongnam.yaml
+    name: 국제/유럽
+    task_id: yeongnam-europe
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 동정/동정일반
+    task_id: yeongnam-etc
+  - category: '58'
+    config: /config/news/yeongnam.yaml
+    name: 동정/결혼
+    task_id: yeongnam-58
+  - category: '59'
+    config: /config/news/yeongnam.yaml
+    name: 동정/부고
+    task_id: yeongnam-59
+  - category: '60'
+    config: /config/news/yeongnam.yaml
+    name: 동정/알림
+    task_id: yeongnam-60
+  - category: '61'
+    config: /config/news/yeongnam.yaml
+    name: 동정/인사
+    task_id: yeongnam-61
+  - category: '62'
+    config: /config/news/yeongnam.yaml
+    name: 기획/특집/기획·특집
+    task_id: yeongnam-62
+  - category: '63'
+    config: /config/news/yeongnam.yaml
+    name: 연재/연재
+    task_id: yeongnam-63
+  - category: '64'
+    config: /config/news/yeongnam.yaml
+    name: 시민기자/시민기자
+    task_id: yeongnam-64
+  - category: etc
+    config: /config/news/yeongnam.yaml
+    name: 연예/연예일반
+    task_id: yeongnam-etc
+  - category: entertainment
+    config: /config/news/yeongnam.yaml
+    name: 연예/방송
+    task_id: yeongnam-entertainment
+  - category: movie
+    config: /config/news/yeongnam.yaml
+    name: 연예/영화
+    task_id: yeongnam-movie
+  - category: '68'
+    config: /config/news/yeongnam.yaml
+    name: 웹툰/플레이툰
+    task_id: yeongnam-68
+  - category: '69'
+    config: /config/news/yeongnam.yaml
+    name: 웹툰/웹툰
+    task_id: yeongnam-69

@@ -1,13 +1,13 @@
 ---
 dag:
   dag_id: 'hani'
-  description: 'hani crawler'
+  description: '한겨레 crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   tags:
     - news
     - korea
-    - hani
+    - 한겨레
 default_args:
   owner: 'Airflow'
   retries: 3

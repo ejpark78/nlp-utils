@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - hani-en
+    - 한겨레
 default_args:
   owner: 'Airflow'
   retries: 3
