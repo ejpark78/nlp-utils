@@ -14,7 +14,7 @@ from airflow.utils.dates import days_ago
 
 from utils import open_config
 
-config = open_config(filename='config/bbs.yaml')
+config = open_config(filename='config/bbs/bbs.yaml')
 
 default_args = {
     **config['default_args'],
