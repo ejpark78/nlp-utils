@@ -7,6 +7,7 @@ dag:
   tags:
     - news
     - daum
+    - portal
 default_args:
   owner: 'Airflow'
   retries: 3

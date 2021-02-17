@@ -5,7 +5,9 @@ dag:
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   tags:
+    - bbs
     - naver-kin
+    - portal
 default_args:
   owner: 'Airflow'
   retries: 3
