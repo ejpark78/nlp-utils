@@ -1,0 +1,87 @@
+---
+dag:
+  dag_id: 'kjdaily'
+  description: 'kjdaily crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - kjdaily
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: etc
+    config: /config/news/kjdaily.yaml
+    name: 정치/일반
+    task_id: kjdaily-etc
+  - category: politics
+    config: /config/news/kjdaily.yaml
+    name: 정치/지구촌소식
+    task_id: kjdaily-politics
+  - category: etc
+    config: /config/news/kjdaily.yaml
+    name: 사회/일반
+    task_id: kjdaily-etc
+  - category: education
+    config: /config/news/kjdaily.yaml
+    name: 사회/교육
+    task_id: kjdaily-education
+  - category: economy
+    config: /config/news/kjdaily.yaml
+    name: 경제
+    task_id: kjdaily-economy
+  - category: sports
+    config: /config/news/kjdaily.yaml
+    name: 스포츠
+    task_id: kjdaily-sports
+  - category: culture
+    config: /config/news/kjdaily.yaml
+    name: 문화/일반
+    task_id: kjdaily-culture
+  - category: book
+    config: /config/news/kjdaily.yaml
+    name: 문화/책
+    task_id: kjdaily-book
+  - category: culture
+    config: /config/news/kjdaily.yaml
+    name: 문화/TV/연예
+    task_id: kjdaily-culture
+  - category: culture
+    config: /config/news/kjdaily.yaml
+    name: 문화/Fun·Joy
+    task_id: kjdaily-culture
+  - category: '10'
+    config: /config/news/kjdaily.yaml
+    name: 의료/웰빙
+    task_id: kjdaily-10
+  - category: people
+    config: /config/news/kjdaily.yaml
+    name: 사람들
+    task_id: kjdaily-people
