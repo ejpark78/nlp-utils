@@ -1,0 +1,71 @@
+---
+dag:
+  dag_id: 'sbs-biz'
+  description: 'sbs-biz crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - sbs-biz
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: biz-book
+    config: /config/news/sbs-biz.yaml
+    name: 경제정책
+    task_id: sbs-biz-book
+  - category: biz-finance
+    config: /config/news/sbs-biz.yaml
+    name: 금융/증권
+    task_id: sbs-biz-finance
+  - category: biz-industry
+    config: /config/news/sbs-biz.yaml
+    name: 산업/재계
+    task_id: sbs-biz-industry
+  - category: biz-estate
+    config: /config/news/sbs-biz.yaml
+    name: 부동산
+    task_id: sbs-biz-estate
+  - category: biz-living
+    config: /config/news/sbs-biz.yaml
+    name: 생활경제
+    task_id: sbs-biz-living
+  - category: biz-global
+    config: /config/news/sbs-biz.yaml
+    name: 글로벌경제
+    task_id: sbs-biz-global
+  - category: all
+    config: /config/news/sbs-biz.yaml
+    name: 전체
+    task_id: sbs-biz-all
+  - category: moneylab
+    config: /config/news/sbs-biz.yaml
+    name: 머니랩
+    task_id: sbs-biz-moneylab
