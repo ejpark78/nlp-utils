@@ -1,7 +1,3 @@
-wheel
-setuptools
-twine
-
 python-dateutil
 elasticsearch
 
@@ -9,25 +5,25 @@ bs4
 lxml
 html5lib
 
+pycurl
+PySocks
+urllib3
+
 requests
 requests[socks]
 requests[security]
 requests-oauthlib
 requests-html
 
-selenium
-selenium-wire
-
-urllib3
 tqdm
 pytz
-pycurl
-PySocks
 certifi
 cachelib
 brotlipy
 dotty_dict
 
 PyYAML
+jsonfinder
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
+# jsonfinder: javascript 추출 모듈

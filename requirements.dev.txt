@@ -1,13 +1,13 @@
-wheel
-setuptools
-twine
-
 python-dateutil
 elasticsearch
 
 bs4
 lxml
 html5lib
+
+pycurl
+PySocks
+urllib3
 
 requests
 requests[socks]
@@ -18,19 +18,22 @@ requests-html
 selenium
 selenium-wire
 
-urllib3
 tqdm
 pytz
-pycurl
-PySocks
 certifi
 cachelib
 brotlipy
 dotty_dict
 
 PyYAML
+jsonfinder
+
+wheel
+setuptools
+twine
 
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
+# jsonfinder: javascript 추출 모듈

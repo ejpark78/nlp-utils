@@ -89,6 +89,7 @@ RUN echo && echo "# pip 저장소 설정" \
         requests[security] \
         requests[socks] \
         urllib3 \
+        jsonfinder \
     && rm -rf /tmp/* /root/.cache
 
 
