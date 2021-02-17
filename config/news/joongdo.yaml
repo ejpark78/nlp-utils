@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - joongdo
+    - 중도일보
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -37,130 +37,130 @@ operator:
     - --sleep
     - '5'
 tasks:
-  - category: administration
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/대전
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-a
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/충남·내포
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-b
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/지방의회
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-c
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/국회·정당
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-d
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/국정·외교
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-e
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/세종
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-f
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/지방정가
-    task_id: joongdo-administration
-  - category: administration
+    task_id: joongdo-administration-g
+  - category: politics
     config: /config/news/joongdo.yaml
     name: 정치행정/[캠페인] 코로나19극복 응원메시지
-    task_id: joongdo-administration
+    task_id: joongdo-administration-h
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/지역경제
-    task_id: joongdo-science
+    task_id: joongdo-science-a
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/건설·부동산
-    task_id: joongdo-science
+    task_id: joongdo-science-b
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/금융·증권
-    task_id: joongdo-science
+    task_id: joongdo-science-c
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/유통·쇼핑
-    task_id: joongdo-science
+    task_id: joongdo-science-d
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/기업·CEO
-    task_id: joongdo-science
+    task_id: joongdo-science-e
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/자동차
-    task_id: joongdo-science
+    task_id: joongdo-science-f
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/취업·창업
-    task_id: joongdo-science
+    task_id: joongdo-science-g
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/대전정부청사
-    task_id: joongdo-science
+    task_id: joongdo-science-h
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/대덕특구
-    task_id: joongdo-science
+    task_id: joongdo-science-i
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/IT·과학
-    task_id: joongdo-science
+    task_id: joongdo-science-j
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/아파트Info
-    task_id: joongdo-science
+    task_id: joongdo-science-k
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/로또
-    task_id: joongdo-science
+    task_id: joongdo-science-l
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/생활의 지혜
-    task_id: joongdo-science
+    task_id: joongdo-science-m
   - category: science
     config: /config/news/joongdo.yaml
     name: 경제과학/4차 산업
-    task_id: joongdo-science
+    task_id: joongdo-science-n
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/사건·사고
-    task_id: joongdo-education
+    task_id: joongdo-education-a
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/법원·검찰
-    task_id: joongdo-education
+    task_id: joongdo-education-b
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/교육·시험
-    task_id: joongdo-education
+    task_id: joongdo-education-c
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/노동·노사
-    task_id: joongdo-education
+    task_id: joongdo-education-d
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/환경·교통
-    task_id: joongdo-education
+    task_id: joongdo-education-e
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/미담
-    task_id: joongdo-education
+    task_id: joongdo-education-f
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/날씨
-    task_id: joongdo-education
+    task_id: joongdo-education-g
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/건강·의료
-    task_id: joongdo-education
+    task_id: joongdo-education-h
   - category: education
     config: /config/news/joongdo.yaml
     name: 사회교육/이슈&화제
-    task_id: joongdo-education
+    task_id: joongdo-education-i
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/공연·전시
@@ -253,179 +253,179 @@ tasks:
     config: /config/news/joongdo.yaml
     name: 사람들/실버라이프
     task_id: joongdo-people
-  - category: '54'
+  - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/중도초대석
-    task_id: joongdo-54
-  - category: '55'
+    task_id: joongdo-special-a
+  - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/기획
-    task_id: joongdo-55
-  - category: issue
+    task_id: joongdo-special-b
+  - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/신천식의 이슈토론
-    task_id: joongdo-issue
-  - category: '57'
+    task_id: joongdo-special-issue
+  - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/리뉴얼 충청
-    task_id: joongdo-57
-  - category: '58'
+    task_id: joongdo-special-c
+  - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/대전기록프로젝트
-    task_id: joongdo-58
-  - category: '59'
+    task_id: joongdo-special-d
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/오늘의 운세
-    task_id: joongdo-59
-  - category: '60'
+    task_id: joongdo-fortune-a
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/오늘의 별자리
-    task_id: joongdo-60
-  - category: '61'
+    task_id: joongdo-fortune-b
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/주간운세
-    task_id: joongdo-61
-  - category: '62'
+    task_id: joongdo-fortune-c
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/생년월일 운세
-    task_id: joongdo-62
-  - category: '63'
+    task_id: joongdo-fortune-d
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/별별 로또
-    task_id: joongdo-63
-  - category: '64'
+    task_id: joongdo-fortune-e
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/구박사 오늘 띠별 운세
-    task_id: joongdo-64
-  - category: '65'
+    task_id: joongdo-fortune-f
+  - category: fortune
     config: /config/news/joongdo.yaml
     name: 운세/별자리 12궁운세
-    task_id: joongdo-65
-  - category: '66'
+    task_id: joongdo-fortune-g
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/수도권
-    task_id: joongdo-66
-  - category: '67'
+    task_id: joongdo-area-h
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/부산·영남
-    task_id: joongdo-67
-  - category: '68'
+    task_id: joongdo-area-i
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/충북
-    task_id: joongdo-68
-  - category: '69'
+    task_id: joongdo-area-j
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/광주·호남
-    task_id: joongdo-69
-  - category: '70'
+    task_id: joongdo-area-k
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/강원
-    task_id: joongdo-70
-  - category: '71'
+    task_id: joongdo-area-l
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/천안시
-    task_id: joongdo-71
-  - category: '72'
+    task_id: joongdo-area-m
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/아산시
-    task_id: joongdo-72
-  - category: '73'
+    task_id: joongdo-area-a
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/공주시
-    task_id: joongdo-73
-  - category: '74'
+    task_id: joongdo-area-b
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/보령시
-    task_id: joongdo-74
-  - category: '75'
+    task_id: joongdo-area-c
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/서산시
-    task_id: joongdo-75
-  - category: '76'
+    task_id: joongdo-area-d
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/논산시
-    task_id: joongdo-76
-  - category: '77'
+    task_id: joongdo-area-aa
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/계룡시
-    task_id: joongdo-77
-  - category: '78'
+    task_id: joongdo-area-ab
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/금산군
-    task_id: joongdo-78
-  - category: '79'
+    task_id: joongdo-area-ac
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/부여군
-    task_id: joongdo-79
-  - category: '80'
+    task_id: joongdo-area-ad
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/서천군
-    task_id: joongdo-80
-  - category: '81'
+    task_id: joongdo-area-ae
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/청양군
-    task_id: joongdo-81
-  - category: '82'
+    task_id: joongdo-area-ba
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/예산군
-    task_id: joongdo-82
-  - category: '83'
+    task_id: joongdo-area-bb
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/태안군
-    task_id: joongdo-83
-  - category: '84'
+    task_id: joongdo-area-bc
+  - category: area
     config: /config/news/joongdo.yaml
     name: 전국/당진시
-    task_id: joongdo-84
+    task_id: joongdo-area-bd
   - category: opinion
     config: /config/news/joongdo.yaml
     name: 오피니언/사설
-    task_id: joongdo-opinion
+    task_id: joongdo-opinion-a
   - category: opinion
     config: /config/news/joongdo.yaml
     name: 오피니언/세상읽기
-    task_id: joongdo-opinion
+    task_id: joongdo-opinion-b
   - category: opinion
     config: /config/news/joongdo.yaml
     name: 오피니언/편집국에서
-    task_id: joongdo-opinion
+    task_id: joongdo-opinion-c
   - category: opinion
     config: /config/news/joongdo.yaml
     name: 오피니언/우난순의 식탐
-    task_id: joongdo-opinion
+    task_id: joongdo-opinion-d
   - category: opinion
     config: /config/news/joongdo.yaml
     name: 오피니언/중도일보 독자위원회
-    task_id: joongdo-opinion
+    task_id: joongdo-opinion-e
   - category: sports
     config: /config/news/joongdo.yaml
     name: 스포츠/한화이글스
-    task_id: joongdo-sports
-  - category: football
+    task_id: joongdo-sports-a
+  - category: sports
     config: /config/news/joongdo.yaml
     name: 스포츠/축구
     task_id: joongdo-football
-  - category: total
+  - category: sports
     config: /config/news/joongdo.yaml
     name: 스포츠/스포츠종합
-    task_id: joongdo-total
+    task_id: joongdo-sports-total
   - category: sports
     config: /config/news/joongdo.yaml
     name: 스포츠/메이저리그
-    task_id: joongdo-sports
+    task_id: joongdo-sports-b
   - category: sports
     config: /config/news/joongdo.yaml
     name: 스포츠/대전시티즌
-    task_id: joongdo-sports
-  - category: '95'
+    task_id: joongdo-sports-ab
+  - category: sports
     config: /config/news/joongdo.yaml
     name: 비주얼/카드뉴스
-    task_id: joongdo-95
-  - category: '96'
+    task_id: joongdo-sports-c
+  - category: sports
     config: /config/news/joongdo.yaml
     name: 비주얼/포토
-    task_id: joongdo-96
-  - category: '97'
+    task_id: joongdo-sports-d
+  - category: sports
     config: /config/news/joongdo.yaml
     name: 비주얼/인포그래픽
-    task_id: joongdo-97
+    task_id: joongdo-sports-f
