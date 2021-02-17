@@ -1,0 +1,75 @@
+---
+dag:
+  dag_id: 'inews24'
+  description: 'inews24 crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - inews24
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: science
+    config: /config/news/inews24.yaml
+    name: IT과학
+    task_id: inews24-science
+  - category: industry
+    config: /config/news/inews24.yaml
+    name: 산업
+    task_id: inews24-industry
+  - category: economy
+    config: /config/news/inews24.yaml
+    name: 경제
+    task_id: inews24-economy
+  - category: politics
+    config: /config/news/inews24.yaml
+    name: 정치
+    task_id: inews24-politics
+  - category: society
+    config: /config/news/inews24.yaml
+    name: 사회
+    task_id: inews24-society
+  - category: living
+    config: /config/news/inews24.yaml
+    name: 문화생활
+    task_id: inews24-living
+  - category: '6'
+    config: /config/news/inews24.yaml
+    name: 전국
+    task_id: inews24-6
+  - category: global
+    config: /config/news/inews24.yaml
+    name: 글로벌
+    task_id: inews24-global
+  - category: sports
+    config: /config/news/inews24.yaml
+    name: 연예스포츠
+    task_id: inews24-sports
