@@ -1,0 +1,75 @@
+---
+dag:
+  dag_id: 'kwangju'
+  description: 'kwangju crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - kwangju
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: politics
+    config: /config/news/kwangju.yaml
+    name: 정치
+    task_id: kwangju-politics
+  - category: economy
+    config: /config/news/kwangju.yaml
+    name: 경제
+    task_id: kwangju-economy
+  - category: society
+    config: /config/news/kwangju.yaml
+    name: 사회
+    task_id: kwangju-society
+  - category: sports
+    config: /config/news/kwangju.yaml
+    name: 스포츠
+    task_id: kwangju-sports
+  - category: entertainment
+    config: /config/news/kwangju.yaml
+    name: 연예
+    task_id: kwangju-entertainment
+  - category: culture
+    config: /config/news/kwangju.yaml
+    name: 문화
+    task_id: kwangju-culture
+  - category: world
+    config: /config/news/kwangju.yaml
+    name: 국제
+    task_id: kwangju-world
+  - category: local
+    config: /config/news/kwangju.yaml
+    name: 지역
+    task_id: kwangju-local
+  - category: column
+    config: /config/news/kwangju.yaml
+    name: 사설
+    task_id: kwangju-column
