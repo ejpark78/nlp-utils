@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - jnilbo
+    - 전남일보
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -40,319 +40,319 @@ tasks:
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/사설
-    task_id: jnilbo-opinion
+    task_id: jnilbo-opinion-a
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/서석대
-    task_id: jnilbo-opinion
+    task_id: jnilbo-opinion-b
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/전일초대석
-    task_id: jnilbo-opinion
-  - category: people
+    task_id: jnilbo-opinion-c
+  - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/사람들
-    task_id: jnilbo-people
+    task_id: jnilbo-people-a
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/전일칼럼
-    task_id: jnilbo-opinion
+    task_id: jnilbo-opinion-d
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/취재수첩
-    task_id: jnilbo-opinion
-  - category: people
+    task_id: jnilbo-opinion-e
+  - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/광주사람들
-    task_id: jnilbo-people
+    task_id: jnilbo-people-b
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/외부칼럼
-    task_id: jnilbo-opinion
+    task_id: jnilbo-opinion-f
   - category: opinion
     config: /config/news/jnilbo.yaml
     name: 오피니언/데스크칼럼
-    task_id: jnilbo-opinion
-  - category: blue-house
+    task_id: jnilbo-opinion-g
+  - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/청와대
     task_id: jnilbo-blue-house
-  - category: national-assembly
+  - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/국회
     task_id: jnilbo-national-assembly
   - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/정치칼럼
-    task_id: jnilbo-politics
+    task_id: jnilbo-politics-a
   - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/여론조사
-    task_id: jnilbo-politics
+    task_id: jnilbo-politics-b
   - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/선거
-    task_id: jnilbo-politics
-  - category: etc
+    task_id: jnilbo-politics-c
+  - category: politics
     config: /config/news/jnilbo.yaml
     name: 정치/정치일반
     task_id: jnilbo-etc
   - category: administration
     config: /config/news/jnilbo.yaml
     name: 행정 의회/광주시
-    task_id: jnilbo-administration
+    task_id: jnilbo-administration-a
   - category: administration
     config: /config/news/jnilbo.yaml
     name: 행정 의회/광주자치구
-    task_id: jnilbo-administration
+    task_id: jnilbo-administration-b
   - category: administration
     config: /config/news/jnilbo.yaml
     name: 행정 의회/전남도
-    task_id: jnilbo-administration
+    task_id: jnilbo-administration-c
   - category: administration
     config: /config/news/jnilbo.yaml
     name: 행정 의회/광주의회
-    task_id: jnilbo-administration
+    task_id: jnilbo-administration-d
   - category: administration
     config: /config/news/jnilbo.yaml
     name: 행정 의회/전남의회
-    task_id: jnilbo-administration
-  - category: education
+    task_id: jnilbo-administration-e
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/사건사고
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-a
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/사회일반
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-b
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/5.18
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-c
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/환경복지
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-d
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/의료건강
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-e
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/날씨
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-f
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/광주시교육청
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-g
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/전남도교육청
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-h
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/대입수능
-    task_id: jnilbo-education
-  - category: education
+    task_id: jnilbo-education-i
+  - category: socitey
     config: /config/news/jnilbo.yaml
     name: 사회 교육/대학
-    task_id: jnilbo-education
+    task_id: jnilbo-education-j
   - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/지역속으로
     task_id: jnilbo-local
-  - category: '31'
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/목포시
-    task_id: jnilbo-31
-  - category: '32'
+    task_id: jnilbo-local-a
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/여수시
-    task_id: jnilbo-32
-  - category: '33'
+    task_id: jnilbo-local-b
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/순천시
-    task_id: jnilbo-33
-  - category: '34'
+    task_id: jnilbo-local-c
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/나주시
-    task_id: jnilbo-34
-  - category: '35'
+    task_id: jnilbo-local-d
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/광양시
-    task_id: jnilbo-35
-  - category: '36'
+    task_id: jnilbo-local-e
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/담양군
-    task_id: jnilbo-36
-  - category: '37'
+    task_id: jnilbo-local-f
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/곡성군
-    task_id: jnilbo-37
-  - category: '38'
+    task_id: jnilbo-local-g
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/구례군
-    task_id: jnilbo-38
-  - category: '39'
+    task_id: jnilbo-local-h
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/고흥군
-    task_id: jnilbo-39
-  - category: '40'
+    task_id: jnilbo-local-i
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/보성군
-    task_id: jnilbo-40
-  - category: '41'
+    task_id: jnilbo-local-j
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/화순군
-    task_id: jnilbo-41
-  - category: '42'
+    task_id: jnilbo-local-k
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/장성군
-    task_id: jnilbo-42
-  - category: '43'
+    task_id: jnilbo-local-l
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/강진군
-    task_id: jnilbo-43
-  - category: '44'
+    task_id: jnilbo-local-m
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/해남군
-    task_id: jnilbo-44
-  - category: '45'
+    task_id: jnilbo-local-n
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/영암군
-    task_id: jnilbo-45
-  - category: '46'
+    task_id: jnilbo-local-o
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/무안군
-    task_id: jnilbo-46
-  - category: '47'
+    task_id: jnilbo-local-p
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/함평군
-    task_id: jnilbo-47
-  - category: '48'
+    task_id: jnilbo-local-q
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/영광군
-    task_id: jnilbo-48
-  - category: '49'
+    task_id: jnilbo-local-r
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/장흥군
-    task_id: jnilbo-49
-  - category: '50'
+    task_id: jnilbo-local-s
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/완도군
-    task_id: jnilbo-50
-  - category: '51'
+    task_id: jnilbo-local-t
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/진도군
-    task_id: jnilbo-51
-  - category: '52'
+    task_id: jnilbo-local-u
+  - category: local
     config: /config/news/jnilbo.yaml
     name: 전남/신안군
-    task_id: jnilbo-52
-  - category: '53'
+    task_id: jnilbo-local-v
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 지속가능/지속가능은 가능한가?
-    task_id: jnilbo-53
-  - category: '54'
+    task_id: jnilbo-special-a
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 지속가능/공프로젝트
-    task_id: jnilbo-54
-  - category: '55'
+    task_id: jnilbo-special-b
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/노샘의 남도역사 이야기
-    task_id: jnilbo-55
-  - category: '56'
+    task_id: jnilbo-special-c
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/박하선의 사진풍경
-    task_id: jnilbo-56
-  - category: '57'
+    task_id: jnilbo-special-d
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/백옥연의 문향
-    task_id: jnilbo-57
-  - category: '58'
+    task_id: jnilbo-special-e
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/이돈삼의 마을이야기
-    task_id: jnilbo-58
-  - category: '59'
+    task_id: jnilbo-special-f
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/이선의 큐레이터 노트
-    task_id: jnilbo-59
-  - category: '60'
+    task_id: jnilbo-special-g
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/장민한의 동시대미술 수첩
-    task_id: jnilbo-60
-  - category: book
+    task_id: jnilbo-special-h
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/조사라의 현대미술 산책
-    task_id: jnilbo-book
-  - category: '62'
+    task_id: jnilbo-special-book
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/차노휘의 길위의 인생
-    task_id: jnilbo-62
-  - category: culture
+    task_id: jnilbo-special-i
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/황호균의 사찰문화재 바로알기
-    task_id: jnilbo-culture
-  - category: '64'
+    task_id: jnilbo-special-culture
+  - category: special
     config: /config/news/jnilbo.yaml
     name: 기획시리즈/이윤선의 남도인문학
-    task_id: jnilbo-64
+    task_id: jnilbo-special-k
   - category: sports
     config: /config/news/jnilbo.yaml
     name: 스포츠/KIA 타이거즈
-    task_id: jnilbo-sports
+    task_id: jnilbo-sports-kia
   - category: sports
     config: /config/news/jnilbo.yaml
     name: 스포츠/광주FC
-    task_id: jnilbo-sports
-  - category: etc
+    task_id: jnilbo-sports-fc
+  - category: sports
     config: /config/news/jnilbo.yaml
     name: 스포츠/체육일반
-    task_id: jnilbo-etc
+    task_id: jnilbo-sports-etc
   - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/문화일반
-    task_id: jnilbo-culture
+    task_id: jnilbo-culture-a
   - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/비엔날레
-    task_id: jnilbo-culture
+    task_id: jnilbo-culture-b
   - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/공연
-    task_id: jnilbo-culture
+    task_id: jnilbo-culture-c
   - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/미술
-    task_id: jnilbo-culture
-  - category: book
+    task_id: jnilbo-culture-d
+  - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/책
-    task_id: jnilbo-book
+    task_id: jnilbo-culture-book
   - category: culture
     config: /config/news/jnilbo.yaml
     name: 문화/문화 기획
-    task_id: jnilbo-culture
+    task_id: jnilbo-culture-e
   - category: economy
     config: /config/news/jnilbo.yaml
     name: 경제/경제일반
-    task_id: jnilbo-economy
+    task_id: jnilbo-economy-etc
   - category: economy
     config: /config/news/jnilbo.yaml
     name: 경제/기업
-    task_id: jnilbo-economy
+    task_id: jnilbo-economy-b
   - category: economy
     config: /config/news/jnilbo.yaml
     name: 경제/유통
-    task_id: jnilbo-economy
-  - category: estate
+    task_id: jnilbo-economy-c
+  - category: economy
     config: /config/news/jnilbo.yaml
     name: 경제/건설부동산
-    task_id: jnilbo-estate
+    task_id: jnilbo-economy-estate
   - category: economy
     config: /config/news/jnilbo.yaml
     name: 경제/농수축협·산림 조합
-    task_id: jnilbo-economy
+    task_id: jnilbo-economy-d
   - category: issue
     config: /config/news/jnilbo.yaml
     name: 일주이슈

@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - dt
+    - 디지털타임스
 default_args:
   owner: 'Airflow'
   retries: 3

@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - etnews
+    - 전자신문
 default_args:
   owner: 'Airflow'
   retries: 3

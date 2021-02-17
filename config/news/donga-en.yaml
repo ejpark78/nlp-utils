@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - donga-en
+    - 동아일보
 default_args:
   owner: 'Airflow'
   retries: 3
