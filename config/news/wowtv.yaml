@@ -1,0 +1,67 @@
+---
+dag:
+  dag_id: 'wowtv'
+  description: 'wowtv crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - wowtv
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: latest
+    config: /config/news/wowtv.yaml
+    name: latest
+    task_id: wowtv-latest
+  - category: stock
+    config: /config/news/wowtv.yaml
+    name: stock
+    task_id: wowtv-stock
+  - category: economy
+    config: /config/news/wowtv.yaml
+    name: economy
+    task_id: wowtv-economy
+  - category: bitcoin
+    config: /config/news/wowtv.yaml
+    name: bitcoin
+    task_id: wowtv-bitcoin
+  - category: it
+    config: /config/news/wowtv.yaml
+    name: it
+    task_id: wowtv-it
+  - category: international
+    config: /config/news/wowtv.yaml
+    name: international
+    task_id: wowtv-international
+  - category: job
+    config: /config/news/wowtv.yaml
+    name: job
+    task_id: wowtv-job
