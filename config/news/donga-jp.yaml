@@ -1,0 +1,71 @@
+---
+dag:
+  dag_id: 'donga-jp'
+  description: 'donga-jp crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - donga-jp
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: Business
+    config: /config/news/donga-jp.yaml
+    name: Business
+    task_id: donga-jp-Business
+  - category: National
+    config: /config/news/donga-jp.yaml
+    name: National
+    task_id: donga-jp-National
+  - category: Politics
+    config: /config/news/donga-jp.yaml
+    name: Politics
+    task_id: donga-jp-Politics
+  - category: International
+    config: /config/news/donga-jp.yaml
+    name: International
+    task_id: donga-jp-International
+  - category: Sports
+    config: /config/news/donga-jp.yaml
+    name: Sports
+    task_id: donga-jp-Sports
+  - category: Culture
+    config: /config/news/donga-jp.yaml
+    name: Culture
+    task_id: donga-jp-Culture
+  - category: Editorial
+    config: /config/news/donga-jp.yaml
+    name: Editorial
+    task_id: donga-jp-Editorial
+  - category: Op-ed
+    config: /config/news/donga-jp.yaml
+    name: Op-ed
+    task_id: donga-jp-Op-ed
