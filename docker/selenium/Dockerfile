@@ -33,6 +33,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         apt-transport-https \
+        apt-utils \
 		bash \
         build-essential \
         ca-certificates \
@@ -41,19 +42,55 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         gnupg \
         gpg-agent \
         libcurl4-openssl-dev \
+        libdb-dev \
         libssl-dev \
         python3 \
+        python3-dateutil \
         python3-dev \
+        python3-lxml \
         python3-pip \
         software-properties-common \
         tzdata \
         wget \
         unzip \
+    && apt install -yq ${APT_OPTS} \
+        freerdp2-x11 \
+        xorg-video-abi-24 \
+        xorgxrdp \
+        xrdp \
+        xserver-xorg-core \
+        xserver-xorg-input-all \
+    && echo && echo "# xrdp 설정" \
+    && adduser xrdp ssl-cert \
+    && echo env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS cinnamon-session > ~/.xsession \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# chrome, webdriver:
+# - https://chromedriver.chromium.org/downloads
+# - https://stynxh.github.io/2020-06-21-Install-Google-Chrome-on-Ubuntu-linux-from-command-line-kor/
+# - https://stynxh.github.io/2019-10-09-Set-Selenium-and-Chrome-browser-in-Docker-korean/
+# - https://stackoverflow.com/questions/45323271/how-to-run-selenium-with-chrome-in-docker
+ENV DISPLAY=:99 CHROMEDRIVER_VER=88.0.4324.96
+
+RUN echo && echo "chrome, webdriver 설치" \
+    && curl -k -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list \
+    && apt update -yq ${APT_OPTS} \
+    && apt install -yq ${APT_OPTS} \
+        fonts-vlgothic \
+        google-chrome-stable \
+        mercurial \
+        xvfb \
+    && apt autoremove -yq \
+    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && google-chrome-stable --version \
+    && wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VER}/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
+    && rm -rf /tmp/* /var/tmp/*
 
 ENV PYTHONWARNINGS "ignore:Unverified HTTPS request"
 
@@ -75,20 +112,29 @@ RUN echo && echo "# pip 저장소 설정" \
     && pip3 install --upgrade --no-cache-dir \
         PySocks \
         PyYAML \
+        boto3 \
+        brotlipy \
         bs4 \
         cachelib \
         dotty_dict \
         elasticsearch \
         html5lib \
+        jsonlines \
         lxml \
+        psutil \
         pycurl \
+        pyjwt \
         python-dateutil \
         requests \
         requests-html \
         requests-oauthlib \
         requests[security] \
         requests[socks] \
+        selenium \
+        selenium-wire \
         urllib3 \
-    && rm -rf /tmp/* /root/.cache
+    && rm -rf /tmp/*
 
+# selenium-hub : https://medium.com/@HoussemDellai/run-selenium-ui-tests-in-docker-containers-f41ae2796b8d
+# https://stackoverflow.com/questions/62011537/how-can-i-run-selenium-tests-in-a-docker-container-with-a-visible-browser
 

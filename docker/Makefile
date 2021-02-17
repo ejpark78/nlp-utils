@@ -74,7 +74,7 @@ build:
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):$(IMAGE_TAG) \
-		-f Dockerfile \
+		-f live/Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
 		.
 

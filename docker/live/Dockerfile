@@ -37,12 +37,12 @@ RUN echo && echo "크롤러 config 설치" \
 
 RUN echo && echo "크롤러 설치 (pypi)" \
     && pip3 install -U crawler \
-    && pip3 show crawler
+    && pip3 show crawler \
+    && rm -rf /root/.cache
 
-# RUN echo && echo "크롤러 설치 (git)" \
-#     && pip3 install git+http://galadriel02.korea.ncsoft.corp/crawler/crawler.git \
-#     && pip3 show crawler \
-#     && rm -rf /src
+#RUN echo && echo "크롤러 설치 (git)" \
+#     && pip3 install git+http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git@master \
+#     && pip3 show crawler
 
 WORKDIR /app
 

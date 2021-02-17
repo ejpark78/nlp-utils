@@ -5,3 +5,7 @@
 [submodule "config"]
 	path = config
 	url = http://galadriel02.korea.ncsoft.corp/crawler/config.git
+
+[submodule "dags"]
+	path = dags
+	url = http://galadriel02.korea.ncsoft.corp/crawler/airflow
