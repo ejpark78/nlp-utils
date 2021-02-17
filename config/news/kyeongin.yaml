@@ -1,0 +1,103 @@
+---
+dag:
+  dag_id: 'kyeongin'
+  description: 'kyeongin crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - kyeongin
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: all
+    config: /config/news/kyeongin.yaml
+    name: 전체뉴스
+    task_id: kyeongin-all
+  - category: sports
+    config: /config/news/kyeongin.yaml
+    name: 스포츠
+    task_id: kyeongin-sports
+  - category: entertainment
+    config: /config/news/kyeongin.yaml
+    name: 연예
+    task_id: kyeongin-entertainment
+  - category: opinion
+    config: /config/news/kyeongin.yaml
+    name: 사설
+    task_id: kyeongin-opinion
+  - category: column
+    config: /config/news/kyeongin.yaml
+    name: 경인칼럼
+    task_id: kyeongin-column
+  - category: column-a
+    config: /config/news/kyeongin.yaml
+    name: 기명칼럼
+    task_id: kyeongin-column-a
+  - category: column-desk
+    config: /config/news/kyeongin.yaml
+    name: 데스크칼럼
+    task_id: kyeongin-column-desk
+  - category: column-sunday
+    config: /config/news/kyeongin.yaml
+    name: 월요논단
+    task_id: kyeongin-column-sunday
+  - category: column-wend
+    config: /config/news/kyeongin.yaml
+    name: 수요광장
+    task_id: kyeongin-column-wend
+  - category: economy
+    config: /config/news/kyeongin.yaml
+    name: 경제전망대
+    task_id: kyeongin-economy
+  - category: column-spring
+    config: /config/news/kyeongin.yaml
+    name: 춘추칼럼
+    task_id: kyeongin-column-spring
+  - category: column-phd
+    config: /config/news/kyeongin.yaml
+    name: 전문가칼럼
+    task_id: kyeongin-column-phd
+  - category: column-a
+    config: /config/news/kyeongin.yaml
+    name: 참성단
+    task_id: kyeongin-column-b
+  - category: today-win
+    config: /config/news/kyeongin.yaml
+    name: 오늘의창
+    task_id: kyeongin-today-win
+  - category: notebook
+    config: /config/news/kyeongin.yaml
+    name: 노트북
+    task_id: kyeongin-notebook
+  - category: issue
+    config: /config/news/kyeongin.yaml
+    name: 기고
+    task_id: kyeongin-issue
