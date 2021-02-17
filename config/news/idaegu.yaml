@@ -1,0 +1,87 @@
+---
+dag:
+  dag_id: 'idaegu'
+  description: 'idaegu crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - idaegu
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: people
+    config: /config/news/idaegu.yaml
+    name: 사람
+    task_id: idaegu-people
+  - category: local
+    config: /config/news/idaegu.yaml
+    name: 지역뉴스
+    task_id: idaegu-local
+  - category: politics
+    config: /config/news/idaegu.yaml
+    name: 정치
+    task_id: idaegu-politics
+  - category: economy
+    config: /config/news/idaegu.yaml
+    name: 경제
+    task_id: idaegu-economy
+  - category: society
+    config: /config/news/idaegu.yaml
+    name: 사회
+    task_id: idaegu-society
+  - category: culture
+    config: /config/news/idaegu.yaml
+    name: 문화
+    task_id: idaegu-culture
+  - category: education
+    config: /config/news/idaegu.yaml
+    name: 교육
+    task_id: idaegu-education
+  - category: opinion
+    config: /config/news/idaegu.yaml
+    name: 오피니언
+    task_id: idaegu-opinion
+  - category: sports
+    config: /config/news/idaegu.yaml
+    name: 스포츠
+    task_id: idaegu-sports
+  - category: entertainment
+    config: /config/news/idaegu.yaml
+    name: 연예
+    task_id: idaegu-entertainment
+  - category: photo
+    config: /config/news/idaegu.yaml
+    name: 포토
+    task_id: idaegu-photo
+  - category: special
+    config: /config/news/idaegu.yaml
+    name: 특집
+    task_id: idaegu-special
