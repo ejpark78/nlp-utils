@@ -14,7 +14,7 @@ from airflow.utils.dates import days_ago
 
 from utils import open_config
 
-config = open_config(filename='config/daum.yaml')
+config = open_config(filename='config/portal/daum.yaml')
 
 default_args = {
     **config['default_args'],
