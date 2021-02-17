@@ -1,0 +1,163 @@
+---
+dag:
+  dag_id: 'fnnews'
+  description: 'fnnews crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - fnnews
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제
+    task_id: fnnews-economy
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제/금융
+    task_id: fnnews-finance
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제/증권
+    task_id: fnnews-stock
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제/부동산
+    task_id: fnnews-estate
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제/산업
+    task_id: fnnews-economy-company
+  - category: economy
+    config: /config/news/fnnews.yaml
+    name: 경제/일반
+    task_id: fnnews-economy-general
+  - category: politics
+    config: /config/news/fnnews.yaml
+    name: 정치
+    task_id: fnnews-politics
+  - category: politics
+    config: /config/news/fnnews.yaml
+    name: 정치/청와대
+    task_id: fnnews-blue-house
+  - category: politics
+    config: /config/news/fnnews.yaml
+    name: 정치/국회
+    task_id: fnnews-national-assembly
+  - category: politics
+    config: /config/news/fnnews.yaml
+    name: 정치/북한
+    task_id: fnnews-north-korea
+  - category: politics
+    config: /config/news/fnnews.yaml
+    name: 정치/외교
+    task_id: fnnews-diplomacy
+  - category: society
+    config: /config/news/fnnews.yaml
+    name: 사회
+    task_id: fnnews-society-general
+  - category: society
+    config: /config/news/fnnews.yaml
+    name: 사회/사건/사고
+    task_id: fnnews-society-event
+  - category: society
+    config: /config/news/fnnews.yaml
+    name: 사회/검찰/법원
+    task_id: fnnews-society-police
+  - category: society
+    config: /config/news/fnnews.yaml
+    name: 사회/행정
+    task_id: fnnews-administration
+  - category: society
+    config: /config/news/fnnews.yaml
+    name: 사회/교육
+    task_id: fnnews-education
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT
+    task_id: fnnews-general
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT/통신
+    task_id: fnnews-commuication
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT/게임
+    task_id: fnnews-game
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT/인터넷
+    task_id: fnnews-internet
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT/블록체인
+    task_id: fnnews-block-chain
+  - category: it
+    config: /config/news/fnnews.yaml
+    name: IT/의학/과학
+    task_id: fnnews-science
+  - category: world
+    config: /config/news/fnnews.yaml
+    name: 국제
+    task_id: fnnews-general
+  - category: world
+    config: /config/news/fnnews.yaml
+    name: 국제/경제
+    task_id: fnnews-economy-world
+  - category: world
+    config: /config/news/fnnews.yaml
+    name: 국제/정치
+    task_id: fnnews-politics
+  - category: world
+    config: /config/news/fnnews.yaml
+    name: 국제/사회
+    task_id: fnnews-society
+  - category: life
+    config: /config/news/fnnews.yaml
+    name: 라이프
+    task_id: fnnews-26
+  - category: life
+    config: /config/news/fnnews.yaml
+    name: 라이프/생활
+    task_id: fnnews-living
+  - category: life
+    config: /config/news/fnnews.yaml
+    name: 라이프/스포츠
+    task_id: fnnews-sports
+  - category: life
+    config: /config/news/fnnews.yaml
+    name: 라이프/푸드/리빙
+    task_id: fnnews-29
+  - category: life
+    config: /config/news/fnnews.yaml
+    name: 라이프/레저/문화
+    task_id: fnnews-tour

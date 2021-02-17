@@ -1,0 +1,83 @@
+---
+dag:
+  dag_id: 'edaily'
+  description: 'edaily crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - edaily
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: economy
+    config: /config/news/edaily.yaml
+    name: 경제
+    task_id: edaily-economy
+  - category: society
+    config: /config/news/edaily.yaml
+    name: 사회
+    task_id: edaily-society
+  - category: company
+    config: /config/news/edaily.yaml
+    name: 기업
+    task_id: edaily-company
+  - category: stock
+    config: /config/news/edaily.yaml
+    name: 증권
+    task_id: edaily-stock
+  - category: estate
+    config: /config/news/edaily.yaml
+    name: 부동산
+    task_id: edaily-estate
+  - category: politics
+    config: /config/news/edaily.yaml
+    name: 정치
+    task_id: edaily-politics
+  - category: entertainment
+    config: /config/news/edaily.yaml
+    name: 연예
+    task_id: edaily-entertainment
+  - category: science
+    config: /config/news/edaily.yaml
+    name: IT과학
+    task_id: edaily-science
+  - category: sports
+    config: /config/news/edaily.yaml
+    name: 스포츠
+    task_id: edaily-sports
+  - category: global
+    config: /config/news/edaily.yaml
+    name: 글로벌
+    task_id: edaily-global
+  - category: culture
+    config: /config/news/edaily.yaml
+    name: 문화
+    task_id: edaily-culture
