@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - kookje
+    - 국제신문
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -37,159 +37,159 @@ operator:
     - --sleep
     - '5'
 tasks:
-  - category: '0'
+  - category: all
     config: /config/news/kookje.yaml
     name: 전체뉴스
-    task_id: kookje-0
-  - category: blue-house
+    task_id: kookje-all
+  - category: politics
     config: /config/news/kookje.yaml
     name: 정치/청와대/대통령
     task_id: kookje-blue-house
-  - category: national-assembly
+  - category: politics
     config: /config/news/kookje.yaml
     name: 정치/국회/정당
     task_id: kookje-national-assembly
-  - category: north-korea
+  - category: politics
     config: /config/news/kookje.yaml
     name: 정치/남북한
     task_id: kookje-north-korea
   - category: politics
     config: /config/news/kookje.yaml
     name: 정치/선거
-    task_id: kookje-politics
+    task_id: kookje-politics-a
   - category: politics
     config: /config/news/kookje.yaml
     name: 정치/지방정치
-    task_id: kookje-politics
+    task_id: kookje-politics-b
   - category: politics
     config: /config/news/kookje.yaml
     name: 정치/국방
-    task_id: kookje-politics
-  - category: book
+    task_id: kookje-politics-c
+  - category: politics
     config: /config/news/kookje.yaml
     name: 정치/정책
-    task_id: kookje-book
-  - category: diplomacy
+    task_id: kookje-politics-book
+  - category: politics
     config: /config/news/kookje.yaml
     name: 정치/외교
     task_id: kookje-diplomacy
-  - category: estate
+  - category: economy
     config: /config/news/kookje.yaml
     name: 경제/부동산
     task_id: kookje-estate
-  - category: finance
+  - category: economy
     config: /config/news/kookje.yaml
     name: 경제/증권/금융/보험
     task_id: kookje-finance
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/쇼핑/유통
-    task_id: kookje-economy
+    task_id: kookje-economy-a
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/기업/창업
-    task_id: kookje-economy
+    task_id: kookje-economy-b
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/구인구직
-    task_id: kookje-economy
+    task_id: kookje-economy-c
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/복권
-    task_id: kookje-economy
+    task_id: kookje-economy-d
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/해양수산
-    task_id: kookje-economy
+    task_id: kookje-economy-e
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/자동차
-    task_id: kookje-economy
+    task_id: kookje-economy-f
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/항공
-    task_id: kookje-economy
+    task_id: kookje-economy-g
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/조세
-    task_id: kookje-economy
+    task_id: kookje-economy-h
   - category: economy
     config: /config/news/kookje.yaml
     name: 경제/통상/무역
-    task_id: kookje-economy
-  - category: book
+    task_id: kookje-economy-i
+  - category: economy
     config: /config/news/kookje.yaml
     name: 경제/정책
     task_id: kookje-book
-  - category: incident
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/사건사고
     task_id: kookje-incident
-  - category: education
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/교육
     task_id: kookje-education
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/보건/복지
-    task_id: kookje-society
-  - category: environment
+    task_id: kookje-society-a
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/환경
     task_id: kookje-environment
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/교통
-    task_id: kookje-society
-  - category: forecast
+    task_id: kookje-society-b
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/날씨
     task_id: kookje-forecast
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/법조
-    task_id: kookje-society
-  - category: labor
+    task_id: kookje-society-c
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/노동
     task_id: kookje-labor
-  - category: administration
+  - category: society
     config: /config/news/kookje.yaml
     name: 사회/행정
     task_id: kookje-administration
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/미디어
-    task_id: kookje-society
-  - category: usa
+    task_id: kookje-society-d
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/미국
     task_id: kookje-usa
-  - category: '32'
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/일본
-    task_id: kookje-32
-  - category: '33'
+    task_id: kookje-world-jp
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/중국
-    task_id: kookje-33
-  - category: '34'
+    task_id: kookje-world-cn
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/중동
-    task_id: kookje-34
-  - category: europe
+    task_id: kookje-world-mid
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/유럽
     task_id: kookje-europe
-  - category: '36'
+  - category: world
     config: /config/news/kookje.yaml
     name: 국제/기타
-    task_id: kookje-36
+    task_id: kookje-world-etc
   - category: culture
     config: /config/news/kookje.yaml
     name: 문화/미술
     task_id: kookje-culture
-  - category: book
+  - category: culture
     config: /config/news/kookje.yaml
     name: 문화/책/문학
     task_id: kookje-book
@@ -201,7 +201,7 @@ tasks:
     config: /config/news/kookje.yaml
     name: 문화/연예
     task_id: kookje-culture
-  - category: movie
+  - category: culture
     config: /config/news/kookje.yaml
     name: 문화/영화/방송
     task_id: kookje-movie
@@ -209,7 +209,7 @@ tasks:
     config: /config/news/kookje.yaml
     name: 문화/문화재
     task_id: kookje-culture
-  - category: religion
+  - category: culture
     config: /config/news/kookje.yaml
     name: 문화/종교
     task_id: kookje-religion
@@ -221,43 +221,43 @@ tasks:
     config: /config/news/kookje.yaml
     name: 문화/전시
     task_id: kookje-culture
-  - category: health
+  - category: living
     config: /config/news/kookje.yaml
     name: 생활/건강정보
     task_id: kookje-health
   - category: living
     config: /config/news/kookje.yaml
     name: 생활/여성생활
-    task_id: kookje-living
+    task_id: kookje-living-a
   - category: living
     config: /config/news/kookje.yaml
     name: 생활/스타일
-    task_id: kookje-living
+    task_id: kookje-living-b
   - category: living
     config: /config/news/kookje.yaml
     name: 생활/트렌드
-    task_id: kookje-living
-  - category: game
+    task_id: kookje-living-c
+  - category: living
     config: /config/news/kookje.yaml
     name: 생활/게임
     task_id: kookje-game
   - category: living
     config: /config/news/kookje.yaml
     name: 생활/맛집
-    task_id: kookje-living
-  - category: travel
+    task_id: kookje-living-d
+  - category: living
     config: /config/news/kookje.yaml
     name: 생활/레저여행
     task_id: kookje-travel
-  - category: environment
+  - category: it
     config: /config/news/kookje.yaml
     name: IT/환경
     task_id: kookje-environment
-  - category: science
+  - category: it
     config: /config/news/kookje.yaml
     name: IT/과학
     task_id: kookje-science
-  - category: '55'
+  - category: it
     config: /config/news/kookje.yaml
     name: IT/IT
-    task_id: kookje-55
+    task_id: kookje-it
