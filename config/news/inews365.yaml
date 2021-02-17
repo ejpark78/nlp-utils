@@ -1,0 +1,71 @@
+---
+dag:
+  dag_id: 'inews365'
+  description: 'inews365 crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - inews365
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: local
+    config: /config/news/inews365.yaml
+    name: 지역
+    task_id: inews365-local
+  - category: politics
+    config: /config/news/inews365.yaml
+    name: 정치
+    task_id: inews365-politics
+  - category: society
+    config: /config/news/inews365.yaml
+    name: 사회
+    task_id: inews365-society
+  - category: education
+    config: /config/news/inews365.yaml
+    name: 교육
+    task_id: inews365-education
+  - category: sports
+    config: /config/news/inews365.yaml
+    name: 스포츠
+    task_id: inews365-sports
+  - category: entertainment
+    config: /config/news/inews365.yaml
+    name: 미디어/연예
+    task_id: inews365-entertainment
+  - category: economy
+    config: /config/news/inews365.yaml
+    name: 경제
+    task_id: inews365-economy
+  - category: life
+    config: /config/news/inews365.yaml
+    name: 라이프
+    task_id: inews365-life
