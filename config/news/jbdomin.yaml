@@ -40,128 +40,128 @@ tasks:
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/전주
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-a
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/군산
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-b
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/익산
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-c
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/정읍
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-d
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/남원
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-e
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/김제
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-f
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/완주
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-g
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/진안
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-h
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/무주
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-i
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/장수
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-j
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/임실
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-k
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/순창
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-l
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/고창
-    task_id: jbdomin-administration
+    task_id: jbdomin-administration-m
   - category: administration
     config: /config/news/jbdomin.yaml
     name: 자치행정/부안
-    task_id: jbdomin-administration
-  - category: total
+    task_id: jbdomin-administration-n
+  - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/정치종합
     task_id: jbdomin-total
-  - category: national-assembly
+  - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/국회·정당·선거
     task_id: jbdomin-national-assembly
-  - category: blue-house
+  - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/도정·청와대
     task_id: jbdomin-blue-house
   - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/지방의회
-    task_id: jbdomin-politics
+    task_id: jbdomin-politics-a
   - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/정치기획
-    task_id: jbdomin-politics
+    task_id: jbdomin-politics-b
   - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/오늘의 선거뉴스
-    task_id: jbdomin-politics
+    task_id: jbdomin-politics-c
   - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/열전현장
-    task_id: jbdomin-politics
+    task_id: jbdomin-politics-d
   - category: politics
     config: /config/news/jbdomin.yaml
     name: 정치/도전 저요저
-    task_id: jbdomin-politics
+    task_id: jbdomin-politics-e
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/경제종합
-    task_id: jbdomin-economy
+    task_id: jbdomin-economy-a
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/산업·기업
-    task_id: jbdomin-economy
-  - category: finance
+    task_id: jbdomin-economy-b
+  - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/금융·증권
     task_id: jbdomin-finance
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/건설
-    task_id: jbdomin-economy
+    task_id: jbdomin-economy-c
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/유통·소비자
-    task_id: jbdomin-economy
+    task_id: jbdomin-economy-d
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/농축산
-    task_id: jbdomin-economy
+    task_id: jbdomin-economy-e
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/경제기획
-    task_id: jbdomin-economy
+    task_id: jbdomin-economy-f
   - category: economy
     config: /config/news/jbdomin.yaml
     name: 경제/조합장선거 누가 뛰나
-    task_id: jbdomin-economy
-  - category: total
+    task_id: jbdomin-economy-g
+  - category: society
     config: /config/news/jbdomin.yaml
     name: 사회/사회종합
     task_id: jbdomin-total
-  - category: labor
+  - category: society
     config: /config/news/jbdomin.yaml
     name: 사회/환경·복지·노동
     task_id: jbdomin-labor
@@ -177,15 +177,15 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 사회/사회기획
     task_id: jbdomin-society
-  - category: local
+  - category: society
     config: /config/news/jbdomin.yaml
     name: 사회/지역별 현황
     task_id: jbdomin-local
-  - category: total
+  - category: culture
     config: /config/news/jbdomin.yaml
     name: 문화/문화종합
     task_id: jbdomin-total
-  - category: book
+  - category: culture
     config: /config/news/jbdomin.yaml
     name: 문화/책·서평
     task_id: jbdomin-book
@@ -208,36 +208,36 @@ tasks:
   - category: education
     config: /config/news/jbdomin.yaml
     name: 교육/교육종합
-    task_id: jbdomin-education
+    task_id: jbdomin-education-a
   - category: education
     config: /config/news/jbdomin.yaml
     name: 교육/초중등교육
-    task_id: jbdomin-education
+    task_id: jbdomin-education-b
   - category: education
     config: /config/news/jbdomin.yaml
     name: 교육/대학교육
-    task_id: jbdomin-education
+    task_id: jbdomin-education-c
   - category: education
     config: /config/news/jbdomin.yaml
     name: 교육/NIE
-    task_id: jbdomin-education
+    task_id: jbdomin-education-d
   - category: education
     config: /config/news/jbdomin.yaml
     name: 교육/교육기획
-    task_id: jbdomin-education
-  - category: total
+    task_id: jbdomin-education-e
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/스포츠종합
     task_id: jbdomin-total
-  - category: football
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/축구
     task_id: jbdomin-football
-  - category: basketball
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/농구
     task_id: jbdomin-basketball
-  - category: baseball
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/야구
     task_id: jbdomin-baseball
@@ -245,11 +245,11 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/태권도
     task_id: jbdomin-sports
-  - category: golf
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/골프
     task_id: jbdomin-golf
-  - category: living
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/생활체육
     task_id: jbdomin-living
@@ -257,34 +257,34 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/전국체전·장애인체전
     task_id: jbdomin-sports
-  - category: movie
+  - category: sports
     config: /config/news/jbdomin.yaml
     name: 스포츠/연예/영화·방송·음악
     task_id: jbdomin-movie
   - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/인사
-    task_id: jbdomin-people
-  - category: person
+    task_id: jbdomin-people-a
+  - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/인물
     task_id: jbdomin-person
   - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/결혼
-    task_id: jbdomin-people
+    task_id: jbdomin-people-b
   - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/부음
-    task_id: jbdomin-people
+    task_id: jbdomin-people-c
   - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/행사
-    task_id: jbdomin-people
+    task_id: jbdomin-people-d
   - category: people
     config: /config/news/jbdomin.yaml
     name: 사람들/알림
-    task_id: jbdomin-people
+    task_id: jbdomin-people-e
   - category: opinion
     config: /config/news/jbdomin.yaml
     name: 오피니언/사설
@@ -301,7 +301,7 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 오피니언/기자시각
     task_id: jbdomin-opinion
-  - category: politics
+  - category: opinion
     config: /config/news/jbdomin.yaml
     name: 오피니언/정치마당
     task_id: jbdomin-politics
@@ -309,10 +309,10 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 오피니언/전북은 지금
     task_id: jbdomin-opinion
-  - category: economy
+  - category: opinion
     config: /config/news/jbdomin.yaml
     name: 오피니언/경제판도
-    task_id: jbdomin-economy
+    task_id: jbdomin-opinion-economy
   - category: opinion
     config: /config/news/jbdomin.yaml
     name: 오피니언/프리즘
@@ -345,7 +345,7 @@ tasks:
     config: /config/news/jbdomin.yaml
     name: 오피니언/독자기고
     task_id: jbdomin-opinion
-  - category: society
+  - category: opinion
     config: /config/news/jbdomin.yaml
     name: 오피니언/사회칼럼
     task_id: jbdomin-society
