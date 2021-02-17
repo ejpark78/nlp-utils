@@ -1,0 +1,347 @@
+---
+dag:
+  dag_id: 'hani'
+  description: 'hani crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - korea
+    - hani
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 정치일반
+    task_id: hani-etc
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 청와대
+    task_id: hani-blue-house
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 국회·정당
+    task_id: hani-national-assembly
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 행정·자치
+    task_id: hani-administration
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 국방·북한
+    task_id: hani-north-korea
+  - category: politics
+    config: /config/news/hani.yaml
+    name: 외교
+    task_id: hani-diplomacy
+  - category: society
+    config: /config/news/hani.yaml
+    name: 사회일반
+    task_id: hani-etc
+  - category: society
+    config: /config/news/hani.yaml
+    name: 여성
+    task_id: hani-society-woman
+  - category: society
+    config: /config/news/hani.yaml
+    name: 노동
+    task_id: hani-labor
+  - category: society
+    config: /config/news/hani.yaml
+    name: 환경
+    task_id: hani-environment
+  - category: society
+    config: /config/news/hani.yaml
+    name: 장애인
+    task_id: hani-hancap
+  - category: society
+    config: /config/news/hani.yaml
+    name: 인권·복지
+    task_id: hani-human-right
+  - category: society
+    config: /config/news/hani.yaml
+    name: 의료·건강
+    task_id: hani-health
+  - category: society
+    config: /config/news/hani.yaml
+    name: 미디어
+    task_id: hani-society-media
+  - category: society
+    config: /config/news/hani.yaml
+    name: 궂긴소식
+    task_id: hani-society-issue
+  - category: society
+    config: /config/news/hani.yaml
+    name: 인사
+    task_id: hani-society-person
+  - category: society
+    config: /config/news/hani.yaml
+    name: 엔지오
+    task_id: hani-society-ngo
+  - category: society
+    config: /config/news/hani.yaml
+    name: 교육
+    task_id: hani-society-education
+  - category: society
+    config: /config/news/hani.yaml
+    name: 종교
+    task_id: hani-religion
+  - category: area
+    config: /config/news/hani.yaml
+    name: 전국일반
+    task_id: hani-area-etc
+  - category: area
+    config: /config/news/hani.yaml
+    name: 제주
+    task_id: hani-area-jeju
+  - category: area
+    config: /config/news/hani.yaml
+    name: 호남
+    task_id: hani-area-a
+  - category: area
+    config: /config/news/hani.yaml
+    name: 영남
+    task_id: hani-area-b
+  - category: area
+    config: /config/news/hani.yaml
+    name: 충청
+    task_id: hani-area-c
+  - category: area
+    config: /config/news/hani.yaml
+    name: 강원
+    task_id: hani-area-d
+  - category: area
+    config: /config/news/hani.yaml
+    name: 수도권
+    task_id: hani-area-soul
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 경제일반
+    task_id: hani-economy-general
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 금융·증권
+    task_id: hani-finance
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 산업·재계
+    task_id: hani-industry
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 자동차
+    task_id: hani-economy-car
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 부동산
+    task_id: hani-economy-estate
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 쇼핑·소비자
+    task_id: hani-economy-shopping
+  - category: economy
+    config: /config/news/hani.yaml
+    name: IT
+    task_id: hani-economy-it
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 직장·취업
+    task_id: hani-economy-job
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 중기·스타트업
+    task_id: hani-economy-startup
+  - category: economy
+    config: /config/news/hani.yaml
+    name: 기업PR
+    task_id: hani-economy-company
+  - category: global
+    config: /config/news/hani.yaml
+    name: 글로벌워치
+    task_id: hani-global
+  - category: global
+    config: /config/news/hani.yaml
+    name: 국제일반
+    task_id: hani-global-etc
+  - category: global
+    config: /config/news/hani.yaml
+    name: 해외토픽
+    task_id: hani-global-topic
+  - category: global
+    config: /config/news/hani.yaml
+    name: 아시아·태평양
+    task_id: hani-global-percipic
+  - category: global
+    config: /config/news/hani.yaml
+    name: 미국·중남미
+    task_id: hani-global-usa
+  - category: global
+    config: /config/news/hani.yaml
+    name: 유럽
+    task_id: hani-europe
+  - category: global
+    config: /config/news/hani.yaml
+    name: 중국
+    task_id: hani-global-china
+  - category: global
+    config: /config/news/hani.yaml
+    name: 일본
+    task_id: hani-global-jp
+  - category: global
+    config: /config/news/hani.yaml
+    name: 중동·아프리카
+    task_id: hani-global-mideast
+  - category: global
+    config: /config/news/hani.yaml
+    name: 국제기구·회의
+    task_id: hani-global-conference
+  - category: global
+    config: /config/news/hani.yaml
+    name: 국제경제
+    task_id: hani-global-economy
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 문화일반
+    task_id: hani-culture
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 영화·애니
+    task_id: hani-culture-movie
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 방송·연예
+    task_id: hani-culture-entertainment
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 여행·여가
+    task_id: hani-culture-travel
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 음악·공연·전시
+    task_id: hani-culture-music
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 학술
+    task_id: hani-culture-conference
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 책&생각
+    task_id: hani-culture-book
+  - category: culture
+    config: /config/news/hani.yaml
+    name: 제주&
+    task_id: hani-culture-jeju
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 스포츠일반
+    task_id: hani-sports-etc
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 축구·해외리그
+    task_id: hani-sports-football
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 야구·MLB
+    task_id: hani-sports-baseball
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 골프
+    task_id: hani-sports-golf
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 경기일정
+    task_id: hani-sports-match
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 경기결과
+    task_id: hani-sports-result
+  - category: sports
+    config: /config/news/hani.yaml
+    name: 바둑
+    task_id: hani-sports-a
+  - category: future
+    config: /config/news/hani.yaml
+    name: 미래
+    task_id: hani-future-a
+  - category: future
+    config: /config/news/hani.yaml
+    name: 과학
+    task_id: hani-future-science
+  - category: future
+    config: /config/news/hani.yaml
+    name: 기술
+    task_id: hani-future-tech
+  - category: future
+    config: /config/news/hani.yaml
+    name: 환경
+    task_id: hani-future-environment
+  - category: future
+    config: /config/news/hani.yaml
+    name: 시각
+    task_id: hani-future-opinion
+  - category: future
+    config: /config/news/hani.yaml
+    name: 야생동물
+    task_id: hani-future-animal
+  - category: future
+    config: /config/news/hani.yaml
+    name: 반려동물
+    task_id: hani-future-dog
+  - category: future
+    config: /config/news/hani.yaml
+    name: 농장동물
+    task_id: hani-future-animal-b
+  - category: future
+    config: /config/news/hani.yaml
+    name: 인간과동물
+    task_id: hani-future-human
+  - category: future
+    config: /config/news/hani.yaml
+    name: 생태와진화
+    task_id: hani-future-c
+  - category: opinion
+    config: /config/news/hani.yaml
+    name: 사설
+    task_id: hani-opinion-a
+  - category: opinion
+    config: /config/news/hani.yaml
+    name: 칼럼
+    task_id: hani-opinion-column
+  - category: opinion
+    config: /config/news/hani.yaml
+    name: 왜냐면
+    task_id: hani-opinion-why
+  - category: photo
+    config: /config/news/hani.yaml
+    name: 포토에세이
+    task_id: hani-photo-a
+  - category: photo
+    config: /config/news/hani.yaml
+    name: 옵스큐라
+    task_id: hani-photo-b
