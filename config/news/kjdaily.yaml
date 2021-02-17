@@ -40,7 +40,7 @@ tasks:
   - category: etc
     config: /config/news/kjdaily.yaml
     name: 정치/일반
-    task_id: kjdaily-etc
+    task_id: kjdaily-etc-a
   - category: politics
     config: /config/news/kjdaily.yaml
     name: 정치/지구촌소식
@@ -48,7 +48,7 @@ tasks:
   - category: etc
     config: /config/news/kjdaily.yaml
     name: 사회/일반
-    task_id: kjdaily-etc
+    task_id: kjdaily-etc-b
   - category: education
     config: /config/news/kjdaily.yaml
     name: 사회/교육
@@ -64,7 +64,7 @@ tasks:
   - category: culture
     config: /config/news/kjdaily.yaml
     name: 문화/일반
-    task_id: kjdaily-culture
+    task_id: kjdaily-culture-a
   - category: book
     config: /config/news/kjdaily.yaml
     name: 문화/책
@@ -72,11 +72,11 @@ tasks:
   - category: culture
     config: /config/news/kjdaily.yaml
     name: 문화/TV/연예
-    task_id: kjdaily-culture
+    task_id: kjdaily-culture-b
   - category: culture
     config: /config/news/kjdaily.yaml
     name: 문화/Fun·Joy
-    task_id: kjdaily-culture
+    task_id: kjdaily-culture-c
   - category: '10'
     config: /config/news/kjdaily.yaml
     name: 의료/웰빙
