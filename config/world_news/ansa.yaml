@@ -1,0 +1,83 @@
+---
+dag:
+  dag_id: 'ansa'
+  description: 'ansa crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - world
+    - ansa (이탈리아)
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: general_news
+    config: /config/world_news/ansa.yaml
+    name: general_news
+    task_id: ansa-general_news
+  - category: politics
+    config: /config/world_news/ansa.yaml
+    name: politics
+    task_id: ansa-politics
+  - category: business
+    config: /config/world_news/ansa.yaml
+    name: business
+    task_id: ansa-business
+  - category: science_tecnology
+    config: /config/world_news/ansa.yaml
+    name: science_tecnology
+    task_id: ansa-science_tecnology
+  - category: lifestyle
+    config: /config/world_news/ansa.yaml
+    name: lifestyle/travel
+    task_id: ansa-lifestyle-travel
+  - category: lifestyle
+    config: /config/world_news/ansa.yaml
+    name: lifestyle/arts
+    task_id: ansa-lifestyle-arts
+  - category: lifestyle
+    config: /config/world_news/ansa.yaml
+    name: lifestyle/fashion_luxury
+    task_id: ansa-lifestyle-fashion_luxury
+  - category: lifestyle
+    config: /config/world_news/ansa.yaml
+    name: lifestyle/food_wine
+    task_id: ansa-lifestyle-food_wine
+  - category: sports
+    config: /config/world_news/ansa.yaml
+    name: sports
+    task_id: ansa-sports
+  - category: vatican
+    config: /config/world_news/ansa.yaml
+    name: vatican
+    task_id: ansa-vatican
+  - category: world
+    config: /config/world_news/ansa.yaml
+    name: world
+    task_id: ansa-world
