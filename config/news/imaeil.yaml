@@ -44,7 +44,7 @@ tasks:
   - category: politics
     config: /config/news/imaeil.yaml
     name: 정치/정치일반
-    task_id: imaeil-etc
+    task_id: imaeil-politics-etc
   - category: politics
     config: /config/news/imaeil.yaml
     name: 정치/지역정가
@@ -96,7 +96,7 @@ tasks:
   - category: society
     config: /config/news/imaeil.yaml
     name: 사회/사회일반
-    task_id: imaeil-etc
+    task_id: imaeil-society-etc
   - category: society
     config: /config/news/imaeil.yaml
     name: 사회/사건사고
@@ -128,7 +128,7 @@ tasks:
   - category: world
     config: /config/news/imaeil.yaml
     name: 국제/국제일반
-    task_id: imaeil-etc
+    task_id: imaeil-world-etc
   - category: world
     config: /config/news/imaeil.yaml
     name: 국제/미국·중국·일본
@@ -160,7 +160,7 @@ tasks:
   - category: sports
     config: /config/news/imaeil.yaml
     name: 스포츠/스포츠일반
-    task_id: imaeil-etc
+    task_id: imaeil-sports-etc
   - category: sports
     config: /config/news/imaeil.yaml
     name: 스포츠/야구
@@ -180,7 +180,7 @@ tasks:
   - category: entertainment
     config: /config/news/imaeil.yaml
     name: 연예/연예일반
-    task_id: imaeil-etc
+    task_id: imaeil-enter-etc
   - category: entertainment
     config: /config/news/imaeil.yaml
     name: 연예/영화
@@ -192,7 +192,7 @@ tasks:
   - category: life
     config: /config/news/imaeil.yaml
     name: 라이프/라이프일반
-    task_id: imaeil-etc
+    task_id: imaeil-life-etc
   - category: life
     config: /config/news/imaeil.yaml
     name: 라이프/여행·축제
