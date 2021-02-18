@@ -56,7 +56,7 @@ tasks:
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/경제칼럼
-    task_id: iusm-economy
+    task_id: iusm-opinion-economy
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/자치시대
@@ -176,11 +176,11 @@ tasks:
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/기업
-    task_id: iusm-economy
+    task_id: iusm-economy-a
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/경제단체
-    task_id: iusm-economy
+    task_id: iusm-economy-b
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/금융·증권
@@ -188,7 +188,7 @@ tasks:
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/유통
-    task_id: iusm-economy
+    task_id: iusm-economy-c
   - category: estate
     config: /config/news/iusm.yaml
     name: 경제/건설·부동산
@@ -196,19 +196,19 @@ tasks:
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/해운·항만
-    task_id: iusm-economy
+    task_id: iusm-economy-d
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/농축수산업
-    task_id: iusm-economy
+    task_id: iusm-economy-e
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/중소기업
-    task_id: iusm-economy
+    task_id: iusm-economy-f
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/기타
-    task_id: iusm-economy
+    task_id: iusm-economy-g
   - category: society
     config: /config/news/iusm.yaml
     name: 사회/노동
