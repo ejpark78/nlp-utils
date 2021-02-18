@@ -112,7 +112,7 @@ tasks:
   - category: politics
     config: /config/news/gyeonghyang.yaml
     name: 정치/일반
-    task_id: gyeonghyang-etc
+    task_id: gyeonghyang-etc-a
   - category: politics
     config: /config/news/gyeonghyang.yaml
     name: 정치/청와대
@@ -136,7 +136,7 @@ tasks:
   - category: society
     config: /config/news/gyeonghyang.yaml
     name: 사회/일반
-    task_id: gyeonghyang-etc
+    task_id: gyeonghyang-etc-b
   - category: society
     config: /config/news/gyeonghyang.yaml
     name: 사회/사건/사고
