@@ -76,7 +76,7 @@ tasks:
   - category: society
     config: /config/news/honam.yaml
     name: 사회/사회일반
-    task_id: honam-etc
+    task_id: honam-society-etc
   - category: society
     config: /config/news/honam.yaml
     name: 사회/사건사고
@@ -128,7 +128,7 @@ tasks:
   - category: sports
     config: /config/news/honam.yaml
     name: 스포츠·연예/일반스포츠
-    task_id: honam-etc
+    task_id: honam-sports-etc
   - category: sports
     config: /config/news/honam.yaml
     name: 스포츠·연예/연예
