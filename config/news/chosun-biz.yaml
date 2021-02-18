@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - chosun-biz
+    - 조선비즈
 default_args:
   owner: 'Airflow'
   retries: 3

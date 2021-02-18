@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - wowtv
+    - 한국경제TV
 default_args:
   owner: 'Airflow'
   retries: 3

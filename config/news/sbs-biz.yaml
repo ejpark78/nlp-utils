@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - sbs-biz
+    - SBS비즈
 default_args:
   owner: 'Airflow'
   retries: 3

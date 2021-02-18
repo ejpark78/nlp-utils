@@ -7,7 +7,7 @@ dag:
   tags:
     - news
     - korea
-    - fntimes
+    - 한국금융신문
 default_args:
   owner: 'Airflow'
   retries: 3
