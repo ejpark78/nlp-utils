@@ -140,7 +140,7 @@ tasks:
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/환경
-    task_id: kookje-environment
+    task_id: kookje-society-environment
   - category: society
     config: /config/news/kookje.yaml
     name: 사회/교통
@@ -256,7 +256,7 @@ tasks:
   - category: it
     config: /config/news/kookje.yaml
     name: IT/환경
-    task_id: kookje-environment
+    task_id: kookje-it-environment
   - category: it
     config: /config/news/kookje.yaml
     name: IT/과학
