@@ -25,3 +25,5 @@ app.tar.gz
 venv
 cache
 /log/
+
+airflow

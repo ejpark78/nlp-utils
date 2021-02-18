@@ -32,6 +32,9 @@ wheel
 setuptools
 twine
 
+apache-airflow==1.10.14
+kubernetes
+
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 

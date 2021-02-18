@@ -146,10 +146,6 @@ run:
 		$(IMAGE):jupyter
 
 prune:
-	cat /etc/hosts \
-		| grep nc-crawler \
-		| perl -ple 's/\s+/\t/g' \
-		| cut -f2 \
-		| xargs -I{} ssh {} "docker system prune -f ; docker image prune -f -a"
+	cat nodes | xargs -I{} ssh {} "hostname ; docker system prune -af"
+	cat nodes | xargs -I{} ssh {} "hostname ; docker images"
 
-# git-sync https://coffeewhale.com/kubernetes/git-sync/2020/02/22/git-sync/
