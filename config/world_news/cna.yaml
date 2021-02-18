@@ -1,0 +1,95 @@
+---
+dag:
+  dag_id: 'cna'
+  description: 'cna crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - world
+    - 대만 중앙통신사
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: aall
+    config: /config/world_news/cna.yaml
+    name: aall
+    task_id: cna-aall
+  - category: aipl
+    config: /config/world_news/cna.yaml
+    name: aipl
+    task_id: cna-aipl
+  - category: aopl
+    config: /config/world_news/cna.yaml
+    name: aopl
+    task_id: cna-aopl
+  - category: acn
+    config: /config/world_news/cna.yaml
+    name: acn
+    task_id: cna-acn
+  - category: aie
+    config: /config/world_news/cna.yaml
+    name: aie
+    task_id: cna-aie
+  - category: asc
+    config: /config/world_news/cna.yaml
+    name: asc
+    task_id: cna-asc
+  - category: ait
+    config: /config/world_news/cna.yaml
+    name: ait
+    task_id: cna-ait
+  - category: ahel
+    config: /config/world_news/cna.yaml
+    name: ahel
+    task_id: cna-ahel
+  - category: asoc
+    config: /config/world_news/cna.yaml
+    name: asoc
+    task_id: cna-asoc
+  - category: aloc
+    config: /config/world_news/cna.yaml
+    name: aloc
+    task_id: cna-aloc
+  - category: acul
+    config: /config/world_news/cna.yaml
+    name: acul
+    task_id: cna-acul
+  - category: aspt
+    config: /config/world_news/cna.yaml
+    name: aspt
+    task_id: cna-aspt
+  - category: amov
+    config: /config/world_news/cna.yaml
+    name: amov
+    task_id: cna-amov
+  - category: newstopic
+    config: /config/world_news/cna.yaml
+    name: newstopic
+    task_id: cna-newstopic
