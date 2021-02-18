@@ -5,8 +5,7 @@ dag:
   schedule_interval: '7,36 * * * *'
   max_active_runs: 1
   tags:
-    - news
-    - daum
+    - 다음 뉴스
     - portal
 default_args:
   owner: 'Airflow'

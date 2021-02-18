@@ -6,7 +6,7 @@ dag:
   max_active_runs: 1
   tags:
     - bbs
-    - naver-kin
+    - 네이버 지식인
     - portal
 default_args:
   owner: 'Airflow'

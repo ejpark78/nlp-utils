@@ -5,8 +5,7 @@ dag:
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   tags:
-    - news
-    - korea
+    - 국내 뉴스
     - 아시아경제
 default_args:
   owner: 'Airflow'

@@ -5,8 +5,7 @@ dag:
   schedule_interval: '7,36 * * * *'
   max_active_runs: 1
   tags:
-    - news
-    - reply
+    - 네이버 뉴스 댓글
     - portal
 default_args:
   owner: 'Airflow'

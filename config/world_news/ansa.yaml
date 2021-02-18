@@ -5,8 +5,7 @@ dag:
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   tags:
-    - news
-    - world
+    - 해외 뉴스
     - ansa (이탈리아)
 default_args:
   owner: 'Airflow'
