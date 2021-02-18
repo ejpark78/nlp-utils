@@ -1,0 +1,71 @@
+---
+dag:
+  dag_id: 'xinhuanet'
+  description: 'xinhuanet crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - world
+    - 신화 통신
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: politics
+    config: /config/world_news/xinhuanet.yaml
+    name: politics/rdzt
+    task_id: xinhuanet-politics-rdzt
+  - category: politics
+    config: /config/world_news/xinhuanet.yaml
+    name: politics/szlb
+    task_id: xinhuanet-politics-szlb
+  - category: politics
+    config: /config/world_news/xinhuanet.yaml
+    name: politics/ytgz
+    task_id: xinhuanet-politics-ytgz
+  - category: world
+    config: /config/world_news/xinhuanet.yaml
+    name: world
+    task_id: xinhuanet-world
+  - category: money
+    config: /config/world_news/xinhuanet.yaml
+    name: money
+    task_id: xinhuanet-money
+  - category: food
+    config: /config/world_news/xinhuanet.yaml
+    name: food
+    task_id: xinhuanet-food
+  - category: tech
+    config: /config/world_news/xinhuanet.yaml
+    name: tech
+    task_id: xinhuanet-tech
+  - category: tech
+    config: /config/world_news/xinhuanet.yaml
+    name: tech/info
+    task_id: xinhuanet-tech-info
