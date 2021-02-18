@@ -12,7 +12,6 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
-
 from utils import open_config
 
 log = logging.getLogger(__name__)
@@ -29,15 +28,13 @@ default_args = {
 with DAG(**config['dag'], default_args=default_args) as dag:
     start = DummyOperator(task_id='start', dag=dag)
 
-    category_operator = {}
+    task_group = {}
     for item in config['tasks']:
         name = item['category']
+        if name not in task_group:
+            task_group[name] = []
 
-        if name not in category_operator:
-            category_operator[name] = DummyOperator(task_id=name, dag=dag)
-            start >> category_operator[name]
-
-        category_operator[name] >> KubernetesPodOperator(
+        task_group[name].append(KubernetesPodOperator(
             dag=dag,
             name='task',
             task_id=item['task_id'],
@@ -48,4 +45,10 @@ with DAG(**config['dag'], default_args=default_args) as dag:
                 item['name'],
             ],
             **config['operator']['params']
-        )
+        ))
+
+    for name in task_group:
+        grp_op = DummyOperator(task_id=name, dag=dag)
+
+        start >> grp_op
+        grp_op >> task_group[name]
