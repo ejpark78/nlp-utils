@@ -36,6 +36,8 @@ operator:
     - crawler.web_news.web_news
     - --sleep
     - '10'
+    - --date-range
+    - today
 tasks:
   - category: it
     config: /config/daum-news/it.yaml
