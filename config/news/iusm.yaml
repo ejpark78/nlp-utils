@@ -116,7 +116,7 @@ tasks:
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/김세진의 영화읽기
-    task_id: iusm-movie
+    task_id: iusm-opinion-movie
   - category: opinion
     config: /config/news/iusm.yaml
     name: 오피니언/기타
@@ -148,7 +148,7 @@ tasks:
   - category: politics
     config: /config/news/iusm.yaml
     name: 정치/지방의회
-    task_id: iusm-politics
+    task_id: iusm-politics-a
   - category: politics
     config: /config/news/iusm.yaml
     name: 정치/국회·정당
@@ -168,11 +168,11 @@ tasks:
   - category: politics
     config: /config/news/iusm.yaml
     name: 정치/선거
-    task_id: iusm-politics
+    task_id: iusm-politics-b
   - category: politics
     config: /config/news/iusm.yaml
     name: 정치/기타
-    task_id: iusm-politics
+    task_id: iusm-politics-c
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/기업
@@ -192,7 +192,7 @@ tasks:
   - category: estate
     config: /config/news/iusm.yaml
     name: 경제/건설·부동산
-    task_id: iusm-estate
+    task_id: iusm-estate-a
   - category: economy
     config: /config/news/iusm.yaml
     name: 경제/해운·항만
@@ -268,7 +268,7 @@ tasks:
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/영화
-    task_id: iusm-movie
+    task_id: iusm-movie-a
   - category: culture
     config: /config/news/iusm.yaml
     name: 문화/울산맛집
@@ -468,7 +468,7 @@ tasks:
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/영화
-    task_id: iusm-movie
+    task_id: iusm-movie-b
   - category: entertainment
     config: /config/news/iusm.yaml
     name: 연예/음악
@@ -540,7 +540,7 @@ tasks:
   - category: special
     config: /config/news/iusm.yaml
     name: 기획/부동산
-    task_id: iusm-estate
+    task_id: iusm-estate-b
   - category: special
     config: /config/news/iusm.yaml
     name: 기획/해오름 문화유산탐방
