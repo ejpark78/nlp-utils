@@ -36,6 +36,10 @@ operator:
     - crawler.world_news.ap_news
     - --sleep
     - '5'
+    - --date-range
+    - today
+    - --mapping
+    - /config/news/mapping.yaml
 tasks:
   - category: politics
     config: /config/world_news/ap_news.yaml

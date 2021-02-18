@@ -36,6 +36,10 @@ operator:
     - crawler.web_news.web_news
     - --sleep
     - '5'
+    - --date-range
+    - today
+    - --mapping
+    - /config/news/mapping.yaml
 tasks:
   - category: administration
     config: /config/news/jbdomin.yaml
