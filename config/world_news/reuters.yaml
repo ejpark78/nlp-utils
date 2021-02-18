@@ -1,0 +1,67 @@
+---
+dag:
+  dag_id: 'reuters'
+  description: 'reuters crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  tags:
+    - news
+    - world
+    - 로히터 통신
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+tasks:
+  - category: worldnews
+    config: /config/world_news/reuters.yaml
+    name: worldnews
+    task_id: reuters-worldnews
+  - category: finance
+    config: /config/world_news/reuters.yaml
+    name: finance
+    task_id: reuters-finance
+  - category: markets
+    config: /config/world_news/reuters.yaml
+    name: markets
+    task_id: reuters-markets
+  - category: breakingviews
+    config: /config/world_news/reuters.yaml
+    name: breakingviews
+    task_id: reuters-breakingviews
+  - category: technology
+    config: /config/world_news/reuters.yaml
+    name: technology
+    task_id: reuters-technology
+  - category: lifestyle
+    config: /config/world_news/reuters.yaml
+    name: lifestyle
+    task_id: reuters-lifestyle
+  - category: pictures
+    config: /config/world_news/reuters.yaml
+    name: pictures
+    task_id: reuters-pictures
