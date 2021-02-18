@@ -68,7 +68,7 @@ tasks:
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/정치종합
-    task_id: jemin-total
+    task_id: jemin-politics-total
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/행정
@@ -76,7 +76,7 @@ tasks:
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/제주도의회
-    task_id: jemin-politics
+    task_id: jemin-politics-a
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/청와대·국회
@@ -88,11 +88,11 @@ tasks:
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/선거
-    task_id: jemin-politics
+    task_id: jemin-politics-b
   - category: politics
     config: /config/news/jemin.yaml
     name: 정치/코로나 동선
-    task_id: jemin-politics
+    task_id: jemin-politics-c
   - category: economy
     config: /config/news/jemin.yaml
     name: 경제/경제종합
@@ -180,7 +180,7 @@ tasks:
   - category: sports
     config: /config/news/jemin.yaml
     name: 스포츠/레져/스포츠종합
-    task_id: jemin-total
+    task_id: jemin-sports-total
   - category: sports
     config: /config/news/jemin.yaml
     name: 스포츠/레져/축구
