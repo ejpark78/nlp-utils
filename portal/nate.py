@@ -5,50 +5,19 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import logging
-from datetime import timedelta
-
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-from airflow.models import DAG
+# from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.utils.dates import days_ago
-from utils import open_config
+from utils import build_portal_dags
 
-log = logging.getLogger(__name__)
+filename = 'config/portal/nate.yaml'
+dag, task_group = build_portal_dags(filename=filename)
 
-config = open_config(filename='config/portal/nate.yaml')
+group_list = []
+for name in task_group:
+    grp = DummyOperator(task_id=name, dag=dag)
+    grp.set_downstream(task_or_task_list=task_group[name])
 
-default_args = {
-    **config['default_args'],
-    'start_date': days_ago(n=1),
-    'retry_delay': timedelta(minutes=10),
-    'execution_timeout': timedelta(hours=1)
-}
+    group_list.append(grp)
 
-with DAG(**config['dag'], default_args=default_args) as dag:
-    start = DummyOperator(task_id='start', dag=dag)
-
-    task_group = {}
-    for item in config['tasks']:
-        name = item['category']
-        if name not in task_group:
-            task_group[name] = []
-
-        task_group[name].append(KubernetesPodOperator(
-            dag=dag,
-            name='task',
-            task_id=item['task_id'],
-            arguments=config['operator']['args'] + [
-                '--config',
-                item['config'],
-                '--sub-category',
-                item['name'],
-            ],
-            **config['operator']['params']
-        ))
-
-    for name in task_group:
-        grp_op = DummyOperator(task_id=name, dag=dag)
-
-        start >> grp_op
-        grp_op >> task_group[name]
+start = DummyOperator(task_id='start', dag=dag)
+start.set_downstream(task_or_task_list=group_list)
