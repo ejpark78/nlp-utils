@@ -3,8 +3,8 @@ dag:
   dag_id: 'daum'
   description: 'daum crawler'
   schedule_interval: '7,36 * * * *'
-  concurrency: 64
-  max_active_runs: 64
+  concurrency: 1
+  max_active_runs: 1
   tags:
     - 다음 뉴스
     - portal
