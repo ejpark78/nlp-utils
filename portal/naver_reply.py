@@ -11,7 +11,6 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
-
 from utils import open_config
 
 config = open_config(filename='config/portal/naver-reply.yaml')
@@ -24,13 +23,15 @@ default_args = {
 }
 
 with DAG(**config['dag'], default_args=default_args) as dag:
-    start = DummyOperator(task_id='start', dag=dag)
-
+    task_list = []
     for item in config['tasks']:
-        start >> KubernetesPodOperator(
+        task_list.append(KubernetesPodOperator(
             dag=dag,
             name='task',
             task_id=item['task_id'],
             arguments=config['operator']['args'] + item['args'],
             **config['operator']['params']
-        )
+        ))
+
+    start = DummyOperator(task_id='start', dag=dag)
+    start >> task_list
