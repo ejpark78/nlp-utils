@@ -31,7 +31,10 @@ def build_portal_dags(filename: str) -> (DAG, dict):
         **config['default_args'],
         'start_date': days_ago(n=1),
         'retry_delay': timedelta(minutes=10),
-        'execution_timeout': timedelta(hours=1)
+        'execution_timeout': timedelta(hours=1),
+        'concurrency': 128,
+        'max_active_runs': 128,
+        'task_concurrency': 128,
     })
 
     task_group = {}
