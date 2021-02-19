@@ -25,7 +25,7 @@ def open_config(filename: str) -> dict:
         return dict(data)
 
 
-def build_portal_dags(filename: str) -> None:
+def build_portal_dags(filename: str):
     config = open_config(filename=filename)
 
     default_args = {
@@ -36,16 +36,11 @@ def build_portal_dags(filename: str) -> None:
     }
 
     with DAG(**config['dag'], default_args=default_args) as dag:
-        start = DummyOperator(task_id='start', dag=dag)
-
         task_group = {}
-        category_group = {}
         for item in config['tasks']:
             name = item['category']
             if name not in task_group:
                 task_group[name] = []
-
-                category_group[name] = DummyOperator(task_id=name, dag=dag)
 
             task_group[name].append(KubernetesPodOperator(
                 dag=dag,
@@ -60,8 +55,4 @@ def build_portal_dags(filename: str) -> None:
                 **config['operator']['params']
             ))
 
-        start >> category_group.values()
-        for name in task_group:
-            category_group[name] >> task_group[name]
-
-    return
+    return dag, task_group
