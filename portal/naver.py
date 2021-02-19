@@ -29,10 +29,13 @@ with DAG(**config['dag'], default_args=default_args) as dag:
     start = DummyOperator(task_id='start', dag=dag)
 
     task_group = {}
+    category_group = {}
     for item in config['tasks']:
         name = item['category']
         if name not in task_group:
             task_group[name] = []
+
+            category_group[name] = DummyOperator(task_id=name, dag=dag)
 
         task_group[name].append(KubernetesPodOperator(
             dag=dag,
@@ -47,8 +50,6 @@ with DAG(**config['dag'], default_args=default_args) as dag:
             **config['operator']['params']
         ))
 
+    start >> category_group.values()
     for name in task_group:
-        grp_op = DummyOperator(task_id=name, dag=dag)
-
-        start >> grp_op
-        grp_op >> task_group[name]
+        category_group[name] >> task_group[name]
