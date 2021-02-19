@@ -4,7 +4,7 @@ dag:
   description: 'naver crawler'
   schedule_interval: '7,36 * * * *'
   concurrency: 8
-  max_active_runs: 1
+  max_active_runs: 8
   tags:
     - 네이버 뉴스
     - portal
