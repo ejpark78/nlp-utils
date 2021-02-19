@@ -3,7 +3,7 @@ dag:
   dag_id: 'naver-kin'
   description: 'naver-kin crawler'
   schedule_interval: '0,30 * * * *'
-  concurrency: 1
+  concurrency: 8
   max_active_runs: 1
   tags:
     - 게시판
