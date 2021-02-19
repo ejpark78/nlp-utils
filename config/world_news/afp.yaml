@@ -4,6 +4,7 @@ dag:
   description: 'afp crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+  concurrency: 64
   tags:
     - 해외 뉴스
     - AFP(프랑스)

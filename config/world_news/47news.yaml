@@ -4,6 +4,7 @@ dag:
   description: '47news crawler'
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
+  concurrency: 64
   tags:
     - 해외 뉴스
     - 교도통신 연합
