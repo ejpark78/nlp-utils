@@ -40,35 +40,35 @@ operator:
     - --mapping
     - /config/news/mapping.yaml
 tasks:
-  - category: politics
+  - category: group1
     config: /config/news/asiae.yaml
     name: 정치/전체뉴스
     task_id: asiae-politics
-  - category: economy
+  - category: group1
     config: /config/news/asiae.yaml
     name: 경제/전체뉴스
     task_id: asiae-economy
-  - category: industry
+  - category: group1
     config: /config/news/asiae.yaml
     name: 산업/IT/전체뉴스
     task_id: asiae-industry
-  - category: stock
+  - category: group1
     config: /config/news/asiae.yaml
     name: 증권/전체뉴스
     task_id: asiae-stock
-  - category: company
+  - category: group1
     config: /config/news/asiae.yaml
     name: 기업분석/전체
     task_id: asiae-company
-  - category: estate
+  - category: group1
     config: /config/news/asiae.yaml
     name: 부동산/전체뉴스
     task_id: asiae-estate
-  - category: world
+  - category: group1
     config: /config/news/asiae.yaml
     name: 국제/전체뉴스
     task_id: asiae-world
-  - category: society
+  - category: group1
     config: /config/news/asiae.yaml
     name: 사회/전체뉴스
     task_id: asiae-society
@@ -84,7 +84,7 @@ tasks:
     config: /config/news/asiae.yaml
     name: 라이프/여행·레저
     task_id: asiae-life-travel
-  - category: live
+  - category: life
     config: /config/news/asiae.yaml
     name: 라이프/공연·전시
     task_id: asiae-live
@@ -108,7 +108,7 @@ tasks:
     config: /config/news/asiae.yaml
     name: 연예/스포츠/전체뉴스
     task_id: asiae-sports
-  - category: golf
+  - category: sports
     config: /config/news/asiae.yaml
     name: 골프/전체뉴스
     task_id: asiae-golf
