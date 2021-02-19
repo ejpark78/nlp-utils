@@ -3,7 +3,8 @@ dag:
   dag_id: 'nate'
   description: 'nate crawler'
   schedule_interval: '7,36 * * * *'
-  max_active_runs: 1
+  concurrency: 64
+  max_active_runs: 64
   tags:
     - 네이트 뉴스
     - portal

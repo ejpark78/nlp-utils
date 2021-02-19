@@ -3,7 +3,8 @@ dag:
   dag_id: 'naver-reply'
   description: 'naver-reply crawler'
   schedule_interval: '7,36 * * * *'
-  max_active_runs: 1
+  concurrency: 64
+  max_active_runs: 64
   tags:
     - 네이버 뉴스 댓글
     - portal

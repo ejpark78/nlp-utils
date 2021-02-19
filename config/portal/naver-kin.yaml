@@ -3,7 +3,8 @@ dag:
   dag_id: 'naver-kin'
   description: 'naver-kin crawler'
   schedule_interval: '0,30 * * * *'
-  max_active_runs: 1
+  concurrency: 64
+  max_active_runs: 64
   tags:
     - 게시판
     - 네이버 지식인

@@ -5,12 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from datetime import timedelta
 from os import getenv
+
+import yaml
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
-import yaml
-from datetime import timedelta
 
 
 def open_config(filename: str) -> dict:
@@ -27,15 +28,15 @@ def open_config(filename: str) -> dict:
 def build_portal_dags(filename: str) -> (DAG, dict):
     config = open_config(filename=filename)
 
-    dag = DAG(**config['dag'], default_args={
-        **config['default_args'],
-        'start_date': days_ago(n=1),
-        'retry_delay': timedelta(minutes=10),
-        'execution_timeout': timedelta(hours=1),
-        'concurrency': 128,
-        'max_active_runs': 128,
-        'task_concurrency': 128,
-    })
+    dag = DAG(
+        **config['dag'],
+        default_args={
+            **config['default_args'],
+            'start_date': days_ago(n=1),
+            'retry_delay': timedelta(minutes=10),
+            'execution_timeout': timedelta(hours=1),
+        }
+    )
 
     task_group = {}
     for item in config['tasks']:
