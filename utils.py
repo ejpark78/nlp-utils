@@ -28,31 +28,30 @@ def open_config(filename: str) -> dict:
 def build_portal_dags(filename: str):
     config = open_config(filename=filename)
 
-    default_args = {
+    dag = DAG(**config['dag'], default_args={
         **config['default_args'],
         'start_date': days_ago(n=1),
         'retry_delay': timedelta(minutes=10),
         'execution_timeout': timedelta(hours=1)
-    }
+    })
 
-    with DAG(**config['dag'], default_args=default_args) as dag:
-        task_group = {}
-        for item in config['tasks']:
-            name = item['category']
-            if name not in task_group:
-                task_group[name] = []
+    task_group = {}
+    for item in config['tasks']:
+        name = item['category']
+        if name not in task_group:
+            task_group[name] = []
 
-            task_group[name].append(KubernetesPodOperator(
-                dag=dag,
-                name='task',
-                task_id=item['task_id'],
-                arguments=config['operator']['args'] + [
-                    '--config',
-                    item['config'],
-                    '--sub-category',
-                    item['name'],
-                ],
-                **config['operator']['params']
-            ))
+        task_group[name].append(KubernetesPodOperator(
+            dag=dag,
+            name='task',
+            task_id=item['task_id'],
+            arguments=config['operator']['args'] + [
+                '--config',
+                item['config'],
+                '--sub-category',
+                item['name'],
+            ],
+            **config['operator']['params']
+        ))
 
     return dag, task_group
