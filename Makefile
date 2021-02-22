@@ -42,4 +42,13 @@ uninstall:
 clean:
 	rm -rf build dist crawler.egg-info
 
+.ONESHELL:
+airflow-env:
+	export AIRFLOW_HOME=$(shell pwd)/airflow
+	export AIRFLOW__CORE__LOAD_EXAMPLES=False
+	export AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT=$(shell pwd)
+	export AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH=dags
+	export AIRFLOW_DAGS_FOLDER=$(shell pwd)/dags
+
+
 # pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

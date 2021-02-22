@@ -118,6 +118,15 @@ jupyter: dev
 		.
 
 .ONESHELL:
+k9s:
+	docker build \
+		$(DOCKER_LABEL) \
+		$(DOCKER_BUILD_OPT) \
+		-t $(IMAGE):k9s \
+		-f k9s/Dockerfile \
+		.
+
+.ONESHELL:
 live: build
 	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):live
 
