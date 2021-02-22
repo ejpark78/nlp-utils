@@ -168,7 +168,7 @@ tasks:
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/공연·전시
-    task_id: joongdo-culture
+    task_id: joongdo-culture-a
   - category: movie
     config: /config/news/joongdo.yaml
     name: 문화/영화·비디오
@@ -176,7 +176,7 @@ tasks:
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/문화·출판
-    task_id: joongdo-culture
+    task_id: joongdo-culture-book
   - category: living
     config: /config/news/joongdo.yaml
     name: 문화/여성·생활
@@ -188,23 +188,23 @@ tasks:
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/문화 일반
-    task_id: joongdo-culture
+    task_id: joongdo-culture-etc
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/문예공론
-    task_id: joongdo-culture
+    task_id: joongdo-culture-issue
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/사자성어는 삶의 이음매
-    task_id: joongdo-culture
+    task_id: joongdo-culture-life
   - category: culture
     config: /config/news/joongdo.yaml
     name: 문화/장상현의 재미있는 고사성어
-    task_id: joongdo-culture
+    task_id: joongdo-culture-c
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/인터뷰
-    task_id: joongdo-people
+    task_id: joongdo-people-a
   - category: person
     config: /config/news/joongdo.yaml
     name: 사람들/새인물
@@ -212,51 +212,51 @@ tasks:
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/인사
-    task_id: joongdo-people
+    task_id: joongdo-people-b
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/동정
-    task_id: joongdo-people
+    task_id: joongdo-people-c
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/알림
-    task_id: joongdo-people
+    task_id: joongdo-people-d
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/부고
-    task_id: joongdo-people
+    task_id: joongdo-people-e
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/뉴스
-    task_id: joongdo-people
+    task_id: joongdo-people-f
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/社告
-    task_id: joongdo-people
+    task_id: joongdo-people-g
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/결혼
-    task_id: joongdo-people
+    task_id: joongdo-people-h
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/내방
-    task_id: joongdo-people
+    task_id: joongdo-people-i
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/바로잡습니다
-    task_id: joongdo-people
+    task_id: joongdo-people-j
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/다문화 신문
-    task_id: joongdo-people
+    task_id: joongdo-people-k
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/사회복지신문
-    task_id: joongdo-people
+    task_id: joongdo-people-l
   - category: people
     config: /config/news/joongdo.yaml
     name: 사람들/실버라이프
-    task_id: joongdo-people
+    task_id: joongdo-people-m
   - category: special
     config: /config/news/joongdo.yaml
     name: 기획/연재/중도초대석

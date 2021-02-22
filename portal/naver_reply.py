@@ -5,33 +5,23 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from datetime import timedelta
-
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-from airflow.models import DAG
+# from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.utils.dates import days_ago
-from utils import open_config
 
-config = open_config(filename='config/portal/naver-reply.yaml')
+from crawler_dag_builder import CrawlerDagBuilder
 
-default_args = {
-    **config['default_args'],
-    'start_date': days_ago(n=1),
-    'retry_delay': timedelta(minutes=10),
-    'execution_timeout': timedelta(hours=1)
-}
+filename = 'config/portal/naver-reply.yaml'
+dag, task_group = CrawlerDagBuilder().build(filename=filename)
 
-with DAG(**config['dag'], default_args=default_args) as dag:
-    task_list = []
-    for item in config['tasks']:
-        task_list.append(KubernetesPodOperator(
-            dag=dag,
-            name='task',
-            task_id=item['task_id'],
-            arguments=config['operator']['args'] + item['args'],
-            **config['operator']['params']
-        ))
+start = DummyOperator(task_id='start', dag=dag)
 
-    start = DummyOperator(task_id='start', dag=dag)
-    start >> task_list
+group_list = []
+for name in task_group:
+    grp = DummyOperator(task_id=name, dag=dag)
+
+    prev = start
+    for task in task_group[name]:
+        grp.set_downstream(task_or_task_list=task)
+        prev = task
+
+    group_list.append(grp)

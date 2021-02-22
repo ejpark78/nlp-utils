@@ -37,11 +37,19 @@ operator:
     - '5'
     - --overwrite
 tasks:
-  - config: /config/bbs/ruliweb.yaml
+  - category: ruliweb
+    name: ruliweb
+    config: /config/bbs/ruliweb.yaml
     task_id: ruliweb
-  - config: /config/bbs/mlbpark-bullpen.yaml
+  - category: mlbpark
+    name: mlbpark
+    config: /config/bbs/mlbpark-bullpen.yaml
     task_id: mlbpark-bullpen
-  - config: /config/bbs/mlbpark-kbo.yaml
+  - category: mlbpark
+    name: mlbpark
+    config: /config/bbs/mlbpark-kbo.yaml
     task_id: mlbpark-kbo
-  - config: /config/bbs/mlbpark-mlb.yaml
+  - category: mlbpark
+    name: mlbpark
+    config: /config/bbs/mlbpark-mlb.yaml
     task_id: mlbpark-mlb

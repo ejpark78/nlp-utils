@@ -7,10 +7,11 @@ from __future__ import print_function
 
 # from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from utils import build_news_dags_with_group
+
+from crawler_dag_builder import CrawlerDagBuilder
 
 filename = 'config/news/ajunews.yaml'
-dag, task_group = build_news_dags_with_group(filename=filename)
+dag, task_group = CrawlerDagBuilder().build(filename=filename)
 
 start = DummyOperator(task_id='start', dag=dag)
 

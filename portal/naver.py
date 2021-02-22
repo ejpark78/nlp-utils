@@ -7,10 +7,11 @@ from __future__ import print_function
 
 # from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from utils import build_portal_dags
+
+from crawler_dag_builder import CrawlerDagBuilder
 
 filename = 'config/portal/naver.yaml'
-dag, task_group = build_portal_dags(filename=filename)
+dag, task_group = CrawlerDagBuilder().build(filename=filename)
 
 group_list = []
 for name in task_group:

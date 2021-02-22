@@ -38,22 +38,30 @@ operator:
     - --sleep
     - '10'
 tasks:
-  - task_id: question-list
+  - category: naver-kin
+    name: question-list
+    task_id: question-list
     args:
       - "--question-list"
       - "--config"
       - "/config/naver-kin/kin.yaml"
-  - task_id: answer-list
+  - category: naver-kin
+    name: answer-list
+    task_id: answer-list
     args:
       - "--answer-list"
       - "--config"
       - "/config/naver-kin/kin.yaml"
-  - task_id: detail-question
+  - category: naver-kin
+    name: detail-question
+    task_id: detail-question
     args:
       - "--question"
       - "--config"
       - "/config/naver-kin/kin.yaml"
-  - task_id: detail-answer
+  - category: naver-kin
+    name: detail-answer
+    task_id: detail-answer
     args:
       - "--answer"
       - "--config"

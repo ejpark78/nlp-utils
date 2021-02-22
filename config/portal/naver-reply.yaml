@@ -37,39 +37,57 @@ operator:
     - --sleep
     - '10'
 tasks:
-  - task_id: politics
+  - category: naver-reply
+    name: politics
+    task_id: politics
     args:
       - "--config"
       - "/config/naver-news-reply//politics-reply.yaml"
-  - task_id: society
+  - category: naver-reply
+    name: society
+    task_id: society
     args:
       - "--config"
       - "/config/naver-news-reply//society-reply.yaml"
-  - task_id: tv
+  - category: naver-reply
+    name: tv
+    task_id: tv
     args:
       - "--config"
       - "/config/naver-news-reply//tv-reply.yaml"
-  - task_id: economy
+  - category: naver-reply
+    name: economy
+    task_id: economy
     args:
       - "--config"
       - "/config/naver-news-reply//economy-reply.yaml"
-  - task_id: international
+  - category: naver-reply
+    name: international
+    task_id: international
     args:
       - "--config"
       - "/config/naver-news-reply//international-reply.yaml"
-  - task_id: it
+  - category: naver-reply
+    name: it
+    task_id: it
     args:
       - "--config"
       - "/config/naver-news-reply//it-reply.yaml"
-  - task_id: living
+  - category: naver-reply
+    name: living
+    task_id: living
     args:
       - "--config"
       - "/config/naver-news-reply//living-reply.yaml"
-  - task_id: opinion
+  - category: naver-reply
+    name: opinion
+    task_id: opinion
     args:
       - "--config"
       - "/config/naver-news-reply//opinion-reply.yaml"
-  - task_id: sports
+  - category: naver-reply
+    name: sports
+    task_id: sports
     args:
       - "--config"
       - "/config/naver-news-reply//sports-reply.yaml"
