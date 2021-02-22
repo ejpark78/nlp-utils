@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=registry.nlp-utils/base/crawler:latest
+ARG BASE_IMAGE=registry.nlp-utils/crawler:base
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
@@ -32,17 +32,36 @@ ENV GIT_TAG=${GIT_TAG}
 ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
 ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
 
+RUN echo && echo "크롤러 설치 (git)" \
+     && git clone -b master http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
+     && cd /tmp/crawler \
+     && pip3 install -r requirements.txt \
+     && python3 setup.py install \
+     && pip3 show crawler \
+     && rm -rf /tmp/*
+
 RUN echo && echo "크롤러 config 설치" \
     && git clone -b live http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
 
-RUN echo && echo "크롤러 설치 (pypi)" \
-    && pip3 install -U crawler \
-    && pip3 show crawler \
-    && rm -rf /root/.cache
+#RUN echo && echo "크롤러 설치 (pypi)" \
+#    && pip3 install -U crawler \
+#    && pip3 show crawler \
+#    && rm -rf /root/.cache
 
-#RUN echo && echo "크롤러 설치 (git)" \
-#     && pip3 install git+http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git@master \
-#     && pip3 show crawler
+#ENV DEBUG=1
+#
+#RUN mkdir -p /src
+#WORKDIR /src
+#
+#ADD app.tar.gz /src
+#
+#RUN echo && echo "크롤러 설치" \
+#    && pip3 install -r requirements.txt \
+#    && make install \
+#    && echo ${GIT_TAG}.${GIT_COMMIT_COUNT} | tee version \
+#	&& python3 setup.py install \
+#    && mv config /config \
+#    && rm -rf /src
 
 WORKDIR /app
 

@@ -59,29 +59,20 @@ batch: build push
 
 .ONESHELL:
 base:
+	cd base
+
 	docker build \
 		$(MIRROR) \
 		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(BASE_IMAGE):base \
-		-f base/Dockerfile \
+		-f Dockerfile \
 		.
 
 .ONESHELL:
-build:
-	docker build \
-		$(DOCKER_LABEL) \
-		$(DOCKER_ARGS) \
-		$(DOCKER_BUILD_OPT) \
-		-t $(IMAGE):$(IMAGE_TAG) \
-		-f live/Dockerfile \
-		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
-		.
-
-.ONESHELL:
-dev:
+live:
 	cd ../
-	tar cvfz ./docker/app.tar.gz \
+	tar cvfz ./docker/live/app.tar.gz \
 		--exclude=.git* \
 		--exclude=.idea \
 		--exclude=log \
@@ -96,46 +87,47 @@ dev:
 		.
 
 	cd -
+	cd live
+
 	docker build \
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
-		-t $(IMAGE):dev \
-		-f dev/Dockerfile \
+		-t $(IMAGE):live \
+		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
 		.
 
 	rm app.tar.gz
 
 .ONESHELL:
-jupyter: dev
+jupyter: live
+	cd jupyter
+
 	docker build \
 		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):jupyter \
-		-f jupyter/Dockerfile \
+		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):dev \
 		.
 
 .ONESHELL:
-k9s:
+toolbox:
+	cd toolbox
+
 	docker build \
 		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
-		-t $(IMAGE):k9s \
-		-f k9s/Dockerfile \
+		-t $(IMAGE):toolbox \
+		-f Dockerfile \
 		.
 
 .ONESHELL:
-live: build
-	docker tag $(IMAGE):$(IMAGE_TAG) $(IMAGE):live
-
-.ONESHELL:
 push:
-	docker push $(IMAGE):dev
 	docker push $(IMAGE):live
 	docker push $(IMAGE):jupyter
-	docker push $(IMAGE):$(IMAGE_TAG)
+	docker push $(IMAGE):toolbox
 
 .ONESHELL:
 check-ip:
@@ -153,6 +145,14 @@ run:
 		--network host \
 		-e PORT=8888 \
 		$(IMAGE):jupyter
+
+.ONESHELL:
+run-toolbox:
+	docker run \
+		--rm \
+		--name toolbox \
+		--network host \
+		$(IMAGE):toolbox
 
 prune:
 	cat nodes | xargs -I{} ssh {} "hostname ; docker system prune -af"

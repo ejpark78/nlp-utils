@@ -6,6 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
+import re
 import ssl
 import sys
 from argparse import Namespace
@@ -204,6 +205,16 @@ class ElasticSearchUtils(object):
     def get_index_list(self) -> list:
         """모든 인덱스 목록을 반환한다."""
         return [v for v in self.conn.indices.get('*') if v[0] != '.']
+
+    def get_index_size(self):
+        """ 인덱스 수량을 반환한다. """
+        columns = ['index', 'count']
+        params = {'s': 'index', 'h': 'index,docs.count'}
+
+        str_index_size = self.conn.cat.indices(params=params)
+        index_list = [x for x in str_index_size.split('\n') if len(x) > 0 and x[0] != '.']
+
+        return [dict(zip(columns, re.sub(r'\s+', ' ', x).split(' '))) for x in index_list]
 
     def get_column_list(self, index_list: str or list, column_type=None) -> list:
         """index 내의 field 목록을 반환한다."""

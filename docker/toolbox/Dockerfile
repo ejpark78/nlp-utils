@@ -89,8 +89,6 @@ RUN echo && echo "# krew 설치" \
     && kubectl krew install konfig \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# other web tty: https://github.com/butlerx/wetty
-
 RUN echo && echo "# ttyd 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
@@ -114,9 +112,13 @@ RUN echo && echo "# ssh kubeconfig 설치" \
     && git clone http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
     && git clone http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube
 
-ADD k9s/zshrc .zshrc
+ADD zshrc .zshrc
 
-CMD ["ttyd", "-p", "8080", "zsh"]
+CMD ["ttyd", "-p", "80", "zsh"]
 
 #  && adduser --quiet --disabled-password --shell /bin/zsh --home /home/$USER_NAME --gecos "User" $USER_NAME
 #  && echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd && usermod -aG sudo $USER_NAME
+
+# other web tty: https://github.com/butlerx/wetty
+# Wetty: Node based web terminal (SSH/login): https://github.com/butlerx/wetty
+# GoTTY: Go based web terminal: https://github.com/yudai/gotty
