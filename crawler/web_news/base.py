@@ -65,6 +65,7 @@ class WebNewsBase(object):
         self.page_range = None
 
         self.cache = SimpleCache(threshold=200, default_timeout=600)
+        self.cache_skip_count = 0
 
         self.logger = Logger()
 
@@ -294,7 +295,7 @@ class WebNewsBase(object):
     def doc_exists(index: str, doc_id: str, es: ElasticSearchUtils) -> (bool, str):
         resp = es.conn.search(
             index=index,
-            _source=['url', 'html'],
+            _source=['url', 'raw'],
             body={
                 'query': {
                     'ids': {
@@ -308,10 +309,10 @@ class WebNewsBase(object):
             return False, None
 
         for item in resp['hits']['hits']:
-            if 'html' not in item['_source']:
+            if 'raw' not in item['_source']:
                 return False, item['_index']
 
-            if item['_source']['html'] != '':
+            if item['_source']['raw'] != '':
                 return True, item['_index']
 
         return False, None
@@ -323,6 +324,8 @@ class WebNewsBase(object):
 
         # 캐쉬에 저장된 문서가 있는지 조회
         if self.cache.has(key=doc_id) is True:
+            self.cache_skip_count += 1
+
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '중복 문서, 건너뜀',
@@ -336,11 +339,6 @@ class WebNewsBase(object):
 
         if is_exists is False:
             return False, doc_index
-
-        # html 필드가 있는지 조회
-        # doc = es.conn.get(index=index, id=doc_id, _source=['html'])
-        # if 'html' not in doc['_source']:
-        #     return False, index
 
         # 댓글 정보 추가 확인
         if reply_info is not None:
@@ -356,8 +354,6 @@ class WebNewsBase(object):
 
             if doc[field_name] != reply_info['count']:
                 return False, None
-
-        self.cache.set(key=doc_id, value=True)
 
         self.logger.info(msg={
             'level': 'INFO',

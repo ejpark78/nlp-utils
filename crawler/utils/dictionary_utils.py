@@ -364,7 +364,6 @@ class DictionaryUtils(object):
         return
 
     def is_skip(self, doc, columns):
-        """ """
         text = '\t'.join([doc[col] for col in columns])
         if text in self.cache:
             self.skip += 1

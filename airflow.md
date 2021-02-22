@@ -18,11 +18,12 @@ export AIRFLOW_DAGS_FOLDER=$(pwd)/dags
 rm airflow/airflow.db
 airflow db init
 
-echo '\n\n' | airflow users create \
+airflow users create \
     --username admin \
     --lastname 박 \
     --firstname 은진 \
     --role Admin \
+    --use-random-password \
     --email ejpark@ncsoft.com
 
 airflow webserver --port 8080
