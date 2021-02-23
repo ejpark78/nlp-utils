@@ -8,14 +8,33 @@ ls:
 	helm ls -A
 
 .ONESHELL:
+install:
+#	helm install ap-news ./news -f news/ap_news.yaml -n dev
+#
+#	helm install world-news ./news -f news/world.yaml -n dev
+#	helm install korea-news ./news -f news/korea.yaml -n dev
+#
+#	stern '' -n dev
+
+	helm install bbs ./portal -f portal/bbs.yaml -n dev
+
+	helm install daum-news ./portal -f portal/daum-news.yaml -n dev
+	helm install nate-news ./portal -f portal/nate-news.yaml -n dev
+	helm install naver-news ./portal -f portal/naver-news.yaml -n dev
+
+	helm install naver-kin ./portal -f portal/naver-kin.yaml -n dev
+	helm install naver-reply ./portal -f portal/naver-reply.yaml -n dev
+
+	helm list -A
+
+.ONESHELL:
 upgrade:
-	helm upgrade dev ./news -f news/dev.yaml -n dev
 	helm upgrade ap-news ./news -f news/ap_news.yaml -n dev
 
 	helm upgrade world-news ./news -f news/world.yaml -n dev
-	helm upgrade korea-news ./news -f news/korea.yaml -n korea-news
+	helm upgrade korea-news ./news -f news/korea.yaml -n dev
 
-	helm upgrade bbs ./portal -f portal/bbs.yaml -n bbs
+	helm upgrade bbs ./portal -f portal/bbs.yaml -n dev
 
 	helm upgrade daum-news ./portal -f portal/daum-news.yaml -n dev
 	helm upgrade nate-news ./portal -f portal/nate-news.yaml -n dev
@@ -24,22 +43,15 @@ upgrade:
 	helm upgrade naver-kin ./portal -f portal/naver-kin.yaml -n dev
 	helm upgrade naver-reply ./portal -f portal/naver-reply.yaml -n dev
 
+	helm list -A
+
 .ONESHELL:
-install:
-	helm install dev ./news -f news/dev.yaml -n dev
-	helm install ap-news ./news -f news/ap_news.yaml -n dev
+delete:
+	helm delete ap-news -n dev
+	helm delete world-news -n dev
+	helm delete korea-news -n dev
 
-	helm install world-news ./news -f news/world.yaml -n dev
-	helm install korea-news ./news -f news/korea.yaml -n korea-news
-
-	helm install bbs ./portal -f portal/bbs.yaml -n bbs
-
-	helm install daum-news ./portal -f portal/daum-news.yaml -n dev
-	helm install nate-news ./portal -f portal/nate-news.yaml -n dev
-	helm install naver-news ./portal -f portal/naver-news.yaml -n dev
-
-	helm install naver-kin ./portal -f portal/naver-kin.yaml -n dev
-	helm install naver-reply ./portal -f portal/naver-reply.yaml -n dev
+	#kubectl delete pods --field-selector status.phase!=Running -n dev
 
 .ONESHELL:
 recrawler:

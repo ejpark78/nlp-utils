@@ -46,10 +46,9 @@ args:
 jobs:
   - name: economy
     schedule: "0 * * * *"
-    index: $(INDEX_ECONOMY)
     args:
       - "--config"
-      - "/config/naver/economy.yaml"
+      - "/config/naver-news/economy.yaml"
     subSategory:
       - "경제/증권"
       - "경제/금융"
@@ -62,10 +61,9 @@ jobs:
 
   - name: international
     schedule: "5 * * * *"
-    index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
-      - "/config/naver/international.yaml"
+      - "/config/naver-news/international.yaml"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -75,10 +73,9 @@ jobs:
 
   - name: it
     schedule: "10 * * * *"
-    index: $(INDEX_IT)
     args:
       - "--config"
-      - "/config/naver/it.yaml"
+      - "/config/naver-news/it.yaml"
     subSategory:
       - "IT/모바일"
       - "IT/인터넷/SNS"
@@ -91,10 +88,9 @@ jobs:
 
   - name: living
     schedule: "15 * * * *"
-    index: $(INDEX_LIVING)
     args:
       - "--config"
-      - "/config/naver/living.yaml"
+      - "/config/naver-news/living.yaml"
     subSategory:
       - "생활/건강정보"
       - "생활/자동차시승기"
@@ -110,19 +106,17 @@ jobs:
 
   - name: opinion
     schedule: "20 * * * *"
-    index: $(INDEX_OPINION)
     args:
       - "--config"
-      - "/config/naver/opinion.yaml"
+      - "/config/naver-news/opinion.yaml"
     subSategory:
       - "오피니언"
 
   - name: politics
     schedule: "25 * * * *"
-    index: $(INDEX_POLITICS)
     args:
       - "--config"
-      - "/config/naver/politics.yaml"
+      - "/config/naver-news/politics.yaml"
     subSategory:
       - "정치/청와대"
       - "정치/국회정당"
@@ -133,10 +127,9 @@ jobs:
 
   - name: society
     schedule: "30 * * * *"
-    index: $(INDEX_SOCIETY)
     args:
       - "--config"
-      - "/config/naver/society.yaml"
+      - "/config/naver-news/society.yaml"
     subSategory:
       - "사회/사건사고"
       - "사회/교육"
@@ -151,10 +144,9 @@ jobs:
 
   - name: sports
     schedule: "35 * * * *"
-    index: $(INDEX_SPORTS)
     args:
       - "--config"
-      - "/config/naver/sports.yaml"
+      - "/config/naver-news/sports.yaml"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"
@@ -169,18 +161,16 @@ jobs:
 
   - name: tv
     schedule: "40 * * * *"
-    index: $(INDEX_TV)
     args:
       - "--config"
-      - "/config/naver/tv.yaml"
+      - "/config/naver-news/tv.yaml"
     subSategory:
       - "TV"
 
   - name: weather
     schedule: "45 * * * *"
-    index: $(INDEX_WEATHER)
     args:
       - "--config"
-      - "/config/naver/weather.yaml"
+      - "/config/naver-news/weather.yaml"
     subSategory:
       - "날씨"

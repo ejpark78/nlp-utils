@@ -46,10 +46,9 @@ args:
 jobs:
   - name: economy
     schedule: "0 * * * *"
-    index: $(INDEX_ECONOMY)
     args:
       - "--config"
-      - "/config/nate/economy.yaml"
+      - "/config/nate-news/economy.yaml"
     subSategory:
       - "경제/생활 경제"
       - "경제/부동산"
@@ -61,10 +60,9 @@ jobs:
 
   - name: entertainment
     schedule: "10 * * * *"
-    index: $(INDEX_ENTERTAINMENT)
     args:
       - "--config"
-      - "/config/nate/entertainment.yaml"
+      - "/config/nate-news/entertainment.yaml"
     subSategory:
       - "연예/영화"
       - "연예/연예가 화제"
@@ -73,10 +71,9 @@ jobs:
 
   - name: international
     schedule: "20 * * * *"
-    index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
-      - "/config/nate/international.yaml"
+      - "/config/nate-news/international.yaml"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -87,10 +84,9 @@ jobs:
 
   - name: it
     schedule: "30 * * * *"
-    index: $(INDEX_IT)
     args:
       - "--config"
-      - "/config/nate/it.yaml"
+      - "/config/nate-news/it.yaml"
     subSategory:
       - "IT/과학"
       - "IT/디지털"
@@ -101,10 +97,9 @@ jobs:
 
   - name: politics
     schedule: "40 * * * *"
-    index: $(INDEX_POLITICS)
     args:
       - "--config"
-      - "/config/nate/politics.yaml"
+      - "/config/nate-news/politics.yaml"
     subSategory:
       - "정치/청와대"
       - "정치/국회/정당"
@@ -115,10 +110,9 @@ jobs:
 
   - name: society
     schedule: "50 * * * *"
-    index: $(INDEX_SOCIETY)
     args:
       - "--config"
-      - "/config/nate/society.yaml"
+      - "/config/nate-news/society.yaml"
     subSategory:
       - "사회/사건사고"
       - "사회/교육학교"
@@ -133,10 +127,9 @@ jobs:
 
   - name: sports
     schedule: "55 * * * *"
-    index: $(INDEX_SPORTS)
     args:
       - "--config"
-      - "/config/nate/sports.yaml"
+      - "/config/nate-news/sports.yaml"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"

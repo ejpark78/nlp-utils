@@ -42,6 +42,10 @@ args:
   - "crawler.web_news.web_news"
   - "--sleep"
   - "5"
+  - "--date-range"
+  - "today"
+  - "--mapping"
+  - "/config/news/mapping.yaml"
 
 jobs:
   - name: reuters
@@ -50,8 +54,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/reuters.yaml"
-      - "--date-range"
-      - "today"
 
   - name: upi
     schedule: "7,34 * * * *"
@@ -59,10 +61,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/upi.yaml"
-      - "--date-range"
-      - "today"
-      - "--page-range"
-      - "1~7"
 
   - name: 47news
     schedule: "7,34 * * * *"
@@ -70,8 +68,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/47news.yaml"
-      - "--date-range"
-      - "today"
 
   - name: belga
     schedule: "7,34 * * * *"
@@ -79,8 +75,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/belga.yaml"
-      - "--date-range"
-      - "today"
 
   - name: afp
     schedule: "7,34 * * * *"
@@ -88,8 +82,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/afp.yaml"
-      - "--date-range"
-      - "today"
 
   - name: bbc
     schedule: "7,34 * * * *"
@@ -97,10 +89,6 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/bbc.yaml"
-      - "--date-range"
-      - "today"
-      - "--page-range"
-      - "1~50"
 
   - name: xinhuanet
     schedule: "7,34 * * * *"
@@ -108,5 +96,3 @@ jobs:
     args:
       - "--config"
       - "/config/world_news/xinhuanet.yaml"
-      - "--date-range"
-      - "today"

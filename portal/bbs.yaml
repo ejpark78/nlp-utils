@@ -47,28 +47,24 @@ args:
 jobs:
   - name: mlbpark-kbo
     schedule: "7,34 * * * *"
-    index: $(INDEX_MLBPARK_KBO)
     args:
       - "--config"
       - "/config/bbs/mlbpark-kbo.yaml"
 
   - name: mlbpark-mlb
     schedule: "10,40 * * * *"
-    index: $(INDEX_MLBPARK_MLB)
     args:
       - "--config"
       - "/config/bbs/mlbpark-mlb.yaml"
 
   - name: mlbpark-bullpen
     schedule: "20,50 * * * *"
-    index: $(INDEX_MLBPARK_BULLPEN)
     args:
       - "--config"
       - "/config/bbs/mlbpark-bullpen.yaml"
 
   - name: ruliweb
     schedule: "7,34 * * * *"
-    index: $(INDEX_RULIWEB)
     args:
       - "--config"
       - "/config/bbs/ruliweb.yaml"

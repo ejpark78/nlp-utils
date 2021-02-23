@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: toolbox
+  labels:
+    app: toolbox
+spec:
+  type: LoadBalancer
+  selector:
+    app: toolbox
+  ports:
+    - port: 8081
+      targetPort: 80
+  externalIPs:
+    - 172.19.168.82
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+  labels:
+    app: toolbox
+spec:
+  selector:
+    matchLabels:
+      app: toolbox
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: toolbox
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: registry
+      containers:
+        - name: default
+          image: registry.nlp-utils/crawler:toolbox
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          ports:
+            - containerPort: 80
+          command:
+            - ttyd
+          args:
+            - -p
+            - "80"
+            - zsh
+#            - --ssl
+#            - --ssl-key
+#            - /root/ssl/tls.key
+#            - --ssl-cert
+#            - /root/ssl/tls.crt
+#          volumeMounts:
+#            - name: ssl
+#              mountPath: "/root/ssl"
+#              readOnly: true
+#      volumes:
+#        - name: ssl
+#          secret:
+#            secretName: ncsoft-ssl

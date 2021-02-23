@@ -50,7 +50,7 @@ jobs:
     args:
       - "--question-list"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
 
   - name: answer-list
     schedule: "20 * * * *"
@@ -60,7 +60,7 @@ jobs:
     args:
       - "--answer-list"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
 
   - name: detail-question
     schedule: "40 * * * *"
@@ -70,7 +70,7 @@ jobs:
     args:
       - "--question"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"
 
   - name: detail-answer
     schedule: "50 * * * *"
@@ -80,4 +80,4 @@ jobs:
     args:
       - "--answer"
       - "--config"
-      - "/config/naver/kin.yaml"
+      - "/config/naver-kin/kin.yaml"

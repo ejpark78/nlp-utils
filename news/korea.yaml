@@ -44,6 +44,8 @@ args:
   - "3"
   - "--date-range"
   - "today"
+  - "--mapping"
+  - "/config/news/mapping.yaml"
 
 jobs:
   - name: ajunews
@@ -87,50 +89,30 @@ jobs:
     args:
       - "--config"
       - "/config/news/dailian.yaml"
-      - "--page-range"
-      - "0~5000"
-      - "--page-step"
-      - "100"
 
   - name: donga
     schedule: "7,34 * * * *"
     args:
       - "--config"
       - "/config/news/donga.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
-
-  - name: donga-en
-    schedule: "7,34 * * * *"
-    args:
-      - "--config"
-      - "/config/news/donga-en.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
 
   - name: donga-cn
     schedule: "7,34 * * * *"
     args:
       - "--config"
       - "/config/news/donga-cn.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
+
+  - name: donga-en
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/donga-en.yaml"
 
   - name: donga-jp
     schedule: "7,34 * * * *"
     args:
       - "--config"
       - "/config/news/donga-jp.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
 
   - name: dt
     schedule: "7,34 * * * *"
@@ -174,6 +156,12 @@ jobs:
       - "--config"
       - "/config/news/hani.yaml"
 
+  - name: hani-cn
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hani-cn.yaml"
+
   - name: hani-en
     schedule: "7,34 * * * *"
     args:
@@ -185,20 +173,6 @@ jobs:
     args:
       - "--config"
       - "/config/news/hani-jp.yaml"
-      - "--page-range"
-      - "1~9000"
-      - "--page-step"
-      - "10"
-
-  - name: hani-cn
-    schedule: "7,34 * * * *"
-    args:
-      - "--config"
-      - "/config/news/hani-cn.yaml"
-      - "--page-range"
-      - "1~9000"
-      - "--page-step"
-      - "10"
 
   - name: hankook
     schedule: "7,34 * * * *"
@@ -277,8 +251,6 @@ jobs:
     args:
       - "--config"
       - "/config/news/joins.yaml"
-      - "--page-range"
-      - "1~1500"
 
   - name: joongboo
     schedule: "7,34 * * * *"
@@ -297,8 +269,6 @@ jobs:
     args:
       - "--config"
       - "/config/news/kjdaily.yaml"
-      - "--page-range"
-      - "0~5000"
 
 #  - name: knnews
 #    schedule: "7,34 * * * *"
@@ -335,8 +305,6 @@ jobs:
     args:
       - "--config"
       - "/config/news/newspeppermint.yaml"
-      - "--page-range"
-      - "1~20"
 
   - name: sbs-biz
     schedule: "7,34 * * * *"
@@ -349,10 +317,6 @@ jobs:
     args:
       - "--config"
       - "/config/news/wowtv.yaml"
-      - "--page-range"
-      - "1~2000"
-      - "--page-step"
-      - "20"
 
   - name: yeongnam
     schedule: "7,34 * * * *"

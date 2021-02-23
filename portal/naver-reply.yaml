@@ -46,64 +46,55 @@ args:
 jobs:
   - name: politics
     schedule: "0 * * * *"
-    index: $(INDEX_POLITICS)
     args:
       - "--config"
-      - "/config/naver/politics-reply.yaml"
+      - "/config/naver-news-reply/politics-reply.yaml"
 
   - name: society
     schedule: "5 * * * *"
-    index: $(INDEX_SOCIETY)
     args:
       - "--config"
-      - "/config/naver/society-reply.yaml"
+      - "/config/naver-news-reply/society-reply.yaml"
 
   - name: tv
     schedule: "10 * * * *"
-    index: $(INDEX_TV)
     args:
       - "--config"
-      - "/config/naver/tv-reply.yaml"
+      - "/config/naver-news-reply/tv-reply.yaml"
 
   - name: economy
     schedule: "15 * * * *"
-    index: $(INDEX_ECONOMY)
     args:
       - "--config"
-      - "/config/naver/economy-reply.yaml"
+      - "/config/naver-news-reply/economy-reply.yaml"
 
   - name: international
     schedule: "20 * * * *"
-    index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
-      - "/config/naver/international-reply.yaml"
+      - "/config/naver-news-reply/international-reply.yaml"
 
   - name: it
     schedule: "25 * * * *"
-    index: $(INDEX_IT)
     args:
       - "--config"
-      - "/config/naver/it-reply.yaml"
+      - "/config/naver-news-reply/it-reply.yaml"
 
   - name: living
     schedule: "30 * * * *"
-    index: $(INDEX_LIVING)
     args:
       - "--config"
-      - "/config/naver/living-reply.yaml"
+      - "/config/naver-news-reply/living-reply.yaml"
 
   - name: opinion
     schedule: "35 * * * *"
-    index: $(INDEX_OPINION)
     args:
       - "--config"
-      - "/config/naver/opinion-reply.yaml"
+      - "/config/naver-news-reply/opinion-reply.yaml"
 
   - name: sports
     schedule: "40 * * * *"
-    index: $(INDEX_SPORTS)
     args:
       - "--config"
-      - "/config/naver/sports-reply.yaml"
+      - "/config/naver-news-reply/sports-reply.yaml"
 

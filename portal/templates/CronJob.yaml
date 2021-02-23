@@ -57,8 +57,6 @@ spec:
                     secretKeyRef:
                       name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
                       key: http_auth
-                - name: ELASTIC_SEARCH_INDEX
-                  value: {{ $job.index }}
               envFrom:
                 - configMapRef:
                     name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
@@ -128,8 +126,6 @@ spec:
                     secretKeyRef:
                       name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
                       key: http_auth
-                - name: ELASTIC_SEARCH_INDEX
-                  value: {{ $job.index }}
               envFrom:
                 - configMapRef:
                     name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"

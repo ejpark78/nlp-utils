@@ -46,10 +46,9 @@ args:
 jobs:
   - name: culture
     schedule: "0 * * * *"
-    index: $(INDEX_CULTURE)
     args:
       - "--config"
-      - "/config/daum/culture.yaml"
+      - "/config/daum-news/culture.yaml"
     subSategory:
       - "문화/공연전시"
       - "문화/책"
@@ -65,10 +64,9 @@ jobs:
 
   - name: economy
     schedule: "5 * * * *"
-    index: $(INDEX_ECONOMY)
     args:
       - "--config"
-      - "/config/daum/economy.yaml"
+      - "/config/daum-news/economy.yaml"
     subSategory:
       - "경제/부동산"
       - "경제/생활경제"
@@ -87,10 +85,9 @@ jobs:
 
   - name: international
     schedule: "10 * * * *"
-    index: $(INDEX_INTERNATIONAL)
     args:
       - "--config"
-      - "/config/daum/international.yaml"
+      - "/config/daum-news/international.yaml"
     subSategory:
       - "국제/일본"
       - "국제/중국"
@@ -104,10 +101,9 @@ jobs:
 
   - name: it
     schedule: "15 * * * *"
-    index: $(INDEX_IT)
     args:
       - "--config"
-      - "/config/daum/it.yaml"
+      - "/config/daum-news/it.yaml"
     subSategory:
       - "IT/IT기기"
       - "IT/통신모바일"
@@ -118,10 +114,9 @@ jobs:
 
   - name: opinion
     schedule: "20 * * * *"
-    index: $(INDEX_OPINION)
     args:
       - "--config"
-      - "/config/daum/opinion.yaml"
+      - "/config/daum-news/opinion.yaml"
     subSategory:
       - "칼럼-칼럼"
       - "칼럼-사설"
@@ -131,10 +126,9 @@ jobs:
 
   - name: politics
     schedule: "25 * * * *"
-    index: $(INDEX_POLITICS)
     args:
       - "--config"
-      - "/config/daum/politics.yaml"
+      - "/config/daum-news/politics.yaml"
     subSategory:
       - "정치/행정지자체"
       - "정치/국회정당"
@@ -145,10 +139,9 @@ jobs:
 
   - name: society
     schedule: "30 * * * *"
-    index: $(INDEX_SOCIETY)
     args:
       - "--config"
-      - "/config/daum/society.yaml"
+      - "/config/daum-news/society.yaml"
     subSategory:
       - "사회/사건사고"
       - "사회/충청"
