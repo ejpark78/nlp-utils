@@ -58,14 +58,14 @@ DOCKER_BUILD_OPT += --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
 batch: build push
 
 .ONESHELL:
-base:
-	cd base
+core:
+	cd core
 
 	docker build \
 		$(MIRROR) \
 		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
-		-t $(BASE_IMAGE):base \
+		-t $(BASE_IMAGE):core \
 		-f Dockerfile \
 		.
 
@@ -95,7 +95,7 @@ live:
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):live \
 		-f Dockerfile \
-		--build-arg BASE_IMAGE=$(BASE_IMAGE):base \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		.
 
 	rm app.tar.gz
@@ -109,7 +109,7 @@ jupyter: live
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):jupyter \
 		-f Dockerfile \
-		--build-arg BASE_IMAGE=$(BASE_IMAGE):dev \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		.
 
 .ONESHELL:

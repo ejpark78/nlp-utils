@@ -33,7 +33,7 @@ ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
 ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
 
 RUN echo && echo "크롤러 설치 (git)" \
-     && git clone -b master http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
+     && git clone -b live http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
      && cd /tmp/crawler \
      && pip3 install -r requirements.txt \
      && python3 setup.py install \

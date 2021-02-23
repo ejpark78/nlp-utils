@@ -678,7 +678,16 @@ class WebNewsCrawler(WebNewsBase):
 
         dt = doc['date']
         if isinstance(doc['date'], str):
-            dt = parse_date(doc['date'])
+            try:
+                dt = parse_date(doc['date'])
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': '날짜 변환 오류',
+                    'date': doc['date'],
+                    'exception': str(e),
+                })
+                return True
 
         today = datetime.now(self.timezone)
         if dt.strftime('%Y%m%d') != today.strftime('%Y%m%d'):
