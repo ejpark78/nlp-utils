@@ -320,6 +320,15 @@ class WebNewsCrawler(WebNewsBase):
         doc = self.merge_category(doc=doc, es=es)
 
         # 문서 저장
+        if '_id' not in doc:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'doc_id 가 없음. 저장하지 않음',
+                'url': doc['url'],
+                **doc
+            })
+            return doc
+
         doc_id = doc['_id']
 
         es.save_document(document=doc, delete=False)

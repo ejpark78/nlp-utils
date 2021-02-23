@@ -54,6 +54,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && echo && echo "# oh my zsh 설치" \
     && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
     && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
+    && echo && echo "# build library 삭제" \
+    && apt purge -yq software-properties-common \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -105,6 +107,8 @@ RUN echo && echo "# ttyd 설치" \
     && cmake .. \
     && make \
     && make install \
+    && echo && echo "# build library 삭제" \
+    && apt purge -yq build-essential cmake \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
