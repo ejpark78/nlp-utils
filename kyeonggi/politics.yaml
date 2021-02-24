@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-kyeonggi-politics-{year}
+- index: raw-kyeonggi-{year}
   article:
     document_id:
       frame: '{idxno}'

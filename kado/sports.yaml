@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-kado-sports-{year}
+- index: raw-kado-{year}
   article:
     document_id:
       frame: '{idxno}'

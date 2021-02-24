@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-kwnews-living-{year}
+- index: raw-kwnews-{year}
   article:
     document_id:
       frame: '{aid}'

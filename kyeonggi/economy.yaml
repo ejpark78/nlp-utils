@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-kyeonggi-economy-{year}
+- index: raw-kyeonggi-{year}
   article:
     document_id:
       frame: '{idxno}'

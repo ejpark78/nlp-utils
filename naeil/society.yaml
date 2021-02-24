@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: crawler-naeil-society-{year}
+- index: raw-naeil-{year}
   article:
     document_id:
       frame: '{id_art}'
