@@ -114,11 +114,16 @@ RUN echo && echo "# ttyd 설치" \
 
 RUN echo && echo "# ssh kubeconfig 설치" \
     && git clone http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
-    && git clone http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube
+    && git clone http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube \
+    && chmod 600 ~/.ssh && chmod -R 400 ~/.ssh/*
 
 ADD zshrc .zshrc
+ADD config .ssh/config
 
-CMD ["ttyd", "-p", "80", "zsh"]
+ENV PORT=80
+ENV USER_AUTH=admin:searchT2020
+
+CMD ["ttyd", "--port", "${PORT}", "--credential", "${USER_AUTH}", "zsh"]
 
 #  && adduser --quiet --disabled-password --shell /bin/zsh --home /home/$USER_NAME --gecos "User" $USER_NAME
 #  && echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd && usermod -aG sudo $USER_NAME
