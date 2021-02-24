@@ -9,12 +9,10 @@ ls:
 
 .ONESHELL:
 install:
-#	helm install ap-news ./news -f news/ap_news.yaml -n dev
-#
-#	helm install world-news ./news -f news/world.yaml -n dev
-#	helm install korea-news ./news -f news/korea.yaml -n dev
-#
-#	stern '' -n dev
+	helm install ap-news ./news -f news/ap_news.yaml -n dev
+
+	helm install world-news ./news -f news/world.yaml -n dev
+	helm install korea-news ./news -f news/korea.yaml -n dev
 
 	helm install bbs ./portal -f portal/bbs.yaml -n dev
 
@@ -50,6 +48,13 @@ delete:
 	helm delete ap-news -n dev
 	helm delete world-news -n dev
 	helm delete korea-news -n dev
+
+	helm delete bbs -n dev
+	helm delete daum-news -n dev
+	helm delete nate-news -n dev
+	helm delete naver-news -n dev
+	helm delete naver-kin -n dev
+	helm delete naver-reply -n dev
 
 	#kubectl delete pods --field-selector status.phase!=Running -n dev
 
