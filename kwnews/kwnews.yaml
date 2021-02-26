@@ -6,8 +6,22 @@ jobs:
       frame: '{aid}'
       type: query
   list:
+  - category: 경제
+    url_frame: http://www.kwnews.co.kr/News/List/?s=401&page={page}
+  - category: 라이프
+    url_frame: http://www.kwnews.co.kr/News/List/?s=2201&page={page}
+  - category: 문화
+    url_frame: http://www.kwnews.co.kr/News/List/?s=601&page={page}
   - category: 지역
     url_frame: http://www.kwnews.co.kr/News/List/?s=2001&page={page}
+  - category: 정치
+    url_frame: http://www.kwnews.co.kr/News/List/?s=101&page={page}
+  - category: 사회
+    url_frame: http://www.kwnews.co.kr/News/List/?s=501&page={page}
+  - category: 스포츠
+    url_frame: http://www.kwnews.co.kr/News/List/?s=701&page={page}
+  - category: 교육
+    url_frame: http://www.kwnews.co.kr/News/List/?s=2101&page={page}
 parsing:
   version: v2021-01-26
   descriptions:

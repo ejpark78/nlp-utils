@@ -6,6 +6,16 @@ jobs:
       frame: '{idxno}'
       type: query
   list:
+  - category: 경제
+    url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=95706&sc_section_code=S1N3&view_type=sm
+  - category: 문화
+    url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=42815&sc_section_code=S1N5&view_type=sm
+  - category: 지역
+    url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=151860&sc_section_code=S1N7&view_type=sm
+  - category: 정치
+    url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=22632&sc_section_code=S1N2&sc_sub_section_code=S2N1&view_type=sm
+  - category: 사회
+    url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=116179&sc_section_code=S1N4&view_type=sm
   - category: 스포츠
     url_frame: http://www.kyeonggi.com/news/articleList.html?page={page}&total=61361&sc_section_code=S1N10&view_type=sm
 parsing:
