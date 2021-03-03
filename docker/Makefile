@@ -117,6 +117,7 @@ toolbox:
 	cd toolbox
 
 	docker build \
+		$(MIRROR) \
 		$(DOCKER_LABEL) \
 		$(DOCKER_BUILD_OPT) \
 		-t $(IMAGE):toolbox \

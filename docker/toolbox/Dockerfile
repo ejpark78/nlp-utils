@@ -60,6 +60,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && echo && echo "# oh my zsh 설치" \
     && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
     && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
+    && rm -rf ~/.oh-my-zsh/.git \
     && echo && echo "# build library 삭제" \
     && apt purge -yq \
         software-properties-common \
@@ -67,10 +68,11 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo && echo "# oh my zsh plugin 설치" \
-    && git clone https://github.com/jonmosco/kube-ps1 ~/.kube-ps1 \
-    && git clone https://github.com/zsh-users/zsh-completions.git ~/.oh-my-zsh/plugins/zsh-completions \
-    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
-    && git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+    && git clone --depth=1 https://github.com/jonmosco/kube-ps1 ~/.kube-ps1 \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-completions.git ~/.oh-my-zsh/plugins/zsh-completions \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions \
+    && find ~ -name .git -type d -exec rm -rf {} +
 
 RUN echo && echo "# helm 설치" \
 	&& wget -O /tmp/helm.tar.gz "https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz" \
@@ -122,14 +124,19 @@ RUN echo && echo "# ttyd 설치" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo && echo "# ssh kubeconfig 설치" \
-    && git clone http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
-    && git clone http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube \
+    && git clone --depth=1 http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
+    && git clone --depth=1 http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube \
+    && echo && echo "# merge kubeconfig" \
+    && cd ~/.kube/cluster.d \
+    && KUBECONFIG=nc-crawler:nc-od:nc-utils:nc-web:nlp kubectl config view --merge --flatten > ~/.kube/config \
+    && rm -rf ~/.kube/cluster.d \
+    && find ~ -name .git -type d -exec rm -rf {} + \
     && chmod 600 ~/.ssh && chmod -R 400 ~/.ssh/*
 
 ADD zshrc .zshrc
-ADD config .ssh/config
-ADD config.json .docker/
-ADD daemon.json /etc/docker/
+ADD ssh-config .ssh/config
+ADD docker-config.json .docker/config.json
+ADD docker-daemon.json /etc/docker/daemon.json
 
 ENV PORT=80
 ENV USER_AUTH=admin:searchT2020
