@@ -2,7 +2,7 @@
 dag:
   dag_id: 'knnews'
   description: 'knnews crawler'
-  schedule_interval: '0,30 * * * *'
+  schedule_interval: '10,40 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
