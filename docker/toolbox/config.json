@@ -1,0 +1,13 @@
+{
+	"auths": {
+		"dmz:5000": {
+			"auth": "azhzOm5scGxhYg=="
+		},
+		"registry.nlp-utils": {
+			"auth": "azhzOm5scGxhYg=="
+		}
+	},
+	"HttpHeaders": {
+		"User-Agent": "Docker-Client/19.03.13 (linux)"
+	}
+}

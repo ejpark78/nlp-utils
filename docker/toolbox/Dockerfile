@@ -51,11 +51,18 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         kubectl \
+    && echo && echo "# docker 설치" \
+	&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
+    && apt-add-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${APT_CODE_NAME} stable" \
+    && apt update -yq ${APT_OPTS} \
+    && apt install -yq ${APT_OPTS} \
+        docker-ce-cli \
     && echo && echo "# oh my zsh 설치" \
     && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
     && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
     && echo && echo "# build library 삭제" \
-    && apt purge -yq software-properties-common \
+    && apt purge -yq \
+        software-properties-common \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -108,7 +115,9 @@ RUN echo && echo "# ttyd 설치" \
     && make \
     && make install \
     && echo && echo "# build library 삭제" \
-    && apt purge -yq build-essential cmake \
+    && apt purge -yq \
+        build-essential \
+        cmake \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -119,6 +128,8 @@ RUN echo && echo "# ssh kubeconfig 설치" \
 
 ADD zshrc .zshrc
 ADD config .ssh/config
+ADD config.json .docker/
+ADD daemon.json /etc/docker/
 
 ENV PORT=80
 ENV USER_AUTH=admin:searchT2020

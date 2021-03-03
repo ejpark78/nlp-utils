@@ -149,10 +149,12 @@ run:
 .ONESHELL:
 run-toolbox:
 	docker run \
-		--rm \
+		-d \
 		--name toolbox \
 		--network host \
-		$(IMAGE):toolbox
+		--volume /var/run/docker.sock:/var/run/docker.sock \
+		$(IMAGE):toolbox \
+		ttyd -p 8081 --credential admin:searchT2020 zsh
 
 prune:
 	cat nodes | xargs -I{} ssh {} "hostname ; docker system prune -af"
