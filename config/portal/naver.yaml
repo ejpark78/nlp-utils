@@ -2,7 +2,7 @@
 dag:
   dag_id: 'naver'
   description: 'naver crawler'
-  schedule_interval: '7,36 * * * *'
+  schedule_interval: '27,56 * * * *'
   concurrency: 64
   max_active_runs: 1
   tags:
