@@ -8,10 +8,8 @@ from __future__ import print_function
 from os.path import isfile
 
 import urllib3
-from exchangelib import ServiceAccount, Configuration, Account, DELEGATE
-from exchangelib import Message, Mailbox, HTMLBody
+from exchangelib import FileAttachment, Message, Mailbox, HTMLBody, ServiceAccount, Configuration, Account, DELEGATE
 from exchangelib.protocol import BaseProtocol, NoVerifyHTTPAdapter
-from exchangelib import FileAttachment
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -21,7 +19,7 @@ class EmailUtils(object):
     """이메일 유틸"""
 
     def __init__(self):
-        """생성자"""
+        pass
 
     @staticmethod
     def open(user_id, user_password):
