@@ -38,8 +38,6 @@ operator:
     - '5'
     - --date-range
     - today
-    - --mapping
-    - /config/news/mapping.yaml
 tasks:
   - category: National
     config: /config/news/hani-en.yaml

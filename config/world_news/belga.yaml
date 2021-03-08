@@ -38,8 +38,6 @@ operator:
     - '5'
     - --date-range
     - today
-    - --mapping
-    - /config/news/mapping.yaml
 tasks:
   - category: latest
     config: /config/world_news/belga.yaml
