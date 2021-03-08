@@ -71,22 +71,6 @@ core:
 
 .ONESHELL:
 live:
-	cd ../
-	tar cvfz ./docker/live/app.tar.gz \
-		--exclude=.git* \
-		--exclude=.idea \
-		--exclude=log \
-		--exclude=ops \
-		--exclude=venv \
-		--exclude=data \
-		--exclude=dist \
-		--exclude=cache \
-		--exclude=build \
-		--exclude=notebook \
-		--exclude=__pycache__ \
-		.
-
-	cd -
 	cd live
 
 	docker build \
@@ -97,8 +81,6 @@ live:
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		.
-
-	rm app.tar.gz
 
 .ONESHELL:
 jupyter: live
@@ -127,7 +109,7 @@ toolbox:
 .ONESHELL:
 push:
 	docker push $(IMAGE):live
-	docker push $(IMAGE):jupyter
+	#docker push $(IMAGE):jupyter
 	docker push $(IMAGE):toolbox
 
 .ONESHELL:
