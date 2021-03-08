@@ -44,8 +44,6 @@ args:
   - "3"
   - "--date-range"
   - "today"
-  - "--mapping"
-  - "/config/news/mapping.yaml"
 
 jobs:
   - name: ajunews

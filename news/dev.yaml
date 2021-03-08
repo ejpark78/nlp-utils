@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:dev
+image: registry.nlp-utils/crawler:live
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -25,7 +25,7 @@ configMap:
   gitSync:
     name: config-sync
     repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "dev"
+    branch: "live"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
@@ -44,35 +44,9 @@ args:
   - "5"
 
 jobs:
-#  - name: dailian
-#    schedule: "7,34 * * * *"
-#    index: "raw-dailian-{year}"
-#    args:
-#      - "--config"
-#      - "/config/news/dailian.yaml"
-#      - "--date-range"
-#      - "today"
-#      - "--page-range"
-#      - "0~5000"
-#      - "--page-step"
-#      - "100"
-#
-#  - name: kjdaily
-#    schedule: "7,34 * * * *"
-#    index: "raw-kjdaily-{year}"
-#    args:
-#      - "--config"
-#      - "/config/news/kjdaily.yaml"
-#      - "--date-range"
-#      - "today"
-#      - "--page-range"
-#      - "0~5000"
+  - name: kado
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kado.yaml"
 
-#  - name: ansa
-#    schedule: "7,34 * * * *"
-#    index: "raw-ansa-{year}"
-#    args:
-#      - "--config"
-#      - "/config/world_news/ansa.yaml"
-#      - "--date-range"
-#      - "today"

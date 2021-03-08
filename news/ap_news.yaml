@@ -42,8 +42,6 @@ args:
   - "crawler.world_news.ap_news"
   - "--sleep"
   - "5"
-  - "--mapping"
-  - "/config/news/mapping.yaml"
 
 jobs:
   - name: apnews
