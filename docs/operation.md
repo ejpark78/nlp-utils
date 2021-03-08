@@ -48,3 +48,24 @@ git commit -am 'merge youngjune'
 
 git push origin live
 ```
+
+## issue
+
+airflow 의 파드가 정상적으로 실행되지 않을때
+
+> 파드 실행 상태 확인: panding 상태가 많은 경우 (k9s 에서 : pod airflow) 
+
+![pod panding](./img/airflow-pod-panding.png)
+
+> 이벤트 확인: FailedSchedule 상태가 많음 (: event)
+
+![events](./img/airflow-events.png)
+
+> 노드 상태 확인 (: node)
+
+![node](./img/crawler-node-die.png)
+
+> 만약, ssh 접속이 안될때: NC CLOUD 에서 해당 노드 재부팅
+
+![reboot](./img/node-reboot.png)
+

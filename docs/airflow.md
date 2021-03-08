@@ -60,4 +60,3 @@ curl -sSL https://raw.githubusercontent.com/bitnami/bitnami-docker-airflow/maste
 
 docker-compose up -d
 ```
-
