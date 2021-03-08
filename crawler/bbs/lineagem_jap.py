@@ -34,7 +34,6 @@ class LineageMBBSJap(object):
     """크롤러"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
         host_info = {
