@@ -65,3 +65,42 @@ class CrawlerDagBuilder(object):
             ))
 
         return dag, task_group
+
+    def build2(self, filename: str) -> (DAG, dict):
+        config = self.open_config(filename=filename)
+
+        dag = DAG(
+            **config['dag'],
+            default_args={
+                **config['default_args'],
+                'start_date': days_ago(n=1),
+                'retry_delay': timedelta(minutes=10),
+                'execution_timeout': timedelta(hours=1),
+            }
+        )
+
+        task_group = {}
+        for item in config['tasks']:
+            name = item['category']
+            if name not in task_group:
+                task_group[name] = []
+
+            if 'args' in item:
+                extra_args = item['args']
+            else:
+                extra_args = [
+                    '--config',
+                    item['config'],
+                    '--sub-category',
+                    item['name'],
+                ]
+
+            task_group[name].append(KubernetesPodOperator(
+                dag=dag,
+                name='task',
+                task_id=item['task_id'],
+                arguments=config['operator']['args'] + extra_args,
+                **config['operator']['params']
+            ))
+
+        return config['dag']['dag_id'], dag, task_group
