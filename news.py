@@ -22,5 +22,3 @@ for filename in filename_list:
         for task in task_group[name]:
             prev.set_downstream(task_or_task_list=task)
             prev = task
-
-        group_list.append(grp)
