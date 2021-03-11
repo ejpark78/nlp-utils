@@ -7,13 +7,12 @@ from __future__ import print_function
 
 # from airflow.models import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow import DAG
 
 from crawler_dag_builder import CrawlerDagBuilder
 
-filename_list = list()
-filename_list.append('config/news/ajunews_job.yaml')
-for filename in filename_list:
-    dag, task_group = CrawlerDagBuilder().build(filename=filename)
+def create_dag(filename):
+    dag_id,dag, task_group = CrawlerDagBuilder().build2(filename=filename)
 
     start = DummyOperator(task_id='start', dag=dag)
     group_list = []
@@ -22,6 +21,14 @@ for filename in filename_list:
         for task in task_group[name]:
             prev.set_downstream(task_or_task_list=task)
             prev = task
+        group_list.append(start)
+    return dag_id, dag
 
-    group_list.append(start)
+
+filename_list = list()
+filename_list.append('config/news/ajunews_job.yaml')
+filename_list.append('config/news/asiae_job.yaml')
+for filename in filename_list:
+    dag_id, dag = create_dag( filename )
+    globals()[dag_id] = dag
 

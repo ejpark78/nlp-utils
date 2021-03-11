@@ -1,0 +1,57 @@
+---
+dag:
+  dag_id: 'asiae'
+  description: 'asiae crawler'
+  schedule_interval: '10,40 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - 국내 뉴스
+    - 아시아경제
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+tasks:
+  - category: group1
+    config: /config/news/asiae.yaml
+    name: 정치/전체뉴스,경제/전체뉴스,산업/IT/전체뉴스,증권/전체뉴스,기업분석/전체
+    task_id: 정치-경제-산업-IT-증권-기업
+  - category: group2
+    config: /config/news/asiae.yaml
+    name: 부동산/전체뉴스,국제/전체뉴스,사회/전체뉴스,라이프/스타일,라이프/뷰티·헬스
+    task_id: 부동산-국제-사회-라이프
+  - category: group3
+    config: /config/news/asiae.yaml
+    name: 라이프/일반,라이프/여행·레저,라이프/공연·전시,라이프/책,라이프/에듀아시아,라이프/드링킷
+    task_id: 라이프
+  - category: group4
+    config: /config/news/asiae.yaml
+    name: 연예/스포츠/전체뉴스,골프/전체뉴스
+    task_id: 연예-스포츠
