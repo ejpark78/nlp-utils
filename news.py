@@ -14,16 +14,14 @@ filename_list = list()
 filename_list.append('config/news/ajunews_job.yaml')
 for filename in filename_list:
     dag, task_group = CrawlerDagBuilder().build(filename=filename)
-    start = DummyOperator(task_id='start', dag=dag)
 
+    start = DummyOperator(task_id='start', dag=dag)
     group_list = []
     for name in task_group:
-        grp = DummyOperator(task_id=name, dag=dag)
-
         prev = start
         for task in task_group[name]:
             prev.set_downstream(task_or_task_list=task)
             prev = task
 
-        group_list.append(grp)
+    group_list.append(start)
 
