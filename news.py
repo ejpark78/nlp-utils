@@ -18,8 +18,6 @@ for filename in filename_list:
 
     group_list = []
     for name in task_group:
-        grp = DummyOperator(task_id=name, dag=dag)
-
         prev = start
         for task in task_group[name]:
             prev.set_downstream(task_or_task_list=task)
