@@ -7,8 +7,9 @@ dag:
   concurrency: 64
   tags:
     - 국내 뉴스
-    - 아주경제
     - 한국어
+    - 아주경제
+    - S0
 default_args:
   owner: 'Airflow'
   retries: 3

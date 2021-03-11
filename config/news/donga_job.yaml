@@ -1,16 +1,15 @@
 ---
 dag:
-  dag_id: 'ccdailynews'
-  description: '충청일보 크롤러'
-  schedule_interval: '20,50 * * * *'
+  dag_id: 'donga'
+  description: '동아일보 크롤러'
+  schedule_interval: '10,40 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
     - 국내 뉴스
-    - 신문
     - 한국어
-    - 충청일보
-    - S20
+    - 동아일보
+    - S10
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -43,10 +42,6 @@ operator:
     - today
 tasks:
   - category: group1
-    config: /config/news/ccdailynews.yaml
-    name: 정치,경제,사회
-    task_id: P-E-S
-  - category: group2
-    config: /config/news/ccdailynews.yaml
-    name: 교육,문화,연예,스포츠
-    task_id: Edu-C-Ent-Spo
+    config: /config/news/donga.yaml
+    name: Politics,Economy,Inter,Society,Culture,Entertainment,Sports
+    task_id: all
