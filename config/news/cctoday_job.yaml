@@ -1,16 +1,16 @@
 ---
 dag:
-  dag_id: 'ccdailynews'
-  description: '충청일보 크롤러'
-  schedule_interval: '20,50 * * * *'
+  dag_id: 'cctoday'
+  description: '충청투데이 crawler'
+  schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
     - 국내 뉴스
     - 신문
     - 한국어
-    - 충청일보
-    - S20
+    - 충청투데이
+    - S0
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -42,11 +42,12 @@ operator:
     - --date-range
     - today
 tasks:
-  - category: group1
-    config: /config/news/ccdailynews.yaml
-    name: 정치,경제,사회
-    task_id: P-E-S
-  - category: group2
-    config: /config/news/ccdailynews.yaml
-    name: 교육,문화,연예,스포츠
-    task_id: Edu-C-Ent-Spo
+  - category: politics
+    config: /config/news/cctoday.yaml
+    name: 정치/행정,경제/과학,사회,스포츠,문화,사람들
+    task_id: P-E-S-Spo-C-P
+  - category: total
+    config: /config/news/cctoday.yaml
+    name: 종합
+    task_id: all
+

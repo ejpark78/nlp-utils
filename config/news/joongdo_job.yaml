@@ -1,0 +1,47 @@
+---
+dag:
+  dag_id: 'joongdo'
+  description: '중도일보 크롤러'
+  schedule_interval: '20,50 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - 국내 뉴스
+    - 한국어
+    - 중도일보
+    - S20
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+tasks:
+  - category: group
+    config: /config/news/joongdo.yaml
+    name: 정치행정/대전,정치행정/충남·내포,정치행정/지방의회,정치행정/국회·정당,정치행정/국정·외교,정치행정/세종,정치행정/지방정가,정치행정/[캠페인] 코로나19극복 응원메시지,경제과학/지역경제,경제과학/건설·부동산,경제과학/금융·증권,경제과학/유통·쇼핑,경제과학/기업·CEO,경제과학/자동차,경제과학/취업·창업,경제과학/대전정부청사,경제과학/대덕특구,경제과학/IT·과학,경제과학/아파트Info,경제과학/로또,경제과학/생활의 지혜,경제과학/4차 산업,사회교육/사건·사고,사회교육/법원·검찰,사회교육/교육·시험,사회교육/노동·노사,사회교육/환경·교통,사회교육/미담,사회교육/날씨,사회교육/건강·의료,사회교육/이슈&화제,문화/공연·전시,문화/영화·비디오,문화/문화·출판,문화/여성·생활,문화/여행·축제,문화/문화 일반,문화/문예공론,문화/사자성어는 삶의 이음매,문화/장상현의 재미있는 고사성어,사람들/인터뷰,사람들/새인물,사람들/인사,사람들/동정,사람들/알림,사람들/부고,사람들/뉴스,사람들/社告,사람들/결혼,사람들/내방,사람들/바로잡습니다,사람들/다문화 신문,사람들/사회복지신문,사람들/실버라이프,기획/연재/중도초대석,기획/연재/기획,기획/연재/신천식의 이슈토론,기획/연재/리뉴얼 충청,기획/연재/대전기록프로젝트,운세/오늘의 운세,운세/오늘의 별자리,운세/주간운세,운세/생년월일 운세,운세/별별 로또,운세/구박사 오늘 띠별 운세,운세/별자리 12궁운세,전국/수도권,전국/부산·영남,전국/충북,전국/광주·호남,전국/강원,전국/천안시,전국/아산시,전국/공주시,전국/보령시,전국/서산시,전국/논산시,전국/계룡시,전국/금산군,전국/부여군,전국/서천군,전국/청양군,전국/예산군,전국/태안군,전국/당진시,오피니언/사설,오피니언/세상읽기,오피니언/편집국에서,오피니언/우난순의 식탐,오피니언/중도일보 독자위원회,스포츠/한화이글스,스포츠/축구,스포츠/스포츠종합,스포츠/메이저리그,스포츠/대전시티즌,비주얼/카드뉴스,비주얼/포토,비주얼/인포그래픽
+    task_id: all

@@ -1,16 +1,15 @@
 ---
 dag:
-  dag_id: 'ccdailynews'
-  description: '충청일보 크롤러'
-  schedule_interval: '20,50 * * * *'
+  dag_id: 'sbs-biz'
+  description: 'SBS비즈 크롤러'
+  schedule_interval: '10,40 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
     - 국내 뉴스
-    - 신문
     - 한국어
-    - 충청일보
-    - S20
+    - SBS비즈
+    - S10
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -42,11 +41,7 @@ operator:
     - --date-range
     - today
 tasks:
-  - category: group1
-    config: /config/news/ccdailynews.yaml
-    name: 정치,경제,사회
-    task_id: P-E-S
-  - category: group2
-    config: /config/news/ccdailynews.yaml
-    name: 교육,문화,연예,스포츠
-    task_id: Edu-C-Ent-Spo
+  - category: biz-book
+    config: /config/news/sbs-biz.yaml
+    name: 경제정책,금융/증권,산업/재계,부동산,생활경제,글로벌경제,전체,머니랩
+    task_id: all

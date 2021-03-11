@@ -1,0 +1,47 @@
+---
+dag:
+  dag_id: 'yeongnam'
+  description: '영남일보 크롤러'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - 국내 뉴스
+    - 한국어
+    - 영남일보
+    - S0
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+tasks:
+  - category: society
+    config: /config/news/yeongnam.yaml
+    name: 사회/사회일반,사회/사건사고,사회/복지·노동,사회/보건의료,사회/환경,사회/반려동물,정치/정치일반,정치/청와대·중앙행정,정치/대구·경북 행정,정치/대구·경북의회,정치/국방·북한,경제/경제일반,경제/증시·금융,경제/부동산,경제/자동차,경제/취업·창업,경제/IT·모바일,스포츠/스포츠일반,스포츠/야구,스포츠/축구,스포츠/농구·배구·핸드볼,스포츠/골프,문화/문화일반,문화/공연·전시,문화/책,문화/운세,문화/기타,건강/건강일반,건강/병원소식,건강/질환,영상/영상뉴스,영상/송국건의혼술,영상/이지핏,위클리포유/위클리포유일반,위클리포유/여행·레저,위클리포유/위클리영화,위클리포유/패션·뷰티,위클리포유/푸드,위클리포유/칼럼,에듀포유/대학·입시,에듀포유/중·고등,에듀포유/초등·유아,에듀포유/대구경북교육청,에듀포유/에듀포유일반,포토/포토뉴스,지역뉴스/경북동부,지역뉴스/경북중부,지역뉴스/경북북부,지역뉴스/대구근교,지역뉴스/대구,교육/과학/교육,교육/과학/과학,국제/국제일반,국제/미국,국제/일본,국제/중국,국제/유럽,동정/동정일반,동정/결혼,동정/부고,동정/알림,동정/인사,기획/특집/기획·특집,연재/연재,시민기자/시민기자,연예/연예일반,연예/방송,연예/영화,웹툰/플레이툰,웹툰/웹툰
+    task_id: all
