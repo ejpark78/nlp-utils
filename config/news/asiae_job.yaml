@@ -8,6 +8,7 @@ dag:
   tags:
     - 국내 뉴스
     - 아시아경제
+    - 한국어
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -42,16 +43,16 @@ tasks:
   - category: group1
     config: /config/news/asiae.yaml
     name: 정치/전체뉴스,경제/전체뉴스,산업/IT/전체뉴스,증권/전체뉴스,기업분석/전체
-    task_id: 정치-경제-산업-IT-증권-기업
+    task_id: P-E-I-IT-Sto-Com
   - category: group2
     config: /config/news/asiae.yaml
     name: 부동산/전체뉴스,국제/전체뉴스,사회/전체뉴스,라이프/스타일,라이프/뷰티·헬스
-    task_id: 부동산-국제-사회-라이프
+    task_id: RE-Inter-S-Life
   - category: group3
     config: /config/news/asiae.yaml
     name: 라이프/일반,라이프/여행·레저,라이프/공연·전시,라이프/책,라이프/에듀아시아,라이프/드링킷
-    task_id: 라이프
+    task_id: Life
   - category: group4
     config: /config/news/asiae.yaml
     name: 연예/스포츠/전체뉴스,골프/전체뉴스
-    task_id: 연예-스포츠
+    task_id: Ent-Spo
