@@ -1,0 +1,30 @@
+---
+settings:
+  number_of_replicas: 1
+  number_of_shards: 1
+mappings:
+  properties:
+    title:
+      type: text
+    url:
+      ignore_above: 256
+      type: keyword
+    content:
+      type: text
+    date:
+      type: date
+    '@curl_date':
+      type: date
+    category:
+      ignore_above: 50
+      type: keyword
+    source:
+      ignore_above: 50
+      type: keyword
+    raw:
+      enabled: false
+    raw_list:
+      enabled: false
+    parser_version:
+      ignore_above: 50
+      type: keyword
