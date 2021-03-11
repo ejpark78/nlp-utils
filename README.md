@@ -295,9 +295,16 @@ start.set_downstream(task_or_task_list=group_list)
 export AIRFLOW_HOME=$(pwd)/airflow
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
 export AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT=$(pwd)
-export AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH=dags
-export AIRFLOW__CORE__DAGS_FOLDER=$(pwd)/dags
+export AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH=./
+export AIRFLOW__CORE__DAGS_FOLDER=$(pwd)
 
+unset AIRFLOW_HOME
+unset AIRFLOW__CORE__LOAD_EXAMPLES
+unset AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT
+unset AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH
+unset AIRFLOW__CORE__DAGS_FOLDER
+
+airflow initdb
 airflow webserver --port 8080
 ```
 
