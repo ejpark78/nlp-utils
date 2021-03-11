@@ -8,6 +8,7 @@ dag:
   tags:
     - 국내 뉴스
     - 아주경제
+    - 한국어
 default_args:
   owner: 'Airflow'
   retries: 3

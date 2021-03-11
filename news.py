@@ -28,7 +28,9 @@ def create_dag(filename):
 filename_list = list()
 filename_list.append('config/news/ajunews_job.yaml')
 filename_list.append('config/news/asiae_job.yaml')
+filename_list.append('config/news/ccdailynews_job.yaml')
 for filename in filename_list:
     dag_id, dag = create_dag( filename )
     globals()[dag_id] = dag
+
 
