@@ -22,7 +22,7 @@ for filename in filename_list:
 
         prev = start
         for task in task_group[name]:
-            grp.set_downstream(task_or_task_list=task)
+            prev.set_downstream(task_or_task_list=task)
             prev = task
 
         group_list.append(grp)
