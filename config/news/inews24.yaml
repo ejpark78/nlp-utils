@@ -14,8 +14,10 @@ default_args:
   depends_on_past: False
   email:
     - ejpark@ncsoft.com
-  email_on_retry: False
-  email_on_failure: False
+    - jaehyunpark@ncsoft.com
+    - gunyoung20@ncsoft.com
+  email_on_retry: True
+  email_on_failure: True
 operator:
   params:
     labels:
