@@ -33,13 +33,13 @@ class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
     def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = 'crawler:crawler2019',
-                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str = None):
+                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str or dict = None):
         self.host = host
         self.http_auth = (http_auth.split(':'))
 
         self.conn = None
 
-        self.mapping = mapping
+        self.mapping: str or dict = mapping
 
         self.index = self.get_target_index(tag=tag, index=index)
 
@@ -89,8 +89,10 @@ class ElasticSearchUtils(object):
             }
         }
 
-        if self.mapping is not None and isfile(self.mapping):
-            mapping = self.open_mapping(self.mapping)
+        if self.mapping is not None:
+            mapping = self.mapping
+            if isinstance(self.mapping, str) and isfile(self.mapping):
+                mapping = self.open_mapping(self.mapping)
 
         try:
             conn.indices.create(index=index, body=mapping)
@@ -103,6 +105,14 @@ class ElasticSearchUtils(object):
                 'exception': str(e),
             })
             return False
+
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': '인덱스 생성 성공',
+            'host': self.host,
+            'index': self.index,
+            'mapping': mapping,
+        })
 
         return True
 

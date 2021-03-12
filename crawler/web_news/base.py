@@ -120,20 +120,33 @@ class WebNewsBase(object):
             'step': step,
         }
 
-        if date_range is None or date_range == 'today':
+        if date_range is None:
             return result
 
+        # today
+        if date_range == 'today':
+            return result
+
+        # 3days
+        if date_range.find('days') > 0:
+            n: str = date_range.replace('days', '').strip()
+
+            if n.isdigit():
+                result['end'] += relativedelta(days=-int(n))
+                return result
+
+        # 날자 범위 추출
         token = date_range.split('~', maxsplit=1)
 
-        dt_start = parse_date(token[0])
+        dt_start = parse_date(token[0]).astimezone(self.timezone)
         dt_end = dt_start + relativedelta(months=1)
 
         if len(token) > 1:
-            dt_end = parse_date(token[1])
+            dt_end = parse_date(token[1]).astimezone(self.timezone)
 
         result = {
-            'end': self.timezone.localize(dt_end),
-            'start': self.timezone.localize(dt_start),
+            'end': max(dt_start, dt_end),
+            'start': min(dt_start, dt_end),
             'step': step,
         }
 

@@ -44,12 +44,14 @@ class WebNewsCrawler(WebNewsBase):
         self.job_names: set or None = None
         self.job_sub_category: set or None = None
 
-    @staticmethod
-    def open_elasticsearch(date: datetime, job: dict, mapping: str = None) -> ElasticSearchUtils:
+    def open_elasticsearch(self, date: datetime, job: dict, mapping: str = None) -> ElasticSearchUtils:
         """디비에 연결한다."""
         index_tag = None
         if date is not None:
             index_tag = date.year
+
+        if mapping is None and 'index_mapping' in self.config:
+            mapping: dict = self.config['index_mapping']
 
         return ElasticSearchUtils(
             tag=index_tag,
@@ -369,7 +371,6 @@ class WebNewsCrawler(WebNewsBase):
                     soup = json.loads(html)
 
                 column = parsing['column']
-
                 if column == '*':
                     soup = {
                         '*': soup
@@ -689,6 +690,9 @@ class WebNewsCrawler(WebNewsBase):
                 if 'encoding' in item:
                     del item['encoding']
 
+                if 'raw' in item:
+                    del item['raw']
+
                 item['status'] = 'raw_list'
 
                 self.save_article(es=es, job=job, doc=item, flush=False)
@@ -782,6 +786,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '뉴스 목록 크롤링',
+                'job_name': job['name'] if 'name' in job else '',
                 'url': url_info['url'] if 'url' in url_info else '',
                 'query': q,
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
@@ -848,6 +853,7 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def batch(self) -> None:
+        """ job -> category -> date -> page 순서 """
         self.params = self.init_arguments()
 
         self.config = self.open_config(filename=self.params.config)
@@ -876,6 +882,13 @@ class WebNewsCrawler(WebNewsBase):
                 step=self.params.page_step,
                 args=job['args']
             )
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '날짜와 페이지 범위',
+                'date_range': {k: str(v) for k, v in self.date_range.items()},
+                'page_range': self.page_range,
+            })
 
             # override elasticsearch config
             job['host'] = os.getenv(

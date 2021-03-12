@@ -530,6 +530,10 @@ class HtmlParser(object):
         for k in mapping_info:
             v = mapping_info[k]
 
+            if v == '*':
+                result[k] = json.dumps(resp, ensure_ascii=False)
+                continue
+
             if dot.get(v) is not None and isinstance(dot[v], str):
                 result[k] = dot[v]
                 continue
