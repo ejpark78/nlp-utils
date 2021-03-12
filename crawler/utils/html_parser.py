@@ -112,7 +112,10 @@ class HtmlParser(object):
 
         for conf in parsing_info:
             tag_list = []
-            self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)
+            if len(conf['value']) == 0:
+                tag_list.append(soup)
+            else:
+                self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)
 
             value_list = self.get_value_list(conf=conf, result=result, tag_list=tag_list, base_url=base_url)
             if value_list is None:

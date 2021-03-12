@@ -77,7 +77,24 @@ live:
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
+		--build-arg "INSTALL_BRANCH=live" \
+		--build-arg "CONFIG_BRANCH=live" \
 		-t $(IMAGE):live \
+		-f Dockerfile \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
+		.
+
+.ONESHELL:
+dev:
+	cd live
+
+	docker build \
+		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
+		$(DOCKER_BUILD_OPT) \
+		--build-arg "INSTALL_BRANCH=dev" \
+		--build-arg "CONFIG_BRANCH=dev" \
+		-t $(IMAGE):dev \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		.

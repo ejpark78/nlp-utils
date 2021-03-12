@@ -35,13 +35,14 @@ class WebNewsCrawler(WebNewsBase):
     def __init__(self):
         super().__init__()
 
-        self.params = None
+        self.params: Namespace or None = None
 
-        self.trace_depth = 0
+        self.trace_depth: int = 0
 
-        self.update_date = False
+        self.update_date: bool = False
 
-        self.job_sub_category = None
+        self.job_names: set or None = None
+        self.job_sub_category: set or None = None
 
     @staticmethod
     def open_elasticsearch(date: datetime, job: dict, mapping: str = None) -> ElasticSearchUtils:
@@ -58,80 +59,6 @@ class WebNewsCrawler(WebNewsBase):
             http_auth=job['http_auth'],
             mapping=mapping,
         )
-
-    def update_category(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils) -> bool:
-        """카테고리 정보를 갱신한다."""
-        if date is None and job['index'].find('{year}') > 0:
-            return False
-
-        # 기사 목록을 추출한다.
-        trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
-        if trace_list is None:
-            return True
-
-        # 개별 뉴스를 따라간다.
-        doc_ids = set()
-        bulk_data = {}
-
-        for trace in trace_list:
-            item = self.parse_tag(
-                resp=trace,
-                url_info=url_info,
-                base_url=url_info['url'],
-                parsing_info=self.config['parsing']['list'],
-            )
-            if item is None or 'url' not in item:
-                continue
-
-            item['url'] = urljoin(url_info['url'], item['url'])
-            item['category'] = job['category']
-
-            doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-            item['_id'] = doc_id
-
-            doc_ids.add(doc_id)
-            bulk_data[doc_id] = item
-
-        doc_list = []
-        es.index = es.get_target_index(
-            tag=es.get_index_year_tag(date=date),
-            index=job['index'],
-        )
-
-        es.get_by_ids(
-            id_list=list(doc_ids),
-            index=es.index,
-            source=['category'],
-            result=doc_list
-        )
-
-        for doc in doc_list:
-            if 'category' not in doc or doc['category'].strip() == '':
-                continue
-
-            if '_id' not in doc:
-                continue
-
-            doc_id = doc['_id']
-
-            category = doc['category'].split(',')
-            category += bulk_data[doc_id]['category'].split(',')
-
-            bulk_data[doc_id]['category'] = ','.join(list(set(category)))
-
-        for doc in bulk_data.values():
-            es.save_document(document=doc, delete=False)
-
-        es.flush()
-
-        self.logger.log(msg={
-            'level': 'MESSAGE',
-            'message': '카테고리 업데이트',
-            'length': len(trace_list),
-            'category': job['category'],
-        })
-
-        return False
 
     def get_article_page(self, item: dict, offline: bool = False) -> str:
         """기사 본문을 조회한다."""
@@ -258,56 +185,42 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
-    def save_article(self, html: str, doc: dict, article: dict, es: ElasticSearchUtils, job: dict) -> dict:
+    def save_article(self, doc: dict, es: ElasticSearchUtils, job: dict, html: str = None,
+                     article: dict = None, flush: bool = True) -> dict:
         """크롤링한 문서를 저장한다."""
         # 후처리
         doc = self.parser.merge_values(item=doc)
-        article = self.parser.merge_values(item=article)
 
-        # json merge
-        if 'json' in doc and 'json' in article:
-            m_json = {
-                **json.loads(doc['json']),
-                **json.loads(article['json'])
-            }
+        if article is not None:
+            article = self.parser.merge_values(item=article)
 
-            del doc['json']
-            article['json'] = json.dumps(m_json)
+            # json merge
+            if 'json' in doc and 'json' in article:
+                m_json = {
+                    **json.loads(doc['json']),
+                    **json.loads(article['json'])
+                }
 
-        error = False
+                del doc['json']
+                article['json'] = json.dumps(m_json)
 
-        # 파싱 에러 처리
-        if 'raw' in article and len(article['raw']) != 0:
-            doc.update(article)
-        elif 'html' in article and len(article['html']) != 0:
-            doc.update(article)
-        elif 'json' in article and len(article['json']) != 0:
-            doc.update(article)
-        else:
-            if 'raw' not in doc or doc['raw'] == '':
-                doc['raw'] = str(html)
+            # 파싱 에러 처리
+            if 'raw' in article and len(article['raw']) != 0:
+                doc.update(article)
+            elif 'json' in article and len(article['json']) != 0:
+                doc.update(article)
+            else:
+                if 'raw' not in doc or doc['raw'] == '':
+                    doc['raw'] = str(html)
 
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'html, json, original 필드가 없음',
-                'url': doc['url'],
-            })
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'html, json, raw 필드가 없음',
+                    'url': doc['url'],
+                })
 
         # 날짜 필드 오류 처리
         self.remove_empty_date(doc=doc)
-
-        # 에러인 경우
-        if error is True:
-            if 'raw' not in doc or doc['raw'] == '':
-                doc['raw'] = str(html)
-
-            es.save_document(
-                document=doc,
-                index=job['index'].replace('-{year}', ''),
-                delete=False,
-            )
-            es.flush()
-            return doc
 
         # 인덱스 변경
         if 'date' in doc:
@@ -332,6 +245,10 @@ class WebNewsCrawler(WebNewsBase):
         doc_id = doc['_id']
 
         es.save_document(document=doc, delete=False)
+
+        if flush is False:
+            return doc
+
         flag = es.flush()
 
         # 성공 로그 표시
@@ -667,7 +584,7 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def check_date_range(self, doc: dict, query: dict) -> bool:
-        if self.params.date_range is None or self.params.date_range != 'today':
+        if self.params.date_range is None or self.params.date_range not in {'today'}:
             return True
 
         if 'date' not in doc:
@@ -764,6 +681,19 @@ class WebNewsCrawler(WebNewsBase):
             if doc_id is None:
                 continue
 
+            item['_id'] = doc_id
+
+            # 기사 목록 저장
+            if self.params.list:
+                # 임시 변수 삭제
+                if 'encoding' in item:
+                    del item['encoding']
+
+                item['status'] = 'raw_list'
+
+                self.save_article(es=es, job=job, doc=item, flush=False)
+                continue
+
             is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
             if is_skip is True:
                 continue
@@ -812,6 +742,9 @@ class WebNewsCrawler(WebNewsBase):
                 'sleep_time': self.params.sleep,
             })
             sleep(self.params.sleep)
+
+        if self.params.list:
+            es.flush()
 
         # 다음 페이지 정보가 있는 경우
         self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es, query=query)
@@ -864,9 +797,6 @@ class WebNewsCrawler(WebNewsBase):
             if resp is None:
                 continue
 
-            # category 업데이트
-            self.update_category(html=resp, url_info=url_info, job=job, date=dt, es=es)
-
             cache_skip_count = self.cache_skip_count
 
             # 문서 저장
@@ -892,7 +822,7 @@ class WebNewsCrawler(WebNewsBase):
         """url_frame 목록을 반복한다."""
         # url 목록 반복
         for url_info in job['list']:
-            if len(self.job_sub_category) > 0 and 'category' in url_info and \
+            if self.job_sub_category is not None and 'category' in url_info and \
                     url_info['category'] not in self.job_sub_category:
                 continue
 
@@ -922,10 +852,15 @@ class WebNewsCrawler(WebNewsBase):
 
         self.config = self.open_config(filename=self.params.config)
 
-        self.job_sub_category = self.params.sub_category.split(',') if self.params.sub_category != '' else []
+        self.job_names = set(self.params.job_name.split(',')) if self.params.job_name != '' else None
+        self.job_sub_category = set(self.params.sub_category.split(',')) if self.params.sub_category != '' else None
 
         # 카테고리 하위 목록을 크롤링한다.
         for job in self.config['jobs']:
+            if 'name' in job and self.job_names is not None:
+                if job['name'] not in self.job_names:
+                    continue
+
             # override args config
             if 'args' not in job:
                 job['args'] = {}
@@ -972,6 +907,11 @@ class WebNewsCrawler(WebNewsBase):
         import argparse
 
         parser = argparse.ArgumentParser()
+
+        parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
+
+        parser.add_argument('--list', action='store_true', default=False, help='목록만 크롤링')
+        parser.add_argument('--article', action='store_true', default=False, help='기사 본문만 크롤링')
 
         parser.add_argument('--config-debug', action='store_true', default=False, help='config 파일 개발')
 

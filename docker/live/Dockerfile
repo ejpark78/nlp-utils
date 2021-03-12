@@ -22,6 +22,8 @@ ARG GIT_BRANCH
 ARG GIT_TAG
 ARG GIT_COMMIT_ID
 ARG GIT_COMMIT_COUNT
+ARG INSTALL_BRANCH
+ARG CONFIG_BRANCH
 
 ENV DOCKER_IMAGE=${DOCKER_IMAGE}
 ENV DOCKER_TAG=${DOCKER_TAG}
@@ -31,17 +33,19 @@ ENV GIT_BRANCH=${GIT_BRANCH}
 ENV GIT_TAG=${GIT_TAG}
 ENV GIT_COMMIT_ID=${GIT_COMMIT_ID}
 ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
+ENV INSTALL_BRANCH=${INSTALL_BRANCH}
+ENV CONFIG_BRANCH=${CONFIG_BRANCH}
 
-RUN echo && echo "크롤러 설치 (git)" \
-     && git clone -b live http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
+RUN echo && echo "크롤러 설치 (git): ${INSTALL_BRANCH}" \
+     && git clone -b ${INSTALL_BRANCH} http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
      && cd /tmp/crawler \
      && pip3 install -r requirements.txt \
      && python3 setup.py install \
      && pip3 show crawler \
      && rm -rf /tmp/*
 
-RUN echo && echo "크롤러 config 설치" \
-    && git clone -b live http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
+RUN echo && echo "크롤러 config 설치: ${CONFIG_BRANCH}" \
+    && git clone -b ${CONFIG_BRANCH} http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
 
 #RUN echo && echo "크롤러 설치 (pypi)" \
 #    && pip3 install -U crawler \
