@@ -13,12 +13,7 @@ mappings:
       type: text
     date:
       type: date
-    '@curl_date':
-      type: date
     category:
-      ignore_above: 50
-      type: keyword
-    source:
       ignore_above: 50
       type: keyword
     raw:
@@ -28,3 +23,22 @@ mappings:
     parser_version:
       ignore_above: 50
       type: keyword
+    status:
+      # raw_list, raw, pipeline
+      ignore_above: 50
+      type: keyword
+    '@curl_date':
+      type: date
+    # pipeline columns
+    image_list:
+      enabled: false
+    vod:
+      enabled: false
+    source:
+      enabled: false
+    source_url:
+      enabled: false
+    source_section:
+      enabled: false
+    papaer:
+      enabled: false
