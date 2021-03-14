@@ -53,11 +53,11 @@ tasks:
     config: /config/news/hani.yaml
     name: 국제일반,해외토픽,아시아·태평양,미국·중남미,유럽,중국,일본,중동·아프리카,국제기구·회의,국제경제
     task_id: international
-  - category: group3
+  - category: group4
     config: /config/news/hani.yaml
     name: 문화일반,영화·애니,방송·연예,여행·여가,음악·공연·전시,학술,책&생각,제주&,스포츠일반,축구·해외리그,야구·MLB,골프,경기일정,경기결과,바둑
     task_id: part4
-  - category: group4
+  - category: group5
     config: /config/news/hani.yaml
     name: 미래,과학,기술,환경,시각,야생동물,반려동물,농장동물,인간과동물,생태와진화,사설,칼럼,왜냐면,포토에세이,옵스큐라
     task_id: part5
