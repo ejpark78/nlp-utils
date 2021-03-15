@@ -89,9 +89,10 @@ parsing:
   # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
     - parser: json
-    - key: raw_list
-      value: [ ]
-      type: html
+      mapping:
+        url: url
+        date: datetime
+        raw_list: '*'
   # 기사 본문에서 추출해야하는 tag 정보
   article:
     - key: raw
@@ -154,3 +155,49 @@ pipeline:
       value:
         - select: div#newsEndContents iframe
       type: html
+
+# 인덱스 맵핑
+index_mapping:
+  settings:
+    number_of_replicas: 1
+    number_of_shards: 1
+  mappings:
+    properties:
+      title:
+        type: text
+      url:
+        ignore_above: 256
+        type: keyword
+      content:
+        type: text
+      date:
+        type: date
+      category:
+        ignore_above: 50
+        type: keyword
+      raw:
+        enabled: false
+      raw_list:
+        enabled: false
+      parser_version:
+        ignore_above: 50
+        type: keyword
+      status:
+        # raw_list, raw, pipeline
+        ignore_above: 50
+        type: keyword
+      '@curl_date':
+        type: date
+      # pipeline columns
+      image_list:
+        enabled: false
+      vod:
+        enabled: false
+      source:
+        enabled: false
+      source_url:
+        enabled: false
+      source_section:
+        enabled: false
+      papaer:
+        enabled: false
