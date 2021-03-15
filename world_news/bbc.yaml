@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-bbs-{year}
+- index: raw-bbc-{year}
   article:
     document_id:
       replace:

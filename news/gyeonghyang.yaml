@@ -1,6 +1,6 @@
 ---
 jobs:
-  - index: raw-hankook-{year}
+  - index: raw-gyeonghyang-{year}
     article:
       document_id:
         frame: '{artid}'
