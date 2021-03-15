@@ -13,6 +13,7 @@ jobs:
       - from: /
         to: '-'
       type: path
+      
   args:
     page_range: "1~50"
   list:

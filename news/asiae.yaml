@@ -13,6 +13,7 @@ jobs:
       - from: /
         to: '-'
       type: path
+      
   list:
   - category: 정치/전체뉴스
     url_frame: https://www.asiae.co.kr/list/politics-all/{page}

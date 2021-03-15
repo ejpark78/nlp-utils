@@ -5,6 +5,7 @@ jobs:
       document_id:
         frame: '{artid}'
         type: query
+        
     list:
       - category: 문화
         url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=960000&page={page}
