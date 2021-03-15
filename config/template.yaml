@@ -17,7 +17,7 @@ default_args:
 operator:
   params:
     labels:
-      crawler: news
+      crawler: korea-news
     namespace: 'airflow'
     image: 'registry.nlp-utils/crawler:live'
     image_pull_policy: 'Always'
