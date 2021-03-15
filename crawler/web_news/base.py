@@ -65,7 +65,7 @@ class WebNewsBase(object):
         self.page_range = None
 
         self.cache = SimpleCache(threshold=200, default_timeout=600)
-        self.cache_skip_count = 0
+        self.skip_count = 0
 
         self.logger = Logger()
 
@@ -138,7 +138,10 @@ class WebNewsBase(object):
         # 날자 범위 추출
         token = date_range.split('~', maxsplit=1)
 
+        # 2021-01 은 2021-01-13 으로 변환됨
         dt_start = parse_date(token[0]).astimezone(self.timezone)
+
+        # 2021-01-01 인 경우
         dt_end = dt_start + relativedelta(months=1)
 
         if len(token) > 1:
@@ -337,11 +340,11 @@ class WebNewsBase(object):
 
         # 캐쉬에 저장된 문서가 있는지 조회
         if self.cache.has(key=doc_id) is True:
-            self.cache_skip_count += 1
+            self.skip_count += 1
 
             self.logger.info(msg={
                 'level': 'INFO',
-                'message': '중복 문서, 건너뜀',
+                'message': '중복 문서, 건너뜀: cache',
                 'doc_id': doc_id,
                 'url': url,
             })

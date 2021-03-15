@@ -247,6 +247,7 @@ class WebNewsCrawler(WebNewsBase):
         doc_id = doc['_id']
 
         es.save_document(document=doc, delete=False)
+        self.cache.set(key=doc_id, value=True)
 
         if flush is False:
             return doc
@@ -624,7 +625,7 @@ class WebNewsCrawler(WebNewsBase):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
-        if self.params.config_debug:
+        if self.params.verbose == 0:
             self.logger.log(msg={'CONFIG_DEBUG': 'trace_list', 'trace_list': self.simplify(trace_list)})
             sleep(self.params.sleep)
 
@@ -650,7 +651,7 @@ class WebNewsCrawler(WebNewsBase):
                 parsing_info=self.config['parsing']['list'],
             )
 
-            if self.params.config_debug:
+            if self.params.verbose == 0:
                 self.logger.log(msg={
                     'CONFIG_DEBUG': 'list info',
                     'trace': self.simplify(trace),
@@ -675,7 +676,7 @@ class WebNewsCrawler(WebNewsBase):
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
 
-            if self.params.config_debug:
+            if self.params.verbose == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
                 sleep(self.params.sleep)
 
@@ -684,22 +685,32 @@ class WebNewsCrawler(WebNewsBase):
 
             item['_id'] = doc_id
 
+            is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
+            if is_skip is True:
+                continue
+
             # 기사 목록 저장
             if self.params.list:
                 # 임시 변수 삭제
-                if 'encoding' in item:
-                    del item['encoding']
-
-                if 'raw' in item:
-                    del item['raw']
+                for k in ['encoding', 'raw']:
+                    if k not in item:
+                        continue
+                    del item[k]
 
                 item['status'] = 'raw_list'
 
-                self.save_article(es=es, job=job, doc=item, flush=False)
-                continue
+                if self.params.verbose == 1:
+                    self.logger.log(
+                        msg={
+                            'job_name': job['name'] if 'name' in job else 'unknown',
+                            '_id': item['_id'],
+                            'date': item['date'].isoformat(),
+                            'title': item['title']
+                        },
+                        show_date=False
+                    )
 
-            is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
-            if is_skip is True:
+                self.save_article(es=es, job=job, doc=item, flush=False)
                 continue
 
             # 기사 본문 조회
@@ -713,7 +724,7 @@ class WebNewsCrawler(WebNewsBase):
                 parsing_info=self.config['parsing']['article'],
             )
 
-            if self.params.config_debug:
+            if self.params.verbose == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
                 sleep(self.params.sleep)
 
@@ -737,8 +748,6 @@ class WebNewsCrawler(WebNewsBase):
                 html=article_html,
                 article=article,
             )
-
-            self.cache.set(key=doc_id, value=True)
 
             self.logger.info(msg={
                 'level': 'INFO',
@@ -766,7 +775,9 @@ class WebNewsCrawler(WebNewsBase):
     def trace_page(self, url_info: dict, job: dict, dt: datetime = None) -> None:
         """뉴스 목록을 크롤링한다."""
         self.trace_depth = 0
-        self.cache_skip_count = 0
+
+        self.cache.clear()
+        self.skip_count = 0
 
         # 디비에 연결한다.
         es = self.open_elasticsearch(date=dt, job=job, mapping=self.params.mapping)
@@ -790,19 +801,20 @@ class WebNewsCrawler(WebNewsBase):
                 'url': url_info['url'] if 'url' in url_info else '',
                 'query': q,
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                'skip_count': self.skip_count,
             })
 
             # 기사 목록 조회
             resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
 
-            if self.params.config_debug:
+            if self.params.verbose == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'list page', 'url': url_info['url']})
                 sleep(self.params.sleep)
 
             if resp is None:
                 continue
 
-            cache_skip_count = self.cache_skip_count
+            prev_skip_count = self.skip_count
 
             # 문서 저장
             early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es, query=q)
@@ -810,11 +822,13 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            if page >= 3 and self.cache_skip_count == cache_skip_count:
+            if 0 < prev_skip_count < self.skip_count:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': 'cache_skip_count 와 문서 목록이 동일함',
-                    'skip_count': self.cache_skip_count,
+                    'prev_skip_count': prev_skip_count,
+                    'skip_count': self.skip_count,
+                    'cache_count': len(self.cache._cache),
                     **url_info
                 })
                 break
@@ -926,7 +940,7 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--list', action='store_true', default=False, help='목록만 크롤링')
         parser.add_argument('--article', action='store_true', default=False, help='기사 본문만 크롤링')
 
-        parser.add_argument('--config-debug', action='store_true', default=False, help='config 파일 개발')
+        parser.add_argument('--verbose', default=0, type=int, help='verbose 모드: 0=config, 1=list info')
 
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 

@@ -16,8 +16,10 @@ import pytz
 
 class LogMessage(object):
 
-    def __init__(self, message, **kwargs):
+    def __init__(self, message: dict, show_date: bool = True, **kwargs):
         self.message = message
+        self.show_logging_date = show_date
+
         self.kwargs = kwargs
 
         self.timezone = pytz.timezone('Asia/Seoul')
@@ -26,7 +28,7 @@ class LogMessage(object):
         self.message.update(self.kwargs)
 
         try:
-            if 'logging_date' not in self.message:
+            if self.show_logging_date is True and 'logging_date' not in self.message:
                 self.message['logging_date'] = datetime.now(self.timezone).isoformat()
 
             return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
@@ -59,22 +61,22 @@ class Logger(object):
 
         return self.logger
 
-    def error(self, msg: dict) -> None:
-        self.logger.error(msg=LogMessage(msg))
+    def error(self, msg: dict, show_date: bool = True) -> None:
+        self.logger.error(msg=LogMessage(msg, show_date=show_date))
         return
 
-    def info(self, msg: dict) -> None:
-        self.logger.info(msg=LogMessage(msg))
+    def info(self, msg: dict, show_date: bool = True) -> None:
+        self.logger.info(msg=LogMessage(msg, show_date=show_date))
         return
 
-    def log(self, msg: dict) -> None:
-        self.logger.log(level=self.MESSAGE, msg=LogMessage(msg))
+    def log(self, msg: dict, show_date: bool = True) -> None:
+        self.logger.log(level=self.MESSAGE, msg=LogMessage(msg, show_date=show_date))
         return
 
-    def warning(self, msg: dict) -> None:
-        self.logger.warning(msg=LogMessage(msg))
+    def warning(self, msg: dict, show_date: bool = True) -> None:
+        self.logger.warning(msg=LogMessage(msg, show_date=show_date))
         return
 
-    def debug(self, msg: dict) -> None:
-        self.logger.debug(msg=LogMessage(msg))
+    def debug(self, msg: dict, show_date: bool = True) -> None:
+        self.logger.debug(msg=LogMessage(msg, show_date=show_date))
         return
