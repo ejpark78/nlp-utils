@@ -41,11 +41,15 @@ operator:
     - --date-range
     - today
 tasks:
-  - category: group
+  - category: group1
     config: /config/news/gyeonghyang.yaml
-    name: 문화,문화/연예,경제/일반,경제/금융,경제/산업,경제/기업,경제/부동산,경제,국제,리빙/생활,리빙/사람들,리빙/트래블,리빙/건강/의학,리빙/자동차,사설/사설,사설/칼럼,사설/여적,정치/일반,정치/청와대,정치/국회/정당,정치/국방/외교,정치/북한,정치/선거
+    name: 문화,문화/연예,경제/일반,경제/금융,경제/산업,경제/기업,경제/부동산,경제,국제,리빙/생활,리빙/사람들,리빙/트래블,리빙/건강/의학
     task_id: part1
-  - category: society
+  - category: group2
     config: /config/news/gyeonghyang.yaml
-    name: 사회/일반,사회/사건/사고,사회/법원/검찰,사회/교육,사회/노동,사회/보건/복지,사회/미디어,사회/지역,스포츠/스포츠
+    name: 사회/일반,사회/사건/사고,사회/법원/검찰,사회/교육,사회/노동,사회/보건/복지,사회/미디어,사회/지역,스포츠/스포츠,정치/국회/정당
     task_id: part2
+  - category: group3
+    config: /config/news/gyeonghyang.yaml
+    리빙/자동차,사설/사설,사설/칼럼,사설/여적,정치/일반,정치/청와대,정치/국방/외교,정치/북한,정치/선거
+    task_id: part3
