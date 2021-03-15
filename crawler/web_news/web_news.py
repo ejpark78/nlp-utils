@@ -50,8 +50,8 @@ class WebNewsCrawler(WebNewsBase):
         if date is not None:
             index_tag = date.year
 
-        if mapping is None and 'index_mapping' in self.config:
-            mapping: dict = self.config['index_mapping']
+        if mapping is None and 'index_mapping' in self.job_config:
+            mapping: dict = self.job_config['index_mapping']
 
         return ElasticSearchUtils(
             tag=index_tag,
@@ -391,14 +391,14 @@ class WebNewsCrawler(WebNewsBase):
         else:
             soup = self.parser.parse_html(
                 html=html,
-                parser_type=self.config['parsing']['parser'],
+                parser_type=self.job_config['parsing']['parser'],
             )
 
             self.parser.trace_tag(
                 soup=soup,
                 index=0,
                 result=trace_list,
-                tag_list=self.config['parsing']['trace'],
+                tag_list=self.job_config['parsing']['trace'],
             )
 
         if len(trace_list) == 0:
@@ -433,7 +433,7 @@ class WebNewsCrawler(WebNewsBase):
             if isinstance(resp, str) or isinstance(resp, bytes):
                 resp = self.parser.parse_html(
                     html=resp,
-                    parser_type=self.config['parsing']['parser'],
+                    parser_type=self.job_config['parsing']['parser'],
                 )
 
             # 목록에서 기사 본문 링크 추출
@@ -442,7 +442,7 @@ class WebNewsCrawler(WebNewsBase):
                 soup=resp,
                 base_url=base_url,
                 parsing_info=parsing_info,
-                parser_version=self.config['parsing']['version'] if 'version' in self.config['parsing'] else None,
+                parser_version=self.job_config['parsing']['version'] if 'version' in self.job_config['parsing'] else None,
             )
 
         # url 추출
@@ -521,14 +521,14 @@ class WebNewsCrawler(WebNewsBase):
     def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
                         query: dict) -> None:
         """다음 페이지를 따라간다."""
-        if 'trace_next_page' not in self.config['parsing']:
+        if 'trace_next_page' not in self.job_config['parsing']:
             return
 
         # html 이 json 인 경우
         if isinstance(html, dict) or isinstance(html, list):
             return
 
-        trace_tag = self.config['parsing']['trace_next_page']
+        trace_tag = self.job_config['parsing']['trace_next_page']
 
         if len(trace_tag) == 0:
             return
@@ -544,7 +544,7 @@ class WebNewsCrawler(WebNewsBase):
         # 다음 페이지 url 추출
         soup = self.parser.parse_html(
             html=html,
-            parser_type=self.config['parsing']['parser'],
+            parser_type=self.job_config['parsing']['parser'],
         )
 
         trace_list = []
@@ -564,10 +564,10 @@ class WebNewsCrawler(WebNewsBase):
                 for pattern in trace_tag['replace']:
                     url = re.sub(pattern['from'], pattern['to'], url, flags=re.DOTALL)
 
-            next_url = self.config['parsing']
+            next_url = self.job_config['parsing']
             next_url['url'] = url
 
-            resp = self.get_html_page(url_info=self.config['parsing'])
+            resp = self.get_html_page(url_info=self.job_config['parsing'])
             if resp is None:
                 continue
 
@@ -624,7 +624,7 @@ class WebNewsCrawler(WebNewsBase):
                    query: dict) -> bool:
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
-        trace_list = self.get_trace_list(html=html, parsing_info=self.config['parsing']['trace'])
+        trace_list = self.get_trace_list(html=html, parsing_info=self.job_config['parsing']['trace'])
         if self.params.verbose == 0:
             self.logger.log(msg={'CONFIG_DEBUG': 'trace_list', 'trace_list': self.simplify(trace_list)})
             sleep(self.params.sleep)
@@ -648,7 +648,7 @@ class WebNewsCrawler(WebNewsBase):
                 resp=trace,
                 url_info=url_info,
                 base_url=base_url,
-                parsing_info=self.config['parsing']['list'],
+                parsing_info=self.job_config['parsing']['list'],
             )
 
             if self.params.verbose == 0:
@@ -704,7 +704,7 @@ class WebNewsCrawler(WebNewsBase):
                         msg={
                             'job_name': job['name'] if 'name' in job else 'unknown',
                             '_id': item['_id'],
-                            'date': item['date'].isoformat(),
+                            'date': item['date'].isoformat().split('T')[0],
                             'title': item['title']
                         },
                         show_date=False
@@ -721,7 +721,7 @@ class WebNewsCrawler(WebNewsBase):
                 resp=article_html,
                 url_info=item,
                 base_url=item['url'],
-                parsing_info=self.config['parsing']['article'],
+                parsing_info=self.job_config['parsing']['article'],
             )
 
             if self.params.verbose == 0:
@@ -739,6 +739,8 @@ class WebNewsCrawler(WebNewsBase):
 
             # 댓글 post process 처리
             self.post_request(article=article, job=job, item=item)
+
+            item['status'] = 'article'
 
             # 기사 저장
             self.save_article(
@@ -866,66 +868,72 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
+    def trace_job(self, job: dict) -> None:
+        if 'name' in job and self.job_names is not None:
+            if job['name'] not in self.job_names:
+                return
+
+        # override args config
+        if 'args' not in job:
+            job['args'] = {}
+
+        self.date_range = self.update_date_range(
+            date_range=self.params.date_range,
+            step=self.params.date_step,
+            args=job['args']
+        )
+
+        self.page_range = self.update_page_range(
+            page_range=self.params.page_range,
+            step=self.params.page_step,
+            args=job['args']
+        )
+
+        self.logger.log(msg={
+            'level': 'MESSAGE',
+            'message': '날짜와 페이지 범위',
+            'date_range': {k: str(v) for k, v in self.date_range.items()},
+            'page_range': self.page_range,
+        })
+
+        # override elasticsearch config
+        job['host'] = os.getenv(
+            'ELASTIC_SEARCH_HOST',
+            default=job['host'] if 'host' in job else None
+        )
+        job['index'] = os.getenv(
+            'ELASTIC_SEARCH_INDEX',
+            default=job['index'] if 'index' in job else None
+        )
+        job['http_auth'] = os.getenv(
+            'ELASTIC_SEARCH_AUTH',
+            default=job['http_auth'] if 'http_auth' in job else None
+        )
+
+        if 'host' not in job or 'index' not in job:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'elasticsearch 저장 정보 없음',
+            })
+            return
+
+        self.trace_category(job=job)
+
+        return
+
     def batch(self) -> None:
         """ job -> category -> date -> page 순서 """
         self.params = self.init_arguments()
 
-        self.config = self.open_config(filename=self.params.config)
+        config_list = self.open_config(filename=self.params.config)
 
         self.job_names = set(self.params.job_name.split(',')) if self.params.job_name != '' else None
         self.job_sub_category = set(self.params.sub_category.split(',')) if self.params.sub_category != '' else None
 
         # 카테고리 하위 목록을 크롤링한다.
-        for job in self.config['jobs']:
-            if 'name' in job and self.job_names is not None:
-                if job['name'] not in self.job_names:
-                    continue
-
-            # override args config
-            if 'args' not in job:
-                job['args'] = {}
-
-            self.date_range = self.update_date_range(
-                date_range=self.params.date_range,
-                step=self.params.date_step,
-                args=job['args']
-            )
-
-            self.page_range = self.update_page_range(
-                page_range=self.params.page_range,
-                step=self.params.page_step,
-                args=job['args']
-            )
-
-            self.logger.log(msg={
-                'level': 'MESSAGE',
-                'message': '날짜와 페이지 범위',
-                'date_range': {k: str(v) for k, v in self.date_range.items()},
-                'page_range': self.page_range,
-            })
-
-            # override elasticsearch config
-            job['host'] = os.getenv(
-                'ELASTIC_SEARCH_HOST',
-                default=job['host'] if 'host' in job else None
-            )
-            job['index'] = os.getenv(
-                'ELASTIC_SEARCH_INDEX',
-                default=job['index'] if 'index' in job else None
-            )
-            job['http_auth'] = os.getenv(
-                'ELASTIC_SEARCH_AUTH',
-                default=job['http_auth'] if 'http_auth' in job else None
-            )
-
-            if 'host' not in job or 'index' not in job:
-                self.logger.error(msg={
-                    'level': 'ERROR',
-                    'message': 'elasticsearch 저장 정보 없음',
-                })
-                break
-
-            self.trace_category(job=job)
+        for self.job_config in config_list:
+            for job in self.job_config['jobs']:
+                self.trace_job(job=job)
 
         return
 
@@ -937,19 +945,20 @@ class WebNewsCrawler(WebNewsBase):
 
         parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
 
-        parser.add_argument('--list', action='store_true', default=False, help='목록만 크롤링')
-        parser.add_argument('--article', action='store_true', default=False, help='기사 본문만 크롤링')
-
-        parser.add_argument('--verbose', default=0, type=int, help='verbose 모드: 0=config, 1=list info')
-
         parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
 
-        parser.add_argument('--sub-category', default='', help='하위 카테고리')
+        parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
+        parser.add_argument('--article', action='store_true', default=False, help='TODO: 기사 본문 크롤링')
+        parser.add_argument('--pipeline', default='', type=str, help='TODO: pipeline')
 
-        parser.add_argument('--date-range', default=None, help='date 날짜 범위: 2000-01-01~2019-04-10')
+        parser.add_argument('--verbose', default=-1, type=int, help='verbose 모드: 0=config, 1=list info')
+
+        parser.add_argument('--sub-category', default='', type=str, help='하위 카테고리')
+
+        parser.add_argument('--date-range', default=None, type=str, help='date 날짜 범위: 2000-01-01~2019-04-10')
         parser.add_argument('--date-step', default=-1, type=int, help='date step')
 
-        parser.add_argument('--page-range', default=None, help='page 범위: 1~100')
+        parser.add_argument('--page-range', default=None, type=str, help='page 범위: 1~100')
         parser.add_argument('--page-step', default=1, type=int, help='page step')
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')

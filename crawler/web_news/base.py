@@ -35,7 +35,7 @@ class WebNewsBase(object):
 
         self.debug = int(getenv('DEBUG', 0))
 
-        self.config = None
+        self.job_config = None
 
         self.parser = HtmlParser()
 
@@ -81,10 +81,16 @@ class WebNewsBase(object):
         return result
 
     @staticmethod
-    def open_config(filename: str) -> dict:
-        with open(filename, 'r') as fp:
-            data = yaml.load(stream=fp, Loader=yaml.FullLoader)
-            return dict(data)
+    def open_config(filename: str) -> list:
+        file_list = filename.split(',')
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+                result.append(dict(data))
+
+        return result
 
     @staticmethod
     def update_page_range(page_range: str = None, step: int = 1, args: dict = None) -> dict:
