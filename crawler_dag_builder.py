@@ -22,15 +22,14 @@ class CrawlerDagBuilder(object):
         path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', '/opt/airflow/dags')
         sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
 
-        template_filename = os.sep.join([path, sub_path, "config", "template.yaml"])
+        template_filename = '{}/{}/{}'.format(path, sub_path, "config/template.yaml")
         template = {}
         if os.path.isfile(template_filename):
-            with open(filename, 'r') as fp:
+            with open(template_filename, 'r') as fp:
                 template = yaml.load(stream=fp, Loader=yaml.FullLoader)
                 template = dict(template)
 
         filename = '{}/{}/{}'.format(path, sub_path, filename)
-        filename = os.join([path, sub_path, filename])
 
         with open(filename, 'r') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)

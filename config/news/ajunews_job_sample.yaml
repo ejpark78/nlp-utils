@@ -5,10 +5,6 @@ dag:
   tags:
     - 국내 뉴스
     - 아주경제
-operator:
-  params:
-    labels:
-      crawler: korea-news
 tasks:
   - category: china
     config: /config/news/ajunews.yaml

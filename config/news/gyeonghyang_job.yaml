@@ -51,5 +51,5 @@ tasks:
     task_id: part2
   - category: group3
     config: /config/news/gyeonghyang.yaml
-    리빙/자동차,사설/사설,사설/칼럼,사설/여적,정치/일반,정치/청와대,정치/국방/외교,정치/북한,정치/선거
+    name: 리빙/자동차,사설/사설,사설/칼럼,사설/여적,정치/일반,정치/청와대,정치/국방/외교,정치/북한,정치/선거
     task_id: part3
