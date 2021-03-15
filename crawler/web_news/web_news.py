@@ -44,6 +44,21 @@ class WebNewsCrawler(WebNewsBase):
         self.job_names: set or None = None
         self.job_sub_category: set or None = None
 
+        self.summary = {
+            'start': datetime.now(self.timezone),
+            'finished': datetime.now(self.timezone),
+            'skip': 0,
+            'page': 0,
+            'list': 0,
+            'article': 0,
+        }
+
+        self.elastic_env = {
+            'host': os.getenv('ELASTIC_SEARCH_HOST', default=''),
+            'index': os.getenv('ELASTIC_SEARCH_INDEX', default=''),
+            'http_auth': os.getenv('ELASTIC_SEARCH_AUTH', default=''),
+        }
+
     def open_elasticsearch(self, date: datetime, job: dict, mapping: str = None) -> ElasticSearchUtils:
         """디비에 연결한다."""
         index_tag = None
@@ -442,7 +457,8 @@ class WebNewsCrawler(WebNewsBase):
                 soup=resp,
                 base_url=base_url,
                 parsing_info=parsing_info,
-                parser_version=self.job_config['parsing']['version'] if 'version' in self.job_config['parsing'] else None,
+                parser_version=self.job_config['parsing']['version'] if 'version' in self.job_config[
+                    'parsing'] else None,
             )
 
         # url 추출
@@ -651,6 +667,8 @@ class WebNewsCrawler(WebNewsBase):
                 parsing_info=self.job_config['parsing']['list'],
             )
 
+            self.summary['list'] += 1
+
             if self.params.verbose == 0:
                 self.logger.log(msg={
                     'CONFIG_DEBUG': 'list info',
@@ -702,7 +720,7 @@ class WebNewsCrawler(WebNewsBase):
                 if self.params.verbose == 1:
                     self.logger.log(
                         msg={
-                            'job_name': job['name'] if 'name' in job else 'unknown',
+                            'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
                             '_id': item['_id'],
                             'date': item['date'].isoformat().split('T')[0],
                             'title': item['title']
@@ -723,6 +741,8 @@ class WebNewsCrawler(WebNewsBase):
                 base_url=item['url'],
                 parsing_info=self.job_config['parsing']['article'],
             )
+
+            self.summary['article'] += 1
 
             if self.params.verbose == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
@@ -808,6 +828,7 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기사 목록 조회
             resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
+            self.summary['page'] += 1
 
             if self.params.verbose == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'list page', 'url': url_info['url']})
@@ -817,6 +838,7 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             prev_skip_count = self.skip_count
+            self.summary['skip'] += self.skip_count
 
             # 문서 저장
             early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es, query=q)
@@ -934,6 +956,17 @@ class WebNewsCrawler(WebNewsBase):
         for self.job_config in config_list:
             for job in self.job_config['jobs']:
                 self.trace_job(job=job)
+
+        # summary
+        self.summary['finished'] = datetime.now(self.timezone)
+        self.summary['runtime'] = self.summary['finished'] - self.summary['start']
+
+        self.logger.log(msg={
+            'level': 'SUMMARY',
+            'args': vars(self.params),
+            'env': self.elastic_env,
+            **self.summary
+        })
 
         return
 
