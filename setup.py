@@ -32,6 +32,7 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=install_requires,
     include_package_data=True,
+    scripts=glob('bin/*.sh'),
     zip_safe=False
 )
 
