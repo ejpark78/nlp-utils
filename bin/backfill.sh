@@ -10,8 +10,8 @@ export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
 
 YEAR=2021
 #python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
 
 
 YEAR=2020

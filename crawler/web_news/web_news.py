@@ -9,6 +9,7 @@ import json
 import os
 import re
 from argparse import Namespace
+from collections import defaultdict
 from copy import deepcopy
 from datetime import datetime, timedelta
 from time import sleep
@@ -44,14 +45,8 @@ class WebNewsCrawler(WebNewsBase):
         self.job_names: set or None = None
         self.job_sub_category: set or None = None
 
-        self.summary = {
-            'start': datetime.now(self.timezone),
-            'finished': datetime.now(self.timezone),
-            'skip': 0,
-            'page': 0,
-            'list': 0,
-            'article': 0,
-        }
+        self.start_date = datetime.now(self.timezone)
+        self.summary = defaultdict(int)
 
         self.elastic_env = {
             'host': os.getenv('ELASTIC_SEARCH_HOST', default=''),
@@ -718,11 +713,13 @@ class WebNewsCrawler(WebNewsBase):
                 item['status'] = 'raw_list'
 
                 if self.params.verbose == 1:
+                    dt_str = item['date'] if isinstance(item['date'], str) else item['date'].isoformat()
+
                     self.logger.log(
                         msg={
                             'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
                             '_id': item['_id'],
-                            'date': item['date'].isoformat().split('T')[0],
+                            'date': dt_str.split('T')[0],
                             'title': item['title']
                         },
                         show_date=False
@@ -942,15 +939,19 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def running_state(self, tag: str) -> None:
-        self.summary['finished'] = datetime.now(self.timezone)
+        finished = datetime.now(self.timezone)
 
-        self.summary['runtime'] = self.summary['finished'] - self.summary['start']
+        runtime = finished - self.start_date
+        runtime = runtime.total_seconds()
 
         self.logger.log(msg={
             'level': 'SUMMARY',
             'args': vars(self.params),
             'env': self.elastic_env,
             'tag': tag,
+            'start': self.start_date,
+            'finished': finished,
+            'runtime': runtime,
             **self.summary
         })
         return

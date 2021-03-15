@@ -5,21 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
-from datetime import datetime
 from os import getenv
-from time import sleep
 
 import pytz
-import requests
 import urllib3
 import yaml
-from cachelib import SimpleCache
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
-from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
-from crawler.web_news.post_process import PostProcessUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

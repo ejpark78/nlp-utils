@@ -21,8 +21,8 @@ from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
 
 
-class PostProcessUtils(object):
-    """후처리 함수"""
+class Pipeline(object):
+    """ETL Pipeline"""
 
     def __init__(self):
         self.logger = Logger()

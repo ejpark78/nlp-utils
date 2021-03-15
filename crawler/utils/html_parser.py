@@ -528,6 +528,9 @@ class HtmlParser(object):
         dot = dotty(resp)
 
         for k in mapping_info:
+            if k[0] == '_':
+                continue
+
             v = mapping_info[k]
 
             if v == '*':
@@ -555,5 +558,17 @@ class HtmlParser(object):
                     'date': result[k],
                     'exception': str(e),
                 })
+
+        # type convert
+        for k in mapping_info:
+            if k != '_convert':
+                continue
+
+            for col, t in mapping_info[k].items():
+                if col not in result:
+                    continue
+
+                if t == 'date' and isinstance(result[col], str):
+                    result[col] = parse_date(result[col]).astimezone(tz=self.timezone)
 
         return result
