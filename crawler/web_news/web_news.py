@@ -849,10 +849,8 @@ class WebNewsCrawler(WebNewsBase):
             if 0 < prev_skip_count < self.skip_count:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
-                    'message': 'cache_skip_count 와 문서 목록이 동일함',
-                    'prev_skip_count': prev_skip_count,
-                    'skip_count': self.skip_count,
-                    'cache_count': len(self.cache._cache),
+                    'message': '마지막 페이지: 종료',
+                    'skip_count': f'{self.skip_count} > {prev_skip_count}',
                     **url_info
                 })
                 break
@@ -943,6 +941,20 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
+    def running_state(self, tag: str) -> None:
+        self.summary['finished'] = datetime.now(self.timezone)
+
+        self.summary['runtime'] = self.summary['finished'] - self.summary['start']
+
+        self.logger.log(msg={
+            'level': 'SUMMARY',
+            'args': vars(self.params),
+            'env': self.elastic_env,
+            'tag': tag,
+            **self.summary
+        })
+        return
+
     def batch(self) -> None:
         """ job -> category -> date -> page 순서 """
         self.params = self.init_arguments()
@@ -957,16 +969,9 @@ class WebNewsCrawler(WebNewsBase):
             for job in self.job_config['jobs']:
                 self.trace_job(job=job)
 
-        # summary
-        self.summary['finished'] = datetime.now(self.timezone)
-        self.summary['runtime'] = self.summary['finished'] - self.summary['start']
+                self.running_state(tag='job done')
 
-        self.logger.log(msg={
-            'level': 'SUMMARY',
-            'args': vars(self.params),
-            'env': self.elastic_env,
-            **self.summary
-        })
+        self.running_state(tag='completed')
 
         return
 

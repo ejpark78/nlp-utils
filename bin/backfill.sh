@@ -8,34 +8,37 @@ export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
 export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
 
 
-#python3 ${SCRIPTS} --date-range 2021-03-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2021-02-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2021-01-01 ${ARGS}
+YEAR=2021
+#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
 
 
-python3 ${SCRIPTS} --date-range 2020-12-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-11-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-10-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-09-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-08-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-07-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-06-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-05-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-04-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-03-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-02-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2020-01-01 ${ARGS}
+YEAR=2020
+python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-10-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-09-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-08-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-07-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-06-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-05-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-04-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
 
 
-python3 ${SCRIPTS} --date-range 2019-12-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-11-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-10-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-09-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-08-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-07-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-06-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-05-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-04-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-03-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-02-01 ${ARGS}
-python3 ${SCRIPTS} --date-range 2019-01-01 ${ARGS}
+YEAR=2019
+python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-10-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-09-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-08-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-07-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-06-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-05-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-04-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
