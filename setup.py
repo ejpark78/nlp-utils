@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from glob import glob
+
 from setuptools import setup, find_packages
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -28,7 +30,9 @@ setup(
     description='검색팀 크롤러',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=install_requires
+    install_requires=install_requires,
+    include_package_data=True,
+    zip_safe=False
 )
 
 # ref: https://stackoverflow.com/questions/24347450/how-do-you-add-additional-files-to-a-wheel

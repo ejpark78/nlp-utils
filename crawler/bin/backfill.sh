@@ -8,7 +8,7 @@ export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
 export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
 
 
-python3 ${SCRIPTS} --date-range 2021-03-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range 2021-03-01 ${ARGS}
 python3 ${SCRIPTS} --date-range 2021-02-01 ${ARGS}
 python3 ${SCRIPTS} --date-range 2021-01-01 ${ARGS}
 

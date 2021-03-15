@@ -42,10 +42,11 @@ RUN echo && echo "크롤러 설치 (git): ${INSTALL_BRANCH}" \
      && pip3 install -r requirements.txt \
      && python3 setup.py install \
      && pip3 show crawler \
-     && rm -rf /tmp/*
+     && rm -rf /tmp/* ~/.cache
 
 RUN echo && echo "크롤러 config 설치: ${CONFIG_BRANCH}" \
-    && git clone -b ${CONFIG_BRANCH} http://galadriel02.korea.ncsoft.corp/crawler/config.git /config
+    && git clone -b ${CONFIG_BRANCH} http://galadriel02.korea.ncsoft.corp/crawler/config.git /config \
+    && rm -rf /config/.git
 
 #RUN echo && echo "크롤러 설치 (pypi)" \
 #    && pip3 install -U crawler \
