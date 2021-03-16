@@ -36,12 +36,12 @@ parsing:
     trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
   trace:
-  - select: div#sub_main_news1 li
+  - select: div#newslist_main_news2 li
   list:
   - comment: url
     key: url
     value:
-    - select: a 
+    - select: a
     type: href
   - comment: 크롤링 시간
     key: '@curl_date'
@@ -74,7 +74,7 @@ parsing:
     value:
     - select: '#newsitem_head > h5 > table > tbody > tr > td:nth-child(1) > b'
     replace:
-    - from: "^편집 "
+    - from: "^.*편집 "
       to: ''
     - from: " "
       to: 'T'
