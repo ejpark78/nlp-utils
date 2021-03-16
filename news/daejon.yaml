@@ -69,16 +69,15 @@ parsing:
     value:
     - select: div#newsitem_head h2
     type: text
-    value_type: single
   - comment: 날짜
     key: date
     value:
-    - select: div#newsitem_head h5
+    - select: '#newsitem_head > h5 > table > tbody > tr > td:nth-child(1) > b'
     replace:
-    - from: "^.+편집 "
+    - from: "^편집 "
       to: ''
-    - from: "\\t.+"
-      to: ''
+    - from: " "
+      to: 'T'
     type: text
     type_convert: date
     value_type: single

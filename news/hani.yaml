@@ -231,7 +231,7 @@ parsing:
   - comment: 텍스트 본문
     key: content
     value:
-    - select: '#article-text'
+    - select: 'div.article-text > div > div.text'
     type: text
     value_type: merge
   - comment: 크롤링 시간
