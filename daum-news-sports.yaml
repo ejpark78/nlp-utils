@@ -54,16 +54,19 @@ jobs:
 parsing:
   version: v2021-03-11
   parser: html5lib
+
   # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
     - parser: json
       column: content
+
   # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
     - parser: json
       mapping:
         raw_list: '*'
         url: https://sports.v.daum.net/v/{newsId}
+
   # 기사 본문에서 추출해야하는 tag 정보
   article:
     - key: raw

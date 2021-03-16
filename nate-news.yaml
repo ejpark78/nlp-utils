@@ -249,9 +249,11 @@ jobs:
 parsing:
   version: v2021-03-11
   parser: lxml
+
   # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
     - select: div.postSubject li
+
   # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
     - key: raw_list
@@ -373,13 +375,7 @@ index_mapping:
       # pipeline columns
       image_list:
         enabled: false
-      vod:
-        enabled: false
       source:
         enabled: false
       source_url:
-        enabled: false
-      source_section:
-        enabled: false
-      papaer:
         enabled: false
