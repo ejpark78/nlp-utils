@@ -225,7 +225,7 @@ jobs:
 #        date_format: '%Y%m%d'
 #        url_frame: https://weather.naver.com/news/wetrNewsList.nhn?ymd={date}
 
-# crawling 시 추출하는 최소 정보
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-11
   parser: html5lib
