@@ -5,7 +5,7 @@ dag:
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   concurrency: 64
-  tags: [±¹³»´º½º]
+  tags: [êµ­ë‚´ë‰´ìŠ¤]
 default_args:
   owner: 'Airflow'
   retries: 3

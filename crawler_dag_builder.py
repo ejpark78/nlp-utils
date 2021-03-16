@@ -14,7 +14,7 @@ import yaml
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
-
+from airflow.contrib.kubernetes.pod import Resources
 
 class CrawlerDagBuilder(object):
 

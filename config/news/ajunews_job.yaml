@@ -4,8 +4,19 @@ dag:
   dag_id: 'ajunews'
   description: '아주경제 크롤러'
   schedule_interval: '0 * * * *'
-  tags:
-    - 아주경제
+  tags: ["아주경제"]
+resources:
+  request_cpu: "200m"
+  request_memory: "256Mi"
+  limit_cpu: "200m"
+  limit_memory: "256Mi"
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: china
     config: /config/news/ajunews.yaml
