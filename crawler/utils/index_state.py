@@ -31,6 +31,7 @@ class CrawlerIndexState(object):
 
         self.params = None
         self.doc_count = defaultdict(dict)
+        self.total = defaultdict(int)
 
         self.url, self.auth = None, None
 
@@ -63,28 +64,30 @@ class CrawlerIndexState(object):
                 'speed': abs(diff) / sleep_time if diff > 0 else 0,
             })
 
+            for col, val in self.doc_count[index].items():
+                if isinstance(val, str):
+                    continue
+
+                self.total[col] += val
+
         self.last_time = time()
 
         return
 
     def show(self) -> None:
-        total = defaultdict(int)
-        print(datetime.now(tz=self.timezone).strftime('%Y-%m-%d %H:%M:%S'), end='\n\n')
+        date = datetime.now(tz=self.timezone).strftime('%Y-%m-%d %H:%M:%S')
+
+        line = '{date: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(date=date, **self.total)
+        print(line)
 
         for index, item in self.doc_count.items():
-            for col, val in item.items():
-                if isinstance(val, str):
-                    continue
-
-                total[col] += val
-
             if self.params.active and item['diff'] == 0:
                 continue
 
             line = '{index: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)'.format(index=index, **item)
             print(line)
 
-        line = '\n{name: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(name='total', **total)
+        line = '\n{name: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(name='total', **self.total)
         print(line)
 
         return
