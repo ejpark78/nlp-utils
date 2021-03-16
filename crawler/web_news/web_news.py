@@ -713,7 +713,9 @@ class WebNewsCrawler(WebNewsBase):
                 item['status'] = 'raw_list'
 
                 if self.params.verbose == 1:
-                    dt_str = item['date'] if isinstance(item['date'], str) else item['date'].isoformat()
+                    dt_str = ''
+                    if 'date' in item:
+                        dt_str = item['date'] if isinstance(item['date'], str) else item['date'].isoformat()
 
                     self.logger.log(
                         msg={

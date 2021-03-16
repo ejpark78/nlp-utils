@@ -42,14 +42,17 @@ class CrawlerIndexState(object):
         resp = requests.get(url=self.url, auth=self.auth, verify=False)
 
         for line in resp.text.split('\n'):
-            if line.strip() == '':
+            if line.strip() == '' or line[0] == '.' or line.find('index') == 0:
                 continue
 
-            if line[0] == '.' or line.find('index') == 0:
+            if self.params.grep and line.find(self.params.grep) < 0:
                 continue
 
             index, count = re.sub(r'\s+', '\t', line).split('\t', maxsplit=1)
             count = int(count)
+
+            if index not in self.doc_count:
+                self.doc_count[index] = {}
 
             for col, default in [('count', count)]:
                 if col not in self.doc_count[index]:
@@ -153,6 +156,8 @@ class CrawlerIndexState(object):
                             help='elastic auth')
 
         parser.add_argument('--cache', default=getenv('CACHE_FILE', default=None), type=str, help='캐시 파일명')
+
+        parser.add_argument('--grep', default=None, type=str, help='인덱스 필터')
 
         return parser.parse_args()
 
