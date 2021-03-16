@@ -2,7 +2,7 @@
 dag:
   dag_id: 'cctoday'
   description: '충청투데이 crawler'
-  schedule_interval: '0,30 * * * *'
+  schedule_interval: '15 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:

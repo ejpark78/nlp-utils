@@ -2,7 +2,7 @@
 dag:
   dag_id: 'kyeongin'
   description: '경인일보 크롤러'
-  schedule_interval: '20,50 * * * *'
+  schedule_interval: '10 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:

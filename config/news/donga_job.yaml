@@ -2,7 +2,7 @@
 dag:
   dag_id: 'donga'
   description: '동아일보 크롤러'
-  schedule_interval: '10,40 * * * *'
+  schedule_interval: '50 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
