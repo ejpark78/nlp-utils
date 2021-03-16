@@ -81,6 +81,45 @@ class WebNewsBase(object):
         return result
 
     @staticmethod
+    def merge_params(args: dict = None, params: dict = None, default_params: dict = None) -> dict:
+        for col, val in args.items():
+            if col not in default_params or col not in params:
+                continue
+
+            if default_params[col] != params[col]:
+                continue
+
+            if isinstance(default_params[col], int):
+                val = int(val)
+
+            params[col] = val
+
+        return params
+
+    @staticmethod
+    def flatten(trace_list: list) -> list:
+        result = []
+
+        for item in trace_list:
+            if isinstance(item, dict):
+                result.append(item)
+                continue
+
+            new_item = {}
+            for x in item:
+                if x is None:
+                    continue
+
+                new_item = {
+                    **new_item,
+                    **x
+                }
+
+            result.append(new_item)
+
+        return result
+
+    @staticmethod
     def open_config(filename: str) -> list:
         file_list = filename.split(',')
 
@@ -93,10 +132,10 @@ class WebNewsBase(object):
         return result
 
     @staticmethod
-    def update_page_range(page_range: str = None, step: int = 1, args: dict = None) -> dict:
+    def update_page_range(page_range: str = None, step: int = 1) -> dict:
         """페이지 범위를 갱신한다."""
-        step = int(args['page_step']) if step == 1 and 'page_step' in args else step
-        page_range = args['page_range'] if page_range is None and 'page_range' in args else page_range
+        if isinstance(step, str):
+            step = int(step)
 
         result = {
             'start': 1,
@@ -114,10 +153,10 @@ class WebNewsBase(object):
             'step': step
         }
 
-    def update_date_range(self, date_range: str = None, step: int = 1, args: dict = None) -> dict:
+    def update_date_range(self, date_range: str = None, step: int = 1) -> dict:
         """날짜 범위를 갱신한다."""
-        step = int(args['date_step']) if step == 1 and 'date_step' in args else step
-        date_range = args['date_range'] if date_range is None and 'date_range' in args else date_range
+        if isinstance(step, str):
+            step = int(step)
 
         today = datetime.now(self.timezone)
         result = {

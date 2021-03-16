@@ -8,7 +8,6 @@ from __future__ import print_function
 import json
 import os
 import re
-from argparse import Namespace
 from collections import defaultdict
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -36,7 +35,8 @@ class WebNewsCrawler(WebNewsBase):
     def __init__(self):
         super().__init__()
 
-        self.params: Namespace or None = None
+        self.params: dict or None = None
+        self.default_params: dict or None = None
 
         self.trace_depth: int = 0
 
@@ -257,7 +257,10 @@ class WebNewsCrawler(WebNewsBase):
         doc_id = doc['_id']
 
         es.save_document(document=doc, delete=False)
-        self.cache.set(key=doc_id, value=True)
+        self.cache.set(
+            key=doc_id,
+            value=self.cache.get(key=doc_id) + 1 if self.cache.has(key=doc_id) else 1
+        )
 
         if flush is False:
             return doc
@@ -323,7 +326,7 @@ class WebNewsCrawler(WebNewsBase):
             for pattern in id_frame['replace']:
                 result = re.sub(pattern['from'], pattern['to'], result, flags=re.DOTALL)
         elif id_frame['type'] == 'query':
-            if self.params.overwrite is False and len(q) == 0:
+            if self.params['overwrite'] is False and len(q) == 0:
                 self.logger.info(msg={
                     'level': 'INFO',
                     'message': '중복 문서, 건너뜀',
@@ -346,29 +349,6 @@ class WebNewsCrawler(WebNewsBase):
             result = id_frame['frame'].format(**item)
 
         return result.strip()
-
-    @staticmethod
-    def flatten(trace_list) -> list:
-        result = []
-
-        for item in trace_list:
-            if isinstance(item, dict):
-                result.append(item)
-                continue
-
-            new_item = {}
-            for x in item:
-                if x is None:
-                    continue
-
-                new_item = {
-                    **new_item,
-                    **x
-                }
-
-            result.append(new_item)
-
-        return result
 
     def get_trace_list(self, html: str, parsing_info: dict = None) -> list or None:
         """trace tag 목록을 추출해서 반환한다."""
@@ -416,10 +396,10 @@ class WebNewsCrawler(WebNewsBase):
                 'level': 'ERROR',
                 'message': 'trace_list 가 없음',
                 'trace_size': len(trace_list),
-                'sleep_time': self.params.sleep,
+                'sleep_time': self.params['sleep'],
             })
 
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
             return None
 
         return trace_list
@@ -502,7 +482,7 @@ class WebNewsCrawler(WebNewsBase):
         return item
 
     def is_skip(self, es: ElasticSearchUtils, date: datetime, job: dict, url: str, doc_id: str) -> (bool, str):
-        if self.params.overwrite is True:
+        if self.params['overwrite'] is True:
             return False, None
 
         es.index = es.get_target_index(
@@ -585,10 +565,10 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '다음페이지 크롤링: 슬립',
-                'sleep_time': self.params.sleep,
+                'sleep_time': self.params['sleep'],
             })
 
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
             early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=date, es=es, query=query)
             if early_stop is True:
@@ -597,7 +577,7 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def check_date_range(self, doc: dict, query: dict) -> bool:
-        if self.params.date_range is None or self.params.date_range not in {'today'}:
+        if self.params['date_range'] is None or self.params['date_range'] not in {'today'}:
             return True
 
         if 'date' not in doc:
@@ -631,14 +611,83 @@ class WebNewsCrawler(WebNewsBase):
 
         return True
 
+    def save_article_list(self, item: dict, job: dict, es: ElasticSearchUtils) -> None:
+        # 임시 변수 삭제
+        for k in ['encoding', 'raw']:
+            if k not in item:
+                continue
+            del item[k]
+
+        item['status'] = 'raw_list'
+
+        if self.params['verbose'] == 1:
+            dt_str = ''
+            if 'date' in item:
+                dt_str = item['date'] if isinstance(item['date'], str) else item['date'].isoformat()
+
+            self.logger.log(
+                msg={
+                    'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
+                    '_id': item['_id'],
+                    'date': dt_str.split('T')[0],
+                    'title': item['title']
+                },
+                show_date=False
+            )
+
+        self.save_article(es=es, job=job, doc=item, flush=False)
+
+        return
+
+    def get_article(self, item: dict, job: dict, doc_id: str, es: ElasticSearchUtils) -> bool:
+        # 기사 본문 조회
+        article_html = self.get_article_page(item=item, offline=False)
+
+        # 문서 저장
+        article = self.parse_tag(
+            resp=article_html,
+            url_info=item,
+            base_url=item['url'],
+            parsing_info=self.job_config['parsing']['article'],
+        )
+
+        self.summary['article'] += 1
+        if self.params['verbose'] == 0:
+            self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
+            sleep(self.params['sleep'])
+
+        # 임시 변수 삭제
+        if 'encoding' in item:
+            del item['encoding']
+
+        if article is None or len(article) == 0:
+            return True
+
+        article['_id'] = doc_id
+
+        # 댓글 post process 처리
+        self.post_request(article=article, job=job, item=item)
+
+        item['status'] = 'article'
+
+        # 기사 저장
+        self.save_article(
+            es=es,
+            job=job,
+            doc=item,
+            html=article_html,
+            article=article,
+        )
+        return False
+
     def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
                    query: dict) -> bool:
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.job_config['parsing']['trace'])
-        if self.params.verbose == 0:
+        if self.params['verbose'] == 0:
             self.logger.log(msg={'CONFIG_DEBUG': 'trace_list', 'trace_list': self.simplify(trace_list)})
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
         if trace_list is None:
             self.logger.log(msg={
@@ -663,14 +712,13 @@ class WebNewsCrawler(WebNewsBase):
             )
 
             self.summary['list'] += 1
-
-            if self.params.verbose == 0:
+            if self.params['verbose'] == 0:
                 self.logger.log(msg={
                     'CONFIG_DEBUG': 'list info',
                     'trace': self.simplify(trace),
                     'item': self.simplify(item)
                 })
-                sleep(self.params.sleep)
+                sleep(self.params['sleep'])
 
             if item is None or 'url' not in item:
                 continue
@@ -689,95 +737,35 @@ class WebNewsCrawler(WebNewsBase):
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
 
-            if self.params.verbose == 0:
+            if self.params['verbose'] == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
-                sleep(self.params.sleep)
+                sleep(self.params['sleep'])
 
             if doc_id is None:
                 continue
 
             item['_id'] = doc_id
 
-            is_skip, doc_index = self.is_skip(es=es, date=date, job=job, url=item['url'], doc_id=doc_id)
+            is_skip, _ = self.is_skip(date=date, job=job, url=item['url'], doc_id=doc_id, es=es)
             if is_skip is True:
                 continue
 
             # 기사 목록 저장
-            if self.params.list:
-                # 임시 변수 삭제
-                for k in ['encoding', 'raw']:
-                    if k not in item:
-                        continue
-                    del item[k]
-
-                item['status'] = 'raw_list'
-
-                if self.params.verbose == 1:
-                    dt_str = ''
-                    if 'date' in item:
-                        dt_str = item['date'] if isinstance(item['date'], str) else item['date'].isoformat()
-
-                    self.logger.log(
-                        msg={
-                            'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
-                            '_id': item['_id'],
-                            'date': dt_str.split('T')[0],
-                            'title': item['title']
-                        },
-                        show_date=False
-                    )
-
-                self.save_article(es=es, job=job, doc=item, flush=False)
+            if self.params['list']:
+                self.save_article_list(item=item, job=job, es=es)
                 continue
 
-            # 기사 본문 조회
-            article_html = self.get_article_page(item=item, offline=False)
-
-            # 문서 저장
-            article = self.parse_tag(
-                resp=article_html,
-                url_info=item,
-                base_url=item['url'],
-                parsing_info=self.job_config['parsing']['article'],
-            )
-
-            self.summary['article'] += 1
-
-            if self.params.verbose == 0:
-                self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
-                sleep(self.params.sleep)
-
-            # 임시 변수 삭제
-            if 'encoding' in item:
-                del item['encoding']
-
-            if article is None or len(article) == 0:
+            if self.get_article(doc_id=doc_id, item=item, job=job, es=es):
                 continue
-
-            article['_id'] = doc_id
-
-            # 댓글 post process 처리
-            self.post_request(article=article, job=job, item=item)
-
-            item['status'] = 'article'
-
-            # 기사 저장
-            self.save_article(
-                es=es,
-                job=job,
-                doc=item,
-                html=article_html,
-                article=article,
-            )
 
             self.logger.info(msg={
                 'level': 'INFO',
                 'message': '뉴스 본문 크롤링: 슬립',
-                'sleep_time': self.params.sleep,
+                'sleep_time': self.params['sleep'],
             })
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
-        if self.params.list:
+        if self.params['list']:
             es.flush()
 
         # 다음 페이지 정보가 있는 경우
@@ -801,7 +789,7 @@ class WebNewsCrawler(WebNewsBase):
         self.skip_count = 0
 
         # 디비에 연결한다.
-        es = self.open_elasticsearch(date=dt, job=job, mapping=self.params.mapping)
+        es = self.open_elasticsearch(date=dt, job=job, mapping=self.params['mapping'])
 
         # start 부터 end 까지 반복한다.
         for page in range(self.page_range['start'], self.page_range['end'] + 1, self.page_range['step']):
@@ -829,9 +817,9 @@ class WebNewsCrawler(WebNewsBase):
             resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
             self.summary['page'] += 1
 
-            if self.params.verbose == 0:
+            if self.params['verbose'] == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'list page', 'url': url_info['url']})
-                sleep(self.params.sleep)
+                sleep(self.params['sleep'])
 
             if resp is None:
                 continue
@@ -845,7 +833,7 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            if 0 < prev_skip_count < self.skip_count:
+            if 0 < prev_skip_count < self.skip_count - self.params['notice_count']:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '마지막 페이지: 종료',
@@ -854,7 +842,7 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 break
 
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
         return
 
@@ -892,20 +880,14 @@ class WebNewsCrawler(WebNewsBase):
             if job['name'] not in self.job_names:
                 return
 
-        # override args config
-        if 'args' not in job:
-            job['args'] = {}
-
         self.date_range = self.update_date_range(
-            date_range=self.params.date_range,
-            step=self.params.date_step,
-            args=job['args']
+            step=self.params['date_step'],
+            date_range=self.params['date_range'],
         )
 
         self.page_range = self.update_page_range(
-            page_range=self.params.page_range,
-            step=self.params.page_step,
-            args=job['args']
+            step=self.params['page_step'],
+            page_range=self.params['page_range'],
         )
 
         self.logger.log(msg={
@@ -948,7 +930,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.logger.log(msg={
             'level': 'SUMMARY',
-            'args': vars(self.params),
+            'args': self.params,
             'env': self.elastic_env,
             'tag': tag,
             'start': self.start_date.isoformat(),
@@ -959,18 +941,30 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def batch(self) -> None:
-        """ job -> category -> date -> page 순서 """
-        self.params = self.init_arguments()
+        """ config -> job -> category -> date -> page 순서 """
+        self.params, self.default_params = self.init_arguments()
 
-        config_list = self.open_config(filename=self.params.config)
+        params_org = deepcopy(self.params)
 
-        self.job_names = set(self.params.job_name.split(',')) if self.params.job_name != '' else None
-        self.job_sub_category = set(self.params.sub_category.split(',')) if self.params.sub_category != '' else None
+        self.job_names = set(self.params['job_name'].split(',')) if self.params['job_name'] != '' else None
+
+        self.job_sub_category = set(self.params['sub_category'].split(',')) \
+            if self.params['sub_category'] != '' else None
 
         # 카테고리 하위 목록을 크롤링한다.
+        config_list = self.open_config(filename=self.params['config'])
+
         for self.job_config in config_list:
             for job in self.job_config['jobs']:
+                self.params = self.merge_params(
+                    args=job['args'],
+                    params=self.params,
+                    default_params=self.default_params
+                )
+
                 self.trace_job(job=job)
+
+                self.params = deepcopy(params_org)
 
                 self.running_state(tag='job done')
 
@@ -979,7 +973,7 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     @staticmethod
-    def init_arguments() -> Namespace:
+    def init_arguments() -> (dict, dict):
         import argparse
 
         parser = argparse.ArgumentParser()
@@ -1007,7 +1001,9 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
         parser.add_argument('--mapping', default=None, type=str, help='인덱스 맵핑 파일 정보')
 
-        return parser.parse_args()
+        parser.add_argument('--notice-count', default=0, type=int, help='공지 사항 개수')
+
+        return vars(parser.parse_args()), vars(parser.parse_args([]))
 
 
 if __name__ == '__main__':
