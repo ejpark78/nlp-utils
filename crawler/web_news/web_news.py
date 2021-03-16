@@ -951,8 +951,8 @@ class WebNewsCrawler(WebNewsBase):
             'args': vars(self.params),
             'env': self.elastic_env,
             'tag': tag,
-            'start': self.start_date,
-            'finished': finished,
+            'start': self.start_date.isoformat(),
+            'finished': finished.isoformat(),
             'runtime': runtime,
             **self.summary
         })
