@@ -1,6 +1,6 @@
 ---
 jobs:
-- index: raw-bbs-{year}
+- index: raw-bbc-{year}
   article:
     document_id:
       replace:
@@ -13,6 +13,7 @@ jobs:
       - from: /
         to: '-'
       type: path
+      
   args:
     page_range: "1~50"
   list:

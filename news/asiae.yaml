@@ -13,6 +13,7 @@ jobs:
       - from: /
         to: '-'
       type: path
+      
   list:
   - category: 정치/전체뉴스
     url_frame: https://www.asiae.co.kr/list/politics-all/{page}
@@ -100,7 +101,7 @@ parsing:
     type_convert: date
     value_type: single
     replace:
-    - from: "최종수정"
+    - from: "^.+기사입력"
       to: ''
   - comment: 텍스트 본문
     key: content
