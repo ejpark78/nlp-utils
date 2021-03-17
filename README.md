@@ -175,7 +175,8 @@ parsing:
     value:
     - select: span#date
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
 ```
 

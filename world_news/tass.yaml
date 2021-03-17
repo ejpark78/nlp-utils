@@ -61,5 +61,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

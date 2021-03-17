@@ -52,8 +52,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -75,7 +73,8 @@ parsing:
     value:
     - select: div.info-text ul li:nth-child(2)
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: "^.*승인 "
@@ -90,5 +89,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

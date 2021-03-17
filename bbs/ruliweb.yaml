@@ -76,8 +76,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -153,7 +151,8 @@ parsing:
     value:
     - select: div.user_info span.regdate
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 텍스트 본문
     key: content
@@ -190,7 +189,8 @@ parsing:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         span.time
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 댓글 좋아요 수량
     key: reply_list.like_count
@@ -208,5 +208,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

@@ -481,8 +481,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -501,7 +499,8 @@ parsing:
     - from: '승인 '
       to: ''
     type: text
-    type_convert: date
+    convert:
+      to: date
   - comment: 텍스트 본문
     key: content
     value:
@@ -512,5 +511,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

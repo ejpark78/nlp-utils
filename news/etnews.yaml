@@ -51,8 +51,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -74,7 +72,8 @@ parsing:
     value:
     - select: header.article_header div.article_header_sub time.date
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: "^.*발행일 :"
@@ -89,5 +88,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

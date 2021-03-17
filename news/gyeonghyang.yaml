@@ -96,14 +96,13 @@ parsing:
       value:
         - select: span.byline em.letter
       type: text
-      type_convert: date
+      convert:
+        to: date
       value_type: single
     - comment: 크롤링 시간
       key: '@curl_date'
       value:
         - const: DATE_NOW
-      type: text
-      type_convert: date
   article:
     - comment: raw html or json
       key: raw
@@ -131,7 +130,8 @@ parsing:
         - from: '\.'
           to: '-'
       type: text
-      type_convert: date
+      convert:
+        to: date
       value_type: single
     - comment: 텍스트 본문
       key: content
@@ -143,5 +143,3 @@ parsing:
       key: '@curl_date'
       value:
         - const: DATE_NOW
-      type: text
-      type_convert: date

@@ -35,7 +35,8 @@ parsing:
     value:
     - select: span > span
     type: content
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 요약
     key: summary
@@ -47,8 +48,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -73,5 +72,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

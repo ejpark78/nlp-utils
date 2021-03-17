@@ -34,7 +34,8 @@ parsing:
     value:
     - select: span.date
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 출처
     key: source
@@ -45,8 +46,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -72,7 +71,8 @@ parsing:
     value:
     - select: div.article_info span.t11
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: '날짜: 연합뉴스'
     key: date
@@ -84,7 +84,8 @@ parsing:
     value:
     - select: div.news_headline div.info span
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 지면 정보
     key: paper
@@ -140,5 +141,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

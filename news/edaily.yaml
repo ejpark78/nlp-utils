@@ -66,7 +66,8 @@ parsing:
     value:
     - select: '#contents .article_news .news_titles div.dates ul li p'
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: "^.*등록"
@@ -87,5 +88,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

@@ -59,7 +59,8 @@ parsing:
     value:
     - select: 'div p span'
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: '(\d+)년 (\d+)월 (\d+)일\.'
@@ -68,8 +69,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -91,7 +90,8 @@ parsing:
     value:
     - select: 'span.meta'
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: '[|].+By: .+$'
@@ -110,5 +110,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

@@ -92,7 +92,8 @@ parsing:
       value:
         - select: div.head_view span.info_view
       type: text
-      type_convert: date
+      convert:
+        to: date
       value_type: single
     - key: content
       value:
@@ -102,9 +103,6 @@ parsing:
     - key: '@curl_date'
       value:
         - const: DATE_NOW
-      type: text
-      type_convert: date
-
 
 # ETL pipeline: raw, raw_list 에서 추출하는 정보
 pipeline:

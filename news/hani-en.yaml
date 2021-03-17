@@ -65,7 +65,8 @@ parsing:
     value:
     - select: '.headline-data'
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: "^.+Posted on :"
@@ -82,5 +83,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

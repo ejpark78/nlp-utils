@@ -43,7 +43,8 @@ parsing:
     value:
     - select: time
     type: datetime
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 요약
     key: summary
@@ -54,8 +55,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -76,7 +75,8 @@ parsing:
     value:
     - select: p.type__date time
     type: datetime
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 작성자
     key: author
@@ -92,5 +92,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

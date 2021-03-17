@@ -7,8 +7,9 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~3000"
+      page_range: "1~90000"
       page_step: "30"
+      notice_count: "5"
     list:
       - category: KBO
         url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=kbotown&query=&select=&user=
@@ -20,8 +21,9 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~3000"
+      page_range: "1~90000"
       page_step: "30"
+      notice_count: "5"
     list:
       - category: MLB
         url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=mlbtown&query=&select=&user=
@@ -33,8 +35,9 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~3000"
+      page_range: "1~90000"
       page_step: "30"
+      notice_count: "5"
     list:
       - category: BULLPEN
         url_frame: http://mlbpark.donga.com/mp/b.php?p={page}&m=list&b=bullpen&query=&select=&user=
@@ -67,13 +70,12 @@ parsing:
       value:
         - select: span.date
       type: text
-      type_convert: date
+      convert:
+        to: date
       value_type: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
-      type: text
-      type_convert: date
 
   # 기사 본문에서 추출해야하는 tag 정보
   article:
@@ -95,7 +97,8 @@ parsing:
       value:
         - select: ul.view_head div.text div.text_right div.text3 span.val
       type: text
-      type_convert: date
+      convert:
+        to: date
       value_type: single
     - key: content
       value:
@@ -105,8 +108,6 @@ parsing:
     - key: '@curl_date'
       value:
         - const: DATE_NOW
-      type: text
-      type_convert: date
 
 # ETL pipeline: raw, raw_list 에서 추출하는 정보
 pipeline:
@@ -177,7 +178,8 @@ pipeline:
       value:
         - select: div.reply_list div.txt_box span.date
       type: text
-      type_convert: date
+      convert:
+        to: date
 
 # 인덱스 맵핑
 index_mapping:

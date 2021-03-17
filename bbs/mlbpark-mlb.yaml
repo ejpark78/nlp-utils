@@ -49,8 +49,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -80,7 +78,8 @@ parsing:
     value:
     - select: ul.view_head div.text div.text_right div.text3 span.val
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
   - comment: 추천수
     key: good_count
@@ -127,10 +126,9 @@ parsing:
     value:
     - select: div.reply_list div.txt_box span.date
     type: text
-    type_convert: date
+    convert:
+      to: date
   - comment: 크롤링 시간
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date

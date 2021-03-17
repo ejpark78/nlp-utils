@@ -53,7 +53,8 @@ parsing:
     value:
     - select: "span.date"
     type: text
-    type_convert: date
+    convert:
+      to: date
     replace:
     - from: '(\d+)\.\s*(\d+)\.\s*(\d+)\.\s*'
       to: '\g<1>-\g<2>-\g<3>'
@@ -67,8 +68,6 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
   article:
   - comment: raw html or json
     key: raw
@@ -90,7 +89,8 @@ parsing:
     value:
     - select: "div.Tline div.read_time"
     type: text
-    type_convert: date
+    convert:
+      to: date
     value_type: single
     replace:
     - from: '(\d+)년\s*(\d+)월\s*(\d+)일\s*\(.\)\s*(\d+):(\d+)'
@@ -105,5 +105,3 @@ parsing:
     key: '@curl_date'
     value:
     - const: DATE_NOW
-    type: text
-    type_convert: date
