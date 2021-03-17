@@ -59,7 +59,6 @@ class CrawlerDagBuilder(object):
                 if os.path.isfile(template_filename):
                     with open(template_filename, 'r') as fp:
                         template = yaml.load(stream=fp, Loader=yaml.FullLoader)
-                        template = dict(template)
                 return CrawlerDagBuilder.update_yaml(template, data)
             else:
                 return data
