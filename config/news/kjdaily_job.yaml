@@ -6,6 +6,13 @@ dag:
   schedule_interval: '45 * * * *'
   tags:
     - 광주매일신문
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group
     config: /config/news/kjdaily.yaml

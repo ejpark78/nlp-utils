@@ -6,6 +6,13 @@ dag:
   schedule_interval: '5 * * * *'
   tags:
     - 아시아경제
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group1
     config: /config/news/asiae.yaml

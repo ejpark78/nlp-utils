@@ -6,6 +6,13 @@ dag:
   schedule_interval: '25 * * * *'
   tags:
     - 한국경제TV
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: latest
     config: /config/news/wowtv.yaml

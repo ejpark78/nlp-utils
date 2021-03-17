@@ -6,6 +6,13 @@ dag:
   schedule_interval: '55 * * * *'
   tags:
     - 충북일보
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group
     config: /config/news/inews365.yaml

@@ -6,6 +6,13 @@ dag:
   schedule_interval: '55 * * * *'
   tags:
     - 디지털타임스
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group1
     config: /config/news/dt.yaml

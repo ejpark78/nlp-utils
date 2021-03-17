@@ -6,6 +6,13 @@ dag:
   schedule_interval: '40 * * * *'
   tags:
     - 중도일보
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group1
     config: /config/news/joongdo.yaml

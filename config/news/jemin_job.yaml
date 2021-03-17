@@ -7,6 +7,13 @@ dag:
   schedule_interval: '15 * * * *'
   tags:
     - 제민일보
+operator:
+  params:
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: group1
     config: /config/news/jemin.yaml
