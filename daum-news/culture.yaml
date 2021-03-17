@@ -125,6 +125,7 @@ parsing:
       attribute:
         class: info_view
     type: text
+    convert:
       merge: single
   - key: image_list.image
     value:

@@ -305,6 +305,8 @@ parsing:
       type: text
       convert:
         to: date
+        format:
+          - '%H:%M'
         merge: single
     - key: '@curl_date'
       value:
@@ -364,6 +366,7 @@ pipeline:
       value:
         - select: div.head_view span.info_view
       type: text
+      convert:
         merge: single
     - column: raw
       key: image_list.image

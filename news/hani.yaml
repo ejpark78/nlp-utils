@@ -209,6 +209,7 @@ parsing:
     value:
     - select: span.title
     type: text
+    convert:
       merge: single
   - key: date
     value:

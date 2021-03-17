@@ -59,11 +59,13 @@ parsing:
     value:
     - select: td.bbsNo
     type: text
+    convert:
       merge: single
   - key: title
     value:
     - select: td.bbsSubject a.sj_ln
     type: text
+    convert:
       merge: single
   - key: sub_category
     replace:
@@ -76,11 +78,13 @@ parsing:
     value:
     - select: td.bbsSubject a.sj_ln
     type: href
+    convert:
       merge: single
   - key: writer
     value:
     - select: td.bbsNick
     type: text
+    convert:
       merge: single
   - key: date
     value:

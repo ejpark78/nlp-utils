@@ -28,16 +28,19 @@ parsing:
     value:
     - select: td.id
     type: text
+    convert:
       merge: single
   - key: title
     value:
     - select: td.subject a.deco
     type: text
+    convert:
       merge: single
   - key: url
     value:
     - select: td.subject a.deco
     type: href
+    convert:
       merge: single
   - key: sub_category
     value:

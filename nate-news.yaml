@@ -273,7 +273,9 @@ parsing:
       type: text
       convert:
         to: date
-        format: '%m.%d %H:%M'
+        format:
+          - '%m.%d %H:%M'
+          - '%m-%d %H:%M'
         merge: single
     - key: '@curl_date'
       value:

@@ -22,11 +22,13 @@ parsing:
     value:
     - name: a
     type: title
+    convert:
       merge: single
   - key: url
     value:
     - name: a
     type: href
+    convert:
       merge: single
   - key: title_header
     value:
