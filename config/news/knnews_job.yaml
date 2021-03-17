@@ -1,45 +1,18 @@
 ---
+reference: config/template_kor.yaml
 dag:
   dag_id: 'knnews'
   description: '경남신문 크롤러'
   schedule_interval: '50 * * * *'
-  max_active_runs: 1
-  concurrency: 64
   tags:
-    - 국내 뉴스
-    - 한국어
     - 경남신문
-    - S10
-default_args:
-  owner: 'Airflow'
-  retries: 3
-  depends_on_past: False
-  email:
-    - ejpark@ncsoft.com
-  email_on_retry: False
-  email_on_failure: False
 operator:
   params:
-    labels:
-      crawler: korea-news
-    namespace: 'airflow'
-    image: 'registry.nlp-utils/crawler:live'
-    image_pull_policy: 'Always'
-    image_pull_secrets: 'registry'
-    is_delete_operator_pod: 'True'
-    get_logs: 'True'
-    cmds:
-      - 'python3'
-    env_vars:
-      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
-      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
-  args:
-    - -m
-    - crawler.web_news.web_news
-    - --sleep
-    - '5'
-    - --date-range
-    - today
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: all
     config: /config/news/knnews.yaml

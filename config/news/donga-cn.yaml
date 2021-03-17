@@ -1,12 +1,10 @@
 ---
+reference: config/template_kor.yaml
 dag:
   dag_id: 'donga-cn'
   description: 'donga-cn crawler'
   schedule_interval: '35 * * * *'
-  max_active_runs: 1
-  concurrency: 64
   tags:
-    - 국내 뉴스
     - 동아일보
 default_args:
   owner: 'Airflow'
