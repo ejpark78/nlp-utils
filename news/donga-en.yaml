@@ -67,7 +67,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: summary
     value:
     - select: span.text
@@ -97,7 +97,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: content
     value:
     - select: div#view_contents

@@ -106,7 +106,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: url
     value:
     - select: 'a.tit'
@@ -127,14 +127,14 @@ parsing:
     value:
     - select: 'div.content div.view_head h1'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "div.view_head div.area_name span.date"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^입력 :"
       to: ''
@@ -142,7 +142,8 @@ parsing:
     value:
     - select: 'article div#articleBody'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

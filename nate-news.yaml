@@ -274,7 +274,7 @@ parsing:
       convert:
         to: date
         format: '%m.%d %H:%M'
-      value_type: single
+        merge: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
@@ -298,7 +298,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: content
       remove:
         - name: script

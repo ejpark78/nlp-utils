@@ -22,12 +22,12 @@ parsing:
     value:
     - name: a
     type: title
-    value_type: single
+      merge: single
   - key: url
     value:
     - name: a
     type: href
-    value_type: single
+      merge: single
   - key: title_header
     value:
     - select: span.word
@@ -71,7 +71,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: good_count
     replace:
     - from: ^.*추천 ([0-9]+).*$
@@ -97,7 +97,8 @@ parsing:
     value:
     - select: div.view_context div#contentDetail
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: reply_list.text
     value:
     - select: div.reply_list div.txt_box span.re_txt

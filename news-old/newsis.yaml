@@ -59,7 +59,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: image_list.image
     value:
     - name: table

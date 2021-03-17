@@ -59,7 +59,8 @@ parsing:
     value:
     - select: a
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: url
     value:
     - select: a
@@ -80,14 +81,14 @@ parsing:
     value:
     - select: 'p .read_title'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: font.read_time
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '^.*입력날짜 :'
       to: ''
@@ -97,7 +98,8 @@ parsing:
     value:
     - select: font[itemprop=articleBody]
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

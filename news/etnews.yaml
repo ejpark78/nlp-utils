@@ -61,14 +61,14 @@ parsing:
     value:
     - select: header.article_header h2.article_title
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: header.article_header div.article_header_sub time.date
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*발행일 :"
       to: ''
@@ -76,7 +76,8 @@ parsing:
     value:
     - select: section#articleBody.article_body p
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

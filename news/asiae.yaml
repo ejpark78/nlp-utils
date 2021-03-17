@@ -85,14 +85,14 @@ parsing:
     value:
     - select: 'div.area_title h3'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "div.area_title div.area_util p.user_data"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.+기사입력"
       to: ''
@@ -100,7 +100,8 @@ parsing:
     value:
     - select: 'div.cont_article div.article_view'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

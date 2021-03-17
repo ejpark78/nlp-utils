@@ -55,7 +55,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: url
     value:
     - select: a
@@ -81,7 +81,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.+登录[ ]*[^0-9] "
       to: ''
@@ -91,7 +91,8 @@ parsing:
     value:
     - select: div.article-view
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

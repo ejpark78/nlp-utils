@@ -61,7 +61,7 @@ parsing:
     replace:
       - from: " .*"
         to: ''
-    value_type: single
+      merge: single
   - key: url
     value:
     - select: "h2 a"
@@ -82,14 +82,14 @@ parsing:
     value:
     - select: 'div.view_title_box p.view_title'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "div.view_title_box span.view_date"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^입력 "
       to: ''
@@ -97,7 +97,8 @@ parsing:
     value:
     - select: 'div.bm_view div.view_left'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

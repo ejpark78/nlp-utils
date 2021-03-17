@@ -58,14 +58,14 @@ parsing:
     value:
     - select: div.vcon h2
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: div.vcon_hd_din3 p
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*기사입력 :"
       to: ''
@@ -73,7 +73,8 @@ parsing:
     value:
     - select: 'div[itemprop=articleBody]'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

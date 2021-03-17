@@ -36,7 +36,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: summary
     value:
     - select: div.story-content p

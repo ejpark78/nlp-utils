@@ -73,14 +73,14 @@ parsing:
     value:
     - select: 'header.view h1'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: 'header.view nav.view span time'
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '^.+입력  '
       to: ''
@@ -88,7 +88,8 @@ parsing:
     value:
     - select: 'main.view article.view'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

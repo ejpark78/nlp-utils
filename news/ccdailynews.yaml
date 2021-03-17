@@ -55,14 +55,14 @@ parsing:
     value:
     - select: header.article-view-header h3.heading
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: article.item ul li:nth-child(2)
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*입력 "
       to: ''
@@ -70,7 +70,8 @@ parsing:
     value:
     - select: div.article-body article#article-view-content-div
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

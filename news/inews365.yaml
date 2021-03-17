@@ -56,14 +56,14 @@ parsing:
     value:
     - select: div.art_tit h2
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: div.art_sum ul li:nth-child(1)
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*웹출고시간"
       to: ''
@@ -71,7 +71,8 @@ parsing:
     value:
     - select: div.article
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

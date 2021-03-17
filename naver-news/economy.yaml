@@ -57,7 +57,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
@@ -79,7 +79,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: content
       value:
         - select: div#articleBodyContents
@@ -110,7 +110,7 @@ pipeline:
     value:
       - select: div.sponsor a
     type: href
-    value_type: single
+      merge: single
   - key: image_list.image
     column: raw
     value:

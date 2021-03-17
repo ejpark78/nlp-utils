@@ -60,7 +60,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: (.+)
       to: ''
@@ -95,12 +95,13 @@ parsing:
       to: ''
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: content
     value:
     - select: article.news_article div[itemprop=articleBody]
     type: text
-    value_type: merge
+    convert:
+      merge: merge
     remove:
     - select: div.news_date
   - key: '@curl_date'

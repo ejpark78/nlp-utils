@@ -56,7 +56,7 @@ parsing:
     replace:
     - from: '(\d+)\.\s*(\d+)\.\s*(\d+)\.\s*'
       to: '\g<1>-\g<2>-\g<3>'
-    value_type: single
+      merge: single
   - key: url
     value:
     - select: "a.sublist"
@@ -77,14 +77,14 @@ parsing:
     value:
     - select: 'div.contents_wide div.rtitle1'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "div.Tline div.read_time"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '(\d+)년\s*(\d+)월\s*(\d+)일\s*\(.\)\s*(\d+):(\d+)'
       to: '\g<1>-\g<2>-\g<3> \g<4>:\g<5>'
@@ -92,7 +92,8 @@ parsing:
     value:
     - select: 'div#CmAdContent div#content.read'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

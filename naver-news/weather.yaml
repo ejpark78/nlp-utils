@@ -35,7 +35,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: source
     value:
     - select: span.source
@@ -62,7 +62,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: paper
     remove:
     - select: i.picon
@@ -73,7 +73,7 @@ parsing:
     value:
     - select: div.sponsor a
     type: href
-    value_type: single
+      merge: single
   - key: image_list.image
     value:
     - select: span.end_photo_org img

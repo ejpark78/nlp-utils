@@ -58,14 +58,14 @@ parsing:
     value:
     - select: '#contents .article_news .news_titles h2'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: '#contents .article_news .news_titles div.dates ul li p'
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*등록"
       to: ''
@@ -79,7 +79,8 @@ parsing:
     value:
     - select: 'div[itemprop=articleBody]'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

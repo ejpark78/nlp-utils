@@ -50,14 +50,14 @@ parsing:
     value:
     - select: 'div.cont_tit h1#PushLinkId.h1_tex'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "div.cont_tit ul li.loca_left"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^기사입력 : "
       to: ''
@@ -65,7 +65,8 @@ parsing:
     value:
     - select: 'div.cont_cont ul li#content_li'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

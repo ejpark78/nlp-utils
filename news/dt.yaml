@@ -71,14 +71,14 @@ parsing:
     value:
     - select: div.wrap div.top_header div.news_title_text h1
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: li.lasttime
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*ÀÔ·Â:"
       to: ''
@@ -88,7 +88,8 @@ parsing:
     value:
     - select: div#article_body div.art_txt
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

@@ -50,7 +50,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   article:
   - key: title
     value:
@@ -71,7 +71,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: author
     value:
     - name: div
@@ -107,7 +107,8 @@ parsing:
       attribute:
         class: par
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: language_list
     value:
     - name: div

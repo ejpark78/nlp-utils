@@ -63,7 +63,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: Posted at
       to: ''
@@ -93,7 +93,7 @@ parsing:
     type: datetime
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: author
     value:
     - select: article header p span strong

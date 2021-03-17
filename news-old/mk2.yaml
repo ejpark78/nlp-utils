@@ -56,7 +56,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   article:
   - key: title
     value:
@@ -81,7 +81,7 @@ parsing:
     type: text
     convert: 
       to: date
-    value_type: single
+      merge: single
   - key: image_list.image
     value:
     - name: div
@@ -106,4 +106,5 @@ parsing:
       attribute:
         class: read_txt
     type: text
-    value_type: merge
+    convert:
+      merge: merge

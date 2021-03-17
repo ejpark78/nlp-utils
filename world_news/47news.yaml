@@ -74,7 +74,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: content
     value:
     - select: div.intermediate_page div.article_body

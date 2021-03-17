@@ -62,14 +62,14 @@ parsing:
     value:
     - select: header.article-view-header header.article-header-wrap div.article-head-title
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: div.info-text ul li:nth-child(2)
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: "^.*승인 "
       to: ''
@@ -77,7 +77,8 @@ parsing:
     value:
     - select: div#article-view-content-div
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

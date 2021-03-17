@@ -63,7 +63,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: source
     value:
     - select: span.writing
@@ -94,21 +94,21 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: span.author em
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: div.article_info span.t11
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: paper
     remove:
     - select: i.picon
@@ -119,12 +119,12 @@ parsing:
     value:
     - select: div.sponsor a
     type: href
-    value_type: single
+      merge: single
   - key: source_url
     value:
     - select: div.article_info a.btn_news_origin
     type: href
-    value_type: single
+      merge: single
   - key: image_list.image
     value:
     - select: span.end_photo_org img

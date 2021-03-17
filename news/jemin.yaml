@@ -175,12 +175,12 @@ parsing:
     value:
     - select: a
     type: href
-    value_type: single
+      merge: single
   - key: title
     value:
     - select: h4.titles
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
         - select: span.byline em:last-child
@@ -203,7 +203,8 @@ parsing:
     value:
     - select: article#article-view-content-div p
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

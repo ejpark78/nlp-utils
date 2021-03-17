@@ -46,7 +46,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: title
     value:
     - select: p.title-text
@@ -79,12 +79,13 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: content
     value:
     - select: div[itemprop=articleBody]
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

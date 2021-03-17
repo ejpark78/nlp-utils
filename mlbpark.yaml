@@ -60,19 +60,19 @@ parsing:
       value:
         - select: div.tit a
       type: title
-      value_type: single
+        merge: single
     - key: url
       value:
         - select: div.tit a
       type: href
-      value_type: single
+        merge: single
     - key: date
       value:
         - select: span.date
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
@@ -99,12 +99,13 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: content
       value:
         - select: div.view_context div#contentDetail
       type: text
-      value_type: merge
+      convert:
+        merge: merge
     - key: '@curl_date'
       value:
         - const: DATE_NOW

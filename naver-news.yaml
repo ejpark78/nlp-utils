@@ -253,7 +253,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
@@ -277,7 +277,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - key: content
       value:
         - select: div#articleBodyContents
@@ -297,7 +297,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     # weather 섹션
     - key: date
       replace:
@@ -307,7 +307,7 @@ parsing:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
 
 # ETL pipeline: raw, raw_list 에서 추출하는 정보
 pipeline:
@@ -334,7 +334,7 @@ pipeline:
       value:
         - select: div.sponsor a
       type: href
-      value_type: single
+        merge: single
     - column: raw
       key: image_list.image
       value:
@@ -367,13 +367,13 @@ pipeline:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
     - column: raw
       key: source_url
       value:
         - select: div.article_info a.btn_news_origin
       type: href
-      value_type: single
+        merge: single
     - column: raw
       key: content
       value:
@@ -387,7 +387,7 @@ pipeline:
       type: text
       convert:
         to: date
-      value_type: single
+        merge: single
 
 # 인덱스 맵핑
 index_mapping:

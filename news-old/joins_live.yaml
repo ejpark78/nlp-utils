@@ -48,7 +48,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: source
     value:
     - name: dd
@@ -78,7 +78,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: edit_date
     replace:
     - from: ^.*수정
@@ -93,7 +93,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: source
     value:
     - name: div
@@ -130,4 +130,5 @@ parsing:
       attribute:
         itemprop: articleBody
     type: text
-    value_type: merge
+    convert:
+      merge: merge

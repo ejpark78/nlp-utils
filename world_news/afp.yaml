@@ -34,12 +34,13 @@ parsing:
     type: content
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: summary
     value:
     - select: div p
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

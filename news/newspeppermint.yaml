@@ -58,7 +58,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '(\d+)년 (\d+)월 (\d+)일\.'
       to: '\g<1>-\g<2>-\g<3>'
@@ -78,14 +78,14 @@ parsing:
     value:
     - select: 'div.container div.main-content .title'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: 'span.meta'
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '[|].+By: .+$'
       to: ''
@@ -97,7 +97,8 @@ parsing:
     value:
     - select: 'div.container div.main-content div.column'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

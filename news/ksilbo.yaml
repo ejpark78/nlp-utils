@@ -29,7 +29,7 @@ parsing:
     type: text
     type_convertconvert:
       to: date
-    value_type: single
+      merge: single
   - key: url
     value:
     - select: "td.ArtList_Title a"
@@ -50,14 +50,14 @@ parsing:
     value:
     - select: 'div.View_Title strong'
     type: text
-    value_type: single
+      merge: single
   - key: date
     value:
     - select: "td div.View_Time"
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
     replace:
     - from: '^승인\s*'
       to: ''
@@ -65,7 +65,8 @@ parsing:
     value:
     - select: 'td#articleBody.view_r div#CmAdContent'
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

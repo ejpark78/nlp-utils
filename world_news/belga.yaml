@@ -42,7 +42,7 @@ parsing:
     type: datetime
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: summary
     value:
     - select: p
@@ -69,7 +69,7 @@ parsing:
     type: datetime
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: author
     value:
     - select: div.panel__caption

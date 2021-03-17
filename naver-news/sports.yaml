@@ -116,7 +116,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - key: image_list.image
     value:
     - select: div#newsEndContents span.end_photo_org img
@@ -134,7 +134,8 @@ parsing:
     value:
     - select: div#newsEndContents
     type: text
-    value_type: merge
+    convert:
+      merge: merge
   - key: '@curl_date'
     value:
     - const: DATE_NOW

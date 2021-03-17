@@ -126,7 +126,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
   - delete: true
     key: image_list.image
     value:
@@ -140,4 +140,5 @@ parsing:
       attribute:
         class: detailView
     type: text
-    value_type: merge
+    convert:
+      merge: merge

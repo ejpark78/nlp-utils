@@ -174,7 +174,7 @@ parsing:
     type: text
     convert:
       to: date
-    value_type: single
+      merge: single
 ```
 
 ## parsing.article
