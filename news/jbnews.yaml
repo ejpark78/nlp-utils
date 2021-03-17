@@ -29,7 +29,7 @@ jobs:
   - category: 스포츠
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
 parsing:
-  version: v2021-01-26
+  version: v2021-03-17
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보

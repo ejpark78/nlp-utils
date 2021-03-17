@@ -52,7 +52,7 @@ jobs:
 
 # crawling 과정에서 추출하는 정보
 parsing:
-  version: v2021-03-11
+  version: v2021-03-17
   parser: html5lib
 
   # 전체 html 에서 추출해야하는 전체 tag 목록

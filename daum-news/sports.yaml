@@ -49,7 +49,7 @@ jobs:
     headers:
       Content-Type: application/json
 parsing:
-  version: v2021-01-26
+  version: v2021-03-17
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
   parser: html5lib

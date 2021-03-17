@@ -140,7 +140,7 @@ jobs:
     method: "POST"
     trace: "Items"
 parsing:
-  version: v2021-01-26
+  version: v2021-03-17
   trace: []
   trace_next_page: {}
   list: []
