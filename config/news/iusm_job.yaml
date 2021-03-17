@@ -2,7 +2,7 @@
 dag:
   dag_id: 'iusm'
   description: '울산매일 크롤러'
-  schedule_interval: '0,30 * * * *'
+  schedule_interval: '0 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:

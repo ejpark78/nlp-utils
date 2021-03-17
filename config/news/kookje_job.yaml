@@ -2,7 +2,7 @@
 dag:
   dag_id: 'kookje'
   description: '국제신문 크롤러'
-  schedule_interval: '20,50 * * * *'
+  schedule_interval: '55 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
@@ -43,17 +43,29 @@ operator:
 tasks:
   - category: group1
     config: /config/news/kookje.yaml
-    name: 전체뉴스,정치/청와대/대통령,정치/국회/정당,정치/남북한,정치/선거,정치/지방정치,정치/국방,정치/정책,정치/외교
+    name: 전체뉴스
     task_id: part1
   - category: group2
     config: /config/news/kookje.yaml
-    name: 경제/부동산,경제/증권/금융/보험,경제/쇼핑/유통,경제/기업/창업,경제/구인구직,경제/복권,경제/해양수산,경제/자동차,경제/항공,경제/조세,경제/통상/무역,경제/정책
+    name: 정치/청와대/대통령,정치/국회/정당,정치/남북한,정치/선거,정치/지방정치,정치/국방,정치/정책,정치/외교
     task_id: part2
   - category: group3
     config: /config/news/kookje.yaml
-    name: 사회/사건사고,사회/교육,사회/보건/복지,사회/환경,사회/교통,사회/날씨,사회/법조,사회/노동,사회/행정,사회/미디어,국제/미국,국제/일본,국제/중국,국제/중동,국제/유럽,국제/기타
+    name: 경제/부동산,경제/증권/금융/보험,경제/쇼핑/유통,경제/기업/창업
     task_id: part3
   - category: group4
     config: /config/news/kookje.yaml
-    name: 문화/미술,문화/책/문학,문화/음악/음반/공연,문화/연예,문화/영화/방송,문화/문화재,문화/종교,문화/바둑,문화/전시,생활/건강정보,생활/여성생활,생활/스타일,생활/트렌드,생활/게임,생활/맛집,생활/레저여행,IT/환경,IT/과학,IT/IT
+    name: 경제/구인구직,경제/복권,경제/해양수산,경제/자동차,경제/항공,경제/조세,경제/통상/무역,경제/정책
     task_id: part4
+  - category: group5
+    config: /config/news/kookje.yaml
+    name: 사회/사건사고,사회/교육,사회/보건/복지,사회/환경,사회/교통,사회/날씨,사회/법조,사회/노동,사회/행정,사회/미디어
+    task_id: part5
+  - category: group6
+    config: /config/news/kookje.yaml    
+    name: 국제/미국,국제/일본,국제/중국,국제/중동,국제/유럽,국제/기타
+    task_id: part6
+  - category: group7
+    config: /config/news/kookje.yaml
+    name: 문화/미술,문화/책/문학,문화/음악/음반/공연,문화/연예,문화/영화/방송,문화/문화재,문화/종교,문화/바둑,문화/전시,생활/건강정보,생활/여성생활,생활/스타일,생활/트렌드,생활/게임,생활/맛집,생활/레저여행,IT/환경,IT/과학,IT/IT
+    task_id: part7

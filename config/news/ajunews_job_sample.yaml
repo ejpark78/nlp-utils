@@ -1,9 +1,10 @@
 ---
+reference: config/template_kor.yaml
 dag:
   dag_id: 'ajunews'
   description: '아주경제 크롤러'
   tags:
-    - 국내 뉴스
+    - 국내뉴스
     - 아주경제
 tasks:
   - category: china

@@ -2,7 +2,7 @@
 dag:
   dag_id: 'etnews'
   description: '전자신문 크롤러'
-  schedule_interval: '10,40 * * * *'
+  schedule_interval: '5 * * * *'
   max_active_runs: 1
   concurrency: 64
   tags:
