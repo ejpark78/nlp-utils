@@ -127,6 +127,7 @@ parsing:
     value:
     - select: 'div.content div.view_head h1'
     type: text
+    convert:
       merge: single
   - key: date
     value:

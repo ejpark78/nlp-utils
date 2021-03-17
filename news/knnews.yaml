@@ -50,6 +50,7 @@ parsing:
     value:
     - select: 'div.cont_tit h1#PushLinkId.h1_tex'
     type: text
+    convert:
       merge: single
   - key: date
     value:

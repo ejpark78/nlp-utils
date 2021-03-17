@@ -86,6 +86,7 @@ parsing:
     value:
     - select: div.sponsor a
     type: href
+    convert:
       merge: single
   - key: image_list.image
     value:

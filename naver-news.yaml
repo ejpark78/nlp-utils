@@ -334,6 +334,7 @@ pipeline:
       value:
         - select: div.sponsor a
       type: href
+      convert:
         merge: single
     - column: raw
       key: image_list.image
@@ -373,6 +374,7 @@ pipeline:
       value:
         - select: div.article_info a.btn_news_origin
       type: href
+      convert:
         merge: single
     - column: raw
       key: content

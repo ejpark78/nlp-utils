@@ -53,10 +53,10 @@ parsing:
     type: text
     convert:
       to: date
+      merge: single
     replace:
     - from: '(\d+)\.\s*(\d+)\.\s*(\d+)\.\s*'
       to: '\g<1>-\g<2>-\g<3>'
-      merge: single
   - key: url
     value:
     - select: "a.sublist"
@@ -77,6 +77,7 @@ parsing:
     value:
     - select: 'div.contents_wide div.rtitle1'
     type: text
+    convert:
       merge: single
   - key: date
     value:

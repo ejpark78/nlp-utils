@@ -183,6 +183,7 @@ parsing:
     value:
     - select: a.links
     type: text
+    convert:
       merge: single
   - key: date
     value:

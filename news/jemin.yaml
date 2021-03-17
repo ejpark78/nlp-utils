@@ -175,11 +175,13 @@ parsing:
     value:
     - select: a
     type: href
+    convert:
       merge: single
   - key: title
     value:
     - select: h4.titles
     type: text
+    convert:
       merge: single
   - key: date
     value:

@@ -61,6 +61,7 @@ parsing:
     value:
     - select: header.article_header h2.article_title
     type: text
+    convert:
       merge: single
   - key: date
     value:

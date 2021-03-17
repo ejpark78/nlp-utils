@@ -58,6 +58,7 @@ parsing:
     value:
     - select: div.vcon h2
     type: text
+    convert:
       merge: single
   - key: date
     value:

@@ -130,6 +130,7 @@ parsing:
     value:
     - select: p.title
     type: text
+    convert:
       merge: single
   - key: content
     value:

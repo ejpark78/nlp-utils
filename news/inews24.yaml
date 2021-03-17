@@ -73,6 +73,7 @@ parsing:
     value:
     - select: 'header.view h1'
     type: text
+    convert:
       merge: single
   - key: date
     value:

@@ -71,6 +71,7 @@ parsing:
     value:
     - select: div.wrap div.top_header div.news_title_text h1
     type: text
+    convert:
       merge: single
   - key: date
     value:

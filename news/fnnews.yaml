@@ -117,6 +117,7 @@ parsing:
     value:
     - select: 'div.inner_view_hd h1.tit_view'
     type: text
+    convert:
       merge: single
   - key: date
     value:

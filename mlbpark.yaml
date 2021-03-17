@@ -60,11 +60,13 @@ parsing:
       value:
         - select: div.tit a
       type: title
+      convert:
         merge: single
     - key: url
       value:
         - select: div.tit a
       type: href
+      convert:
         merge: single
     - key: date
       value:

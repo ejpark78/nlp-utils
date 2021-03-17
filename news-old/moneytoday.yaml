@@ -38,6 +38,7 @@ parsing:
         class: view_top
     - name: h1
     type: text
+    convert:
       merge: single
   - key: date
     replace:

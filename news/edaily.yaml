@@ -58,6 +58,7 @@ parsing:
     value:
     - select: '#contents .article_news .news_titles h2'
     type: text
+    convert:
       merge: single
   - key: date
     value:

@@ -27,7 +27,7 @@ parsing:
     value:
     - select: "div font.View_SmFont.FontEng"
     type: text
-    type_convertconvert:
+    convert:
       to: date
       merge: single
   - key: url
@@ -50,6 +50,7 @@ parsing:
     value:
     - select: 'div.View_Title strong'
     type: text
+    convert:
       merge: single
   - key: date
     value:

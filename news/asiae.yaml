@@ -85,6 +85,7 @@ parsing:
     value:
     - select: 'div.area_title h3'
     type: text
+    convert:
       merge: single
   - key: date
     value:

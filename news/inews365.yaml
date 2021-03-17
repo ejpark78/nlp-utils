@@ -56,6 +56,7 @@ parsing:
     value:
     - select: div.art_tit h2
     type: text
+    convert:
       merge: single
   - key: date
     value:
