@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -22,10 +22,6 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
@@ -34,7 +30,7 @@ configMap:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
 
 args:
   - "python3"
@@ -48,7 +44,9 @@ jobs:
     schedule: "0 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/economy.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "economy"
     subSategory:
       - "경제/증권"
       - "경제/금융"
@@ -63,7 +61,9 @@ jobs:
     schedule: "5 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/international.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "international"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -75,7 +75,9 @@ jobs:
     schedule: "10 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/it.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "it"
     subSategory:
       - "IT/모바일"
       - "IT/인터넷/SNS"
@@ -90,7 +92,9 @@ jobs:
     schedule: "15 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/living.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "living"
     subSategory:
       - "생활/건강정보"
       - "생활/자동차시승기"
@@ -108,7 +112,9 @@ jobs:
     schedule: "20 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/opinion.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "opinion"
     subSategory:
       - "오피니언"
 
@@ -116,7 +122,9 @@ jobs:
     schedule: "25 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/politics.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "politics"
     subSategory:
       - "정치/청와대"
       - "정치/국회정당"
@@ -129,7 +137,9 @@ jobs:
     schedule: "30 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/society.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "society"
     subSategory:
       - "사회/사건사고"
       - "사회/교육"
@@ -146,7 +156,9 @@ jobs:
     schedule: "35 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/sports.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "sports"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"
@@ -163,7 +175,9 @@ jobs:
     schedule: "40 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/tv.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "tv"
     subSategory:
       - "TV"
 
@@ -171,6 +185,8 @@ jobs:
     schedule: "45 * * * *"
     args:
       - "--config"
-      - "/config/naver-news/weather.yaml"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "weather"
     subSategory:
       - "날씨"

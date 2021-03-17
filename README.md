@@ -82,7 +82,7 @@ environmentVariables:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
 
 jobs:
   - name: naver-economy

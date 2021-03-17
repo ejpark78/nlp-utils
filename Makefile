@@ -9,21 +9,21 @@ ls:
 
 .ONESHELL:
 install:
-	helm install ap-news ./news -f news/ap_news.yaml -n dev
-
-	helm install world-news ./news -f news/world.yaml -n dev
-	helm install korea-news ./news -f news/korea.yaml -n dev
-
 	helm install bbs ./portal -f portal/bbs.yaml -n dev
 
 	helm install daum-news ./portal -f portal/daum-news.yaml -n dev
 	helm install nate-news ./portal -f portal/nate-news.yaml -n dev
 	helm install naver-news ./portal -f portal/naver-news.yaml -n dev
 
-	helm install naver-kin ./portal -f portal/naver-kin.yaml -n dev
-	helm install naver-reply ./portal -f portal/naver-reply.yaml -n dev
+	helm install naver-kin ./portal -f portal/naver-kin.yaml -n naver-kin
+	#helm install naver-reply ./portal -f portal/naver-reply.yaml -n dev
 
 	helm list -A
+
+#	helm install ap-news ./news -f news/ap_news.yaml -n dev
+#
+#	helm install world-news ./news -f news/world.yaml -n dev
+#	helm install korea-news ./news -f news/korea.yaml -n dev
 
 .ONESHELL:
 upgrade:

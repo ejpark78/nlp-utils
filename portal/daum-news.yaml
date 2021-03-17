@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -22,10 +22,6 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
@@ -34,7 +30,7 @@ configMap:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
 
 args:
   - "python3"
@@ -48,7 +44,9 @@ jobs:
     schedule: "0 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/culture.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "culture"
     subSategory:
       - "문화/공연전시"
       - "문화/책"
@@ -66,7 +64,9 @@ jobs:
     schedule: "5 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/economy.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "economy"
     subSategory:
       - "경제/부동산"
       - "경제/생활경제"
@@ -87,7 +87,9 @@ jobs:
     schedule: "10 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/international.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "international"
     subSategory:
       - "국제/일본"
       - "국제/중국"
@@ -103,7 +105,9 @@ jobs:
     schedule: "15 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/it.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "it"
     subSategory:
       - "IT/IT기기"
       - "IT/통신모바일"
@@ -116,7 +120,9 @@ jobs:
     schedule: "20 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/opinion.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "opinion"
     subSategory:
       - "칼럼-칼럼"
       - "칼럼-사설"
@@ -128,7 +134,9 @@ jobs:
     schedule: "25 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/politics.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "politics"
     subSategory:
       - "정치/행정지자체"
       - "정치/국회정당"
@@ -141,7 +149,9 @@ jobs:
     schedule: "30 * * * *"
     args:
       - "--config"
-      - "/config/daum-news/society.yaml"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "society"
     subSategory:
       - "사회/사건사고"
       - "사회/충청"

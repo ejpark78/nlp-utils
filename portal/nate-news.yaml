@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -22,10 +22,6 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
@@ -34,7 +30,7 @@ configMap:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
 
 args:
   - "python3"
@@ -48,7 +44,9 @@ jobs:
     schedule: "0 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/economy.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "economy"
     subSategory:
       - "경제/생활 경제"
       - "경제/부동산"
@@ -62,7 +60,9 @@ jobs:
     schedule: "10 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/entertainment.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "entertainment"
     subSategory:
       - "연예/영화"
       - "연예/연예가 화제"
@@ -73,7 +73,9 @@ jobs:
     schedule: "20 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/international.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "international"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -86,7 +88,9 @@ jobs:
     schedule: "30 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/it.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "it"
     subSategory:
       - "IT/과학"
       - "IT/디지털"
@@ -99,7 +103,9 @@ jobs:
     schedule: "40 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/politics.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "politics"
     subSategory:
       - "정치/청와대"
       - "정치/국회/정당"
@@ -112,7 +118,9 @@ jobs:
     schedule: "50 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/society.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "society"
     subSategory:
       - "사회/사건사고"
       - "사회/교육학교"
@@ -129,7 +137,9 @@ jobs:
     schedule: "55 * * * *"
     args:
       - "--config"
-      - "/config/nate-news/sports.yaml"
+      - "/config/nate-news.yaml"
+      - "--job-name"
+      - "sports"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"

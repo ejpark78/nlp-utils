@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:live
+image: registry.nlp-utils/crawler:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
@@ -22,10 +22,6 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
   elasticsearch:
     authName: es-auth
     host: "https://corpus.ncsoft.com:9200"
@@ -34,7 +30,7 @@ configMap:
 schedule:
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
 
 args:
   - "python3"
@@ -49,19 +45,25 @@ jobs:
     schedule: "7,34 * * * *"
     args:
       - "--config"
-      - "/config/bbs/mlbpark-kbo.yaml"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "kbo"
 
   - name: mlbpark-mlb
     schedule: "10,40 * * * *"
     args:
       - "--config"
-      - "/config/bbs/mlbpark-mlb.yaml"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "mlb"
 
   - name: mlbpark-bullpen
     schedule: "20,50 * * * *"
     args:
       - "--config"
-      - "/config/bbs/mlbpark-bullpen.yaml"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "bullpen"
 
   - name: ruliweb
     schedule: "7,34 * * * *"

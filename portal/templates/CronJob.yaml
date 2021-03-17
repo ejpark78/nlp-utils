@@ -27,24 +27,6 @@ spec:
             {{- toYaml $.Values.hostAliases | nindent 12 }}
           imagePullSecrets:
             - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
-          initContainers:
-            - name: config-sync
-              image: {{ $.Values.gitImage }}
-              imagePullPolicy: IfNotPresent
-              envFrom:
-                - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
-              command:
-                - git
-                - clone
-                - --progress
-                - -b
-                - $(GIT_SYNC_BRANCH)
-                - $(GIT_SYNC_REPO)
-                - /config
-              volumeMounts:
-                - name: config
-                  mountPath: "/config"
           containers:
             - name: app
               resources:
@@ -65,12 +47,6 @@ spec:
                 {{- toYaml $job.args | nindent 16 }}
                 - --sub-category
                 - {{ $subCategory }}
-              volumeMounts:
-                - name: config
-                  mountPath: "/config"
-          volumes:
-            - name: config
-              emptyDir: {}
     {{- end }}
   {{- else }}
 ---
@@ -96,24 +72,6 @@ spec:
             {{- toYaml $.Values.hostAliases | nindent 12 }}
           imagePullSecrets:
             - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
-          initContainers:
-            - name: config-sync
-              image: {{ $.Values.gitImage }}
-              imagePullPolicy: IfNotPresent
-              envFrom:
-                - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
-              command:
-                - git
-                - clone
-                - --progress
-                - -b
-                - $(GIT_SYNC_BRANCH)
-                - $(GIT_SYNC_REPO)
-                - /config
-              volumeMounts:
-                - name: config
-                  mountPath: "/config"
           containers:
             - name: app
               resources:
@@ -132,11 +90,5 @@ spec:
               args:
                 {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}
-              volumeMounts:
-                - name: config
-                  mountPath: "/config"
-          volumes:
-            - name: config
-              emptyDir: {}
   {{- end }}
 {{- end }}
