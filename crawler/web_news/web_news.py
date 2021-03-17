@@ -404,7 +404,8 @@ class WebNewsCrawler(WebNewsBase):
 
         return trace_list
 
-    def parse_tag(self, resp, url_info: dict, parsing_info: list, base_url: str):
+    def parse_tag(self, resp, url_info: dict, parsing_info: list, base_url: str,
+                  default_date: datetime = None) -> dict or None:
         """trace tag 하나를 파싱해서 반환한다."""
         # json 인 경우 맵핑값 매칭
         first_item = deepcopy(parsing_info[0]) if len(parsing_info) > 0 else {}
@@ -427,13 +428,14 @@ class WebNewsCrawler(WebNewsBase):
                 )
 
             # 목록에서 기사 본문 링크 추출
+            parser_version = self.job_config['parsing']['version'] if 'version' in self.job_config['parsing'] else None
             item = self.parser.parse(
                 html=None,
                 soup=resp,
                 base_url=base_url,
                 parsing_info=parsing_info,
-                parser_version=self.job_config['parsing']['version'] if 'version' in self.job_config[
-                    'parsing'] else None,
+                default_date=default_date,
+                parser_version=parser_version,
             )
 
         # url 추출
@@ -708,6 +710,7 @@ class WebNewsCrawler(WebNewsBase):
                 resp=trace,
                 url_info=url_info,
                 base_url=base_url,
+                default_date=date,
                 parsing_info=self.job_config['parsing']['list'],
             )
 

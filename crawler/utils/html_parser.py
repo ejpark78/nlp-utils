@@ -8,13 +8,13 @@ import json
 import re
 from datetime import datetime
 from urllib.parse import urljoin, urlparse, parse_qs, ParseResult
-from dotty_dict import dotty
 
 import bs4
 import pytz
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
+from dotty_dict import dotty
 
 from crawler.utils.logger import Logger
 
@@ -91,7 +91,7 @@ class HtmlParser(object):
         return soup
 
     def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None,
-              parser_version: str = None) -> dict or None:
+              parser_version: str = None, default_date: datetime = None) -> dict or None:
         """ 상세 정보 HTML 을 파싱한다."""
         if html is not None:
             soup = BeautifulSoup(html, 'html5lib')
@@ -117,7 +117,13 @@ class HtmlParser(object):
             else:
                 self.trace_tag(soup=soup, tag_list=conf['value'], index=0, result=tag_list)
 
-            value_list = self.get_value_list(conf=conf, result=result, tag_list=tag_list, base_url=base_url)
+            value_list = self.get_value_list(
+                conf=conf,
+                result=result,
+                tag_list=tag_list,
+                base_url=base_url,
+                default_date=default_date
+            )
             if value_list is None:
                 continue
 
@@ -125,14 +131,15 @@ class HtmlParser(object):
 
         return result
 
-    def get_value_list(self, conf: dict, result: dict, tag_list: list, base_url: str) -> list or None:
+    def get_value_list(self, conf: dict, result: dict, tag_list: list, base_url: str,
+                       default_date: datetime = None) -> list or None:
         value_list = []
         for tag in tag_list:
             # 이미 값이 있는 경우
             if conf['key'] in result:
                 continue
 
-            val = self.extract_value(tag=tag, conf=conf, base_url=base_url)
+            val = self.extract_value(tag=tag, conf=conf, base_url=base_url, default_date=default_date)
             if val is None:
                 continue
 
@@ -168,7 +175,8 @@ class HtmlParser(object):
 
         return value_list
 
-    def extract_value(self, tag: BeautifulSoup, conf: dict, base_url: str):
+    def extract_value(self, tag: BeautifulSoup, conf: dict, base_url: str,
+                      default_date: datetime = None) -> str or int or datetime or None:
         # 태그 삭제
         if 'remove' in conf:
             for pattern in conf['remove']:
@@ -177,6 +185,9 @@ class HtmlParser(object):
 
                 for target in target_list:
                     target.extract()
+
+        if 'type' not in conf:
+            conf['type'] = 'text'
 
         # 값 추출
         if conf['type'] == 'text':
@@ -224,8 +235,17 @@ class HtmlParser(object):
                 value = value.strip()
 
         # 타입 변환
-        if 'type_convert' in conf and conf['type_convert'] == 'date':
-            value = self.parse_date(value)
+        if 'convert' in conf:
+            convert_info = conf['convert']
+
+            if convert_info['to'] == 'date' and 'format' in convert_info:
+                value = self.parse_date_with_format(
+                    value,
+                    date_format=convert_info['format'],
+                    default=default_date
+                )
+            else:
+                value = self.parse_date(value)
 
             # 날짜 파싱이 안된 경우
             if isinstance(value, datetime) is False:
@@ -265,6 +285,29 @@ class HtmlParser(object):
                 self.trace_tag(soup=tag, tag_list=tag_list, index=index + 1, result=result)
 
         return
+
+    def parse_date_with_format(self, str_date: str, date_format: str = None,
+                               default: datetime = None) -> datetime or None:
+        date = datetime.strptime(str_date, date_format)
+        if date.year == 1900 and default is not None:
+            date = date.replace(year=default.year)
+
+        try:
+            date = self.timezone.localize(date)
+        except Exception as e:
+            if 'tzinfo is already set' in str(e):
+                return date
+
+            self.logger.warning(msg={
+                'level': 'WARNING',
+                'message': 'datetime localize 경고',
+                'date': date,
+                'str_date': str_date,
+                'exception': str(e),
+            })
+            return None
+
+        return date
 
     def parse_date(self, str_date: str) -> datetime or None:
         """날짜를 변환한다."""
