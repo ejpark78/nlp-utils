@@ -11,8 +11,8 @@ export ELASTIC_SEARCH_AUTH=$(echo ZWxhc3RpYzpzZWFyY2hUMjAyMA== | base64 -d)
 
 
 YEAR=2021
-#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
+python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
 python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
 
 #

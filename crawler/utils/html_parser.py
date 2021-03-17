@@ -244,8 +244,8 @@ class HtmlParser(object):
             if convert_info['to'] == 'date' and 'format' in convert_info:
                 value = self.parse_date_with_format(
                     value,
+                    default=default_date,
                     date_format=convert_info['format'],
-                    default=default_date
                 )
             else:
                 value = self.parse_date(value)
@@ -289,9 +289,25 @@ class HtmlParser(object):
 
         return
 
-    def parse_date_with_format(self, str_date: str, date_format: str = None,
+    def parse_date_with_format(self, str_date: str, date_format: list = None,
                                default: datetime = None) -> datetime or None:
-        date = datetime.strptime(str_date, date_format)
+        date = None
+        for dt_format in date_format:
+            try:
+                date = datetime.strptime(str_date, dt_format)
+                break
+            except Exception as e:
+                continue
+
+        if date is None:
+            self.logger.warning(msg={
+                'level': 'WARNING',
+                'message': '날짜 포멧 변환 오류',
+                'str_date': str_date,
+                'date_format': date_format,
+            })
+            return None
+
         if date.year == 1900 and default is not None:
             date = date.replace(year=default.year)
 
