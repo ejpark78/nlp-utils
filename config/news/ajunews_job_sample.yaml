@@ -1,7 +1,7 @@
 ---
 reference: config/template_kor.yaml
 dag:
-  dag_id: 'ajunews'
+  dag_id: 'ajunews_template_sample'
   description: '아주경제 크롤러'
   tags:
     - 국내뉴스
