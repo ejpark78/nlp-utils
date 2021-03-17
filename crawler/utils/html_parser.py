@@ -146,17 +146,19 @@ class HtmlParser(object):
             value_list.append(val)
 
         # 타입 제약: 디폴트 목록형
-        if 'value_type' in conf:
-            if conf['value_type'] == 'single':
+        if 'convert' in conf and 'merge' in conf['convert']:
+            merge_type = conf['convert']['merge']
+
+            if merge_type == 'single':
                 if len(value_list) > 0:
                     value_list = value_list[0].strip() if isinstance(value_list, str) else value_list[0]
                 else:
                     value_list = ''
 
-            if conf['value_type'] == 'merge':
+            if merge_type == 'merge':
                 value_list = '\n'.join(value_list).strip()
 
-            if conf['value_type'] == 'unique':
+            if merge_type == 'unique':
                 value_list = list(set(value_list))
 
         # 값의 개수가 하나인 경우, 스칼라로 변경한다.
@@ -186,6 +188,7 @@ class HtmlParser(object):
                 for target in target_list:
                     target.extract()
 
+        # default type: text
         if 'type' not in conf:
             conf['type'] = 'text'
 
