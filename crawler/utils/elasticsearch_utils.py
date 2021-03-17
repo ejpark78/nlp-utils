@@ -5,12 +5,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from bz2 import BZ2File
+
 import json
 import re
 import ssl
 import sys
-from argparse import Namespace
 from datetime import datetime
+from os import getenv
 from os import makedirs
 from os.path import isdir, isfile
 from ssl import SSLContext
@@ -483,9 +485,25 @@ class ElasticSearchUtils(object):
 
         return
 
+    def dump_index_list(self, index_list: str, size: int = 1000, path: str = '.') -> None:
+        with open(index_list, 'r') as fp:
+            index_list = dict({tuple(x.split()) for x in fp.readlines()})
+
+        for idx, s in sorted(index_list.items(), key=lambda x: int(x[1])):
+            if self.conn.indices.exists(idx) is False:
+                continue
+
+            with BZ2File(f'{path}/{idx}.json.bz2', 'wb') as fp:
+                self.dump_index(index=idx, size=size, index_size=int(s), fp=fp)
+
+        return
+
     def dump_index(self, index: str, size: int = 1000, query: dict = None, result: list = None,
-                   limit: int = -1, source: list = None) -> None:
+                   limit: int = -1, source: list = None, index_size: int = -1, fp: BZ2File = None) -> None:
         if index is None or index == '':
+            return
+
+        if self.conn.indices.exists(index) is False:
             return
 
         count = 1
@@ -498,7 +516,12 @@ class ElasticSearchUtils(object):
                 **self.conn.indices.get_settings(index)[index],
                 **self.conn.indices.get_mapping(index)[index]
             }
-            print(json.dumps(settings, ensure_ascii=False), flush=True)
+
+            line = json.dumps(settings, ensure_ascii=False) + '\n'
+            if fp:
+                fp.write(line.encode('utf-8'))
+            else:
+                print(line, flush=True, end='')
 
         p_bar = None
         while count > 0:
@@ -521,6 +544,9 @@ class ElasticSearchUtils(object):
                     dynamic_ncols=True
                 )
 
+                if index_size > 0:
+                    p_bar.total = index_size
+
             p_bar.update(count)
             sum_count += count
 
@@ -533,9 +559,16 @@ class ElasticSearchUtils(object):
                 })
 
                 if result is None:
-                    print(json.dumps(doc, ensure_ascii=False), flush=True)
+                    line = json.dumps(doc, ensure_ascii=False) + '\n'
+                    if fp:
+                        fp.write(line.encode('utf-8'))
+                    else:
+                        print(line, flush=True, end='')
                 else:
                     result.append(doc)
+
+            if fp:
+                fp.flush()
 
             if 0 < limit < sum_count:
                 break
@@ -856,24 +889,25 @@ class ElasticSearchUtils(object):
         )
 
     def batch(self) -> None:
-        env = self.init_arguments()
+        params = self.init_arguments()
 
-        self.host = env.host
-        self.index = env.index
-        self.http_auth = env.http_auth
+        self.host, self.index, self.http_auth = params['host'], params['index'], params['auth']
 
         self.open()
 
-        if env.dump:
-            self.dump_index(index=env.index, size=env.size)
+        if params['dump']:
+            if params['index']:
+                self.dump_index(index=params['index'], size=params['size'])
+            else:
+                self.dump_index_list(index_list=params['index_list'], size=params['size'], path=params['dump_path'])
 
-        if env.restore:
-            self.restore_index(index=env.index, size=env.size)
+        if params['restore']:
+            self.restore_index(index=params['index'], size=params['size'])
 
         return
 
     @staticmethod
-    def init_arguments() -> Namespace:
+    def init_arguments() -> dict:
         import argparse
 
         parser = argparse.ArgumentParser(description='')
@@ -881,13 +915,19 @@ class ElasticSearchUtils(object):
         parser.add_argument('--dump', action='store_true', default=False, help='')
         parser.add_argument('--restore', action='store_true', default=False, help='')
 
-        parser.add_argument('--host', default=None, help='elastic search 주소')
-        parser.add_argument('--http-auth', default=None, help='elastic auth')
+        parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
+                            help='elasticsearch url')
+        parser.add_argument('--auth', default=getenv('ELASTIC_SEARCH_AUTH', default=None), type=str,
+                            help='elasticsearch auth')
+
         parser.add_argument('--index', default=None, help='인덱스명')
+        parser.add_argument('--index-list', default=None, help='인덱스 목록')
 
         parser.add_argument('--size', default=1000, type=int, help='인덱스명')
 
-        return parser.parse_args()
+        parser.add_argument('--dump-path', default='.', help='저장 위치')
+
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

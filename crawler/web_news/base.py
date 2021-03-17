@@ -81,7 +81,10 @@ class WebNewsBase(object):
         return result
 
     @staticmethod
-    def merge_params(args: dict = None, params: dict = None, default_params: dict = None) -> dict:
+    def merge_params(args: dict, params: dict, default_params: dict) -> dict:
+        if args is None:
+            return params
+
         for col, val in args.items():
             if col not in default_params or col not in params:
                 continue

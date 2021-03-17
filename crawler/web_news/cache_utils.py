@@ -123,3 +123,27 @@ class CacheUtils(CacheBase):
             self.conn.commit()
 
         return
+
+    def batch(self) -> None:
+        params = self.init_arguments()
+
+        if params['json2db'] is True:
+            CacheUtils().json2db(filename=params['filename'])
+
+        return
+
+    @staticmethod
+    def init_arguments() -> dict:
+        import argparse
+
+        parser = argparse.ArgumentParser()
+
+        parser.add_argument('--json2db', action='store_true', default=False)
+
+        parser.add_argument('--filename', default=None, type=str, help='json file name')
+
+        return vars(parser.parse_args())
+
+
+if __name__ == '__main__':
+    CacheUtils().batch()

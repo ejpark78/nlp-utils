@@ -30,8 +30,9 @@ class CrawlerIndexState(object):
         super().__init__()
 
         self.params = None
-        self.doc_count = defaultdict(dict)
+
         self.total = defaultdict(int)
+        self.doc_count = defaultdict(dict)
 
         self.url, self.auth = None, None
 

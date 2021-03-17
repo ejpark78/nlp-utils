@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
+set -x #echo on
+
 ARGS="--verbos 1 --sleep 0.8 --config config/nate-news.yaml --list"
-SCRIPTS="crawler/web_news/web_news.py"
+SCRIPTS="-m crawler.web_news.web_news"
 
 export PYTHONPATH=.
 export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
-export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
+export ELASTIC_SEARCH_AUTH=$(echo ZWxhc3RpYzpzZWFyY2hUMjAyMA== | base64 -d)
 
 
 YEAR=2021
-python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
 python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
 
 #

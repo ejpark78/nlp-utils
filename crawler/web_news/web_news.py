@@ -873,6 +873,8 @@ class WebNewsCrawler(WebNewsBase):
                 # page 단위로 크롤링한다.
                 self.trace_page(url_info=url_info, job=job, dt=dt)
 
+            self.running_state(tag='category')
+
         return
 
     def trace_job(self, job: dict) -> None:
@@ -920,6 +922,8 @@ class WebNewsCrawler(WebNewsBase):
 
         self.trace_category(job=job)
 
+        self.running_state(tag='job')
+
         return
 
     def running_state(self, tag: str) -> None:
@@ -935,7 +939,7 @@ class WebNewsCrawler(WebNewsBase):
             'tag': tag,
             'start': self.start_date.isoformat(),
             'finished': finished.isoformat(),
-            'runtime': runtime,
+            'runtime': f'{runtime:0.2f}',
             **self.summary
         })
         return
@@ -957,7 +961,7 @@ class WebNewsCrawler(WebNewsBase):
         for self.job_config in config_list:
             for job in self.job_config['jobs']:
                 self.params = self.merge_params(
-                    args=job['args'],
+                    args=job['args'] if 'args' in job else None,
                     params=self.params,
                     default_params=self.default_params
                 )
@@ -965,8 +969,6 @@ class WebNewsCrawler(WebNewsBase):
                 self.trace_job(job=job)
 
                 self.params = deepcopy(params_org)
-
-                self.running_state(tag='job done')
 
         self.running_state(tag='completed')
 

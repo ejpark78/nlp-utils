@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+set -x #echo on
+
 ARGS="--verbos 1 --sleep 0.8 --config config/naver-news.yaml,config/naver-news-sports.yaml --list"
-SCRIPTS="crawler/web_news/web_news.py"
+SCRIPTS="-m crawler.web_news.web_news"
 
 export PYTHONPATH=.
 export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
-export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
+export ELASTIC_SEARCH_AUTH=$(echo ZWxhc3RpYzpzZWFyY2hUMjAyMA== | base64 -d)
 
 
 YEAR=2021
@@ -15,8 +17,8 @@ YEAR=2021
 
 
 YEAR=2020
-python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
+#python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
 python3 ${SCRIPTS} --date-range ${YEAR}-10-01 ${ARGS}
 python3 ${SCRIPTS} --date-range ${YEAR}-09-01 ${ARGS}
 python3 ${SCRIPTS} --date-range ${YEAR}-08-01 ${ARGS}
