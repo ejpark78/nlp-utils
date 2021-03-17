@@ -308,8 +308,11 @@ class HtmlParser(object):
             })
             return None
 
-        if date.year == 1900 and default is not None:
-            date = date.replace(year=default.year)
+        if default is not None:
+            if date.strftime('%Y-%m-%d') == '1900-01-01':
+                date = date.replace(year=default.year, month=default.month, day=default.day)
+            elif date.year == 1900:
+                date = date.replace(year=default.year)
 
         try:
             date = self.timezone.localize(date)

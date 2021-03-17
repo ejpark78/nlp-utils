@@ -937,7 +937,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.logger.log(msg={
             'level': 'SUMMARY',
-            'args': self.params,
+            'params': self.params,
             'env': self.elastic_env,
             'tag': tag,
             'start': self.start_date.isoformat(),
