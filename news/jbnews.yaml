@@ -9,27 +9,27 @@ jobs:
   - category: 정치
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N1&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 경제
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N2&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N2&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
 
   - category: 사회
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N3&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 교육
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N28&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N28&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 문화
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 사람들
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N8&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N8&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   
   - category: 충남
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N6&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 충북
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N5&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N5&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 대전
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N26&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 세종
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N22&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N22&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 스포츠
-    rul_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
 
 parsing:
   descriptions:
