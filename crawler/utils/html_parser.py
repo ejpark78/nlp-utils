@@ -241,18 +241,16 @@ class HtmlParser(object):
         if 'convert' in conf:
             convert_info = conf['convert']
 
-            if convert_info['to'] == 'date' and 'format' in convert_info:
-                value = self.parse_date_with_format(
+            if 'to' in convert_info and convert_info['to'] == 'date':
+                value = self.parse_date(
                     value,
                     default=default_date,
-                    date_format=convert_info['format'],
+                    date_format=convert_info['format'] if 'format' in convert_info else None,
                 )
-            else:
-                value = self.parse_date(value)
 
-            # 날짜 파싱이 안된 경우
-            if isinstance(value, datetime) is False:
-                return None
+                # 날짜 파싱이 안된 경우
+                if isinstance(value, datetime) is False:
+                    return None
 
         return value
 
@@ -331,7 +329,15 @@ class HtmlParser(object):
 
         return date
 
-    def parse_date(self, str_date: str) -> datetime or None:
+    def parse_date(self, str_date: str, date_format: list = None,
+                   default: datetime = None) -> datetime or None:
+        if date_format is not None:
+            return self.parse_date_with_format(
+                str_date,
+                default=default,
+                date_format=date_format,
+            )
+
         """날짜를 변환한다."""
         try:
             if '오전' in str_date:

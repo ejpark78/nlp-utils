@@ -754,8 +754,9 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             # 기사 목록 저장
+            self.save_article_list(item=item, job=job, es=es)
+
             if self.params['list']:
-                self.save_article_list(item=item, job=job, es=es)
                 continue
 
             if self.get_article(doc_id=doc_id, item=item, job=job, es=es):
