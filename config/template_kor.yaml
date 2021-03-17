@@ -5,7 +5,7 @@ dag:
   schedule_interval: '0,30 * * * *'
   max_active_runs: 1
   concurrency: 64
-  tags: [국내뉴스]
+  tags: [국내뉴스,한국어]
 default_args:
   owner: 'Airflow'
   retries: 3
@@ -36,4 +36,6 @@ operator:
     - '5'
     - --date-range
     - today
+    - --page-range
+    - 1~5
 tasks: []
