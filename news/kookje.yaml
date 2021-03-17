@@ -6,8 +6,6 @@ jobs:
       frame: '{key}'
       type: query
   list:
-  - category: 전체뉴스
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=&series=&sword=&hot=&page={page}
     encoding: euc-kr
   - category: 정치/청와대/대통령
     url_frame: http://www.kookje.co.kr/news2011/asp/list.asp?code=0110&page={page}
