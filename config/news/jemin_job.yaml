@@ -1,6 +1,5 @@
 ---
 reference: config/template_kor.yaml
-reference: config/template_kor.yaml                                                                    ---
 dag:
   dag_id: 'jemin'
   description: '제민일보 크롤러'
