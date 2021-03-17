@@ -49,18 +49,15 @@ parsing:
   trace:
   - select: ol li article
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: header a > span
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: header a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div time > span
     type: text
@@ -70,18 +67,15 @@ parsing:
     replace:
     - from: Posted at
       to: ''
-  - comment: 요약
-    key: summary
+  - key: summary
     value:
     - select: div div div p
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -89,32 +83,27 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: article header h1#main-heading
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: dd time
     type: datetime
     convert:
       to: date
     value_type: single
-  - comment: 작성자
-    key: author
+  - key: author
     value:
     - select: article header p span strong
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: article
     type: text
     remove:
     - name: header
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

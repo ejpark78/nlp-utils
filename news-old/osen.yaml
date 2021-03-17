@@ -108,16 +108,14 @@ parsing:
   trace: {}
   list: {}
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: detailTitle
     - name: h1
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: div
       attribute:
@@ -129,16 +127,14 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 이미지
-    delete: true
+  - delete: true
     key: image_list.image
     value:
     - name: img
       attribute:
         class: view_photo up
     type: src
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

@@ -49,36 +49,30 @@ parsing:
   trace:
   - select: div.list_body.newsflash_body li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: span.date
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 출처
-    key: source
+  - key: source
     value:
     - select: span.writing
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -86,91 +80,76 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.article_info h3#articleTitle
     type: text
-  - comment: '제목: 스포츠 동아'
-    key: title
+  - key: title
     value:
     - select: div.end_ct_area h2.end_tit
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.article_info span.t11
     type: text
     convert:
       to: date
     value_type: single
-  - comment: '날짜: 스포츠동아'
-    key: date
+  - key: date
     value:
     - select: span.author em
     type: text
     convert:
       to: date
     value_type: single
-  - comment: '날짜: 국민일보'
-    key: date
+  - key: date
     value:
     - select: div.article_info span.t11
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 지면 정보
-    key: paper
+  - key: paper
     remove:
     - select: i.picon
     value:
     - select: div.article_info span.sponsor_newspaper
     type: text
-  - comment: 출처
-    key: source_url
+  - key: source_url
     value:
     - select: div.sponsor a
     type: href
     value_type: single
-  - comment: '출처: 스포츠 동아'
-    key: source_url
+  - key: source_url
     value:
     - select: div.article_info a.btn_news_origin
     type: href
     value_type: single
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - select: span.end_photo_org img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - select: span.end_photo_org em.img_desc
     type: text
-  - comment: 동영상
-    key: vod
+  - key: vod
     value:
     - select: div#articleBodyContents iframe
     type: html
-  - comment: 원래 섹션
-    key: source_section
+  - key: source_section
     value:
     - select: div.guide_categorization em.guide_categorization_item
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#articleBodyContents
     type: text
-  - comment: '텍스트 본문: 스포츠 동아'
-    key: content
+  - key: content
     value:
     - select: div#articeBody
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

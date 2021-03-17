@@ -36,24 +36,21 @@ parsing:
       class: list_area
   - name: dl
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: dt
       attribute:
         class: tit
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: dt
       attribute:
         class: tit
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: span
       attribute:
@@ -63,8 +60,7 @@ parsing:
       to: date
     value_type: single
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -73,22 +69,19 @@ parsing:
       attribute:
         class: head_tit
     type: text
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: h1
       attribute:
         class: top_title
     type: text
-  - comment: 부제목
-    key: sub_title
+  - key: sub_title
     value:
     - name: h2
       attribute:
         class: sub_title1
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
@@ -100,23 +93,20 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
         class: img_center
     - name: img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: figure
     - name: figcaption
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

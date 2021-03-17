@@ -26,20 +26,17 @@ parsing:
     attribute:
       class: list_item
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: dt
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: dt
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: '[(].+[)]'
       to: ''
@@ -55,15 +52,13 @@ parsing:
       to: date
     value_type: single
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: h1
       attribute:
         id: news_title_text_id
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: 입력
       to: ''
@@ -77,8 +72,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 글쓴이
-    key: author
+  - key: author
     value:
     - name: div
       attribute:
@@ -87,39 +81,34 @@ parsing:
       attribute:
         id: j1
     type: text
-  - comment: 글쓴이 소속
-    key: author_source
+  - key: author_source
     value:
     - name: span
       attribute:
         class: author_source
     type: text
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
         class: news_imgbox
     - name: img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
       attribute:
         class: news_imgbox
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:
         class: par
     type: text
     value_type: merge
-  - comment: 다국어 기사
-    key: language_list
+  - key: language_list
     value:
     - name: div
       attribute:

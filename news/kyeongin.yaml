@@ -48,13 +48,11 @@ parsing:
   trace:
   - select: "div.news_list_box"
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: "h2 a"
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: span
     type: text
@@ -64,18 +62,15 @@ parsing:
       - from: " .*"
         to: ''
     value_type: single
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: "h2 a"
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -83,14 +78,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: 'div.view_title_box p.view_title'
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "div.view_title_box span.view_date"
     type: text
@@ -100,13 +93,11 @@ parsing:
     replace:
     - from: "^입력 "
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: 'div.bm_view div.view_left'
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

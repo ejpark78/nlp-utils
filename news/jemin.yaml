@@ -171,32 +171,27 @@ parsing:
   trace:
   - select: section#section-list li
   list:
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: a
     type: href
     value_type: single
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: h4.titles
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
         - select: span.byline em:last-child
     type: text
     convert:
       to: date
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -204,13 +199,11 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: article#article-view-content-div p
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

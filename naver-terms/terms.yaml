@@ -425,8 +425,7 @@ parsing:
     - select: li.thumb_list_item
     type: html
   values:
-  - comment: 조회수
-    key: hit_view
+  - key: hit_view
     replace:
     - from: 조회[ ]*
       to: ''
@@ -435,25 +434,21 @@ parsing:
       attribute:
         class: info hit_view
     type: text
-  - comment: 좋아요
-    key: like_count
+  - key: like_count
     value:
     - name: em
       attribute:
         class: u_cnt _count
     type: text
-  - comment: 표제어
-    key: name
+  - key: name
     value:
     - select: h3.subject
     type: text
-  - comment: 용어 설명
-    key: define
+  - key: define
     value:
     - select: p.dsc
     type: text
-  - comment: 본문으로 이동
-    key: detail_link
+  - key: detail_link
     value:
     - name: a
       attribute:

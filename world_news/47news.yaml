@@ -36,33 +36,27 @@ parsing:
   trace:
   - select: div.panel ul.title-list li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: li h3
     type: text
-  - comment: li a
-    key: url
+  - key: url
     value:
     - select: a
     type: href
-  - comment: 출처
-    key: source
+  - key: source
     value:
     - select: div div.credit-name
     type: text
-  - comment: 요약
-    key: summary
+  - key: summary
     value:
     - select: p.display_body span
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -70,25 +64,21 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.intermediate_page h1 a
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.intermediate_page div.writer span:first-child
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.intermediate_page div.article_body
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

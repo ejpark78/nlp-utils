@@ -38,8 +38,7 @@ parsing:
       url: https://tass.ru/{slug}/{id}
       date: dateLabel
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -47,17 +46,14 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.news div.news-hader h1
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.news div.text-content
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

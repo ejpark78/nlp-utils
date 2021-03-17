@@ -24,61 +24,50 @@ parsing:
   trace:
   - select: table.board_list_table tr.table_body
   list:
-  - comment: 게시글 아이디
-    key: article_id
+  - key: article_id
     value:
     - select: td.id
     type: text
     value_type: single
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: td.subject a.deco
     type: text
     value_type: single
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: td.subject a.deco
     type: href
     value_type: single
-  - comment: 소분류
-    key: sub_category
+  - key: sub_category
     value:
     - select: td.divsn
     type: text
-  - comment: 사용자명
-    key: writer
+  - key: writer
     value:
     - select: td.writer
     type: text
-  - comment: 댓글수
-    key: reply_count
+  - key: reply_count
     value:
     - select: td.subject span.num
     type: text
-  - comment: 추천수
-    key: recommend_count
+  - key: recommend_count
     value:
     - select: td.recomd
     type: text
-  - comment: 조회수
-    key: view_count
+  - key: view_count
     value:
     - select: td.hit
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: td.time
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -86,65 +75,55 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 소분류
-    key: sub_category
+  - key: sub_category
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
     value:
     - select: h4.subject span.subject_text
     type: text
-  - comment: 제목
-    key: title
+  - key: title
     replace:
     - from: ^.*[[].+?[]](.+)$
       to: \g<1>
     value:
     - select: h4.subject span.subject_text
     type: text
-  - comment: 댓글수
-    key: reply_count
+  - key: reply_count
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
     value:
     - select: h4.subject strong.reply_count
     type: text
-  - comment: 작성자
-    key: writer
+  - key: writer
     value:
     - select: div.user_info strong.nick
     type: text
-  - comment: 작성자 srl
-    key: member_srl
+  - key: member_srl
     replace:
     - from: ^.*[(](.+?)[)].*$
       to: \g<1>
     value:
     - select: div.user_info span.member_srl
     type: text
-  - comment: 출석일수
-    key: attend
+  - key: attend
     value:
     - select: div.user_info span.attend
     type: text
-  - comment: 출석일수
-    key: level
+  - key: level
     value:
     - select: div.user_info span.level
     type: text
-  - comment: 사용자 경험지수
-    key: experience
+  - key: experience
     value:
     - select: div.user_info span.exp_text
     type: text
-  - comment: 추천수
-    key: like_count
+  - key: like_count
     value:
     - select: div.user_info span.like
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: '[(](.+?)[)]'
       to: \g<1>
@@ -154,37 +133,31 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.board_main_view > div.view_content
     type: text
     value_type: merge
-  - comment: 댓글 목록
-    key: reply_html_content
+  - key: reply_html_content
     value:
     - select: div.comment_view_wrapper tr.comment_element
     type: html
-  - comment: 댓글 작성자
-    key: reply_list.writer
+  - key: reply_list.writer
     value:
     - select: div.comment_view_wrapper tr.comment_element td.user div.nick
     type: text
-  - comment: 댓글 작성자 srl
-    key: reply_list.member_srl
+  - key: reply_list.member_srl
     replace:
     - from: ^.*[(](.+?)[)].*$
       to: \g<1>
     value:
     - select: div.comment_view_wrapper tr.comment_element td.user span.member_srl
     type: text
-  - comment: 댓글 텍스트
-    key: reply_list.text
+  - key: reply_list.text
     value:
     - select: div.comment_view_wrapper tr.comment_element td.comment span.text
     type: text
-  - comment: 댓글 작성 시간
-    key: reply_list.date
+  - key: reply_list.date
     value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         span.time
@@ -192,19 +165,16 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 댓글 좋아요 수량
-    key: reply_list.like_count
+  - key: reply_list.like_count
     value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_like span.num
     type: text
-  - comment: 댓글 싫어요 수량
-    key: reply_list.dislike_count
+  - key: reply_list.dislike_count
     value:
     - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
         button.btn_dislike span.num
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

@@ -50,13 +50,11 @@ parsing:
   trace:
   - select: div.list_content dl.list_item
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: dt a
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: dd.date_author span.date
     type: text
@@ -66,18 +64,15 @@ parsing:
     replace:
     - from: (.+)
       to: ''
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: dt a
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -85,13 +80,11 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.news_title_text h1
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: article.news_article div[itemprop=articleBody] div.news_date
     type: text
@@ -103,15 +96,13 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: article.news_article div[itemprop=articleBody]
     type: text
     value_type: merge
     remove:
     - select: div.news_date
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

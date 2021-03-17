@@ -22,19 +22,16 @@ parsing:
     attribute:
       class: subject
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -42,8 +39,7 @@ parsing:
     - name: h1
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.+([1-2][089][0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
@@ -58,23 +54,20 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 글쓴이
-    key: author
+  - key: author
     value:
     - name: a
       attribute:
         title: 기자의 다른기사보기
     type: text
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: td
       attribute:
         class: img
     - name: img
     type: src
-  - comment: 이미지 갭션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: td
@@ -82,8 +75,7 @@ parsing:
         class: img
     - name: img
     type: alt
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

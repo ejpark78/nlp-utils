@@ -21,19 +21,16 @@ parsing:
       id: content_sm
   - name: dl
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -42,8 +39,7 @@ parsing:
       attribute:
         id: article_title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.+(20[0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
@@ -54,23 +50,20 @@ parsing:
     type: text
     convert:
       to: date
-  - comment: 글쓴이
-    key: author
+  - key: author
     value:
     - name: p
       attribute:
         class: info_byline
     type: text
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
         class: art_photo_wrap
     - name: img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
@@ -78,8 +71,7 @@ parsing:
         class: art_photo_wrap
     - name: img
     type: alt
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
@@ -89,15 +81,13 @@ parsing:
       attribute:
         class: caption
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:
         id: articleBody
     type: text
-  - comment: 기사 문단
-    key: content_text
+  - key: content_text
     value:
     - name: p
       attribute:

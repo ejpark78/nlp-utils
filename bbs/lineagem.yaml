@@ -55,7 +55,6 @@ jobs:
 parsing:
   version: v2021-01-26
   article: []
-  comment: []
   list: {}
   parser: html5lib
   trace: {}

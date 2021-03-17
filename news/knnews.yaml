@@ -26,23 +26,19 @@ parsing:
   trace:
   - select: "div.list_cont02 ul li"
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: "span.cont02_tit a"
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: 'span.cont02_tit a'
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -50,14 +46,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: 'div.cont_tit h1#PushLinkId.h1_tex'
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "div.cont_tit ul li.loca_left"
     type: text
@@ -67,13 +61,11 @@ parsing:
     replace:
     - from: "^기사입력 : "
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: 'div.cont_cont ul li#content_li'
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

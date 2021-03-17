@@ -58,26 +58,22 @@ parsing:
   trace:
   - select: div.lato div.row.story.list div.col-md-12
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.col-md-8 div.title
     type: text
-  - comment: 카테고리
-    key: list_category
+  - key: list_category
     value:
     - select: div.col-md-8 div.category
     type: text
     replace:
     - from: /+.+$
       to: ''
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.col-md-8 div.category i.time-ago
     type: text
@@ -87,18 +83,15 @@ parsing:
     replace:
     - from: /+
       to: ''
-  - comment: 요약
-    key: summary
+  - key: summary
     value:
     - select: div.content
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -106,18 +99,15 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.news-head h1.headline
     type: text
-  - comment: 하위 카테고리
-    key: sub_category
+  - key: sub_category
     value:
     - select: div.news-head div.breadcrumb
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.news-head div.article-date
     type: text
@@ -129,17 +119,14 @@ parsing:
       to: ''
     - from: ^.+Updated
       to: ''
-  - comment: 작성자
-    key: author
+  - key: author
     value:
     - select: div.news-head div.author div
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: article[itemprop=articleBody]
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

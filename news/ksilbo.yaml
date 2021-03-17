@@ -19,31 +19,26 @@ parsing:
   trace:
   - select: "tr td.ArtList_Title"
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: "td.ArtList_Title a"
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "div font.View_SmFont.FontEng"
     type: text
     type_convertconvert:
       to: date
     value_type: single
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: "td.ArtList_Title a"
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -51,14 +46,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: 'div.View_Title strong'
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "td div.View_Time"
     type: text
@@ -68,13 +61,11 @@ parsing:
     replace:
     - from: '^승인\s*'
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: 'td#articleBody.view_r div#CmAdContent'
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

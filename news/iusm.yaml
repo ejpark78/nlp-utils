@@ -467,23 +467,19 @@ parsing:
   trace:
   - select: table#article-list table td.list-titles
   list:
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: a
     type: href
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: a
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -491,8 +487,7 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.info li.date
     replace:
@@ -501,13 +496,11 @@ parsing:
     type: text
     convert:
       to: date
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#articleBody
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

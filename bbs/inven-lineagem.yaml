@@ -55,60 +55,50 @@ parsing:
   trace:
   - select: div.articleList table tr
   list:
-  - comment: 게시글 아이디
-    key: article_id
+  - key: article_id
     value:
     - select: td.bbsNo
     type: text
     value_type: single
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: td.bbsSubject a.sj_ln
     type: text
     value_type: single
-  - comment: 소분류
-    key: sub_category
+  - key: sub_category
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
     value:
     - select: td.bbsSubject a.sj_ln
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: td.bbsSubject a.sj_ln
     type: href
     value_type: single
-  - comment: 사용자명
-    key: writer
+  - key: writer
     value:
     - select: td.bbsNick
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: td.date
     type: text
-  - comment: 조회수
-    key: view_count
+  - key: view_count
     value:
     - select: td.hit
     type: text
-  - comment: 추천수
-    key: recommend_count
+  - key: recommend_count
     value:
     - select: td.req
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -116,52 +106,44 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 소분류
-    key: sub_category
+  - key: sub_category
     replace:
     - from: ^.*[[](.+?)[]].*$
       to: \g<1>
     value:
     - select: div.articleCategory
     type: text
-  - comment: 사용자명
-    key: writer
+  - key: writer
     value:
     - select: div.articleWriter
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.articleDate
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 조회수
-    key: view_count
+  - key: view_count
     replace:
     - from: ^.*조회:.*([0-9]+).*$
       to: \g<1>
     value:
     - select: div.articleHit
     type: text
-  - comment: 추천수
-    key: recommend_count
+  - key: recommend_count
     value:
     - select: span#bbsRecommendNum1
     type: text
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.articleTitle
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#powerbbsContent
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

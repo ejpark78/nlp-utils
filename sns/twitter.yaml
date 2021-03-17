@@ -294,15 +294,13 @@ parsing:
     - select: ol.stream-items
     type: html
   values:
-  - comment: 댓글
-    key: reply.text
+  - key: reply.text
     value:
     - name: div
       attribute:
         class: js-tweet-text-container
     type: text
-  - comment: 댓글러
-    key: reply.name
+  - key: reply.name
     value:
     - name: div
       attribute:
@@ -311,8 +309,7 @@ parsing:
       attribute:
         class: FullNameGroup
     type: text
-  - comment: 댓글러
-    key: reply.id
+  - key: reply.id
     value:
     - name: div
       attribute:

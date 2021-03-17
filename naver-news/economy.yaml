@@ -100,7 +100,6 @@ pipeline:
     type: text
   - key: paper
     column: raw
-    comment: 지면 정보
     value:
       - select: div.article_info span.sponsor_newspaper
     type: text
@@ -108,7 +107,6 @@ pipeline:
       - select: i.picon
   - key: source_url
     column: raw
-    comment: 출처
     value:
       - select: div.sponsor a
     type: href

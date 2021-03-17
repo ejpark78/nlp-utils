@@ -28,36 +28,30 @@ parsing:
     value:
     - select: div.infinite-pagination-wrapper div.infinite-pagination__item a
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: a
     type: title
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: time
     type: datetime
     convert:
       to: date
     value_type: single
-  - comment: 요약
-    key: summary
+  - key: summary
     value:
     - select: p
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -65,30 +59,25 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: h1.panel__title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: p.type__date time
     type: datetime
     convert:
       to: date
     value_type: single
-  - comment: 작성자
-    key: author
+  - key: author
     value:
     - select: div.panel__caption
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.panel__text
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

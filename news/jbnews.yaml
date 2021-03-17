@@ -38,23 +38,19 @@ parsing:
   trace:
   - select: div.article-list section.article-list-content.type-sm.text-left div.list-block
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.list-block div.list-titles a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: div.list-block div.list-titles a
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -62,14 +58,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: header.article-view-header header.article-header-wrap div.article-head-title
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.info-text ul li:nth-child(2)
     type: text
@@ -79,13 +73,11 @@ parsing:
     replace:
     - from: "^.*승인 "
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#article-view-content-div
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

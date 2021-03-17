@@ -158,20 +158,17 @@ parsing:
 ```yaml
 parsing:
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: title
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: a.url
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: span#date
     type: text
@@ -185,8 +182,7 @@ parsing:
 ```yaml
 parsing:
   article:
-  - comment: html
-    key: html
+  - key: html
     value:
     - name: html
     remove:
@@ -198,13 +194,11 @@ parsing:
         role: date
     - select: div[role=date]
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.article_info
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#articleBodyContents
     type: text

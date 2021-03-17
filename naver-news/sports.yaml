@@ -87,8 +87,7 @@ parsing:
   list:
   - parser: json
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -96,18 +95,15 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.news_headline h4.title
     type: text
-  - comment: 기사 원문 주소
-    key: source_url
+  - key: source_url
     value:
     - select: div.news_headline div.info a.press_link
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     remove:
     - select: a.press_link
     replace:
@@ -121,29 +117,24 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - select: div#newsEndContents span.end_photo_org img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - select: div#newsEndContents span.end_photo_org em.img_desc
     type: text
-  - comment: 동영상
-    key: vod
+  - key: vod
     value:
     - select: div#newsEndContents iframe
     type: html
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div#newsEndContents
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

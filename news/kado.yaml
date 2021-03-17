@@ -28,31 +28,26 @@ parsing:
   trace:
   - select: section#section-list
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: section#section-list > ul span > em:nth-child(3)
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -60,13 +55,11 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div#article-view > div > header > h3
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)
     type: text
@@ -78,12 +71,10 @@ parsing:
       to: ''
     - from: "입력"
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: article#article-view-content-div
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

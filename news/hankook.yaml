@@ -106,31 +106,26 @@ parsing:
   trace:
   - select: ul.board-list.column-3 li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.text-box h3 a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: div.text-box h3 a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.cell-1 span.date
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -138,13 +133,11 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: div.col-main h2.title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.info dl dd
     replace:
@@ -158,13 +151,11 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.col-main
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

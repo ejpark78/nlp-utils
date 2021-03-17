@@ -25,24 +25,21 @@ parsing:
       class: bd
   - name: li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: dt
     - name: a
       attribute:
         class: title_cr
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: dt
     - name: a
       attribute:
         class: title_cr
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: dd
     - name: span
@@ -52,8 +49,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 출처
-    key: source
+  - key: source
     value:
     - name: dd
     - name: em
@@ -61,16 +57,14 @@ parsing:
         class: provide
     type: text
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: article_tit
     - name: h2
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.*입력
       to: ''
@@ -85,8 +79,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 날짜
-    key: edit_date
+  - key: edit_date
     replace:
     - from: ^.*수정
       to: ''
@@ -101,8 +94,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 출처
-    key: source
+  - key: source
     value:
     - name: div
       attribute:
@@ -111,32 +103,28 @@ parsing:
       attribute:
         class: provider
     type: text
-  - comment: 지면
-    key: paper_url
+  - key: paper_url
     value:
     - name: div
       attribute:
         class: byline
     - name: a
     type: href
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
         class: image
     - name: img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: p
       attribute:
         class: caption
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

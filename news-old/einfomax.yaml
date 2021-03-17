@@ -20,16 +20,14 @@ parsing:
     attribute:
       class: table-row
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: list-titles table-cell
     - name: strong
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: div
       attribute:
@@ -38,8 +36,7 @@ parsing:
       attribute:
         class: links
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.+([1-2][089][0-9][0-9][.\- :0-9]+).+$
       to: \g<1>
@@ -52,15 +49,13 @@ parsing:
       to: date
     value_type: single
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: article-head-title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: ^.*승인
       to: ''
@@ -76,8 +71,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 글쓴이
-    key: author
+  - key: author
     replace:
     - from: 승인.+$
       to: ''
@@ -86,8 +80,7 @@ parsing:
       attribute:
         class: info-text
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     remove:
     - name: div
       attribute:

@@ -50,18 +50,15 @@ parsing:
     value:
     - select: div.pagination-bar li.num-pag a
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: h3.news-title a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: h3.news-title a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.news-date
     type: text
@@ -71,18 +68,15 @@ parsing:
     replace:
     - from: ^-\s+
       to: ''
-  - comment: 요약
-    key: summary
+  - key: summary
     value:
     - select: p.news-abs
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -90,25 +84,21 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: header h1.news-title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: div.news-time time strong
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div[itemprop=articleBody]
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

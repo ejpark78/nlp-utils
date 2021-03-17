@@ -39,18 +39,15 @@ parsing:
       class: postSubject
   - name: li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: span
       attribute:
@@ -60,13 +57,11 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -74,8 +69,7 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -84,8 +78,7 @@ parsing:
       attribute:
         class: viewTite
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: dl
       attribute:
@@ -96,16 +89,14 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 출처
-    key: source
+  - key: source
     value:
     - name: dl
       attribute:
         class: articleInfo
     - name: img
     type: alt
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
@@ -114,8 +105,7 @@ parsing:
       attribute:
         alt: 기사 이미지
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
@@ -125,8 +115,7 @@ parsing:
       attribute:
         class: caption
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     remove:
     - name: caption
     - name: script
@@ -143,7 +132,6 @@ parsing:
       attribute:
         id: articleContetns
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

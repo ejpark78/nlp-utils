@@ -18,25 +18,21 @@ parsing:
   trace:
   - select: table.tbl_type01 tr
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
     type: title
     value_type: single
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
     type: href
     value_type: single
-  - comment: 제목 헤더
-    key: title_header
+  - key: title_header
     value:
     - select: span.word
     type: text
-  - comment: 댓글수
-    key: reply_count
+  - key: reply_count
     replace:
     - from: '[[]'
       to: ''
@@ -45,13 +41,11 @@ parsing:
     value:
     - select: span.replycnt
     type: text
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -59,13 +53,11 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목 헤더
-    key: title_header
+  - key: title_header
     value:
     - select: div.left_cont div.titles span.word
     type: text
-  - comment: 제목
-    key: title
+  - key: title
     remove:
     - name: span
       attribute:
@@ -73,62 +65,53 @@ parsing:
     value:
     - select: div.left_cont div.titles
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: ul.view_head div.text div.text_right div.text3 span.val
     type: text
     convert:
       to: date
     value_type: single
-  - comment: 추천수
-    key: good_count
+  - key: good_count
     replace:
     - from: ^.*추천 ([0-9]+).*$
       to: \g<1>
     value:
     - select: ul.view_head div.text div.text_left div.text2
     type: text
-  - comment: 조회수
-    key: view_count
+  - key: view_count
     replace:
     - from: ^.*조회 ([0-9]+).*$
       to: \g<1>
     value:
     - select: ul.view_head div.text div.text_left div.text2
     type: text
-  - comment: 글쓴이
-    key: author
+  - key: author
     replace:
     - from: 입력.+$
       to: ''
     value:
     - select: ul.view_head div.text div.text_left span.nick
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: div.view_context div#contentDetail
     type: text
     value_type: merge
-  - comment: 댓글 텍스트
-    key: reply_list.text
+  - key: reply_list.text
     value:
     - select: div.reply_list div.txt_box span.re_txt
     type: text
-  - comment: 댓글 사용자
-    key: reply_list.author
+  - key: reply_list.author
     value:
     - select: div.reply_list div.txt_box span.name
     type: text
-  - comment: 댓글 시간
-    key: reply_list.date
+  - key: reply_list.date
     value:
     - select: div.reply_list div.txt_box span.date
     type: text
     convert:
       to: date
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

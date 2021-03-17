@@ -37,23 +37,19 @@ parsing:
   trace:
   - select: div.list_wrap ul.list_news li
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: dl.clearfix dt
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: dl.clearfix dd.summury a
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -61,14 +57,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: header.article_header h2.article_title
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: header.article_header div.article_header_sub time.date
     type: text
@@ -78,13 +72,11 @@ parsing:
     replace:
     - from: "^.*발행일 :"
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: section#articleBody.article_body p
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

@@ -56,7 +56,6 @@ jobs:
     url_frame: https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
 parsing:
   article: []
-  comment: []
   list: {}
   parser: html5lib
   trace: {}

@@ -25,16 +25,14 @@ parsing:
     attribute:
       class: con
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: strong
       attribute:
         class: news-tl
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: strong
       attribute:
@@ -42,8 +40,7 @@ parsing:
     - name: a
     type: href
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -52,8 +49,7 @@ parsing:
       attribute:
         class: tit-article
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: 송고시간[ ]+[|][ ]+
       to: ''
@@ -67,24 +63,21 @@ parsing:
     type: text
     convert:
       to: date
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
         class: article-img
     - name: img
     type: src
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
       attribute:
         class: img-info
     type: text
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

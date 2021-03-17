@@ -21,20 +21,17 @@ parsing:
       class: list_rbox
   - name: dl
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: dt
     - name: a
     type: text
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: dt
     - name: a
     type: href
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: dd
     - name: span
@@ -43,16 +40,14 @@ parsing:
       to: date
     value_type: single
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
         class: article_top
     - name: h3
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     replace:
     - from: 기사입력
       to: ''
@@ -69,8 +64,7 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 이미지
-    key: image_list.image
+  - key: image_list.image
     value:
     - name: div
       attribute:
@@ -78,8 +72,7 @@ parsing:
     - name: img
     type: src
     value_type: unique
-  - comment: 이미지 캡션
-    delete: true
+  - delete: true
     key: image_list.caption
     value:
     - name: div
@@ -90,8 +83,7 @@ parsing:
         class: caption
     type: text
     value_type: unique
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:

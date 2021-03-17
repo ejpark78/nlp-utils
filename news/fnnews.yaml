@@ -86,31 +86,26 @@ parsing:
   trace:
   - select: "html body li"
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: "a strong.tit_thumb"
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "em.date"
     type: text
     convert:
       to: date
     value_type: single
-  - comment: url
-    key: url
+  - key: url
     value:
     - select: "a"
     type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW
   article:
-  - comment: raw html or json
-    key: raw
+  - key: raw
     value:
     - name: html
     remove:
@@ -118,14 +113,12 @@ parsing:
     - name: style
     - name: comment
     type: html
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - select: 'div.inner_view_hd h1.tit_view'
     type: text
     value_type: single
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - select: "div.inner_view_hd div.byline em"
     type: text
@@ -137,13 +130,11 @@ parsing:
       to: ''
     - from: "^수정 "
       to: ''
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - select: 'div.inner_contents div.wrap_left div#article_content.cont_art'
     type: text
     value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
+  - key: '@curl_date'
     value:
     - const: DATE_NOW

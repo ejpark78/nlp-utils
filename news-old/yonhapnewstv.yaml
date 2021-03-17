@@ -25,23 +25,20 @@ parsing:
     attribute:
       class: thumb
   list:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: a
       attribute:
         class: clip-link
     type: title
-  - comment: url
-    key: url
+  - key: url
     value:
     - name: a
       attribute:
         class: clip-link
     type: href
   article:
-  - comment: 제목
-    key: title
+  - key: title
     value:
     - name: div
       attribute:
@@ -50,8 +47,7 @@ parsing:
       attribute:
         id: title
     type: text
-  - comment: 날짜
-    key: date
+  - key: date
     value:
     - name: div
       attribute:
@@ -63,15 +59,13 @@ parsing:
     convert:
       to: date
     value_type: single
-  - comment: 텍스트 본문
-    key: content
+  - key: content
     value:
     - name: div
       attribute:
         itemprop: articleBody
     type: text
-  - comment: 비디오
-    key: video
+  - key: video
     value:
     - name: div
       attribute:
