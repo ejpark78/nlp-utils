@@ -71,9 +71,9 @@ class HtmlParser(object):
         return item
 
     @staticmethod
-    def parse_html(html: str, parser_type: str) -> BeautifulSoup:
+    def parse_html(html: str or bytes, parser_type: str) -> BeautifulSoup:
         """html 문서를 파싱한다."""
-        soup = None
+        html = html.decode('utf-8') if isinstance(html, bytes) else html
 
         html = html.replace('\r', '\n')
 
@@ -84,11 +84,9 @@ class HtmlParser(object):
         html = re.sub('<br', '\n<br', html, flags=re.IGNORECASE | re.MULTILINE)
 
         if parser_type == 'lxml':
-            soup = BeautifulSoup(html, 'lxml')
-        else:
-            soup = BeautifulSoup(html, 'html5lib')
+            return BeautifulSoup(html, 'lxml')
 
-        return soup
+        return BeautifulSoup(html, 'html5lib')
 
     def parse(self, parsing_info: list, base_url: str, html: str = None, soup: BeautifulSoup = None,
               parser_version: str = None, default_date: datetime = None) -> dict or None:

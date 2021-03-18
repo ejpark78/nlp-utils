@@ -5,12 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from bz2 import BZ2File
-
 import json
 import re
 import ssl
 import sys
+from bz2 import BZ2File
 from datetime import datetime
 from os import getenv
 from os import makedirs
