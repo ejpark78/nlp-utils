@@ -29,7 +29,7 @@ class CrawlerIndexState(object):
     def __init__(self):
         super().__init__()
 
-        self.params = None
+        self.params: dict = None
 
         self.total = defaultdict(int)
         self.doc_count = defaultdict(dict)
@@ -46,7 +46,7 @@ class CrawlerIndexState(object):
             if line.strip() == '' or line[0] == '.' or line.find('index') == 0:
                 continue
 
-            if self.params.grep and line.find(self.params.grep) < 0:
+            if self.params['grep'] and line.find(self.params['grep']) < 0:
                 continue
 
             index, count = re.sub(r'\s+', '\t', line).split('\t', maxsplit=1)
@@ -85,7 +85,7 @@ class CrawlerIndexState(object):
         print(line)
 
         for index, item in self.doc_count.items():
-            if self.params.active and item['diff'] == 0:
+            if self.params['active'] and item['diff'] == 0:
                 continue
 
             line = '{index: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)'.format(index=index, **item)
@@ -97,10 +97,10 @@ class CrawlerIndexState(object):
         return
 
     def load_cache(self) -> None:
-        if not self.params.cache or isfile(self.params.cache) is False:
+        if not self.params['cache'] or isfile(self.params['cache']) is False:
             return
 
-        with open(self.params.cache, 'r') as fp:
+        with open(self.params['cache'], 'r') as fp:
             cache = json.load(fp=fp)
 
             self.last_time = cache['time']
@@ -109,22 +109,23 @@ class CrawlerIndexState(object):
         return
 
     def save_cache(self) -> None:
-        if not self.params.cache:
+        if not self.params['cache']:
             return
 
-        with open(self.params.cache, 'w') as fp:
-            json.dump({'doc_count': self.doc_count, 'time': self.last_time}, fp=fp, ensure_ascii=False, indent=4)
+        if self.params['sleep'] > 0:
+            return
+
+        with open(self.params['cache'], 'w') as fp:
+            line = json.dumps({'doc_count': self.doc_count, 'time': self.last_time}, ensure_ascii=False, indent=4)
+            fp.write(line)
 
         return
 
     def batch(self) -> None:
         self.params = self.init_arguments()
 
-        self.url = f'{self.params.host}/_cat/indices?v&s=index&h=index,docs.count'
-        self.auth = tuple(self.params.auth.split(':'))
-
-        if not self.params.cache and isfile(self.params.cache) is True:
-            os.remove(self.params.cache)
+        self.url = f'{self.params["host"]}/_cat/indices?v&s=index&h=index,docs.count'
+        self.auth = tuple(self.params['auth'].split(':'))
 
         while True:
             self.load_cache()
@@ -134,15 +135,15 @@ class CrawlerIndexState(object):
 
             self.save_cache()
 
-            if self.params.sleep <= 0:
+            if self.params['sleep'] <= 0:
                 break
 
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
         return
 
     @staticmethod
-    def init_arguments() -> Namespace:
+    def init_arguments() -> dict:
         import argparse
 
         parser = argparse.ArgumentParser()
@@ -156,11 +157,11 @@ class CrawlerIndexState(object):
         parser.add_argument('--auth', default=getenv('ELASTIC_SEARCH_AUTH', default=None), type=str,
                             help='elastic auth')
 
-        parser.add_argument('--cache', default=getenv('CACHE_FILE', default=None), type=str, help='캐시 파일명')
+        parser.add_argument('--cache', default=None, type=str, help='캐시 파일명')
 
         parser.add_argument('--grep', default=None, type=str, help='인덱스 필터')
 
-        return parser.parse_args()
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

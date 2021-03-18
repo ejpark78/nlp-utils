@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
+interval="$1"
+es_server="$2"
+
+SCRIPTS="-m crawler.utils.index_state"
+#SCRIPTS="crawler/utils/index_state.py"
+
 export PYTHONPATH=.
-export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
-export ELASTIC_SEARCH_AUTH="elastic:searchT2020"
-export CACHE_FILE="/tmp/crawler-es.size.json"
 
-watch -d -n60 python3 -m crawler.utils.index_state --active --cache /tmp/crawler-es.size.json
+cache_file="/tmp/index-state."$(dbus-uuidgen)".json"
 
-#export ELASTIC_SEARCH_HOST="https://corpus.cloud.ncsoft.com:9200"
-#export ELASTIC_SEARCH_AUTH="elastic:nlplab"
-#export CACHE_FILE="/tmp/corpus.size.json"
+if [[ ${es_server} == "corpus" ]]; then
+  host="https://corpus.ncsoft.com:9200"
+  auth=$(echo -n "ZWxhc3RpYzpubHBsYWI=" | base64 -d)
+else
+  host="https://crawler-es.cloud.ncsoft.com:9200"
+  auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
+fi
 
-#watch -d -n60 python3 crawler/utils/index_state.py --active
+watch -d -n${interval} \
+  python3 ${SCRIPTS} --active --cache "${cache_file}" --host "${host}" --auth "${auth}"

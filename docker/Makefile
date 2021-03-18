@@ -149,8 +149,7 @@ run:
 
 .ONESHELL:
 run-toolbox:
-	docker run \
-		-d \
+	docker run -d \
 		--name toolbox \
 		--network host \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
@@ -160,6 +159,7 @@ run-toolbox:
 .ONESHELL:
 run-dev:
 	docker run -it --rm \
+		--add-host "corpus.ncsoft.com:172.20.93.112" \
 		-e "ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200" \
 		-e "ELASTIC_SEARCH_AUTH=crawler:crawler2019" \
 		$(IMAGE):dev \
