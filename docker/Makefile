@@ -126,8 +126,9 @@ toolbox:
 .ONESHELL:
 push:
 	docker push $(IMAGE):live
+	docker push $(IMAGE):dev
 	#docker push $(IMAGE):jupyter
-	docker push $(IMAGE):toolbox
+	#docker push $(IMAGE):toolbox
 
 .ONESHELL:
 check-ip:
@@ -155,6 +156,18 @@ run-toolbox:
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE):toolbox \
 		ttyd -p 8081 --credential admin:searchT2020 zsh
+
+.ONESHELL:
+run-dev:
+	docker run -it --rm \
+		-e "ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200" \
+		-e "ELASTIC_SEARCH_AUTH=crawler:crawler2019" \
+		$(IMAGE):dev \
+			python3 -m crawler.web_news.web_news \
+				--sleep 10 \
+				--config /config/naver-news.yaml \
+				--job-name economy \
+				--sub-category "경제/증권"
 
 prune:
 	cat nodes | xargs -I{} ssh {} "hostname ; docker system prune -af"
