@@ -638,17 +638,13 @@ class ElasticSearchUtils(object):
         if self.conn.indices.exists(index) is False:
             return result
 
-        count = 1
-        sum_count = 0
-        scroll_id = ''
-
         query = {
             '_source': ''
         }
         if query_cond is not None:
             query.update(query_cond)
 
-        p_bar = None
+        count, sum_count, scroll_id, p_bar = 1, 0, '', None
 
         while count > 0:
             resp = self.scroll(
@@ -881,11 +877,91 @@ class ElasticSearchUtils(object):
         return
 
     def get_doc_url(self, document_id) -> str:
-        return '{host}/{index}/_doc/{doc_id}?pretty'.format(
-            doc_id=document_id,
-            host=self.host,
-            index=self.index,
-        )
+        return f'{self.host}/{self.index}/_doc/{document_id}?pretty'
+
+    def get_doc_count_by_date(self, index: str, column: str = 'date', interval: str = 'day',
+                              date_range: str = None) -> dict:
+        """ 날짜별 문서 수량을 조회한다. """
+        fmt, search_fmt = 'yyyy-MM-dd', '%Y-%m-%d'
+        if interval == 'month':
+            fmt, search_fmt = 'yyyy-MM', '%Y'
+        elif interval == 'year':
+            fmt, search_fmt = 'yyyy', '%Y'
+
+        query = {
+            'size': 0,
+            'track_total_hits': True,
+            'aggregations': {
+                'by_date': {
+                    'date_histogram': {
+                        'field': column,
+                        'keyed': False,
+                        'format': fmt,
+                        'time_zone': '+09:00',
+                        'calendar_interval': interval
+                    }
+                }
+            }
+        }
+
+        if date_range is not None:
+            dt_start, dt_end = date_range.split('~')
+
+            query['query'] = {
+                'bool': {
+                    'must': {
+                        'range': {
+                            column: {
+                                'gte': parse_date(dt_start).strftime(search_fmt),
+                                'lte': parse_date(dt_end).strftime(search_fmt),
+                                'format': fmt
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        resp = self.conn.search(index=index, body=query)
+
+        buckets = resp['aggregations']['by_date']['buckets']
+        rows = [{'date': x['key_as_string'], 'count': x['doc_count']} for x in buckets]
+
+        return {
+            'total': resp['hits']['total']['value'],
+            'rows': rows,
+        }
+
+    def get_column_count(self, index, column='date'):
+        """ 필드의 문서 수량을 조회한다. """
+        query = {
+            'size': 0,
+            'aggregations': {
+                'group_by': {
+                    'terms': {
+                        'field': '{}.keyword'.format(column),
+                        'size': 200
+                    }
+                }
+            }
+        }
+
+        resp = self.conn.search(index=index, body=query)
+
+        count = resp['aggregations']['group_by']['buckets']
+
+        total = 0
+        for x in count:
+            total += x['doc_count']
+
+        result = []
+        for x in count:
+            result.append({
+                'name': x['key'],
+                'count': x['doc_count']
+            })
+
+        return sorted(result, key=lambda item: item['name'])
 
     def batch(self) -> None:
         params = self.init_arguments()
@@ -911,8 +987,8 @@ class ElasticSearchUtils(object):
 
         parser = argparse.ArgumentParser(description='')
 
-        parser.add_argument('--dump', action='store_true', default=False, help='')
-        parser.add_argument('--restore', action='store_true', default=False, help='')
+        parser.add_argument('--dump', action='store_true', default=False, help='인덱스 덤프')
+        parser.add_argument('--restore', action='store_true', default=False, help='인덱스 복원')
 
         parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
                             help='elasticsearch url')

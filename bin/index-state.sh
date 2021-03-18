@@ -19,4 +19,4 @@ else
 fi
 
 watch -d -n${interval} \
-  python3 ${SCRIPTS} --active --cache "${cache_file}" --host "${host}" --auth "${auth}"
+  python3 ${SCRIPTS} --index-size --active --cache "${cache_file}" --host "${host}" --auth "${auth}"

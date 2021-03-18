@@ -117,7 +117,7 @@ class WebNewsBase(object):
         # 후처리
         doc = self.parser.merge_values(item=doc)
 
-        if article is not None:
+        if article:
             article = self.parser.merge_values(item=article)
 
             # json merge
@@ -172,6 +172,11 @@ class WebNewsBase(object):
 
         es.save_document(document=doc, delete=False)
         self.cache.set(key=doc_id, value=True)
+
+        if article:
+            self.summary['new_article'] += 1
+        else:
+            self.summary['new_list'] += 1
 
         if flush is False:
             return doc

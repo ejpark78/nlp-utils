@@ -6,9 +6,7 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import os
 import re
-from argparse import Namespace
 from collections import defaultdict
 from datetime import datetime
 from os import getenv
@@ -121,12 +119,7 @@ class CrawlerIndexState(object):
 
         return
 
-    def batch(self) -> None:
-        self.params = self.init_arguments()
-
-        self.url = f'{self.params["host"]}/_cat/indices?v&s=index&h=index,docs.count'
-        self.auth = tuple(self.params['auth'].split(':'))
-
+    def index_size(self) -> None:
         while True:
             self.load_cache()
 
@@ -136,9 +129,25 @@ class CrawlerIndexState(object):
             self.save_cache()
 
             if self.params['sleep'] <= 0:
-                break
+                return
 
             sleep(self.params['sleep'])
+
+        return
+
+    def date_histogram(self) -> None:
+        return
+
+    def batch(self) -> None:
+        self.params = self.init_arguments()
+
+        self.url = f'{self.params["host"]}/_cat/indices?v&s=index&h=index,docs.count'
+        self.auth = tuple(self.params['auth'].split(':'))
+
+        if self.params['date_histogram']:
+            self.date_histogram()
+        else:
+            self.index_size()
 
         return
 
@@ -147,6 +156,9 @@ class CrawlerIndexState(object):
         import argparse
 
         parser = argparse.ArgumentParser()
+
+        parser.add_argument('--date-histogram', action='store_true', default=False, help='날짜별 문서 수량')
+        parser.add_argument('--index-size', action='store_true', default=False, help='인덱스 사이즈')
 
         parser.add_argument('--active', action='store_true', default=False, help='변경이 있는 인덱스')
 

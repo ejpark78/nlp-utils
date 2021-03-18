@@ -337,6 +337,7 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
+            self.cache.set(key=doc_id, value=True)
 
             if self.params['verbose'] == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
@@ -360,8 +361,6 @@ class WebNewsCrawler(WebNewsBase):
             # 기사 본문을 수집한다.
             if self.trace_article(doc_id=doc_id, item=item, job=job, es=es):
                 continue
-
-            self.cache.set(key=doc_id, value=True)
 
             sleep(self.params['sleep'])
 
