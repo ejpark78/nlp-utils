@@ -876,7 +876,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_doc_url(self, document_id) -> str:
+    def get_doc_url(self, document_id: str) -> str:
         return f'{self.host}/{self.index}/_doc/{document_id}?pretty'
 
     def get_doc_count_by_date(self, index: str, column: str = 'date', interval: str = 'day',
@@ -932,7 +932,7 @@ class ElasticSearchUtils(object):
             'rows': rows,
         }
 
-    def get_column_count(self, index, column='date'):
+    def get_column_count(self, index: str, column: str = 'date') -> list:
         """ 필드의 문서 수량을 조회한다. """
         query = {
             'size': 0,

@@ -481,6 +481,12 @@ class WebNewsCrawler(WebNewsBase):
             if job['name'] not in self.job_names:
                 return
 
+        self.params, job = self.merge_params(
+            job=job,
+            params=self.params,
+            default_params=self.default_params
+        )
+
         self.date_range = self.update_date_range(
             step=self.params['date_step'],
             date_range=self.params['date_range'],
@@ -489,27 +495,6 @@ class WebNewsCrawler(WebNewsBase):
         self.page_range = self.update_page_range(
             step=self.params['page_step'],
             page_range=self.params['page_range'],
-        )
-
-        self.logger.log(msg={
-            'level': 'MESSAGE',
-            'message': '[CONFIG_ERROR] 날짜와 페이지 범위',
-            'date_range': {k: str(v) for k, v in self.date_range.items()},
-            'page_range': self.page_range,
-        })
-
-        # override elasticsearch config
-        job['host'] = os.getenv(
-            'ELASTIC_SEARCH_HOST',
-            default=job['host'] if 'host' in job else None
-        )
-        job['index'] = os.getenv(
-            'ELASTIC_SEARCH_INDEX',
-            default=job['index'] if 'index' in job else None
-        )
-        job['http_auth'] = os.getenv(
-            'ELASTIC_SEARCH_AUTH',
-            default=job['http_auth'] if 'http_auth' in job else None
         )
 
         if 'host' not in job or 'index' not in job:
@@ -541,14 +526,9 @@ class WebNewsCrawler(WebNewsBase):
 
         for self.job_config in config_list:
             for job in self.job_config['jobs']:
-                self.params = self.merge_params(
-                    args=job['args'] if 'args' in job else None,
-                    params=self.params,
-                    default_params=self.default_params
-                )
-
                 self.trace_job(job=job)
 
+                # restore original params
                 self.params = deepcopy(params_org)
 
         self.running_state(tag='completed')

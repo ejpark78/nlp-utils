@@ -509,10 +509,25 @@ class WebNewsBase(object):
 
         return result
 
-    @staticmethod
-    def merge_params(args: dict, params: dict, default_params: dict) -> dict:
+    def merge_params(self, job: dict, params: dict, default_params: dict) -> (dict, dict):
+        # override elasticsearch config
+        job['host'] = getenv(
+            'ELASTIC_SEARCH_HOST',
+            default=job['host'] if 'host' in job else None
+        )
+        job['index'] = getenv(
+            'ELASTIC_SEARCH_INDEX',
+            default=job['index'] if 'index' in job else None
+        )
+        job['http_auth'] = getenv(
+            'ELASTIC_SEARCH_AUTH',
+            default=job['http_auth'] if 'http_auth' in job else None
+        )
+
+        # merge config args
+        args = job['args'] if 'args' in job else None
         if args is None:
-            return params
+            return params, job
 
         for col, val in args.items():
             if col not in default_params or col not in params:
@@ -526,7 +541,7 @@ class WebNewsBase(object):
 
             params[col] = val
 
-        return params
+        return params, job
 
     @staticmethod
     def flatten(trace_list: list) -> list:
@@ -563,8 +578,7 @@ class WebNewsBase(object):
 
         return result
 
-    @staticmethod
-    def update_page_range(page_range: str = None, step: int = 1) -> dict:
+    def update_page_range(self, page_range: str = None, step: int = 1) -> dict:
         """페이지 범위를 갱신한다."""
         if isinstance(step, str):
             step = int(step)
@@ -575,15 +589,28 @@ class WebNewsBase(object):
             'step': step
         }
 
+        self.params.update({
+            'start_page': result['start'],
+            'end_page': result['end'],
+        })
+
         if page_range is None:
             return result
 
         pg_start, pg_end = page_range.split('~', maxsplit=1)
-        return {
+
+        result = {
             'start': int(pg_start),
             'end': int(pg_end),
             'step': step
         }
+
+        self.params.update({
+            'start_page': result['start'],
+            'end_page': result['end'],
+        })
+
+        return result
 
     def update_date_range(self, date_range: str = None, step: int = 1) -> dict:
         """날짜 범위를 갱신한다."""
@@ -597,6 +624,11 @@ class WebNewsBase(object):
             'step': step,
         }
 
+        self.params.update({
+            'start_date': result['start'],
+            'end_date': result['end'],
+        })
+
         if date_range is None:
             return result
 
@@ -605,11 +637,16 @@ class WebNewsBase(object):
             return result
 
         # 3days
-        if date_range.find('days') > 0:
-            n: str = date_range.replace('days', '').strip()
+        if date_range.find('d') > 0:
+            n: str = date_range.split('d')[0].strip()
 
             if n.isdigit():
                 result['end'] += relativedelta(days=-int(n))
+
+                self.params.update({
+                    'start_date': result['start'],
+                    'end_date': result['end'],
+                })
                 return result
 
         # 날자 범위 추출
@@ -633,6 +670,11 @@ class WebNewsBase(object):
         today = datetime.now(self.timezone)
         if result['end'] > today:
             result['end'] = today
+
+        self.params.update({
+            'start_date': result['start'],
+            'end_date': result['end'],
+        })
 
         return result
 
