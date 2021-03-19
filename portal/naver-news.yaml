@@ -38,6 +38,8 @@ args:
   - "crawler.web_news.web_news"
   - "--sleep"
   - "10"
+  - "--page-range"
+  - "1~50"
 
 jobs:
   - name: economy
@@ -156,7 +158,7 @@ jobs:
     schedule: "35 * * * *"
     args:
       - "--config"
-      - "/config/naver-news.yaml"
+      - "/config/naver-news-sports.yaml"
       - "--job-name"
       - "sports"
     subSategory:
@@ -171,22 +173,22 @@ jobs:
       - "스포츠/축구"
       - "스포츠/스포츠-일반"
 
-  - name: tv
-    schedule: "40 * * * *"
-    args:
-      - "--config"
-      - "/config/naver-news.yaml"
-      - "--job-name"
-      - "tv"
-    subSategory:
-      - "TV"
-
-  - name: weather
-    schedule: "45 * * * *"
-    args:
-      - "--config"
-      - "/config/naver-news.yaml"
-      - "--job-name"
-      - "weather"
-    subSategory:
-      - "날씨"
+#  - name: tv
+#    schedule: "40 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/naver-news.yaml"
+#      - "--job-name"
+#      - "tv"
+#    subSategory:
+#      - "TV"
+#
+#  - name: weather
+#    schedule: "45 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/naver-news.yaml"
+#      - "--job-name"
+#      - "weather"
+#    subSategory:
+#      - "날씨"

@@ -181,3 +181,20 @@ EOF
 
 cls-p nodes "docker system prune -af"
 ```
+
+# Debug
+
+```bash
+
+docker run -it --rm \
+  --add-host "corpus.ncsoft.com:172.20.93.112" \
+  -e "ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200" \
+  -e "ELASTIC_SEARCH_AUTH=crawler:crawler2019" \
+  registry.nlp-utils/crawler:dev \
+    python3 -m crawler.web_news.web_news \
+      --sleep 10 \
+      --config /config/naver-news.yaml \
+      --job-name economy \
+      --sub-category "경제/증권"
+  
+```
