@@ -25,6 +25,7 @@ from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
 
 from crawler.utils.logger import Logger
+import base64
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -33,10 +34,16 @@ urllib3.disable_warnings(UserWarning)
 class ElasticSearchUtils(object):
     """엘라스틱 서치"""
 
-    def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = 'crawler:crawler2019',
-                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str or dict = None):
+    def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = None,
+                 bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str or dict = None,
+                 encoded_auth: bool = False):
+        super().__init__()
+
+        if encoded_auth:
+            http_auth = base64.decodebytes(http_auth.encode('utf-8')).decode('utf-8')
+
         self.host = host
-        self.http_auth = (http_auth.split(':'))
+        self.http_auth = (http_auth.split(':')) if http_auth else None
 
         self.conn = None
 
@@ -57,7 +64,7 @@ class ElasticSearchUtils(object):
 
         self.params = {'request_timeout': 620}
 
-        if self.host is not None:
+        if self.host:
             self.open()
 
     @staticmethod
@@ -90,7 +97,7 @@ class ElasticSearchUtils(object):
             }
         }
 
-        if self.mapping is not None:
+        if self.mapping:
             mapping = self.mapping
             if isinstance(self.mapping, str) and isfile(self.mapping):
                 mapping = self.open_mapping(self.mapping)
@@ -215,9 +222,9 @@ class ElasticSearchUtils(object):
 
     def get_index_list(self) -> list:
         """모든 인덱스 목록을 반환한다."""
-        return [v for v in self.conn.indices.get('*') if v[0] != '.']
+        return [x for x in self.conn.indices.get('*') if x[0] != '.']
 
-    def get_index_size(self):
+    def get_index_size(self) -> list:
         """ 인덱스 수량을 반환한다. """
         columns = ['index', 'count']
         params = {'s': 'index', 'h': 'index,docs.count'}
@@ -225,7 +232,11 @@ class ElasticSearchUtils(object):
         str_index_size = self.conn.cat.indices(params=params)
         index_list = [x for x in str_index_size.split('\n') if len(x) > 0 and x[0] != '.']
 
-        return [dict(zip(columns, re.sub(r'\s+', ' ', x).split(' '))) for x in index_list]
+        result = [dict(zip(columns, re.sub(r'\s+', ' ', x).split(' '))) for x in index_list]
+        for x in result:
+            x['count'] = int(x['count'])
+
+        return result
 
     def get_column_list(self, index_list: str or list, column_type=None) -> list:
         """index 내의 field 목록을 반환한다."""
@@ -878,90 +889,6 @@ class ElasticSearchUtils(object):
 
     def get_doc_url(self, document_id: str) -> str:
         return f'{self.host}/{self.index}/_doc/{document_id}?pretty'
-
-    def get_doc_count_by_date(self, index: str, column: str = 'date', interval: str = 'day',
-                              date_range: str = None) -> dict:
-        """ 날짜별 문서 수량을 조회한다. """
-        fmt, search_fmt = 'yyyy-MM-dd', '%Y-%m-%d'
-        if interval == 'month':
-            fmt, search_fmt = 'yyyy-MM', '%Y'
-        elif interval == 'year':
-            fmt, search_fmt = 'yyyy', '%Y'
-
-        query = {
-            'size': 0,
-            'track_total_hits': True,
-            'aggregations': {
-                'by_date': {
-                    'date_histogram': {
-                        'field': column,
-                        'keyed': False,
-                        'format': fmt,
-                        'time_zone': '+09:00',
-                        'calendar_interval': interval
-                    }
-                }
-            }
-        }
-
-        if date_range is not None:
-            dt_start, dt_end = date_range.split('~')
-
-            query['query'] = {
-                'bool': {
-                    'must': {
-                        'range': {
-                            column: {
-                                'gte': parse_date(dt_start).strftime(search_fmt),
-                                'lte': parse_date(dt_end).strftime(search_fmt),
-                                'format': fmt
-                            }
-                        }
-                    }
-                }
-
-            }
-
-        resp = self.conn.search(index=index, body=query)
-
-        buckets = resp['aggregations']['by_date']['buckets']
-        rows = [{'date': x['key_as_string'], 'count': x['doc_count']} for x in buckets]
-
-        return {
-            'total': resp['hits']['total']['value'],
-            'rows': rows,
-        }
-
-    def get_column_count(self, index: str, column: str = 'date') -> list:
-        """ 필드의 문서 수량을 조회한다. """
-        query = {
-            'size': 0,
-            'aggregations': {
-                'group_by': {
-                    'terms': {
-                        'field': '{}.keyword'.format(column),
-                        'size': 200
-                    }
-                }
-            }
-        }
-
-        resp = self.conn.search(index=index, body=query)
-
-        count = resp['aggregations']['group_by']['buckets']
-
-        total = 0
-        for x in count:
-            total += x['doc_count']
-
-        result = []
-        for x in count:
-            result.append({
-                'name': x['key'],
-                'count': x['doc_count']
-            })
-
-        return sorted(result, key=lambda item: item['name'])
 
     def batch(self) -> None:
         params = self.init_arguments()

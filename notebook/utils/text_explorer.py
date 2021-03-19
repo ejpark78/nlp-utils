@@ -443,7 +443,6 @@ class TextExplorer(object):
         return summary
 
     def describe_range(self, df, column, min_value, max_value, sample=20):
-        """ """
         from IPython.display import display
 
         search_df = df[(df['BLEU'] > min_value) & (df['BLEU'] < max_value)]

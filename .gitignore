@@ -21,6 +21,9 @@ dist
 *.db
 *.egg-info/
 
+/*.html
+/*.pdf
+
 app.tar.gz
 venv
 cache

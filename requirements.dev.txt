@@ -38,6 +38,11 @@ apache-airflow[mysql]
 apache-airflow[kubernetes]
 
 werkzeug<1.0.0
+pandas
+jupyter
+notebook
+jupyter_contrib_nbextensions
+matplotlib
 
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

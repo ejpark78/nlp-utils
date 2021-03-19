@@ -6,7 +6,6 @@ from __future__ import division
 from __future__ import print_function
 
 import json
-import os
 import re
 from copy import deepcopy
 from datetime import datetime, timedelta

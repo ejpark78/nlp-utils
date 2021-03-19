@@ -17,6 +17,8 @@ import pytz
 import requests
 import urllib3
 
+from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
@@ -41,7 +43,7 @@ class CrawlerIndexState(object):
         resp = requests.get(url=self.url, auth=self.auth, verify=False)
 
         for line in resp.text.split('\n'):
-            if line.strip() == '' or line[0] == '.' or line.find('index') == 0:
+            if line.strip() == '' or line[0] == '.':
                 continue
 
             if self.params['grep'] and line.find(self.params['grep']) < 0:
@@ -135,17 +137,21 @@ class CrawlerIndexState(object):
 
         return
 
-    def date_histogram(self) -> None:
-        return
+    def date_histogram(self, index: str, date_range: str) -> dict:
+        es = ElasticSearchUtils(host=self.params['host'], http_auth=self.params['auth'])
+
+        result = es.get_date_histogram(index=index, column='date', interval='day', date_range=date_range)
+
+        return result
 
     def batch(self) -> None:
         self.params = self.init_arguments()
 
-        self.url = f'{self.params["host"]}/_cat/indices?v&s=index&h=index,docs.count'
+        self.url = f'{self.params["host"]}/_cat/indices?s=index&h=index,docs.count'
         self.auth = tuple(self.params['auth'].split(':'))
 
         if self.params['date_histogram']:
-            self.date_histogram()
+            self.date_histogram(index=self.params['index'], date_range=self.params['date_range'])
         else:
             self.index_size()
 
@@ -172,6 +178,9 @@ class CrawlerIndexState(object):
         parser.add_argument('--cache', default=None, type=str, help='캐시 파일명')
 
         parser.add_argument('--grep', default=None, type=str, help='인덱스 필터')
+
+        parser.add_argument('--index', default=None, type=str, help='인덱스명')
+        parser.add_argument('--date-range', default=None, type=str, help='날짜 범위')
 
         return vars(parser.parse_args())
 
