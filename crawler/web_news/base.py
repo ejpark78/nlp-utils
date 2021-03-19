@@ -12,6 +12,8 @@ from copy import deepcopy
 from datetime import datetime
 from os import getenv
 from time import sleep
+from dotty_dict import dotty
+from jsonfinder import jsonfinder
 
 import pytz
 import requests
@@ -69,9 +71,6 @@ class WebNewsBase(object):
         self.date_range = None
         self.page_range = None
 
-        self.cache = SimpleCache(threshold=200, default_timeout=600)
-        self.skip_count = 0
-
         self.start_date = datetime.now(self.timezone)
 
         # summary
@@ -89,6 +88,73 @@ class WebNewsBase(object):
 
         # logger
         self.logger = Logger()
+
+    def save_article_list(self, item: dict, job: dict, es: ElasticSearchUtils) -> None:
+        # 임시 변수 삭제
+        for k in ['encoding', 'raw']:
+            if k not in item:
+                continue
+            del item[k]
+
+        item['status'] = 'raw_list'
+
+        self.save_article(es=es, job=job, doc=item, flush=False)
+
+        return
+
+    def get_trace_list(self, html: str, parsing_info: dict = None) -> list or None:
+        """trace tag 목록을 추출해서 반환한다."""
+        trace_list = []
+        if len(parsing_info) > 0 and 'parser' in parsing_info[0]:
+            parsing = parsing_info[0]
+
+            soup = html
+            if parsing['parser'] == 'json':
+                if isinstance(html, str):
+                    soup = json.loads(html)
+
+                column = parsing['column']
+                if column == '*':
+                    soup = {
+                        '*': soup
+                    }
+
+                dot = dotty(soup)
+
+                trace_list = list(dot[column]) if column in dot else []
+                trace_list = self.flatten(trace_list=trace_list)
+            elif parsing['parser'] == 'javascript':
+                if isinstance(html, str):
+                    soup = BeautifulSoup(html)
+
+                js = [''.join(x.contents) for x in soup.find_all('script') if 'list:' in ''.join(x.contents)][0]
+
+                trace_list = [x for _, _, x in jsonfinder(js) if x is not None][0]
+        else:
+            soup = self.parser.parse_html(
+                html=html,
+                parser_type=self.job_config['parsing']['parser'],
+            )
+
+            self.parser.trace_tag(
+                soup=soup,
+                index=0,
+                result=trace_list,
+                tag_list=self.job_config['parsing']['trace'],
+            )
+
+        if len(trace_list) == 0:
+            self.logger.error(msg={
+                'level': 'ERROR',
+                'message': 'trace_list 가 없음',
+                'trace_size': len(trace_list),
+                'sleep_time': self.params['sleep'],
+            })
+
+            sleep(self.params['sleep'])
+            return None
+
+        return trace_list
 
     def get_article_body(self, item: dict, offline: bool = False) -> str:
         """기사 본문을 조회한다."""
@@ -171,7 +237,6 @@ class WebNewsBase(object):
         doc_id = doc['_id']
 
         es.save_document(document=doc, delete=False)
-        self.cache.set(key=doc_id, value=True)
 
         if article:
             self.summary['new_article'] += 1
@@ -280,19 +345,6 @@ class WebNewsBase(object):
             tag=es.get_index_year_tag(date=date),
             index=job['index'],
         )
-
-        # 캐쉬에 저장된 문서가 있는지 조회
-        if self.cache.has(key=doc_id) is True:
-            self.skip_count += 1
-
-            if self.params['verbose'] == 1:
-                self.logger.log(msg={
-                    'level': 'INFO',
-                    'message': '[CACHE_EXISTS] cache 중복 문서, 건너뜀',
-                    'doc_id': doc_id,
-                    'url': url,
-                })
-            return True, doc_index
 
         is_skip, doc_index = self.is_doc_exists(
             url=url,
@@ -509,7 +561,8 @@ class WebNewsBase(object):
 
         return result
 
-    def merge_params(self, job: dict, params: dict, default_params: dict) -> (dict, dict):
+    @staticmethod
+    def merge_params(job: dict, params: dict, default_params: dict) -> (dict, dict):
         # override elasticsearch config
         job['host'] = getenv(
             'ELASTIC_SEARCH_HOST',

@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 import re
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -14,16 +13,15 @@ from urllib.parse import parse_qs, urljoin
 
 import requests
 import urllib3
-from bs4 import BeautifulSoup
 from dateutil.rrule import rrule, DAILY
-from dotty_dict import dotty
-from jsonfinder import jsonfinder
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.web_news.base import WebNewsBase
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
+
+urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 
 
 class WebNewsCrawler(WebNewsBase):
@@ -113,60 +111,6 @@ class WebNewsCrawler(WebNewsBase):
 
         return
 
-    def get_trace_list(self, html: str, parsing_info: dict = None) -> list or None:
-        """trace tag 목록을 추출해서 반환한다."""
-        trace_list = []
-        if len(parsing_info) > 0 and 'parser' in parsing_info[0]:
-            parsing = parsing_info[0]
-
-            soup = html
-            if parsing['parser'] == 'json':
-                if isinstance(html, str):
-                    soup = json.loads(html)
-
-                column = parsing['column']
-                if column == '*':
-                    soup = {
-                        '*': soup
-                    }
-
-                dot = dotty(soup)
-
-                trace_list = list(dot[column]) if column in dot else []
-                trace_list = self.flatten(trace_list=trace_list)
-            elif parsing['parser'] == 'javascript':
-                if isinstance(html, str):
-                    soup = BeautifulSoup(html)
-
-                js = [''.join(x.contents) for x in soup.find_all('script') if 'list:' in ''.join(x.contents)][0]
-
-                trace_list = [x for _, _, x in jsonfinder(js) if x is not None][0]
-        else:
-            soup = self.parser.parse_html(
-                html=html,
-                parser_type=self.job_config['parsing']['parser'],
-            )
-
-            self.parser.trace_tag(
-                soup=soup,
-                index=0,
-                result=trace_list,
-                tag_list=self.job_config['parsing']['trace'],
-            )
-
-        if len(trace_list) == 0:
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': 'trace_list 가 없음',
-                'trace_size': len(trace_list),
-                'sleep_time': self.params['sleep'],
-            })
-
-            sleep(self.params['sleep'])
-            return None
-
-        return trace_list
-
     def trace_next_page(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
                         query: dict) -> None:
         """다음 페이지를 따라간다."""
@@ -222,26 +166,15 @@ class WebNewsCrawler(WebNewsBase):
 
             sleep(self.params['sleep'])
 
-            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=date, es=es, query=query)
+            early_stop, _ = self.trace_article_list(
+                html=resp, url_info=url_info, job=job, date=date, es=es, query=query
+            )
             if early_stop is True:
                 break
 
         return
 
-    def save_article_list(self, item: dict, job: dict, es: ElasticSearchUtils) -> None:
-        # 임시 변수 삭제
-        for k in ['encoding', 'raw']:
-            if k not in item:
-                continue
-            del item[k]
-
-        item['status'] = 'raw_list'
-
-        self.save_article(es=es, job=job, doc=item, flush=False)
-
-        return
-
-    def trace_article(self, item: dict, job: dict, doc_id: str, es: ElasticSearchUtils) -> bool:
+    def trace_article_body(self, item: dict, job: dict, doc_id: str, es: ElasticSearchUtils) -> bool:
         # 기사 본문 조회
         article_html = self.get_article_body(item=item, offline=False)
 
@@ -281,8 +214,8 @@ class WebNewsCrawler(WebNewsBase):
         )
         return False
 
-    def trace_news(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
-                   query: dict) -> bool:
+    def trace_article_list(self, html: str, url_info: dict, job: dict, date: datetime, es: ElasticSearchUtils,
+                           query: dict) -> (bool, set):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.job_config['parsing']['trace'])
@@ -295,12 +228,14 @@ class WebNewsCrawler(WebNewsBase):
                 'message': 'trace_list 가 없음: 조기 종료',
                 **url_info
             })
-            return True
+            return True, set()
 
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
         is_date_range_stop = False
+
+        url_cache = set()
 
         # 개별 뉴스를 따라간다.
         for trace in trace_list:
@@ -336,7 +271,6 @@ class WebNewsCrawler(WebNewsBase):
 
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
-            self.cache.set(key=doc_id, value=True)
 
             if self.params['verbose'] == 0:
                 self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
@@ -345,6 +279,19 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             item['_id'] = doc_id
+
+            # 캐쉬에 저장된 문서가 있는지 조회
+            if item['url'] in url_cache:
+                self.summary['skip'] += 1
+
+                if self.params['verbose'] == 1:
+                    self.logger.log(msg={
+                        'level': 'INFO',
+                        'message': '[CACHE_EXISTS] cache 중복 문서, 건너뜀',
+                    })
+                continue
+
+            url_cache.add(item['url'])
 
             is_skip, _ = self.is_skip(date=date, job=job, url=item['url'], doc_id=doc_id, es=es)
             if is_skip is True:
@@ -358,7 +305,7 @@ class WebNewsCrawler(WebNewsBase):
                 continue
 
             # 기사 본문을 수집한다.
-            if self.trace_article(doc_id=doc_id, item=item, job=job, es=es):
+            if self.trace_article_body(doc_id=doc_id, item=item, job=job, es=es):
                 continue
 
             sleep(self.params['sleep'])
@@ -375,16 +322,15 @@ class WebNewsCrawler(WebNewsBase):
                 'level': 'MESSAGE',
                 'message': '날짜 범위 넘어감: 조기 종료',
             })
-            return True
+            return True, url_cache
 
-        return False
+        return False, url_cache
 
-    def trace_page(self, url_info: dict, job: dict, dt: datetime = None) -> None:
+    def trace_page_list(self, url_info: dict, job: dict, dt: datetime = None) -> None:
         """뉴스 목록을 크롤링한다."""
         self.trace_depth = 0
 
-        self.cache.clear()
-        self.skip_count = 0
+        cache_buf = set()
 
         # 디비에 연결한다.
         es = self.open_elasticsearch(date=dt, job=job, mapping=self.params['mapping'])
@@ -408,7 +354,6 @@ class WebNewsCrawler(WebNewsBase):
                 'url': url_info['url'] if 'url' in url_info else '',
                 'query': q,
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
-                'skip_count': self.skip_count,
             })
 
             # 기사 목록 조회
@@ -421,24 +366,23 @@ class WebNewsCrawler(WebNewsBase):
             if resp is None:
                 continue
 
-            prev_skip_count = self.skip_count
-
             # 문서 저장
-            early_stop = self.trace_news(html=resp, url_info=url_info, job=job, date=dt, es=es, query=q)
+            early_stop, cache = self.trace_article_list(
+                html=resp, url_info=url_info, job=job, date=dt, es=es, query=q
+            )
             if early_stop is True:
                 break
 
-            self.summary['skip'] += self.skip_count
-
             # 중복 문서 개수 점검
-            if 0 < prev_skip_count < self.skip_count - self.params['notice_count']:
+            if 0 == len(cache) or (len(cache_buf) > 0 and (cache_buf | cache) == cache):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '마지막 페이지: 종료',
-                    'skip_count': f'{self.skip_count} > {prev_skip_count}',
                     **url_info
                 })
                 return
+
+            cache_buf.update(cache)
 
             sleep(self.params['sleep'])
 
@@ -454,7 +398,7 @@ class WebNewsCrawler(WebNewsBase):
 
             if url_info['url_frame'].find('date') < 0:
                 # page 단위로 크롤링한다.
-                self.trace_page(url_info=url_info, job=job, dt=None)
+                self.trace_page_list(url_info=url_info, job=job, dt=None)
                 continue
 
             # 날짜 지정시
@@ -469,7 +413,7 @@ class WebNewsCrawler(WebNewsBase):
                     break
 
                 # page 단위로 크롤링한다.
-                self.trace_page(url_info=url_info, job=job, dt=dt)
+                self.trace_page_list(url_info=url_info, job=job, dt=dt)
 
             self.running_state(tag='category')
 
@@ -510,7 +454,14 @@ class WebNewsCrawler(WebNewsBase):
         return
 
     def batch(self) -> None:
-        """ config -> job -> category -> date -> page 순서 """
+        """  순서
+        batch(config)
+            -> trace_job
+            -> trace_category
+            -> trace_page_list(date)
+            -> trace_article_list(page)
+            -> trace_article_body
+        """
         self.params, self.default_params = self.init_arguments()
 
         params_org = deepcopy(self.params)
@@ -562,8 +513,6 @@ class WebNewsCrawler(WebNewsBase):
 
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
         parser.add_argument('--mapping', default=None, type=str, help='인덱스 맵핑 파일 정보')
-
-        parser.add_argument('--notice-count', default=0, type=int, help='공지 사항 개수')
 
         return vars(parser.parse_args()), vars(parser.parse_args([]))
 
