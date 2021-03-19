@@ -243,6 +243,22 @@ class WebNewsBase(object):
         else:
             self.summary['new_list'] += 1
 
+            dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
+
+            self.logger.log(
+                msg={
+                    'level': 'MESSAGE',
+                    'message': '저장 성공',
+                    'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
+                    '_id': doc_id,
+                    'date': dt_str.split('T')[0],
+                    'title': doc['title'],
+                    'url': doc['url'],
+                    'doc_url': es.get_doc_url(document_id=doc_id),
+                },
+                show_date=False
+            )
+
         if flush is False:
             return doc
 
@@ -250,9 +266,7 @@ class WebNewsBase(object):
 
         # 성공 로그 표시
         if flag is True:
-            dt_str = ''
-            if 'date' in doc:
-                dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat()
+            dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
 
             self.logger.log(
                 msg={
