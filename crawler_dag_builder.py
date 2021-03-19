@@ -14,7 +14,6 @@ import yaml
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
-from airflow.contrib.kubernetes.pod import Resources
 
 class CrawlerDagBuilder(object):
 
@@ -49,16 +48,26 @@ class CrawlerDagBuilder(object):
         path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', '/opt/airflow/dags')
         sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
 
-        filename = '{}/{}/{}'.format(path, sub_path, filename)
+        sep = '/'
+        if f'config{sep}' in filename:
+            filename = sep.join([path, sub_path, filename])
+        else:
+            filename = sep.join([path, sub_path, 'config', filename])
 
-        with open(filename, 'r') as fp:
+        with open(filename, 'r', encoding='utf-8') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
-            if "reference" in data :
-                template_filename = '{}/{}/{}'.format(path, sub_path, data["reference"])
+            if "reference" in data:
+                temp_filename = data["reference"] if '.yaml' in data["reference"] else "template.yaml"
+                if f'config{sep}' in data["reference"]:
+                    template_filename = sep.join([path, sub_path, temp_filename])
+                else:
+                    template_filename = sep.join([path, sub_path, 'config', temp_filename])
+
                 template = {}
                 if os.path.isfile(template_filename):
-                    with open(template_filename, 'r') as fp:
+                    with open(template_filename, 'r', encoding='utf-8') as fp:
                         template = yaml.load(stream=fp, Loader=yaml.FullLoader)
+                        template = template if '.yaml' in data["reference"] else template[data["reference"]]
                 return CrawlerDagBuilder.update_yaml(template, data)
             else:
                 return data
