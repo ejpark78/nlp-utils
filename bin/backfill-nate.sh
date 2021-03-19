@@ -2,45 +2,20 @@
 
 set -x #echo on
 
-ARGS="--verbos 1 --sleep 0.8 --config config/nate-news.yaml --list"
-SCRIPTS="-m crawler.web_news.web_news"
+config="/config/nate-news.yaml"
 
-export PYTHONPATH=.
-export ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
-export ELASTIC_SEARCH_AUTH=$(echo ZWxhc3RpYzpzZWFyY2hUMjAyMA== | base64 -d)
+time bin/backfill.sh "${config}" "2021-03-15~2021-03-31"
 
-
-YEAR=2021
-#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
-
-
-YEAR=2020
-python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-10-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-09-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-08-01 ${ARGS}
-python3 ${SCRIPTS} --date-range ${YEAR}-07-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-06-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-05-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-04-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
-
-#
-#YEAR=2019
-#python3 ${SCRIPTS} --date-range ${YEAR}-12-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-11-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-10-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-09-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-08-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-07-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-06-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-05-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-04-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-03-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-02-01 ${ARGS}
-#python3 ${SCRIPTS} --date-range ${YEAR}-01-01 ${ARGS}
+year=2020
+time bin/backfill.sh "${config}" "${year}-12-01"
+time bin/backfill.sh "${config}" "${year}-11-01"
+time bin/backfill.sh "${config}" "${year}-10-01"
+time bin/backfill.sh "${config}" "${year}-09-01"
+time bin/backfill.sh "${config}" "${year}-08-01"
+time bin/backfill.sh "${config}" "${year}-07-01"
+time bin/backfill.sh "${config}" "${year}-06-01"
+time bin/backfill.sh "${config}" "${year}-05-01"
+time bin/backfill.sh "${config}" "${year}-04-01"
+time bin/backfill.sh "${config}" "${year}-03-01"
+time bin/backfill.sh "${config}" "${year}-02-01"
+time bin/backfill.sh "${config}" "${year}-01-01"

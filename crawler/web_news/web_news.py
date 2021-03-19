@@ -330,7 +330,7 @@ class WebNewsCrawler(WebNewsBase):
         """뉴스 목록을 크롤링한다."""
         self.trace_depth = 0
 
-        cache_buf = set()
+        history = set()
 
         # 디비에 연결한다.
         es = self.open_elasticsearch(date=dt, job=job, mapping=self.params['mapping'])
@@ -374,10 +374,10 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            tmp = deepcopy(cache_buf)
-            tmp.update(cache)
+            check = deepcopy(history)
+            check.update(cache)
 
-            if 0 == len(cache) or (0 < len(cache_buf) == len(tmp)):
+            if 0 == len(cache) or (0 < len(history) == len(check)):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '마지막 페이지: 종료',
@@ -385,10 +385,10 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 return
 
-            if len(cache_buf) > 200:
-                cache_buf.clear()
+            if len(history) > 200:
+                history.clear()
 
-            cache_buf.update(cache)
+            history.update(cache)
 
             sleep(self.params['sleep'])
 

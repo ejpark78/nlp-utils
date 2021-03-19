@@ -7,15 +7,15 @@ dt="$2"
 
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
 es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
+image="registry.nlp-utils/crawler:dev"
 
 docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \
   --add-host "crawler-es.cloud.ncsoft.com:172.19.170.187" \
   -e "ELASTIC_SEARCH_HOST=${es_host}" \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
-  registry.nlp-utils/crawler:dev \
+  ${image} \
     python3 -m crawler.web_news.web_news \
-      --verbos 1 \
       --sleep 0.8 \
       --config "${config}" \
       --date-range "${dt}" \
