@@ -382,6 +382,9 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 return
 
+            if len(cache_buf) > 100:
+                cache_buf.clear()
+
             cache_buf.update(cache)
 
             sleep(self.params['sleep'])
