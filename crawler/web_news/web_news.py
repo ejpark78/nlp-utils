@@ -374,7 +374,10 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            if 0 == len(cache) or (len(cache_buf) > 0 and (cache_buf | cache) == cache):
+            tmp = deepcopy(cache_buf)
+            tmp.update(cache)
+
+            if 0 == len(cache) or (0 < len(cache_buf) == len(tmp)):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '마지막 페이지: 종료',
@@ -382,7 +385,7 @@ class WebNewsCrawler(WebNewsBase):
                 })
                 return
 
-            if len(cache_buf) > 100:
+            if len(cache_buf) > 200:
                 cache_buf.clear()
 
             cache_buf.update(cache)
