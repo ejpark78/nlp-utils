@@ -5,9 +5,9 @@ set -x #echo on
 config="$1"
 dt="$2"
 
+image="registry.nlp-utils/crawler:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
 es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
-image="registry.nlp-utils/crawler:dev"
 
 docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \

@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
 
-PYTHONPATH=.
-ELASTIC_SEARCH_HOST="https://crawler-es.cloud.ncsoft.com:9200"
-ELASTIC_SEARCH_AUTH=$(echo ZWxhc3RpYzpzZWFyY2hUMjAyMA== | base64 -d)
+set -x #echo on
 
-DUMP_PATH="data/naver-backfill"
-mkdir -p ${DUMP_PATH}
+image="registry.nlp-utils/crawler:dev"
+es_host="https://crawler-es.cloud.ncsoft.com:9200"
+es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
 
-curl -k -s -u ${ELASTIC_SEARCH_AUTH} "${ELASTIC_SEARCH_HOST}/_cat/indices?s=index&h=index,docs.count" \
-  | grep -v "\." | tee ${DUMP_PATH}/index.list
+dump_path=$(pwd)"/data/backfill"
+mkdir -p "${dump_path}"
 
-python3 crawler/utils/elasticsearch_utils.py \
-  --dump \
-  --dump-path ${DUMP_PATH} \
-  --index-list ${DUMP_PATH}/index.list
+curl -k -s -u "${es_auth}" "${es_host}/_cat/indices?s=index&h=index,docs.count" \
+  | grep -v "\." | tee "${dump_path}/index.list"
+
+docker run -it --rm \
+  --add-host "corpus.ncsoft.com:172.20.93.112" \
+  --add-host "crawler-es.cloud.ncsoft.com:172.19.170.187" \
+  -e "ELASTIC_SEARCH_HOST=${es_host}" \
+  -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
+  -v "${dump_path}:/mnt" \
+  ${image} \
+    python3 -m crawler.utils.elasticsearch_utils \
+      --dump --dump-path "/mnt" --index-list "/mnt/index.list"
+
+sudo chown -R $(id -u):$(id -g) "${dump_path}"
