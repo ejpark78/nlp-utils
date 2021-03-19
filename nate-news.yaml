@@ -277,7 +277,7 @@ parsing:
           - '%m.%d %H:%M'
           - '%m-%d %H:%M'
         merge: single
-    - key: '@curl_date'
+    - key: '@curl_list'
       value:
         - const: DATE_NOW
 
@@ -301,7 +301,7 @@ parsing:
       convert:
         to: date
         merge: single
-    - key: content
+    - key: contents
       remove:
         - name: script
         - name: sclink
@@ -353,7 +353,7 @@ index_mapping:
       url:
         ignore_above: 256
         type: keyword
-      content:
+      contents:
         type: text
       date:
         type: date
@@ -371,12 +371,7 @@ index_mapping:
         # raw_list, raw, pipeline
         ignore_above: 50
         type: keyword
+      '@curl_list':
+        type: date
       '@curl_date':
         type: date
-      # pipeline columns
-      image_list:
-        enabled: false
-      source:
-        enabled: false
-      source_url:
-        enabled: false

@@ -254,7 +254,7 @@ parsing:
       convert:
         to: date
         merge: single
-    - key: '@curl_date'
+    - key: '@curl_list'
       value:
         - const: DATE_NOW
 
@@ -278,7 +278,7 @@ parsing:
       convert:
         to: date
         merge: single
-    - key: content
+    - key: contents
       value:
         - select: div#articleBodyContents
       type: text
@@ -403,7 +403,7 @@ index_mapping:
       url:
         ignore_above: 256
         type: keyword
-      content:
+      contents:
         type: text
       date:
         type: date
@@ -421,18 +421,7 @@ index_mapping:
         # raw_list, raw, pipeline
         ignore_above: 50
         type: keyword
+      '@curl_list':
+        type: date
       '@curl_date':
         type: date
-      # pipeline columns
-      image_list:
-        enabled: false
-      vod:
-        enabled: false
-      source:
-        enabled: false
-      source_url:
-        enabled: false
-      source_section:
-        enabled: false
-      papaer:
-        enabled: false
