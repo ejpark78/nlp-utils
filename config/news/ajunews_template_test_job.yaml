@@ -1,7 +1,7 @@
 ---
 reference: template_kor
 dag:
-  dag_id: 'ajunews'
+  dag_id: 'ajunews_template_test'
   description: '아주경제 크롤러'
   schedule_interval: '0 * * * *'
   tags: ["아주경제"]
