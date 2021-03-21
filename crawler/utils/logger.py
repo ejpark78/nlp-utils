@@ -31,9 +31,16 @@ class LogMessage(object):
             if self.show_logging_date is True and 'logging_date' not in self.message:
                 self.message['logging_date'] = datetime.now(self.timezone).isoformat()
 
-            return json.dumps(self.message, ensure_ascii=False, sort_keys=True)
+            return json.dumps(self.message, ensure_ascii=False, sort_keys=True, default=self.convert_date)
         except Exception as e:
             return '{0}:{1}'.format(str(self.message), str(e))
+
+    @staticmethod
+    def convert_date(value: any) -> str:
+        if isinstance(value, datetime):
+            return value.isoformat()
+
+        raise TypeError(f'[ERROR] JSON serializable: {value}')
 
 
 class Logger(object):

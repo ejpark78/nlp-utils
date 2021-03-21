@@ -2,11 +2,19 @@
 
 set -x #echo on
 
-image="registry.nlp-utils/crawler:dev"
-es_host="https://crawler-es.cloud.ncsoft.com:9200"
-es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
+es_server="$1"
 
-dump_path=$(pwd)"/data/backfill"
+image="registry.nlp-utils/crawler:dev"
+
+if [[ ${es_server} == "corpus" ]]; then
+  es_host="https://corpus.ncsoft.com:9200"
+  es_auth=$(echo -n "ZWxhc3RpYzpubHBsYWI=" | base64 -d)
+else
+  es_host="https://crawler-es.cloud.ncsoft.com:9200"
+  es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
+fi
+
+dump_path=$(pwd)"/data/es_dump/${es_server}"
 mkdir -p "${dump_path}"
 
 curl -k -s -u "${es_auth}" "${es_host}/_cat/indices?s=index&h=index,docs.count" \

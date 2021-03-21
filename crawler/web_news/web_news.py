@@ -187,8 +187,6 @@ class WebNewsCrawler(WebNewsBase):
         )
 
         self.summary['article'] += 1
-        if self.params['verbose'] == 0:
-            self.logger.log(msg={'CONFIG_DEBUG': 'article', 'article': self.simplify(article)})
 
         # 임시 변수 삭제
         if 'encoding' in item:
@@ -219,13 +217,11 @@ class WebNewsCrawler(WebNewsBase):
         """개별 뉴스를 따라간다."""
         # 기사 목록을 추출한다.
         trace_list = self.get_trace_list(html=html, parsing_info=self.job_config['parsing']['trace'])
-        if self.params['verbose'] == 0:
-            self.logger.log(msg={'CONFIG_DEBUG': 'trace_list', 'trace_list': self.simplify(trace_list)})
 
-        if trace_list is None:
+        if len(trace_list) == 0:
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': 'trace_list 가 없음: 조기 종료',
+                'message': '[조기 종료] trace 목록이 없음',
                 **url_info
             })
             return True, set()
@@ -233,11 +229,10 @@ class WebNewsCrawler(WebNewsBase):
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
+        cache = set()
         is_date_range_stop = False
 
-        url_cache = set()
-
-        # 개별 뉴스를 따라간다.
+        # 개별 뉴스를 추적한다.
         for trace in trace_list:
             item = self.parse_tag(
                 resp=trace,
@@ -248,12 +243,6 @@ class WebNewsCrawler(WebNewsBase):
             )
 
             self.summary['list'] += 1
-            if self.params['verbose'] == 0:
-                self.logger.log(msg={
-                    'CONFIG_DEBUG': 'list info',
-                    'trace': self.simplify(trace),
-                    'item': self.simplify(item)
-                })
 
             if item is None or 'url' not in item:
                 continue
@@ -265,6 +254,7 @@ class WebNewsCrawler(WebNewsBase):
             if date is None and 'date' in item:
                 date = item['date']
 
+            # 날자 범위 점검: today
             if self.is_within_date_range(doc=item, query=query) is False:
                 is_date_range_stop = True
                 break
@@ -272,16 +262,13 @@ class WebNewsCrawler(WebNewsBase):
             # 기존 크롤링된 문서를 확인한다.
             doc_id = self.get_doc_id(url=item['url'], job=job, item=item)
 
-            if self.params['verbose'] == 0:
-                self.logger.log(msg={'CONFIG_DEBUG': 'document id', 'doc_id': doc_id})
-
             if doc_id is None:
                 continue
 
             item['_id'] = doc_id
 
             # 캐쉬에 저장된 문서가 있는지 조회
-            if item['url'] in url_cache:
+            if item['url'] in cache:
                 self.summary['skip'] += 1
 
                 if self.params['verbose'] == 1:
@@ -291,7 +278,7 @@ class WebNewsCrawler(WebNewsBase):
                     })
                 continue
 
-            url_cache.add(item['url'])
+            cache.add(item['url'])
 
             is_skip, _ = self.is_skip(date=date, job=job, url=item['url'], doc_id=doc_id, es=es)
             if is_skip is True:
@@ -320,11 +307,11 @@ class WebNewsCrawler(WebNewsBase):
         if is_date_range_stop is True:
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '날짜 범위 넘어감: 조기 종료',
+                'message': '[조기 종료] 날짜 범위 넘어감',
             })
-            return True, url_cache
+            return True, cache
 
-        return False, url_cache
+        return False, cache
 
     def trace_page_list(self, url_info: dict, job: dict, dt: datetime = None) -> None:
         """뉴스 목록을 크롤링한다."""
@@ -360,9 +347,6 @@ class WebNewsCrawler(WebNewsBase):
             resp = self.get_html_page(url_info=url_info, log_msg={'trace': '뉴스 목록 조회'})
             self.summary['page'] += 1
 
-            if self.params['verbose'] == 0:
-                self.logger.log(msg={'CONFIG_DEBUG': 'list page', 'url': url_info['url']})
-
             if resp is None:
                 continue
 
@@ -374,13 +358,10 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            check = deepcopy(history)
-            check.update(cache)
-
-            if 0 == len(cache) or (0 < len(history) == len(check)):
+            if 0 == len(cache) or history.intersection(cache) == cache:
                 self.logger.log(msg={
                     'level': 'MESSAGE',
-                    'message': '마지막 페이지: 종료',
+                    'message': '[조기 종료] 마지막 페이지',
                     **url_info
                 })
                 return
@@ -497,16 +478,16 @@ class WebNewsCrawler(WebNewsBase):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
-
-        parser.add_argument('--overwrite', action='store_true', default=False, help='덮어쓰기')
-
+        # flow-control
         parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
         parser.add_argument('--contents', action='store_true', default=False, help='TODO: 기사 본문 크롤링')
         parser.add_argument('--pipeline', default='', type=str, help='TODO: pipeline')
 
-        parser.add_argument('--verbose', default=-1, type=int, help='verbose 모드: 0=config, 1=INFO')
+        # essential
+        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
 
+        # config overwrite
+        parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
         parser.add_argument('--sub-category', default='', type=str, help='하위 카테고리')
 
         parser.add_argument('--date-range', default=None, type=str, help='date 날짜 범위: 2000-01-01~2019-04-10')
@@ -517,8 +498,12 @@ class WebNewsCrawler(WebNewsBase):
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
-        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
-        parser.add_argument('--mapping', default=None, type=str, help='인덱스 맵핑 파일 정보')
+        # optional
+        parser.add_argument('--overwrite', action='store_true', default=False, help='(optional) 덮어쓰기')
+
+        parser.add_argument('--mapping', default=None, type=str, help='(optional) 인덱스 맵핑 파일 정보')
+
+        parser.add_argument('--verbose', default=-1, type=int, help='(optional) verbose 모드: 1=INFO')
 
         return vars(parser.parse_args()), vars(parser.parse_args([]))
 
