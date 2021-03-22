@@ -339,7 +339,6 @@ class WebNewsCrawler(WebNewsBase):
                 'message': '뉴스 목록 크롤링',
                 'job_name': job['name'] if 'name' in job else '',
                 'url': url_info['url'] if 'url' in url_info else '',
-                'query': q,
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
             })
 
