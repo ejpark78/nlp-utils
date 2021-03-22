@@ -29,11 +29,6 @@ operator:
     env_vars:
       ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
       ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
   args:
     - -m
     - crawler.web_news.web_news
