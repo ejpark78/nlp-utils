@@ -378,6 +378,12 @@ class WebNewsBase(object):
         runtime = finished - self.start_date
         runtime = runtime.total_seconds()
 
+        summary = deepcopy(self.summary)
+
+        # password masking
+        if 'env' in summary and 'http_auth' in summary['env']:
+            summary['env']['http_auth'] = '*****'
+
         self.logger.log(msg={
             'level': 'SUMMARY',
             'params': self.params,
@@ -386,7 +392,7 @@ class WebNewsBase(object):
             'start': self.start_date.isoformat(),
             'finished': finished.isoformat(),
             'runtime': f'{runtime:0.2f}',
-            **self.summary
+            **summary
         })
         return
 

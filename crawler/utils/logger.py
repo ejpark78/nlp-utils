@@ -36,11 +36,11 @@ class LogMessage(object):
             return '{0}:{1}'.format(str(self.message), str(e))
 
     @staticmethod
-    def convert_date(value: any) -> str:
-        if isinstance(value, datetime):
-            return value.isoformat()
+    def convert_date(obj: any) -> str:
+        if isinstance(obj, datetime):
+            return obj.isoformat()
 
-        raise TypeError(f'[ERROR] JSON serializable: {value}')
+        raise TypeError(f'[ERROR] JSON serializable: {obj}')
 
 
 class Logger(object):
