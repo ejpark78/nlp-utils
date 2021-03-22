@@ -337,7 +337,7 @@ class WebNewsCrawler(WebNewsBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '뉴스 목록 크롤링',
-                'job_name': job['name'] if 'name' in job else '',
+                'category': ' // '.join([job[x] for x in {'name', 'category'} if x in job]),
                 'url': url_info['url'] if 'url' in url_info else '',
                 'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
             })
