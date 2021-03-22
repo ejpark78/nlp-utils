@@ -1,20 +1,26 @@
 #!/usr/bin/env bash
 
-notebook="notebook/daily_report.ipynb"
-output_prefix="daily-report"
-output_dir="."
+today=$(date "+%Y-%m-%d_%H%M%S")
+
+notebook="notebook/backfill-state.ipynb"
+output_prefix="backfill-${today}"
+output_dir="data/reports"
 
 mail_to="ejpark@ncsoft.com,jaehyunpark@ncsoft.com,gunyoung20@ncsoft.com,kimgihwan@ncsoft.com"
+#mail_to="ejpark@ncsoft.com"
 mail_from="ejpark@ncsoft.com"
 
 rely_url="172.20.0.116"
 
-jupyter nbconvert --to notebook --inplace --execute "${notebook}"
+mkdir -p "${output_dir}"
+
+jupyter nbconvert --to notebook --execute "${notebook}" --output-dir "${output_dir}" --output "${output_prefix}"
 
 jupyter nbconvert --to html --execute "${notebook}" --output-dir "${output_dir}" --output "${output_prefix}.html"
 jupyter nbconvert --to webpdf --execute "${notebook}" --output-dir "${output_dir}" --output "${output_prefix}"
 
-subject="[Daily Reports] "$(date "+%Y-%m-%d %H:%M:%S")
+#subject="[Backfill State] "$(date "+%Y-%m-%d %H:%M:%S")
+subject="[Backfill State] Range: 2021-01-01~2021-03-22"
 echo "mail to: ${mail_to}, subject: ${subject}"
 
 python3 crawler/utils/smtp_rely.py \

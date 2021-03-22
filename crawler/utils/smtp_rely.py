@@ -27,26 +27,35 @@ class SmtpRely(object):
     def batch(self) -> None:
         params = self.init_arguments()
 
-        today = self.today.strftime('%Y-%m-%d')
+        if params['to'] is None:
+            return
 
+        # make mail body
         message = EmailMessage()
 
-        with open('reports.html', 'r') as fp:
+        with open(params['contents'], 'r') as fp:
             message.add_alternative(''.join(fp.readlines()), subtype='html')
 
-        if isfile(params['attach']):
-            with open(params['attach'], 'rb') as fp:
-                data = fp.read()
-                message.add_attachment(
-                    data,
-                    maintype='application',
-                    subtype='pdf',
-                    filename=params['attach'].split('/')[-1]
-                )
+        if params['attach']:
+            for filename in params['attach'].split(','):
+                if isfile(filename) is False:
+                    continue
+
+                with open(filename, 'rb') as fp:
+                    subtype = 'pdf'
+                    if '.ipynb' in filename:
+                        subtype = 'ipynb'
+
+                    message.add_attachment(
+                        fp.read(),
+                        maintype='application',
+                        subtype=subtype,
+                        filename=filename.split('/')[-1]
+                    )
 
         message['From'] = params['from']
         message['To'] = params['to'].split(',')
-        message['Subject'] = f'[Crawler Daily Reports] {today}'
+        message['Subject'] = f'{params["subject"]}'
 
         # Send the mail
         with smtplib.SMTP(params['server']) as server:
@@ -62,10 +71,12 @@ class SmtpRely(object):
 
         parser.add_argument('--server', default='172.20.0.116', type=str, help='SMTP Rely Server')
 
-        parser.add_argument('--from', default='ejpark@ncsoft.com', type=str, help='보내이')
-        parser.add_argument('--to', default='ejpark@ncsoft.com', type=str, help='받는이')
+        parser.add_argument('--from', default=None, type=str, help='보내이')
+        parser.add_argument('--to', default=None, type=str, help='받는이')
 
-        parser.add_argument('--contents', default='./reports.html', type=str, help='메일 본문')
+        parser.add_argument('--subject', default='[Crawler Daily Reports]', type=str, help='메일 본문')
+
+        parser.add_argument('--contents', default=None, type=str, help='메일 본문')
         parser.add_argument('--attach', default=None, type=str, help='첨부파일')
 
         return vars(parser.parse_args())
