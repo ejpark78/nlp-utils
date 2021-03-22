@@ -1,12 +1,10 @@
 ---
 jobs:
 - index: raw-herald-{year}
-
   article:
     document_id:
       frame: '{ud}'
       type: query
-
   list:
   - category: 정치
     url_frame: http://biz.heraldcorp.com/list.php?ct=010108000000&ctv=&np={page}
@@ -30,6 +28,8 @@ jobs:
     url_frame: http://biz.heraldcorp.com/village/list.php?ct=10-&np={page}
   - category: 울산경남
     url_frame: http://biz.heraldcorp.com/village/list.php?ct=12-&np={page}
+  - category: PR_Newswire
+    url_frame: http://biz.heraldcorp.com/list.php?ct=011800000000&ctv=&np={page}
 parsing:
   version: v2021-01-26
   descriptions:
