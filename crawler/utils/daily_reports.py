@@ -142,6 +142,7 @@ class DailyReports(object):
         """ 필드의 문서 수량을 조회한다. """
         query = {
             'size': 0,
+            'track_total_hits': True,
             'aggregations': {
                 'group_by': {
                     'terms': {
@@ -210,6 +211,59 @@ class DailyReports(object):
 
             for x in item['by_date']['buckets']:
                 result[sec_name][x['key_as_string']] = x['doc_count']
+
+        return result
+
+    def get_category_min_date(self, index_list: str, column: str = 'category', date_column: str = 'date',
+                              date_format: str = 'yyyy-MM-dd', date_range: str = None) -> list:
+        """ 날짜별 문서 수량을 조회한다. """
+        query = {
+            'size': 0,
+            'track_total_hits': True,
+            'aggregations': {
+                'by_index': {
+                    'terms': {
+                        'field': '_index',
+                        'size': 10
+                    },
+                    'aggregations': {
+                        'group_by': {
+                            'terms': {
+                                'field': f'{column}',
+                                'size': 10
+                            },
+                            'aggregations': {
+                                'date_pos': {
+                                    'min': {
+                                        'format': date_format,
+                                        'field': f'{date_column}',
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        query.update(self.get_date_range_dsl(date_range=date_range, date_column=column))
+
+        resp = self.es.conn.search(index=index_list, body=query)['aggregations']
+
+        result = []
+
+        for idx in resp['by_index']['buckets']:
+            sec_name = idx['key'].split('-')[2]
+
+            for group in idx['group_by']['buckets']:
+                if group['key'].find(',') > 0:
+                    continue
+
+                result.append({
+                    'section': sec_name,
+                    'category': group['key'],
+                    'date': group['date_pos']['value_as_string']
+                })
 
         return result
 
