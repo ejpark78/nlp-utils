@@ -171,20 +171,28 @@ class DailyReports(object):
 
         return sorted(result, key=lambda item: item[column])
 
-    def get_index_histogram(self, index: str, column: str = 'date', interval: str = 'day',
+    def get_index_histogram(self, index_list: str, column: str = 'date', interval: str = 'day',
                             date_format: str = 'yyyy-MM-dd', date_range: str = None) -> dict:
         """ 날짜별 문서 수량을 조회한다. """
         query = {
             'size': 0,
             'track_total_hits': True,
             'aggregations': {
-                'by_date': {
-                    'date_histogram': {
-                        'field': column,
-                        'keyed': False,
-                        'format': date_format,
-                        'time_zone': '+09:00',
-                        'calendar_interval': interval
+                'by_index': {
+                    'terms': {
+                        'field': '_index',
+                        'size': 100
+                    },
+                    'aggregations': {
+                        'by_date': {
+                            'date_histogram': {
+                                'field': column,
+                                'keyed': False,
+                                'format': date_format,
+                                'time_zone': '+09:00',
+                                'calendar_interval': interval
+                            }
+                        }
                     }
                 }
             }
@@ -192,15 +200,18 @@ class DailyReports(object):
 
         query.update(self.get_date_range_dsl(date_range=date_range, date_column=column))
 
-        resp = self.es.conn.search(index=index, body=query)
+        resp = self.es.conn.search(index=index_list, body=query)
 
-        buckets = resp['aggregations']['by_date']['buckets']
-        rows = [{'date': x['key_as_string'], 'count': x['doc_count']} for x in buckets]
+        result = defaultdict(dict)
 
-        return {
-            'total': resp['hits']['total']['value'],
-            'rows': rows,
-        }
+        buckets = resp['aggregations']['by_index']['buckets']
+        for item in buckets:
+            sec_name = item['key'].split('-')[2]
+
+            for x in item['by_date']['buckets']:
+                result[sec_name][x['key_as_string']] = x['doc_count']
+
+        return result
 
 
 if __name__ == '__main__':
