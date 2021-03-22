@@ -241,7 +241,7 @@ class WebNewsBase(object):
                     msg={
                         'level': 'MESSAGE',
                         'message': '저장 성공',
-                        'category': ' >> '.join([job[x] for x in {'name', 'category'} if x in job]),
+                        'category': ' >> '.join([job[x] for x in ['name', 'category'] if x in job]),
                         '_id': doc_id,
                         'date': dt_str.split('T')[0],
                         'title': doc['title'],
