@@ -4,14 +4,10 @@ jobs:
   article:
     document_id:
       replace:
-      - from: /arti/
-        to: '/'
-      - from: .html
-        to: ''
       - from: ^/
         to: ''
-      - from: /
-        to: '-'
+      - from: view/
+        to: ''
       type: path
   list:
   - category: 중국/마켓
@@ -28,11 +24,11 @@ jobs:
     url_frame: https://www.ajunews.com/china/chinanews?page={page}&
   - category: 산업/기업
     url_frame: https://www.ajunews.com/industry/enterprise?page={page}&
-  - category: 산업/조선/철강
+  - category: 산업/조선·철강
     url_frame: https://www.ajunews.com/industry/maritime?page={page}&
   - category: 산업/유통
     url_frame: https://www.ajunews.com/industry/distribution?page={page}&
-  - category: 산업/제약/바이오
+  - category: 산업/제약·바이오
     url_frame: https://www.ajunews.com/industry/pharmaceutical?page={page}&
   - category: 산업/모바일
     url_frame: https://www.ajunews.com/industry/itsience?page={page}&
@@ -52,7 +48,7 @@ jobs:
     url_frame: https://www.ajunews.com/economy/global/market?page={page}&
   - category: 경제/기업
     url_frame: https://www.ajunews.com/economy/global/enterprise?page={page}&
-  - category: 경제/인물
+  - category: 경제/인물/화제
     url_frame: https://www.ajunews.com/economy/global/issue?page={page}&
   - category: 경제/일반
     url_frame: https://www.ajunews.com/economy/global/news?page={page}&
@@ -62,7 +58,7 @@ jobs:
     url_frame: https://www.ajunews.com/politics/bluehouse?page={page}&
   - category: 정치/외교
     url_frame: https://www.ajunews.com/politics/diplomacy?page={page}&
-  - category: 정치/국방/북한
+  - category: 정치/북한·국방
     url_frame: https://www.ajunews.com/politics/northkorea?page={page}&
   - category: 정치/국회
     url_frame: https://www.ajunews.com/politics/assembly?page={page}&
@@ -78,13 +74,13 @@ jobs:
     url_frame: https://www.ajunews.com/society/accident?page={page}&
   - category: 사회/일반
     url_frame: https://www.ajunews.com/society/news?page={page}&
-  - category: 문화/연예
+  - category: 문화·연예/문화
+    url_frame: https://www.ajunews.com/cultureentertainment/culture?page={page}&
+  - category: 문화·연예/여행·레저
     url_frame: https://www.ajunews.com/cultureentertainment/tourleisure?page={page}&
-  - category: 문화/연예/여행
-    url_frame: https://www.ajunews.com/cultureentertainment/tourleisure?page={page}&
-  - category: 문화/연예
+  - category: 문화·연예/연예
     url_frame: https://www.ajunews.com/cultureentertainment/entertainment?page={page}&
-  - category: 문화/연예/스포츠
+  - category: 문화·연예/스포츠
     url_frame: https://www.ajunews.com/cultureentertainment/sports?page={page}&
 parsing:
   descriptions:
