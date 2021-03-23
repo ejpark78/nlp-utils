@@ -4,6 +4,7 @@ set -x #echo on
 
 config="$1"
 dt="$2"
+extra="$3"
 
 image="registry.nlp-utils/crawler:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
@@ -16,7 +17,7 @@ docker run -it --rm \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
   ${image} \
     python3 -m crawler.web_news.web_news \
-      --sleep 0.8 \
       --config "${config}" \
       --date-range "${dt}" \
-      --list
+      --sleep 0.8 \
+      --list ${extra}

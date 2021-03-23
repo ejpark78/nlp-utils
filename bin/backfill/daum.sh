@@ -4,12 +4,12 @@ set -x #echo on
 
 config="/config/daum-news.yaml"
 
-time bin/backfill.sh "${config}" "2021-03-01"
-time bin/backfill.sh "${config}" "2021-02-01"
-time bin/backfill.sh "${config}" "2021-01-01"
-
-time bin/backfill.sh "${config}" "2020-12-01"
-time bin/backfill.sh "${config}" "2020-11-01"
+#time bin/backfill.sh "${config}" "2021-03-01"
+#time bin/backfill.sh "${config}" "2021-02-01"
+#time bin/backfill.sh "${config}" "2021-01-01"
+#
+#time bin/backfill.sh "${config}" "2020-12-01"
+#time bin/backfill.sh "${config}" "2020-11-01"
 time bin/backfill.sh "${config}" "2020-10-01"
 time bin/backfill.sh "${config}" "2020-09-01"
 time bin/backfill.sh "${config}" "2020-08-01"

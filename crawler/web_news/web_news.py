@@ -338,8 +338,8 @@ class WebNewsCrawler(WebNewsBase):
                 'level': 'MESSAGE',
                 'message': '뉴스 목록 크롤링',
                 'category': '[' + ']['.join([job[x] for x in ['name', 'category'] if x in job]) + ']',
-                'url': url_info['url'] if 'url' in url_info else '',
-                'date': dt.strftime('%Y-%m-%d') if dt is not None else '',
+                'url': url_info['url'] if 'url' in url_info else None,
+                'date': dt.strftime('%Y-%m-%d') if dt is not None else None,
             })
 
             # 기사 목록 조회
