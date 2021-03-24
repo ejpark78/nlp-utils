@@ -38,8 +38,6 @@ args:
   - "crawler.web_news.web_news"
   - "--sleep"
   - "10"
-  - "--page-range"
-  - "1~50"
 
 jobs:
   - name: economy
