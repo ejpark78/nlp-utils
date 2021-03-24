@@ -42,6 +42,8 @@ class CrawlerIndexState(object):
     def update_count(self) -> None:
         resp = requests.get(url=self.url, auth=self.auth, verify=False)
 
+        index_list = set()
+
         for line in resp.text.split('\n'):
             if line.strip() == '' or line[0] == '.':
                 continue
@@ -51,6 +53,8 @@ class CrawlerIndexState(object):
 
             index, count = re.sub(r'\s+', '\t', line).split('\t', maxsplit=1)
             count = int(count)
+
+            index_list.add(index)
 
             if index not in self.doc_count:
                 self.doc_count[index] = {}
@@ -76,22 +80,27 @@ class CrawlerIndexState(object):
 
         self.last_time = time()
 
+        # delete index
+        index_list = set(self.doc_count.keys()) - index_list
+        for index in list(index_list):
+            del self.doc_count[index]
+
         return
 
     def show(self) -> None:
         date = datetime.now(tz=self.timezone).strftime('%Y-%m-%d %H:%M:%S')
 
-        line = '{date: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(date=date, **self.total)
+        line = '{date: <35} {count: >12,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(date=date, **self.total)
         print(line)
 
         for index, item in self.doc_count.items():
             if self.params['active'] and item['diff'] == 0:
                 continue
 
-            line = '{index: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)'.format(index=index, **item)
+            line = '{index: <35} {count: >12,} {diff: >7,} {speed: >7.2f} (doc/sec)'.format(index=index, **item)
             print(line)
 
-        line = '\n{name: <35} {count: >10,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(name='total', **self.total)
+        line = '\n{name: <35} {count: >12,} {diff: >7,} {speed: >7.2f} (doc/sec)\n'.format(name='total', **self.total)
         print(line)
 
         return

@@ -33,7 +33,7 @@ class NLUWrapperUtils(object):
     """NLU Wrapper 유틸"""
 
     def __init__(self):
-        """생성자"""
+        pass
 
     @staticmethod
     def batch(utils, index, text, option, timeout, url):

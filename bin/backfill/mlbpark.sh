@@ -20,5 +20,5 @@ docker run -it --rm \
       --config "${config}" \
       --sleep 5 \
       --job-name "kbo" \
-      --page-range "1~9000000" \
+      --page-range "167491~9000000" \
       --list

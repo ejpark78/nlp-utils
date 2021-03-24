@@ -123,15 +123,15 @@ RUN echo && echo "# ttyd 설치" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN echo && echo "# ssh kubeconfig 설치" \
-    && git clone --depth=1 http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
-    && git clone --depth=1 http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube \
-    && echo && echo "# merge kubeconfig" \
-    && cd ~/.kube/cluster.d \
-    && KUBECONFIG=nc-crawler:nc-od:nc-utils:nc-web:nlp kubectl config view --merge --flatten > ~/.kube/config \
-    && rm -rf ~/.kube/cluster.d \
-    && find ~ -name .git -type d -exec rm -rf {} + \
-    && chmod 600 ~/.ssh && chmod -R 400 ~/.ssh/*
+#RUN echo && echo "# ssh kubeconfig 설치" \
+#    && git clone --depth=1 http://ejpark:z5qdkW9xda4YGyUsa6jQ@galadriel02.korea.ncsoft.corp/ejpark/ssh ~/.ssh \
+#    && git clone --depth=1 http://ejpark:-_VTvKxdyZjG37C-U9px@galadriel02.korea.ncsoft.corp/ejpark/kubeconfig ~/.kube \
+#    && echo && echo "# merge kubeconfig" \
+#    && cd ~/.kube/cluster.d \
+#    && KUBECONFIG=nc-crawler:nc-od:nc-utils:nc-web:nlp kubectl config view --merge --flatten > ~/.kube/config \
+#    && rm -rf ~/.kube/cluster.d \
+#    && find ~ -name .git -type d -exec rm -rf {} + \
+#    && chmod 600 ~/.ssh && chmod -R 400 ~/.ssh/*
 
 ADD zshrc .zshrc
 ADD ssh-config .ssh/config

@@ -26,6 +26,7 @@ docker run -it --rm \
   -e "ELASTIC_SEARCH_HOST=${es_host}" \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
   -v "${dump_path}:/mnt" \
+  --name "dump-${es_server}" \
   ${image} \
     python3 -m crawler.utils.elasticsearch_utils \
       --dump --dump-path "/mnt" --index-list "/mnt/index.list"
