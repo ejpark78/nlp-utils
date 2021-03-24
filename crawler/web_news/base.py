@@ -12,17 +12,16 @@ from copy import deepcopy
 from datetime import datetime
 from os import getenv
 from time import sleep
-from dotty_dict import dotty
-from jsonfinder import jsonfinder
 
 import pytz
 import requests
 import urllib3
 import yaml
 from bs4 import BeautifulSoup
-from cachelib import SimpleCache
 from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
+from dotty_dict import dotty
+from jsonfinder import jsonfinder
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
@@ -235,7 +234,8 @@ class WebNewsBase(object):
             self.summary['new_list'] += 1
 
             if self.params['verbose'] == 1:
-                dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
+                dt_str = doc['date'] if isinstance(doc['date'], str) else doc[
+                    'date'].isoformat() if 'date' in doc else ''
 
                 self.logger.log(
                     msg={
