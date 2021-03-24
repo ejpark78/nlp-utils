@@ -75,8 +75,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:
@@ -135,6 +135,15 @@ parsing:
         class: info_view
     type: text
     value_type: single
+  - comment: html 본문
+    key: html_content
+    value:
+    - name: div
+      attribute:
+        class: article_view
+    - name: section
+    type: html
+    value_type: merge
   - comment: 이미지
     key: image_list.image
     value:

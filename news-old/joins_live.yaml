@@ -10,7 +10,6 @@ jobs:
     date_format: '%Y%m%d'
     url_frame: http://isplus.live.joins.com/news/list/list.asp?page={page}&tm=i_b_6110
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -116,6 +115,23 @@ parsing:
         class: byline
     - name: a
     type: href
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    - name: script
+    - name: div
+      attribute:
+        id: top_ad
+    - name: div
+      attribute:
+        class: article_msn_ad
+    value:
+    - name: div
+      attribute:
+        itemprop: articleBody
+    type: html
+    value_type: merge
   - comment: 이미지
     key: image_list.image
     value:

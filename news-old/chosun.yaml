@@ -15,7 +15,6 @@ jobs:
   - category: 야구
     url_frame: http://news.chosun.com/svc/list_in/list.html?catid=82&source=1&pn={page}
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -92,6 +91,17 @@ parsing:
       attribute:
         class: author_source
     type: text
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    - name: script
+    value:
+    - name: div
+      attribute:
+        class: par
+    type: html
+    value_type: merge
   - comment: 이미지
     key: image_list.image
     value:
