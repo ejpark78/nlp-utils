@@ -1,119 +1,119 @@
 ---
 jobs:
-- index: raw-newspeppermint-{year}
-  article:
-    document_id:
-      replace:
-      - from: ^/
-        to: ''
-      - from: /$
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-  args:
-    page_range: "1~20"
-  list:
-  - category: 세계
-    url_frame: https://newspeppermint.com/category/world-politics/page/{page}/
-  - category: 한국
-    url_frame: https://newspeppermint.com/category/korea/page/{page}/
-  - category: 경제
-    url_frame: https://newspeppermint.com/category/economy/page/{page}/
-  - category: 경영
-    url_frame: https://newspeppermint.com/category/business/page/{page}/
-  - category: IT
-    url_frame: https://newspeppermint.com/category/it/page/{page}/
-  - category: 과학
-    url_frame: https://newspeppermint.com/category/science-environment/page/{page}/
-  - category: 문화
-    url_frame: https://newspeppermint.com/category/lifestyle/page/{page}/
-  - category: 스포츠
-    url_frame: https://newspeppermint.com/category/sports/page/{page}/
-  - category: 칼럼
-    url_frame: https://newspeppermint.com/category/column/page/{page}/
-  - category: 추천
-    url_frame: https://newspeppermint.com/category/추천/page/{page}/
+  - index: raw-newspeppermint-{year}
+    article:
+      document_id:
+        replace:
+          - from: ^/
+            to: ''
+          - from: /$
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+    args:
+      page_range: "1~20"
+    list:
+      - category: 세계
+        url_frame: https://newspeppermint.com/category/world-politics/page/{page}/
+      - category: 한국
+        url_frame: https://newspeppermint.com/category/korea/page/{page}/
+      - category: 경제
+        url_frame: https://newspeppermint.com/category/economy/page/{page}/
+      - category: 경영
+        url_frame: https://newspeppermint.com/category/business/page/{page}/
+      - category: IT
+        url_frame: https://newspeppermint.com/category/it/page/{page}/
+      - category: 과학
+        url_frame: https://newspeppermint.com/category/science-environment/page/{page}/
+      - category: 문화
+        url_frame: https://newspeppermint.com/category/lifestyle/page/{page}/
+      - category: 스포츠
+        url_frame: https://newspeppermint.com/category/sports/page/{page}/
+      - category: 칼럼
+        url_frame: https://newspeppermint.com/category/column/page/{page}/
+      - category: 추천
+        url_frame: https://newspeppermint.com/category/추천/page/{page}/
+
+# crawling 과정에서 추출하는 정보
 parsing:
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  version: v2021-03-17
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.main-content div ul li
+    - select: div.main-content div ul li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - comment: 제목
-    key: title
-    value:
-    - select: span a
-    type: text
-  - comment: url
-    key: url
-    value:
-    - select: span a
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - select: 'div p span'
-    type: text
-    type_convert: date
-    value_type: single
-    replace:
-    - from: '(\d+)년 (\d+)월 (\d+)일\.'
-      to: '\g<1>-\g<2>-\g<3>'
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: title
+      value:
+        - select: span a
+      type: text
+    - key: url
+      value:
+        - select: span a
+      type: href
+    - key: date
+      value:
+        - select: 'div p span'
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: '(\d+)년 (\d+)월 (\d+)일\.'
+          to: '\g<1>-\g<2>-\g<3>'
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: html
-    key: html
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: 'div.container div.main-content .title'
-    type: text
-    value_type: single
-  - comment: 원문 기사
-    key: source_en
-    value:
-    - select: 'div.container div.main-content p a[rel=noopener]'
-    type: href
-    value_type: merge
-  - comment: 날짜
-    key: date
-    value:
-    - select: 'span.meta'
-    type: text
-    type_convert: date
-    value_type: single
-    replace:
-    - from: '[|].+By: .+$'
-      to: ''
-    - from: '(\d+)년 (\d+)월 (\d+)일'
-      to: '\g<1>-\g<2>-\g<3>'
-    remove:
-    - name: a
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: 'div.container div.main-content div.column'
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: 'div.container div.main-content .title'
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: 'span.meta'
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: '[|].+By: .+$'
+          to: ''
+        - from: '(\d+)년 (\d+)월 (\d+)일'
+          to: '\g<1>-\g<2>-\g<3>'
+      remove:
+        - name: a
+    - key: content
+      value:
+        - select: 'div.container div.main-content div.column'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: source_en
+      value:
+        - select: 'div.container div.main-content p a[rel=noopener]'
+      type: href
+      value_type: merge

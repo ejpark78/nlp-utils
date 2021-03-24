@@ -1,90 +1,94 @@
 ---
 jobs:
-- index: raw-hani-en-{year}
-  article:
-    document_id:
-      replace:
-      - from: /arti/
-        to: '/'
-      - from: /english_edition/
-        to: '/'
-      - from: .html
-        to: ''
-      - from: ^/
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-  list:
-  - category: National
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_national/list{page}.html
-  - category: North Korea
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_northkorea/list{page}.html
-  - category: International
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_international/list{page}.html
-  - category: Eco-Business
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_business/list{page}.html
-  - category: Culture
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_entertainment/list{page}.html
-  - category: Editorial-Opinion
-    url_frame: http://english.hani.co.kr/arti/english_edition/e_editorial/list{page}.html
-  - category: All
-    url_frame: http://english.hani.co.kr/arti/english_edition/list{page}.html
+  - index: raw-hani-en-{year}
+    article:
+      document_id:
+        replace:
+          - from: /arti/
+            to: '/'
+          - from: /english_edition/
+            to: '/'
+          - from: .html
+            to: ''
+          - from: ^/
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+    list:
+      - category: National
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_national/list{page}.html
+      - category: North Korea
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_northkorea/list{page}.html
+      - category: International
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_international/list{page}.html
+      - category: Eco-Business
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_business/list{page}.html
+      - category: Culture
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_entertainment/list{page}.html
+      - category: Editorial-Opinion
+        url_frame: http://english.hani.co.kr/arti/english_edition/e_editorial/list{page}.html
+      - category: All
+        url_frame: http://english.hani.co.kr/arti/english_edition/list{page}.html
+
+# crawling 과정에서 추출하는 정보
 parsing:
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  version: v2021-03-17
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - parser: javascript
-    filter: 'list:'
+    - parser: javascript
+      filter: 'list:'
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - parser: json
-    mapping:
-      url: url
-      date: wdate
+    - parser: json
+      mapping:
+        url: url
+        date: wdate
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: html
-    key: html
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: div.article-headline .headline-tit
-    type: text
-  - comment: 날짜
-    key: date
-    value:
-    - select: '.headline-data'
-    type: text
-    type_convert: date
-    value_type: single
-    replace:
-    - from: "^.+Posted on :"
-      to: ''
-    - from: "^.+Modified on :"
-      to: ''
-  - comment: 한국어 기사
-    key: source_ko
-    value:
-    - select: 'a#inner_originArticle'
-    type: href
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: div.article-view
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: div.article-headline .headline-tit
+      type: text
+    - key: date
+      value:
+        - select: '.headline-data'
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^.+Posted on :"
+          to: ''
+        - from: "^.+Modified on :"
+          to: ''
+    - key: content
+      value:
+        - select: div.article-view
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: source_ko
+      value:
+        - select: 'a#inner_originArticle'
+      type: href

@@ -1,117 +1,113 @@
 ---
 jobs:
-- index: raw-asiae-{year}
-  article:
-    document_id:
-      replace:
-      - from: /arti/
-        to: '/'
-      - from: .html
-        to: ''
-      - from: ^/
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-      
-  list:
-  - category: 정치/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/politics-all/{page}
-  - category: 경제/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/economy-all/{page}
-  - category: 산업/IT/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/industry-IT-all/{page}
-  - category: 증권/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/stock-all/{page}
-  - category: 기업분석/전체
-    url_frame: https://www.asiae.co.kr/list/corporate-analysis-all/{page}
-  - category: 부동산/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/realestate-all/{page}
-  - category: 국제/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/world-all/{page}
-  - category: 사회/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/society-all/{page}
-  - category: 라이프/스타일
-    url_frame: https://www.asiae.co.kr/list/style/{page}
-  - category: 라이프/뷰티·헬스
-    url_frame: https://www.asiae.co.kr/list/beauty-health/{page}
-  - category: 라이프/여행·레저
-    url_frame: https://www.asiae.co.kr/list/travel-leisure/{page}
-  - category: 라이프/공연·전시
-    url_frame: https://www.asiae.co.kr/list/performance-exhibit/{page}
-  - category: 라이프/책
-    url_frame: https://www.asiae.co.kr/list/book/{page}
-  - category: 라이프/일반
-    url_frame: https://www.asiae.co.kr/list/life-general/{page}
-  - category: 라이프/에듀아시아
-    url_frame: https://www.asiae.co.kr/list/edu-asia/{page}
-  - category: 라이프/드링킷
-    url_frame: https://www.asiae.co.kr/list/drink-eat/{page}
-  - category: 연예/스포츠/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/entertainment-sports-all/{page}
-  - category: 골프/전체뉴스
-    url_frame: https://www.asiae.co.kr/list/golf-all/{page}
+  - index: raw-asiae-{year}
+    article:
+      document_id:
+        replace:
+          - from: /arti/
+            to: '/'
+          - from: .html
+            to: ''
+          - from: ^/
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+
+    list:
+      - category: 정치/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/politics-all/{page}
+      - category: 경제/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/economy-all/{page}
+      - category: 산업/IT/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/industry-IT-all/{page}
+      - category: 증권/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/stock-all/{page}
+      - category: 기업분석/전체
+        url_frame: https://www.asiae.co.kr/list/corporate-analysis-all/{page}
+      - category: 부동산/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/realestate-all/{page}
+      - category: 국제/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/world-all/{page}
+      - category: 사회/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/society-all/{page}
+      - category: 라이프/스타일
+        url_frame: https://www.asiae.co.kr/list/style/{page}
+      - category: 라이프/뷰티·헬스
+        url_frame: https://www.asiae.co.kr/list/beauty-health/{page}
+      - category: 라이프/여행·레저
+        url_frame: https://www.asiae.co.kr/list/travel-leisure/{page}
+      - category: 라이프/공연·전시
+        url_frame: https://www.asiae.co.kr/list/performance-exhibit/{page}
+      - category: 라이프/책
+        url_frame: https://www.asiae.co.kr/list/book/{page}
+      - category: 라이프/일반
+        url_frame: https://www.asiae.co.kr/list/life-general/{page}
+      - category: 라이프/에듀아시아
+        url_frame: https://www.asiae.co.kr/list/edu-asia/{page}
+      - category: 라이프/드링킷
+        url_frame: https://www.asiae.co.kr/list/drink-eat/{page}
+      - category: 연예/스포츠/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/entertainment-sports-all/{page}
+      - category: 골프/전체뉴스
+        url_frame: https://www.asiae.co.kr/list/golf-all/{page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
-  version: v2021-01-26
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  version: v2021-03-17
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: "div.cont_list div.listsm_type"
+    - select: "div.cont_list div.listsm_type"
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - comment: 제목
-    key: title
-    value:
-    - select: "h3.l_fsttit a"
-    type: title
-  - comment: url
-    key: url
-    value:
-    - select: "h3.l_fsttit a"
-    type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: title
+      value:
+        - select: "h3.l_fsttit a"
+      type: title
+    - key: url
+      value:
+        - select: "h3.l_fsttit a"
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: raw html or json
-    key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: 'div.area_title h3'
-    type: text
-    value_type: single
-  - comment: 날짜
-    key: date
-    value:
-    - select: "div.area_title div.area_util p.user_data"
-    type: text
-    type_convert: date
-    value_type: single
-    replace:
-    - from: "^.+기사입력"
-      to: ''
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: 'div.cont_article div.article_view'
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: 'div.area_title h3'
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: "div.area_title div.area_util p.user_data"
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^.+기사입력"
+          to: ''
+    - key: content
+      value:
+        - select: 'div.cont_article div.article_view'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

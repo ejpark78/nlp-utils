@@ -1,81 +1,78 @@
 ---
 jobs:
-- index: raw-knnews-{year}
-  article:
-    document_id:
-      replace:
-      - from: /arti/
-        to: '/'
-      - from: .html
-        to: ''
-      - from: ^/
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-  list:
-  - category: 전체기사
-    url_frame: http://www.knnews.co.kr/news/articleList.php?page={page}
+  - index: raw-knnews-{year}
+    article:
+      document_id:
+        replace:
+          - from: /arti/
+            to: '/'
+          - from: .html
+            to: ''
+          - from: ^/
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+    list:
+      - category: 전체기사
+        url_frame: http://www.knnews.co.kr/news/articleList.php?page={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  version: v2021-03-17
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: "div.list_cont02 ul li"
+    - select: "div.list_cont02 ul li"
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - comment: 제목
-    key: title
-    value:
-    - select: "span.cont02_tit a"
-    type: text
-  - comment: url
-    key: url
-    value:
-    - select: 'span.cont02_tit a'
-    type: href
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: title
+      value:
+        - select: "span.cont02_tit a"
+      type: text
+    - key: url
+      value:
+        - select: 'span.cont02_tit a'
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: html
-    key: html
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: 'div.cont_tit h1#PushLinkId.h1_tex'
-    type: text
-    value_type: single
-  - comment: 날짜
-    key: date
-    value:
-    - select: "div.cont_tit ul li.loca_left"
-    type: text
-    type_convert: date
-    value_type: single
-    replace:
-    - from: "^기사입력 : "
-      to: ''
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: 'div.cont_cont ul li#content_li'
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: 'div.cont_tit h1#PushLinkId.h1_tex'
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: "div.cont_tit ul li.loca_left"
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^기사입력 : "
+          to: ''
+    - key: content
+      value:
+        - select: 'div.cont_cont ul li#content_li'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

@@ -5,45 +5,45 @@ jobs:
       document_id:
         frame: '{artid}'
         type: query
-        
+
     list:
       - category: 전체기사
         url_frame: http://news.khan.co.kr/kh_recent/index.html?&page={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  version: v2021-03-17
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
     - select: div.news_list ul li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-    - comment: 제목
-      key: title
+    - key: title
       value:
         - select: strong.hd_title a
       type: text
-    - comment: url
-      key: url
+    - key: url
       value:
         - select: strong.hd_title a
       type: href
-    - comment: 날짜
-      key: date
+    - key: date
       value:
         - select: span.byline em.letter
       type: text
       type_convert: date
       value_type: single
-    - comment: 크롤링 시간
-      key: '@curl_date'
+    - key: '@curl_date'
       value:
         - const: DATE_NOW
       type: text
       type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-    - comment: html
-      key: html
+    - key: raw
       value:
         - name: html
       remove:
@@ -51,13 +51,11 @@ parsing:
         - name: style
         - name: comment
       type: html
-    - comment: 제목
-      key: title
+    - key: title
       value:
         - select: h1#article_title.headline.mg
       type: text
-    - comment: 날짜
-      key: date
+    - key: date
       value:
         - select: "div.pagecontrol div.byline em"
       replace:
@@ -70,14 +68,12 @@ parsing:
       type: text
       type_convert: date
       value_type: single
-    - comment: 텍스트 본문
-      key: content
+    - key: content
       value:
         - select: div#articleBody.art_body
       type: text
       value_type: merge
-    - comment: 크롤링 시간
-      key: '@curl_date'
+    - key: '@curl_date'
       value:
         - const: DATE_NOW
       type: text
