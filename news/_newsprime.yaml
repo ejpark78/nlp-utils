@@ -1,88 +1,92 @@
 ---
 jobs:
-- index: raw-newsprime-{year}
-  article:
-    document_id:
-      frame: '{sec_no}-{no}'
-      type: query
-  list:
-  - category: 자본시장
-    url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=56&page={page}
-  - category: 산업
-    url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=57&page={page}
-  - category: 부동산
-    url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=58&page={page}
-  - category: 중기벤처
-    url_frame: http://www.newsprime.co.kr/news/section1.html?sec_no=59&page={page}
-  - category: 정치사회
-    url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=60&page={page}
-  - category: 오피니언
-    url_frame: http://www.newsprime.co.kr/news/section2.html?sec_no=61&page={page}
-  - category: 아하!그렇군요
-    url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=62&page={page}
-  - category: 지역
-    url_frame: http://www.newsprime.co.kr/news/section_list_all/?sec_no=64&page={page}
+  - index: raw-newsprime-{year}
+    article:
+      document_id:
+        frame: '{sec_no}-{no}'
+        type: query
+    list:
+      - category: 자본시장
+        url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=56&page={page}
+      - category: 산업
+        url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=57&page={page}
+      - category: 부동산
+        url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=58&page={page}
+      - category: 중기벤처
+        url_frame: http://www.newsprime.co.kr/news/section1.html?sec_no=59&page={page}
+      - category: 정치사회
+        url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=60&page={page}
+      - category: 오피니언
+        url_frame: http://www.newsprime.co.kr/news/section2.html?sec_no=61&page={page}
+      - category: 아하!그렇군요
+        url_frame: http://www.newsprime.co.kr/news/section_list_all.html?sec_no=62&page={page}
+      - category: 지역
+        url_frame: http://www.newsprime.co.kr/news/section_list_all/?sec_no=64&page={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: 'div table table'
+    - select: 'div table table'
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: title
-    value:
-    - select: .article-title a
-    type: text
-  - key: date
-    value:
-    - select: span.date
-    type: text
-    convert:
-      to: date
-      merge: single
-  - key: url
-    value:
-    - select: 'div.c011_ara tr td.news1'
-    type: href
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: .article-title a
+      type: text
+    - key: date
+      value:
+        - select: span.date
+      type: text
+      type_convert: date
+      value_type: single
+    - key: url
+      value:
+        - select: 'div.c011_ara tr td.news1'
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - key: title
-    value:
-    - select: span.title
-    type: text
-    convert:
-      merge: single
-  - key: date
-    value:
-    - select: p.date-time
-    type: text
-    convert:
-      to: date
-      merge: single
-    replace:
-    - from: "^.+등록 :"
-      to: ''
-    - from: "^.+수정 :"
-      to: ''
-  - key: content
-    value:
-    - select: '#article-text'
-    type: text
-    convert:
-      merge: merge
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: span.title
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: p.date-time
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^.+등록 :"
+          to: ''
+        - from: "^.+수정 :"
+          to: ''
+    - key: content
+      value:
+        - select: '#article-text'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

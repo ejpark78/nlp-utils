@@ -1,96 +1,101 @@
 ---
 jobs:
-- index: raw-dailian-{year}
-  article:
-    document_id:
-      replace:
-      - from: /news/
-        to: '/'
-      - from: /view/
-        to: '/'
-      - from: ^/
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-  args:
-    page_range: "0~5000"
-    page_step: "100"
-  list:
-  - category: 경제
-    url_frame: https://dailian.co.kr/economy?startPos={page}
-  - category: 연예
-    url_frame: https://dailian.co.kr/entertainment?startPos={page}
-  - category: IT/과학
-    url_frame: https://dailian.co.kr/itScience?startPos={page}
-  - category: 생활문화
-    url_frame: https://dailian.co.kr/lifeCulture?startPos={page}
-  - category: 전체기사
-    url_frame: https://dailian.co.kr/newsList?startPos={page}
-  - category: 정치
-    url_frame: https://dailian.co.kr/politics?startPos={page}
-  - category: PR
-    url_frame: https://dailian.co.kr/pr?startPos={page}
-  - category: 사회
-    url_frame: https://dailian.co.kr/society?startPos={page}
-  - category: 스포츠
-    url_frame: https://dailian.co.kr/sports?startPos={page}
-  - category: 세계
-    url_frame: https://dailian.co.kr/world?startPos={page}
+  - index: raw-dailian-{year}
+    article:
+      document_id:
+        replace:
+          - from: /news/
+            to: '/'
+          - from: /view/
+            to: '/'
+          - from: ^/
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+    args:
+      page_range: "0~5000"
+      page_step: "100"
+    list:
+      - category: 경제
+        url_frame: https://dailian.co.kr/economy?startPos={page}
+      - category: 연예
+        url_frame: https://dailian.co.kr/entertainment?startPos={page}
+      - category: IT/과학
+        url_frame: https://dailian.co.kr/itScience?startPos={page}
+      - category: 생활문화
+        url_frame: https://dailian.co.kr/lifeCulture?startPos={page}
+      - category: 전체기사
+        url_frame: https://dailian.co.kr/newsList?startPos={page}
+      - category: 정치
+        url_frame: https://dailian.co.kr/politics?startPos={page}
+      - category: PR
+        url_frame: https://dailian.co.kr/pr?startPos={page}
+      - category: 사회
+        url_frame: https://dailian.co.kr/society?startPos={page}
+      - category: 스포츠
+        url_frame: https://dailian.co.kr/sports?startPos={page}
+      - category: 세계
+        url_frame: https://dailian.co.kr/world?startPos={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.listsOfArticles > div > div
+    - select: div.listsOfArticles > div > div
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: title
-    value:
-    - select: div.textOflist h6
-    type: text
-  - key: url
-    value:
-    - select: div.textOflist a
-    type: href
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: div.textOflist h6
+      type: text
+    - key: url
+      value:
+        - select: div.textOflist a
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - key: title
-    value:
-    - select: '.contents .news-contents .title'
-    type: text
-    convert:
-      merge: single
-  - key: date
-    value:
-    - select: '.contents .news-contents .information ul li'
-    type: text
-    convert:
-      to: date
-      merge: single
-    replace:
-    - from: '^.*입력'
-      to: ''
-    - from: '^.*수정'
-      to: ''
-  - key: content
-    value:
-    - select: '.contents .news-contents .article'
-    type: text
-    convert:
-      merge: merge
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: '.contents .news-contents .title'
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: '.contents .news-contents .information ul li'
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: '^.*입력'
+          to: ''
+        - from: '^.*수정'
+          to: ''
+    - key: content
+      value:
+        - select: '.contents .news-contents .article'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

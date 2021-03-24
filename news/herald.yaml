@@ -1,99 +1,94 @@
 ---
 jobs:
-- index: raw-herald-{year}
-  article:
-    document_id:
-      frame: '{ud}'
-      type: query
-  list:
-  - category: 정치
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010108000000&ctv=&np={page}
-  - category: 경제
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010104000000&ctv=&np={page}
-  - category: 사회
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010109000000&ctv=&np={page}
-  - category: 국제
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010110000000&ctv=&np={page}
-  - category: IT/과학
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010502000000&ctv=&np={page}
-  - category: 생활/문화
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010504000000&ctv=&np={page}
-  - category: 연예
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010400000000&ctv=&np={page}
-  - category: 스포츠
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010410010000&ctv=&np={page}
-  - category: 오피니언
-    url_frame: http://biz.heraldcorp.com/list.php?ct=010103000000&ctv=&np={page}
-  - category: 대구경북
-    url_frame: http://biz.heraldcorp.com/village/list.php?ct=10-&np={page}
-  - category: 울산경남
-    url_frame: http://biz.heraldcorp.com/village/list.php?ct=12-&np={page}
-  - category: PR_Newswire
-    url_frame: http://biz.heraldcorp.com/list.php?ct=011800000000&ctv=&np={page}
+  - index: raw-herald-{year}
+    article:
+      document_id:
+        frame: '{ud}'
+        type: query
+    list:
+      - category: 정치
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010108000000&ctv=&np={page}
+      - category: 경제
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010104000000&ctv=&np={page}
+      - category: 사회
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010109000000&ctv=&np={page}
+      - category: 국제
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010110000000&ctv=&np={page}
+      - category: IT/과학
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010502000000&ctv=&np={page}
+      - category: 생활/문화
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010504000000&ctv=&np={page}
+      - category: 연예
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010400000000&ctv=&np={page}
+      - category: 스포츠
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010410010000&ctv=&np={page}
+      - category: 오피니언
+        url_frame: http://biz.heraldcorp.com/list.php?ct=010103000000&ctv=&np={page}
+      - category: 대구경북
+        url_frame: http://biz.heraldcorp.com/village/list.php?ct=10-&np={page}
+      - category: 울산경남
+        url_frame: http://biz.heraldcorp.com/village/list.php?ct=12-&np={page}
+      - category: PR_Newswire
+        url_frame: http://biz.heraldcorp.com/list.php?ct=011800000000&ctv=&np={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-01-26
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.list ul li
+    - select: div.list ul li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - comment: 제목
-    key: title
-    value:
-    - select: div.list_title.ellipsis
-    type: title
-  - comment: url
-    key: url
-    value:
-    - select: div.list ul li a
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - select: div.l_date
-    type: text
-    type_convert: date
-    value_type: single
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: title
+      value:
+        - select: div.list_title.ellipsis
+      type: title
+    - key: url
+      value:
+        - select: div.list ul li a
+      type: href
+    - key: date
+      value:
+        - select: div.l_date
+      type: text
+      type_convert: date
+      value_type: single
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: raw html or json
-    key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: li.article_title.ellipsis2
-    type: text
-  - comment: 날짜
-    key: date
-    value:
-    - select: li.article_date
-    type: text
-    type_convert: date
-    value_type: single
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: div#articleText.article_view
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-      - const: DATE_NOW
-    type: text
-    value_type: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: li.article_title.ellipsis2
+      type: text
+    - key: date
+      value:
+        - select: li.article_date
+      type: text
+      type_convert: date
+      value_type: single
+    - key: content
+      value:
+        - select: div#articleText.article_view
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      value_type: date

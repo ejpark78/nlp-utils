@@ -1,143 +1,148 @@
 ---
 jobs:
-- index: raw-imaeil-{year}
-  tag: 매일신문
-  article:
-    document_id:
-      replace:
-      - from: '/[a-zA-Z]+/'
-        to: ''
-      - from: '[?]_source=html'
-        to: ''
-      type: path
-  list:
-  - category: 정치/정치일반
-    url_frame: http://news.imaeil.com/Politics/page/{page}
-  - category: 정치/지역정가
-    url_frame: http://news.imaeil.com/RegionOfPolitics/page/{page}
-  - category: 정치/청와대·세종
-    url_frame: http://news.imaeil.com/Government/page/{page}
-  - category: 정치/국회·정당
-    url_frame: http://news.imaeil.com/NationalAssembly/page/{page}
-  - category: 정치/북한·국방
-    url_frame: http://news.imaeil.com/NationalDefense/page/{page}
-  - category: 정치/선거
-    url_frame: http://news.imaeil.com/Election/page/{page}
-  - category: 경제/경제일반
-    url_frame: http://news.imaeil.com/Economy/page/{page}
-  - category: 경제/부동산
-    url_frame: http://news.imaeil.com/RealEstate/page/{page}
-  - category: 경제/금융·증권·보험
-    url_frame: http://news.imaeil.com/Finance/page/{page}
-  - category: 경제/쇼핑·소비자
-    url_frame: http://news.imaeil.com/Shopping/page/{page}
-  - category: 경제/기업·창업
-    url_frame: http://news.imaeil.com/Enterprise/page/{page}
-  - category: 경제/구인·구직
-    url_frame: http://news.imaeil.com/Job/page/{page}
-  - category: 경제/IT·자동차
-    url_frame: http://news.imaeil.com/ITCar/page/{page}
-  - category: 사회/사회일반
-    url_frame: http://news.imaeil.com/Society/page/{page}
-  - category: 사회/사건사고
-    url_frame: http://news.imaeil.com/Accident/page/{page}
-  - category: 사회/법원·검찰
-    url_frame: http://news.imaeil.com/Prosecution/page/{page}
-  - category: 사회/교육
-    url_frame: http://news.imaeil.com/Education/page/{page}
-  - category: 사회/사람들
-    url_frame: http://news.imaeil.com/People/page/{page}
-  - category: 사회/인사·화촉·모임·부음
-    url_frame: http://news.imaeil.com/Notice/page/{page}
-  - category: 사회/이웃사랑
-    url_frame: http://news.imaeil.com/Neighbor/page/{page}
-  - category: 사회/핫뉴스
-    url_frame: http://news.imaeil.com/HotNews/page/{page}
-  - category: 국제/국제일반
-    url_frame: http://news.imaeil.com/International/page/{page}
-  - category: 국제/미국·중국·일본
-    url_frame: http://news.imaeil.com/AP/page/{page}
-  - category: 국제/해외토픽
-    url_frame: http://news.imaeil.com/ForeignTopics/page/{page}
-  - category: 문화/문화일반
-    url_frame: http://news.imaeil.com/Culture/page/{page}
-  - category: 문화/음악·공연
-    url_frame: http://news.imaeil.com/Performance/page/{page}
-  - category: 문화/미술·전시
-    url_frame: http://news.imaeil.com/Exhibition/page/{page}
-  - category: 문화/문학·책
-    url_frame: http://news.imaeil.com/Literature/page/{page}
-  - category: 문화/종교
-    url_frame: http://news.imaeil.com/Religion/page/{page}
-  - category: 스포츠/스포츠일반
-    url_frame: http://news.imaeil.com/Sports/page/{page}
-  - category: 스포츠/야구
-    url_frame: http://news.imaeil.com/Baseball/page/{page}
-  - category: 스포츠/축구
-    url_frame: http://news.imaeil.com/Football/page/{page}
-  - category: 스포츠/골프
-    url_frame: http://news.imaeil.com/Golf/page/{page}
-  - category: 스포츠/지역스포츠
-    url_frame: http://news.imaeil.com/LocalSports/page/{page}
-  - category: 연예/연예일반
-    url_frame: http://news.imaeil.com/Entertainments/page/{page}
-  - category: 연예/영화
-    url_frame: http://news.imaeil.com/Movie/page/{page}
-  - category: 연예/방송·연예
-    url_frame: http://news.imaeil.com/Broadcast/page/{page}
-  - category: 라이프/라이프일반
-    url_frame: http://news.imaeil.com/Life/page/{page}
-  - category: 라이프/여행·축제
-    url_frame: http://news.imaeil.com/Travel/page/{page}
-  - category: 라이프/맛
-    url_frame: http://news.imaeil.com/Flavor/page/{page}
-  - category: 라이프/건강
-    url_frame: http://news.imaeil.com/Health/page/{page}
+  - index: raw-imaeil-{year}
+    tag: 매일신문
+    article:
+      document_id:
+        replace:
+          - from: '/[a-zA-Z]+/'
+            to: ''
+          - from: '[?]_source=html'
+            to: ''
+        type: path
+    list:
+      - category: 정치/정치일반
+        url_frame: http://news.imaeil.com/Politics/page/{page}
+      - category: 정치/지역정가
+        url_frame: http://news.imaeil.com/RegionOfPolitics/page/{page}
+      - category: 정치/청와대·세종
+        url_frame: http://news.imaeil.com/Government/page/{page}
+      - category: 정치/국회·정당
+        url_frame: http://news.imaeil.com/NationalAssembly/page/{page}
+      - category: 정치/북한·국방
+        url_frame: http://news.imaeil.com/NationalDefense/page/{page}
+      - category: 정치/선거
+        url_frame: http://news.imaeil.com/Election/page/{page}
+      - category: 경제/경제일반
+        url_frame: http://news.imaeil.com/Economy/page/{page}
+      - category: 경제/부동산
+        url_frame: http://news.imaeil.com/RealEstate/page/{page}
+      - category: 경제/금융·증권·보험
+        url_frame: http://news.imaeil.com/Finance/page/{page}
+      - category: 경제/쇼핑·소비자
+        url_frame: http://news.imaeil.com/Shopping/page/{page}
+      - category: 경제/기업·창업
+        url_frame: http://news.imaeil.com/Enterprise/page/{page}
+      - category: 경제/구인·구직
+        url_frame: http://news.imaeil.com/Job/page/{page}
+      - category: 경제/IT·자동차
+        url_frame: http://news.imaeil.com/ITCar/page/{page}
+      - category: 사회/사회일반
+        url_frame: http://news.imaeil.com/Society/page/{page}
+      - category: 사회/사건사고
+        url_frame: http://news.imaeil.com/Accident/page/{page}
+      - category: 사회/법원·검찰
+        url_frame: http://news.imaeil.com/Prosecution/page/{page}
+      - category: 사회/교육
+        url_frame: http://news.imaeil.com/Education/page/{page}
+      - category: 사회/사람들
+        url_frame: http://news.imaeil.com/People/page/{page}
+      - category: 사회/인사·화촉·모임·부음
+        url_frame: http://news.imaeil.com/Notice/page/{page}
+      - category: 사회/이웃사랑
+        url_frame: http://news.imaeil.com/Neighbor/page/{page}
+      - category: 사회/핫뉴스
+        url_frame: http://news.imaeil.com/HotNews/page/{page}
+      - category: 국제/국제일반
+        url_frame: http://news.imaeil.com/International/page/{page}
+      - category: 국제/미국·중국·일본
+        url_frame: http://news.imaeil.com/AP/page/{page}
+      - category: 국제/해외토픽
+        url_frame: http://news.imaeil.com/ForeignTopics/page/{page}
+      - category: 문화/문화일반
+        url_frame: http://news.imaeil.com/Culture/page/{page}
+      - category: 문화/음악·공연
+        url_frame: http://news.imaeil.com/Performance/page/{page}
+      - category: 문화/미술·전시
+        url_frame: http://news.imaeil.com/Exhibition/page/{page}
+      - category: 문화/문학·책
+        url_frame: http://news.imaeil.com/Literature/page/{page}
+      - category: 문화/종교
+        url_frame: http://news.imaeil.com/Religion/page/{page}
+      - category: 스포츠/스포츠일반
+        url_frame: http://news.imaeil.com/Sports/page/{page}
+      - category: 스포츠/야구
+        url_frame: http://news.imaeil.com/Baseball/page/{page}
+      - category: 스포츠/축구
+        url_frame: http://news.imaeil.com/Football/page/{page}
+      - category: 스포츠/골프
+        url_frame: http://news.imaeil.com/Golf/page/{page}
+      - category: 스포츠/지역스포츠
+        url_frame: http://news.imaeil.com/LocalSports/page/{page}
+      - category: 연예/연예일반
+        url_frame: http://news.imaeil.com/Entertainments/page/{page}
+      - category: 연예/영화
+        url_frame: http://news.imaeil.com/Movie/page/{page}
+      - category: 연예/방송·연예
+        url_frame: http://news.imaeil.com/Broadcast/page/{page}
+      - category: 라이프/라이프일반
+        url_frame: http://news.imaeil.com/Life/page/{page}
+      - category: 라이프/여행·축제
+        url_frame: http://news.imaeil.com/Travel/page/{page}
+      - category: 라이프/맛
+        url_frame: http://news.imaeil.com/Flavor/page/{page}
+      - category: 라이프/건강
+        url_frame: http://news.imaeil.com/Health/page/{page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div#container div.article_list
+    - select: div#container div.article_list
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: url
-    value:
-    - select: p.title a
-    type: href
-  - key: date
-    value:
-    - select: p.date
-    type: text
-    convert:
-      to: date
-      merge: single
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: url
+      value:
+        - select: p.title a
+      type: href
+    - key: date
+      value:
+        - select: p.date
+      type: text
+      type_convert: date
+      value_type: single
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - key: title
-    value:
-    - select: p.title
-    type: text
-    convert:
-      merge: single
-  - key: content
-    value:
-    - select: div.article_area p
-    type: text
-    convert:
-      merge: merge
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: p.title
+      type: text
+      value_type: single
+    - key: content
+      value:
+        - select: div.article_area p
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

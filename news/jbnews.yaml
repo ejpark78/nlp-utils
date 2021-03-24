@@ -1,84 +1,92 @@
 ---
 jobs:
-- index: raw-jbnews-{year}
-  article:
-    document_id:
-      frame: '{idxno}'
-      type: query
-  list:
-  - category: 정치
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N1&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 경제
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N2&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 사회
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N3&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 교육
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N28&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 문화
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 사람들
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N8&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 충남
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N6&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 충북
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N5&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 대전
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N26&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 세종
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N22&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
-  - category: 스포츠
-    url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+  - index: raw-jbnews-{year}
+    article:
+      document_id:
+        frame: '{idxno}'
+        type: query
+    list:
+      - category: 정치
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N1&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 경제
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N2&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+
+      - category: 사회
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N3&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 교육
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N28&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 문화
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 사람들
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N8&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+
+      - category: 충남
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N6&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 충북
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N5&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 대전
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N26&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 세종
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N22&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+      - category: 스포츠
+        url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.article-list section.article-list-content.type-sm.text-left div.list-block
+    - select: div.article-list section.article-list-content.type-sm.text-left div.list-block
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: title
-    value:
-    - select: div.list-block div.list-titles a
-    type: text
-  - key: url
-    value:
-    - select: div.list-block div.list-titles a
-    type: href
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: div.list-block div.list-titles a
+      type: text
+    - key: url
+      value:
+        - select: div.list-block div.list-titles a
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - key: title
-    value:
-    - select: header.article-view-header header.article-header-wrap div.article-head-title
-    type: text
-      merge: single
-  - key: date
-    value:
-    - select: div.info-text ul li:nth-child(2)
-    type: text
-    convert:
-      to: date
-      merge: single
-    replace:
-    - from: "^.*승인 "
-      to: ''
-  - key: content
-    value:
-    - select: div#article-view-content-div
-    type: text
-    convert:
-      merge: merge
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: header.article-view-header header.article-header-wrap div.article-head-title
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: div.info-text ul li:nth-child(2)
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^.*승인 "
+          to: ''
+    - key: content
+      value:
+        - select: div#article-view-content-div
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date

@@ -1,93 +1,155 @@
 ---
 jobs:
-- index: raw-donga-{year}
-  article:
-    document_id:
-      replace:
-      - from: /news/
-        to: '/'
-      - from: /article/
-        to: '/'
-      - from: /all/
-        to: '/'
-      - from: ^/
-        to: ''
-      - from: /
-        to: '-'
-      type: path
-  args:
-    page_range: "1~2000"
-    page_step: "20"
-  list:
-  - category: Politics
-    url_frame: https://www.donga.com/news/List/Politics?p={page}&prod=news&ymd=&m=NP
-  - category: Economy
-    url_frame: https://www.donga.com/news/List/Economy?p={page}&prod=news&ymd=&m=NP
-  - category: Inter
-    url_frame: https://www.donga.com/news/List/Inter?p={page}&prod=news&ymd=&m=NP
-  - category: Society
-    url_frame: https://www.donga.com/news/List/Society?p={page}&prod=news&ymd=&m=NP
-  - category: Culture
-    url_frame: https://www.donga.com/news/List/Culture?p={page}&prod=news&ymd=&m=NP
-  - category: Entertainment
-    url_frame: https://www.donga.com/news/List/Entertainment?p={page}&prod=news&ymd=&m=NP
-  - category: Sports
-    url_frame: https://www.donga.com/news/List/Sports?p={page}&prod=news&ymd=&m=NP
+  - index: raw-donga-{year}
+    article:
+      document_id:
+        replace:
+          - from: /news/
+            to: '/'
+          - from: /article/
+            to: '/'
+          - from: /all/
+            to: '/'
+          - from: ^/
+            to: ''
+          - from: /
+            to: '-'
+        type: path
+    args:
+      page_range: "1~2000"
+      page_step: "20"
+    list:
+      - category: Politics
+        url_frame: https://www.donga.com/news/List/Politics?p={page}&prod=news&ymd=&m=NP
+      - category: Economy
+        url_frame: https://www.donga.com/news/List/Economy?p={page}&prod=news&ymd=&m=NP
+      - category: Inter
+        url_frame: https://www.donga.com/news/List/Inter?p={page}&prod=news&ymd=&m=NP
+      - category: Society
+        url_frame: https://www.donga.com/news/List/Society?p={page}&prod=news&ymd=&m=NP
+      - category: Culture
+        url_frame: https://www.donga.com/news/List/Culture?p={page}&prod=news&ymd=&m=NP
+      - category: Entertainment
+        url_frame: https://www.donga.com/news/List/Entertainment?p={page}&prod=news&ymd=&m=NP
+      - category: Sports
+        url_frame: https://www.donga.com/news/List/Sports?p={page}&prod=news&ymd=&m=NP
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: lxml
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.articleList
+    - select: div.articleList
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: title
-    value:
-    - select: div.rightList span.tit
-    type: text
-  - key: url
-    value:
-    - select: div.rightList a
-    type: href
-  - key: date
-    value:
-    - select: div.rightList span.date
-    type: text
-    convert:
-      to: date
-      merge: single
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: div.rightList span.tit
+      type: text
+    - key: url
+      value:
+        - select: div.rightList a
+      type: href
+    - key: date
+      value:
+        - select: div.rightList span.date
+      type: text
+      type_convert: date
+      value_type: single
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
+    - key: raw
     value:
-    - name: html
+      - name: html
     remove:
-    - name: script
-    - name: style
-    - name: comment
+      - name: script
+      - name: style
+      - name: comment
     type: html
-  - key: title
-    value:
-    - select: div.article_title h2.title
-    type: text
-  - key: date
-    value:
-    - select: div.article_title span.date01
-    replace:
-    - from: 입력[ ]*|수정[ ]*
-      to: ''
-    type: text
-    convert:
-      to: date
-      merge: single
-  - key: content
-    value:
-    - select: div.article_txt
-    type: text
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: div.article_title h2.title
+      type: text
+    - key: date
+      value:
+        - select: div.article_title span.date01
+      replace:
+        - from: 입력[ ]*|수정[ ]*
+          to: ''
+      type: text
+      type_convert: date
+      value_type: single
+    - key: content
+      value:
+        - select: div.article_txt
+      type: text
+    - key: keyword
+      value:
+        - select: div.article_keyword
+      type: text
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: author
+      value:
+        - select: div.article_title span.report
+      type: text
+    - column: raw
+      key: html_content
+      remove:
+        - select: div.article_relation
+        - select: div#bestnews_layer
+        - select: div#adBox
+        - select: div#article_issue
+      value:
+        - select: div.article_txt
+      type: html
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div.articlePhotoL img
+      type: src
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div.articlePhotoR img
+      type: src
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div.articlePhotoC img
+      type: src
+    - column: raw
+      delete: true
+      key: image_list.caption
+      value:
+        - select: div.articlePhotoR
+      type: text
+    - column: raw
+      delete: true
+      key: image_list.caption
+      value:
+        - select: div.articlePhotoL
+      type: text
+    - column: raw
+      delete: true
+      key: image_list.caption
+      value:
+        - select: div.articlePhotoC
+      type: text

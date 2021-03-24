@@ -1,110 +1,104 @@
 ---
 jobs:
-- index: raw-investing-{year}
-  article:
-    document_id:
-      replace:
-      - from: '^.+[-]'
-        to: ''
-      type: path
-  list:
-  - category: cryptocurrency
-    url_frame: https://www.investing.com/news/cryptocurrency-news/{page}
-  - category: stock-markets
-    url_frame: https://www.investing.com/news/stock-market-news/{page}
-  - category: commodities
-    url_frame: https://www.investing.com/news/commodities-news/{page}
-  - category: forex
-    url_frame: https://www.investing.com/news/forex-news/{page}
-  - category: economy
-    url_frame: https://www.investing.com/news/economy/{page}
-  - category: economic-indicators
-    url_frame: https://www.investing.com/news/economic-indicators/{page}
-  - category: politics
-    url_frame: https://www.investing.com/news/politics/{page}
-  - category: world
-    url_frame: https://www.investing.com/news/world-news/{page}
-  - category: coronavirus
-    url_frame: https://www.investing.com/news/coronavirus/{page}
-  - category: technology
-    url_frame: https://www.investing.com/news/technology-news/{page}
-  - category: sports&general
-    url_frame: https://www.investing.com/news/general/{page}
+  - index: raw-investing-{year}
+    article:
+      document_id:
+        replace:
+          - from: '^.+[-]'
+            to: ''
+        type: path
+    list:
+      - category: cryptocurrency
+        url_frame: https://www.investing.com/news/cryptocurrency-news/{page}
+      - category: stock-markets
+        url_frame: https://www.investing.com/news/stock-market-news/{page}
+      - category: commodities
+        url_frame: https://www.investing.com/news/commodities-news/{page}
+      - category: forex
+        url_frame: https://www.investing.com/news/forex-news/{page}
+      - category: economy
+        url_frame: https://www.investing.com/news/economy/{page}
+      - category: economic-indicators
+        url_frame: https://www.investing.com/news/economic-indicators/{page}
+      - category: politics
+        url_frame: https://www.investing.com/news/politics/{page}
+      - category: world
+        url_frame: https://www.investing.com/news/world-news/{page}
+      - category: coronavirus
+        url_frame: https://www.investing.com/news/coronavirus/{page}
+      - category: technology
+        url_frame: https://www.investing.com/news/technology-news/{page}
+      - category: sports&general
+        url_frame: https://www.investing.com/news/general/{page}
 
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-01-26
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: div.largeTitle article.js-article-item.articleItem
+    - select: div.largeTitle article.js-article-item.articleItem
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - comment: 제목
-    key: title
-    value:
-    - select: div.textDiv a.title
-    type: title
-  - comment: url
-    key: url
-    value:
-    - select: div.textDiv a.title
-    type: href
-  - comment: 날짜
-    key: date
-    value:
-    - select: div.textDiv span.articleDetails span.date
-    replace:
-    - from: '- '
-      to: ''
-    type: text
-    type_convert: date
-    value_type: single
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    type_convert: date
+    - key: title
+      value:
+        - select: div.textDiv a.title
+      type: title
+    - key: url
+      value:
+        - select: div.textDiv a.title
+      type: href
+    - key: date
+      value:
+        - select: div.textDiv span.articleDetails span.date
+      replace:
+        - from: '- '
+          to: ''
+      type: text
+      type_convert: date
+      value_type: single
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - comment: raw html or json
-    key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - comment: 제목
-    key: title
-    value:
-    - select: h1.articleHeader
-    type: text
-  - comment: 날짜
-    key: date
-    value:
-    - select: div.contentSectionDetails span
-    replace:
-    - from: '^.*\('
-      to: ''
-    - from: '\)'
-      to: ''
-    - from: 'ET'
-      to: ''
-    type: text
-    type_convert: date
-    value_type: single
-  - comment: 텍스트 본문
-    key: content
-    value:
-    - select: div.WYSIWYG.articlePage
-    type: text
-    value_type: merge
-  - comment: 크롤링 시간
-    key: '@curl_date'
-    value:
-    - const: DATE_NOW
-    type: text
-    value_type: date
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: h1.articleHeader
+      type: text
+    - key: date
+      value:
+        - select: div.contentSectionDetails span
+      replace:
+        - from: '^.*\('
+          to: ''
+        - from: '\)'
+          to: ''
+        - from: 'ET'
+          to: ''
+      type: text
+      type_convert: date
+      value_type: single
+    - key: content
+      value:
+        - select: div.WYSIWYG.articlePage
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      value_type: date

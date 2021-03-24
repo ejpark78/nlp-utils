@@ -5,81 +5,21 @@ jobs:
       document_id:
         frame: '{artid}'
         type: query
-        
+
     list:
-      - category: 문화
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=960000&page={page}
-      - category: 문화/연예
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=960801&page={page}
-      - category: 경제/일반
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=economy&page={page}
-      - category: 경제/금융
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=finance&page={page}
-      - category: 경제/산업
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=industry&page={page}
-      - category: 경제/기업
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=company&page={page}
-      - category: 경제/부동산
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=realty&page={page}
-      - category: 경제
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=tech&page={page}
-      - category: 국제
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=970000&page={page}
-      - category: 리빙/생활
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=consumer&page={page}
-      - category: 리빙/사람들
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=people&page={page}
-      - category: 리빙/트래블
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=travel&page={page}
-      - category: 리빙/건강/의학
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=health&page={page}
-      - category: 리빙/자동차
-        url_frame: http://biz.khan.co.kr/khan_art_list.html?category=car&page={page}
-      - category: 사설/사설
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=990101&page={page}
-      - category: 사설/칼럼
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=990350&page={page}
-      - category: 사설/여적
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=990201&page={page}
-      - category: 정치/일반
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910100&page={page}
-      - category: 정치/청와대
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910203&page={page}
-      - category: 정치/국회/정당
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910402&page={page}
-      - category: 정치/국방/외교
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910302&page={page}
-      - category: 정치/북한
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910303&page={page}
-      - category: 정치/선거
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=910110&page={page}
-      - category: 사회/일반
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940100&page={page}
-      - category: 사회/사건/사고
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940202&page={page}
-      - category: 사회/법원/검찰
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940301&page={page}
-      - category: 사회/교육
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940401&page={page}
-      - category: 사회/노동
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940702&page={page}
-      - category: 사회/보건/복지
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940601&page={page}
-      - category: 사회/미디어
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=940705&page={page}
-      - category: 사회/지역
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=62_local&page={page}
-      - category: 스포츠/스포츠
-        url_frame: http://news.khan.co.kr/kh_news/khan_art_list.html?code=980000&page={page}
+      - category: 전체기사
+        url_frame: http://news.khan.co.kr/kh_recent/index.html?&page={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
     - select: div.news_list ul li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
     - key: title
       value:
@@ -93,12 +33,15 @@ parsing:
       value:
         - select: span.byline em.letter
       type: text
-      convert:
-        to: date
-        merge: single
+      type_convert: date
+      value_type: single
     - key: '@curl_date'
       value:
         - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
     - key: raw
       value:
@@ -123,15 +66,15 @@ parsing:
         - from: '\.'
           to: '-'
       type: text
-      convert:
-        to: date
-        merge: single
+      type_convert: date
+      value_type: single
     - key: content
       value:
         - select: div#articleBody.art_body
       type: text
-      convert:
-        merge: merge
+      value_type: merge
     - key: '@curl_date'
       value:
         - const: DATE_NOW
+      type: text
+      type_convert: date

@@ -1,45 +1,49 @@
 ---
 jobs:
-- index: raw-sbs-biz-{year}
-  article:
-    document_id:
-      frame: '{_id}'
-      type: value
-  list:
-  - category: 경제정책
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_23%2Cj1_21%2Cj1_7
-  - category: 금융/증권
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_13%2Cj1_33%2Cj1_39%2Cj1_35%2Cj1_37%2Cj1_9%2Cj1_26%2Cj1_25%2Cj1_27%2Cj1_28
-  - category: 산업/재계
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_15%2Cj1_43%2Cj1_45%2Cj1_41
-  - category: 부동산
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_17%2Cj1_47%2Cj1_51%2Cj1_49
-  - category: 생활경제
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_5%2Cj1_6
-  - category: 글로벌경제
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_11%2Cj1_8%2Cj1_29%2Cj1_30%2Cj1_31
-  - category: 전체
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=
-  - category: 머니랩
-    url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=%EB%A8%B8%EB%8B%88%EB%9E%A9&programids=&cnbc_category=&searchkeyword=&cnbc_hotissue=
+  - index: raw-sbs-biz-{year}
+    article:
+      document_id:
+        frame: '{_id}'
+        type: value
+    list:
+      - category: 경제정책
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_23%2Cj1_21%2Cj1_7
+      - category: 금융/증권
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_13%2Cj1_33%2Cj1_39%2Cj1_35%2Cj1_37%2Cj1_9%2Cj1_26%2Cj1_25%2Cj1_27%2Cj1_28
+      - category: 산업/재계
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_15%2Cj1_43%2Cj1_45%2Cj1_41
+      - category: 부동산
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_17%2Cj1_47%2Cj1_51%2Cj1_49
+      - category: 생활경제
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_5%2Cj1_6
+      - category: 글로벌경제
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=j1_11%2Cj1_8%2Cj1_29%2Cj1_30%2Cj1_31
+      - category: 전체
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=&programids=&searchkeyword=&cnbc_hotissue=&cnbc_category=
+      - category: 머니랩
+        url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=%EB%A8%B8%EB%8B%88%EB%9E%A9&programids=&cnbc_category=&searchkeyword=&cnbc_hotissue=
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - parser: json
-    column: list
+    - parser: json
+      column: list
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - parser: json
-    mapping:
-      _id: mediaid
-      title: title
-      url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
-      date: broaddate
+    - parser: json
+      mapping:
+        _id: mediaid
+        title: title
+        url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
+        date: broaddate
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - parser: json
-    mapping:
-      content: clip.info.synopsis
+    - parser: json
+      mapping:
+        content: clip.info.synopsis

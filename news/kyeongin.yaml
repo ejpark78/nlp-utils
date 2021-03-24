@@ -1,104 +1,109 @@
 ---
 jobs:
-- index: raw-kyeongin-{year}
-  article:
-    document_id:
-      frame: '{key}'
-      type: query
-  list:
-  - category: 전체뉴스
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=&series=&sword=&hot=&page={page}
-  - category: 스포츠
-    url_frame: http://www.kyeongin.com/sports?series=&sword=&hot=&page={page}
-  - category: 연예
-    url_frame: http://www.kyeongin.com/entertain?series=&sword=&hot=&page={page}
-  - category: 사설
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=N11&page={page}
-  - category: 경인칼럼
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12009&page={page}
-  - category: 기명칼럼
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_02&page={page}
-  - category: 데스크칼럼
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12021&page={page}
-  - category: 월요논단
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12035&page={page}
-  - category: 수요광장
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12028&page={page}
-  - category: 경제전망대
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12008&page={page}
-  - category: 춘추칼럼
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12049&page={page}
-  - category: 전문가칼럼
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_04&page={page}
-  - category: 참성단
-    url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_01&page={page}
-  - category: 오늘의창
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12044&page={page}
-  - category: 노트북
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12018&page={page}
-  - category: 기고
-    url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12006&page={page}
+  - index: raw-kyeongin-{year}
+    article:
+      document_id:
+        frame: '{key}'
+        type: query
+    list:
+      - category: 전체뉴스
+        url_frame: http://www.kyeongin.com/main/news.php?ncid=&series=&sword=&hot=&page={page}
+      - category: 스포츠
+        url_frame: http://www.kyeongin.com/sports?series=&sword=&hot=&page={page}
+      - category: 연예
+        url_frame: http://www.kyeongin.com/entertain?series=&sword=&hot=&page={page}
+      - category: 사설
+        url_frame: http://www.kyeongin.com/main/news.php?ncid=N11&page={page}
+      - category: 경인칼럼
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12009&page={page}
+      - category: 기명칼럼
+        url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_02&page={page}
+      - category: 데스크칼럼
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12021&page={page}
+      - category: 월요논단
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12035&page={page}
+      - category: 수요광장
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12028&page={page}
+      - category: 경제전망대
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12008&page={page}
+      - category: 춘추칼럼
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12049&page={page}
+      - category: 전문가칼럼
+        url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_04&page={page}
+      - category: 참성단
+        url_frame: http://www.kyeongin.com/main/news.php?ncid=N12_01&page={page}
+      - category: 오늘의창
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12044&page={page}
+      - category: 노트북
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12018&page={page}
+      - category: 기고
+        url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12006&page={page}
+
+# crawling 과정에서 추출하는 정보
 parsing:
   version: v2021-03-17
-  descriptions:
-    article: 기사 본문에서 추출해야하는 tag 정보
-    list: 기사 목록에서 추출해야하는 하나의 기사 정보
-    trace: 전체 html 에서 추출해야하는 전체 tag 목록
   parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-  - select: "div.news_list_box"
+    - select: "div.news_list_box"
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
-  - key: title
-    value:
-    - select: "h2 a"
-    type: text
-  - key: date
-    value:
-    - select: span
-    type: text
-    convert:
-      to: date
-    replace:
-      - from: " .*"
-        to: ''
-      merge: single
-  - key: url
-    value:
-    - select: "h2 a"
-    type: href
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: title
+      value:
+        - select: "h2 a"
+      type: text
+    - key: date
+      value:
+        - select: span
+      type: text
+      type_convert: date
+      replace:
+        - from: " .*"
+          to: ''
+      value_type: single
+    - key: url
+      value:
+        - select: "h2 a"
+      type: href
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
   article:
-  - key: raw
-    value:
-    - name: html
-    remove:
-    - name: script
-    - name: style
-    - name: comment
-    type: html
-  - key: title
-    value:
-    - select: 'div.view_title_box p.view_title'
-    type: text
-      merge: single
-  - key: date
-    value:
-    - select: "div.view_title_box span.view_date"
-    type: text
-    convert:
-      to: date
-      merge: single
-    replace:
-    - from: "^입력 "
-      to: ''
-  - key: content
-    value:
-    - select: 'div.bm_view div.view_left'
-    type: text
-    convert:
-      merge: merge
-  - key: '@curl_date'
-    value:
-    - const: DATE_NOW
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: 'div.view_title_box p.view_title'
+      type: text
+      value_type: single
+    - key: date
+      value:
+        - select: "div.view_title_box span.view_date"
+      type: text
+      type_convert: date
+      value_type: single
+      replace:
+        - from: "^입력 "
+          to: ''
+    - key: content
+      value:
+        - select: 'div.bm_view div.view_left'
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
