@@ -3,7 +3,7 @@ jobs:
 - index: raw-sbs-biz-{year}
   article:
     document_id:
-      frame: '{_id}'
+      frame: '{document_id}'
       type: value
   list:
   - category: 경제정책
@@ -23,7 +23,6 @@ jobs:
   - category: 머니랩
     url_frame: https://static.apis.sbs.co.kr/play-api/1.0/sbs_newsmedias?channelid=S06&offset={page}&limit=15&sort=new&title=%EB%A8%B8%EB%8B%88%EB%9E%A9&programids=&cnbc_category=&searchkeyword=&cnbc_hotissue=
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -35,7 +34,7 @@ parsing:
   list:
   - parser: json
     mapping:
-      _id: mediaid
+      document_id: mediaid
       title: title
       url: https://apis.sbs.co.kr/play-api/1.0/sbs_newsmedia/{mediaid}?
       date: broaddate

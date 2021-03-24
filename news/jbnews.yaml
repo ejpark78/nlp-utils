@@ -10,6 +10,7 @@ jobs:
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N1&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 경제
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N2&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+
   - category: 사회
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N3&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 교육
@@ -18,6 +19,7 @@ jobs:
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N4&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 사람들
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N8&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+  
   - category: 충남
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N6&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 충북
@@ -28,8 +30,8 @@ jobs:
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N22&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
   - category: 스포츠
     url_frame: http://www.jbnews.com/news/articleList.html?page={page}&total=100000&sc_section_code=S1N82&sc_sub_section_code=&sc_serial_code=&sc_area=&sc_level=&sc_article_type=&sc_view_level=&sc_serial_number=&sc_word=&sc_word2=&sc_andor=&sc_order_by=E&view_type=sm&sc_multi_code=
+
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -55,8 +57,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:

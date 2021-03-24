@@ -39,8 +39,8 @@ jobs:
   - category: 연예스포츠
     date_format: '%Y%m'
     url_frame: http://inews24.com/list/entersport?date={date}&page={page}
+    
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -66,8 +66,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:
