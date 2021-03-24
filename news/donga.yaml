@@ -16,7 +16,7 @@ jobs:
         to: '-'
       type: path
   args:
-    page_range: "1~2000"
+    page_range: "0~100"
     page_step: "20"
   list:
   - category: Politics
@@ -34,7 +34,6 @@ jobs:
   - category: Sports
     url_frame: https://www.donga.com/news/List/Sports?p={page}&prod=news&ymd=&m=NP
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -60,6 +59,11 @@ parsing:
     type: text
     type_convert: date
     value_type: single
+  - comment: 요약
+    key: summary
+    value:
+    - select: div.rightList span.txt
+    type: text
   - comment: 크롤링 시간
     key: '@curl_date'
     value:
@@ -67,8 +71,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:
@@ -91,10 +95,63 @@ parsing:
     type: text
     type_convert: date
     value_type: single
+  - comment: 글쓴이
+    key: author
+    value:
+    - select: div.article_title span.report
+    type: text
+  - comment: html 본문
+    key: html_content
+    remove:
+    - select: div.article_relation
+    - select: div#bestnews_layer
+    - select: div#adBox
+    - select: div#article_issue
+    value:
+    - select: div.article_txt
+    type: html
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - select: div.articlePhotoL img
+    type: src
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - select: div.articlePhotoR img
+    type: src
+  - comment: 이미지
+    key: image_list.image
+    value:
+    - select: div.articlePhotoC img
+    type: src
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - select: div.articlePhotoR
+    type: text
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - select: div.articlePhotoL
+    type: text
+  - comment: 이미지 캡션
+    delete: true
+    key: image_list.caption
+    value:
+    - select: div.articlePhotoC
+    type: text
   - comment: 텍스트 본문
     key: content
     value:
     - select: div.article_txt
+    type: text
+  - comment: 키워드
+    key: keyword
+    value:
+    - select: div.article_keyword
     type: text
   - comment: 크롤링 시간
     key: '@curl_date'

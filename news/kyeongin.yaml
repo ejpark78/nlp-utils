@@ -39,7 +39,6 @@ jobs:
   - category: 기고
     url_frame: http://www.kyeongin.com/main/kstory_list.php?series=S12006&page={page}
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -75,8 +74,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:

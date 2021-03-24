@@ -19,6 +19,18 @@ jobs:
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N5&page={page}
   - category: 정치/국제
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N6&page={page}
+  - category: 정치/정치일반
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N1&page={page}
+  - category: 정치/정부ㆍ청와대
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N2&page={page}
+  - category: 정치/국회ㆍ정당
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N3&page={page}
+  - category: 정치/자치ㆍ의회
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N4&page={page}
+  - category: 정치/북한
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N5&page={page}
+  - category: 정치/국제
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N6&page={page}
   - category: 경제/경제일반
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N7&page={page}
   - category: 경제/금융ㆍ증권
@@ -53,6 +65,14 @@ jobs:
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N19&page={page}
   - category: 사회/사건ㆍ사고
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N20&page={page}
+  - category: 사회/보건ㆍ의료
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N17&page={page}
+  - category: 사회/법원ㆍ검찰
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N18&page={page}
+  - category: 사회/환경
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N21&page={page}
+  - category: 사회/날씨
+    url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N22&page={page}
   - category: 문화/문화일반
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N23&page={page}
   - category: 문화/문학ㆍ출판
@@ -111,7 +131,7 @@ jobs:
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N51&page={page}
   - category: 지역/고창
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N52&page={page}
-  - category: 지역/부안
+  - category: 지역/부안 
     url_frame: http://www.jjan.kr/news/articleList.html?sc_sub_section_code=S2N53&page={page}
   - category: 사람들/결혼
     url_frame: http://www.jjan.kr/news/articleList.html?sc_serial_code=SRN1&page={page}
@@ -132,7 +152,6 @@ jobs:
   - category: 사람들/이전
     url_frame: http://www.jjan.kr/news/articleList.html?sc_serial_code=SRN125&page={page}
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -168,8 +187,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:
