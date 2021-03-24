@@ -21,8 +21,9 @@ urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 
 class NLUWrapper(object):
 
-    def __init__(self):
-        self.url = 'http://172.20.92.249:32001'
+    def __init__(self, url: str = 'http://172.20.92.249:32001', timeout: int = 5):
+        self.url = url
+        self.timeout = timeout
 
         self.options = {
             'domain': 'economy',
@@ -40,42 +41,38 @@ class NLUWrapper(object):
 
     @staticmethod
     def simplify(doc_list: list) -> list:
-        """ 결과를 파싱한다."""
         dep_columns = 'index,head,morp,pos,func'.split(',')
-        result_columns = set('text,morp_str,ne_str,depen_str,time_results'.split(','))
+        result_columns = set('text,morp_str,ne_str'.split(','))
 
         result = []
         for doc in doc_list:
+            meta = doc['meta'] if 'meta' in doc else {}
+
             for sent in doc['sentences']:
                 item = defaultdict(str)
+
+                # 결과 변환: 시간 필드 변경
+                if 'time_results' in item:
+                    if len(sent['time_results']) > 0:
+                        item['times_str'] = json.dumps(sent['time_results'], ensure_ascii=False)
+
+                # depen_str 변환
+                if 'depen_str' in item and len(sent['depen_str']) > 0:
+                    depen = [dict(zip(dep_columns, dep)) for dep in sent['depen_str']]
+                    item['depen_str'] = json.dumps(depen, ensure_ascii=False)
+
                 for k in result_columns:
                     if k not in sent:
                         continue
 
                     item[k] = sent[k]
 
-                # 결과 변환: 시간 필드 변경
-                if len(item['time_results']) > 0:
-                    item['times_str'] = json.dumps(item['time_results'], ensure_ascii=False)
-
-                del item['time_results']
-
-                # depen_str 변환
-                if len(item['depen_str']) > 0:
-                    depen = [dict(zip(dep_columns, dep)) for dep in item['depen_str']]
-                    item['depen_str'] = json.dumps(depen, ensure_ascii=False)
-
-                del item['depen_str']
-
-                if 'meta' not in doc:
-                    doc['meta'] = {}
-
-                result.append({**doc['meta'], **item})
+                result.append({**meta, **item})
 
         return result
 
     @staticmethod
-    def buf_doc(text: str, options: dict, meta: dict) -> list:
+    def make_doc(text: str, options: dict, meta: dict) -> list:
         text_list = [text]
         if isinstance(text, list):
             text_list = text
@@ -94,24 +91,23 @@ class NLUWrapper(object):
             }]
         } for x in text_list]
 
-    def send(self, doc: list, url: str, options: dict, timeout: int = 5) -> list:
-        """nlu wrapper 호출"""
-        post_data = {
-            'nlu_wrapper': {
-                'option': options
-            },
-            'doc': doc
-        }
-
-        # rest api 호출
+    def request(self, doc: list, options: dict, url: str) -> list:
         try:
-            resp = requests.post(url=url, json=post_data, timeout=timeout).json()
+            resp = requests.post(
+                url=url,
+                json={
+                    'nlu_wrapper': {
+                        'option': options
+                    },
+                    'doc': doc
+                },
+                timeout=self.timeout
+            ).json()
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
                 'message': 'NLU Wrapper 호출 에러',
                 'url': url,
-                'post_data': post_data,
                 'exception': str(e),
             })
 
@@ -126,22 +122,21 @@ class NLUWrapper(object):
                 'message': 'NLU Wrapper 결과 취합 에러',
                 'url': url,
                 'resp': resp,
-                'post_data': post_data,
                 'exception': str(e),
             })
 
         return []
 
-    def fit_document(self, document: dict, domain: str) -> list:
-        """하나의 기사를 코퍼스 전처리 한다."""
+    def make_request(self, document: dict, domain: str) -> list:
+        """하나의 문서를 코퍼스 전처리 한다."""
         self.options['domain'] = domain
 
         meta_columns = set('_id,paper,date,source,category'.split(','))
 
+        result = []
         # 제목 처리
-        doc = []
         if 'title' in document and document['title'] != '':
-            doc += self.buf_doc(
+            result += self.make_doc(
                 meta={
                     'position': 'title',
                     **{x: document[x] for x in meta_columns if x in document}
@@ -161,7 +156,7 @@ class NLUWrapper(object):
                     text_list = item['caption']
 
                 for text in [x for x in text_list if x != '']:
-                    doc += self.buf_doc(
+                    result += self.make_doc(
                         meta={
                             'position': 'caption',
                             **{x: document[x] for x in meta_columns if x in document}
@@ -177,7 +172,7 @@ class NLUWrapper(object):
                 if text == '':
                     continue
 
-                doc += self.buf_doc(
+                result += self.make_doc(
                     meta={
                         'position': 'content',
                         **{x: document[x] for x in meta_columns if x in document}
@@ -186,7 +181,7 @@ class NLUWrapper(object):
                     options=self.options,
                 )
 
-        return self.send(doc=doc, options=self.options, url=self.url)
+        return result
 
     def batch(self) -> None:
         document = {
@@ -199,7 +194,10 @@ class NLUWrapper(object):
             "date": "2019-06-09T16:13:00+09:00"
         }
 
-        result = self.fit_document(document=document, domain='economy')
+        docs = self.make_request(document=document, domain='economy')
+
+        result = self.request(doc=docs, options=self.options, url=self.url)
+
         return
 
 
