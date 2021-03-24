@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'daejon'
   description: '대전일보 크롤러'
   schedule_interval: '25 * * * *'
   tags:
     - 대전일보
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: group1
     config: /config/news/daejon.yaml

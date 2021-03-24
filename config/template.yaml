@@ -103,3 +103,18 @@ template_jp:
         crawler: korea-news
         lang: jp
   tasks: []
+
+template_eco_en:
+  dag:
+    <<: *dag_template
+    tags: [경제,영어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: eco-news
+        lang: en
+  tasks: []

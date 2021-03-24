@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'kyeongin'
   description: '경인일보 크롤러'
   schedule_interval: '10 * * * *'
   tags:
     - 경인일보
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: all
     config: /config/news/kyeongin.yaml

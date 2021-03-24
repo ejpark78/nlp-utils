@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'kjdaily'
   description: '광주매일신문 크롤러'
   schedule_interval: '45 * * * *'
   tags:
     - 광주매일신문
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: group
     config: /config/news/kjdaily.yaml

@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'inews365'
   description: '충북일보 크롤러'
   schedule_interval: '55 * * * *'
   tags:
     - 충북일보
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: group
     config: /config/news/inews365.yaml

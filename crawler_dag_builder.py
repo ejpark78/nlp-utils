@@ -49,19 +49,17 @@ class CrawlerDagBuilder(object):
         sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
 
         sep = '/'
-        if f'config{sep}' in filename:
-            filename = sep.join([path, sub_path, filename])
-        else:
-            filename = sep.join([path, sub_path, 'config', filename])
+        filename = sep.join([path, sub_path, filename]
+                            if f'config{sep}' in filename
+                            else [path, sub_path, 'config', filename])
 
         with open(filename, 'r', encoding='utf-8') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             if "reference" in data:
                 temp_filename = data["reference"] if '.yaml' in data["reference"] else "template.yaml"
-                if f'config{sep}' in data["reference"]:
-                    template_filename = sep.join([path, sub_path, temp_filename])
-                else:
-                    template_filename = sep.join([path, sub_path, 'config', temp_filename])
+                template_filename = sep.join([path, sub_path, temp_filename]
+                                             if f'config{sep}' in data["reference"]
+                                             else [path, sub_path, 'config', temp_filename])
 
                 template = {}
                 if os.path.isfile(template_filename):
