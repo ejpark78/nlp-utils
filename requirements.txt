@@ -23,6 +23,7 @@ brotlipy
 dotty_dict
 
 PyYAML
+PyMySQL
 jsonfinder
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
