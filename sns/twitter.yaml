@@ -287,12 +287,11 @@ jobs:
   url_frame:
     user_timeline: https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name={screen_name}
 parsing:
+  version: v2021-01-26
   trace:
-    key: html_content
+    key: raw
     value:
-    - name: ol
-      attribute:
-        class: stream-items
+    - select: ol.stream-items
     type: html
   values:
   - comment: 댓글

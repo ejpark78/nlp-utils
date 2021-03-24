@@ -1,0 +1,381 @@
+---
+jobs:
+  - name: economy
+    index: crawler-nate-economy-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 경제/생활 경제
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0302&type=t&date={date}&page={page}
+      - category: 경제/부동산
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0303&type=t&date={date}&page={page}
+      - category: 경제/금융/증권
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0304&type=t&date={date}&page={page}
+      - category: 경제/산업/기업
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0305&type=t&date={date}&page={page}
+      - category: 경제/취업/창업
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0306&type=t&date={date}&page={page}
+      - category: 경제/국제경제
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0307&type=t&date={date}&page={page}
+      - category: 경제/경제 일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0308&type=t&date={date}&page={page}
+
+  - name: entertainment
+    index: crawler-nate-entertainment-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 연예/영화
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/ent/subsection?mid=e1300&type=t&date={date}&page={page}
+      - category: 연예/연예가 화제
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/ent/subsection?mid=e1100&type=t&date={date}&page={page}
+      - category: 연예/방송가요
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/ent/subsection?mid=e1200&type=t&date={date}&page={page}
+      - category: 연예/해외연예
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/ent/subsection?mid=e1400&type=t&date={date}&page={page}
+
+  - name: international
+    index: crawler-nate-international-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 세계/아시아호주
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0502&type=t&date={date}&page={page}
+      - category: 세계/미국중남미
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0503&type=t&date={date}&page={page}
+      - category: 세계/유럽
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0504&type=t&date={date}&page={page}
+      - category: 세계/중동아프리카
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0505&type=t&date={date}&page={page}
+      - category: 세계/해외화제
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0506&type=t&date={date}&page={page}
+      - category: 세계/일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0507&type=t&date={date}&page={page}
+
+  - name: it
+    index: crawler-nate-it-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: IT/과학
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0602&type=t&date={date}&page={page}
+      - category: IT/디지털
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0603&type=t&date={date}&page={page}
+      - category: IT/컴퓨터/인터넷
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0604&type=t&date={date}&page={page}
+      - category: IT/뉴미디어/통신
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0605&type=t&date={date}&page={page}
+      - category: IT/게임
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0606&type=t&date={date}&page={page}
+      - category: IT/IT/과학 일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0607&type=t&date={date}&page={page}
+
+  - name: politics
+    index: crawler-nate-politics-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 정치/청와대
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0202&type=t&date={date}&page={page}
+      - category: 정치/국회/정당
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0203&type=t&date={date}&page={page}
+      - category: 정치/외교/국방
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0204&type=t&date={date}&page={page}
+      - category: 정치/북한
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0205&type=t&date={date}&page={page}
+      - category: 정치/행정
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0206&type=t&date={date}&page={page}
+      - category: 정치/정치 일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0207&type=t&date={date}&page={page}
+
+  - name: society
+    index: crawler-nate-society-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 사회/사건사고
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0402&type=t&date={date}&page={page}
+      - category: 사회/교육학교
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0403&type=t&date={date}&page={page}
+      - category: 사회/교통지역
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0404&type=t&date={date}&page={page}
+      - category: 사회/인권복지
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0405&type=t&date={date}&page={page}
+      - category: 사회/여성노동
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0406&type=t&date={date}&page={page}
+      - category: 사회/환경
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0407&type=t&date={date}&page={page}
+      - category: 사회/미디어
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0408&type=t&date={date}&page={page}
+      - category: 사회/종교
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0409&type=t&date={date}&page={page}
+      - category: 사회/인물
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0410&type=t&date={date}&page={page}
+      - category: 사회/일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.nate.com/subsection?mid=n0411&type=t&date={date}&page={page}
+
+  - name: sports
+    index: crawler-nate-sports-{year}
+    article:
+      document_id:
+        replace:
+          - from: /view/
+            to: ''
+        type: path
+    list:
+      - category: 스포츠/야구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/baseball/recent?type=t&date={date}&page={page}
+      - category: 스포츠/해외야구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/abrbaseball/recent?&type=t&date={date}&page={page}
+      - category: 스포츠/축구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/soccer/recent?&type=t&date={date}&page={page}
+      - category: 스포츠/해외축구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/abrsoccer/recent?&type=t&date={date}&page={page}
+      - category: 스포츠/농구-배구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/basketvolley/recent?&type=t&date={date}&page={page}
+      - category: 스포츠/스포츠-일반
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.nate.com/general/recent?&type=t&date={date}&page={page}
+
+#  - name: tv
+#    index: crawler-nate-tv-{year}
+#    article:
+#      document_id:
+#        replace:
+#          - from: /view/
+#            to: ''
+#        type: path
+#    list:
+#      - category: TV/SBS
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0903&cp=sv&type=t&date={date}&page={page}
+#      - category: TV/JTBC
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0908&cp=jt&type=t&date={date}&page={page}
+#      - category: TV/YTN
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0904&cp=yn&type=t&date={date}&page={page}
+#      - category: TV/MBN
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0911&cp=nt&type=t&date={date}&page={page}
+#      - category: TV/연합뉴스TV
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0905&cp=ny&type=t&date={date}&page={page}
+#      - category: TV/OBS TV
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0914&cp=ob&type=t&date={date}&page={page}
+#      - category: TV/SBSCNBC
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0912&cp=cn&type=t&date={date}&page={page}
+#      - category: TV/한국경제TV
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0913&cp=ht&type=t&date={date}&page={page}
+#      - category: TV/KTV국민방송
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/recentTV?mid=n0915&cp=kv&type=t&date={date}&page={page}
+#      - category: TV/실시간 중계
+#        date_format: '%Y%m%d'
+#        url_frame: https://news.nate.com/liveNews?mid=n0910&type=t&date={date}&page={page}
+
+# crawling 과정에서 추출하는 정보
+parsing:
+  version: v2021-03-11
+  parser: lxml
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
+  trace:
+    - select: div.postSubject li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
+  list:
+    - key: raw_list
+      value: [ ]
+      type: html
+    - key: title
+      value:
+        - select: a
+      type: text
+    - key: url
+      value:
+        - select: a
+      type: href
+    - key: date
+      value:
+        - select: span > em
+      type: text
+      type_convert: date
+      value_type: single
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
+  article:
+    - key: raw
+      value: [ ]
+      type: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+    - key: title
+      value:
+        - select: div#articleView h3.articleSubecjt
+      type: text
+    - key: date
+      value:
+        - select: span.firstDate em
+      type: text
+      type_convert: date
+      value_type: single
+    - key: content
+      remove:
+        - name: script
+        - name: sclink
+        - name: iframe
+      value:
+        - select: div#realArtcContents
+      type: text
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: source
+      replace:
+        - from: 원문
+          to: ''
+      value:
+        - select: p.articleInfo span.link
+      type: text
+    - column: raw
+      key: source_url
+      value:
+        - select: p.articleInfo a[title=원문보기]
+      type: href
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div#realArtcContents img
+      type: src
+    - column: raw
+      delete: true
+      key: image_list.caption
+      value:
+        - select: div#realArtcContents p.p_caption
+      type: text
+
+# 인덱스 맵핑
+index_mapping:
+  settings:
+    number_of_replicas: 1
+    number_of_shards: 1
+  mappings:
+    properties:
+      title:
+        type: text
+      url:
+        ignore_above: 256
+        type: keyword
+      content:
+        type: text
+      date:
+        type: date
+      category:
+        ignore_above: 50
+        type: keyword
+      raw:
+        enabled: false
+      raw_list:
+        enabled: false
+      parser_version:
+        ignore_above: 50
+        type: keyword
+      status:
+        # raw_list, raw, pipeline
+        ignore_above: 50
+        type: keyword
+      '@curl_date':
+        type: date
+      # pipeline columns
+      image_list:
+        enabled: false
+      source:
+        enabled: false
+      source_url:
+        enabled: false

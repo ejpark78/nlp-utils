@@ -99,6 +99,7 @@ jobs:
     trace: rows
     url_frame: http://osen.mt.co.kr/api/probaseball/team_news/wiz?offset={page}
 parsing:
+  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -127,35 +128,6 @@ parsing:
     type: text
     type_convert: date
     value_type: single
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: iframe
-    - name: script
-    - name: div
-      attribute:
-        class: news-copyright
-    - name: div
-      attribute:
-        class: realtime-session
-    - name: div
-      attribute:
-        id: taboola-organic-below-article-thumbnails
-    - name: div
-      attribute:
-        id: taboola-below-article-thumbnails
-    - name: div
-      attribute:
-        id: divBox
-    - name: div
-      attribute:
-        class: content-inner__banner
-    value:
-    - name: div
-      attribute:
-        class: detailView
-    type: html
-    value_type: merge
   - comment: 이미지
     delete: true
     key: image_list.image

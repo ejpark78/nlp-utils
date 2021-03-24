@@ -69,8 +69,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

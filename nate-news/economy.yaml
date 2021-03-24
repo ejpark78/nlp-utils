@@ -69,8 +69,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:
@@ -121,19 +121,6 @@ parsing:
       attribute:
         title: 원문보기
     type: href
-  - comment: html 본문
-    key: html_content
-    remove:
-    - name: script
-    - name: sclink
-    - name: iframe
-      attribute:
-        title: 광고
-    value:
-    - name: div
-      attribute:
-        id: realArtcContents
-    type: html
   - comment: 이미지
     key: image_list.image
     value:

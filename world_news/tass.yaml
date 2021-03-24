@@ -38,8 +38,8 @@ parsing:
       url: https://tass.ru/{slug}/{id}
       date: dateLabel
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

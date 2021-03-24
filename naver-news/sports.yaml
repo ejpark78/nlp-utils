@@ -87,8 +87,8 @@ parsing:
   list:
   - parser: json
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:

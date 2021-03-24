@@ -1,0 +1,209 @@
+---
+jobs:
+  - name: sports
+    index: crawler-naver-sports-{year}
+    article:
+      document_id:
+        frame: '{oid}-{aid}'
+        type: query
+    list:
+      - category: 스포츠/야구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /kbaseball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/해외야구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/wbaseball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /wbaseball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/게임
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/esports/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /esports/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/축구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /kfootball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/해외축구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/wfootball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /wfootball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/농구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/basketball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /basketball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/배구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/volleyball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /volleyball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/골프
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/golf/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /golf/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/축구
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/kfootball/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /kfootball/news/read.nhn?oid={oid}&aid={aid}
+      - category: 스포츠/스포츠-일반
+        date_format: '%Y%m%d'
+        url_frame: https://sports.news.naver.com/general/news/list.nhn?isphoto=&date={date}&page={page}
+        headers:
+          Content-Type: application/json
+        mapping:
+          url: /general/news/read.nhn?oid={oid}&aid={aid}
+
+# crawling 과정에서 추출하는 정보
+parsing:
+  version: v2021-03-11
+  parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
+  trace:
+    - parser: json
+      column: list
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
+  list:
+    - parser: json
+      mapping:
+        raw_list: '*'
+        url: url
+        title: title
+        date: datetime
+        _convert:
+          date: date
+
+  # 기사 본문에서 추출해야하는 tag 정보
+  article:
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: div.news_headline h4.title
+      type: text
+    - key: date
+      remove:
+        - select: a.press_link
+      replace:
+        - from: 기사입력
+          to: ''
+        - from: ^.+최종수정
+          to: ''
+      value:
+        - select: div.news_headline div.info
+      type: text
+      type_convert: date
+      value_type: single
+    - key: content
+      value:
+        - select: div#newsEndContents
+      type: text
+      value_type: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+      type: text
+      type_convert: date
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: source_url
+      value:
+        - select: div.news_headline div.info a.press_link
+      type: href
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div#newsEndContents span.end_photo_org img
+      type: src
+    - column: raw
+      key: image_list.caption
+      delete: true
+      value:
+        - select: div#newsEndContents span.end_photo_org em.img_desc
+      type: text
+    - column: raw
+      key: vod
+      value:
+        - select: div#newsEndContents iframe
+      type: html
+
+# 인덱스 맵핑
+index_mapping:
+  settings:
+    number_of_replicas: 1
+    number_of_shards: 1
+  mappings:
+    properties:
+      title:
+        type: text
+      url:
+        ignore_above: 256
+        type: keyword
+      content:
+        type: text
+      date:
+        type: date
+      category:
+        ignore_above: 50
+        type: keyword
+      raw:
+        enabled: false
+      raw_list:
+        enabled: false
+      parser_version:
+        ignore_above: 50
+        type: keyword
+      status:
+        # raw_list, raw, pipeline
+        ignore_above: 50
+        type: keyword
+      '@curl_date':
+        type: date
+      # pipeline columns
+      image_list:
+        enabled: false
+      vod:
+        enabled: false
+      source:
+        enabled: false
+      source_url:
+        enabled: false
+      source_section:
+        enabled: false
+      papaer:
+        enabled: false

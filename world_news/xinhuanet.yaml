@@ -46,8 +46,8 @@ parsing:
       source: SourceName
       date: PubTime
   article:
-  - comment: html
-    key: html
+  - comment: raw html or json
+    key: raw
     value:
     - name: html
     remove:
