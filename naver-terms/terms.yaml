@@ -420,7 +420,7 @@ jobs:
 parsing:
   version: v2021-01-26
   trace:
-    key: raw
+    key: html_content
     value:
     - select: li.thumb_list_item
     type: html

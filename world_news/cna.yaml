@@ -1,7 +1,6 @@
 ---
 jobs:
 - index: raw-cna-{year}
-  tag: 중앙통신사 (대만)
   article:
     document_id:
       replace:

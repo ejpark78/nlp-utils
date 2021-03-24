@@ -9,7 +9,6 @@ jobs:
   - category: 야구
     url_frame: http://sports.mk.co.kr/list.php?sc=71000002&mc=B
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -85,6 +84,23 @@ parsing:
     type: text
     type_convert: date
     value_type: single
+  - comment: html 본문
+    key: html_content
+    remove:
+    - name: iframe
+    - name: script
+    - name: div
+      attribute:
+        id: slot6
+    - name: a
+      attribute:
+        target: _blank
+    value:
+    - name: div
+      attribute:
+        id: artText
+    type: html
+    value_type: merge
   - comment: 이미지
     key: image_list.image
     value:

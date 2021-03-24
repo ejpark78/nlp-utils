@@ -46,7 +46,6 @@ jobs:
     response_type: json
     url_frame: http://www.inven.co.kr/common/board/comment.json.php
 parsing:
-  version: v2021-01-26
   descriptions:
     article: 기사 본문에서 추출해야하는 tag 정보
     list: 기사 목록에서 추출해야하는 하나의 기사 정보
@@ -109,8 +108,8 @@ parsing:
     type: text
     type_convert: date
   article:
-  - comment: raw html or json
-    key: raw
+  - comment: html
+    key: html
     value:
     - name: html
     remove:
@@ -156,6 +155,12 @@ parsing:
     value:
     - select: div.articleTitle
     type: text
+  - comment: html 본문
+    key: html_content
+    value:
+    - select: div#tbArticle
+    type: html
+    value_type: merge
   - comment: 텍스트 본문
     key: content
     value:
