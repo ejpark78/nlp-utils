@@ -13,7 +13,6 @@ import pandas as pd
 import pytz
 import urllib3
 from IPython.display import display
-from dateutil.parser import parse as parse_date
 from dateutil.relativedelta import relativedelta
 from matplotlib import font_manager, rc
 
@@ -75,37 +74,6 @@ class DailyReports(object):
 
         return cnt
 
-    @staticmethod
-    def get_date_range_dsl(date_range: str = None, date_column: str = 'date') -> dict:
-        if date_range is None:
-            return {}
-
-        dt_start, dt_end = None, None
-        if date_range is not None:
-            dt_start, dt_end = date_range.split('~')
-            dt_start, dt_end = parse_date(dt_start), parse_date(dt_end)
-
-        fmt, search_fmt = 'yyyy-MM-dd HH:mm:ss', '%Y-%m-%d %H:%M:%S'
-
-        if dt_start == dt_end:
-            dt_end += relativedelta(days=1) - relativedelta(seconds=1)
-
-        return {
-            'query': {
-                'bool': {
-                    'must': {
-                        'range': {
-                            date_column: {
-                                'gte': dt_start.strftime(search_fmt),
-                                'lte': dt_end.strftime(search_fmt),
-                                'format': fmt
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
     def get_date_histogram(self, index: str, column: str = 'date', interval: str = 'day',
                            date_format: str = 'yyyy-MM-dd', date_range: str = None) -> dict:
         """ 날짜별 문서 수량을 조회한다. """
@@ -125,7 +93,7 @@ class DailyReports(object):
             }
         }
 
-        query.update(self.get_date_range_dsl(date_range=date_range, date_column=column))
+        query.update(self.es.get_date_range_query(date_range=date_range, date_column=column))
 
         resp = self.es.conn.search(index=index, body=query)
 
@@ -153,7 +121,7 @@ class DailyReports(object):
             }
         }
 
-        query.update(self.get_date_range_dsl(date_range=date_range, date_column=date_column))
+        query.update(self.es.get_date_range_query(date_range=date_range, date_column=date_column))
 
         resp = self.es.conn.search(index=index, body=query)
 
@@ -199,7 +167,7 @@ class DailyReports(object):
             }
         }
 
-        query.update(self.get_date_range_dsl(date_range=date_range, date_column=column))
+        query.update(self.es.get_date_range_query(date_range=date_range, date_column=column))
 
         resp = self.es.conn.search(index=index_list, body=query)
 
@@ -246,7 +214,7 @@ class DailyReports(object):
             }
         }
 
-        query.update(self.get_date_range_dsl(date_range=date_range, date_column=column))
+        query.update(self.es.get_date_range_query(date_range=date_range, date_column=column))
 
         resp = self.es.conn.search(index=index_list, body=query)['aggregations']
 

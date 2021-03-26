@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import base64
 import json
 import re
 import ssl
@@ -20,12 +21,12 @@ import pytz
 import urllib3
 import yaml
 from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
 from tqdm.autonotebook import tqdm
 
 from crawler.utils.logger import Logger
-import base64
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -886,6 +887,36 @@ class ElasticSearchUtils(object):
             )
 
         return
+
+    @staticmethod
+    def get_date_range_query(date_range: str = None, date_column: str = 'date',
+                             parse_fmt: str = 'yyyy-MM-dd HH:mm:ss', query_fmt: str = '%Y-%m-%d %H:%M:%S') -> dict:
+        if date_range is None:
+            return {}
+
+        dt_start, dt_end = None, None
+        if date_range is not None:
+            dt_start, dt_end = date_range.split('~')
+            dt_start, dt_end = parse_date(dt_start), parse_date(dt_end)
+
+        if dt_start == dt_end:
+            dt_end += relativedelta(days=1) - relativedelta(seconds=1)
+
+        return {
+            'query': {
+                'bool': {
+                    'must': {
+                        'range': {
+                            date_column: {
+                                'gte': dt_start.strftime(query_fmt),
+                                'lte': dt_end.strftime(query_fmt),
+                                'format': parse_fmt
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     def get_doc_url(self, document_id: str) -> str:
         return f'{self.host}/{self.index}/_doc/{document_id}?pretty'

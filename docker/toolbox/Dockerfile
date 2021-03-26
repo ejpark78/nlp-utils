@@ -74,16 +74,20 @@ RUN echo && echo "# oh my zsh plugin 설치" \
     && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions \
     && find ~ -name .git -type d -exec rm -rf {} +
 
+ARG HELM_VER="v3.5.2"
+ARG K9S_VER="v0.24.4"
+ARG STERN_VER="1.11.0"
+
 RUN echo && echo "# helm 설치" \
-	&& wget -O /tmp/helm.tar.gz "https://get.helm.sh/helm-v3.4.2-linux-amd64.tar.gz" \
+	&& wget -O /tmp/helm.tar.gz "https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz" \
     && tar xvfz /tmp/helm.tar.gz -C /tmp \
     && mv /tmp/linux-amd64/helm /usr/bin/ \
     && echo && echo "# k9s 설치" \
-    && wget -O /tmp/k9s.tar.gz "https://github.com/derailed/k9s/releases/download/v0.24.2/k9s_Linux_x86_64.tar.gz" \
+    && wget -O /tmp/k9s.tar.gz "https://github.com/derailed/k9s/releases/download/${K9S_VER}/k9s_Linux_x86_64.tar.gz" \
     && tar xvfz /tmp/k9s.tar.gz -C /tmp \
     && mv /tmp/k9s /usr/bin/ \
     && echo && echo "# stern 설치" \
-    && wget -O /usr/bin/stern "https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64" \
+    && wget -O /usr/bin/stern "https://github.com/wercker/stern/releases/download/${STERN_VER}/stern_linux_amd64" \
     && chmod +x /usr/bin/stern \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
