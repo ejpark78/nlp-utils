@@ -384,26 +384,37 @@ class NLUWrapper(object):
 
         result_db.close()
 
+        # SELECT `index`, `id` FROM `naver` GROUP BY `index`, `id`;
+        # SELECT `index`, `id`, ANY_VALUE(`date`) FROM `naver` GROUP BY `index`, `id`;
+
+        # NLU Wrapper: 100%|█████████▉| 28446/28454 [10:05:50<00:13,  1.66s/it]
+        # NLU Wrapper: 100%|██████████| 28454/28454 [10:05:56<00:00,  1.28s/it]
+
         return
 
     @staticmethod
     def init_arguments() -> dict:
         import argparse
 
+        from os import getenv
+
         parser = argparse.ArgumentParser(description='')
 
-        parser.add_argument('--host', default='https://corpus.ncsoft.com:9200', type=str, help='elasticsearch url')
-        parser.add_argument('--auth', default='crawler:crawler2019', type=str, help='elasticsearch auth')
+        parser.add_argument('--host', type=str, help='elasticsearch url',
+                            default=getenv('ELASTIC_SEARCH_HOST', default=None))
+        parser.add_argument('--auth', type=str, help='elasticsearch auth',
+                            default=getenv('ELASTIC_SEARCH_AUTH', default=None))
 
-        parser.add_argument('--index', default='crawler-naver-*-2021', help='인덱스명')
+        parser.add_argument('--index', help='인덱스명',
+                            default=getenv('ELASTIC_INDEX', default='crawler-naver-*-2021'))
 
-        parser.add_argument('--result-host', default='172.19.154.164', help='')
-        parser.add_argument('--result-user', default='root', help='')
-        parser.add_argument('--result-password', default='searchT2020', help='')
-        parser.add_argument('--result-database', default='naver', help='')
-        parser.add_argument('--result-table-name', default='naver', help='')
+        parser.add_argument('--result-host', default=getenv('DB_HOST', default='crawler-mysql.cloud.ncsoft.com'))
+        parser.add_argument('--result-user', default=getenv('DB_USER', default='root'))
+        parser.add_argument('--result-password', default=getenv('DB_PASSWORD', default='searchT2020'))
+        parser.add_argument('--result-database', default=getenv('DB_DATABASE', default='naver'))
+        parser.add_argument('--result-table-name', default=getenv('DB_TABLE', default='naver'))
 
-        parser.add_argument('--nlu-wrapper-url', default='http://172.20.40.142', help='')
+        parser.add_argument('--nlu-wrapper-url', default=getenv('NLU_WRAPPER_URL', default='http://172.20.40.142'))
         # parser.add_argument('--nlu-wrapper-url', default='http://172.20.92.249:32001', help='통합망 서버')
 
         parser.add_argument('--limit', default=-1, type=int, help='한번에 분석하는 수량')
