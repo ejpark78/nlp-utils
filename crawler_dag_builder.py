@@ -15,6 +15,8 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
 
+import kubernetes.client.models as k8s
+
 class CrawlerDagBuilder(object):
 
     @staticmethod
@@ -98,14 +100,26 @@ class CrawlerDagBuilder(object):
                     '--sub-category',
                     item['name'],
                 ]
-
-            task_group[name].append(KubernetesPodOperator(
-                dag=dag,
-                name='task',
-                task_id=item['task_id'],
-                arguments=config['operator']['args'] + extra_args,
-                **config['operator']['params']
-            ))
+            if 'init_containers' in config['operator']:
+                init_containers_config = config['operator'].pop('init_containers')
+                init_containers = [k8s.V1Container(**init_containers_config)]
+                pod_operator = KubernetesPodOperator(
+                    dag=dag,
+                    name='task',
+                    task_id=item['task_id'],
+                    arguments=config['operator']['args'] + extra_args,
+                    init_containers=init_containers,
+                    **config['operator']['params']
+                )
+            else:
+                pod_operator = KubernetesPodOperator(
+                    dag=dag,
+                    name='task',
+                    task_id=item['task_id'],
+                    arguments=config['operator']['args'] + extra_args,
+                    **config['operator']['params']
+                )
+            task_group[name].append(pod_operator)
 
         return dag, task_group
 

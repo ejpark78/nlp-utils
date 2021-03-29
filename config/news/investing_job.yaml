@@ -1,5 +1,5 @@
 ---
-reference: template_en
+reference: adena_template_en
 dag:
   dag_id: 'investing'
   description: 'investing 크롤러'
