@@ -38,6 +38,6 @@ operator:
       limit_memory: "256Mi"
 tasks:
   - category: cryptocurrency
-    <<: *config_path
+    config: /adena_crawler/config/news/investing.yaml
     name: cryptocurrency
     task_id: investing-cryptocurrency
