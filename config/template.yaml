@@ -45,16 +45,6 @@ news: &news_args_template
     - --page-range
     - 1~5
 
-adena_news: &adena_news_args_template
-  args:
-    - adena_crawler.crawler.web_news.web_news
-    - --sleep
-    - '5'
-    - --date-range
-    - today
-    - --page-range
-    - 1~5
-
 adena_params: &adena_operator_params_template
   labels:
     crawler: news
@@ -65,8 +55,8 @@ adena_params: &adena_operator_params_template
   is_delete_operator_pod: 'True'
   get_logs: 'True'
   cmds:
-    - 'python3'
-    - '-m'
+    - 'sleep'
+    - '1000'
   env_vars:
     ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
     ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
@@ -177,7 +167,7 @@ adena_template_en:
   default_args:
     <<: *default_args_template
   operator:
-    <<: *adena_news_args_template
+    <<: *news_args_template
     params:
       <<: *adena_operator_params_template
       labels:
