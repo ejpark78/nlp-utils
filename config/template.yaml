@@ -168,13 +168,9 @@ adena_template_en:
   default_args:
     <<: *default_args_template
   operator:
-#    <<: *news_args_template
-    args: []
+    <<: *news_args_template
     params:
       <<: *adena_operator_params_template
-      cmds:
-        - 'sleep'
-        - '1000'
       labels:
         crawler: adena-news
         lang: en
