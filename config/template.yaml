@@ -93,6 +93,9 @@ adena_init_containers: &adena_init_containers_template
   - $(GIT_SYNC_BRANCH)
   - $(GIT_SYNC_REPO)
   - /adena_crawler
+  volume_mounts:
+    - name: crawler
+      mount_path: "/adena_crawler"
 
 
 template_kor:
@@ -183,4 +186,6 @@ adena_template_en:
       labels:
         crawler: adena-news
         lang: en
+    init_containers:
+      <<: *adena_init_containers_template
   tasks: []
