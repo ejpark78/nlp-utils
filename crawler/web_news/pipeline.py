@@ -109,7 +109,7 @@ class Pipeline(object):
 
         return result
 
-    def get_doc_list(self) -> list:
+    def get_doc_list(self, doc_ids: set) -> list:
         es = ElasticSearchUtils(host=self.params['host'], http_auth=self.params['auth'])
 
         query = {
@@ -129,7 +129,7 @@ class Pipeline(object):
             result=doc_list
         )
 
-        return doc_list
+        return [x for x in doc_list if tuple([x['_index'], x['_id']]) not in doc_ids]
 
     @staticmethod
     def save_error_list(error_list: list, filename: str = 'nlu-wrapper-error.list') -> None:
@@ -147,7 +147,10 @@ class Pipeline(object):
         if len(doc_list) == 0:
             return []
 
+        style, domain = 'literary', 'economy'
         bulk, doc_buf, error_docs = [], [], []
+
+        options = {**self.nlu_wrapper.options}
 
         for doc in tqdm(doc_list, desc='NLU Wrapper'):
             bulk += self.make_request(
@@ -157,17 +160,12 @@ class Pipeline(object):
             doc_buf.append(doc)
 
             if len(bulk) > bulk_size:
-                resp = self.nlu_wrapper.request(
-                    doc_list=bulk,
-                    style='literary',
-                    domain='economy',
-                    options={**self.nlu_wrapper.options},
-                )
+                resp = self.nlu_wrapper.request(doc_list=bulk, style=style, domain=domain, options=options)
                 self.result_db.save_result(doc_list=resp)
 
                 if len(resp) == 0:
                     error_docs += doc_buf
-                    self.save_error_list(error_list=bulk)
+                    # self.save_error_list(error_list=bulk)
 
                 bulk, doc_buf = [], []
                 sleep(self.params['sleep'])
@@ -175,17 +173,12 @@ class Pipeline(object):
         if len(bulk) == 0:
             return error_docs
 
-        resp = self.nlu_wrapper.request(
-            doc_list=bulk,
-            style='literary',
-            domain='economy',
-            options={**self.nlu_wrapper.options},
-        )
+        resp = self.nlu_wrapper.request(doc_list=bulk, style=style, domain=domain, options=options)
         self.result_db.save_result(doc_list=resp)
 
         if len(resp) == 0:
             error_docs += doc_buf
-            self.save_error_list(error_list=bulk)
+            # self.save_error_list(error_list=bulk)
 
         # NLU Wrapper: 100%|█████████▉| 28446/28454 [10:05:50<00:13,  1.66s/it]
         # NLU Wrapper: 100%|██████████| 28454/28454 [10:05:56<00:00,  1.28s/it]
@@ -212,8 +205,10 @@ class Pipeline(object):
             table_name=self.params['result_table_name']
         )
 
+        doc_ids = self.result_db.get_ids(date_range=self.params['date_range'])
+
         # dump article
-        doc_list = self.get_doc_list()
+        doc_list = self.get_doc_list(doc_ids=doc_ids)
 
         # pipeline
 

@@ -8,6 +8,7 @@ import pymysql
 import pytz
 import urllib3
 from dateutil.parser import parse as parse_date
+from dateutil.relativedelta import relativedelta
 
 from crawler.utils.logger import Logger
 
@@ -109,24 +110,22 @@ class MysqlUtils(object):
 
         return
 
-    def get_ids(self, date_range: str) -> list:
-        # SELECT `index`, `id` FROM `naver` GROUP BY `index`, `id`;
+    def get_ids(self, date_range: str) -> set:
         dt_st, dt_en = date_range.split('~')
+        dt_st, dt_en = parse_date(dt_st), parse_date(dt_en)
 
-        sql = f"""
-        SELECT `index`, `id`, ANY_VALUE(`date`) 
-        FROM `naver` 
-        WHERE `date` 
-        BETWEEN {dt_st} AND {dt_en} 
-        GROUP BY `index`, `id`
-        """
+        if dt_st == dt_en:
+            dt_en += relativedelta(days=1)
+
+        dt_st = dt_st.strftime('%Y-%m-%d 00:00:00')
+        dt_en = dt_en.strftime('%Y-%m-%d 00:00:00')
 
         cursor = self.db.cursor()
-        cursor.execute(sql)
+        cursor.execute(
+            f" SELECT `index`, `id` FROM `naver` WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' GROUP BY `index`, `id` "
+        )
 
-        columns = 'index,id,date'.split(',')
-
-        return [dict(zip(columns, val)) for val in cursor.fetchall()]
+        return set([x for x in cursor.fetchall()])
 
     def open(self, host: str, auth: str, database: str, table_name: str) -> None:
         self.make_sql_frame(table_name=table_name)
