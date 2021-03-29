@@ -57,7 +57,7 @@ adena_params: &adena_operator_params_template
   cmds:
     - 'python3'
     - '-m'
-    - 'adena_crawler.web_news.web_news'
+    - 'adena_crawler.crawler.web_news.web_news'
   env_vars:
     ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
     ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
