@@ -67,17 +67,6 @@ adena_params: &adena_operator_params_template
     limit_cpu: "200m"
     limit_memory: "256Mi"
 
-adena_news: &adena_news_args_template
-  args:
-    - --sleep
-    - '5'
-    - --date-range
-    - today
-    - --page-range
-    - 1~5
-    - sleep
-    - 30m
-
 adena_init_containers: &adena_init_containers_template
 - name: git-config
   image: registry.nlp-utils/alpine/git:v2.30.0
@@ -179,7 +168,7 @@ adena_template_en:
   default_args:
     <<: *default_args_template
   operator:
-    <<: *adena_news_args_template
+    <<: *news_args_template
     params:
       <<: *adena_operator_params_template
       labels:
