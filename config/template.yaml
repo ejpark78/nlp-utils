@@ -45,15 +45,6 @@ news: &news_args_template
     - --page-range
     - 1~5
 
-adena_news: &adena_news_args_template
-  args:
-    - --sleep
-    - '5'
-    - --date-range
-    - today
-    - --page-range
-    - 1~5
-
 adena_params: &adena_operator_params_template
   labels:
     crawler: news
@@ -75,28 +66,6 @@ adena_params: &adena_operator_params_template
     request_memory: "256Mi"
     limit_cpu: "200m"
     limit_memory: "256Mi"
-
-adena_init_containers: &adena_init_containers_template
-- name: git-config
-  image: registry.nlp-utils/alpine/git:v2.30.0
-  image_pull_policy: IfNotPresent
-  env:
-  - name: GIT_SYNC_REPO
-    value: "http://gunyoung20:QxrKmhTQs7LEXzvV6xuq@galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
-  - name: GIT_SYNC_BRANCH
-    repo: "master"
-  command:
-  - git
-  - clone
-  - --progress
-  - -b
-  - $(GIT_SYNC_BRANCH)
-  - $(GIT_SYNC_REPO)
-  - /adena_crawler
-  volume_mounts:
-    - name: crawler
-      mount_path: "/adena_crawler"
-
 
 template_kor:
   dag:
@@ -180,12 +149,10 @@ adena_template_en:
   default_args:
     <<: *default_args_template
   operator:
-    <<: *adena_news_args_template
+    <<: *news_args_template
     params:
       <<: *adena_operator_params_template
       labels:
         crawler: adena-news
         lang: en
-    init_containers:
-      <<: *adena_init_containers_template
   tasks: []
