@@ -5,50 +5,48 @@ dag:
   description: 'investing 크롤러'
   schedule_interval: '0 * * * *'
   tags: ["investing"]
-task_template: &task_template
-  config: /adena_crawler/config/news/investing.yaml
 tasks:
   - category: cryptocurrency
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: cryptocurrency
     task_id: investing-cryptocurrency
   - category: stock-markets
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: investing-stock-markets
     task_id: investing-stock-markets
   - category: commodities
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: commodities
     task_id: investing-commodities
   - category: forex
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: forex
     task_id: investing-forex
   - category: economy
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: economy
     task_id: investing-economy
   - category: economic-indicators
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: economic-indicators
     task_id: investing-economic-indicators
   - category: politics
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: politics
     task_id: investing-politics
   - category: world
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: world
     task_id: investing-world
   - category: coronavirus
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: coronavirus
     task_id: investing-coronavirus
   - category: technology
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: technology
     task_id: investing-technology
   - category: sports&general
-    <<: *task_template
+    config: /adena_crawler/config/news/investing.yaml
     name: sports
     task_id: investing-sports
