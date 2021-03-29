@@ -1,6 +1,40 @@
 import json
 
 import requests
+from collections import defaultdict
+
+
+def simplify(doc_list: list) -> list:
+    dep_columns = 'index,head,morp,pos,func'.split(',')
+    result_columns = set('text,morp_str,ne_str'.split(','))
+
+    result, sent_id = [], 1
+    for doc in doc_list:
+        meta = doc['meta'] if 'meta' in doc else {}
+
+        for sent in doc['sentences']:
+            item = defaultdict(str)
+
+            # 결과 변환: 시간 필드 변경
+            if 'time_results' in item:
+                if len(sent['time_results']) > 0:
+                    item['times_str'] = json.dumps(sent['time_results'], ensure_ascii=False)
+
+            # depen_str 변환
+            if 'depen_str' in item and len(sent['depen_str']) > 0:
+                depen = [dict(zip(dep_columns, dep)) for dep in sent['depen_str']]
+                item['depen_str'] = json.dumps(depen, ensure_ascii=False)
+
+            for k in result_columns:
+                if k not in sent:
+                    continue
+
+                item[k] = sent[k]
+
+            result.append({'sentence_id': sent_id, **meta, **item})
+            sent_id += 1
+
+    return result
 
 
 def nlu_wrapper(text, url='http://172.20.40.142:80/'):
@@ -9,7 +43,7 @@ def nlu_wrapper(text, url='http://172.20.40.142:80/'):
     req_data = {
         "nlu_wrapper": {
             "option": {
-                "domain": "baseball",
+                "domain": "economy",
                 "style": "literary",
                 "module": ["SBD_crf", "POS", "NER"],
             }
@@ -33,39 +67,7 @@ def nlu_wrapper(text, url='http://172.20.40.142:80/'):
         print('nlu_resp: ', nlu_resp)
 
         # 단순화시킨다.
-        for doc in nlu_resp['doc']:
-            for sentence in doc['sentences']:
-                item = {
-                    'text': '',
-                    'morp_str': '',
-                    'ne_str': '',
-                    'depen_str': [],
-                    'time_results': [],
-                }
-
-                for k in item.keys():
-                    if k not in sentence:
-                        continue
-
-                    item[k] = sentence[k]
-
-                # 시간 필드 변경
-                if len(item['time_results']) > 0:
-                    item['times'] = item['time_results']
-
-                del item['time_results']
-
-                # depen_str 변환
-                if len(item['depen_str']) > 0:
-                    depen = []
-                    for dep in item['depen_str']:
-                        depen.append(dict(zip(['index', 'head', 'morp', 'pos', 'func'], dep)))
-
-                    item['depen'] = depen
-
-                del item['depen_str']
-
-                result.append(item)
+        result = simplify(nlu_resp['doc'])
 
         return result, meta
     except Exception as e:
@@ -87,6 +89,6 @@ text = "85년생 35살 입니다."
 
 text = "[OSEN=기장(부산)박준형 기자] 30일 오후 부산 기장군 기장현대차드림볼파크에서 제29회 WBSC 기장 세계청소년야구선수권대회(18세 이하)' 일본과 스페인의 경기가 진행됐다.\n\n7회말 실점위기를 무실점으로 막은 스페인 선발투수 저스틴 루나가 동료들과 하이파이브를 하고 있다. / soul1014@osen.co.kr"
 
-r = nlu_wrapper(text=text)
+r, _ = nlu_wrapper(text=text)
 
 print(json.dumps(r, ensure_ascii=False, indent=4))

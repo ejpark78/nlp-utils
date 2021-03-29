@@ -55,3 +55,11 @@ REGISTRY=galadriel02.korea.ncsoft.corp:5000 \
     | grep api-center \
     | xargs -I{} curl -s -k -X GET "https://${REGISTRY}/v2/{}/tags/list"
 ```
+
+## nlu wrapper 로그 확인
+
+```bash
+
+tail -f /project/app/common/logger/logs/*.log
+
+```
