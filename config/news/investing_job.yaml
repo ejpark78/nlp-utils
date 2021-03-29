@@ -11,55 +11,44 @@ tasks:
   - category: cryptocurrency
     <<: *config_path
     name: cryptocurrency
-    url_frame: https://www.investing.com/news/cryptocurrency-news/{page}
     task_id: investing-cryptocurrency
   - category: stock-markets
     <<: *config_path
     name: investing-stock-markets
-    url_frame: https://www.investing.com/news/stock-market-news/{page}
     task_id: investing-stock-markets
   - category: commodities
     <<: *config_path
     name: commodities
-    url_frame: https://www.investing.com/news/commodities-news/{page}
     task_id: investing-commodities
   - category: forex
     <<: *config_path
     name: forex
-    url_frame: https://www.investing.com/news/forex-news/{page}
     task_id: investing-forex
   - category: economy
     <<: *config_path
     name: economy
-    url_frame: https://www.investing.com/news/economy/{page}
     task_id: investing-economy
   - category: economic-indicators
     <<: *config_path
     name: economic-indicators
-    url_frame: https://www.investing.com/news/economic-indicators/{page}
     task_id: investing-economic-indicators
   - category: politics
     <<: *config_path
     name: politics
-    url_frame: https://www.investing.com/news/politics/{page}
     task_id: investing-politics
   - category: world
     <<: *config_path
     name: world
-    url_frame: https://www.investing.com/news/world-news/{page}
     task_id: investing-world
   - category: coronavirus
     <<: *config_path
     name: coronavirus
-    url_frame: https://www.investing.com/news/coronavirus/{page}
     task_id: investing-coronavirus
   - category: technology
     <<: *config_path
     name: technology
-    url_frame: https://www.investing.com/news/technology-news/{page}
     task_id: investing-technology
   - category: sports&general
     <<: *config_path
     name: sports
-    url_frame: https://www.investing.com/news/general/{page}
     task_id: investing-sports
