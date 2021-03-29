@@ -51,6 +51,9 @@ class CrawlerDagBuilder(object):
         sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
 
         sep = '/'
+        sep = os.sep
+        path = os.getcwd()[:os.getcwd().rfind(os.sep)]
+        sub_path = 'airflow'
         file_path = sep.join([path, sub_path, filename])
         if not os.path.isfile(filename):
             file_path = sep.join([path, sub_path, 'config', filename])
