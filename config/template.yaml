@@ -60,7 +60,7 @@ adena_init_containers: &adena_init_containers_template
   image_pull_policy: IfNotPresent
   env:
   - name: GIT_SYNC_REPO
-    value: "http://galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
+    value: "http://gunyoung20:QxrKmhTQs7LEXzvV6xuq@galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
   - name: GIT_SYNC_BRANCH
     repo: "live"
   command:
