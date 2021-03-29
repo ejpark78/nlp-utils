@@ -1,5 +1,5 @@
 ---
-reference: adena_template_en
+reference:
 dag:
   dag_id: 'investing'
   description: 'investing 크롤러'
@@ -7,48 +7,37 @@ dag:
   tags: ["investing"]
 task_template: &config_path
   config: /adena_crawler/config/news/investing.yaml
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - gunyoung20@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/adena-crawler:master'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'sleep'
+      - '1000'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
 tasks:
   - category: cryptocurrency
     <<: *config_path
     name: cryptocurrency
     task_id: investing-cryptocurrency
-  - category: stock-markets
-    <<: *config_path
-    name: investing-stock-markets
-    task_id: investing-stock-markets
-  - category: commodities
-    <<: *config_path
-    name: commodities
-    task_id: investing-commodities
-  - category: forex
-    <<: *config_path
-    name: forex
-    task_id: investing-forex
-  - category: economy
-    <<: *config_path
-    name: economy
-    task_id: investing-economy
-  - category: economic-indicators
-    <<: *config_path
-    name: economic-indicators
-    task_id: investing-economic-indicators
-  - category: politics
-    <<: *config_path
-    name: politics
-    task_id: investing-politics
-  - category: world
-    <<: *config_path
-    name: world
-    task_id: investing-world
-  - category: coronavirus
-    <<: *config_path
-    name: coronavirus
-    task_id: investing-coronavirus
-  - category: technology
-    <<: *config_path
-    name: technology
-    task_id: investing-technology
-  - category: sports&general
-    <<: *config_path
-    name: sports
-    task_id: investing-sports
