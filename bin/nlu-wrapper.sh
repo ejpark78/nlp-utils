@@ -2,7 +2,7 @@
 
 set -x #echo on
 
-# bin/nlu-wrapper.sh "--name nlu-wrapper-2021-03" "2021-03-01~2021-03-10"
+# bin/nlu-wrapper.sh "--name nlu-wrapper-2021-03" "2021-03-29~2021-03-29"
 
 docker_args="$1"
 dt_range="$2"
@@ -26,5 +26,5 @@ docker run -it --rm \
   -e "NLU_WRAPPER_URL=http://172.20.40.142" \
   ${docker_args} \
   ${image} \
-    python3 -m crawler.utils.nlu_wrapper \
+    python3 -m crawler.web_news.pipeline \
       --date-range "${dt_range}"

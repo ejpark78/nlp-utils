@@ -31,24 +31,30 @@ class MysqlUtils(object):
         self.logger = Logger()
         self.timezone = pytz.timezone('Asia/Seoul')
 
-    def make_sql_frame(self, table_name: str) -> None:
-        """
-        CREATE TABLE naver (
-            `index` varchar(50) not null,
-            `id` varchar(50) not null,
-            `paragraph_id` integer not null,
-            `sentence_id` integer not null,
-            `date` datetime not null,
-            `position` varchar(10) not null,
-            `source` varchar(10) default '',
-            `category` varchar(50) default '',
-            `page` varchar(10) default '',
-            `text` text not null,
-            `ne` text not null,
-            `pos` text not null,
+    def create_table(self, table_name: str) -> None:
+        sql = f"""
+        CREATE TABLE {table_name} (
+            `index` VARCHAR(50) NOT NULL,
+            `id` VARCHAR(50) NOT NULL,
+            `paragraph_id` INTEGER NOT NULL,
+            `sentence_id` INTEGER NOT NULL,
+            `date` DATETIME NOT NULL,
+            `position` VARCHAR(10) NOT NULL,
+            `source` VARCHAR(10) DEFAULT '',
+            `category` VARCHAR(50) DEFAULT '',
+            `page` VARCHAR(10) DEFAULT '',
+            `text` TEXT NOT NULL,
+            `ne` TEXT NOT NULL,
+            `pos` TEXT NOT NULL,
             PRIMARY KEY (`index`, `id`, `paragraph_id`, `sentence_id`)
-        );
+        )      
         """
+
+        cursor = self.db.cursor()
+        cursor.execute(sql)
+        return
+
+    def make_sql_frame(self, table_name: str) -> None:
         self.column_alias = {
             '_index': 'index',
             '_id': 'id',
@@ -105,11 +111,15 @@ class MysqlUtils(object):
 
     def get_ids(self, date_range: str) -> list:
         # SELECT `index`, `id` FROM `naver` GROUP BY `index`, `id`;
-        sql = 'SELECT `index`, `id`, ANY_VALUE(`date`) ' \
-              'FROM `naver` ' \
-              'WHERE `date` ' \
-              'BETWEEN {} AND {} ' \
-              'GROUP BY `index`, `id`'
+        dt_st, dt_en = date_range.split('~')
+
+        sql = f"""
+        SELECT `index`, `id`, ANY_VALUE(`date`) 
+        FROM `naver` 
+        WHERE `date` 
+        BETWEEN {dt_st} AND {dt_en} 
+        GROUP BY `index`, `id`
+        """
 
         cursor = self.db.cursor()
         cursor.execute(sql)
