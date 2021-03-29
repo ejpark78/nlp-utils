@@ -56,6 +56,7 @@ adena_params: &adena_operator_params_template
   get_logs: 'True'
   cmds:
     - 'sleep'
+  args:
     - '1000'
   env_vars:
     ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
@@ -167,7 +168,6 @@ adena_template_en:
   default_args:
     <<: *default_args_template
   operator:
-    <<: *news_args_template
     params:
       <<: *adena_operator_params_template
       labels:
