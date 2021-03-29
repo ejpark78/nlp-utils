@@ -45,7 +45,7 @@ RUN echo && echo "크롤러 설치 (git): ${INSTALL_BRANCH}" \
      && rm -rf /tmp/* ~/.cache
 
 RUN echo && echo "크롤러 config 설치: ${CONFIG_BRANCH}" \
-    && git clone -b ${CONFIG_BRANCH} http://galadriel02.korea.ncsoft.corp/crawler/config.git /config \
+    && git clone -b ${CONFIG_BRANCH} http://ejpark:tyYXt4sQoyazxxytvnzH@galadriel02.korea.ncsoft.corp/crawler/config.git /config \
     && rm -rf /config/.git
 
 #RUN echo && echo "크롤러 설치 (pypi)" \

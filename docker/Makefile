@@ -78,7 +78,7 @@ live:
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
 		--build-arg "INSTALL_BRANCH=live" \
-		--build-arg "CONFIG_BRANCH=live" \
+		--build-arg "CONFIG_BRANCH=master" \
 		-t $(IMAGE):live \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
@@ -93,7 +93,7 @@ dev:
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
 		--build-arg "INSTALL_BRANCH=dev" \
-		--build-arg "CONFIG_BRANCH=dev" \
+		--build-arg "CONFIG_BRANCH=master" \
 		-t $(IMAGE):dev \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \

@@ -332,10 +332,11 @@ class NLUWrapper(object):
 
         doc_list = self.get_doc_list()
 
+        db_user, db_passwd = self.params['result_auth'].split(':')
         result_db = pymysql.connect(
             host=self.params['result_host'],
-            user=self.params['result_user'],
-            password=self.params['result_password'],
+            user=db_user,
+            password=db_passwd,
             database=self.params['result_database'],
         )
 
@@ -409,8 +410,7 @@ class NLUWrapper(object):
                             default=getenv('ELASTIC_INDEX', default='crawler-naver-*-2021'))
 
         parser.add_argument('--result-host', default=getenv('DB_HOST', default='crawler-mysql.cloud.ncsoft.com'))
-        parser.add_argument('--result-user', default=getenv('DB_USER', default='root'))
-        parser.add_argument('--result-password', default=getenv('DB_PASSWORD', default='searchT2020'))
+        parser.add_argument('--result-auth', default=getenv('DB_AUTH', default='root:searchT2020'))
         parser.add_argument('--result-database', default=getenv('DB_DATABASE', default='naver'))
         parser.add_argument('--result-table-name', default=getenv('DB_TABLE', default='naver'))
 
