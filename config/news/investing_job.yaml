@@ -1,43 +1,63 @@
 ---
-reference:
+reference: adena_template_en
 dag:
   dag_id: 'investing'
   description: 'investing 크롤러'
   schedule_interval: '0 * * * *'
   tags: ["investing"]
-task_template: &config_path
-  config: /adena_crawler/config/news/investing.yaml
-default_args:
-  owner: 'Airflow'
-  retries: 3
-  depends_on_past: False
-  email:
-    - gunyoung20@ncsoft.com
-  email_on_retry: False
-  email_on_failure: False
-operator:
-  params:
-    labels:
-      crawler: news
-    namespace: 'airflow'
-    image: 'registry.nlp-utils/adena-crawler:master'
-    image_pull_policy: 'Always'
-    image_pull_secrets: 'registry'
-    is_delete_operator_pod: 'True'
-    get_logs: 'True'
-    cmds:
-      - 'sleep'
-      - '1000'
-    env_vars:
-      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
-      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: cryptocurrency
-    config: /adena_crawler/config/news/investing.yaml
+    config: /config/news/investing.yaml
     name: cryptocurrency
+    url_frame: https://www.investing.com/news/cryptocurrency-news/{page}
     task_id: investing-cryptocurrency
+  - category: stock-markets
+    config: /config/news/investing.yaml
+    name: investing-stock-markets
+    url_frame: https://www.investing.com/news/stock-market-news/{page}
+    task_id: investing-stock-markets
+  - category: commodities
+    config: /config/news/investing.yaml
+    name: commodities
+    url_frame: https://www.investing.com/news/commodities-news/{page}
+    task_id: investing-commodities
+  - category: forex
+    config: /config/news/investing.yaml
+    name: forex
+    url_frame: https://www.investing.com/news/forex-news/{page}
+    task_id: investing-forex
+  - category: economy
+    config: /config/news/investing.yaml
+    name: economy
+    url_frame: https://www.investing.com/news/economy/{page}
+    task_id: investing-economy
+  - category: economic-indicators
+    config: /config/news/investing.yaml
+    name: economic-indicators
+    url_frame: https://www.investing.com/news/economic-indicators/{page}
+    task_id: investing-economic-indicators
+  - category: politics
+    config: /config/news/investing.yaml
+    name: politics
+    url_frame: https://www.investing.com/news/politics/{page}
+    task_id: investing-politics
+  - category: world
+    config: /config/news/investing.yaml
+    name: world
+    url_frame: https://www.investing.com/news/world-news/{page}
+    task_id: investing-world
+  - category: coronavirus
+    config: /config/news/investing.yaml
+    name: coronavirus
+    url_frame: https://www.investing.com/news/coronavirus/{page}
+    task_id: investing-coronavirus
+  - category: technology
+    config: /config/news/investing.yaml
+    name: technology
+    url_frame: https://www.investing.com/news/technology-news/{page}
+    task_id: investing-technology
+  - category: sports&general
+    config: /config/news/investing.yaml
+    name: sports
+    url_frame: https://www.investing.com/news/general/{page}
+    task_id: investing-sports
