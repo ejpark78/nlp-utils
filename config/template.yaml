@@ -10,7 +10,7 @@ default_args: &default_args_template
   retries: 3
   depends_on_past: False
   email:
-    - ejpark@ncsoft.com
+    - gunyoung20@ncsoft.com
   email_on_retry: False
   email_on_failure: False
 operator:
@@ -33,6 +33,17 @@ operator:
       request_memory: "256Mi"
       limit_cpu: "200m"
       limit_memory: "256Mi"
+
+news: &news_args_template
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+    - --page-range
+    - 1~5
 
 adena_params: &adena_operator_params_template
   labels:
@@ -72,16 +83,6 @@ adena_init_containers: &adena_init_containers_template
   - $(GIT_SYNC_REPO)
   - /adena_crawler/config
 
-news: &news_args_template
-  args:
-    - -m
-    - crawler.web_news.web_news
-    - --sleep
-    - '5'
-    - --date-range
-    - today
-    - --page-range
-    - 1~5
 
 template_kor:
   dag:
