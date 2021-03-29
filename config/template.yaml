@@ -172,6 +172,6 @@ adena_template_en:
       labels:
         crawler: adena-news
         lang: en
-#    init_containers:
-#      <<: *adena_init_containers_template
+    init_containers:
+      <<: *adena_init_containers_template
   tasks: []
