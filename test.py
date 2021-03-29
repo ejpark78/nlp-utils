@@ -9,8 +9,9 @@ import crawler_dag_builder
 
 if __name__ == "__main__":
     project_path = os.getcwd()[:os.getcwd().rfind(os.sep)]
-    os.putenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', project_path)
-    os.putenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'airflow')
+    # os.putenv('AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT', project_path)
+    # os.putenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'airflow')
     builder = crawler_dag_builder.CrawlerDagBuilder()
-    config = builder.open_config(f"news{os.sep}cctoday_job.yaml")
+    config = builder.open_config(f"news{os.sep}investing_job.yaml")
+    dag, task_group = builder.build(f"news{os.sep}investing_job.yaml")
     print(config)
