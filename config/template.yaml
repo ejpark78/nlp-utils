@@ -49,7 +49,7 @@ adena_params: &adena_operator_params_template
   labels:
     crawler: news
   namespace: 'airflow'
-  image: 'registry.nlp-utils/adena-crawler:live'
+  image: 'registry.nlp-utils/adena-crawler:master'
   image_pull_policy: 'Always'
   image_pull_secrets: 'registry'
   is_delete_operator_pod: 'True'
@@ -75,7 +75,7 @@ adena_init_containers: &adena_init_containers_template
   - name: GIT_SYNC_REPO
     value: "http://gunyoung20:QxrKmhTQs7LEXzvV6xuq@galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
   - name: GIT_SYNC_BRANCH
-    repo: "live"
+    repo: "master"
   command:
   - git
   - clone
