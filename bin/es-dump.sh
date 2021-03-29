@@ -14,7 +14,9 @@ else
   es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
 fi
 
-dump_path=$(pwd)"/data/es_dump/${es_server}"
+today=$(date "+%Y-%m-%d")
+
+dump_path=$(pwd)"/data/es_dump/${es_server}/${today}"
 mkdir -p "${dump_path}"
 
 curl -k -s -u "${es_auth}" "${es_host}/_cat/indices?s=index&h=index,docs.count" \

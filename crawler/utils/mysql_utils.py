@@ -101,8 +101,9 @@ class MysqlUtils(object):
             if 'date' in doc:
                 doc['date'] = parse_date(doc['date']).astimezone(tz=self.timezone)
 
+            v = self.get_values(doc=doc)
             try:
-                cursor.execute(self.sql, self.get_values(doc=doc))
+                cursor.execute(self.sql, v)
             except Exception as e:
                 self.logger.error(msg={'level': 'ERROR', 'doc': doc, 'error': str(e)})
 
@@ -119,7 +120,10 @@ class MysqlUtils(object):
 
         cursor = self.db.cursor()
         cursor.execute(
-            f" SELECT `index`, `id` FROM `naver` WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' GROUP BY `index`, `id` "
+            f"SELECT `index`, `id` "
+            f"  FROM `naver` "
+            f"  WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' "
+            f"  GROUP BY `index`, `id` "
         )
 
         return set([x for x in cursor.fetchall()])

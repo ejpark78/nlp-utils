@@ -165,7 +165,6 @@ class Pipeline(object):
 
                 if len(resp) == 0:
                     error_docs += doc_buf
-                    # self.save_error_list(error_list=bulk)
 
                 bulk, doc_buf = [], []
                 sleep(self.params['sleep'])
@@ -178,7 +177,6 @@ class Pipeline(object):
 
         if len(resp) == 0:
             error_docs += doc_buf
-            # self.save_error_list(error_list=bulk)
 
         # NLU Wrapper: 100%|█████████▉| 28446/28454 [10:05:50<00:13,  1.66s/it]
         # NLU Wrapper: 100%|██████████| 28454/28454 [10:05:56<00:00,  1.28s/it]
