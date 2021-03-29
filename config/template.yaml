@@ -53,8 +53,6 @@ adena_news: &adena_news_args_template
     - today
     - --page-range
     - 1~5
-    - --wait_start
-    - 300
 
 adena_params: &adena_operator_params_template
   labels:
