@@ -38,7 +38,7 @@ adena_params: &adena_operator_params_template
   labels:
     crawler: news
   namespace: 'airflow'
-  image: 'registry.nlp-utils/adena_crawler:live'
+  image: 'registry.nlp-utils/adena-crawler:live'
   image_pull_policy: 'Always'
   image_pull_secrets: 'registry'
   is_delete_operator_pod: 'True'
