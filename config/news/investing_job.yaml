@@ -5,59 +5,50 @@ dag:
   description: 'investing 크롤러'
   schedule_interval: '0 * * * *'
   tags: ["investing"]
+task_template: &task_template
+  config: /adena_crawler/config/news/investing.yaml
 tasks:
   - category: cryptocurrency
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: cryptocurrency
-    url_frame: https://www.investing.com/news/cryptocurrency-news/{page}
     task_id: investing-cryptocurrency
   - category: stock-markets
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: investing-stock-markets
-    url_frame: https://www.investing.com/news/stock-market-news/{page}
     task_id: investing-stock-markets
   - category: commodities
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: commodities
-    url_frame: https://www.investing.com/news/commodities-news/{page}
     task_id: investing-commodities
   - category: forex
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: forex
-    url_frame: https://www.investing.com/news/forex-news/{page}
     task_id: investing-forex
   - category: economy
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: economy
-    url_frame: https://www.investing.com/news/economy/{page}
     task_id: investing-economy
   - category: economic-indicators
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: economic-indicators
-    url_frame: https://www.investing.com/news/economic-indicators/{page}
     task_id: investing-economic-indicators
   - category: politics
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: politics
-    url_frame: https://www.investing.com/news/politics/{page}
     task_id: investing-politics
   - category: world
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: world
-    url_frame: https://www.investing.com/news/world-news/{page}
     task_id: investing-world
   - category: coronavirus
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: coronavirus
-    url_frame: https://www.investing.com/news/coronavirus/{page}
     task_id: investing-coronavirus
   - category: technology
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: technology
-    url_frame: https://www.investing.com/news/technology-news/{page}
     task_id: investing-technology
   - category: sports&general
-    config: /config/news/investing.yaml
+    <<: *task_template
     name: sports
-    url_frame: https://www.investing.com/news/general/{page}
     task_id: investing-sports
