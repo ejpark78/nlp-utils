@@ -167,10 +167,10 @@ adena_template_en:
   operator:
     <<: *news_args_template
     params:
-      <<: *operator_params_template
+      <<: *adena_operator_params_template
       labels:
         crawler: adena-news
         lang: en
     init_containers:
-      <<: *init_containers_template
+      <<: *adena_init_containers_template
   tasks: []
