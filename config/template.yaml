@@ -33,23 +33,44 @@ operator:
       request_memory: "256Mi"
       limit_cpu: "200m"
       limit_memory: "256Mi"
-  init_containers: &init_containers_template
-  - name: git-config
-    image: registry.nlp-utils/alpine/git:v2.30.0
-    image_pull_policy: IfNotPresent
-    env:
-    - name: GIT_SYNC_REPO
-      value: "http://galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
-    - name: GIT_SYNC_BRANCH
-      repo: "live"
-    command:
-    - git
-    - clone
-    - --progress
-    - -b
-    - $(GIT_SYNC_BRANCH)
-    - $(GIT_SYNC_REPO)
-    - /adena_crawler/config
+
+adena_params: &adena_operator_params_template
+  labels:
+    crawler: news
+  namespace: 'airflow'
+  image: 'registry.nlp-utils/adena_crawler:live'
+  image_pull_policy: 'Always'
+  image_pull_secrets: 'registry'
+  is_delete_operator_pod: 'True'
+  get_logs: 'True'
+  cmds:
+    - 'python3'
+  env_vars:
+    ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+    ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  resources:
+    request_cpu: "200m"
+    request_memory: "256Mi"
+    limit_cpu: "200m"
+    limit_memory: "256Mi"
+
+adena_init_containers: &adena_init_containers_template
+- name: git-config
+  image: registry.nlp-utils/alpine/git:v2.30.0
+  image_pull_policy: IfNotPresent
+  env:
+  - name: GIT_SYNC_REPO
+    value: "http://galadriel02.korea.ncsoft.corp/ontology/adena_crawler.git"
+  - name: GIT_SYNC_BRANCH
+    repo: "live"
+  command:
+  - git
+  - clone
+  - --progress
+  - -b
+  - $(GIT_SYNC_BRANCH)
+  - $(GIT_SYNC_REPO)
+  - /adena_crawler/config
 
 news: &news_args_template
   args:
@@ -146,10 +167,10 @@ adena_template_en:
   operator:
     <<: *news_args_template
     params:
-      <<: *operator_params_template
+      <<: *adena_operator_params_template
       labels:
         crawler: adena-news
         lang: en
     init_containers:
-      <<: *init_containers_template
+      <<: *adena_init_containers_template
   tasks: []
