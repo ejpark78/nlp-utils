@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'newspeppermint'
   description: 'NewsPeppermint 크롤러'
   schedule_interval: '15 * * * *'
   tags:
     - NewsPeppermint
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: world
     config: /config/news/newspeppermint.yaml

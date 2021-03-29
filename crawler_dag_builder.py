@@ -15,6 +15,8 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
 
+import kubernetes.client.models as k8s
+
 class CrawlerDagBuilder(object):
 
     @staticmethod
@@ -49,19 +51,17 @@ class CrawlerDagBuilder(object):
         sub_path = getenv('AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH', 'repo')
 
         sep = '/'
-        if f'config{sep}' in filename:
-            filename = sep.join([path, sub_path, filename])
-        else:
-            filename = sep.join([path, sub_path, 'config', filename])
+        filename = sep.join([path, sub_path, filename]
+                            if f'config{sep}' in filename
+                            else [path, sub_path, 'config', filename])
 
         with open(filename, 'r', encoding='utf-8') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             if "reference" in data:
                 temp_filename = data["reference"] if '.yaml' in data["reference"] else "template.yaml"
-                if f'config{sep}' in data["reference"]:
-                    template_filename = sep.join([path, sub_path, temp_filename])
-                else:
-                    template_filename = sep.join([path, sub_path, 'config', temp_filename])
+                template_filename = sep.join([path, sub_path, temp_filename]
+                                             if f'config{sep}' in data["reference"]
+                                             else [path, sub_path, 'config', temp_filename])
 
                 template = {}
                 if os.path.isfile(template_filename):
@@ -101,13 +101,19 @@ class CrawlerDagBuilder(object):
                     item['name'],
                 ]
 
+            init_containers = None
+            if 'init_containers' in config['operator']:
+                init_containers_config = config['operator'].pop('init_containers')
+                init_containers = [k8s.V1Container(**init_containers_config)]
+
             task_group[name].append(KubernetesPodOperator(
-                dag=dag,
-                name='task',
-                task_id=item['task_id'],
-                arguments=config['operator']['args'] + extra_args,
-                **config['operator']['params']
-            ))
+                    dag=dag,
+                    name='task',
+                    task_id=item['task_id'],
+                    arguments=config['operator']['args'] + extra_args,
+                    init_containers=init_containers,
+                    **config['operator']['params']
+                ))
 
         return dag, task_group
 

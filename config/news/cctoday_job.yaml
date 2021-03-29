@@ -1,18 +1,11 @@
 ---
-reference: config/template_kor.yaml
+reference: template_kor
 dag:
   dag_id: 'cctoday'
   description: '충청투데이 crawler'
   schedule_interval: '15 * * * *'
   tags:
     - 충청투데이
-operator:
-  params:
-    resources:
-      request_cpu: "200m"
-      request_memory: "256Mi"
-      limit_cpu: "200m"
-      limit_memory: "256Mi"
 tasks:
   - category: politics
     config: /config/news/cctoday.yaml
