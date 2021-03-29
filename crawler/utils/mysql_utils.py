@@ -97,17 +97,21 @@ class MysqlUtils(object):
 
         cursor = self.db.cursor()
 
-        for doc in doc_list:
+        for i, doc in enumerate(doc_list):
             if 'date' in doc:
                 doc['date'] = parse_date(doc['date']).astimezone(tz=self.timezone)
 
             v = self.get_values(doc=doc)
             if verbose == 1:
                 self.logger.log(msg={**doc, 'values': v})
+
             try:
                 cursor.execute(self.sql, v)
             except Exception as e:
                 self.logger.error(msg={'level': 'ERROR', 'doc': doc, 'error': str(e)})
+
+            if i % 10 == 9:
+                self.db.commit()
 
         self.db.commit()
 
