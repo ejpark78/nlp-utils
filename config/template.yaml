@@ -169,6 +169,7 @@ adena_template_en:
     <<: *default_args_template
   operator:
 #    <<: *news_args_template
+    args: []
     params:
       <<: *adena_operator_params_template
       cmds:
