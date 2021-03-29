@@ -52,7 +52,7 @@ class CrawlerDagBuilder(object):
 
         sep = '/'
         file_path = sep.join([path, sub_path, filename])
-        if not os.path.isfile(filename):
+        if not os.path.isfile(file_path):
             file_path = sep.join([path, sub_path, 'config', filename])
 
         with open(file_path, 'r', encoding='utf-8') as fp:
