@@ -22,7 +22,7 @@ from crawler.utils.logger import Logger
 
 
 class PostProcess(object):
-    """ETL Pipeline"""
+    """Post Process"""
 
     def __init__(self):
         self.logger = Logger()

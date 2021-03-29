@@ -50,6 +50,11 @@ DOCKER_ARGS += --build-arg "GIT_TAG=$(GIT_TAG)"
 DOCKER_ARGS += --build-arg "GIT_COMMIT_ID=$(GIT_COMMIT_ID)"
 DOCKER_ARGS += --build-arg "GIT_COMMIT_COUNT=$(GIT_COMMIT)"
 
+# APP
+APP_INSTALL =
+APP_INSTALL += --build-arg "CRAWLER_SRC=http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git"
+APP_INSTALL += --build-arg "CRAWLER_CONFIG=http://ejpark:tyYXt4sQoyazxxytvnzH@galadriel02.korea.ncsoft.corp/crawler/config.git"
+
 DOCKER_BUILD_OPT =
 DOCKER_BUILD_OPT += --network=host
 DOCKER_BUILD_OPT += --add-host "nlp-utils:172.19.153.41"
@@ -77,6 +82,7 @@ live:
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
+		$(APP_INSTALL) \
 		--build-arg "INSTALL_BRANCH=live" \
 		--build-arg "CONFIG_BRANCH=master" \
 		-t $(IMAGE):live \
@@ -92,6 +98,7 @@ dev:
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
+		$(APP_INSTALL) \
 		--build-arg "INSTALL_BRANCH=dev" \
 		--build-arg "CONFIG_BRANCH=master" \
 		-t $(IMAGE):dev \
@@ -124,11 +131,12 @@ toolbox:
 		.
 
 .ONESHELL:
-push:
+push-live:
 	docker push $(IMAGE):live
+
+.ONESHELL:
+push-dev:
 	docker push $(IMAGE):dev
-	#docker push $(IMAGE):jupyter
-	#docker push $(IMAGE):toolbox
 
 .ONESHELL:
 check-ip:

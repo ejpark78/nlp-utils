@@ -517,6 +517,8 @@ class ElasticSearchUtils(object):
         if self.conn.indices.exists(index) is False:
             return
 
+        size = limit + 1 if size > limit else size
+
         count = 1
         sum_count = 0
         scroll_id = ''

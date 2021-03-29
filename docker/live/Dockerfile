@@ -36,8 +36,11 @@ ENV GIT_COMMIT_COUNT=${GIT_COMMIT_COUNT}
 ENV INSTALL_BRANCH=${INSTALL_BRANCH}
 ENV CONFIG_BRANCH=${CONFIG_BRANCH}
 
+ARG CRAWLER_SRC="http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git"
+ARG CRAWLER_CONFIG="http://ejpark:tyYXt4sQoyazxxytvnzH@galadriel02.korea.ncsoft.corp/crawler/config.git"
+
 RUN echo && echo "크롤러 설치 (git): ${INSTALL_BRANCH}" \
-     && git clone -b ${INSTALL_BRANCH} http://ejpark:utSWJzbGBnmomJjm55Xh@galadriel02.korea.ncsoft.corp/crawler/crawler.git /tmp/crawler \
+     && git clone -b ${INSTALL_BRANCH} ${CRAWLER_SRC} /tmp/crawler \
      && cd /tmp/crawler \
      && pip3 install -r requirements.txt \
      && python3 setup.py install \
@@ -45,7 +48,7 @@ RUN echo && echo "크롤러 설치 (git): ${INSTALL_BRANCH}" \
      && rm -rf /tmp/* ~/.cache
 
 RUN echo && echo "크롤러 config 설치: ${CONFIG_BRANCH}" \
-    && git clone -b ${CONFIG_BRANCH} http://ejpark:tyYXt4sQoyazxxytvnzH@galadriel02.korea.ncsoft.corp/crawler/config.git /config \
+    && git clone -b ${CONFIG_BRANCH} ${CRAWLER_CONFIG} /config \
     && rm -rf /config/.git
 
 #RUN echo && echo "크롤러 설치 (pypi)" \

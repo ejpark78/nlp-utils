@@ -2,8 +2,10 @@
 
 set -x #echo on
 
-dt_range="$1"
-docker_args="$2"
+# bin/nlu-wrapper.sh "--name nlu-wrapper-2021-03" "2021-03-01~2021-03-10"
+
+docker_args="$1"
+dt_range="$2"
 
 image="registry.nlp-utils/crawler:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
@@ -13,6 +15,7 @@ db_auth=$(echo -n "cm9vdDpzZWFyY2hUMjAyMA==" | base64 -d)
 docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \
   --add-host "crawler-es.cloud.ncsoft.com:172.19.170.187" \
+  --add-host "crawler-mysql.cloud.ncsoft.com:172.19.154.164" \
   -e "ELASTIC_SEARCH_HOST=${es_host}" \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
   -e "ELASTIC_INDEX=crawler-naver-*-2021" \
