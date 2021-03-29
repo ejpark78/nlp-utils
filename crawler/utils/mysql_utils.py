@@ -91,7 +91,7 @@ class MysqlUtils(object):
 
         return result
 
-    def save_result(self, doc_list: list) -> None:
+    def save_result(self, doc_list: list, verbose: int = 0) -> None:
         if len(doc_list) == 0:
             return
 
@@ -102,6 +102,8 @@ class MysqlUtils(object):
                 doc['date'] = parse_date(doc['date']).astimezone(tz=self.timezone)
 
             v = self.get_values(doc=doc)
+            if verbose == 1:
+                self.logger.log(msg={**doc, 'values': v})
             try:
                 cursor.execute(self.sql, v)
             except Exception as e:

@@ -161,7 +161,7 @@ class Pipeline(object):
 
             if len(bulk) > bulk_size:
                 resp = self.nlu_wrapper.request(doc_list=bulk, style=style, domain=domain, options=options)
-                self.result_db.save_result(doc_list=resp)
+                self.result_db.save_result(doc_list=resp, verbose=self.params['verbose'])
 
                 if len(resp) == 0:
                     error_docs += doc_buf
@@ -173,7 +173,7 @@ class Pipeline(object):
             return error_docs
 
         resp = self.nlu_wrapper.request(doc_list=bulk, style=style, domain=domain, options=options)
-        self.result_db.save_result(doc_list=resp)
+        self.result_db.save_result(doc_list=resp, verbose=self.params['verbose'])
 
         if len(resp) == 0:
             error_docs += doc_buf
