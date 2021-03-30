@@ -678,14 +678,13 @@ class ElasticSearchUtils(object):
 
             sum_count += count
 
-            log_msg = {
+            self.logger.info(msg={
                 'level': 'INFO',
                 'index': index,
                 'count': count,
-                'sum_count': sum_count,
                 'total': resp['total'],
-            }
-            self.logger.info(msg=log_msg)
+                'sum_count': sum_count,
+            })
 
             for item in resp['hits']:
                 document_id = item['_id']
@@ -921,6 +920,31 @@ class ElasticSearchUtils(object):
                 }
             }
         }
+
+    @staticmethod
+    def flatten_doc(obj: dict, sep: str = '.') -> dict:
+        result, stack = {}, list(obj.items())
+
+        while len(stack) > 0:
+            key, val = stack.pop()
+            if isinstance(val, dict) is False:
+                result[key] = val
+                continue
+
+            stack += [(f'{key}{sep}{sub_key}', sub_val) for sub_key, sub_val in val.items()]
+
+        return result
+
+    def save_summary(self, index: str, summary: dict) -> None:
+        if self.conn.indices.exists(index=index) is not True:
+            pass
+
+        summary = self.flatten_doc(obj=summary, sep='.')
+        if '@timestamp' not in summary:
+            summary['@timestamp'] = datetime.now(tz=self.timezone).isoformat()
+
+        self.conn.index(index=index, body=summary)
+        return
 
     def get_doc_url(self, document_id: str) -> str:
         return f'{self.host}/{self.index}/_doc/{document_id}?pretty'

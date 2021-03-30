@@ -75,6 +75,7 @@ class WebNewsBase(object):
         # summary
         self.summary = defaultdict(int)
 
+        # ES ENV
         self.elastic_env = {
             'host': getenv('ELASTIC_SEARCH_HOST', default=''),
             'index': getenv('ELASTIC_SEARCH_INDEX', default=''),
@@ -372,28 +373,36 @@ class WebNewsBase(object):
 
         return False, doc_index
 
-    def running_state(self, tag: str) -> None:
+    def masking_auth(self, obj: dict) -> None:
+        for k, v in obj.items():
+            if isinstance(v, dict):
+                self.masking_auth(obj=v)
+            elif k.find('auth') >= 0:
+                obj[k] = '*****'
+
+        return
+
+    def show_summary(self, tag: str, es: ElasticSearchUtils = None) -> None:
         finished = datetime.now(self.timezone)
-
         runtime = finished - self.start_date
-        runtime = runtime.total_seconds()
 
-        summary = deepcopy(self.summary)
-
-        # password masking
-        if 'env' in summary and 'http_auth' in summary['env']:
-            summary['env']['http_auth'] = '*****'
-
-        self.logger.log(msg={
-            'level': 'SUMMARY',
-            'params': self.params,
-            'env': self.elastic_env,
+        summary = {
             'tag': tag,
             'start': self.start_date.isoformat(),
+            'runtime': f'{runtime.total_seconds():0.2f}',
             'finished': finished.isoformat(),
-            'runtime': f'{runtime:0.2f}',
-            **summary
-        })
+            'params': {
+                **self.params
+            },
+            **self.summary,
+        }
+        self.masking_auth(obj=summary)
+
+        self.logger.log(msg={'level': 'SUMMARY', **summary})
+
+        if es:
+            es.save_summary(index='crawler-summary', summary=summary)
+
         return
 
     def remove_empty_date(self, doc: dict) -> None:

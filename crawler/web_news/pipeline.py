@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from collections import defaultdict
+from datetime import datetime
 from os import getenv
 from time import sleep
 
@@ -33,6 +35,46 @@ class Pipeline(object):
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.source = 'title,date,paper,source,category,content'.split(',')
+
+        # summary
+        self.summary = defaultdict(int)
+        self.start_date = datetime.now(self.timezone)
+
+    def masking_auth(self, obj: dict) -> None:
+        for k, v in obj.items():
+            if isinstance(v, dict):
+                self.masking_auth(obj=v)
+            elif k.find('auth') >= 0:
+                obj[k] = '*****'
+
+        return
+
+    def show_summary(self, tag: str = '') -> None:
+        finished = datetime.now(self.timezone)
+        runtime = finished - self.start_date
+
+        summary = {
+            'tag': tag,
+            'start': self.start_date.isoformat(),
+            'runtime': f'{runtime.total_seconds():0.2f}',
+            'finished': finished.isoformat(),
+            'params': {
+                **self.params
+            },
+            **self.summary,
+        }
+        self.masking_auth(obj=summary)
+
+        self.logger.log(msg={'level': 'SUMMARY', **summary})
+
+        ElasticSearchUtils(
+            host=self.params['host'],
+            http_auth=self.params['auth']
+        ).save_summary(
+            index='crawler-summary',
+            summary=summary
+        )
+        return
 
     def make_request(self, document: dict, modules: set) -> list:
         """하나의 문서를 코퍼스 전처리 한다.
@@ -129,19 +171,12 @@ class Pipeline(object):
             result=doc_list
         )
 
-        return [x for x in doc_list if tuple([x['_index'], x['_id']]) not in doc_ids]
+        result = [x for x in doc_list if tuple([x['_index'], x['_id']]) not in doc_ids]
 
-    @staticmethod
-    def save_error_list(error_list: list, filename: str = 'nlu-wrapper-error.list') -> None:
-        doc_ids = set([(x['meta']['_index'], x['meta']['_id']) for x in error_list if 'meta' in x])
-        if len(doc_ids) == 0:
-            return
+        self.summary['skip_docs'] += len(doc_list) - len(result)
+        self.summary['search_docs'] += len(doc_list)
 
-        with open(filename, 'a+') as fp:
-            for x in doc_ids:
-                fp.write('\t'.join(x) + '\n')
-
-        return
+        return result
 
     def analyze(self, doc_list: list, bulk_size: int = 50) -> list:
         if len(doc_list) == 0:
@@ -165,6 +200,8 @@ class Pipeline(object):
 
                 if len(resp) == 0:
                     error_docs += doc_buf
+                else:
+                    self.summary['nlu_docs'] += len(resp)
 
                 bulk, doc_buf = [], []
                 sleep(self.params['sleep'])
@@ -177,19 +214,26 @@ class Pipeline(object):
 
         if len(resp) == 0:
             error_docs += doc_buf
+        else:
+            self.summary['nlu_docs'] += len(resp)
 
-        # NLU Wrapper: 100%|█████████▉| 28446/28454 [10:05:50<00:13,  1.66s/it]
-        # NLU Wrapper: 100%|██████████| 28454/28454 [10:05:56<00:00,  1.28s/it]
         return error_docs
+
+    def pipeline(self, doc_list: list) -> None:
+        # TODO
+        return
 
     def batch(self) -> None:
         """
         1. es date range dump
-        2. apply config pipeline
+        2. apply config pipeline: parse raw
         3. call nlu wrapper
         4. save result
+        5. summary
         """
         self.params = self.init_arguments()
+
+        self.show_summary()
 
         self.nlu_wrapper.open(
             host=self.params['nlu_wrapper_host'],
@@ -209,13 +253,20 @@ class Pipeline(object):
         doc_list = self.get_doc_list(doc_ids=doc_ids)
 
         # pipeline
+        self.pipeline(doc_list=doc_list)
 
         # analyze
         error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])
+        self.summary['error_docs'] += len(error_docs)
 
         error_docs = self.analyze(doc_list=error_docs, bulk_size=self.params['bulk_size'] // 2)
+        self.summary['retry_error_docs'] += len(error_docs)
 
         error_docs = self.analyze(doc_list=error_docs, bulk_size=1)
+        self.summary['retry_error_docs'] += len(error_docs)
+
+        # summary
+        self.show_summary()
 
         self.result_db.close()
 

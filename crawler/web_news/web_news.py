@@ -401,7 +401,7 @@ class WebNewsCrawler(WebNewsBase):
                 # page 단위로 크롤링한다.
                 self.trace_page_list(url_info=url_info, job=job, dt=dt)
 
-            self.running_state(tag='category')
+            self.show_summary(tag='category')
 
         return
 
@@ -435,7 +435,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.trace_category(job=job)
 
-        self.running_state(tag='job')
+        self.show_summary(tag='job')
 
         return
 
@@ -467,7 +467,7 @@ class WebNewsCrawler(WebNewsBase):
                 # restore original params
                 self.params = deepcopy(params_org)
 
-        self.running_state(tag='completed')
+        self.show_summary(tag='completed')
 
         return
 

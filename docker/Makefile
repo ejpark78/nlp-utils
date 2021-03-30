@@ -100,7 +100,7 @@ dev:
 		$(DOCKER_BUILD_OPT) \
 		$(APP_INSTALL) \
 		--build-arg "INSTALL_BRANCH=dev" \
-		--build-arg "CONFIG_BRANCH=master" \
+		--build-arg "CONFIG_BRANCH=dev" \
 		-t $(IMAGE):dev \
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
