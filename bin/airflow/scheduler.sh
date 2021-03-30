@@ -1,8 +1,11 @@
+#!/usr/bin/env bash
 
-export AIRFLOW_HOME=$(pwd)/airflow
+export AIRFLOW_HOME="$(pwd)/airflow"
 export AIRFLOW__CORE__LOAD_EXAMPLES=False
-export AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH=dags
-export AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
+export AIRFLOW__CORE__DAGS_FOLDER="$(pwd)/dags"
+export AIRFLOW__KUBERNETES__GIT_DAGS_VOLUME_SUBPATH="dags"
+export AIRFLOW__KUBERNETES__GIT_DAGS_FOLDER_MOUNT_POINT="$(pwd)"
+
 export AIRFLOW__CORE__EXECUTOR=KubernetesExecutor
 export AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@localhost/airflow
 export AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@localhost/airflow

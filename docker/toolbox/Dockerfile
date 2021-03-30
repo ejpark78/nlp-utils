@@ -75,7 +75,7 @@ RUN echo && echo "# oh my zsh plugin 설치" \
     && find ~ -name .git -type d -exec rm -rf {} +
 
 ARG HELM_VER="v3.5.2"
-ARG K9S_VER="v0.24.4"
+ARG K9S_VER="v0.24.6"
 ARG STERN_VER="1.11.0"
 
 RUN echo && echo "# helm 설치" \
