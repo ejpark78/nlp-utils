@@ -233,8 +233,6 @@ class Pipeline(object):
         """
         self.params = self.init_arguments()
 
-        self.show_summary()
-
         self.nlu_wrapper.open(
             host=self.params['nlu_wrapper_host'],
             timeout=self.params['timeout']
