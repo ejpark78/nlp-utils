@@ -41,7 +41,8 @@ spec:
                       key: db_auth
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-pipline"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.name }}"
               args:
                 {{- toYaml $.Values.args | nindent 16 }}
+                {{- toYaml $job.args | nindent 16 }}
 {{- end }}

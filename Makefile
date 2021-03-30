@@ -9,6 +9,8 @@ ls:
 
 .ONESHELL:
 install:
+	helm install pipeline ./pipeline -f pipeline/values.yaml -n pipeline-kb
+
 	helm install bbs ./portal -f portal/bbs.yaml -n dev
 
 	helm install daum-news ./portal -f portal/daum-news.yaml -n dev

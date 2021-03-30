@@ -22,15 +22,17 @@ hostAliases:
       - "crawler-mysql.cloud.ncsoft.com"
 
 configMap:
-  ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
-  ELASTIC_INDEX: "crawler-naver-*-2021"
-  DB_HOST: "crawler-mysql.cloud.ncsoft.com"
-  DB_DATABASE: "naver"
-  DB_TABLE: "naver"
-  NLU_WRAPPER_URL: "http://172.20.40.142"
+  name: pipeline
+  data:
+    ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+    ELASTIC_INDEX: "crawler-naver-*-2021"
+    DB_HOST: "172.19.154.164"
+    DB_DATABASE: "naver"
+    DB_TABLE: "naver"
+    NLU_WRAPPER_URL: "http://172.20.40.142"
 
 secret:
-  name: pipeline
+  name: auth
 
 schedule:
   concurrencyPolicy: Forbid
@@ -45,5 +47,56 @@ args:
   - "today"
 
 jobs:
-  - name: pipeline-kb
+  - name: kb-economy
     schedule: "0 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-economy-2021"
+
+  - name: kb-international
+    schedule: "10 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-international-2021"
+
+  - name: kb-it
+    schedule: "20 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-it-2021"
+
+  - name: kb-living
+    schedule: "10 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-living-2021"
+
+  - name: kb-opinion
+    schedule: "20 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-opinion-2021"
+
+  - name: kb-politics
+    schedule: "40 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-politics-2021"
+
+  - name: kb-society
+    schedule: "30 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-society-2021"
+
+  - name: kb-sports
+    schedule: "50 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-sports-2021"
+
+  - name: kb-tv
+    schedule: "40 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-tv-2021"
