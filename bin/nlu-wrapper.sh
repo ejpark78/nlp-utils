@@ -9,13 +9,12 @@ dt_range="$2"
 python_args="$3"
 
 image="registry.nlp-utils/crawler:dev"
-es_host="https://crawler-es.cloud.ncsoft.com:9200"
-es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
+es_host="https://corpus.ncsoft.com:9200"
+es_auth=$(echo -n "Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==" | base64 -d)
 db_auth=$(echo -n "cm9vdDpzZWFyY2hUMjAyMA==" | base64 -d)
 
 docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \
-  --add-host "crawler-es.cloud.ncsoft.com:172.19.170.187" \
   --add-host "crawler-mysql.cloud.ncsoft.com:172.19.154.164" \
   -e "ELASTIC_SEARCH_HOST=${es_host}" \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \

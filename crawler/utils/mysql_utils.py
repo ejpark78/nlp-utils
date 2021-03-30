@@ -4,6 +4,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from datetime import datetime
+
 import pymysql
 import pytz
 import urllib3
@@ -118,8 +120,11 @@ class MysqlUtils(object):
         return
 
     def get_ids(self, date_range: str) -> set:
-        dt_st, dt_en = date_range.split('~')
-        dt_st, dt_en = parse_date(dt_st), parse_date(dt_en) + relativedelta(days=1)
+        dt_st = dt_en = datetime.now(self.timezone)
+
+        if date_range != 'today':
+            dt_st, dt_en = date_range.split('~')
+            dt_st, dt_en = parse_date(dt_st), parse_date(dt_en) + relativedelta(days=1)
 
         dt_st = dt_st.strftime('%Y-%m-%d 00:00:00')
         dt_en = dt_en.strftime('%Y-%m-%d 00:00:00')

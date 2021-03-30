@@ -19,6 +19,6 @@ docker run -it --rm \
     python3 -m crawler.web_news.web_news \
       --config "${config}" \
       --sleep 5 \
-      --job-name "kbo" \
-      --page-range "1032451~9000000" \
+      --job-name "bullpen" \
+      --page-range "1~9000000" \
       --list

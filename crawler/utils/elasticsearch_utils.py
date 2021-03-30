@@ -890,14 +890,16 @@ class ElasticSearchUtils(object):
 
         return
 
-    @staticmethod
-    def get_date_range_query(date_range: str = None, date_column: str = 'date',
+    def get_date_range_query(self, date_range: str = None, date_column: str = 'date',
                              parse_fmt: str = 'yyyy-MM-dd HH:mm:ss', query_fmt: str = '%Y-%m-%d %H:%M:%S') -> dict:
         if date_range is None:
             return {}
 
         dt_start, dt_end = None, None
-        if date_range is not None:
+
+        if date_range == 'today':
+            dt_start = dt_end = datetime.now(self.timezone).replace(hour=0, minute=0, second=0)
+        elif date_range.find('~') > 0:
             dt_start, dt_end = date_range.split('~')
             dt_start, dt_end = parse_date(dt_start), parse_date(dt_end)
 
