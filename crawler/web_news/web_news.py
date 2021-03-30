@@ -376,6 +376,8 @@ class WebNewsCrawler(WebNewsBase):
 
     def trace_category(self, job: dict) -> None:
         """url_frame 목록을 반복한다."""
+        self.summary['job'] = {**job}
+
         # url 목록 반복
         for url_info in job['list']:
             if self.job_sub_category is not None and 'category' in url_info and \
@@ -401,7 +403,7 @@ class WebNewsCrawler(WebNewsBase):
                 # page 단위로 크롤링한다.
                 self.trace_page_list(url_info=url_info, job=job, dt=dt)
 
-            self.show_summary(tag='category')
+            self.show_summary(tag='category', es=ElasticSearchUtils(host=job['host'], http_auth=job['http_auth']))
 
         return
 
@@ -435,7 +437,7 @@ class WebNewsCrawler(WebNewsBase):
 
         self.trace_category(job=job)
 
-        self.show_summary(tag='job')
+        self.show_summary(tag='job', es=ElasticSearchUtils(host=job['host'], http_auth=job['http_auth']))
 
         return
 
@@ -460,14 +462,23 @@ class WebNewsCrawler(WebNewsBase):
         # 카테고리 하위 목록을 크롤링한다.
         config_list = self.open_config(filename=self.params['config'])
 
+        last_job = None
         for self.job_config in config_list:
             for job in self.job_config['jobs']:
                 self.trace_job(job=job)
 
+                last_job = job
+
                 # restore original params
                 self.params = deepcopy(params_org)
 
-        self.show_summary(tag='completed')
+        if 'job' in self.summary:
+            del self.summary['job']
+
+        self.show_summary(
+            tag='completed',
+            es=ElasticSearchUtils(host=last_job['host'], http_auth=last_job['http_auth'])
+        )
 
         return
 

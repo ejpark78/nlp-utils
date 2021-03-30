@@ -2,6 +2,7 @@
 
 set -x #echo on
 
+time bin/nlu-wrapper.sh "--name nlu-2021-03-30" "2021-03-30~2021-03-30"
 time bin/nlu-wrapper.sh "--name nlu-2021-03-29" "2021-03-29~2021-03-29"
 time bin/nlu-wrapper.sh "--name nlu-2021-03-28" "2021-03-28~2021-03-28"
 time bin/nlu-wrapper.sh "--name nlu-2021-03-27" "2021-03-27~2021-03-27"

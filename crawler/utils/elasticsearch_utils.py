@@ -927,11 +927,16 @@ class ElasticSearchUtils(object):
 
         while len(stack) > 0:
             key, val = stack.pop()
-            if isinstance(val, dict) is False:
-                result[key] = val
+
+            if isinstance(val, list):
+                stack += [(f'{key}{sep}{i}', sub_val) for i, sub_val in enumerate(val)]
                 continue
 
-            stack += [(f'{key}{sep}{sub_key}', sub_val) for sub_key, sub_val in val.items()]
+            if isinstance(val, dict):
+                stack += [(f'{key}{sep}{sub_key}', sub_val) for sub_key, sub_val in val.items()]
+                continue
+
+            result[key] = val
 
         return result
 
