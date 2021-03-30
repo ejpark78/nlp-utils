@@ -1,11 +1,11 @@
 ---
-refrenece: template_kor
+reference: template_kor
 dag:
   dag_id: 'naeil'
   description: '내일 신문 크롤러'
   schedule_interval: '0 * * * *'
   tags:
-  - '내일신문'
+  - 내일신문
 tasks:
 - category: 전체기사
   config: /config/news/naeil.yaml
