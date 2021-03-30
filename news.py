@@ -12,7 +12,7 @@ from airflow import DAG
 from crawler_dag_builder import CrawlerDagBuilder
 
 def create_dag(filename):
-    dag_id,dag, task_group = CrawlerDagBuilder().build2(filename=filename)
+    dag, task_group = CrawlerDagBuilder().build(filename=filename)
 
     start = DummyOperator(task_id='start', dag=dag)
     group_list = []
@@ -22,7 +22,7 @@ def create_dag(filename):
             prev.set_downstream(task_or_task_list=task)
             prev = task
         group_list.append(start)
-    return dag_id, dag
+    return dag
 
 
 filename_list = list()
@@ -72,7 +72,7 @@ filename_list.append('news/yeongnam_job.yaml')
 
 
 for filename in filename_list:
-    dag_id, dag = create_dag( filename )
-    globals()[dag_id] = dag
+    dag = create_dag(filename)
+    globals()[dag.dag_id] = dag
 
 
