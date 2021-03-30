@@ -79,7 +79,7 @@ class CrawlerDagBuilder(object):
             **config['dag'],
             default_args={
                 **config['default_args'],
-                'start_date': days_ago(n=1),
+                'start_date': days_ago(n=2),
                 'retry_delay': timedelta(minutes=10),
                 'execution_timeout': timedelta(hours=1),
             }
@@ -100,26 +100,12 @@ class CrawlerDagBuilder(object):
                     '--sub-category',
                     item['name'],
                 ]
-            volumes = None
-            volume_mounts = None
-            init_containers = None
-            if 'init_containers' in config['operator']:
-                init_containers_config = config['operator'].pop('init_containers')
-                volume_configs = init_containers_config.pop('volume_mounts')
-                volumes = [k8s.V1Volume(name=vol_config['name'], empty_dir=True)
-                                 for vol_config in volume_configs]
-                volume_mounts = [k8s.V1VolumeMount(sub_path=None, read_only=True, **vol_config)
-                                 for vol_config in volume_configs]
-                init_containers = [k8s.V1Container(volume_mounts=volume_mounts, **init_containers_config)]
 
             task_group[name].append(KubernetesPodOperator(
                     dag=dag,
                     name='task',
                     task_id=item['task_id'],
                     arguments=config['operator']['args'] + extra_args,
-                    init_containers=init_containers,
-                    volumes=volumes,
-                    volume_mounts=volume_mounts,
                     **config['operator']['params']
                 ))
 
@@ -132,7 +118,7 @@ class CrawlerDagBuilder(object):
             **config['dag'],
             default_args={
                 **config['default_args'],
-                'start_date': days_ago(n=1),
+                'start_date': days_ago(n=2),
                 'retry_delay': timedelta(minutes=10),
                 'execution_timeout': timedelta(hours=1),
             }
