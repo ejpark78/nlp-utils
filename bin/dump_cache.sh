@@ -7,7 +7,7 @@ facebook_scripts="crawler/facebook/facebook.py"
 daum_scripts="crawler/movie_reviews/daum/daum.py"
 naver_scripts="crawler/movie_reviews/naver/naver.py"
 kbsec_scripts="crawler/kbsec/kbsec.py"
-sql_dump_scripts="crawler/bin/sql_dump.sh"
+sql_dump_scripts="bin/sql_dump.sh"
 
 case ${cache} in
   daum)

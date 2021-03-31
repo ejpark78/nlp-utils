@@ -120,7 +120,6 @@ xrdp:
 		$(APP_INSTALL) \
 		-t $(IMAGE):xrdp \
 		-f Dockerfile \
-		--build-arg BASE_IMAGE=$(BASE_IMAGE):dev \
 		.
 
 .ONESHELL:

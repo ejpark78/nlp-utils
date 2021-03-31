@@ -45,8 +45,9 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         vim \
         wget \
         zsh \
+    \
     && echo && echo "# docker/kubectl 설치" \
-	&& curl -s "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | apt-key add - \
+	&& curl -fsSL "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | apt-key add - \
 	&& curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | apt-key add - \
     && apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
     && apt-add-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${APT_CODE_NAME} stable" \
@@ -54,16 +55,19 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt install -yq ${APT_OPTS} \
         kubectl \
         docker-ce-cli \
+    \
     && echo && echo "# oh my zsh 설치" \
-    && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
+    && wget "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh || true \
     && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
     && rm -rf ~/.oh-my-zsh/.git \
+    \
     && echo && echo "# oh my zsh plugin 설치" \
-    && git clone --depth=1 https://github.com/jonmosco/kube-ps1 ~/.kube-ps1 \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-completions.git ~/.oh-my-zsh/plugins/zsh-completions \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions \
+    && git clone --depth=1 "https://github.com/jonmosco/kube-ps1" ~/.kube-ps1 \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-completions.git" ~/.oh-my-zsh/plugins/zsh-completions \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-syntax-highlighting.git" ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-autosuggestions.git" ~/.oh-my-zsh/plugins/zsh-autosuggestions \
     && find ~ -name .git -type d -exec rm -rf {} + \
+    \
     && echo && echo "# build library 삭제" \
     && apt purge -yq \
         software-properties-common \
@@ -78,16 +82,17 @@ RUN echo && echo "# helm 설치" \
 	&& wget -O /tmp/helm.tar.gz "https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz" \
     && tar xvfz /tmp/helm.tar.gz -C /tmp \
     && mv /tmp/linux-amd64/helm /usr/bin/ \
+    \
     && echo && echo "# k9s 설치" \
     && wget -O /tmp/k9s.tar.gz "https://github.com/derailed/k9s/releases/download/${K9S_VER}/k9s_Linux_x86_64.tar.gz" \
     && tar xvfz /tmp/k9s.tar.gz -C /tmp \
     && mv /tmp/k9s /usr/bin/ \
+    \
     && echo && echo "# stern 설치" \
     && wget -O /usr/bin/stern "https://github.com/wercker/stern/releases/download/${STERN_VER}/stern_linux_amd64" \
     && chmod +x /usr/bin/stern \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo && echo "# krew 설치" \
+    \
+    && echo && echo "# krew 설치" \
     && wget -O /tmp/krew.tar.gz "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" \
     && tar zxvf /tmp/krew.tar.gz -C /tmp \
     && mv /tmp/krew-linux_amd64 /usr/bin/krew \

@@ -72,6 +72,7 @@ class SeleniumWireUtils(object):
         options.add_argument("--disable-setuid-sandbox")
         options.add_argument("--disable-webgl")
         options.add_argument("--disable-popup-blocking")
+
         options.add_argument("--allow-running-insecure-content")
 
         options.add_argument("--no-default-browser-check")
@@ -84,17 +85,21 @@ class SeleniumWireUtils(object):
 
         prefs = {
             'disk-cache-size': 4096,
-            'profile.managed_default_content_settings.images': 2,
-            'profile.default_content_setting_values.notifications': 2,
-            'profile.managed_default_content_settings.stylesheets': 2,
-            'profile.managed_default_content_settings.plugins': 1,
-            'profile.managed_default_content_settings.popups': 2,
-            'profile.managed_default_content_settings.geolocation': 2,
-            'profile.managed_default_content_settings.media_stream': 2,
+            'profile.managed_default_content_settings.images': 1,
+            'profile.managed_default_content_settings.stylesheets': 1,
         }
 
-        if self.login is True:
-            prefs = {}
+        if self.login is False:
+            prefs = {
+                'disk-cache-size': 4096,
+                'profile.managed_default_content_settings.images': 2,
+                'profile.default_content_setting_values.notifications': 2,
+                'profile.managed_default_content_settings.stylesheets': 2,
+                'profile.managed_default_content_settings.plugins': 1,
+                'profile.managed_default_content_settings.popups': 2,
+                'profile.managed_default_content_settings.geolocation': 2,
+                'profile.managed_default_content_settings.media_stream': 2,
+            }
 
         options.add_experimental_option('prefs', prefs)
 

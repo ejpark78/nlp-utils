@@ -12,11 +12,11 @@ if [ ! -f "/etc/xrdp/cert.pem" ]; then
 
   cd /etc/xrdp
 
-  if [ ! $CERTIFICATE_SUBJECT ]; then
-    CERTIFICATE_SUBJECT="/C=US/ST=Some State/L=Some City/O=Some Org/OU=Some Unit/CN=Terminalserver"
-  fi
-
-  openssl req -x509 -newkey rsa:2048 -nodes -keyout /etc/xrdp/key.pem -out /etc/xrdp/cert.pem -days 365 -subj "$CERTIFICATE_SUBJECT"
+  openssl req -x509 -newkey rsa:2048 -nodes \
+    -keyout /etc/xrdp/key.pem \
+    -out /etc/xrdp/cert.pem \
+    -days 365 \
+    -subj "/C=US/ST=Some State/L=Some City/O=Some Org/OU=Some Unit/CN=Terminalserver"
 
   crudini --set /etc/xrdp/xrdp.ini Globals security_layer tls
   crudini --set /etc/xrdp/xrdp.ini Globals certificate /etc/xrdp/cert.pem

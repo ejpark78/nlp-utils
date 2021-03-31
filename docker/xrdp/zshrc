@@ -1,5 +1,7 @@
 
-ZSH_THEME="agnoster"
+ZSH_THEME="risto"
+ZSH_THEME="daveverwer"
+ZSH_THEME="gentoo"
 
 # CASE_SENSITIVE="true"
 # HYPHEN_INSENSITIVE="true"
@@ -27,34 +29,5 @@ plugins=(
 
 source ~/.oh-my-zsh/oh-my-zsh.sh
 
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-
-if [ /usr/bin/kubectl ]; then source <(kubectl completion zsh); fi
-
-prompt_newline() {
-  if [[ -n $CURRENT_BG ]]; then
-    echo -n "%{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR
-%(?.%F{$CURRENT_BG}.%F{red})❯%f"
-
-  else
-    echo -n "%{%k%}"
-  fi
-
-  echo -n "%{%f%}"
-  CURRENT_BG=''
-}
-
-build_prompt() {
-  RETVAL=$?
-  prompt_status
-  prompt_virtualenv
-  prompt_context
-  prompt_dir
-  prompt_git
-  prompt_bzr
-  prompt_hg
-  prompt_newline # 멀티라인 적용
-  prompt_end
-}
-
 export PS1='$(kube_ps1) '$PS1
+
