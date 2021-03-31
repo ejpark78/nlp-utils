@@ -45,34 +45,30 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         vim \
         wget \
         zsh \
-    && echo && echo "# kubectl 설치" \
-	&& curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+    && echo && echo "# docker/kubectl 설치" \
+	&& curl -s "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | apt-key add - \
+	&& curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | apt-key add - \
     && apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
-    && apt update -yq ${APT_OPTS} \
-    && apt install -yq ${APT_OPTS} \
-        kubectl \
-    && echo && echo "# docker 설치" \
-	&& curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
     && apt-add-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${APT_CODE_NAME} stable" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
+        kubectl \
         docker-ce-cli \
     && echo && echo "# oh my zsh 설치" \
     && wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true \
     && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
     && rm -rf ~/.oh-my-zsh/.git \
+    && echo && echo "# oh my zsh plugin 설치" \
+    && git clone --depth=1 https://github.com/jonmosco/kube-ps1 ~/.kube-ps1 \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-completions.git ~/.oh-my-zsh/plugins/zsh-completions \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
+    && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions \
+    && find ~ -name .git -type d -exec rm -rf {} + \
     && echo && echo "# build library 삭제" \
     && apt purge -yq \
         software-properties-common \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo && echo "# oh my zsh plugin 설치" \
-    && git clone --depth=1 https://github.com/jonmosco/kube-ps1 ~/.kube-ps1 \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-completions.git ~/.oh-my-zsh/plugins/zsh-completions \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
-    && git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions \
-    && find ~ -name .git -type d -exec rm -rf {} +
 
 ARG HELM_VER="v3.5.2"
 ARG K9S_VER="v0.24.6"
@@ -113,7 +109,7 @@ RUN echo && echo "# ttyd 설치" \
         libjson-c-dev \
         libwebsockets-dev \
     && cd /tmp/ \
-    && git clone https://github.com/tsl0922/ttyd.git \
+    && git clone "https://github.com/tsl0922/ttyd.git" \
     && cd ttyd \
     && mkdir build \
     && cd build \

@@ -10,7 +10,7 @@ from time import sleep
 import urllib3
 from tqdm import tqdm
 
-from .base import UdemyBase
+from crawler.udemy.base import UdemyBase
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

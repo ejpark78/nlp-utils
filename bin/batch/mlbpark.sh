@@ -20,5 +20,5 @@ docker run -it --rm \
       --config "${config}" \
       --sleep 5 \
       --job-name "bullpen" \
-      --page-range "1~9000000" \
+      --page-range "326251~9000000" \
       --list

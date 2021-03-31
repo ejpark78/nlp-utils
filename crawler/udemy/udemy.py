@@ -9,8 +9,8 @@ from time import sleep
 
 import urllib3
 
-from .course_list import UdemyCourseList
-from .trace_course import UdemyTraceCourse
+from crawler.udemy.course_list import UdemyCourseList
+from crawler.udemy.trace_course import UdemyTraceCourse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

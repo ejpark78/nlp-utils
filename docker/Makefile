@@ -79,6 +79,7 @@ live:
 	cd live
 
 	docker build \
+		$(MIRROR) \
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
@@ -95,6 +96,7 @@ dev:
 	cd live
 
 	docker build \
+		$(MIRROR) \
 		$(DOCKER_LABEL) \
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
@@ -105,6 +107,35 @@ dev:
 		-f Dockerfile \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		.
+
+.ONESHELL:
+xrdp:
+	cd xrdp
+
+	docker build \
+		$(MIRROR) \
+		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
+		$(DOCKER_BUILD_OPT) \
+		$(APP_INSTALL) \
+		-t $(IMAGE):xrdp \
+		-f Dockerfile \
+		--build-arg BASE_IMAGE=$(BASE_IMAGE):dev \
+		.
+
+.ONESHELL:
+run-xrdp:
+	docker run \
+		-it --rm \
+		--name xrdp \
+		--hostname ubuntu \
+		--shm-size 1g \
+		-p 5555:3389 \
+		$(IMAGE):xrdp
+
+.ONESHELL:
+connect-xrdp:
+	/opt/freerdp-nightly/bin/xfreerdp /size:1600x1000 /u:ubuntu /v:localhost:5555
 
 .ONESHELL:
 jupyter: live

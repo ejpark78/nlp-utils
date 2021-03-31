@@ -8,7 +8,7 @@ config="/config/daum-news.yaml"
 #time bin/backfill.sh "${config}" "2021-02-01"
 #time bin/backfill.sh "${config}" "2021-01-01"
 
-time bin/backfill.sh "${config}" "2019-12-01" "--name daum-12"
+#time bin/backfill.sh "${config}" "2019-12-01" "--name daum-12"
 time bin/backfill.sh "${config}" "2019-11-01" "--name daum-11"
 time bin/backfill.sh "${config}" "2019-10-01" "--name daum-10"
 time bin/backfill.sh "${config}" "2019-09-01" "--name daum-09"
