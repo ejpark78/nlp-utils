@@ -478,6 +478,8 @@ class WebNewsCrawler(WebNewsBase):
                 # 기사 본문을 수집한다.
                 self.trace_article_body(doc_id=doc['_id'], item={'url': doc['url']}, job=job, es=es)
 
+                sleep(self.params['sleep'])
+
         return
 
     def batch(self) -> None:
