@@ -20,14 +20,19 @@ plugins=(
     git
     history
     tmux
-    kubectl
-    kube-ps1
     zsh-completions
     zsh-syntax-highlighting
     zsh-autosuggestions
 )
 
+if [[ -f /usr/bin/kubectl ]]; then
+    plugins+=(kubectl kube-ps1)
+
+    source <(kubectl completion zsh)
+
+    export PS1='$(kube_ps1) '$PS1
+fi
+
 source ~/.oh-my-zsh/oh-my-zsh.sh
 
-export PS1='$(kube_ps1) '$PS1
 

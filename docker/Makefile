@@ -110,7 +110,7 @@ dev:
 
 .ONESHELL:
 xrdp:
-	cd xrdp
+	cd xfce4/xrdp
 
 	docker build \
 		$(MIRROR) \
@@ -123,18 +123,49 @@ xrdp:
 		.
 
 .ONESHELL:
-run-xrdp:
+xfce4-core:
+	cd xfce4/core
+
+	docker build \
+		$(MIRROR) \
+		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
+		$(DOCKER_BUILD_OPT) \
+		$(APP_INSTALL) \
+		-t xfce4:core \
+		-f Dockerfile \
+		.
+
+.ONESHELL:
+xfce4-crawler:
+	cd xfce4/crawler
+
+	docker build \
+		$(MIRROR) \
+		$(DOCKER_LABEL) \
+		$(DOCKER_ARGS) \
+		$(DOCKER_BUILD_OPT) \
+		$(APP_INSTALL) \
+		--build-arg BASE_IMAGE=xfce4:core \
+		-t xfce4:crawler \
+		-f Dockerfile \
+		.
+
+.ONESHELL:
+run-xfce4-core:
 	docker run \
 		-it --rm \
 		--name xrdp \
-		--hostname ubuntu \
+		--hostname xfce4-core \
+		--add-host "nlp-utils:172.19.153.41" \
 		--shm-size 1g \
 		-p 5555:3389 \
-		$(IMAGE):xrdp
+		-p 5556:9001 \
+		xfce4:core
 
 .ONESHELL:
 connect-xrdp:
-	/opt/freerdp-nightly/bin/xfreerdp /size:1600x1000 /u:ubuntu /v:localhost:5555
+	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5555
 
 .ONESHELL:
 jupyter: live
