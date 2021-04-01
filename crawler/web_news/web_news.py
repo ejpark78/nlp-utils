@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, urljoin
 
 import requests
 import urllib3
-from dateutil.rrule import rrule, DAILY
+from dateutil.rrule import rrule, DAILY, YEARLY
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.web_news.base import WebNewsBase
@@ -169,6 +169,7 @@ class WebNewsCrawler(WebNewsBase):
             early_stop, _ = self.trace_article_list(
                 html=resp, url_info=url_info, job=job, date=date, es=es, query=query
             )
+
             if early_stop is True:
                 break
 
@@ -229,8 +230,7 @@ class WebNewsCrawler(WebNewsBase):
         # 베이스 url 추출
         base_url = self.parser.parse_url(url_info['url'])[1]
 
-        cache = set()
-        is_date_range_stop = False
+        cache, is_date_range_stop = set(), False
 
         # 개별 뉴스를 추적한다.
         for trace in trace_list:
@@ -299,9 +299,6 @@ class WebNewsCrawler(WebNewsBase):
 
         if self.params['list']:
             es.flush()
-
-        # 다음 페이지 정보가 있는 경우
-        self.trace_next_page(html=html, url_info=url_info, job=job, date=date, es=es, query=query)
 
         # 날짜 범위 점검
         if is_date_range_stop is True:
@@ -435,9 +432,51 @@ class WebNewsCrawler(WebNewsBase):
             })
             return
 
-        self.trace_category(job=job)
+        # contents
+        if self.params['contents'] is True:
+            self.trace_contents(job=job)
+        else:
+            self.trace_category(job=job)
 
         self.show_summary(tag='job', es=ElasticSearchUtils(host=job['host'], http_auth=job['http_auth']))
+
+        return
+
+    def trace_contents(self, job: dict) -> None:
+        self.params, job = self.merge_params(
+            job=job,
+            params=self.params,
+            default_params=self.default_params
+        )
+
+        es = ElasticSearchUtils(host=job['host'], http_auth=job['http_auth'])
+
+        dt_query = es.get_date_range_query(date_range=self.params['date_range'])
+
+        query = {
+            'track_total_hits': True,
+            '_source': ['url'],
+            'query': {
+                'bool': {
+                    'must_not': [{
+                        'exists': {
+                            'field': 'contents'
+                        }
+                    }],
+                    **dt_query['query']['bool']
+                }
+            }
+        }
+
+        date_list = list(rrule(YEARLY, dtstart=self.date_range['start'], until=self.date_range['end']))
+
+        for dt in date_list:
+            doc_list = []
+            es.dump_index(index=job['index'].format(year=dt.year), query=query, result=doc_list)
+
+            for doc in doc_list:
+                # 기사 본문을 수집한다.
+                self.trace_article_body(doc_id=doc['_id'], item={'url': doc['url']}, job=job, es=es)
 
         return
 
@@ -491,7 +530,6 @@ class WebNewsCrawler(WebNewsBase):
         # flow-control
         parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
         parser.add_argument('--contents', action='store_true', default=False, help='TODO: 기사 본문 크롤링')
-        parser.add_argument('--pipeline', default='', type=str, help='TODO: pipeline')
 
         # essential
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')

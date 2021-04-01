@@ -187,12 +187,12 @@ class WebNewsBase(object):
                 del doc['json']
                 article['json'] = json.dumps(m_json)
 
-            # 파싱 에러 처리
             if 'raw' in article and len(article['raw']) != 0:
                 doc.update(article)
             elif 'json' in article and len(article['json']) != 0:
                 doc.update(article)
             else:
+                # 파싱 에러 처리
                 if 'raw' not in doc or doc['raw'] == '':
                     doc['raw'] = str(html)
 
@@ -280,6 +280,9 @@ class WebNewsBase(object):
     @staticmethod
     def merge_category(doc: dict, es: ElasticSearchUtils) -> dict:
         """category 정보를 병합한다."""
+        if 'category' not in doc:
+            return doc
+
         doc_id = None
 
         if '_id' in doc:
