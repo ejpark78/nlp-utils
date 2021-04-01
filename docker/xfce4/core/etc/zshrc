@@ -1,0 +1,38 @@
+
+ZSH_THEME="risto"
+ZSH_THEME="daveverwer"
+ZSH_THEME="gentoo"
+
+# CASE_SENSITIVE="true"
+# HYPHEN_INSENSITIVE="true"
+DISABLE_AUTO_UPDATE="true"
+# export UPDATE_ZSH_DAYS=13
+# DISABLE_LS_COLORS="true"
+# DISABLE_AUTO_TITLE="true"
+# ENABLE_CORRECTION="true"
+# COMPLETION_WAITING_DOTS="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# HIST_STAMPS="mm/dd/yyyy"
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+plugins=(
+    git
+    history
+    tmux
+    zsh-completions
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+)
+
+if [[ -f /usr/bin/kubectl ]]; then
+    plugins+=(kubectl kube-ps1)
+
+    source <(kubectl completion zsh)
+
+    export PS1='$(kube_ps1) '$PS1
+fi
+
+source ~/.oh-my-zsh/oh-my-zsh.sh
+
+

@@ -1,0 +1,10 @@
+{
+	"auths": {
+		"dmz:5000": {
+			"auth": "azhzOm5scGxhYg=="
+		},
+		"registry.nlp-utils": {
+			"auth": "azhzOm5scGxhYg=="
+		}
+	}
+}
