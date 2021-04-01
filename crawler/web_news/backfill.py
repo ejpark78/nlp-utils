@@ -104,7 +104,7 @@ class Backfill(object):
         return result
 
     def save_docs(self, index: str, ids: list, size: int) -> None:
-        for i in tqdm(range(0, len(ids), size)):
+        for i in tqdm(range(0, len(ids), size), desc=index):
             id_list = ids[i:i + size]
 
             docs = []
