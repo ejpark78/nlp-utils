@@ -133,6 +133,9 @@ class Backfill(object):
                     'doc_as_upsert': False,
                 }]
 
+            if len(bulk) == 0:
+                continue
+
             _ = self.es['backfill'].conn.bulk(
                 index=index,
                 body=bulk,

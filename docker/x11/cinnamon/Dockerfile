@@ -28,6 +28,7 @@ RUN echo && echo "# cinnamon 설치" \
         dpkg-dev \
         gpg-agent \
         pkg-config \
+        xserver-xorg-dev \
         cinnamon-desktop-environment \
     \
     && echo && echo "# xrdp 설정" \

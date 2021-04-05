@@ -59,13 +59,13 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         fonts-vlgothic \
         git \
         gnupg \
+        language-pack-gnome-ko \
+        language-pack-ko \
         less \
         libcurl4-openssl-dev \
         libdb-dev \
         libssl-dev \
         locales \
-        language-pack-ko \
-        language-pack-gnome-ko \
         python3 \
         python3-dev \
         software-properties-common \
