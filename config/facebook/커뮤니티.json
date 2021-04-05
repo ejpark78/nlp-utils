@@ -1,0 +1,68 @@
+{
+  "list": [
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/ainlp",
+      "meta": {
+        "name": "딥러닝 자연어처리 연구그룹 - AI NLP KOREA",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/TensorFlowKR",
+      "meta": {
+        "name": "TensorFlowKR",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/k8skr",
+      "meta": {
+        "name": "Kubernetes Korea Group",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/k8skorea",
+      "meta": {
+        "name": "Kubernetes & Docker 스터디 그룹",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/MLOpsKR",
+      "meta": {
+        "name": "MLOps KR",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "groups/jenkinskorea",
+      "meta": {
+        "name": "Jenkins korea",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "monthly.nlp",
+      "meta": {
+        "name": "월간 자연어 처리",
+        "category": "커뮤니티"
+      }
+    },
+    {
+      "site": "https://m.facebook.com",
+      "page": "빅데이터-스터디-110551120433816",
+      "meta": {
+        "name": "빅데이터 스터디",
+        "category": "커뮤니티"
+      }
+    }
+  ]
+}

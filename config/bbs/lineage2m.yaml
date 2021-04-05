@@ -1,0 +1,61 @@
+---
+jobs:
+- index: crawler-bbs-lineage2m-{year}
+  article:
+    document_id:
+      frame: '{articleId}'
+      type: value
+    headers:
+      Content-Type: application/json
+    mapping:
+      article: /
+      category: /
+      communityLevelName: ''
+      hasAttachment: ''
+      hasThumbnail: ''
+      html_content: '{contents}'
+      isScrapArticle: ''
+      nextArticle: ''
+      prevNextArticleEntries: ''
+      reserved1: ''
+      reserved2: ''
+      reserved3: ''
+      reserved4: ''
+      userAgent: ''
+      userPlatform: ''
+      voteContents: ''
+      writer: /
+    parser: json
+  list:
+  - category: all
+    check_id: true
+    headers:
+      Content-Type: application/json
+    last_content:
+      articleId: 0
+    mapping:
+      date: '{postDate}'
+      hasAttachment: ''
+      hasThumbnail: ''
+      reserved1: ''
+      reserved2: ''
+      reserved3: ''
+      reserved4: ''
+      url: https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}.json
+      userAgent: ''
+      userPlatform: ''
+      writer: /
+    parser: json
+    trace: articleList
+    url_frame: https://lineage2m.plaync.com/board/all/article/search/moreArticles?query=&searchType=&summary=false&isVote=true&moreSize=20&previousArticleId={articleId}&moreDirection=BEFORE&categoryId=&guid=&gameUserUid=&gameCharacterId=&gameServerId=
+  post_request:
+  - field: commentList
+    key: reply_list
+    method: GET
+    response_type: json
+    url_frame: https://lineage2m.plaync.com/board/{boardAlias}/article/{articleId}/comment/search/moreComment?fields=vote&previousCommentId=0&moreSize=20&moreDirection=BEFORE&fields=&orderType=good
+parsing:
+  article: []
+  list: {}
+  parser: html5lib
+  trace: {}

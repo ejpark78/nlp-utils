@@ -1,0 +1,184 @@
+---
+jobs:
+- index: crawler-bbs-ruliweb-{year}
+  article:
+    document_id:
+      replace:
+      - from: ^.+/board/([0-9]+)/read/([0-9]+)[^0-9]*$
+        to: \g<1>-\g<2>
+      type: path
+  list:
+  - category: 고민상담
+    url_frame: https://bbs.ruliweb.com/community/board/300147?page={page}
+  - category: 질문게시판
+    url_frame: https://bbs.ruliweb.com/community/board/300142?page={page}
+  - category: 토론게시판
+    url_frame: https://bbs.ruliweb.com/community/board/300152?page={page}
+parsing:
+  version: v2021-03-17
+  descriptions:
+    article: 기사 본문에서 추출해야하는 tag 정보
+    list: 기사 목록에서 추출해야하는 하나의 기사 정보
+    trace: 전체 html 에서 추출해야하는 전체 tag 목록
+  parser: html5lib
+  trace:
+  - select: table.board_list_table tr.table_body
+  list:
+  - key: article_id
+    value:
+    - select: td.id
+    type: text
+    convert:
+      merge: single
+  - key: title
+    value:
+    - select: td.subject a.deco
+    type: text
+    convert:
+      merge: single
+  - key: url
+    value:
+    - select: td.subject a.deco
+    type: href
+    convert:
+      merge: single
+  - key: sub_category
+    value:
+    - select: td.divsn
+    type: text
+  - key: writer
+    value:
+    - select: td.writer
+    type: text
+  - key: reply_count
+    value:
+    - select: td.subject span.num
+    type: text
+  - key: recommend_count
+    value:
+    - select: td.recomd
+    type: text
+  - key: view_count
+    value:
+    - select: td.hit
+    type: text
+  - key: date
+    value:
+    - select: td.time
+    type: text
+  - key: '@curl_date'
+    value:
+    - const: DATE_NOW
+  article:
+  - key: raw
+    value:
+    - name: html
+    remove:
+    - name: script
+    - name: style
+    - name: comment
+    type: html
+  - key: sub_category
+    replace:
+    - from: ^.*[[](.+?)[]].*$
+      to: \g<1>
+    value:
+    - select: h4.subject span.subject_text
+    type: text
+  - key: title
+    replace:
+    - from: ^.*[[].+?[]](.+)$
+      to: \g<1>
+    value:
+    - select: h4.subject span.subject_text
+    type: text
+  - key: reply_count
+    replace:
+    - from: ^.*[[](.+?)[]].*$
+      to: \g<1>
+    value:
+    - select: h4.subject strong.reply_count
+    type: text
+  - key: writer
+    value:
+    - select: div.user_info strong.nick
+    type: text
+  - key: member_srl
+    replace:
+    - from: ^.*[(](.+?)[)].*$
+      to: \g<1>
+    value:
+    - select: div.user_info span.member_srl
+    type: text
+  - key: attend
+    value:
+    - select: div.user_info span.attend
+    type: text
+  - key: level
+    value:
+    - select: div.user_info span.level
+    type: text
+  - key: experience
+    value:
+    - select: div.user_info span.exp_text
+    type: text
+  - key: like_count
+    value:
+    - select: div.user_info span.like
+    type: text
+  - key: date
+    replace:
+    - from: '[(](.+?)[)]'
+      to: \g<1>
+    value:
+    - select: div.user_info span.regdate
+    type: text
+    convert:
+      to: date
+      merge: single
+  - key: content
+    value:
+    - select: div.board_main_view > div.view_content
+    type: text
+    convert:
+      merge: merge
+  - key: reply_html_content
+    value:
+    - select: div.comment_view_wrapper tr.comment_element
+    type: html
+  - key: reply_list.writer
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.user div.nick
+    type: text
+  - key: reply_list.member_srl
+    replace:
+    - from: ^.*[(](.+?)[)].*$
+      to: \g<1>
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.user span.member_srl
+    type: text
+  - key: reply_list.text
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.comment span.text
+    type: text
+  - key: reply_list.date
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
+        span.time
+    type: text
+    convert:
+      to: date
+      merge: single
+  - key: reply_list.like_count
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
+        button.btn_like span.num
+    type: text
+  - key: reply_list.dislike_count
+    value:
+    - select: div.comment_view_wrapper tr.comment_element td.parent_control_box_wrapper
+        button.btn_dislike span.num
+    type: text
+  - key: '@curl_date'
+    value:
+    - const: DATE_NOW

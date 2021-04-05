@@ -1,0 +1,13 @@
+---
+jobs:
+- index: crawler-naver-sports-reply-{year}
+  article:
+    document_id:
+      frame: '{oid}-{aid}'
+      type: query
+  list:
+  - Referer: https://sports.news.naver.com/kbaseball/news/index.nhn?isphoto=N&type=comment&date={date}&page={page}
+    date_format: '%Y%m%d'
+    list: https://sports.news.naver.com/kbaseball/news/list.nhn?isphoto=N&type=comment&page={page}&date={date}
+    list_index: crawler-naver-sports
+    reply: https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json?ticket=sports&templateId=view&pool=cbox2&lang=ko&country=KR&objectId=news{oid},{aid}&categoryId=&pageSize=20&indexSize=10&groupId=&listType=OBJECT&pageType=more&page={page}&refresh=false&sort=LIKE

@@ -1,0 +1,421 @@
+---
+jobs:
+  - name: culture
+    index: crawler-daum-culture-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 문화/공연전시
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/art?regDate={date}&page={page}
+      - category: 문화/책
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/book?regDate={date}&page={page}
+      - category: 문화/뷰티패션
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/fashion?regDate={date}&page={page}
+      - category: 문화/음식맛집
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/food?regDate={date}&page={page}
+      - category: 문화/건강
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/health?regDate={date}&page={page}
+      - category: 문화/가정육아
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/home?regDate={date}&page={page}
+      - category: 문화/여행레저
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/leisure?regDate={date}&page={page}
+      - category: 문화/생활정보
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/life?regDate={date}&page={page}
+      - category: 문화/생활일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/others?regDate={date}&page={page}
+      - category: 문화/종교
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/religion?regDate={date}&page={page}
+      - category: 문화/날씨
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/culture/weather?regDate={date}&page={page}
+
+  - name: economy
+    index: crawler-daum-economy-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 경제/부동산
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/estate?regDate={date}&page={page}
+      - category: 경제/생활경제
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/consumer?regDate={date}&page={page}
+      - category: 경제/금융
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/finance?regDate={date}&page={page}
+      - category: 경제/기업산업
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/industry?regDate={date}&page={page}
+      - category: 경제/취업직장인
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/employ?regDate={date}&page={page}
+      - category: 경제/국제경제
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/world?regDate={date}&page={page}
+      - category: 경제/자동차
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/autos?regDate={date}&page={page}
+      - category: 경제/경제일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/others?regDate={date}&page={page}
+      - category: 경제/주식
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/stock?regDate={date}&page={page}
+      - category: 경제/시황분석
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/publicnotice?regDate={date}&page={page}
+      - category: 경제/해외증시
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/worldstock?regDate={date}&page={page}
+      - category: 경제/채권선물
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/bondsfutures?regDate={date}&page={page}
+      - category: 경제/외환
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/fx?regDate={date}&page={page}
+      - category: 경제/주식일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/economic/stock_others?regDate={date}&page={page}
+
+  - name: international
+    index: crawler-daum-international-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 국제/일본
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/japan?regDate={date}&page={page}
+      - category: 국제/중국
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/china?regDate={date}&page={page}
+      - category: 국제/아시아/대양주
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/asia?regDate={date}&page={page}
+      - category: 국제/미주/아메리카
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/america?regDate={date}&page={page}
+      - category: 국제/유럽
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/europe?regDate={date}&page={page}
+      - category: 국제/중동/아프리카
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/africa?regDate={date}&page={page}
+      - category: 국제/영어뉴스
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/englishnews?regDate={date}&page={page}
+      - category: 국제/해외화제
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/topic?regDate={date}&page={page}
+      - category: 국제/국제일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/foreign/others?regDate={date}&page={page}
+
+  - name: it
+    index: crawler-daum-it-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: IT/IT기기
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/device?regDate={date}&page={page}
+      - category: IT/통신모바일
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/mobile?regDate={date}&page={page}
+      - category: IT/소프트웨어
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/software?regDate={date}&page={page}
+      - category: IT/인터넷
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/internet?regDate={date}&page={page}
+      - category: IT/게임
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/game?regDate={date}&page={page}
+      - category: IT/IT일반
+        date_format: '%Y%m%d'
+        url_frame: https://media.daum.net/breakingnews/digital/others?regDate={date}&page={page}
+
+  - name: opinion
+    index: crawler-daum-opinion-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 칼럼-칼럼
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/editorial/column?regDate={date}&page={page}
+      - category: 칼럼-사설
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/editorial/editorial?regDate={date}&page={page}
+      - category: 칼럼-여론
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/editorial/opinion?regDate={date}&page={page}
+      - category: 칼럼-만평
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/editorial/cartoon?regDate={date}&page={page}
+      - category: 칼럼
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/editorial?regDate={date}&page={page}
+
+  - name: politics
+    index: crawler-daum-politics-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 정치/행정지자체
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/administration?regDate={date}&page={page}
+      - category: 정치/국회정당
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/assembly?regDate={date}&page={page}
+      - category: 정치/외교국방
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/dipdefen?regDate={date}&page={page}
+      - category: 정치/북한
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/north?regDate={date}&page={page}
+      - category: 정치/정치일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/others?regDate={date}&page={page}
+      - category: 정치/청와대
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/politics/president?regDate={date}&page={page}
+
+  - name: society
+    index: crawler-daum-society-{year}
+    article:
+      document_id:
+        replace:
+          - from: /v/
+            to: ''
+        type: path
+    list:
+      - category: 사회/사건사고
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/affair?regDate={date}&page={page}
+      - category: 사회/충청
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/chungcheong?regDate={date}&page={page}
+      - category: 사회/교육
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/education?regDate={date}&page={page}
+      - category: 사회/환경
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/environment?regDate={date}&page={page}
+      - category: 사회/강원
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/gangwon?regDate={date}&page={page}
+      - category: 사회/경상
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/gyeongsang?regDate={date}&page={page}
+      - category: 사회/제주
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/jeju?regDate={date}&page={page}
+      - category: 사회/전라
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/jeolla?regDate={date}&page={page}
+      - category: 사회/노동
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/labor?regDate={date}&page={page}
+      - category: 사회/미디어
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/media?regDate={date}&page={page}
+      - category: 사회/수도권
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/metro?regDate={date}&page={page}
+      - category: 사회/전국
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/nation?regDate={date}&page={page}
+      - category: 사회/지역일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/nation_others?regDate={date}&page={page}
+      - category: 사회/사회일반
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/others?regDate={date}&page={page}
+      - category: 사회/인물
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/people?regDate={date}&page={page}
+      - category: 사회/서울
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/seoul?regDate={date}&page={page}
+      - category: 사회/복지
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/welfare?regDate={date}&page={page}
+      - category: 사회/여성
+        date_format: '%Y%m%d'
+        url_frame: https://news.daum.net/breakingnews/society/woman?regDate={date}&page={page}
+
+# crawling 과정에서 추출하는 정보
+parsing:
+  version: v2021-03-17
+  parser: html5lib
+
+  # 전체 html 에서 추출해야하는 전체 tag 목록
+  trace:
+    - select: ul.list_news2.list_allnews li
+
+  # 기사 목록에서 추출해야하는 하나의 기사 정보
+  list:
+    - key: raw_list
+      value: [ ]
+      type: html
+    - key: title
+      value:
+        - select: a.link_txt
+      type: text
+    - key: url
+      value:
+        - select: a.link_txt
+      type: href
+    - key: date
+      value:
+        - select: span.info_time
+      type: text
+      convert:
+        to: date
+        format:
+          - '%H:%M'
+        merge: single
+    - key: '@curl_list'
+      value:
+        - const: DATE_NOW
+
+  # 기사 본문에서 추출해야하는 tag 정보
+  article:
+    - key: raw
+      value:
+        - name: html
+      remove:
+        - name: script
+        - name: style
+        - name: comment
+      type: html
+    - key: title
+      value:
+        - select: div.head_view h3.tit_view
+      type: text
+    - key: date
+      replace:
+        - from: ^.*입력
+          to: ''
+        - from: ^.*수정
+          to: ''
+        - from: 댓글.+$
+          to: ''
+      value:
+        - select: div.head_view span.info_view
+      type: text
+      convert:
+        to: date
+        merge: single
+    - key: contents
+      value:
+        - select: div.article_view section
+      type: text
+      convert:
+        merge: merge
+    - key: '@curl_date'
+      value:
+        - const: DATE_NOW
+
+# ETL pipeline: raw, raw_list 에서 추출하는 정보
+pipeline:
+  common:
+    - column: raw
+      key: source
+      value:
+        - select: div.head_view img
+      type: alt
+    - column: raw
+      key: author
+      replace:
+        - from: 입력.+$
+          to: ''
+      value:
+        - select: div.head_view span.info_view
+      type: text
+      convert:
+        merge: single
+    - column: raw
+      key: image_list.image
+      value:
+        - select: div.article_view section img
+      type: src
+    - column: raw
+      delete: true
+      key: image_list.caption
+      value:
+        - select: div.article_view section figcaption
+      type: text
+    - column: raw
+      key: vod
+      value:
+        - select: div.article_view iframe
+      type: html
+
+# 인덱스 맵핑
+index_mapping:
+  settings:
+    number_of_replicas: 1
+    number_of_shards: 1
+  mappings:
+    properties:
+      title:
+        type: text
+      url:
+        ignore_above: 256
+        type: keyword
+      contents:
+        type: text
+      date:
+        type: date
+      category:
+        ignore_above: 50
+        type: keyword
+      raw:
+        enabled: false
+      raw_list:
+        enabled: false
+      parser_version:
+        ignore_above: 50
+        type: keyword
+      status:
+        # raw_list, raw, pipeline
+        ignore_above: 50
+        type: keyword
+      '@curl_list':
+        type: date
+      '@curl_date':
+        type: date
