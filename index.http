@@ -1,5 +1,11 @@
 ### indices 목록
 
+GET {{host}}/_cat/indices/corpus-wiki-*?v&s=index&h=index,docs.count
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
 GET {{host}}/_cat/indices?v&s=index
 Authorization: Basic {{username}} {{password}}
 Accept: application/text

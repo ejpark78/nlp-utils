@@ -1,6 +1,6 @@
 ###
 
-GET {{host}}/crawler-naver-economy-2019/_search
+GET {{host}}/{{index}}/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json
@@ -14,51 +14,10 @@ Accept: application/json
 
 ###
 
-#DELETE {{host}}/crawler-web_news-cache
-#Authorization: Basic {{username}} {{password}}
-#Content-Type: application/json
-#Accept: application/text
-
-###
-
-GET {{host}}/crawler-web_news-cache/_doc/cP0A-3YBeBRPOgn17QW2
+GET {{host}}/{{index}}/_search
 Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
+Content-Type: application/text
 Accept: application/text
-
-
-###
-
-GET {{host}}/crawler-web_news-cache/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-###
-
-GET {{host}}/crawler-web_news-cache/_search
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-{
-  "_source": [
-    "url",
-    "tags",
-    "url_info"
-  ],
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "match_phrase": {
-            "tags": "#list"
-          }
-        }
-      ]
-    }
-  }
-}
 
 ###
 
@@ -638,6 +597,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
+
 }
 
 ###

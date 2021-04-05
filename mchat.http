@@ -1,11 +1,5 @@
 ###
 
-GET {{host}}/_cat/indices?v&s=index&h=index,docs.count
-Authorization: Basic {{username}} {{password}}
-Accept: application/text
-
-###
-
 GET {{host}}/log_gamechatglobal_*/_search
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -200,25 +194,6 @@ Accept: application/json
 < mchat/room_list.l2-ja.json
 
 ###
-
-POST {{host}}/log_gamechat_cache/_doc/room_list.bns-tw
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-< mchat/room_list.bns-tw.json
-
-###
-
-POST {{host}}/log_gamechat_cache/_doc/room_list.bns-en
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-< mchat/room_list.bns-en.json
-
-###
-
 POST {{host}}/log_gamechat_cache/_doc/server_info
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
@@ -228,23 +203,7 @@ Accept: application/json
 
 ###
 
-POST {{host}}/log_gamechat_cache/_doc/users
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/json
-
-< mchat/users.json
-
-###
-
 GET {{host}}/log_gamechat_cache/_doc/room_list
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-###
-
-GET {{host}}/log_gamechat_cache/_doc/users
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
@@ -317,13 +276,3 @@ Accept: application/text
 }
 
 ###
-
-GET {{host}}/metadata_gamechat/_doc/server_info
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-###
-
-
-
