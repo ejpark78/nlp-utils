@@ -23,7 +23,6 @@ dist
 /*.html
 /*.pdf
 
-app.tar.gz
 venv
 cache
 /log/
