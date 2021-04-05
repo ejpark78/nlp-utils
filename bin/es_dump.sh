@@ -4,7 +4,7 @@ set -x #echo on
 
 es_server="$1"
 
-image="registry.nlp-utils/crawler:dev"
+image="registry.nlp-utils/crawler-dev:dev"
 
 if [[ ${es_server} == "corpus" ]]; then
   es_host="https://corpus.ncsoft.com:9200"

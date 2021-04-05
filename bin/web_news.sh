@@ -6,7 +6,7 @@ config="$1"
 docker_args="$2"
 python_args="$3"
 
-image="registry.nlp-utils/crawler:dev"
+image="registry.nlp-utils/crawler-dev:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
 es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
 

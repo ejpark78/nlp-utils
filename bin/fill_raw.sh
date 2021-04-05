@@ -6,7 +6,7 @@ index="$1"
 dt="$2"
 docker_args="$3"
 
-image="registry.nlp-utils/crawler:dev"
+image="registry.nlp-utils/crawler-dev:dev"
 
 docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \

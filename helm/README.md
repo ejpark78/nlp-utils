@@ -113,7 +113,7 @@ jobs:
 # recrawler pod helm
 
 ```yaml
-image: registry.nlp-utils/crawler:dev
+image: registry.nlp-utils/crawler-dev:dev
 
 imagePullSecrets: registry
 
@@ -190,7 +190,7 @@ docker run -it --rm \
   --add-host "corpus.ncsoft.com:172.20.93.112" \
   -e "ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200" \
   -e "ELASTIC_SEARCH_AUTH=crawler:crawler2019" \
-  registry.nlp-utils/crawler:dev \
+  registry.nlp-utils/crawler-dev:dev \
     python3 -m crawler.web_news.web_news \
       --sleep 10 \
       --config /config/naver-news.yaml \

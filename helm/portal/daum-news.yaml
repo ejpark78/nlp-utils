@@ -1,4 +1,4 @@
-image: registry.nlp-utils/crawler:dev
+image: registry.nlp-utils/crawler-dev:dev
 gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry

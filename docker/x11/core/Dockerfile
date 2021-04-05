@@ -64,6 +64,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         libdb-dev \
         libssl-dev \
         locales \
+        language-pack-ko \
+        language-pack-gnome-ko \
         python3 \
         python3-dev \
         software-properties-common \
@@ -71,6 +73,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         sudo \
         supervisor \
         tmux \
+        tzdata \
         unzip \
         vim \
         wget \
@@ -96,12 +99,17 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && update-locale LANG=ko_KR.UTF-8 \
     && dpkg-reconfigure locales \
     \
+    && echo && echo "# timezone 설정" \
+    && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
+    \
     && apt purge -yq ${APT_OPTS} \
+        tzdata \
         software-properties-common \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN echo && echo "# xfce4, xrdp 설치" \
+RUN echo && echo "# xserver, xrdp 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         apt-transport-https \
@@ -120,24 +128,13 @@ RUN echo && echo "# xfce4, xrdp 설치" \
         pkg-config \
         pulseaudio \
         tilix \
-        tzdata \
         uuid-runtime \
         xauth \
-        xfce4 \
-        xfce4-clipman-plugin \
-        xfce4-cpugraph-plugin \
-        xfce4-netload-plugin \
-        xfce4-screenshooter \
-        xfce4-taskmanager \
-        xfce4-xkb-plugin \
         xorgxrdp \
         xrdp \
+        xserver-xorg-core \
         xserver-xorg-legacy \
         xvfb \
-    \
-    && echo && echo "# timezone 설정" \
-    && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
-    && dpkg-reconfigure --frontend noninteractive tzdata \
     \
     && echo && echo "# xrdp 설정" \
     && mkdir /var/run/dbus \
@@ -145,9 +142,9 @@ RUN echo && echo "# xfce4, xrdp 설치" \
     && cp /etc/X11/xrdp/xorg.conf /etc/X11 \
     && sed -i "s/xrdp\/xorg/xorg/g" /etc/xrdp/sesman.ini \
     && sed -i "s/console/anybody/g" /etc/X11/Xwrapper.config \
-    && echo "env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS xfce4-session" > ~/.xsession \
-    && echo "xfce4-session" > /etc/skel/.Xclients \
     && echo "export QT_XKB_CONFIG_ROOT=/usr/share/X11/locale" >> /etc/profile \
+    \
+    && echo && echo "# xrdp ssl 설정" \
     && rm -rf /etc/xrdp/rsakeys.ini /etc/xrdp/*.pem \
     && xrdp-keygen xrdp auto \
     && openssl req -x509 -newkey rsa:2048 -nodes -days 365 \

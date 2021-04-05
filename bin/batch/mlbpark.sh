@@ -5,7 +5,7 @@ set -x #echo on
 name="mlbpark-kbo"
 config="/config/mlbpark.yaml"
 
-image="registry.nlp-utils/crawler:dev"
+image="registry.nlp-utils/crawler-dev:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
 es_auth=$(echo -n "ZWxhc3RpYzpzZWFyY2hUMjAyMA==" | base64 -d)
 

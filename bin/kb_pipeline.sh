@@ -8,7 +8,7 @@ docker_args="$1"
 dt_range="$2"
 python_args="$3"
 
-image="registry.nlp-utils/crawler:dev"
+image="registry.nlp-utils/crawler-dev:dev"
 es_host="https://corpus.ncsoft.com:9200"
 es_auth=$(echo -n "Y3Jhd2xlcjpjcmF3bGVyMjAxOQ==" | base64 -d)
 db_auth=$(echo -n "cm9vdDpzZWFyY2hUMjAyMA==" | base64 -d)

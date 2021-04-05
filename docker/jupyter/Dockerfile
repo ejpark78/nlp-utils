@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=registry.nlp-utils/crawler:dev
+ARG BASE_IMAGE=registry.nlp-utils/crawler-dev:dev
 FROM ${BASE_IMAGE}
 
 LABEL maintainer="ejpark@ncsoft.co.kr"
