@@ -18,7 +18,7 @@ config="/config/naver-news.yaml,/config/naver-news-sports.yaml"
 #time bin/backfill.sh "${config}" "2019-05-01" "--name naver-05"
 #time bin/backfill.sh "${config}" "2019-04-01" "--name naver-04"
 #time bin/backfill.sh "${config}" "2019-03-01" "--name naver-03"
-time bin/backfill.sh "${config}" "2019-02-01" "--name naver-02"
+#time bin/backfill.sh "${config}" "2019-02-01" "--name naver-02"
 time bin/backfill.sh "${config}" "2019-01-01" "--name naver-01"
 
 time bin/backfill.sh "${config}" "2018-12-01" "--name naver-12"

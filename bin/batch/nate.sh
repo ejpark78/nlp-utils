@@ -18,7 +18,7 @@ config="/config/nate-news.yaml"
 #time bin/backfill.sh "${config}" "2019-05-01" "--name nate-05"
 #time bin/backfill.sh "${config}" "2019-04-01" "--name nate-04"
 #time bin/backfill.sh "${config}" "2019-03-01" "--name nate-03"
-time bin/backfill.sh "${config}" "2019-02-01" "--name nate-02"
+#time bin/backfill.sh "${config}" "2019-02-01" "--name nate-02"
 time bin/backfill.sh "${config}" "2019-01-01" "--name nate-01"
 
 time bin/backfill.sh "${config}" "2018-12-01" "--name nate-12"

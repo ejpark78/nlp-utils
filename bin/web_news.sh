@@ -2,8 +2,9 @@
 
 set -x #echo on
 
-name="mlbpark-kbo"
-config="/config/mlbpark.yaml"
+config="$1"
+docker_args="$2"
+python_args="$3"
 
 image="registry.nlp-utils/crawler:dev"
 es_host="https://crawler-es.cloud.ncsoft.com:9200"
@@ -14,11 +15,8 @@ docker run -it --rm \
   --add-host "crawler-es.cloud.ncsoft.com:172.19.170.187" \
   -e "ELASTIC_SEARCH_HOST=${es_host}" \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
-  --name "${name}" \
+  ${docker_args} \
   ${image} \
     python3 -m crawler.web_news.web_news \
       --config "${config}" \
-      --sleep 5 \
-      --job-name "bullpen" \
-      --page-range "1101901~9000000" \
-      --list
+      ${python_args}

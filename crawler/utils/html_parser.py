@@ -293,13 +293,20 @@ class HtmlParser(object):
                 date = datetime.strptime(str_date, dt_format)
                 break
             except Exception as e:
+                self.logger.warning(msg={
+                    'level': 'WARNING',
+                    'message': 'datetime strptime 경고',
+                    'date': date,
+                    'str_date': str_date if len(str_date) < 30 else str_date[:30],
+                    'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
+                })
                 continue
 
         if date is None:
             self.logger.warning(msg={
                 'level': 'WARNING',
-                'message': '날짜 포멧 변환 오류',
-                'str_date': str_date,
+                'message': '날짜 포멧 변환 경고',
+                'str_date': str_date if len(str_date) < 20 else str_date[:20],
                 'date_format': date_format,
             })
             return None
@@ -320,8 +327,8 @@ class HtmlParser(object):
                 'level': 'WARNING',
                 'message': 'datetime localize 경고',
                 'date': date,
-                'str_date': str_date,
-                'exception': str(e),
+                'str_date': str_date if len(str_date) < 30 else str_date[:30],
+                'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
             })
             return None
 
@@ -377,8 +384,8 @@ class HtmlParser(object):
             self.logger.warning(msg={
                 'level': 'WARNING',
                 'message': 'html 날짜 변환 경고',
-                'str_date': str_date,
-                'exception': str(e),
+                'str_date': str_date if len(str_date) < 30 else str_date[:30],
+                'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
             })
 
             return None
@@ -393,8 +400,8 @@ class HtmlParser(object):
                 'level': 'WARNING',
                 'message': 'datetime localize 경고',
                 'date': date,
-                'str_date': str_date,
-                'exception': str(e),
+                'str_date': str_date if len(str_date) < 30 else str_date[:30],
+                'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
             })
             return None
 

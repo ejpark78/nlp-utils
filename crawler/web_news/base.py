@@ -268,8 +268,8 @@ class WebNewsBase(object):
                     'category': '-'.join([job[x] for x in ['name', 'category'] if x in job]),
                     '_id': doc_id,
                     'date': dt_str.split('T')[0],
-                    'title': doc['title'],
-                    'url': doc['url'],
+                    'title': doc['title'] if 'title' in doc else '',
+                    'url': doc['url'] if 'url' in doc else '',
                     'doc_url': es.get_doc_url(document_id=doc_id),
                 },
                 show_date=False

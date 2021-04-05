@@ -179,7 +179,7 @@ class WebNewsCrawler(WebNewsBase):
         # 기사 본문 조회
         article_html = self.get_article_body(item=item, offline=False)
 
-        # 문서 저장
+        # 문서 파싱
         article = self.parse_tag(
             resp=article_html,
             url_info=item,
@@ -187,14 +187,33 @@ class WebNewsCrawler(WebNewsBase):
             parsing_info=self.job_config['parsing']['article'],
         )
 
+        if article is None or len(article) == 0:
+            self.summary['article_parsing_error'] += 1
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '[EMPTY_DATE] article 내용이 없는 문서, 건너뜀',
+                'doc_id': doc_id,
+                **item,
+            })
+            return True
+
+        if self.params['contents'] and 'date' not in article:
+            self.summary['empty_date'] += 1
+
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '[EMPTY_DATE] date 가 없는 문서, 건너뜀',
+                'doc_id': doc_id,
+                **item,
+            })
+            return True
+
         self.summary['article'] += 1
 
         # 임시 변수 삭제
         if 'encoding' in item:
             del item['encoding']
-
-        if article is None or len(article) == 0:
-            return True
 
         article['_id'] = doc_id
 
