@@ -1,0 +1,68 @@
+{{- range $jobIndex, $job := .Values.jobs }}
+{{- range $CategoryIndex, $subCategory := $job.subSategory }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $.Release.Name }}-{{ $job.name }}-{{ $CategoryIndex }}"
+  labels:
+    app: {{ $job.name }}
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
+spec:
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+  restartPolicy: {{ $.Values.restartPolicy }}
+  hostAliases:
+    {{- toYaml $.Values.hostAliases | nindent 2 }}
+  imagePullSecrets:
+    - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
+  initContainers:
+  - name: config-sync
+    image: {{ $.Values.gitImage }}
+    imagePullPolicy: IfNotPresent
+    envFrom:
+      - configMapRef:
+          name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
+    command:
+      - git
+      - clone
+      - --progress
+      - -b
+      - $(GIT_SYNC_BRANCH)
+      - $(GIT_SYNC_REPO)
+      - /config
+    volumeMounts:
+      - name: config
+        mountPath: "/config"
+  containers:
+  - name: app
+    resources:
+      {{- toYaml $.Values.resources | nindent 5 }}
+    image: {{ $.Values.image }}
+    imagePullPolicy: Always
+    env:
+      - name: ELASTIC_SEARCH_AUTH
+        valueFrom:
+          secretKeyRef:
+            name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+            key: http_auth
+      - name: ELASTIC_SEARCH_INDEX
+        value: {{ $job.index }}
+    envFrom:
+      - configMapRef:
+          name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
+    args:
+      {{- toYaml $.Values.args | nindent 6 }}
+      {{- toYaml $job.args | nindent 6 }}
+      - --sub-category
+      - {{ $subCategory }}
+    volumeMounts:
+      - name: config
+        mountPath: "/config"
+  volumes:
+    - name: config
+      emptyDir: {}
+{{- end }}
+{{- end }}

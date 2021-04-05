@@ -1,0 +1,105 @@
+image: registry.nlp-utils/crawler:dev
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 200Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+configMap:
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
+  envFrom: bbs
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--overwrite"
+  - "--sleep"
+  - "10"
+
+jobs:
+  - name: mlbpark-kbo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "kbo"
+
+  - name: mlbpark-mlb
+    schedule: "10,40 * * * *"
+    args:
+      - "--config"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "mlb"
+
+  - name: mlbpark-bullpen
+    schedule: "20,50 * * * *"
+    args:
+      - "--config"
+      - "/config/mlbpark.yaml"
+      - "--job-name"
+      - "bullpen"
+
+  - name: ruliweb
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/bbs/ruliweb.yaml"
+
+#  - name: inven-lineagem
+#    schedule: "7,34 * * * *"
+#    index: $(INDEX_INVEN)
+#    args:
+#      - "--config"
+#      - "/config/bbs/inven-lineagem.yaml"
+#      - "--page-range"
+#      - "1~20"
+#      - "--page-step"
+#      - "1"
+
+#  - name: lineagem
+#    schedule: "7,34 * * * *"
+#    index: $(INDEX_LINEAGEM)
+#    args:
+#      - "--config"
+#      - "/config/bbs/lineagem.yaml"
+#      - "--page-range"
+#      - "1~100"
+#      - "--page-step"
+#      - "1"
+#
+#  - name: lineage2m
+#    schedule: "7,34 * * * *"
+#    index: $(INDEX_LINEAGE2M)
+#    args:
+#      - "--config"
+#      - "/config/bbs/lineage2m.yaml"
+#      - "--page-range"
+#      - "1~100"
+#      - "--page-step"
+#      - "1"

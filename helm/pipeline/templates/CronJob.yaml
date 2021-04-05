@@ -1,0 +1,48 @@
+{{- range $jobIndex, $job := .Values.jobs }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ $.Release.Name }}-{{ $job.name }}"
+  labels:
+    app: {{ $job.name }}
+    release: {{ $.Release.Name }}
+    namespace: {{ $.Release.Namespace }}
+spec:
+  schedule: {{ $job.schedule }}
+  concurrencyPolicy: {{ $.Values.schedule.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ $.Values.schedule.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $.Values.schedule.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: {{ $.Values.restartPolicy }}
+          hostAliases:
+            {{- toYaml $.Values.hostAliases | nindent 12 }}
+          imagePullSecrets:
+            - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
+          containers:
+            - name: app
+              resources:
+                {{- toYaml $.Values.resources | nindent 16 }}
+              image: {{ $.Values.image }}
+              imagePullPolicy: Always
+              env:
+                - name: ELASTIC_SEARCH_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ $.Release.Name }}-{{ $.Values.secret.name }}"
+                      key: es_auth
+                - name: DB_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: "{{ $.Release.Name }}-{{ $.Values.secret.name }}"
+                      key: db_auth
+              envFrom:
+                - configMapRef:
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.name }}"
+              args:
+                {{- toYaml $.Values.args | nindent 16 }}
+                {{- toYaml $job.args | nindent 16 }}
+{{- end }}

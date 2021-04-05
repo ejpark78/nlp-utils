@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+type: kubernetes.io/dockerconfigjson
+kind: Secret
+metadata:
+  name: registry
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5ubHAtdXRpbHMiOnsidXNlcm5hbWUiOiJrOHMiLCJwYXNzd29yZCI6Im5scGxhYiIsImVtYWlsIjoiZWpwYXJrNzhAZ21haWwuY29tIiwiYXV0aCI6ImF6aHpPbTVzY0d4aFlnPT0ifX19
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nlu-wrapper
+data:
+  VERSION: "latest"
+  SERV_PORT: "80"
+
+#  POS_IP_ADDR_common: "http://kmat-common"
+#  POS_IP_ADDR_economy: "http://kmat-economy"
+#  POS_IP_ADDR_baseball: "http://kmat-baseball"
+#  POS_IP_ADDR_lineageM: "http://kmat-lineagem"
+
+#  NER_IP_ADDR_economy: "http://ner-economy"
+#  NER_IP_ADDR_baseball: "http://ner-baseball"
+
+  SBD_IP_ADDR_colloque: "http://sbd-colloque"
+  SBD_IP_ADDR_literary: "http://sbd-literary"
+
+  DP_IP_ADDR: "http://parser-common"
+
+  TIME_PYTHON_IP_ADDR: "http://time-common/nctime"
+
+  FILEBEAT_NAME: "filebeat.yml"
+
+  POS_IP_ADDR_common: "http://kmat-economy"
+  POS_IP_ADDR_economy: "http://kmat-economy"
+  POS_IP_ADDR_baseball: "http://kmat-economy"
+  POS_IP_ADDR_lineageM: "http://kmat-economy"
+
+  NER_IP_ADDR_economy: "http://ner-economy"
+  NER_IP_ADDR_baseball: "http://ner-economy"
+
+
+#      - VERSION=$version
+#      - SBD_IP_ADDR_literary=$SBD_IP_ADDR_literary
+#      - SBD_IP_ADDR_colloque=$SBD_IP_ADDR_colloque
+#      - SBD_IP_ADDR_paige_post=$SBD_IP_ADDR_paige_post
+#      - SEG_IP_ADDR=$SEG_IP_ADDR
+#      - POS_IP_ADDR_common=$POS_IP_ADDR_common
+#      - POS_IP_ADDR_economy=$POS_IP_ADDR_economy
+#      - POS_IP_ADDR_baseball=$POS_IP_ADDR_baseball
+#      - POS_IP_ADDR_lineageM=$POS_IP_ADDR_lineageM
+#      - NER_IP_ADDR_common=$NER_IP_ADDR_common
+#      - NER_IP_ADDR_economy=$NER_IP_ADDR_economy
+#      - NER_IP_ADDR_economy2=$NER_IP_ADDR_economy2
+#      - NER_IP_ADDR_baseball=$NER_IP_ADDR_baseball
+#      - NER_IP_ADDR_lineageM=$NER_IP_ADDR_lineageM
+#      - NER_IP_ADDR_lineage2M=$NER_IP_ADDR_lineage2M
+#      - NER_IP_ADDR_BS=$NER_IP_ADDR_BS
+#      - NER_CRF_IP_ADDR_common=$NER_CRF_IP_ADDR_common
+#      - NER_CRF_IP_ADDR_baseball=$NER_CRF_IP_ADDR_baseball
+#      - NER_dl_IP_ADDR_common=$NER_dl_IP_ADDR_common
+#      - TIME_IP_ADDR=$TIME_IP_ADDR
+#      - TENSE_IP_ADDR_common=$TENSE_IP_ADDR_common
+#      - TENSE_IP_ADDR_baseball=$TENSE_IP_ADDR_baseball
+#      - DP_IP_ADDR=$DP_IP_ADDR
+#      - DP_RL_IP_ADDR=$DP_RL_IP_ADDR
+#      - SERV_PORT=$SERV_PORT
+#      - SBD_CRF_IP_ADDR_literary=$SBD_CRF_IP_ADDR_literary
+#      - SBD_CRF_IP_ADDR_colloque=$SBD_CRF_IP_ADDR_colloque
+#      - SENTI_IP_ADDR=$SENTI_IP_ADDR
+#      - CHUNK_DP_RULE_IP_ADDR=$CHUNK_DP_RULE_IP_ADDR
+
+# http://172.20.92.245/understanding/nlu_wrapper_language_lab/-/blob/master/docker/docker-compose.yml

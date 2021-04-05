@@ -1,0 +1,192 @@
+image: registry.nlp-utils/crawler:dev
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+configMap:
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
+  envFrom: naver
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "10"
+
+jobs:
+  - name: economy
+    schedule: "0 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "economy"
+    subSategory:
+      - "경제/증권"
+      - "경제/금융"
+      - "경제/부동산"
+      - "경제/산업/재계"
+      - "경제/글로벌 경제"
+      - "경제/경제 일반"
+      - "경제/생활경제"
+      - "경제/중기/벤처"
+
+  - name: international
+    schedule: "5 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "international"
+    subSategory:
+      - "세계/아시아호주"
+      - "세계/미국중남미"
+      - "세계/유럽"
+      - "세계/중동아프리카"
+      - "세계/일반"
+
+  - name: it
+    schedule: "10 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "it"
+    subSategory:
+      - "IT/모바일"
+      - "IT/인터넷/SNS"
+      - "IT/통신/뉴미디어"
+      - "IT/IT 일반"
+      - "IT/보안/해킹"
+      - "IT/컴퓨터"
+      - "IT/게임/리뷰"
+      - "IT/과학 일반"
+
+  - name: living
+    schedule: "15 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "living"
+    subSategory:
+      - "생활/건강정보"
+      - "생활/자동차시승기"
+      - "생활/도로교통"
+      - "생활/여행/레저"
+      - "생활/음식맛집"
+      - "생활/패션뷰티"
+      - "생활/공연전시"
+      - "생활/책"
+      - "생활/종교"
+      - "생활/날씨"
+      - "생활/일반"
+
+  - name: opinion
+    schedule: "20 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "opinion"
+    subSategory:
+      - "오피니언"
+
+  - name: politics
+    schedule: "25 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "politics"
+    subSategory:
+      - "정치/청와대"
+      - "정치/국회정당"
+      - "정치/북한"
+      - "정치/행정"
+      - "정치/국방외교"
+      - "정치/정치일반"
+
+  - name: society
+    schedule: "30 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news.yaml"
+      - "--job-name"
+      - "society"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/교육"
+      - "사회/노동"
+      - "사회/언론"
+      - "사회/환경"
+      - "사회/인권복지"
+      - "사회/식품의료"
+      - "사회/지역"
+      - "사회/인물"
+      - "사회/사회일반"
+
+  - name: sports
+    schedule: "35 * * * *"
+    args:
+      - "--config"
+      - "/config/naver-news-sports.yaml"
+      - "--job-name"
+      - "sports"
+    subSategory:
+      - "스포츠/야구"
+      - "스포츠/해외야구"
+      - "스포츠/게임"
+      - "스포츠/축구"
+      - "스포츠/해외축구"
+      - "스포츠/농구"
+      - "스포츠/배구"
+      - "스포츠/골프"
+      - "스포츠/축구"
+      - "스포츠/스포츠-일반"
+
+#  - name: tv
+#    schedule: "40 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/naver-news.yaml"
+#      - "--job-name"
+#      - "tv"
+#    subSategory:
+#      - "TV"
+#
+#  - name: weather
+#    schedule: "45 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/naver-news.yaml"
+#      - "--job-name"
+#      - "weather"
+#    subSategory:
+#      - "날씨"

@@ -1,0 +1,325 @@
+image: registry.nlp-utils/crawler:live
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 150Mi
+  limits:
+    cpu: 100m
+    memory: 150Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+configMap:
+  gitSync:
+    name: config-sync
+    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
+    branch: "live"
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
+  envFrom: korea-news
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "3"
+  - "--date-range"
+  - "today"
+
+jobs:
+  - name: ajunews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ajunews.yaml"
+
+  - name: asiae
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ajunews.yaml"
+
+  - name: ccdailynews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ccdailynews.yaml"
+
+  - name: cctoday
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/cctoday.yaml"
+
+  - name: chosun-biz
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/chosun-biz.yaml"
+
+  - name: daejon
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/daejon.yaml"
+
+  - name: dailian
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/dailian.yaml"
+
+  - name: donga
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/donga.yaml"
+
+  - name: donga-cn
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/donga-cn.yaml"
+
+  - name: donga-en
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/donga-en.yaml"
+
+  - name: donga-jp
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/donga-jp.yaml"
+
+  - name: dt
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/dt.yaml"
+
+  - name: edaily
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/edaily.yaml"
+
+  - name: etnews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/etnews.yaml"
+
+  - name: fnnews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/fnnews.yaml"
+
+  - name: fntimes
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/fntimes.yaml"
+
+  - name: gyeonghyang
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/gyeonghyang.yaml"
+
+  - name: hani
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hani.yaml"
+
+  - name: hani-cn
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hani-cn.yaml"
+
+  - name: hani-en
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hani-en.yaml"
+
+  - name: hani-jp
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hani-jp.yaml"
+
+  - name: hankook
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/hankook.yaml"
+
+  - name: honam
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/honam.yaml"
+
+  - name: idaegu
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/idaegu.yaml"
+
+  - name: imaeil
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/imaeil.yaml"
+
+  - name: inews24
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/inews24.yaml"
+
+  - name: inews365
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/inews365.yaml"
+
+  - name: iusm
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/iusm.yaml"
+
+  - name: jbdomin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jbdomin.yaml"
+
+  - name: jbnews
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jbnews.yaml"
+
+  - name: jemin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jemin.yaml"
+
+  - name: jjan
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jjan.yaml"
+
+  - name: jnilbo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/jnilbo.yaml"
+
+  - name: joins
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joins.yaml"
+
+  - name: joongboo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joongboo.yaml"
+
+  - name: joongdo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/joongdo.yaml"
+
+  - name: kjdaily
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kjdaily.yaml"
+
+#  - name: knnews
+#    schedule: "7,34 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/news/knnews.yaml"
+
+  - name: kookje
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kookje.yaml"
+
+  - name: ksilbo
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/ksilbo.yaml"
+
+#  - name: kwangju
+#    schedule: "7,34 * * * *"
+#    args:
+#      - "--config"
+#      - "/config/news/kwangju.yaml"
+
+  - name: kyeongin
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/kyeongin.yaml"
+
+  - name: newspeppermint
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/newspeppermint.yaml"
+
+  - name: sbs-biz
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/sbs-biz.yaml"
+
+  - name: wowtv
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/wowtv.yaml"
+
+  - name: yeongnam
+    schedule: "7,34 * * * *"
+    args:
+      - "--config"
+      - "/config/news/yeongnam.yaml"
+
+

@@ -1,0 +1,97 @@
+imagePullSecrets: registry
+
+restartPolicy: Always
+
+services:
+  - name: nlu-wrapper
+    image: registry.nlp-utils/nlu-wrapper/nlu-wrapper:latest
+    imagePullPolicy: Always
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    domains:
+      - "common"
+    configMapRef: nlu-wrapper
+    service:
+      type: LoadBalancer
+      externalIPs: "172.20.40.142"
+
+  - name: sbd
+    image: registry.nlp-utils/nlu-wrapper/sbd_crf:latest
+    imagePullPolicy: Always
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 400m
+        memory: 1024Mi
+      limits:
+        cpu: 400m
+        memory: 1024Mi
+    domains:
+      - "colloque"
+      - "literary"
+
+  - name: kmat
+    image: registry.nlp-utils/nlu-wrapper/kmat:latest
+    imagePullPolicy: Always
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 300m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
+    domains:
+#      - "common"
+      - "economy"
+#      - "baseball"
+#      - "lineageM"
+
+  - name: ner
+    image: registry.nlp-utils/nlu-wrapper/ner-rule-2018:latest
+    imagePullPolicy: Always
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    domains:
+      - "economy"
+#      - "baseball"
+
+#  - name: parser
+#    image: registry.nlp-utils/nlu-wrapper/dependency-parser:latest
+#    imagePullPolicy: Always
+#    replicaCount: 1
+#    resources:
+#      requests:
+#        cpu: 400m
+#        memory: 1200Mi
+#      limits:
+#        cpu: 400m
+#        memory: 1200Mi
+#    domains:
+#      - "common"
+
+#  - name: time
+#    image: registry.nlp-utils/nlu-wrapper/nctime-2018:latest
+#    imagePullPolicy: Always
+#    replicaCount: 1
+#    resources:
+#      requests:
+#        cpu: 200m
+#        memory: 256Mi
+#      limits:
+#        cpu: 200m
+#        memory: 256Mi
+#    domains:
+#      - "common"

@@ -1,0 +1,43 @@
+image: registry.nlp-utils/crawler:live
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+
+environmentVariables:
+  - name: ELASTIC_SEARCH_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-auth
+        key: http_auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+jobs:
+  - name: naver-game-center
+    schedule: "7,34 * * * *"
+    environmentVariables:
+      - name: ELASTIC_SEARCH_INDEX
+        value: ""
+    configMapRef: game-center
+    args:
+      - "python3"
+      - "module/naver/kbo/game_center_utils.py"
+      - "--game-info"
+      - "--trace-comments"

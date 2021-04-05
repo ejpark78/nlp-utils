@@ -1,0 +1,173 @@
+image: registry.nlp-utils/crawler:dev
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+  - ip: "172.20.92.245"
+    hostnames:
+      - "galadriel02.korea.ncsoft.corp"
+
+configMap:
+  elasticsearch:
+    authName: es-auth
+    host: "https://corpus.ncsoft.com:9200"
+  envFrom: daum
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.web_news"
+  - "--sleep"
+  - "10"
+
+jobs:
+  - name: culture
+    schedule: "0 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "culture"
+    subSategory:
+      - "문화/공연전시"
+      - "문화/책"
+      - "문화/뷰티패션"
+      - "문화/음식맛집"
+      - "문화/건강"
+      - "문화/가정육아"
+      - "문화/여행레저"
+      - "문화/생활정보"
+      - "문화/생활일반"
+      - "문화/종교"
+      - "문화/날씨"
+
+  - name: economy
+    schedule: "5 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "economy"
+    subSategory:
+      - "경제/부동산"
+      - "경제/생활경제"
+      - "경제/금융"
+      - "경제/기업산업"
+      - "경제/취업직장인"
+      - "경제/국제경제"
+      - "경제/자동차"
+      - "경제/경제일반"
+      - "경제/주식"
+      - "경제/시황분석"
+      - "경제/해외증시"
+      - "경제/채권선물"
+      - "경제/외환"
+      - "경제/주식일반"
+
+  - name: international
+    schedule: "10 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "international"
+    subSategory:
+      - "국제/일본"
+      - "국제/중국"
+      - "국제/아시아/대양주"
+      - "국제/미주/아메리카"
+      - "국제/유럽"
+      - "국제/중동/아프리카"
+      - "국제/영어뉴스"
+      - "국제/해외화제"
+      - "국제/국제일반"
+
+  - name: it
+    schedule: "15 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "it"
+    subSategory:
+      - "IT/IT기기"
+      - "IT/통신모바일"
+      - "IT/소프트웨어"
+      - "IT/인터넷"
+      - "IT/게임"
+      - "IT/IT일반"
+
+  - name: opinion
+    schedule: "20 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "opinion"
+    subSategory:
+      - "칼럼-칼럼"
+      - "칼럼-사설"
+      - "칼럼-여론"
+      - "칼럼-만평"
+      - "칼럼"
+
+  - name: politics
+    schedule: "25 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "politics"
+    subSategory:
+      - "정치/행정지자체"
+      - "정치/국회정당"
+      - "정치/외교국방"
+      - "정치/북한"
+      - "정치/정치일반"
+      - "정치/청와대"
+
+  - name: society
+    schedule: "30 * * * *"
+    args:
+      - "--config"
+      - "/config/daum-news.yaml"
+      - "--job-name"
+      - "society"
+    subSategory:
+      - "사회/사건사고"
+      - "사회/충청"
+      - "사회/교육"
+      - "사회/환경"
+      - "사회/강원"
+      - "사회/경상"
+      - "사회/제주"
+      - "사회/전라"
+      - "사회/노동"
+      - "사회/미디어"
+      - "사회/수도권"
+      - "사회/전국"
+      - "사회/지역일반"
+      - "사회/사회일반"
+      - "사회/인물"
+      - "사회/서울"
+      - "사회/복지"
+      - "사회/여성"

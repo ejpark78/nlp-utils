@@ -1,0 +1,115 @@
+
+#---
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: amity-list
+#  labels:
+#    app: crawler
+#spec:
+#  restartPolicy: Always
+#  containers:
+#    - name: amity
+#      image: registry.nlp-utils/crawler:latest
+#      workingDir: /usr/local/app
+#      args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/친목.json", "--max_page", "50"]
+
+# ---
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: community-list
+#   labels:
+#     app: crawler-facebook-community-list
+# spec:
+#   restartPolicy: Always
+#   containers:
+#     - name: community
+#       image: registry.nlp-utils/crawler:latest
+#       workingDir: /usr/local/app
+#       args: ["python3", "module/facebook.py", "--list", "--reply", "--config", "config/facebook/커뮤니티.json", "--max_page", "50"]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: media-list
+  labels:
+    app: crawler-facebook
+spec:
+  schedule: "7,34 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
+          containers:
+            - name: default
+              image: registry.nlp-utils/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              args: [
+                "python3", "module/facebook.py",
+                "--list", "--reply",
+                "--config", "config/facebook/언론.json",
+                "--max_page", "50"
+              ]
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: school-chat-list
+  labels:
+    app: crawler-facebook
+spec:
+  schedule: "10,40 * * * *"
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          hostAliases:
+            - ip: "172.20.93.112"
+              hostnames:
+                - "corpus.ncsoft.com"
+          imagePullSecrets:
+            - name: registry
+          containers:
+            - name: default
+              image: registry.nlp-utils/crawler:latest
+              imagePullPolicy: Always
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
+              workingDir: /usr/local/app
+              args: [
+                "python3", "module/facebook.py",
+                "--list",
+                "--reply",
+                "--config", "config/facebook/대나무숲.json",
+                "--max_page", "50"
+              ]

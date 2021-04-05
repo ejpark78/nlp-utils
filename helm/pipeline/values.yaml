@@ -1,0 +1,102 @@
+image: registry.nlp-utils/crawler:dev
+gitImage: registry.nlp-utils/alpine/git:v2.30.0
+
+imagePullSecrets: registry
+
+restartPolicy: Never
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+hostAliases:
+  - ip: "172.20.93.112"
+    hostnames:
+      - "corpus.ncsoft.com"
+  - ip: "172.19.154.164"
+    hostnames:
+      - "crawler-mysql.cloud.ncsoft.com"
+
+configMap:
+  name: pipeline
+  data:
+    ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+    ELASTIC_INDEX: "crawler-naver-*-2021"
+    DB_HOST: "crawler-mysql.cloud.ncsoft.com"
+    DB_DATABASE: "naver"
+    DB_TABLE: "naver"
+    NLU_WRAPPER_URL: "http://172.20.40.142"
+
+secret:
+  name: auth
+
+schedule:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
+
+args:
+  - "python3"
+  - "-m"
+  - "crawler.web_news.pipeline"
+  - "--date-range"
+  - "today"
+
+jobs:
+  - name: kb-economy
+    schedule: "0 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-economy-2021"
+
+  - name: kb-international
+    schedule: "10 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-international-2021"
+
+  - name: kb-it
+    schedule: "20 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-it-2021"
+
+  - name: kb-living
+    schedule: "10 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-living-2021"
+
+  - name: kb-opinion
+    schedule: "20 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-opinion-2021"
+
+  - name: kb-politics
+    schedule: "40 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-politics-2021"
+
+  - name: kb-society
+    schedule: "30 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-society-2021"
+
+  - name: kb-sports
+    schedule: "50 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-sports-2021"
+
+  - name: kb-tv
+    schedule: "40 * * * *"
+    args:
+      - "--index"
+      - "crawler-naver-tv-2021"
