@@ -1,0 +1,133 @@
+### indices 목록
+
+GET {{host}}/_cat/indices/corpus-wiki-*?v&s=index&h=index,docs.count
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/indices?v&s=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+DELETE {{host}}/.monitoring-*
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+DELETE {{host}}/.kibana_*
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+PUT {{host}}/{{index}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "number_of_replicas": 0
+  }
+}
+
+###
+
+GET {{host}}/{{index}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+PUT {{host}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "mapper": {
+      "dynamic": null
+    }
+  }
+}
+
+###
+
+PUT {{host}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}
+
+###
+
+PUT {{host}}/{{index}}/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "index": {
+    "number_of_replicas": 2
+  }
+}
+
+###
+
+DELETE {{host}}/crawler-facebook_reply
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-facebook-en/_mappings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###

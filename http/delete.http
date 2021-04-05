@@ -1,0 +1,17 @@
+
+
+###
+
+POST {{host}}/_flush
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+DELETE {{host}}/ko_tm04/_doc/c02d2811-f318-4295-8f2b-7156185bd6ea
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###

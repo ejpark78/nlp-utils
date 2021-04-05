@@ -1,0 +1,1616 @@
+###
+
+GET {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {
+    }
+  }
+}
+
+###
+
+GET {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-facebook-ko/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "curl_date": {
+            "gte": "2020-07-15 00:00:00",
+            "lte": "2020-07-20 00:00:00",
+            "format": "yyyy-MM-dd HH:mm:ss"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "postDate": {
+            "gte": "2018-08-01",
+            "lte": "2018-08-31",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents"
+  ],
+  "from": 0,
+  "size": 10,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": {
+            "range": {
+              "postDate": {
+                "gte": "2018-08-01",
+                "lte": "2018-08-31",
+                "format": "yyyy-MM-dd"
+              }
+            }
+          }
+        }
+      },
+      "boost": "5",
+      "random_score": {},
+      "boost_mode": "multiply"
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "articleId",
+    "title",
+    "contents",
+    "comment_list"
+  ],
+  "from": 0,
+  "size": 500,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "기사"
+          }
+        },
+        {
+          "match_phrase": {
+            "contents": "기사"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "title": "삼성전자"
+          }
+        },
+        {
+          "match_phrase": {
+            "content": "삼성전자"
+          }
+        },
+        {
+          "range": {
+            "date": {
+              "gte": "2018-01-01",
+              "lte": "2018-10-04",
+              "format": "yyyy-MM-dd"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "document_id",
+    "title",
+    "date",
+    "content",
+    "image_list"
+  ],
+  "from": 0,
+  "size": 30,
+  "query": {
+    "multi_match": {
+      "query": "삼성전자",
+      "type": "phrase",
+      "fields": [
+        "title",
+        "content"
+      ]
+    },
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-01-01",
+            "lte": "2018-10-04",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match_phrase": {
+            "contents": "믹어야지"
+          }
+        },
+        {
+          "match_phrase": {
+            "title": "믹어야지"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "contents": "믹어야"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "query_string": {
+      "query": "(믹어야)",
+      "fields": [
+        "contents"
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "title",
+    "contents"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "multi_match": {
+            "query": "모리사냥",
+            "type": "phrase",
+            "analyzer": "standard",
+            "fields": [
+              "title"
+            ],
+            "operator": "and",
+            "tie_breaker": 0.8
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "postDate": {
+              "gte": "2018-08-01",
+              "lte": "2018-08-31",
+              "format": "yyyy-MM-dd"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2017-02-01",
+            "lte": "2017-02-28",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2018-10-01",
+            "lte": "2018-10-28",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+POST {{host}}/{{index}}/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "message"
+  ],
+  "from": 0,
+  "size": 500
+}
+
+###
+
+GET {{host}}/crawler-news-mk-2019/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "title",
+    "url"
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "[날씨]"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "meta_info",
+            "query": {
+              "exists": {
+                "field": "meta_info.hit_tmpl_ver"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": []
+    }
+  },
+  "aggregations": {
+    "by_date": {
+      "date_histogram": {
+        "field": "client_info.request_date",
+        "keyed": true,
+        "time_zone": "+09:00",
+        "calendar_interval": "day"
+      },
+      "aggregations": {
+        "by_method": {
+          "nested": {
+            "path": "meta_info"
+          },
+          "aggregations": {
+            "method": {
+              "terms": {
+                "field": "meta_info.translation_method"
+              },
+              "aggregations": {
+                "by_ver": {
+                  "terms": {
+                    "field": "meta_info.hit_tmpl_ver"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggregations": {
+    "by_date": {
+      "aggregations": {
+        "by_method": {
+          "aggregations": {
+            "method": {
+              "aggregations": {
+                "by_ver": {
+                  "terms": {
+                    "field": "meta_info.hit_tmpl_ver"
+                  }
+                }
+              },
+              "terms": {
+                "field": "meta_info.translation_method"
+              }
+            }
+          },
+          "nested": {
+            "path": "meta_info"
+          }
+        }
+      },
+      "date_histogram": {
+        "calendar_interval": "day",
+        "field": "client_info.request_date",
+        "keyed": true,
+        "time_zone": "+09:00"
+      }
+    }
+  },
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "match": {
+            "client_info.game_code": "l2m-ko"
+          }
+        },
+        {
+          "match": {
+            "source_lang": "ko"
+          }
+        },
+        {
+          "match": {
+            "target_lang": "en"
+          }
+        }
+      ],
+      "must": [
+        {
+          "range": {
+            "client_info.request_date": {
+              "format": "yyyy-MM-dd",
+              "gte": "2020-07-22",
+              "lte": "2020-07-22"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0
+}
+
+###
+
+GET {{host}}/ko_tm04,ja_tm01,en_tm03,cn_tm02,tw_tm03/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        },
+        {
+          "nested": {
+            "path": "meta_info",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "range": {
+                      "meta_info.hit_tmpl_ver": {
+                        "gte": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "must": [
+      ]
+    }
+  },
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "title",
+    "content",
+    "reply_list"
+  ],
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "cafe_name": "리공카"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "match": {
+      "cafe_name": "리공카"
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "range": {
+      "date": {
+        "gte": "2018-01-01",
+        "lte": "2018-10-04",
+        "format": "yyyy-MM-dd"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "date",
+    "cafe_name",
+    "title"
+  ],
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "리공카"
+        }
+      },
+      "filter": {
+        "range": {
+          "date": {
+            "gte": "2018-06-01",
+            "lte": "2018-06-30",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "document_id"
+  ],
+  "query": {
+    "wildcard": {
+      "document_id": {
+        "value": "201912*",
+        "boost": 1.0,
+        "rewrite": "constant_score"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must_not": {
+        "exists": {
+          "field": "articleid"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "고민상담카페"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-facebook/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/crawler-facebook/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "exists": {
+          "field": "reply_list"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-bbs-naver/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "cafe_name": "고민상담카페"
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/corpus_process-naver-economy-2019/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "_source": [
+    "nlu_wrapper.*.moph_str"
+  ]
+}
+
+###
+
+GET {{host}}/crawler-naver-dictionary/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "category": "중한"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "exists": {
+            "field": "entry"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_comments-2011/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "object_id": "20110728SSHT0"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-youtube-live-chat/_doc/CkUKGkNQZmQtWXY0a2VZQ0ZhbkV3UW9kTC1ZQk5REidDUHYxME5YM2tlWUNGYlhCVEFJZDFWRU5hZzE1NzUxMTcwMDMxMzI=
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/crawler-bbs-lineage2m/_search?size=0
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "aggs": {
+    "min_articleId": {
+      "min": {
+        "field": "articleId"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-economy-2020/_search?size=0
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "aggregations": {
+    "by_day": {
+      "date_histogram": {
+        "field": "date",
+        "keyed": false,
+        "format": "yyyy-MM-dd",
+        "time_zone": "+09:00",
+        "calendar_interval": "day"
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "match": {
+            "state": "done"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-dictionary-example-linedict-list/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "exists": {
+            "field": "entry"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "gdate": "20200506"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-naver-kbo_game_center_game_info/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "gameId": "20200512SKLG02020"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-dictionary-example-glosbe-en*-word-list/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-glosbe-koen-article/_doc/362cb241-3630-4176-a1a6-79e1edcfd151
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/crawler-dictionary-example-glosbe-koid-word-list/_doc/start
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "url": "https://glosbe.com/ko/id/-",
+  "entry": "-",
+  "document_id": "start"
+}
+
+###
+
+GET {{host}}/log_gamechat_world_cn_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/crawler-dictionary-example-glosbe-envi-word-list/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "date": {
+            "gte": "2020-05-27T14:50:00+09:00"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "from": 0,
+  "size": 20,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "client_info.game_code": "l2-en"
+          }
+        },
+        {
+          "match": {
+            "source_lang": "en"
+          }
+        },
+        {
+          "match": {
+            "target_lang": "tw"
+          }
+        }
+      ],
+      "must": {
+        "range": {
+          "client_info.request_date": {
+            "gte": "2020-01-01",
+            "lte": "2020-05-20",
+            "format": "yyyy-MM-dd"
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {
+          "gameServer": "51"
+        }
+      },
+      "must": {
+        "range": {
+          "localDateTime": {
+            "gte": "2020-05-31T04:02:13+09:00"
+          }
+        }
+      }
+    }
+  },
+  "size": 200,
+  "sort": [
+    {
+      "localDateTime": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {
+          "gameServer": "51"
+        }
+      },
+      "must": {
+        "range": {
+          "localDateTime": {
+            "gte": "2020-06-01T07:50:31+09:00",
+            "lte": "2020-06-01T07:51:31+09:00"
+          }
+        }
+      }
+    }
+  },
+  "size": 200,
+  "sort": [
+    {
+      "localDateTime": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "localDateTime"
+  ],
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {
+          "gameServer": "51"
+        }
+      },
+      "must": {
+        "range": {
+          "localDateTime": {
+            "gte": "2020-06-01T07:51:32+09:00"
+          }
+        }
+      }
+    }
+  },
+  "aggregations": {
+    "by_date": {
+      "date_histogram": {
+        "field": "localDateTime",
+        "keyed": false,
+        "calendar_interval": "1m"
+      }
+    }
+  }
+}
+
+### 2020-05-31T13:03:41
+### 2020-05-31T04:02:13+09:00
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "range": {
+                "localDateTime": {
+                  "gte": "2020-05-31T00:00:00+09:00",
+                  "lte": "2020-06-01T00:00:00+09:00"
+                }
+              }
+            },
+            {
+              "match": {
+                "uchar_msg": {
+                  "query": "미안해요 안할게요 이제"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "size": 100,
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "uchar_msg"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "match": {
+          "uchar_msg": {
+            "query": "미안해요 안할게요 이제"
+          }
+        }
+      }
+    }
+  },
+  "size": 100,
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world2_kr_202005/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "msg",
+    "name",
+    "gameCode",
+    "gameServer",
+    "localDateTime"
+  ],
+  "from": 0,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "range": {
+                "localDateTime": {
+                  "gte": "2020-05-30T00:00:00+09:00",
+                  "lte": "2020-06-01T00:00:00+09:00"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "size": 100,
+  "sort": [
+    {
+      "localDateTime": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###
+
+GET {{host}}/log_gamechat_world_cn_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "size": 0,
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "gameServer",
+        "size": 200
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/crawler-facebook-id-reply/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+GET {{host}}/crawler-facebook-en/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "page": "groups/dockerkubernetes"
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+
+POST {{host}}/crawler-dictionary-example-word-list/_update_by_query
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source['rank'] = 'Lv1'"
+  }
+}
+
+###
+
+POST {{host}}/ko_tm04/_update_by_query
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "match_all": {}
+  },
+  "script": {
+    "source": "ctx._source.remove('edit_info')"
+  }
+}
+
+###
+
+GET http://172.20.93.221:30006/log_mtdemo_202005_re/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "size": 0,
+  "aggregations": {
+    "group_by": {
+      "terms": {
+        "field": "meta_info.translation_method.keyword",
+        "min_doc_count": 1
+      }
+    }
+  }
+}
+
+###
+
+GET http://172.20.93.221:30006/_template/log_mtdemo_202005_re
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET http://172.20.93.221:30006/log_mtdemo_202005_re/_mapping
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET http://172.20.93.221:30006/log_mtdemo_*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "client_info"
+  ]
+}
+
+###
+
+GET {{host}}/ko_tm04/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "ko_ver": {
+            "lte": 0
+          }
+        }
+      }
+    }
+  }
+}
+
+###
+
+GET {{host}}/mt_evaluation/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/log_mtdemo_202005_re/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "client_info.game_code": "l2m-ko"
+          }
+        },
+        {
+          "match": {
+            "source_lang": "ko"
+          }
+        },
+        {
+          "match": {
+            "target_lang": "en"
+          }
+        },
+        {
+          "match": {
+            "option.save_tm": true
+          }
+        }
+      ],
+      "must": {
+        "range": {
+          "client_info.request_date": {
+            "format": "yyyy-MM-dd",
+            "gte": "2020-05-08",
+            "lte": "2020-07-08"
+          }
+        }
+      }
+    }
+  },
+  "size": 20,
+  "sort": [
+    {
+      "client_info.request_date": {
+        "order": "desc"
+      }
+    }
+  ],
+  "track_total_hits": true
+}
+
+###

@@ -1,0 +1,60 @@
+{
+  "settings": {
+    "index": {
+      "max_ngram_diff": 10,
+      "mapping.total_fields.limit": 5000
+    },
+    "number_of_shards": 3,
+    "number_of_replicas": 2,
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        },
+        "space_analyzer": {
+          "tokenizer": "space_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 1,
+          "max_gram": 9,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+        "space_tokenizer": {
+          "type": "whitespace",
+          "max_token_length": 2048
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "document_id": {
+        "type": "text"
+      },
+      "id": {
+        "type": "text"
+      },
+      "type": {
+        "type": "text"
+      },
+      "english": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "korean": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "korean_morp": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      }
+    }
+  }
+}

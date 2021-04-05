@@ -1,0 +1,36 @@
+###
+
+GET {{host}}/_tasks?detailed=true
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_tasks?detailed=true&actions=*reindex
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_tasks/8kaypq9RQgCyoDjpSdTLRA:197600854
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+POST {{host}}/_tasks/_cancel?nodes=aqJqiAyUQdSx7Wak72LGBA&actions=*reindex
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+POST {{host}}/_tasks/_cancel?nodes=8kaypq9RQgCyoDjpSdTLRA&actions=*bulk
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###

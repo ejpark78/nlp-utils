@@ -1,0 +1,72 @@
+
+#처리내역
+#nano OAuth Client 생성이 완료되었습니다.
+#연동 관련 문의사항이 있으시면 언제든지 연락 부탁드립니다.
+#
+#Stage 환경
+#- Authorize Endpoint: https://stg-nano.ncsoft.com/oauth/auth
+#- Token Endpoint: https://stg-nano.ncsoft.com/oauth/token
+#- UserInfo Endpoint: https://stg-nano.ncsoft.com/oauth/me
+#- Client ID: nlplab
+#- Client Secret: 34cdf910-c6b8-4f8b-82ef-ea3f7bce7024
+#- Redirect URL: https://corpus.ncsoft.com
+#https://mt.ncsoft.com
+#https://nlp.ncsoft.com
+#https://nlp-dev.ncsoft.com
+#- Test : https://stg-nano.ncsoft.com/oauth/auth?client_id=nlplab&response_type=code&scope=nano&redirect_uri=https://nlp.ncsoft.com
+#
+#Product 환경
+#- Authorize Endpoint: https://nano.ncsoft.com/oauth/auth
+#- Token Endpoint: https://nano.ncsoft.com/oauth/token
+#- UserInfo Endpoint: https://nano.ncsoft.com/oauth/me
+#- Client ID: nlplab
+#- Client Secret: cf25d21b-97bb-46b0-8a97-943e18657530
+#- Redirect URL: https://corpus.ncsoft.com
+#https://mt.ncsoft.com
+#https://nlp.ncsoft.com
+#- Test : https://nano.ncsoft.com/oauth/auth?client_id=nlplab&response_type=code&scope=nano&redirect_uri=https://corpus.ncsoft.com
+
+
+# https://wiki.ncsoft.com/display/nanowiki/nano+OAuth2+-+API+Reference
+# https://wiki.ncsoft.com/pages/viewpage.action?pageId=162203481
+
+
+###
+
+# curl -i 'https://stg-nano.ncsoft.com/oauth/auth?client_id=nlplab&response_type=code&scope=nano&redirect_uri=https://nlp-dev.ncsoft.com:21002/oauth/callback' -i -H 'Accept: application/json'
+
+###
+
+GET https://stg-nano.ncsoft.com/oauth/auth?client_id=nlplab&response_type=code&scope=nano&redirect_uri=http://nlp-dev.ncsoft.com:21002/oauth/callback
+Content-Type: application/json
+Accept: application/json
+
+###
+
+DELETE {{host}}/oauth_log
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/oauth_cache/_search?pretty
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+DELETE {{host}}/oauth_cache
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+DELETE {{host}}/oauth_cache/_doc/ejpark-nlp-dev.ncsoft.com
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###

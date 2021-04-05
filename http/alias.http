@@ -1,0 +1,73 @@
+### indices 목록
+
+GET {{host}}/_cat/indices?v&s=index&h=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+POST {{host}}/_aliases
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "actions": [
+    {
+      "remove": {
+        "indices": [
+          "raw-fntimes",
+          "raw-fntimes-2*"
+        ],
+        "alias": "alias-raw-fntimes"
+      }
+    }
+  ]
+}
+
+###
+
+GET {{host}}/_aliases
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/alias-raw-fntimes/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": [
+    "title",
+    "date"
+  ]
+}
+
+###
+
+GET {{host}}/raw-fntimes,raw-fntimes-*/_search
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": ["url"],
+  "query": {
+    "ids" : {
+      "values" : ["202004161846516502f09e13944d_18"]
+    }
+  }
+}
+###
+
+GET {{host}}/raw-fntimes-*/_doc/202004161846516502f09e13944d_18
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "_source": ["url"]
+}
+###

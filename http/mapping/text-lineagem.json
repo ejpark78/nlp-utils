@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "index": {
+      "max_ngram_diff": 10,
+      "mapping.total_fields.limit": 5000
+    },
+    "analysis": {
+      "analyzer": {
+        "ngram_analyzer": {
+          "tokenizer": "ngram_tokenizer"
+        },
+        "space_analyzer": {
+          "tokenizer": "space_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 1,
+          "max_gram": 9,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        },
+        "space_tokenizer": {
+          "type": "whitespace",
+          "max_token_length": 4096
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "date": {
+        "type": "date"
+      },
+      "document_id": {
+        "type": "text"
+      },
+      "source": {
+        "type": "text"
+      },
+      "text": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
+      "keywords": {
+        "type": "text",
+        "analyzer": "space_analyzer"
+      }
+    }
+  }
+}

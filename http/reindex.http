@@ -1,0 +1,58 @@
+###
+
+POST {{host}}/_reindex?wait_for_completion=false
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "index": "corpus-bitext"
+  },
+  "dest": {
+    "index": "corpus-bitext-koen"
+  }
+}
+
+###
+
+DELETE {{host}}/crawler-dictionary-example-youdao
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+POST {{host}}/_reindex?wait_for_completion=false
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "source": {
+    "remote": {
+      "host": "https://corpus.ncsoft.com:9200",
+      "username": "elastic",
+      "password": "nlplab"
+    },
+    "index": "crawler-jisikman-2018"
+  },
+  "dest": {
+    "index": "crawler-jisikman-2018"
+  }
+}
+
+###
+
+
+
+
+###
+
+
+
+###
+
+
+
+###

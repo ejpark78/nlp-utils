@@ -1,0 +1,49 @@
+###
+
+GET {{host}}/_cat/recovery?v&active_only=true
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/pending_tasks?v
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/shards?h=index,shard,prirep,state,unassigned.reason
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/shards?v
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+### health
+
+GET {{host}}/_cat/health?v
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+### nodes
+
+GET {{host}}/_cat/nodes?v&s=name
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_cat/recovery
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+
+

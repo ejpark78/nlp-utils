@@ -1,0 +1,58 @@
+### 인덱스 매핑 정보 조회
+
+GET {{host}}/text-bbs-lineagem/_mappings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/text
+Accept: application/json
+
+### 인덱스 매핑 설정
+
+PUT {{host}}/sentence-pool-ko
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+< mapping/sentence-pool.json
+
+### nori test
+
+PUT thing/_mappings/thing
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "properties": {
+    "ko": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "ko_morph": {
+          "type": "text",
+          "analyzer": "nori_korean"
+        }
+      }
+    },
+    "en": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "en_morph": {
+          "type": "text",
+          "analyzer": "english"
+        }
+      }
+    }
+  }
+}
+
+
+### POST thing/_update_by_query
+
+###
