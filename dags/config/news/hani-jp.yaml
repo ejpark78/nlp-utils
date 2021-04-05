@@ -1,0 +1,37 @@
+---
+reference: template_jp
+dag:
+  dag_id: 'hani-jp'
+  description: 'hani-jp crawler'
+  schedule_interval: '20 * * * *'
+  tags:
+    - 한겨레
+tasks:
+  - category: jp-a
+    config: /config/news/hani-jp.yaml
+    name: 全体
+    task_id: hani-jp-a
+  - category: jp-b
+    config: /config/news/hani-jp.yaml
+    name: 政治·社会
+    task_id: hani-jp-b
+  - category: jp-c
+    config: /config/news/hani-jp.yaml
+    name: 日本·国際
+    task_id: hani-jp-c
+  - category: jp-d
+    config: /config/news/hani-jp.yaml
+    name: 経済
+    task_id: hani-jp-d
+  - category: jp-e
+    config: /config/news/hani-jp.yaml
+    name: 文化
+    task_id: hani-jp-e
+  - category: jp-f
+    config: /config/news/hani-jp.yaml
+    name: 社説・コラム
+    task_id: hani-jp-f
+  - category: jp-h
+    config: /config/news/hani-jp.yaml
+    name: ハンギョレ21
+    task_id: hani-jp-h

@@ -1,0 +1,21 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'chosun-biz'
+  description: '조선비즈 크롤러'
+  schedule_interval: '20 * * * *'
+  tags:
+    - 조선비즈
+tasks:
+  - category: group1
+    config: /config/news/chosun-biz.yaml
+    name: 국제,증권,부동산,산업,IT
+    task_id: Inter-Stock-RE-I-IT
+  - category: group2
+    config: /config/news/chosun-biz.yaml
+    name: 오피니언,정책,유통,금융,시사
+    task_id: Opi-Poli-Logis-Fin-Debate
+  - category: group3
+    config: /config/news/chosun-biz.yaml
+    name: 전체
+    task_id: all

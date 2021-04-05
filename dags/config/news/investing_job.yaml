@@ -1,0 +1,20 @@
+---
+reference: adena_template_en
+dag:
+  dag_id: 'investing'
+  description: 'investing 크롤러'
+  schedule_interval: '0 * * * *'
+  tags: ["investing"]
+tasks:
+  - category: currency
+    config: /config/news/investing.yaml
+    name: cryptocurrency,politics,world,sports&general
+    task_id: investing-cryptocurrency
+  - category: stock
+    config: /config/news/investing.yaml
+    name: stock-markets,commodities,forex,coronavirus
+    task_id: investing-stock-markets
+  - category: economy
+    config: /config/news/investing.yaml
+    name: economy,economic-indicators,technology
+    task_id: investing-economy

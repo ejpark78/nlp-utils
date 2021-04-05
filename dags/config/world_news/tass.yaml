@@ -1,0 +1,53 @@
+---
+dag:
+  dag_id: 'tass'
+  description: 'tass crawler'
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - 해외 뉴스
+    - 타스 (러시아)
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+tasks:
+  - category: v-strane
+    config: /config/world_news/tass.yaml
+    name: v-strane
+    task_id: tass-v-strane
+  - category: politika
+    config: /config/world_news/tass.yaml
+    name: politika
+    task_id: tass-politika
+  - category: mezhdunarodnaya-panorama
+    config: /config/world_news/tass.yaml
+    name: mezhdunarodnaya-panorama
+    task_id: tass-mezhdunarodnaya-panorama

@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'daejon'
+  description: '대전일보 크롤러'
+  schedule_interval: '25 * * * *'
+  tags:
+    - 대전일보
+tasks:
+  - category: group1
+    config: /config/news/daejon.yaml
+    name: 정치,경제/과학,사회,문화,포토뉴스,라이프,지역,사람들,기획,스포츠,연예
+    task_id: all

@@ -1,0 +1,281 @@
+---
+dag:
+  dag_id: 'naver'
+  description: 'naver crawler'
+  schedule_interval: '27,56 * * * *'
+  concurrency: 64
+  max_active_runs: 1
+  tags:
+    - 네이버 뉴스
+    - portal
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: naver
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '10'
+    - --date-range
+    - today
+tasks:
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/모바일
+    task_id: it-mobile
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/인터넷/SNS
+    task_id: it-sns
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/통신/뉴미디어
+    task_id: it-new-media
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/IT 일반
+    task_id: it-etc
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/보안/해킹
+    task_id: it-security
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/컴퓨터
+    task_id: it-computer
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/게임/리뷰
+    task_id: it-game
+  - category: it
+    config: /config/naver-news/it.yaml
+    name: IT/과학 일반
+    task_id: it-science
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/증권
+    task_id: economy-stock
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/금융
+    task_id: economy-finance
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/부동산
+    task_id: economy-estate
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/산업/재계
+    task_id: economy-industry
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/글로벌 경제
+    task_id: economy-global
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/경제 일반
+    task_id: economy-etc
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/생활경제
+    task_id: economy-living
+  - category: economy
+    config: /config/naver-news/economy.yaml
+    name: 경제/중기/벤처
+    task_id: economy-venture
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/사건사고
+    task_id: society-incident
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/교육
+    task_id: society-education
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/노동
+    task_id: society-labor
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/언론
+    task_id: society-media
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/환경
+    task_id: society-environment
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/인권복지
+    task_id: society-human-right
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/식품의료
+    task_id: society-medical
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/지역
+    task_id: society-local
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/인물
+    task_id: society-person
+  - category: society
+    config: /config/naver-news/society.yaml
+    name: 사회/사회일반
+    task_id: society-etc
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/청와대
+    task_id: politics-blue-house
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/국회정당
+    task_id: politics-national-assembly
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/북한
+    task_id: politics-north-korea
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/행정
+    task_id: politics-administration
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/국방외교
+    task_id: politics-national-defense
+  - category: politics
+    config: /config/naver-news/politics.yaml
+    name: 정치/정치일반
+    task_id: politics-etc
+  - category: weather
+    config: /config/naver-news/weather.yaml
+    name: 날씨
+    task_id: weather-forecast
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/건강정보
+    task_id: living-health
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/자동차시승기
+    task_id: living-car
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/도로교통
+    task_id: living-traffic
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/여행/레저
+    task_id: living-tour
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/음식맛집
+    task_id: living-food
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/패션뷰티
+    task_id: living-beauty
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/공연전시
+    task_id: living-art
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/책
+    task_id: living-book
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/종교
+    task_id: living-religion
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/날씨
+    task_id: living-forecast
+  - category: living
+    config: /config/naver-news/living.yaml
+    name: 생활/일반
+    task_id: living-etc
+  - category: opinion
+    config: /config/naver-news/opinion.yaml
+    name: 오피니언
+    task_id: opinion-opinion
+  - category: tv
+    config: /config/naver-news/tv.yaml
+    name: TV
+    task_id: tv-tv
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/야구
+    task_id: sports-baseball
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/해외야구
+    task_id: sports-wbaseball
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/게임
+    task_id: sports-game
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/축구
+    task_id: sports-football
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/해외축구
+    task_id: sports-wfootball
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/농구
+    task_id: sports-basketball
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/배구
+    task_id: sports-volleyball
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/골프
+    task_id: sports-golf
+  - category: sports
+    config: /config/naver-news/sports.yaml
+    name: 스포츠/스포츠-일반
+    task_id: sports-etc
+  - category: international
+    config: /config/naver-news/international.yaml
+    name: 세계/아시아호주
+    task_id: international-asia
+  - category: international
+    config: /config/naver-news/international.yaml
+    name: 세계/미국중남미
+    task_id: international-western
+  - category: international
+    config: /config/naver-news/international.yaml
+    name: 세계/유럽
+    task_id: international-europe
+  - category: international
+    config: /config/naver-news/international.yaml
+    name: 세계/중동아프리카
+    task_id: international-mideast
+  - category: international
+    config: /config/naver-news/international.yaml
+    name: 세계/일반
+    task_id: international-etc

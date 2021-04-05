@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'idaegu'
+  description: '대구일보 크롤러'
+  schedule_interval: '40 * * * *'
+  tags:
+    - 대구일보
+tasks:
+  - category: group
+    config: /config/news/idaegu.yaml
+    name: 사람,지역뉴스,정치,경제,사회,문화,교육,오피니언,스포츠,연예,포토,특집
+    task_id: all

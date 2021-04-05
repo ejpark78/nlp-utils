@@ -1,0 +1,110 @@
+---
+dag:
+  dag_id: 'upi'
+  description: 'upi crawler'
+  schedule_interval: '10,40 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - 해외 뉴스
+    - 국제합동통신
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: korea-news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.web_news.web_news
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+tasks:
+  - category: TopNews
+    config: /config/world_news/upi.yaml
+    name: TopNews/WorldNews
+    task_id: upi-TopNews-WorldNews
+  - category: TopNews
+    config: /config/world_news/upi.yaml
+    name: TopNews/US
+    task_id: upi-TopNews-US
+  - category: TopNews
+    config: /config/world_news/upi.yaml
+    name: TopNews/Featured
+    task_id: upi-TopNews-Featured
+  - category: TopNews
+    config: /config/world_news/upi.yaml
+    name: TopNews/Voices
+    task_id: upi-TopNews-Voices
+  - category: OddNews
+    config: /config/world_news/upi.yaml
+    name: OddNews
+    task_id: upi-OddNews
+  - category: Entertainment_News
+    config: /config/world_news/upi.yaml
+    name: Entertainment_News/Movies
+    task_id: upi-Entertainment_News-Movies
+  - category: Entertainment_News
+    config: /config/world_news/upi.yaml
+    name: Entertainment_News/Music
+    task_id: upi-Entertainment_News-Music
+  - category: Entertainment_News
+    config: /config/world_news/upi.yaml
+    name: Entertainment_News/TV
+    task_id: upi-Entertainment_News-TV
+  - category: SportsNews
+    config: /config/world_news/upi.yaml
+    name: SportsNews/Soccer
+    task_id: upi-SportsNews-Soccer
+  - category: SportsNews
+    config: /config/world_news/upi.yaml
+    name: SportsNews/NFL
+    task_id: upi-SportsNews-NFL
+  - category: SportsNews
+    config: /config/world_news/upi.yaml
+    name: SportsNews/NBA
+    task_id: upi-SportsNews-NBA
+  - category: SportsNews
+    config: /config/world_news/upi.yaml
+    name: SportsNews/MLB
+    task_id: upi-SportsNews-MLB
+  - category: DefenseNews
+    config: /config/world_news/upi.yaml
+    name: DefenseNews
+    task_id: upi-DefenseNews
+  - category: Featured
+    config: /config/world_news/upi.yaml
+    name: Featured
+    task_id: upi-Featured
+  - category: ScienceNews
+    config: /config/world_news/upi.yaml
+    name: ScienceNews
+    task_id: upi-ScienceNews
+  - category: HealthNews
+    config: /config/world_news/upi.yaml
+    name: HealthNews
+    task_id: upi-HealthNews
+  - category: Almanac
+    config: /config/world_news/upi.yaml
+    name: Almanac
+    task_id: upi-Almanac
+

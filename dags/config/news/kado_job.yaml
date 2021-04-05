@@ -1,0 +1,14 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'kado'
+  description: '강원도민일보 크롤러'
+  schedule_interval: '0 * * * *'
+  tags:
+    - 강원도민일보
+    - S0
+tasks:
+  - category: group
+    config: /config/news/kado.yaml
+    name: 경제
+    task_id: kado-economy

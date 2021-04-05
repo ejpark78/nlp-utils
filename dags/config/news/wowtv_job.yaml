@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'wowtv'
+  description: '한국경제TV 크롤러'
+  schedule_interval: '25 * * * *'
+  tags:
+    - 한국경제TV
+tasks:
+  - category: latest
+    config: /config/news/wowtv.yaml
+    name: latest,stock,economy,bitcoin,it,international,job
+    task_id: all

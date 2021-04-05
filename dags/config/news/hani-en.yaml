@@ -1,0 +1,37 @@
+---
+reference: template_en
+dag:
+  dag_id: 'hani-en'
+  description: 'hani-en crawler'
+  schedule_interval: '10 * * * *'
+  tags:
+    - 한겨레
+tasks:
+  - category: National
+    config: /config/news/hani-en.yaml
+    name: National
+    task_id: National
+  - category: NorthKorea
+    config: /config/news/hani-en.yaml
+    name: North Korea
+    task_id: NorthKorea
+  - category: International
+    config: /config/news/hani-en.yaml
+    name: International
+    task_id: International
+  - category: Eco-Business
+    config: /config/news/hani-en.yaml
+    name: Eco-Business
+    task_id: Eco-Business
+  - category: Culture
+    config: /config/news/hani-en.yaml
+    name: Culture
+    task_id: Culture
+  - category: Editorial-Opinion
+    config: /config/news/hani-en.yaml
+    name: Editorial-Opinion
+    task_id: Editorial-Opinion
+  - category: All
+    config: /config/news/hani-en.yaml
+    name: All
+    task_id: All

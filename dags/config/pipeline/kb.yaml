@@ -1,0 +1,100 @@
+---
+dag:
+  dag_id: 'kb-pipeline'
+  description: 'KB Pipeline'
+  schedule_interval: '0 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+  tags:
+    - "KB Pipeline"
+
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+
+operator:
+  params:
+    labels:
+      crawler: pipeline-kb
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:dev'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+      ELASTIC_INDEX: "crawler-naver-*-2021"
+      DB_HOST: "crawler-mysql.cloud.ncsoft.com"
+      DB_AUTH: 'root:searchT2020'
+      DB_DATABASE: "naver"
+      DB_TABLE: "naver"
+      NLU_WRAPPER_URL: "http://172.20.40.142"
+    cmds:
+      - 'python3'
+  args:
+    - -m
+    - crawler.web_news.pipeline
+    - --date-range
+    - today
+
+tasks:
+  - category: group-economy
+    name: kb-economy
+    args:
+      - "--index"
+      - "crawler-naver-economy-2021"
+
+  - category: group-international
+    name: kb-international
+    args:
+      - "--index"
+      - "crawler-naver-international-2021"
+
+  - category: group-it
+    name: kb-it
+    args:
+      - "--index"
+      - "crawler-naver-it-2021"
+
+  - category: group-living
+    name: kb-living
+    args:
+      - "--index"
+      - "crawler-naver-living-2021"
+
+  - category: group-opinion
+    name: kb-opinion
+    args:
+      - "--index"
+      - "crawler-naver-opinion-2021"
+
+  - category: group-politics
+    name: kb-politics
+    args:
+      - "--index"
+      - "crawler-naver-politics-2021"
+
+  - category: group-society
+    name: kb-society
+    args:
+      - "--index"
+      - "crawler-naver-society-2021"
+
+  - category: group-sports
+    name: kb-sports
+    args:
+      - "--index"
+      - "crawler-naver-sports-2021"
+
+  - category: group-tv
+    name: kb-tv
+    args:
+      - "--index"
+      - "crawler-naver-tv-2021"

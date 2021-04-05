@@ -1,0 +1,17 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'fnnews'
+  description: '파이낸셜뉴스 크롤러'
+  schedule_interval: '10 * * * *'
+  tags:
+    - 파이낸셜뉴스
+tasks:
+  - category: group1
+    config: /config/news/fnnews.yaml
+    name: 경제,경제/금융,경제/증권,경제/부동산,경제/산업,경제/일반,정치,정치/청와대,정치/국회,정치/북한,정치/외교,사회,사회/사건/사고,사회/검찰/법원,사회/행정,사회/교육
+    task_id: part1
+  - category: group2
+    config: /config/news/fnnews.yaml
+    name: IT/인터넷,IT/블록체인,IT/의학/과학,국제,국제/경제,국제/정치,국제/사회,라이프,라이프/생활,라이프/스포츠,라이프/푸드/리빙,라이프/레저/문화,IT,IT/통신,IT/게임
+    task_id: part2

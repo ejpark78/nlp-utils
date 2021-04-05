@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'sbs-biz'
+  description: 'SBS비즈 크롤러'
+  schedule_interval: '20 * * * *'
+  tags:
+    - SBS비즈
+tasks:
+  - category: biz-book
+    config: /config/news/sbs-biz.yaml
+    name: 경제정책,금융/증권,산업/재계,부동산,생활경제,글로벌경제,전체,머니랩
+    task_id: all

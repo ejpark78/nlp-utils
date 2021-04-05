@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'kyeongin'
+  description: '경인일보 크롤러'
+  schedule_interval: '10 * * * *'
+  tags:
+    - 경인일보
+tasks:
+  - category: all
+    config: /config/news/kyeongin.yaml
+    name: 전체뉴스,스포츠,연예,사설,경인칼럼,기명칼럼,데스크칼럼,월요논단,수요광장,경제전망대,춘추칼럼,전문가칼럼,참성단,오늘의창,노트북,기고
+    task_id: all

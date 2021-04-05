@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'kwangju'
+  description: '광주일보 크롤러'
+  schedule_interval: '5 * * * *'
+  tags:
+    - 광주일보
+tasks:
+  - category: group
+    config: /config/news/kwangju.yaml
+    name: 정치,경제,사회,스포츠,연예,문화,국제,지역,사설
+    task_id: all

@@ -1,0 +1,21 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'hankook'
+  description: '한국일보 크롤러'
+  schedule_interval: '30 * * * *'
+  tags:
+    - 한국일보
+tasks:
+  - category: group1
+    config: /config/news/hankook.yaml
+    name: 문화/책,문화/공연/전시,연예/일반,연예/영화,연예/방송,연예/음악,연예/일반,경제/일반,경제/산업,경제/금융/증권,경제/부동산,국제/일반,국제/아시아/호주,국제/미국/중남미
+    task_id: part1
+  - category: group2
+    config: /config/news/hankook.yaml
+    name: 국제/유럽,국제/중동/아프리카,국제/이슈,IT/과학,리빙/음식,리빙/여행,리빙/건강,리빙/일반,리빙/날씨,사설/인터뷰,사설/사설,사설/칼럼,정치/국회/정당,정치/청와대
+    task_id: part2
+  - category: group3
+    config: /config/news/hankook.yaml
+    name: 정치/외교,정치/국방/북한,정치/일반,사회/사건/사고,사회/법원/경찰,사회/교육,사회/노동,사회/보건/복지,사회/일반,스포츠/야구,스포츠/축구,스포츠/농구,스포츠/배구,스포츠/골프,스포츠/일반
+    task_id: part3

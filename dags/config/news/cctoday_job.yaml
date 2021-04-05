@@ -1,0 +1,18 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'cctoday'
+  description: '충청투데이 crawler'
+  schedule_interval: '15 * * * *'
+  tags:
+    - 충청투데이
+tasks:
+  - category: politics
+    config: /config/news/cctoday.yaml
+    name: 정치/행정,경제/과학,사회,스포츠,문화,사람들
+    task_id: P-E-S-Spo-C-P
+  - category: total
+    config: /config/news/cctoday.yaml
+    name: 종합
+    task_id: all
+

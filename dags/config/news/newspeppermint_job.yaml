@@ -1,0 +1,13 @@
+---
+reference: template_kor
+dag:
+  dag_id: 'newspeppermint'
+  description: 'NewsPeppermint 크롤러'
+  schedule_interval: '15 * * * *'
+  tags:
+    - NewsPeppermint
+tasks:
+  - category: world
+    config: /config/news/newspeppermint.yaml
+    name: 세계,한국,경제,경영,IT,과학,문화,스포츠,칼럼,추천
+    task_id: all

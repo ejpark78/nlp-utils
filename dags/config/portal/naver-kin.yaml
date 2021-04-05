@@ -1,0 +1,68 @@
+---
+dag:
+  dag_id: 'naver-kin'
+  description: 'naver-kin crawler'
+  schedule_interval: '4,34 * * * *'
+  concurrency: 8
+  max_active_runs: 1
+  tags:
+    - 게시판
+    - 네이버 지식인
+    - portal
+default_args:
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - ejpark@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params:
+    labels:
+      crawler: naver-kin
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  args:
+    - -m
+    - crawler.naver.kin.kin
+    - --sleep
+    - '10'
+tasks:
+  - category: naver-kin
+    name: question-list
+    task_id: question-list
+    args:
+      - "--question-list"
+      - "--config"
+      - "/config/naver-kin/kin.yaml"
+  - category: naver-kin
+    name: answer-list
+    task_id: answer-list
+    args:
+      - "--answer-list"
+      - "--config"
+      - "/config/naver-kin/kin.yaml"
+  - category: naver-kin
+    name: detail-question
+    task_id: detail-question
+    args:
+      - "--question"
+      - "--config"
+      - "/config/naver-kin/kin.yaml"
+  - category: naver-kin
+    name: detail-answer
+    task_id: detail-answer
+    args:
+      - "--answer"
+      - "--config"
+      - "/config/naver-kin/kin.yaml"

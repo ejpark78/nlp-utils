@@ -1,0 +1,158 @@
+---
+dag: &dag_template
+  dag_id: ''
+  description: ''
+  schedule_interval: '0,30 * * * *'
+  max_active_runs: 1
+  concurrency: 64
+default_args: &default_args_template
+  owner: 'Airflow'
+  retries: 3
+  depends_on_past: False
+  email:
+    - gunyoung20@ncsoft.com
+  email_on_retry: False
+  email_on_failure: False
+operator:
+  params: &operator_params_template
+    labels:
+      crawler: news
+    namespace: 'airflow'
+    image: 'registry.nlp-utils/crawler:live'
+    image_pull_policy: 'Always'
+    image_pull_secrets: 'registry'
+    is_delete_operator_pod: 'True'
+    get_logs: 'True'
+    cmds:
+      - 'python3'
+      - '-m'
+      - 'crawler.web_news.web_news'
+    env_vars:
+      ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+      ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+    resources:
+      request_cpu: "200m"
+      request_memory: "256Mi"
+      limit_cpu: "200m"
+      limit_memory: "256Mi"
+
+news: &news_args_template
+  args:
+    - --sleep
+    - '5'
+    - --date-range
+    - today
+    - --page-range
+    - 1~5
+
+adena_params: &adena_operator_params_template
+  labels:
+    crawler: news
+  namespace: 'airflow'
+  image: 'registry.nlp-utils/adena-crawler:master'
+  image_pull_policy: 'Always'
+  image_pull_secrets: 'registry'
+  is_delete_operator_pod: 'True'
+  get_logs: 'True'
+  cmds:
+    - 'python3'
+    - '-m'
+    - 'crawler.web_news.web_news'
+  env_vars:
+    ELASTIC_SEARCH_HOST: 'https://corpus.ncsoft.com:9200'
+    ELASTIC_SEARCH_AUTH: 'crawler:crawler2019'
+  resources:
+    request_cpu: "200m"
+    request_memory: "256Mi"
+    limit_cpu: "200m"
+    limit_memory: "256Mi"
+
+template_kor:
+  dag:
+    <<: *dag_template
+    tags: [국내뉴스,한국어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: korea-news
+        lang: kor
+  tasks: []
+
+template_en:
+  dag:
+    <<: *dag_template
+    tags: [국내뉴스,영어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: korea-news
+        lang: en
+  tasks: []
+
+template_cn:
+  dag:
+    <<: *dag_template
+    tags: [국내뉴스,중국어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: korea-news
+        lang: cn
+  tasks: []
+
+template_jp:
+  dag:
+    <<: *dag_template
+    tags: [국내뉴스,일본어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: korea-news
+        lang: jp
+  tasks: []
+
+template_eco_en:
+  dag:
+    <<: *dag_template
+    tags: [경제,영어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *operator_params_template
+      labels:
+        crawler: eco-news
+        lang: en
+  tasks: []
+
+adena_template_en:
+  dag:
+    <<: *dag_template
+    tags: [영어]
+  default_args:
+    <<: *default_args_template
+  operator:
+    <<: *news_args_template
+    params:
+      <<: *adena_operator_params_template
+      labels:
+        crawler: adena-news
+        lang: en
+  tasks: []

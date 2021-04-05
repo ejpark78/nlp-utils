@@ -1,0 +1,45 @@
+---
+reference: template_cn
+dag:
+  dag_id: 'hani-cn'
+  description: 'hani-cn crawler'
+  schedule_interval: '0 * * * *'
+  tags:
+    - 한겨레
+tasks:
+  - category: politics
+    config: /config/news/hani-cn.yaml
+    name: 全部
+    task_id: hani-cn-politics
+  - category: society
+    config: /config/news/hani-cn.yaml
+    name: 政治·社会
+    task_id: hani-cn-society
+  - category: economy
+    config: /config/news/hani-cn.yaml
+    name: 财经新闻
+    task_id: hani-cn-economy
+  - category: china
+    config: /config/news/hani-cn.yaml
+    name: 中国·国际
+    task_id: hani-cn-china
+  - category: korea
+    config: /config/news/hani-cn.yaml
+    name: 朝鲜消息
+    task_id: hani-cn-korea
+  - category: culture
+    config: /config/news/hani-cn.yaml
+    name: 文化·韩流
+    task_id: hani-cn-culture
+  - category: opinion
+    config: /config/news/hani-cn.yaml
+    name: 评论专栏
+    task_id: hani-cn-opinion
+  - category: radio
+    config: /config/news/hani-cn.yaml
+    name: 图片视频
+    task_id: hani-cn-radio
+  - category: jeju
+    config: /config/news/hani-cn.yaml
+    name: 济州
+    task_id: hani-cn-jeju
