@@ -304,15 +304,15 @@ parsing:
         to: date
         merge: single
     # weather 섹션
-    - key: date
-      replace:
-        - from: '^.+([0-9]{4,4})[.]([0-9]+)[.]([0-9]+)[.] ([0-9]+):([0-9]+):([0-9]+)'
-          to: '\g<1>-\g<2>-\g<3> \g<4>:\g<5>:\g<6>'
-      value: [ ]
-      type: text
-      convert:
-        to: date
-        merge: single
+#    - key: date
+#      replace:
+#        - from: '^.+([0-9]{4,4})[.]([0-9]+)[.]([0-9]+)[.] ([0-9]+):([0-9]+):([0-9]+)'
+#          to: '\g<1>-\g<2>-\g<3> \g<4>:\g<5>:\g<6>'
+#      value: [ ]
+#      type: text
+#      convert:
+#        to: date
+#        merge: single
 
 # ETL pipeline: raw, raw_list 에서 추출하는 정보
 pipeline:
