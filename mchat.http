@@ -317,3 +317,13 @@ Accept: application/text
 }
 
 ###
+
+GET {{host}}/metadata_gamechat/_doc/server_info
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+
+

@@ -1,0 +1,22 @@
+###
+
+GET http://172.19.169.16:30101/logstash-*/_search?pretty
+Authorization: Basic elastic languageAI12#
+Content-Type: application/json
+Accept: application/text
+
+{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "@timestamp": {
+            "gte": "now-10m"
+          }
+        }
+      }
+    }
+  }
+}
+
+###

@@ -47,7 +47,7 @@ Accept: application/text
     "tags",
     "url_info"
   ],
-"query": {
+  "query": {
     "bool": {
       "must": [
         {
