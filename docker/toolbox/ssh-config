@@ -1,0 +1,9 @@
+
+Host *
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null
+   LogLevel ERROR
+
+Host node*
+   User ubuntu
+   IdentityFile ~/.ssh/nccloud.pem
