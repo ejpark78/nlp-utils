@@ -259,7 +259,9 @@ class WebNewsBase(object):
 
         # 성공 로그 표시
         if flag is True:
-            dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
+            dt_str = ''
+            if 'date' in doc:
+                dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
 
             self.logger.log(
                 msg={
@@ -483,37 +485,6 @@ class WebNewsBase(object):
                     'resp': str(resp)[:200],
                 })
                 return None
-
-        if len(item) == 0:
-            text = ''
-            if isinstance(resp, BeautifulSoup):
-                text = resp.get_text()
-            elif isinstance(resp, str):
-                soup = BeautifulSoup(resp, 'html5lib')
-                text = ''.join(x.get_text() for x in soup.find_all())
-
-            # 삭제된 페이지
-            empty = [
-                '페이지를 찾을 수 없습니다',
-                '언론사 요청에 의해 삭제된 기사입니다.',
-                '노출 중단 된 기사입니다.',
-                'Service Unavailable',
-                'Service Temporarily Unavailable'
-            ]
-            for m in empty:
-                if text.find(m) > 0:
-                    return {}
-
-            # 에러 메세지 출력
-            self.logger.error(msg={
-                'level': 'ERROR',
-                'message': '[PARING_ERROR] HTML 파싱 에러',
-                'resp': str(resp)[:200] + ' ...',
-                'text': text,
-                'url': url_info['url'],
-            })
-
-            return None
 
         return item
 

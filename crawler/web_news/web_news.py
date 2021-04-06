@@ -198,15 +198,35 @@ class WebNewsCrawler(WebNewsBase):
             })
             return True
 
-        if self.params['contents'] and 'date' not in article:
-            self.summary['empty_date'] += 1
+        # check column missing
+        columns = set([x['key'] for x in self.job_config['parsing']['article']])
+        doc_columns = set(article.keys())
+
+        missing_columns = list(columns.difference(doc_columns))
+
+        if self.params['contents'] and len(missing_columns) > 0:
+            self.summary['column_missing_error'] += 1
+            # flag = self.is_deleted(resp=article_html)
+
+            item['status'] = 'column_missing_error'
+            article['_id'] = doc_id
 
             self.logger.log(msg={
                 'level': 'MESSAGE',
-                'message': '[EMPTY_DATE] date 가 없는 문서, 건너뜀',
+                'message': f'[COLUMN_MISSING] {",".join(missing_columns)} 가 없는 문서',
                 'doc_id': doc_id,
-                **item,
+                'missing_columns': ','.join(missing_columns),
+                'url': item['url'] if 'url' in item else '',
             })
+
+            # 기사 저장
+            self.save_article(
+                es=es,
+                job=job,
+                doc=item,
+                html=article_html,
+                article=article,
+            )
             return True
 
         self.summary['article'] += 1
@@ -474,12 +494,16 @@ class WebNewsCrawler(WebNewsBase):
 
         query = {
             'track_total_hits': True,
-            '_source': ['url'],
+            '_source': ['url', 'status'],
             'query': {
                 'bool': {
                     'must_not': [{
                         'exists': {
                             'field': 'contents'
+                        }
+                    }, {
+                        'match': {
+                            'status': 'column_missing_error'
                         }
                     }],
                     **dt_query['query']['bool']
@@ -490,14 +514,20 @@ class WebNewsCrawler(WebNewsBase):
         date_list = list(rrule(YEARLY, dtstart=self.date_range['start'], until=self.date_range['end']))
 
         for dt in date_list:
+            prev_index, es.index = es.index, job['index'].format(year=dt.year)
+
             doc_list = []
-            es.dump_index(index=job['index'].format(year=dt.year), query=query, result=doc_list)
+            es.dump_index(index=es.index, query=query, result=doc_list)
+
+            doc_list = [x for x in doc_list if 'status' in x and x['status'].find('error') < 0]
 
             for doc in doc_list:
                 # 기사 본문을 수집한다.
                 self.trace_article_body(doc_id=doc['_id'], item={'url': doc['url']}, job=job, es=es)
 
                 sleep(self.params['sleep'])
+
+            es.index = prev_index
 
         return
 
