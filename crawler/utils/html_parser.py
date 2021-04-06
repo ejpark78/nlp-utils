@@ -293,14 +293,7 @@ class HtmlParser(object):
                 date = datetime.strptime(str_date, dt_format)
                 break
             except Exception as e:
-                self.logger.warning(msg={
-                    'level': 'WARNING',
-                    'message': 'datetime strptime 경고',
-                    'date': date,
-                    'format': dt_format,
-                    'str_date': str_date if len(str_date) < 30 else str_date[:30],
-                    'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
-                })
+                _ = str(e)
 
         if date is None:
             self.logger.warning(msg={
