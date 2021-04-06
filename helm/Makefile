@@ -9,15 +9,15 @@ ls:
 
 .ONESHELL:
 install:
-	helm install pipeline ./pipeline -f pipeline/values.yaml -n pipeline-kb
+	#helm install pipeline ./pipeline -f pipeline/values.yaml -n pipeline-kb
 
-	helm install bbs ./portal -f portal/bbs.yaml -n dev
+	#helm install bbs ./portal -f portal/bbs.yaml -n dev
 
 	helm install daum-news ./portal -f portal/daum-news.yaml -n dev
 	helm install nate-news ./portal -f portal/nate-news.yaml -n dev
 	helm install naver-news ./portal -f portal/naver-news.yaml -n dev
 
-	helm install naver-kin ./portal -f portal/naver-kin.yaml -n naver-kin
+	#helm install naver-kin ./portal -f portal/naver-kin.yaml -n naver-kin
 	#helm install naver-reply ./portal -f portal/naver-reply.yaml -n dev
 
 	helm list -A

@@ -565,10 +565,13 @@ class WebNewsCrawler(WebNewsBase):
         if 'job' in self.summary:
             del self.summary['job']
 
-        self.show_summary(
-            tag='completed',
-            es=ElasticSearchUtils(host=last_job['host'], http_auth=last_job['http_auth'])
-        )
+        if last_job:
+            self.show_summary(
+                tag='completed',
+                es=ElasticSearchUtils(
+                    host=last_job['host'],
+                    http_auth=last_job['http_auth']) if 'host' in last_job else None
+            )
 
         return
 

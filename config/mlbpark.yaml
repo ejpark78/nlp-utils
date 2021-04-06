@@ -7,7 +7,7 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~900000"
+      page_range: "1~300"
       page_step: "30"
     list:
       - category: KBO
@@ -20,7 +20,7 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~900000"
+      page_range: "1~300"
       page_step: "30"
     list:
       - category: MLB
@@ -33,7 +33,7 @@ jobs:
         frame: '{id}'
         type: query
     args:
-      page_range: "1~900000"
+      page_range: "1~300"
       page_step: "30"
     list:
       - category: BULLPEN
