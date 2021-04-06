@@ -51,12 +51,31 @@ airflow-env:
 	export AIRFLOW_DAGS_FOLDER=$(shell pwd)/dags
 
 .ONESHELL:
+add-remote:
+	git remote add config http://galadriel02.korea.ncsoft.corp/crawler-dev/config.git
+	git remote add helm http://galadriel02.korea.ncsoft.corp/crawler-dev/helm.git
+	git remote add dags http://galadriel02.korea.ncsoft.corp/crawler-dev/dags.git
+	git remote add http http://galadriel02.korea.ncsoft.corp/crawler-dev/http.git
+	git remote add docker http://galadriel02.korea.ncsoft.corp/crawler-dev/docker.git
+	git remote add nlplab http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
+
+.ONESHELL:
+add-subtree:
+	git subtree add --prefix config config dev
+	git subtree add --prefix helm helm dev
+	git subtree add --prefix dags dags dev
+	git subtree add --prefix http http dev
+	git subtree add --prefix docker docker dev
+	git subtree add --prefix nlplab nlplab dev
+
+.ONESHELL:
 push-subtree:
 	git subtree push --prefix config config dev
 	git subtree push --prefix dags dags dev
 	git subtree push --prefix docker docker dev
 	git subtree push --prefix helm helm dev
 	git subtree push --prefix http http dev
+	git subtree push --prefix nlplab nlplab dev
 
 .ONESHELL:
 docker-states:
@@ -64,3 +83,4 @@ docker-states:
 
 
 # pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
+
