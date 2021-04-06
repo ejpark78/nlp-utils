@@ -243,6 +243,7 @@ mk-mirror-data:
 
 .ONESHELL:
 run-mirror:
+	# id: nexus:nexus
 	docker run -it --rm \
 		--name nexus3 \
 		-p 8081:8081 \

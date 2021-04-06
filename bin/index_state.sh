@@ -3,6 +3,9 @@
 interval="$1"
 es_server="$2"
 
+shift 1
+shift 1
+
 cache_file="/tmp/index-state."$(dbus-uuidgen)".json"
 
 if [[ ${es_server} == "corpus" ]]; then
@@ -16,4 +19,4 @@ fi
 watch -d -n${interval} \
   python3 -m crawler.utils.index_state \
      --host "${es_host}" --auth "${es_auth}" \
-     --index-size --cache "${cache_file}" $3
+     --index-size --cache "${cache_file}" $@

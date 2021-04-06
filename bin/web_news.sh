@@ -3,7 +3,7 @@
 set -x #echo on
 
 docker_args="$1"
-python_args="$2"
+shift 1
 
 image="registry.nlp-utils/crawler-dev:dev"
 
@@ -17,4 +17,4 @@ docker run -it --rm \
   -e "ELASTIC_SEARCH_AUTH=${es_auth}" \
   ${docker_args} \
   ${image} \
-    python3 -m crawler.web_news.web_news ${python_args}
+    python3 -m crawler.web_news.web_news $@
