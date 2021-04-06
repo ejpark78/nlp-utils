@@ -78,7 +78,7 @@ core:
 
 .ONESHELL:
 dev:
-	cd live
+	cd dev
 
 	docker build \
 		$(MIRROR) \
@@ -174,7 +174,7 @@ connect-cinnamon:
 	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5557
 
 .ONESHELL:
-jupyter: live
+jupyter: dev
 	cd jupyter
 
 	docker build \
@@ -196,10 +196,6 @@ toolbox:
 		-t $(IMAGE):toolbox \
 		-f Dockerfile \
 		.
-
-.ONESHELL:
-push-live:
-	docker push $(IMAGE):live
 
 .ONESHELL:
 push-dev:
@@ -232,19 +228,25 @@ run-toolbox:
 		ttyd -p 8081 --credential admin:searchT2020 zsh
 
 .ONESHELL:
-run-dev:
+reset-mirror-data:
+	rm -rf $(shell pwd)/nexus3-data
+	mkdir -p $(shell pwd)/nexus3-data/restore-from-backup
+
+.ONESHELL:
+mk-mirror-data:
+	mkdir -p $(shell pwd)/nexus3-data/restore-from-backup
+	tar xvfz $(shell pwd)/nexus3-config.tar.gz -C $(shell pwd)/nexus3-data/restore-from-backup
+
+	sudo chown -R 200 $(shell pwd)/nexus3-data
+
+	# nexus3 restore: https://help.sonatype.com/repomanager3/backup-and-restore/restore-exported-databases
+
+.ONESHELL:
+run-mirror:
 	docker run -it --rm \
-		--add-host "corpus.ncsoft.com:172.20.93.112" \
-		-e "ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200" \
-		-e "ELASTIC_SEARCH_AUTH=crawler:crawler2019" \
-		$(IMAGE):dev \
-			python3 -m crawler.web_news.web_news \
-				--sleep 10 \
-				--config /config/naver-news.yaml \
-				--job-name economy \
-				--sub-category "경제/증권"
+		--name nexus3 \
+		-p 8081:8081 \
+		--volume $(shell pwd)/nexus3-data:/nexus-data \
+		sonatype/nexus3:latest
 
-prune:
-	cat nodes | xargs -I{} ssh {} "hostname ; docker system prune -af"
-	cat nodes | xargs -I{} ssh {} "hostname ; docker images"
-
+# https://github.com/mayth/go-simple-upload-server
