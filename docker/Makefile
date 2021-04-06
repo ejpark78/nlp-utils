@@ -249,4 +249,14 @@ run-mirror:
 		--volume $(shell pwd)/nexus3-data:/nexus-data \
 		sonatype/nexus3:latest
 
-# https://github.com/mayth/go-simple-upload-server
+.ONESHELL:
+run-upload-server:
+	docker run -it --rm \
+		-p 25478:25478 \
+		--volume $(shell pwd)/tmp:/mnt \
+		mayth/simple-upload-server -upload_limit 1024000000 -token token /mnt
+
+	# curl 'http://172.19.153.41:25478/upload?token=token' -Ffile=@backup.tar.gz
+
+	# https://github.com/mayth/go-simple-upload-server
+
