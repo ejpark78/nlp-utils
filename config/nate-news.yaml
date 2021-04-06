@@ -252,7 +252,7 @@ parsing:
 
   # 전체 html 에서 추출해야하는 전체 tag 목록
   trace:
-    - select: div.postSubject li
+    - select: 'div.postSubject li'
 
   # 기사 목록에서 추출해야하는 하나의 기사 정보
   list:
@@ -261,15 +261,15 @@ parsing:
       type: html
     - key: title
       value:
-        - select: a
+        - select: 'a'
       type: text
     - key: url
       value:
-        - select: a
+        - select: 'a'
       type: href
     - key: date
       value:
-        - select: span > em
+        - select: 'span > em'
       type: text
       convert:
         to: date
@@ -279,7 +279,7 @@ parsing:
         merge: single
     - key: '@curl_list'
       value:
-        - const: DATE_NOW
+        - const: 'DATE_NOW'
 
   # 기사 본문에서 추출해야하는 tag 정보
   article:
@@ -292,11 +292,11 @@ parsing:
         - name: comment
     - key: title
       value:
-        - select: div#articleView h3.articleSubecjt
+        - select: 'div#articleView h3.articleSubecjt'
       type: text
     - key: date
       value:
-        - select: span.firstDate em
+        - select: 'span.firstDate em'
       type: text
       convert:
         to: date
@@ -307,11 +307,11 @@ parsing:
         - name: sclink
         - name: iframe
       value:
-        - select: div#realArtcContents
+        - select: 'div#realArtcContents'
       type: text
     - key: '@curl_date'
       value:
-        - const: DATE_NOW
+        - const: 'DATE_NOW'
 
 # ETL pipeline: raw, raw_list 에서 추출하는 정보
 pipeline:
@@ -322,7 +322,7 @@ pipeline:
         - from: 원문
           to: ''
       value:
-        - select: p.articleInfo span.link
+        - select: 'p.articleInfo span.link'
       type: text
     - column: raw
       key: source_url

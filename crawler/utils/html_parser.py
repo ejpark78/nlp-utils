@@ -297,10 +297,10 @@ class HtmlParser(object):
                     'level': 'WARNING',
                     'message': 'datetime strptime 경고',
                     'date': date,
+                    'format': dt_format,
                     'str_date': str_date if len(str_date) < 30 else str_date[:30],
                     'exception': str(e) if len(str(e)) < 30 else str(e)[:30],
                 })
-                continue
 
         if date is None:
             self.logger.warning(msg={
