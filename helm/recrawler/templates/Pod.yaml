@@ -28,23 +28,15 @@ spec:
       - name: ELASTIC_SEARCH_AUTH
         valueFrom:
           secretKeyRef:
-            name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+            name: "{{ $.Release.Name }}-{{ $.Values.secret.name }}"
             key: http_auth
-      - name: ELASTIC_SEARCH_INDEX
-        value: {{ $job.index }}
     envFrom:
       - configMapRef:
-          name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
+          name: "{{ $.Release.Name }}-{{ $.Values.configMap.name }}"
     args:
       {{- toYaml $.Values.args | nindent 6 }}
       {{- toYaml $job.args | nindent 6 }}
       - --sub-category
       - {{ $subCategory }}
-    volumeMounts:
-      - name: config
-        mountPath: "/config"
-  volumes:
-    - name: config
-      emptyDir: {}
 {{- end }}
 {{- end }}

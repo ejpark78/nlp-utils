@@ -1,5 +1,4 @@
 image: registry.nlp-utils/crawler:live
-gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 

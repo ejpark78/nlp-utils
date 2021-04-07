@@ -4,13 +4,13 @@
 ## 설치 
 
 ```bash
-pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
+pip3 install git+http://galadriel02.korea.ncsoft.corp/crawler-dev/corpus.git
 ```
 
 ## 라이브러리 구성
 
 ```bash
-nlplab
+corpus
   ├── datasets.py
   ├── models.py
   └── utils
@@ -25,7 +25,7 @@ nlplab
 
 ```python
 import pandas as pd
-from nlplab.datasets import DataSets
+from corpus.datasets import DataSets
 
 ds = DataSets()
 
@@ -48,7 +48,7 @@ print(df)
 ## models
 
 ```python
-from nlplab.models import Models
+from corpus.models import Models
 
 m = Models()
 
@@ -64,7 +64,7 @@ m.pull(name='bert', tag='004_bert_eojeol_tensorflow')
 ```python
 import sys
 
-pkg_info = !pip3 show nlplab
+pkg_info = !pip3 show corpus
 pkg_info = {l.split(':')[0]: l.split(': ')[1]  for l in pkg_info}
 
 sys.path.append(pkg_info['Location'])
@@ -97,7 +97,7 @@ EOF
 ## 패키지 설치
 
 ```bash
-pip3 install nlplab
+pip3 install corpus
 ```
 
 # 패키지 빌드/배포 

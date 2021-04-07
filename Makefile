@@ -75,7 +75,7 @@ push-subtree:
 	git subtree push --prefix docker docker dev
 	git subtree push --prefix helm helm dev
 	git subtree push --prefix http http dev
-	git subtree push --prefix nlplab nlplab dev
+	git subtree push --prefix corpus corpus dev
 
 .ONESHELL:
 docker-states:

@@ -1,5 +1,4 @@
 image: registry.nlp-utils/crawler-dev:dev
-gitImage: registry.nlp-utils/alpine/git:v2.30.0
 
 imagePullSecrets: registry
 
@@ -22,14 +21,12 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
-  elasticsearch:
-    authName: es-auth
-    host: "https://corpus.ncsoft.com:9200"
-  envFrom: nate
+  name: es
+  data:
+    ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+
+secret:
+  name: auth
 
 args:
   - "python3"
