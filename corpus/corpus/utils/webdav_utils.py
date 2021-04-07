@@ -10,6 +10,7 @@ import os
 from os import getenv
 
 import pycurl
+import webdav
 import webdav.client as wc
 from webdav.exceptions import NotConnection
 from webdav.urn import Urn
@@ -17,7 +18,7 @@ from webdav.urn import Urn
 
 class WebdavUtils(object):
 
-    def __init__(self, home=None, endpoint=None, username=None, passwd=None):
+    def __init__(self, home: str = None, username: str = None, passwd: str = None, endpoint: str = None):
         """생성자"""
         self.webdav_home = home
         if home is None:
@@ -38,7 +39,7 @@ class WebdavUtils(object):
             'webdav_password': passwd
         }
 
-    def open_webdev_client(self):
+    def open_webdev_client(self) -> webdav.client:
         client = wc.Client(self.webdav_options)
 
         client.default_options.update({
@@ -48,7 +49,7 @@ class WebdavUtils(object):
 
         return client
 
-    def get_cloud_corpus_tree(self):
+    def get_cloud_corpus_tree(self) -> dict:
         """클라우드 코퍼스 트리 구조 반환 """
         client = self.open_webdev_client()
 
@@ -75,7 +76,7 @@ class WebdavUtils(object):
 
         return result
 
-    def get_cloud_corpus_list(self):
+    def get_cloud_corpus_list(self) -> list:
         """클라우드 코퍼스 목록 반환, 페이지 목록 반환"""
         client = self.open_webdev_client()
 
@@ -93,13 +94,13 @@ class WebdavUtils(object):
 
         return result
 
-    def get_cloud_corpus_sublist(self, name, page, size):
+    def get_cloud_corpus_sublist(self, name: str, page: int, size: int) -> list:
         """코퍼스 하위 목록 조회 """
         client = self.open_webdev_client()
 
         result = []
 
-        home_path = '{}/{}'.format(self.webdav_home, name)
+        home_path = f'{self.webdav_home}/{name}'
         files_list = client.list(home_path)
         if files_list[0][:-1] == name:
             files_list = files_list[1:]
@@ -117,11 +118,11 @@ class WebdavUtils(object):
 
         return result
 
-    def get_cloud_corpus_sub_item(self, group, corpus_name):
+    def get_cloud_corpus_sub_item(self, group: str, corpus_name: str) -> dict:
         """해당 코퍼스 디렉토리에 포함된 파일들을 불러와 저장 """
         client = self.open_webdev_client()
 
-        home_path = '{}/{}/{}'.format(self.webdav_home, group, corpus_name)
+        home_path = f'{self.webdav_home}/{group}/{corpus_name}'
         local_home = os.getenv('LOCAL_HOME_PATH', '/tmp')
         files_list = client.list(home_path)
         if local_home == 'null':
@@ -187,7 +188,7 @@ class WebdavUtils(object):
         return result
 
     @staticmethod
-    def download_file(client, remote_file, local_path):
+    def download_file(client: webdav.client, remote_file: str, local_path: str) -> None:
         """파일을 다운로드한다."""
         try:
             urn = Urn(remote_file)

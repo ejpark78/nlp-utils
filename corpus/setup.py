@@ -23,7 +23,7 @@ setup(
     version=version,
     packages=find_packages(include=['corpus', 'corpus.*']),
     python_requires='>=3',
-    url='http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab',
+    url='http://galadriel02.korea.ncsoft.corp/corpus-dev/corpus',
     license='Apache License Version 2.0',
     author='ejpark',
     author_email='ejpark@ncsoft.com',

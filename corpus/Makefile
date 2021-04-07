@@ -32,6 +32,6 @@ uninstall:
 
 .ONESHELL:
 clean:
-	rm -rf build dist src/*.egg-info
+	rm -rf build dist *.egg-info
 
 # pip3 install git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

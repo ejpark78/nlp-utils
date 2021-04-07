@@ -12,8 +12,8 @@ from os.path import basename, isfile
 
 import urllib3
 
-from nlplab.utils.elasticsearch_utils import ElasticSearchUtils
-from nlplab.utils.minio_utils import MinioUtils
+from corpus.utils.elasticsearch_utils import ElasticSearchUtils
+from corpus.utils.minio_utils import MinioUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -21,7 +21,7 @@ urllib3.disable_warnings(UserWarning)
 
 class DataSets(object):
 
-    def __init__(self, name=None, use_cache=True):
+    def __init__(self, name: str = None, use_cache: bool = True):
         self.elastic = ElasticSearchUtils()
         self.minio = MinioUtils()
 
@@ -36,7 +36,7 @@ class DataSets(object):
         self.meta = {}
         self.pull_meta()
 
-    def get_info(self, name):
+    def get_info(self, name: str) -> None or dict:
         if name is None:
             name = self.name
 
@@ -48,14 +48,14 @@ class DataSets(object):
 
         return self.meta[name]
 
-    def push_meta(self, filename):
+    def push_meta(self, filename: str) -> None:
         self.minio.push(
             local='{path}/{filename}'.format(path=self.local_home, filename=filename),
             remote='{path}/{filename}'.format(path=self.remote_home, filename=filename),
         )
         return
 
-    def pull_meta(self):
+    def pull_meta(self) -> None:
         meta_list = self.minio.ls(path=self.meta_path)
 
         self.meta = {}
@@ -79,21 +79,19 @@ class DataSets(object):
 
         return
 
-    def pull_elastic_meta(self):
+    def pull_elastic_meta(self) -> dict:
+        result = {}
         for index in self.elastic.index_list():
-            if 'corpus_process' in index:
-                continue
-
-            self.meta[index] = {
+            result[index] = {
                 'name': index,
                 'desc': 'elasticsearch 코퍼스',
                 'source': self.elastic.host,
                 'local_path': 'elasticsearch',
             }
 
-        return
+        return result
 
-    def load(self, name=None, filename=None, use_cache=True):
+    def load(self, name: str = None, filename: str = None, use_cache: bool = True) -> None or list:
         meta = self.get_info(name=name)
         if meta is None:
             return None
@@ -108,7 +106,7 @@ class DataSets(object):
 
         return None
 
-    def load_elasticsearch_data(self, meta, name):
+    def load_elasticsearch_data(self, meta: dict, name: str) -> list:
         filename = '{home}/{path}/{filename}'.format(
             home=self.local_home,
             path=meta['local_path'],
@@ -125,7 +123,7 @@ class DataSets(object):
 
         return result
 
-    def load_minio_data(self, meta, filename):
+    def load_minio_data(self, meta: dict, filename: str) -> list:
         local_file = '{home}/{path}/{filename}'.format(
             home=self.local_home,
             path=meta['local_path'],
@@ -142,7 +140,7 @@ class DataSets(object):
 
         return result
 
-    def pull_minio_file(self, filename, name=None):
+    def pull_minio_file(self, filename: str, name: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return
@@ -161,7 +159,7 @@ class DataSets(object):
         )
         return
 
-    def push_minio_file(self, filename, name=None):
+    def push_minio_file(self, filename: str, name: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return
@@ -180,7 +178,7 @@ class DataSets(object):
         )
         return
 
-    def upload(self, name=None, filename=None):
+    def upload(self, name: str = None, filename: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return

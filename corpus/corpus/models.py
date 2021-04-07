@@ -12,7 +12,7 @@ from os.path import dirname, isfile
 
 import urllib3
 
-from nlplab.utils.minio_utils import MinioUtils
+from corpus.utils.minio_utils import MinioUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -20,7 +20,7 @@ urllib3.disable_warnings(UserWarning)
 
 class Models(object):
 
-    def __init__(self, name=None, use_cache=True):
+    def __init__(self, name: str = None, use_cache: bool = True):
         self.minio = MinioUtils()
 
         self.name = name
@@ -32,14 +32,14 @@ class Models(object):
         self.meta = {}
         self.pull_meta()
 
-    def push_meta(self):
+    def push_meta(self) -> None:
         self.minio.push(
             local='{}/meta.json'.format(self.local_home),
             remote='{}/meta.json'.format(self.remote_home),
         )
         return
 
-    def pull_meta(self):
+    def pull_meta(self) -> None:
         filename = '{}/meta.json'.format(self.local_home)
         if isfile(filename) is False or self.use_cache is False:
             self.minio.pull(
@@ -52,7 +52,7 @@ class Models(object):
 
         return
 
-    def get_info(self, name):
+    def get_info(self, name: str) -> None or dict:
         if name is None:
             name = self.name
 
@@ -64,7 +64,7 @@ class Models(object):
 
         return self.meta[name]
 
-    def pull(self, tag, name=None):
+    def pull(self, tag: str, name: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return
@@ -83,7 +83,7 @@ class Models(object):
 
         return
 
-    def push(self, tag, name=None):
+    def push(self, tag: str, name: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return
@@ -98,7 +98,7 @@ class Models(object):
         )
         return
 
-    def upload(self, name=None, tag=None):
+    def upload(self, name: str = None, tag: str = None) -> None:
         info = self.get_info(name=name)
         if info is None:
             return

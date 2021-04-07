@@ -5,8 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import json
 import re
+from glob import glob
 from os import getenv, makedirs
+from os.path import basename
 from os.path import dirname, isdir
 from time import sleep
 from urllib.parse import urljoin
@@ -24,7 +27,7 @@ urllib3.disable_warnings(UserWarning)
 class ConfluenceUtils(object):
     """Confluence API 연동 클래스"""
 
-    def __init__(self, url=None, auth=None):
+    def __init__(self, url: str = None, auth: str = None):
         """생성자"""
         # 참고: https://developer.atlassian.com/server/confluence/confluence-rest-api-examples/
 
@@ -49,37 +52,27 @@ class ConfluenceUtils(object):
 
         self.sleep_time = 0.5
 
-    def get_user_info(self, username):
+    def get_user_info(self, username: str) -> dict:
         """사용자 정보를 조회한다. """
-        url = '{url}/rest/api/user?username={username}'.format(
-            url=self.url,
-            username=username
-        )
+        url = f'{self.url}/rest/api/user?username={username}'
 
         resp = requests.get(url=url, auth=self.auth, timeout=60, verify=False)
-        user_info = resp.json()
 
-        return user_info
+        return resp.json()
 
-    def get_user_group(self, username):
+    def get_user_group(self, username: str) -> dict:
         """그룹 정보를 조회한다. """
-        url = '{url}/rest/api/user/memberof?username={username}'.format(
-            url=self.url,
-            username=username
-        )
+        url = f'{self.url}/rest/api/user/memberof?username={username}'
 
         resp = requests.get(url=url, auth=self.auth, timeout=60, verify=False)
         user_info = resp.json()
 
         return user_info
 
-    def get_page_list(self, state):
+    def get_page_list(self, state: str) -> list:
         """페이지 목록을 조회한다. """
         # 페이지 번호
-        url = '{url}/pages/children.action?pageId={page_id}'.format(
-            url=self.url,
-            page_id=self.state[state]
-        )
+        url = f'{self.url}/pages/children.action?pageId={self.state[state]}'
 
         resp = requests.get(url=url, auth=self.auth, timeout=60, verify=False)
         page_list = resp.json()
@@ -94,12 +87,9 @@ class ConfluenceUtils(object):
 
         return result
 
-    def get_child_page(self, page_id):
+    def get_child_page(self, page_id: str) -> list:
         """하위 페이지 목록을 조회한다."""
-        url = '{url}/rest/api/content/{page_id}/child/page'.format(
-            url=self.url,
-            page_id=page_id
-        )
+        url = f'{self.url}/rest/api/content/{page_id}/child/page'
 
         resp = requests.get(url=url, auth=self.auth, timeout=60, verify=False)
         page_list = resp.json()
@@ -114,7 +104,7 @@ class ConfluenceUtils(object):
         return result
 
     @staticmethod
-    def remove_field(data, field_list):
+    def remove_field(data: dict, field_list: list) -> dict:
         """필요 없는 필드 삭제"""
         for field in field_list:
             if field in data:
@@ -122,12 +112,9 @@ class ConfluenceUtils(object):
 
         return data
 
-    def get_page(self, page_id):
+    def get_page(self, page_id: str) -> dict:
         """ 하나의 페이지를 읽어 온다. """
-        url = '{url}/rest/api/content/{page_id}?expand=body.view,history'.format(
-            url=self.url,
-            page_id=page_id,
-        )
+        url = f'{self.url}/rest/api/content/{page_id}?expand=body.view,history'
 
         resp = requests.get(url=url, auth=self.auth, timeout=30, verify=False)
         page = resp.json()
@@ -140,12 +127,9 @@ class ConfluenceUtils(object):
 
         return page
 
-    def get_attachment_list(self, page_id):
+    def get_attachment_list(self, page_id: str) -> list:
         """ 첨부 파일 목록을 조회한다. """
-        url = '{url}/rest/api/content/{page_id}/child/attachment'.format(
-            url=self.url,
-            page_id=page_id,
-        )
+        url = f'{self.url}/rest/api/content/{page_id}/child/attachment'
 
         resp = requests.get(url=url, auth=self.auth, timeout=30, verify=False)
         attach_list = resp.json()
@@ -159,7 +143,7 @@ class ConfluenceUtils(object):
 
         return result
 
-    def download_all_file(self, page_list, path):
+    def download_all_file(self, page_list: list, path: str) -> None:
         """전체 첨부파일을 다운로드한다."""
         for page in tqdm(page_list, desc='download', dynamic_ncols=True):
             if 'attachment' not in page:
@@ -168,14 +152,14 @@ class ConfluenceUtils(object):
             for attach in tqdm(page['attachment'], desc='page: ' + page['pageId'], dynamic_ncols=True):
                 self.download(
                     url=attach['url'],
-                    filename='{}/{}/{}'.format(path, page['pageId'], attach['name']),
+                    filename=f"{path}/{page['pageId']}/{attach['name']}",
                 )
 
                 sleep(self.sleep_time)
 
         return
 
-    def download(self, filename, url):
+    def download(self, filename: str, url: str) -> None:
         """첨부파일을 다운로드한다."""
         path = dirname(filename)
         if isdir(path) is False:
@@ -188,7 +172,7 @@ class ConfluenceUtils(object):
 
         return
 
-    def save_all_page(self, page_list, path):
+    def save_all_page(self, page_list: list, path: str) -> None:
         """전체 페이지를 저장한다."""
         for page in tqdm(page_list, desc='save page', dynamic_ncols=True):
             # 페이지 저장
@@ -198,9 +182,8 @@ class ConfluenceUtils(object):
         return
 
     @staticmethod
-    def save_page(page, path):
+    def save_page(page: dict, path: str) -> None:
         """페이지를 저장한다."""
-        import json
 
         def json_default(value):
             if isinstance(value, pd.DataFrame):
@@ -208,7 +191,7 @@ class ConfluenceUtils(object):
 
             raise TypeError('not JSON serializable: ' + str(type(value)))
 
-        filename = '{}/{}/{}.json'.format(path, page['pageId'], page['pageId'])
+        filename = f"{path}/{page['pageId']}/{page['pageId']}.json"
 
         path = dirname(filename)
         if isdir(path) is False:
@@ -221,13 +204,10 @@ class ConfluenceUtils(object):
         return
 
     @staticmethod
-    def read_attachment(page_id, path):
+    def read_attachment(page_id: str, path: str) -> dict:
         """첨부 파일을 읽는다."""
-        from glob import glob
-        from os.path import basename
-
         result = {}
-        for filename in tqdm(glob('{}/{}/*.*'.format(path, page_id))):
+        for filename in tqdm(glob(f'{path}/{page_id}/*.*')):
             if filename.find('.xls') < 0:
                 continue
 
@@ -243,7 +223,7 @@ class ConfluenceUtils(object):
         return result
 
     @staticmethod
-    def to_json(df, filename):
+    def to_json(df: pd.DataFrame, filename: str) -> None:
         """파일로 저장한다."""
         df.reset_index().to_json(
             filename,
@@ -255,7 +235,7 @@ class ConfluenceUtils(object):
         return
 
     @staticmethod
-    def read_json(filename):
+    def read_json(filename: str) -> pd.DataFrame:
         """파일로 저장한다."""
         df = pd.read_json(
             filename,
@@ -266,7 +246,7 @@ class ConfluenceUtils(object):
         return df
 
     @staticmethod
-    def get_freq_columns(meta_list):
+    def get_freq_columns(meta_list: dict) -> list:
         """빈도가 높은 컬럼 목록을 반환한다."""
         columns = {}
         for meta in meta_list:
@@ -278,7 +258,7 @@ class ConfluenceUtils(object):
         return [k for k in columns if columns[k] > 5]
 
     @staticmethod
-    def parse_html(html):
+    def parse_html(html: str) -> str:
         """선택된 값만 남긴다."""
         # 텍스트 전처리
         html = html.replace(u'\xa0', u'')
@@ -303,7 +283,7 @@ class ConfluenceUtils(object):
         return str(soup)
 
     @staticmethod
-    def get_text(html):
+    def get_text(html: str) -> str:
         """본문을 추출한다."""
         soup = BeautifulSoup(html, 'html5lib')
         for tag in soup.find_all('table'):
@@ -311,7 +291,7 @@ class ConfluenceUtils(object):
 
         return re.sub(r'\n+', r'\n', soup.get_text().strip())
 
-    def extract_meta(self, content):
+    def extract_meta(self, content: str) -> dict:
         """메타 정보를 추출한다."""
         html = self.parse_html(content)
 
@@ -348,7 +328,7 @@ class ConfluenceUtils(object):
             'content': self.get_text(html),
         }
 
-    def get_all_page(self, page_list):
+    def get_all_page(self, page_list: list) -> dict:
         """페이지 목록의 전체 내용을 가져온다."""
         meta_list = []
         attach_list = []
@@ -392,7 +372,7 @@ class ConfluenceUtils(object):
             'attach_list': attach_list,
         }
 
-    def save_report(self, page_info, path):
+    def save_report(self, page_info: dict, path: str) -> None:
         """보고서를 저장한다."""
         # 페이지 목록 저장
         page_list_df = pd.DataFrame(
@@ -402,7 +382,7 @@ class ConfluenceUtils(object):
 
         self.to_json(
             df=page_list_df,
-            filename='{}/page_list.json.bz2'.format(path)
+            filename=f'{path}/page_list.json.bz2'
         )
 
         # 메타 정보 저장
@@ -415,7 +395,7 @@ class ConfluenceUtils(object):
 
         self.to_json(
             df=meta_df,
-            filename='{}/meta.json.bz2'.format(path)
+            filename=f'{path}/meta.json.bz2'
         )
 
         # 첨부 파일 정보 저장
@@ -423,7 +403,7 @@ class ConfluenceUtils(object):
 
         self.to_json(
             df=attach_df,
-            filename='{}/attachment.json.bz2'.format(path)
+            filename=f'{path}/attachment.json.bz2'
         )
 
         return

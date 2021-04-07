@@ -16,7 +16,7 @@ urllib3.disable_warnings(UserWarning)
 
 class MinioUtils(object):
 
-    def __init__(self, bucket=None, username=None, key=None, endpoint=None):
+    def __init__(self, bucket: str = None, username: str = None, key: str = None, endpoint: str = None):
         self.bucket = bucket
         if bucket is None:
             self.bucket = getenv('NLPLAB_S3_BUCKET', 'nlplab')
@@ -34,7 +34,7 @@ class MinioUtils(object):
         if endpoint is None:
             self.endpoint = getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')
 
-    def push(self, local, remote):
+    def push(self, local: str, remote: str) -> None:
         client = Minio(
             self.endpoint,
             access_key=self.username,
@@ -50,7 +50,7 @@ class MinioUtils(object):
 
         return
 
-    def pull(self, remote, local):
+    def pull(self, remote: str, local: str) -> None:
         client = Minio(
             self.endpoint,
             access_key=self.username,
@@ -66,7 +66,7 @@ class MinioUtils(object):
 
         return
 
-    def ls(self, path):
+    def ls(self, path: str) -> list:
         client = Minio(
             self.endpoint,
             access_key=self.username,

@@ -18,7 +18,6 @@ class LogMessage(object):
     """구조화된 로깅"""
 
     def __init__(self, message, **kwargs):
-        """생성자"""
         self.message = message
         self.kwargs = kwargs
 
@@ -38,10 +37,8 @@ class LogMessage(object):
 
 
 class Logger(object):
-    """ """
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
         self.MESSAGE = 25

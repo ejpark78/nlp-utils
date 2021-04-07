@@ -12,7 +12,7 @@ from os.path import dirname, isdir
 
 import urllib3
 from elasticsearch import Elasticsearch
-from nlplab.utils.logger import Logger
+from corpus.utils.logger import Logger
 from tqdm import tqdm
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
