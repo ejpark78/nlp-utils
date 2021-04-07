@@ -57,7 +57,7 @@ add-remote:
 	git remote add dags http://galadriel02.korea.ncsoft.corp/crawler-dev/dags.git
 	git remote add http http://galadriel02.korea.ncsoft.corp/crawler-dev/http.git
 	git remote add docker http://galadriel02.korea.ncsoft.corp/crawler-dev/docker.git
-	git remote add nlplab http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
+	git remote add corpus http://galadriel02.korea.ncsoft.corp/crawler-dev/corpus.git
 
 .ONESHELL:
 add-subtree:
@@ -66,7 +66,7 @@ add-subtree:
 	git subtree add --prefix dags dags dev
 	git subtree add --prefix http http dev
 	git subtree add --prefix docker docker dev
-	git subtree add --prefix nlplab nlplab dev
+	git subtree add --prefix corpus corpus dev
 
 .ONESHELL:
 push-subtree:
