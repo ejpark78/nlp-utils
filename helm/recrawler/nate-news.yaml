@@ -32,17 +32,18 @@ args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--config"
+  - "/config/nate-news.yaml"
   - "--date-range"
-  - "2020-12-01~2020-12-31"
+  - "2021-03-01~2021-04-30"
   - "--sleep"
   - "10"
 
 jobs:
   - name: economy
-    index: $(INDEX_ECONOMY)
     args:
-      - "--config"
-      - "/config/nate/economy.yaml"
+      - "--job-name"
+      - "economy"
     subSategory:
       - "경제/생활 경제"
       - "경제/부동산"
@@ -53,10 +54,9 @@ jobs:
       - "경제/경제 일반"
 
   - name: entertainment
-    index: $(INDEX_ENTERTAINMENT)
     args:
-      - "--config"
-      - "/config/nate/entertainment.yaml"
+      - "--job-name"
+      - "entertainment"
     subSategory:
       - "연예/영화"
       - "연예/연예가 화제"
@@ -64,10 +64,9 @@ jobs:
       - "연예/해외연예"
 
   - name: international
-    index: $(INDEX_INTERNATIONAL)
     args:
-      - "--config"
-      - "/config/nate/international.yaml"
+      - "--job-name"
+      - "international"
     subSategory:
       - "세계/아시아호주"
       - "세계/미국중남미"
@@ -77,10 +76,9 @@ jobs:
       - "세계/일반"
 
   - name: it
-    index: $(INDEX_IT)
     args:
-      - "--config"
-      - "/config/nate/it.yaml"
+      - "--job-name"
+      - "it"
     subSategory:
       - "IT/과학"
       - "IT/디지털"
@@ -90,11 +88,9 @@ jobs:
       - "IT/IT/과학 일반"
 
   - name: politics
-    index: $(INDEX_POLITICS)
-    configMapRef: nate
     args:
-      - "--config"
-      - "/config/nate/politics.yaml"
+      - "--job-name"
+      - "politics"
     subSategory:
       - "정치/청와대"
       - "정치/국회/정당"
@@ -104,10 +100,9 @@ jobs:
       - "정치/정치 일반"
 
   - name: society
-    index: $(INDEX_SOCIETY)
     args:
-      - "--config"
-      - "/config/nate/society.yaml"
+      - "--job-name"
+      - "society"
     subSategory:
       - "사회/사건사고"
       - "사회/교육학교"
@@ -121,10 +116,9 @@ jobs:
       - "사회/일반"
 
   - name: sports
-    index: $(INDEX_SPORTS)
     args:
-      - "--config"
-      - "/config/nate/sports.yaml"
+      - "--job-name"
+      - "sports"
     subSategory:
       - "스포츠/야구"
       - "스포츠/해외야구"

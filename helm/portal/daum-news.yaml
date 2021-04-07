@@ -37,6 +37,8 @@ args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--config"
+  - "/config/daum-news.yaml"
   - "--sleep"
   - "10"
 
@@ -44,8 +46,6 @@ jobs:
   - name: culture
     schedule: "0 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "culture"
     subSategory:
@@ -64,8 +64,6 @@ jobs:
   - name: economy
     schedule: "5 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "economy"
     subSategory:
@@ -87,8 +85,6 @@ jobs:
   - name: international
     schedule: "10 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "international"
     subSategory:
@@ -105,8 +101,6 @@ jobs:
   - name: it
     schedule: "15 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "it"
     subSategory:
@@ -120,8 +114,6 @@ jobs:
   - name: opinion
     schedule: "20 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "opinion"
     subSategory:
@@ -134,8 +126,6 @@ jobs:
   - name: politics
     schedule: "25 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "politics"
     subSategory:
@@ -149,8 +139,6 @@ jobs:
   - name: society
     schedule: "30 * * * *"
     args:
-      - "--config"
-      - "/config/daum-news.yaml"
       - "--job-name"
       - "society"
     subSategory:

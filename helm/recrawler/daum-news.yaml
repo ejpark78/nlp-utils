@@ -32,17 +32,18 @@ args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--config"
+  - "/config/daum-news.yaml"
   - "--date-range"
-  - "2020-12-01~2020-12-31"
+  - "2021-03-01~2020-04-30"
   - "--sleep"
   - "10"
 
 jobs:
   - name: culture
-    index: $(INDEX_CULTURE)
     args:
-      - "--config"
-      - "/config/daum/culture.yaml"
+      - "--job-name"
+      - "culture"
     subSategory:
       - "문화/공연전시"
       - "문화/책"
@@ -57,10 +58,9 @@ jobs:
       - "문화/날씨"
 
   - name: economy
-    index: $(INDEX_ECONOMY)
     args:
-      - "--config"
-      - "/config/daum/economy.yaml"
+      - "--job-name"
+      - "economy"
     subSategory:
       - "경제/부동산"
       - "경제/생활경제"
@@ -78,10 +78,9 @@ jobs:
       - "경제/주식일반"
 
   - name: international
-    index: $(INDEX_INTERNATIONAL)
     args:
-      - "--config"
-      - "/config/daum/international.yaml"
+      - "--job-name"
+      - "international"
     subSategory:
       - "국제/일본"
       - "국제/중국"
@@ -94,10 +93,9 @@ jobs:
       - "국제/국제일반"
 
   - name: it
-    index: $(INDEX_IT)
     args:
-      - "--config"
-      - "/config/daum/it.yaml"
+      - "--job-name"
+      - "it"
     subSategory:
       - "IT/IT기기"
       - "IT/통신모바일"
@@ -107,10 +105,9 @@ jobs:
       - "IT/IT일반"
 
   - name: opinion
-    index: $(INDEX_OPINION)
     args:
-      - "--config"
-      - "/config/daum/opinion.yaml"
+      - "--job-name"
+      - "opinion"
     subSategory:
       - "칼럼-칼럼"
       - "칼럼-사설"
@@ -119,10 +116,9 @@ jobs:
       - "칼럼"
 
   - name: politics
-    index: $(INDEX_POLITICS)
     args:
-      - "--config"
-      - "/config/daum/politics.yaml"
+      - "--job-name"
+      - "politics"
     subSategory:
       - "정치/행정지자체"
       - "정치/국회정당"
@@ -132,10 +128,9 @@ jobs:
       - "정치/청와대"
 
   - name: society
-    index: $(INDEX_SOCIETY)
     args:
-      - "--config"
-      - "/config/daum/society.yaml"
+      - "--job-name"
+      - "society"
     subSategory:
       - "사회/사건사고"
       - "사회/충청"

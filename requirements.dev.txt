@@ -45,6 +45,11 @@ notebook
 jupyter_contrib_nbextensions
 matplotlib
 
+webdav
+minio
+
+pip
+
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 

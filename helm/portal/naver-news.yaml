@@ -37,6 +37,8 @@ args:
   - "python3"
   - "-m"
   - "crawler.web_news.web_news"
+  - "--config"
+  - "/config/naver-news.yaml"
   - "--sleep"
   - "10"
 
@@ -44,8 +46,6 @@ jobs:
   - name: economy
     schedule: "0 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "economy"
     subSategory:
@@ -61,8 +61,6 @@ jobs:
   - name: international
     schedule: "5 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "international"
     subSategory:
@@ -75,8 +73,6 @@ jobs:
   - name: it
     schedule: "10 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "it"
     subSategory:
@@ -92,8 +88,6 @@ jobs:
   - name: living
     schedule: "15 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "living"
     subSategory:
@@ -112,8 +106,6 @@ jobs:
   - name: opinion
     schedule: "20 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "opinion"
     subSategory:
@@ -122,8 +114,6 @@ jobs:
   - name: politics
     schedule: "25 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "politics"
     subSategory:
@@ -137,8 +127,6 @@ jobs:
   - name: society
     schedule: "30 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news.yaml"
       - "--job-name"
       - "society"
     subSategory:
@@ -156,8 +144,6 @@ jobs:
   - name: sports
     schedule: "35 * * * *"
     args:
-      - "--config"
-      - "/config/naver-news-sports.yaml"
       - "--job-name"
       - "sports"
     subSategory:
@@ -175,8 +161,6 @@ jobs:
 #  - name: tv
 #    schedule: "40 * * * *"
 #    args:
-#      - "--config"
-#      - "/config/naver-news.yaml"
 #      - "--job-name"
 #      - "tv"
 #    subSategory:
@@ -185,8 +169,6 @@ jobs:
 #  - name: weather
 #    schedule: "45 * * * *"
 #    args:
-#      - "--config"
-#      - "/config/naver-news.yaml"
 #      - "--job-name"
 #      - "weather"
 #    subSategory:
