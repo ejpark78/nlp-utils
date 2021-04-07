@@ -141,7 +141,7 @@ class YoutubeVideoList(YoutubeBase):
                     'level': 'MESSAGE',
                     'message': 'SKIP CHANNEL',
                     'item': item,
-                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                    'position': f'{i:,}/{len(channel_list):,}',
                 })
                 continue
 
@@ -153,7 +153,7 @@ class YoutubeVideoList(YoutubeBase):
                     'level': 'MESSAGE',
                     'message': '동영상 목록 조회',
                     'url': url,
-                    'position': '{:,}/{:,}'.format(i, len(channel_list)),
+                    'position': f'{i:,}/{len(channel_list):,}',
                     **item
                 })
 

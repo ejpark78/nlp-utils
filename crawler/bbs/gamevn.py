@@ -122,7 +122,7 @@ class GameVn(ForumUtils):
             topic = self.get_text(soup=soup, css='div.titleBar h1')
 
             for page in range(1, max_page + 1):
-                url = url_frame + 'page-{}'.format(page)
+                url = f'{url_frame}page-{page}'
 
                 msg = {
                     'level': 'MESSAGE',

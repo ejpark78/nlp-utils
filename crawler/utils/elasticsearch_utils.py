@@ -269,8 +269,8 @@ class ElasticSearchUtils(object):
             self.index = index
 
         try:
-            condition = "if (!ctx._source.{field}.contains(params.value)) ".format(field=field)
-            condition += "{{ ctx._source.{field}.add(params.value) }}".format(field=field)
+            condition = f"if (!ctx._source.{field}.contains(params.value)) "
+            condition += f"{{ ctx._source.{field}.add(params.value) }}"
 
             body = {
                 'script': {
@@ -490,7 +490,7 @@ class ElasticSearchUtils(object):
             'doc_list': doc_list,
         }
 
-        filename = '{}/{}-{}.json'.format(self.log_path, self.index, dt.strftime('%Y%m%d-%H%M%S'))
+        filename = f"{self.log_path}/{self.index}-{dt.strftime('%Y%m%d-%H%M%S')}.json"
         with open(filename, 'w') as fp:
             fp.write(json.dumps(contents, ensure_ascii=False, indent=2))
 
@@ -671,7 +671,7 @@ class ElasticSearchUtils(object):
             if p_bar is None:
                 p_bar = tqdm(
                     total=resp['total'],
-                    desc='dump doc id list {index}'.format(index=index),
+                    desc=f'dump doc id list {index}',
                     dynamic_ncols=True
                 )
             p_bar.update(count)
@@ -800,7 +800,7 @@ class ElasticSearchUtils(object):
             if c not in prev_doc or c not in doc:
                 continue
 
-            value = '{};{}'.format(prev_doc[c], doc[c])
+            value = f'{prev_doc[c]};{doc[c]}'
             value = value.split(';')
             value = set(value)
 
@@ -818,7 +818,7 @@ class ElasticSearchUtils(object):
         if exists_doc is True:
             self.move_document(
                 source_index=list_index,
-                target_index='{}_done'.format(list_index),
+                target_index=f'{list_index}_done',
                 source_id=list_id,
                 document_id=doc_id,
                 merge_column=merge_column,

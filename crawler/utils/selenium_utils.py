@@ -55,7 +55,7 @@ class SeleniumUtils(object):
         options.add_argument('--disable-dev-shm-usage')
 
         if self.user_data_path is not None:
-            options.add_argument('user-data-dir={}'.format(self.user_data_path))
+            options.add_argument(f'user-data-dir={self.user_data_path}')
 
         prefs = {
             'disk-cache-size': 4096,

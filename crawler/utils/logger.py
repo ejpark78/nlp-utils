@@ -33,7 +33,7 @@ class LogMessage(object):
 
             return json.dumps(self.message, ensure_ascii=False, sort_keys=True, default=self.convert_date)
         except Exception as e:
-            return '{0}:{1}'.format(str(self.message), str(e))
+            return f'{str(self.message)}:{str(e)}'
 
     @staticmethod
     def convert_date(obj: any) -> str:

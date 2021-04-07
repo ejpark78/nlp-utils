@@ -82,13 +82,13 @@ class UdemyTraceCourse(UdemyBase):
 
     def get_course(self, course):
         """강좌 목록을 다운로드 받는다."""
-        course_path = '{}/{}'.format(self.params.data_path, course['title'].replace('/', '-'))
+        course_path = f"{self.params.data_path}/{course['title'].replace('/', '-')}"
 
         if isdir(course_path) is False:
             os.makedirs(course_path)
 
         self.selenium.open(
-            url='https://ncsoft.udemy.com{}'.format(course['url']),
+            url=f"https://ncsoft.udemy.com{course['url']}",
             resp_url_path='/api-2.0/courses/',
             wait_for_path='.+/api-2.0/courses/.+$',
         )

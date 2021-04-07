@@ -164,7 +164,7 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'get live chat',
-                'i': '{}/{}'.format(i, len(resp_list)),
+                'i': f'{i}/{len(resp_list)}',
                 'url': url,
             })
 
@@ -205,7 +205,7 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         if len(doc_list) == 0:
             return
 
-        filename = '{}/{}.json'.format(self.home_path, str(uuid4()))
+        filename = f'{self.home_path}/{str(uuid4())}.json'
 
         dir_path = dirname(filename)
         if isdir(dir_path) is False:

@@ -53,9 +53,9 @@ class FBCrawler(object):
 
         db = CacheUtils(filename=self.params.cache)
 
-        f_name = '{filename}.posts'.format(filename=splitext(self.params.cache)[0])
+        f_name = f'{splitext(self.params.cache)[0]}.posts'
         db.export_tbl(
-            filename='{f_name}.json.bz2'.format(f_name=f_name),
+            filename=f'{f_name}.json.bz2',
             tbl='posts',
             db_column='id,reply_count,content',
             json_columns='content'.split(','),
@@ -65,9 +65,9 @@ class FBCrawler(object):
 
         db.json2xlsx(filename=f_name)
 
-        f_name = '{filename}.replies'.format(filename=splitext(self.params.cache)[0])
+        f_name = f'{splitext(self.params.cache)[0]}.replies'
         db.export_tbl(
-            filename='{f_name}.json.bz2'.format(f_name=f_name),
+            filename=f'{f_name}.json.bz2',
             tbl='replies',
             db_column='id,post_id,content',
             json_columns='content'.split(','),

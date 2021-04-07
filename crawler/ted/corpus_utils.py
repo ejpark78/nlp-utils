@@ -36,7 +36,7 @@ class TedCorpusUtils(object):
             return
 
         for doc in talks:
-            doc['_id'] = '{}-{}'.format(doc['talk_id'], doc['time'])
+            doc['_id'] = f"{doc['talk_id']}-{doc['time']}"
 
             self.elastic.save_document(document=doc, index=self.index)
 
@@ -50,7 +50,7 @@ class TedCorpusUtils(object):
 
         result = {}
         lang_list = []
-        for filename in tqdm(glob('{}/*.json'.format(talk_id))):
+        for filename in tqdm(glob(f'{talk_id}/*.json')):
             if 'talk-info' in filename:
                 continue
 

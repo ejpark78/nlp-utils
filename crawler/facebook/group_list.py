@@ -56,8 +56,8 @@ class FBGroupList(FBBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'trace post list',
-                'page': '{:,}/{:,}'.format(i, self.params.max_page),
-                'count': '{:,}/{:,}'.format(len(post_list), count),
+                'page': f'{i:,}/{self.params.max_page:,}',
+                'count': f'{len(post_list):,}/{count:,}',
             })
 
             if post_list is None or len(post_list) == 0:
@@ -142,7 +142,7 @@ class FBGroupList(FBBase):
         file_list = filename.split(',')
         if isdir(filename) is True:
             file_list = []
-            for f_name in glob('{}/*.json'.format(filename)):
+            for f_name in glob(f'{filename}/*.json'):
                 file_list.append(f_name)
 
         result = []

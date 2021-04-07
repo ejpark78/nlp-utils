@@ -7,13 +7,15 @@ from __future__ import print_function
 
 import bz2
 import json
+import re
 from os import makedirs, getenv
 from os.path import dirname, isdir
 
 import urllib3
 from elasticsearch import Elasticsearch
-from corpus.utils.logger import Logger
 from tqdm import tqdm
+
+from corpus.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -59,7 +61,21 @@ class ElasticSearchUtils(object):
         return
 
     def index_list(self):
-        return [v for v in self.conn.indices.get('*') if v[0] != '.']
+        return [x for x in self.conn.indices.get('*') if x[0] != '.']
+
+    def get_index_size(self) -> list:
+        """ 인덱스 수량을 반환한다. """
+        columns = ['index', 'count']
+        params = {'s': 'index', 'h': 'index,docs.count'}
+
+        str_index_size = self.conn.cat.indices(params=params)
+        index_list = [x for x in str_index_size.split('\n') if len(x) > 0 and x[0] != '.']
+
+        result = [dict(zip(columns, re.sub(r'\s+', ' ', x).split(' '))) for x in index_list]
+        for x in result:
+            x['count'] = int(x['count'])
+
+        return result
 
     def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None) -> dict:
         params = {

@@ -95,7 +95,7 @@ class UpdateIndex(object):
                     bulk += [
                         {
                             'index': {
-                                '_id': '{q_id}-{i:03d}'.format(q_id=q_id, i=i),
+                                '_id': f'{q_id}-{i:03d}',
                                 '_index': a_index,
                             }
                         },

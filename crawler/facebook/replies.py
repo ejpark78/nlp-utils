@@ -177,7 +177,7 @@ class FBReplies(FBBase):
                 'level': 'MESSAGE',
                 'message': '댓글 조회',
                 'content': post['content'],
-                'position': '{:,}/{:,}'.format(i, len(rows)),
+                'position': f'{i:,}/{len(rows):,}',
             })
 
             count = self.get_replies(post=post)

@@ -144,7 +144,7 @@ class GlosbeCrawler(object):
 
     def get_example(self, page, url):
         """ """
-        url = '{url}?page={page}&tmmode=MUST'.format(page=page, url=url)
+        url = f'{url}?page={page}&tmmode=MUST'
         self.logger.log(msg={
             'level': 'MESSAGE',
             'message': '예문 조회',

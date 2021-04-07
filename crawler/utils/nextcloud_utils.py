@@ -68,7 +68,7 @@ class NextcloudUtils(object):
         for file in files_list[1:]:
             file = file.replace('/', '')
 
-            sub_list = self.client.list('{}/{}'.format(path, file))
+            sub_list = self.client.list(f'{path}/{file}')
 
             for sub_file in sub_list[1:]:
                 # 마지막 / 제거

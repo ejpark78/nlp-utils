@@ -372,7 +372,7 @@ class TextExplorer(object):
             tl = self.text_length(text=df[k], labels=['길이', '어절'])
             tl_list.append(tl)
 
-            sub_title = '길이 ({})'.format(k)
+            sub_title = f'길이 ({k})'
 
             count = tl['text_length']
             for k in count:
@@ -412,7 +412,7 @@ class TextExplorer(object):
                 title=title
             )
 
-        self.text_length_corr(df, title='{} (상관 계수)'.format(title))
+        self.text_length_corr(df, title=f'{title} (상관 계수)')
 
         return {
             'bleu': bleu_summary,
@@ -447,13 +447,13 @@ class TextExplorer(object):
 
         search_df = df[(df['BLEU'] > min_value) & (df['BLEU'] < max_value)]
 
-        display('BLEU: {:0.4f} ~ {:0.4f}, size: {:,}'.format(min_value, max_value, len(search_df)))
+        display(f'BLEU: {min_value:0.4f} ~ {max_value:0.4f}, size: {len(search_df):,}')
 
-        title = '{}~{}'.format(min_value, max_value)
+        title = f'{min_value}~{max_value}'
         summary = self.get_summary(df=search_df, columns=[column], title=title)
 
         for k in {'bleu', 'length'}:
-            display(summary[k].style.set_caption(k + ': ' + title))
+            display(summary[k].style.set_caption(f'{k}:{title}'))
 
         sample_df = search_df.sample(n=sample).sort_values(by=['BLEU', 'NIST'], ascending=False)
         display(sample_df.style.set_caption(title))

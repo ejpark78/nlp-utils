@@ -28,9 +28,9 @@ class KmatUtils(object):
         self.kmat = NCKmat()
         self.rules = MorphTrie()
 
-        self.kmat.load('../rsc', 'UserDict_{}'.format(domain))
+        self.kmat.load('../rsc', f'UserDict_{domain}')
 
-        self.rule_file = '../rsc/{}.rule'.format(domain)
+        self.rule_file = f'../rsc/{domain}.rule'
         self.rules.loadRuleFile(self.rule_file)
 
     @staticmethod
@@ -69,8 +69,8 @@ class KmatUtils(object):
             tagged_list = pos_tag(word_tokenize(doc[column]))
             morp = ' '.join(['/'.join(p) for p in tagged_list])
 
-        doc['{}_morp'.format(column)] = morp
-        doc['{}_token'.format(column)] = re.sub(r'/[^/]+?( |$|\+)', ' ', morp)
+        doc[f'{column}_morp'] = morp
+        doc[f'{column}_token'] = re.sub(r'/[^/]+?( |$|\+)', ' ', morp)
 
         return
 

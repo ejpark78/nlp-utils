@@ -193,7 +193,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
 
         try:
             css = 'a.cmt.next_cmt'
-            self.driver.execute_script('document.querySelector("{}").click()'.format(css))
+            self.driver.execute_script(f'document.querySelector("{css}").click()')
 
             self.wait('div.go_article a.link')
         except JavascriptException:
@@ -445,7 +445,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             if end > len(id_list):
                 end = len(id_list)
 
-            p_bar = tqdm(doc_list, desc='{:,}~{:,}'.format(start, end))
+            p_bar = tqdm(doc_list, desc=f'{start:,}~{end:,}')
             for doc in p_bar:
                 doc['commentCount'] = doc['replay_count']
                 del doc['replay_count']
@@ -540,7 +540,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '게시글 본문 조회',
-                    'current': '{:,}/{:,}'.format(i, len(doc_list)),
+                    'current': f'{i:,}/{len(doc_list):,}',
                     'bbs_name': bbs_info['name'],
                     'articleId': str(doc['articleId']),
                 })
@@ -688,7 +688,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '게시글 목록 조회',
-                'current': '{:,}/{:,}'.format(i, max_iter),
+                'current': f'{i:,}/{max_iter:,}',
                 'bbs_name': bbs_info['name']
             })
 

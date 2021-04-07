@@ -160,7 +160,7 @@ class YoutubeLiveChat(YoutubeBase):
                 'size': len(rows)
             })
 
-            url = 'https://www.youtube.com/watch?v={video_id}'.format(video_id=video_id)
+            url = f'https://www.youtube.com/watch?v={video_id}'
             self.selenium.open(
                 url=url,
                 resp_url_path='/get_live_chat_replay',

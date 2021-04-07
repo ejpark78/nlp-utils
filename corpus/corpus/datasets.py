@@ -31,7 +31,7 @@ class DataSets(object):
         self.local_home = getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets')
         self.remote_home = getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
 
-        self.meta_path = '{home}/meta'.format(home=self.remote_home)
+        self.meta_path = f'{self.remote_home}/meta'
 
         self.meta = {}
         self.pull_meta()
@@ -50,8 +50,8 @@ class DataSets(object):
 
     def push_meta(self, filename: str) -> None:
         self.minio.push(
-            local='{path}/{filename}'.format(path=self.local_home, filename=filename),
-            remote='{path}/{filename}'.format(path=self.remote_home, filename=filename),
+            local=f'{self.local_home}/{filename}',
+            remote=f'{self.remote_home}/{filename}',
         )
         return
 
@@ -60,10 +60,7 @@ class DataSets(object):
 
         self.meta = {}
         for remote_meta in meta_list:
-            filename = '{path}/{filename}'.format(
-                path=self.local_home,
-                filename=basename(remote_meta)
-            )
+            filename = f'{self.local_home}/{basename(remote_meta)}'
 
             # download meta
             self.minio.pull(
@@ -81,9 +78,10 @@ class DataSets(object):
 
     def pull_elastic_meta(self) -> dict:
         result = {}
-        for index in self.elastic.index_list():
-            result[index] = {
-                'name': index,
+        for item in self.elastic.get_index_size():
+            result[item['index']] = {
+                'name': item['index'],
+                'count': item['count'],
                 'desc': 'elasticsearch 코퍼스',
                 'source': self.elastic.host,
                 'local_path': 'elasticsearch',
@@ -107,11 +105,7 @@ class DataSets(object):
         return None
 
     def load_elasticsearch_data(self, meta: dict, name: str) -> list:
-        filename = '{home}/{path}/{filename}'.format(
-            home=self.local_home,
-            path=meta['local_path'],
-            filename=name
-        )
+        filename = f"{self.local_home}/{meta['local_path']}/{name}"
 
         if isfile(filename) is False or self.use_cache is False:
             self.elastic.export(filename=filename, index=name)
@@ -124,11 +118,7 @@ class DataSets(object):
         return result
 
     def load_minio_data(self, meta: dict, filename: str) -> list:
-        local_file = '{home}/{path}/{filename}'.format(
-            home=self.local_home,
-            path=meta['local_path'],
-            filename=filename
-        )
+        local_file = f"{self.local_home}/{meta['local_path']}/{filename}"
 
         if isfile(local_file) is False or self.use_cache is False:
             self.pull_minio_file(filename=filename, name=meta['name'])
@@ -146,16 +136,8 @@ class DataSets(object):
             return
 
         self.minio.pull(
-            local='{home}/{path}/{filename}'.format(
-                home=self.local_home,
-                path=info['local_path'],
-                filename=filename
-            ),
-            remote='{home}/{path}/{filename}'.format(
-                home=self.remote_home,
-                path=info['remote_path'],
-                filename=filename
-            ),
+            local=f"{self.local_home}/{info['local_path']}/{filename}",
+            remote=f"{self.remote_home}/{info['remote_path']}/{filename}"
         )
         return
 
@@ -165,16 +147,8 @@ class DataSets(object):
             return
 
         self.minio.push(
-            local='{home}/{path}/{filename}'.format(
-                home=self.local_home,
-                path=info['local_path'],
-                filename=filename
-            ),
-            remote='{home}/{path}/{filename}'.format(
-                home=self.remote_home,
-                path=info['remote_path'],
-                filename=filename
-            ),
+            local=f"{self.local_home}/{info['local_path']}/{filename}",
+            remote=f"{self.remote_home}/{info['remote_path']}/{filename}"
         )
         return
 
@@ -192,5 +166,5 @@ if __name__ == '__main__':
     ds = DataSets()
     print(ds.meta)
 
-    data = ds.load(name='kbsec', filename='kbsec.reports.json.bz2')
+    data = ds.load(name='daum_movie_reviews')
     print(data)

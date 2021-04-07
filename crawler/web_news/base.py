@@ -494,7 +494,7 @@ class WebNewsBase(object):
 
         q, _, url_info = self.parser.parse_url(url)
 
-        result = '{}.{}'.format(url_info.path, '.'.join(q.values()))
+        result = f"{url_info.path}.{'.'.join(q.values())}"
 
         if id_frame['type'] == 'path':
             result = url_info.path

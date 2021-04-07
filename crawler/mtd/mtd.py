@@ -26,7 +26,7 @@ class MtdCrawler(object):
 
         es = ElasticSearchUtils()
         for item in meta['index_list']:
-            filename = 'data/mtd/{idx}.db'.format(idx=item['index'])
+            filename = f"data/mtd/{item['index']}.db"
             db = CacheUtils(filename=filename)
 
             columns = item['columns'].split(',')

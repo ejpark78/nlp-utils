@@ -461,7 +461,7 @@ class HtmlParser(object):
         for key in query:
             query[key] = query[key][0]
 
-        base_url = '{}://{}{}'.format(url_info.scheme, url_info.netloc, url_info.path)
+        base_url = f'{url_info.scheme}://{url_info.netloc}{url_info.path}'
 
         return query, base_url, url_info
 

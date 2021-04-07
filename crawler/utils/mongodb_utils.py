@@ -40,7 +40,7 @@ class MongoDBUtils(object):
     @staticmethod
     def open(host, port, db_name):
         """ 디비에 연결한다."""
-        connect = MongoClient('mongodb://{}:{}'.format(host, port))
+        connect = MongoClient(f'mongodb://{host}:{port}')
         db = connect.get_database(db_name)
 
         return connect, db
@@ -89,7 +89,7 @@ class MongoDBUtils(object):
             # datetime 형식을 문자열로 변환
             if 'date' in document:
                 if isinstance(document['date'], datetime):
-                    document['date'] = '{}'.format(document['date'])
+                    document['date'] = f"{document['date']}"
 
             if field is not None:
                 result.append(document)
@@ -110,7 +110,7 @@ class MongoDBUtils(object):
         # datetime 형식을 문자열로 변환
         if result is not None and 'date' in result:
             if isinstance(result['date'], datetime):
-                result['date'] = '{}'.format(result['date'])
+                result['date'] = f"{result['date']}"
 
         connect.close()
 
@@ -141,7 +141,7 @@ class MongoDBUtils(object):
         # datetime 형식을 문자열로 변환
         if document is not None and 'date' in document:
             if isinstance(document['date'], datetime):
-                document['date'] = '{}'.format(document['date'])
+                document['date'] = f"{document['date']}"
 
         return document
 
@@ -153,12 +153,12 @@ class MongoDBUtils(object):
 
         count = 0
         for doc_id in document_list:
-            simple_doc_id = re.sub(' \(\d+?\)$', '', doc_id)
+            simple_doc_id = re.sub(r' \(\d+?\)$', '', doc_id)
 
             if document_id != simple_doc_id:
                 continue
 
-            m = re.search('\(\d+?\)$', doc_id)
+            m = re.search(r'\(\d+?\)$', doc_id)
             if m is not None:
                 max_id = m.group(0)
                 max_id = max_id.replace('(', '').replace(')', '')
@@ -171,7 +171,7 @@ class MongoDBUtils(object):
 
         result = document_id
         if count > 0:
-            result = '{} ({})'.format(document_id, count)
+            result = f'{document_id} ({count})'
 
         return result
 
@@ -192,7 +192,7 @@ class MongoDBUtils(object):
             # 문서 삽입
             to_db = db.get_collection(to_collection)
 
-            document['_id'] = '{}-{}'.format(document_id, time_tag)
+            document['_id'] = f'{document_id}-{time_tag}'
 
             to_db.insert(document)
 
@@ -221,7 +221,7 @@ class MongoDBUtils(object):
 
             for doc in cursor:
                 if 'date' in doc and isinstance(doc['date'], datetime):
-                    doc['date'] = '{}'.format(doc['date'])
+                    doc['date'] = f"{doc['date']}"
 
                 result.append(doc)
 
@@ -236,7 +236,7 @@ class MongoDBUtils(object):
         with bz2.open(filename, 'wb') as fp:
             for doc in document_list:
                 if 'date' in doc and isinstance(doc['date'], datetime):
-                    doc['date'] = '{}'.format(doc['date'])
+                    doc['date'] = f"{doc['date']}"
 
                 line = json.dumps(doc, ensure_ascii=False, sort_keys=True) + '\n'
 
@@ -263,7 +263,7 @@ class MongoDBUtils(object):
         for doc in cursor:
             fp.write(json.dumps(doc, ensure_ascii=False, default=self.json_serial) + '\n')
             count += 1
-            print('{:,}'.format(count), end='\r', flush=True)
+            print(f'{count:,}', end='\r', flush=True)
             if count % 100 == 0:
                 fp.flush()
 

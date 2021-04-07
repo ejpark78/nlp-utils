@@ -90,7 +90,7 @@ class BitextExports(object):
 
         bitext_df = self.clean_lang(df=df)
 
-        self.save(df=bitext_df, filename='dictionary/{}.bitext.json.bz2'.format(index))
+        self.save(df=bitext_df, filename=f'dictionary/{index}.bitext.json.bz2')
 
         return bitext_df
 
@@ -112,7 +112,7 @@ class BitextExports(object):
 
         bitext_df = self.clean_lang(df=df)
 
-        self.save(df=bitext_df, filename='dictionary/{}.bitext.json.bz2'.format(index))
+        self.save(df=bitext_df, filename=f'dictionary/{index}.bitext.json.bz2')
 
         return bitext_df
 
@@ -144,7 +144,7 @@ class BitextExports(object):
 
         bitext_df = self.clean_lang(df=df)
 
-        self.save(df=bitext_df, filename='dictionary/{}.bitext.json.bz2'.format(index))
+        self.save(df=bitext_df, filename=f'dictionary/{index}.bitext.json.bz2')
 
         return bitext_df
 
@@ -173,7 +173,7 @@ class BitextExports(object):
 
             bitext_df = self.clean_lang(df=df)
 
-            self.save(df=bitext_df, filename='news/{}.bitext.json.bz2'.format(index))
+            self.save(df=bitext_df, filename=f'news/{index}.bitext.json.bz2')
 
         return
 

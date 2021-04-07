@@ -44,14 +44,13 @@ class UdemyBase(object):
         """캐쉬 파일로 저장한다."""
         data_json = json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True)
 
-        filename = '{path}/{name}.json'.format(path=path, name=name)
+        filename = f'{path}/{name}.json'
         with open(filename, 'w') as fp:
             fp.write(data_json)
 
         if save_time_tag is True:
             dt = datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y%m%d-%H%M%S')
-            filename = '{path}/{name}.{dt}.json'.format(path=path, name=name, dt=dt)
-            with open(filename, 'w') as fp:
+            with open(f'{path}/{name}.{dt}.json', 'w') as fp:
                 fp.write(data_json)
 
         return
@@ -59,7 +58,7 @@ class UdemyBase(object):
     @staticmethod
     def open_cache(path, name):
         """캐쉬파일을 읽는다."""
-        filename = '{path}/{name}.json'.format(path=path, name=name)
+        filename = f'{path}/{name}.json'
         if isfile(filename) is False:
             return None
 
@@ -87,12 +86,12 @@ class UdemyBase(object):
 
         if resp.status_code // 100 != 2:
             self.logger.error(msg={
-                'error': 'error: {}'.format(resp.text)
+                'error': f'error: {resp.text}'
             })
 
         total_size = int(resp.headers.get('content-length', 0))
         self.logger.log(msg={
-            'size': 'size: {:,}'.format(total_size)
+            'size': f'size: {total_size:,}'
         })
 
         wrote = 0
@@ -128,10 +127,10 @@ class UdemyBase(object):
         if 'external_url' not in external_link:
             return
 
-        filename = '{path}/{name}.desktop'.format(path=path, name=name)
+        filename = f'{path}/{name}.desktop'
         if isfile(filename):
             self.logger.log(msg={
-                'make_link_file': 'skip {}'.format(filename),
+                'make_link_file': f'skip {filename}',
             })
             return
 

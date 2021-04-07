@@ -31,7 +31,7 @@ class UdemyCourseList(UdemyBase):
         for page in tqdm(range(1, self.params.max_page + 1), desc='course list'):
             self.selenium.reset_requests()
 
-            url = 'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'.format(page=page)
+            url = f'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'
 
             self.selenium.open(url=url)
             sleep(self.params.sleep)

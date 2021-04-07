@@ -147,7 +147,7 @@ class YoutubeReply(YoutubeBase):
                 'size': len(rows)
             })
 
-            url = 'https://www.youtube.com/watch?v={v_id}'.format(v_id=v_id)
+            url = f'https://www.youtube.com/watch?v={v_id}'
             self.selenium.open(
                 url=url,
                 resp_url_path=None,
