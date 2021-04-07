@@ -77,38 +77,59 @@ class DataSets(object):
         return
 
     def pull_elastic_meta(self) -> dict:
+        mappings = self.elastic.get_index_columns()
+
         result = {}
         for item in self.elastic.get_index_size():
-            result[item['index']] = {
-                'name': item['index'],
+            index = item['index']
+
+            if index not in mappings:
+                continue
+
+            result[index] = {
+                'name': index,
                 'count': item['count'],
                 'desc': 'elasticsearch 코퍼스',
                 'source': self.elastic.host,
+                'location': 'elasticsearch',
                 'local_path': 'elasticsearch',
+                'columns': mappings[index],
             }
 
         return result
 
-    def load(self, name: str = None, filename: str = None, use_cache: bool = True) -> None or list:
-        meta = self.get_info(name=name)
+    def load(self, name: str = None, filename: str = None, use_cache: bool = True, meta: dict = None,
+             source: list = None) -> None or list:
+        if meta and name in meta:
+            meta = meta[name]
+        else:
+            meta = self.get_info(name=name)
+
         if meta is None:
             return None
 
         self.use_cache = use_cache
 
         if 'location' not in meta:
-            return self.load_minio_data(meta=meta, filename=filename)
+            if filename:
+                return self.load_minio_data(meta=meta, filename=filename)
+
+            result = []
+            for x in meta['files']:
+                result += self.load_minio_data(meta=meta, filename=x['name'])
+
+            return result
 
         if meta['location'] == 'elasticsearch':
-            return self.load_elasticsearch_data(meta=meta, name=name)
+            return self.load_elasticsearch_data(meta=meta, name=name, source=source)
 
         return None
 
-    def load_elasticsearch_data(self, meta: dict, name: str) -> list:
-        filename = f"{self.local_home}/{meta['local_path']}/{name}"
+    def load_elasticsearch_data(self, meta: dict, name: str, source: list = None) -> list:
+        filename = f"{self.local_home}/{meta['local_path']}/{name}.bz2"
 
         if isfile(filename) is False or self.use_cache is False:
-            self.elastic.export(filename=filename, index=name)
+            self.elastic.export(filename=filename, index=name, source=source)
 
         result = []
         with bz2.open(filename, 'rb') as fp:
@@ -161,10 +182,20 @@ class DataSets(object):
 
         return
 
+    def test(self) -> None:
+        # print(self.meta)
+
+        # data = self.load(name='daum_movie_reviews')
+        # print(data)
+
+        meta = self.pull_elastic_meta()
+        # print(meta)
+
+        data = self.load(name='crawler-naver-economy-2021', meta=meta, source='title,content'.split(','))
+        # print(data)
+
+        return
+
 
 if __name__ == '__main__':
-    ds = DataSets()
-    print(ds.meta)
-
-    data = ds.load(name='daum_movie_reviews')
-    print(data)
+    DataSets().test()
