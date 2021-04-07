@@ -9,3 +9,12 @@ tqdm
 webdav
 minio
 elasticsearch
+
+werkzeug<1.0.0
+pandas
+jupyter
+notebook
+jupyter_contrib_nbextensions
+matplotlib
+
+autopep8

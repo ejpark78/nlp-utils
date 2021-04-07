@@ -47,7 +47,7 @@ matplotlib
 
 webdav
 minio
-
+autopep8
 pip
 
 # nlplab

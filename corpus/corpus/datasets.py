@@ -89,11 +89,9 @@ class DataSets(object):
             result[index] = {
                 'name': index,
                 'count': item['count'],
-                'desc': 'elasticsearch 코퍼스',
-                'source': self.elastic.host,
+                'columns': mappings[index],
                 'location': 'elasticsearch',
                 'local_path': 'elasticsearch',
-                'columns': mappings[index],
             }
 
         return result

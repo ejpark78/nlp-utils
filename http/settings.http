@@ -18,7 +18,7 @@ Accept: application/json
 
 ###
 
-PUT {{host}}/crawler-facebook-*/_settings
+PUT {{host}}/crawler-naver-kbo_game_center_relay_text-tmp/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/json

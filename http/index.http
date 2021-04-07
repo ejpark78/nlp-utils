@@ -55,19 +55,6 @@ Accept: application/text
 
 ###
 
-PUT {{host}}/{{index}}/_settings
-Authorization: Basic {{username}} {{password}}
-Content-Type: application/json
-Accept: application/text
-
-{
-  "index": {
-    "number_of_replicas": 0
-  }
-}
-
-###
-
 GET {{host}}/{{index}}/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/text
@@ -105,14 +92,15 @@ Accept: application/text
 
 ###
 
-PUT {{host}}/{{index}}/_settings
+PUT {{host}}/crawler-bbs-lineagem/_settings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
 
 {
   "index": {
-    "number_of_replicas": 2
+    "number_of_shards": 1,
+    "number_of_replicas": 1
   }
 }
 
@@ -129,5 +117,52 @@ GET {{host}}/crawler-facebook-en/_mappings
 Authorization: Basic {{username}} {{password}}
 Content-Type: application/json
 Accept: application/text
+
+###
+
+POST {{host}}/_reindex?wait_for_completion=false
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+{
+  "source": {
+    "index": "crawler-naver-politics-2019"
+  },
+  "dest": {
+    "index": "crawler-naver-politics-2019-tmp"
+  }
+}
+
+###
+
+DELETE {{host}}/crawler-naver-kin-rank_user_list
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/text
+
+###
+
+PUT {{host}}/crawler-naver-society-reply-tmp/_settings
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "index.mapping.total_fields.limit": 500000
+}
+
+###
+
+GET {{host}}/_cat/indices?v&s=index
+Authorization: Basic {{username}} {{password}}
+Accept: application/text
+
+###
+
+GET {{host}}/_tasks?detailed=true&actions=*reindex
+Authorization: Basic {{username}} {{password}}
+Content-Type: application/json
+Accept: application/json
 
 ###
