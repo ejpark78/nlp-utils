@@ -14,7 +14,7 @@ build:
 
 .ONESHELL:
 install:
-	pip3 install dist/nlplab-1.*.whl
+	pip3 install dist/*.*.whl
 
 .ONESHELL:
 upload:

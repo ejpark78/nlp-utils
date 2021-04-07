@@ -37,11 +37,11 @@ spec:
                 - name: ELASTIC_SEARCH_AUTH
                   valueFrom:
                     secretKeyRef:
-                      name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+                      name: "{{ $.Release.Name }}-{{ $.Values.secret.name }}"
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.name }}"
               args:
                 {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}
@@ -82,11 +82,11 @@ spec:
                 - name: ELASTIC_SEARCH_AUTH
                   valueFrom:
                     secretKeyRef:
-                      name: "{{ $.Release.Name }}-{{ $.Values.configMap.elasticsearch.authName }}"
+                      name: "{{ $.Release.Name }}-{{ $.Values.secret.name }}"
                       key: http_auth
               envFrom:
                 - configMapRef:
-                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.envFrom }}"
+                    name: "{{ $.Release.Name }}-{{ $.Values.configMap.name }}"
               args:
                 {{- toYaml $.Values.args | nindent 16 }}
                 {{- toYaml $job.args | nindent 16 }}

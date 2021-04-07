@@ -11,7 +11,7 @@ ls:
 install:
 	#helm install pipeline ./pipeline -f pipeline/values.yaml -n pipeline-kb
 
-	#helm install bbs ./portal -f portal/bbs.yaml -n dev
+	helm install bbs ./portal -f portal/bbs.yaml -n dev
 
 	helm install daum-news ./portal -f portal/daum-news.yaml -n dev
 	helm install nate-news ./portal -f portal/nate-news.yaml -n dev
@@ -29,10 +29,10 @@ install:
 
 .ONESHELL:
 upgrade:
-	helm upgrade ap-news ./news -f news/ap_news.yaml -n dev
-
-	helm upgrade world-news ./news -f news/world.yaml -n dev
-	helm upgrade korea-news ./news -f news/korea.yaml -n dev
+#	helm upgrade ap-news ./news -f news/ap_news.yaml -n dev
+#
+#	helm upgrade world-news ./news -f news/world.yaml -n dev
+#	helm upgrade korea-news ./news -f news/korea.yaml -n dev
 
 	helm upgrade bbs ./portal -f portal/bbs.yaml -n dev
 
@@ -40,23 +40,23 @@ upgrade:
 	helm upgrade nate-news ./portal -f portal/nate-news.yaml -n dev
 	helm upgrade naver-news ./portal -f portal/naver-news.yaml -n dev
 
-	helm upgrade naver-kin ./portal -f portal/naver-kin.yaml -n dev
-	helm upgrade naver-reply ./portal -f portal/naver-reply.yaml -n dev
+#	helm upgrade naver-kin ./portal -f portal/naver-kin.yaml -n dev
+#	helm upgrade naver-reply ./portal -f portal/naver-reply.yaml -n dev
 
 	helm list -A
 
 .ONESHELL:
 delete:
-	helm delete ap-news -n dev
-	helm delete world-news -n dev
-	helm delete korea-news -n dev
+#	helm delete ap-news -n dev
+#	helm delete world-news -n dev
+#	helm delete korea-news -n dev
 
 	helm delete bbs -n dev
 	helm delete daum-news -n dev
 	helm delete nate-news -n dev
 	helm delete naver-news -n dev
-	helm delete naver-kin -n dev
-	helm delete naver-reply -n dev
+#	helm delete naver-kin -n dev
+#	helm delete naver-reply -n dev
 
 	#kubectl delete pods --field-selector status.phase!=Running -n dev
 

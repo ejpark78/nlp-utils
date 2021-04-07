@@ -22,10 +22,12 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  elasticsearch:
-    authName: es-auth
-    host: "https://corpus.ncsoft.com:9200"
-  envFrom: bbs
+  name: es
+  data:
+    ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+
+secret:
+  name: auth
 
 schedule:
   concurrencyPolicy: Forbid

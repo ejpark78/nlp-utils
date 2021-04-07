@@ -18,24 +18,6 @@ spec:
     {{- toYaml $.Values.hostAliases | nindent 2 }}
   imagePullSecrets:
     - name: "{{ $.Release.Name }}-{{ $.Values.imagePullSecrets }}"
-  initContainers:
-  - name: config-sync
-    image: {{ $.Values.gitImage }}
-    imagePullPolicy: IfNotPresent
-    envFrom:
-      - configMapRef:
-          name: "{{ $.Release.Name }}-{{ $.Values.configMap.gitSync.name }}"
-    command:
-      - git
-      - clone
-      - --progress
-      - -b
-      - $(GIT_SYNC_BRANCH)
-      - $(GIT_SYNC_REPO)
-      - /config
-    volumeMounts:
-      - name: config
-        mountPath: "/config"
   containers:
   - name: app
     resources:

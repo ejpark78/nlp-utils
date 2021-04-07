@@ -22,14 +22,12 @@ hostAliases:
       - "galadriel02.korea.ncsoft.corp"
 
 configMap:
-  gitSync:
-    name: config-sync
-    repo: "http://galadriel02.korea.ncsoft.corp/crawler/config.git"
-    branch: "live"
-  elasticsearch:
-    authName: es-auth
-    host: "https://corpus.ncsoft.com:9200"
-  envFrom: naver-reply
+  name: es
+  data:
+    ELASTIC_SEARCH_HOST: "https://corpus.ncsoft.com:9200"
+
+secret:
+  name: auth
 
 schedule:
   concurrencyPolicy: Forbid
