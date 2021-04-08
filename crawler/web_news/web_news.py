@@ -62,7 +62,7 @@ class WebNewsCrawler(WebNewsBase):
                     resp = requests.get(
                         url=url,
                         verify=False,
-                        timeout=60,
+                        timeout=self.params['request_timeout'],
                         headers=headers,
                         allow_redirects=True,
                     )
@@ -74,7 +74,7 @@ class WebNewsCrawler(WebNewsBase):
                         url=url,
                         data=body,
                         verify=False,
-                        timeout=60,
+                        timeout=self.params['request_timeout'],
                         headers=headers,
                         allow_redirects=True,
                     )
@@ -599,6 +599,7 @@ class WebNewsCrawler(WebNewsBase):
         parser.add_argument('--page-step', default=1, type=int, help='page step')
 
         parser.add_argument('--sleep', default=10, type=float, help='sleep time')
+        parser.add_argument('--request-timeout', default=320, type=float, help='request timeout')
 
         # optional
         parser.add_argument('--overwrite', action='store_true', default=False, help='(optional) 덮어쓰기')

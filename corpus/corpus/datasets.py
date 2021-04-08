@@ -26,14 +26,16 @@ class DataSetsUtils(object):
 
     def __init__(self):
         self.data_path = {
-            'local': getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets'),
-            'remote': getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
+            'local': getenv('DATASETS_LOCAL_HOME', 'data/datasets'),
+            'remote': getenv('DATASETS_REMOTE_HOME', 'datasets')
         }
 
         self.meta_path = {
             'local': f'{self.data_path["local"]}/meta',
             'remote': f'{self.data_path["remote"]}/meta',
         }
+
+        self.elastic: ElasticSearchUtils = ElasticSearchUtils()
 
     def read_datasets_meta(self) -> dict:
         result = {}
@@ -45,26 +47,34 @@ class DataSetsUtils(object):
         return result
 
     @staticmethod
-    def read_corpus(filename: str, limit: int = -1) -> list:
-        count, result = 0, []
+    def read_corpus(filename: str, limit: int = -1) -> (list, dict):
+        count, result, settings = 0, [], None
         with bz2.open(filename, 'rb') as fp:
             for line in tqdm(fp, desc=f'read: {filename}'):
-                result.append(json.loads(line.decode('utf-8')))
+                doc = json.loads(line.decode('utf-8'))
+                if settings is None and 'settings' in doc:
+                    settings = doc
+                    continue
+
+                result.append(doc)
 
                 count += 1
                 if limit > 0 and count < limit:
                     break
 
-        return result
+        return result, settings
 
-    def update_file_info(self, info: dict, file_info: dict) -> None:
-        data = self.read_corpus(
-            filename=f"{self.data_path['local']}/{info['path']['local']}/{file_info['name']}"
-        )
+    def _update_file_info(self, info: dict, file_info: dict) -> None:
+        filename = f"{self.data_path['local']}/{info['path']['local']}/{file_info['name']}"
+        data, settings = self.read_corpus(limit=100, filename=filename)
 
-        file_info['count'] = len(data)
+        file_info['count'] = -1
+
+        if settings:
+            file_info['columns'] = self.elastic.get_index_columns(mappings={'index': settings})
+            return
+
         file_info['columns'] = {col: 'text' if isinstance(v, str) else 'object' for col, v in data[0].items()}
-
         return
 
     def update_datasets_meta(self, include: set = None) -> None:
@@ -79,7 +89,7 @@ class DataSetsUtils(object):
 
             for file_info in info['files']:
                 bar.set_description(desc=f"{name}/{file_info['name']}")
-                self.update_file_info(info=info, file_info=file_info)
+                self._update_file_info(info=info, file_info=file_info)
 
             filename = f"{self.meta_path['local']}/{name}.yaml"
             with open(filename, 'w') as fp:
@@ -101,11 +111,10 @@ class DataSets(DataSetsUtils):
         super().__init__()
 
         self.minio: MinioUtils = MinioUtils()
-        self.elastic: ElasticSearchUtils = ElasticSearchUtils()
 
         self.use_cache: bool = use_cache
 
-    def upload(self, info: dict, filename: str) -> None:
+    def _upload(self, info: dict, filename: str) -> None:
         self.minio.push(
             local=f"{self.data_path['local']}/{info['path']['local']}/{filename}",
             remote=f"{self.data_path['remote']}/{info['path']['remote']}/{filename}"
@@ -113,66 +122,14 @@ class DataSets(DataSetsUtils):
 
         return None
 
-    def download(self, filename: str, info: dict) -> None:
+    def _download(self, filename: str, info: dict) -> None:
         self.minio.pull(
             local=f"{self.data_path['local']}/{info['path']['local']}/{filename}",
             remote=f"{self.data_path['remote']}/{info['path']['remote']}/{filename}"
         )
         return
 
-    def upload_datasets(self, include: set = None) -> None:
-        meta = self.read_datasets_meta()
-
-        # upload meta & corpus
-        bar = tqdm(meta.items())
-        for name, info in bar:
-            bar.set_description(desc=name)
-
-            if include and name not in include:
-                continue
-
-            self.upload_datasets_meta(filename=f'{name}.yaml')
-
-            for file_info in info['files']:
-                bar.set_description(desc=f"{name}/{file_info['name']}")
-
-                self.upload(info=info, filename=file_info['name'])
-
-        return None
-
-    def download_datasets(self, meta: dict = None) -> None:
-        if meta is None:
-            meta = self._download_datasets_meta()
-
-        bar = tqdm(meta.items())
-        for name, info in bar:
-            for file_info in info['files']:
-                bar.set_description(desc=f"{name}/{file_info['name']}")
-
-                local_file = f"{self.data_path['local']}/{info['path']['local']}/{file_info['name']}"
-                if isfile(local_file) and self.use_cache:
-                    continue
-
-                self.download(filename=file_info['name'], info=info)
-
-        return None
-
-    def get_meta(self, name: str = 'all') -> dict:
-        if name == 'all':
-            return {
-                **self._download_datasets_meta(),
-                **self._download_elasticsearch_meta()
-            }
-
-        if name == 'datasets':
-            return self._download_datasets_meta()
-
-        if name == 'elasticsearch':
-            return self._download_elasticsearch_meta()
-
-        return {}
-
-    def upload_datasets_meta(self, filename: str) -> None:
+    def _upload_datasets_meta(self, filename: str) -> None:
         self.minio.push(
             local=f"{self.meta_path['local']}/{filename}",
             remote=f"{self.meta_path['remote']}/{filename}",
@@ -213,6 +170,22 @@ class DataSets(DataSetsUtils):
 
         return result
 
+    def _load_datasets(self, info: dict, filename: str) -> list:
+        local_file = f"{self.data_path['local']}/{info['path']['local']}/{filename}"
+
+        if isfile(local_file) is False or self.use_cache is False:
+            self._download(filename=filename, info=info)
+
+        return self.read_corpus(filename=local_file)[0]
+
+    def _load_elasticsearch_corpus(self, info: dict, name: str, source: list = None) -> list:
+        local_file = f"{self.data_path['local']}/{info['path']['local']}/{name}.bz2"
+
+        if isfile(local_file) is False or self.use_cache is False:
+            self.elastic.export(filename=local_file, index=name, source=source)
+
+        return self.read_corpus(filename=local_file)[0]
+
     def load(self, name: str, meta: dict, filename: str = None, use_cache: bool = True,
              source: list = None) -> None or list:
         if meta and name in meta:
@@ -236,21 +209,60 @@ class DataSets(DataSetsUtils):
 
         return result
 
-    def _load_datasets(self, info: dict, filename: str) -> list:
-        local_file = f"{self.data_path['local']}/{info['path']['local']}/{filename}"
+    def upload_datasets(self, include: set = None, meta_only: bool = False) -> None:
+        meta = self.read_datasets_meta()
 
-        if isfile(local_file) is False or self.use_cache is False:
-            self.download(filename=filename, info=info)
+        # upload meta & corpus
+        bar = tqdm(meta.items())
+        for name, info in bar:
+            bar.set_description(desc=name)
 
-        return self.read_corpus(filename=local_file)
+            if include and name not in include:
+                continue
 
-    def _load_elasticsearch_corpus(self, info: dict, name: str, source: list = None) -> list:
-        local_file = f"{self.data_path['local']}/{info['path']['local']}/{name}.bz2"
+            self._upload_datasets_meta(filename=f'{name}.yaml')
 
-        if isfile(local_file) is False or self.use_cache is False:
-            self.elastic.export(filename=local_file, index=name, source=source)
+            if meta_only is True:
+                continue
 
-        return self.read_corpus(filename=local_file)
+            for file_info in info['files']:
+                bar.set_description(desc=f"{name}/{file_info['name']}")
+
+                self._upload(info=info, filename=file_info['name'])
+
+        return None
+
+    def download_datasets(self, meta: dict = None) -> None:
+        if meta is None:
+            meta = self._download_datasets_meta()
+
+        bar = tqdm(meta.items())
+        for name, info in bar:
+            for file_info in info['files']:
+                bar.set_description(desc=f"{name}/{file_info['name']}")
+
+                local_file = f"{self.data_path['local']}/{info['path']['local']}/{file_info['name']}"
+                if isfile(local_file) and self.use_cache:
+                    continue
+
+                self._download(filename=file_info['name'], info=info)
+
+        return None
+
+    def get_meta(self, name: str = 'all') -> dict:
+        if name == 'all':
+            return {
+                **self._download_datasets_meta(),
+                **self._download_elasticsearch_meta()
+            }
+
+        if name == 'datasets':
+            return self._download_datasets_meta()
+
+        if name == 'elasticsearch':
+            return self._download_elasticsearch_meta()
+
+        return {}
 
     def test(self) -> None:
         """
@@ -274,6 +286,11 @@ class DataSets(DataSetsUtils):
         data = self.load(name='crawler-naver-economy-2021', source='title,content'.split(','), meta=es_meta)
         print(data)
         """
+
+        self.update_datasets_meta(include={'wiki'})
+
+        # self.upload_datasets(include={'wiki'}, meta_only=True)
+        # meta = self.get_meta('datasets')
 
         return
 

@@ -77,16 +77,19 @@ class ElasticSearchUtils(object):
 
         return result
 
-    def get_index_columns(self) -> dict:
-        mappings = self.conn.indices.get_mapping()
+    def get_index_columns(self, mappings: dict = None) -> dict:
+        if mappings is None:
+            mappings = self.conn.indices.get_mapping()
 
-        result = {i: x['mappings']['properties'] for i, x in mappings.items() if 'mappings' in x and 'properties' in x['mappings']}
+        result = {
+            index: x['mappings']['properties'] for index, x in mappings.items() if 'mappings' in x and 'properties' in x['mappings']
+        }
 
         for i, x in result.items():
             for j, y in x.items():
                 if 'type' in y:
                     x[j] = y['type']
-                else :
+                else:
                     x[j] = 'object'
 
         return result

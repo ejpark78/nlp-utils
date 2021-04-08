@@ -746,7 +746,7 @@ class WebNewsBase(object):
             resp = requests.post(
                 url=url_info['url'],
                 verify=False,
-                timeout=60,
+                timeout=self.params['request_timeout'],
                 headers=headers,
                 json=url_info['post_data'],
                 allow_redirects=True,
@@ -806,7 +806,7 @@ class WebNewsBase(object):
             resp = requests.get(
                 url=url_info['url'],
                 verify=False,
-                timeout=60,
+                timeout=self.params['request_timeout'],
                 headers=headers,
                 allow_redirects=True,
             )

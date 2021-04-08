@@ -17,24 +17,20 @@ urllib3.disable_warnings(UserWarning)
 
 class MinioUtils(object):
 
-    def __init__(self, bucket: str = None, username: str = None, key: str = None, endpoint: str = None):
+    def __init__(self, bucket: str = None, encoded_auth: str = None, endpoint: str = None):
         self.bucket = bucket
         if bucket is None:
-            self.bucket = getenv('NLPLAB_S3_BUCKET', 'nlplab')
+            self.bucket = getenv('MINIO_BUCKET', 'nlplab')
 
-        self.username = username
-        if username is None:
-            self.username = getenv('NLPLAB_S3_USERNAME', 'k8s')
+        if encoded_auth is None:
+            encoded_auth = getenv('MINIO_ENCODED_AUTH', 'azhzOm5scGxhYjIwMjA=')
 
-        self.key = key
-        if key is None:
-            encoded_key = getenv('NLPLAB_S3_BUCKET_KEY_ENCODED', 'bmxwbGFiMjAyMA==')
-            self.key = decodebytes(encoded_key.encode('utf-8')).decode('utf-8')
+        self.username, self.key = decodebytes(encoded_auth.encode('utf-8')).decode('utf-8').split(':')
 
-        # nlp-utils: 172.19.153.41
+        # nlp-utils: 172.19.153.41 nlp-s3.cloud.ncsoft.com
         self.endpoint = endpoint
         if endpoint is None:
-            self.endpoint = getenv('NLPLAB_S3_BUCKET_ENDPOINT', '172.19.153.41:32900')
+            self.endpoint = getenv('MINIO_ENDPOINT', 'nlp-s3.cloud.ncsoft.com:32900')
 
     def push(self, local: str, remote: str) -> None:
         client = Minio(
