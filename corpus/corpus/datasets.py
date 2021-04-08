@@ -44,24 +44,36 @@ class DataSetsUtils(object):
 
         return result
 
-    def json2yaml(self) -> None:
-        for filename in glob(f"{self.meta_path['local']}/*.json"):
-            with open(filename, 'r') as fp:
-                data = json.load(fp=fp)
+    @staticmethod
+    def read_corpus(filename: str) -> list:
+        result = []
+        with bz2.open(filename, 'rb') as fp:
+            for line in tqdm(fp, desc=f'read: {filename}'):
+                result.append(json.loads(line.decode('utf-8')))
 
-            data['tags'] = data['category'].split('/')
-            del data['category']
+        return result
 
-            data['path'] = {
-                'local': data['path']['local'],
-                'remote': data['remote_path'],
-            }
-            del data['path']['local']
-            del data['remote_path']
+    def batch(self) -> None:
+        # add meta.files: count, columns
 
-            with open(filename.replace('.json', '.yaml'), 'w') as fp:
+        meta = self.read_datasets_meta()
+
+        bar = tqdm(meta.items())
+        for name, info in bar:
+            for f in info['files']:
+                bar.set_description(desc=f"{name}/{f['name']}")
+
+                data = self.read_corpus(
+                    filename=f"{self.data_path['local']}/{info['path']['local']}/{f['name']}"
+                )
+
+                f['count'] = len(data)
+                f['columns'] = {col: 'text' if isinstance(v, str) else 'object' for col, v in data[0].items()}
+
+            filename = f"{self.meta_path['local']}/{name}.yaml"
+            with open(filename, 'w') as fp:
                 yaml.dump(
-                    data=data,
+                    data=info,
                     stream=fp,
                     default_flow_style=False,
                     allow_unicode=True,
@@ -182,12 +194,7 @@ class DataSets(DataSetsUtils):
         if isfile(filename) is False or self.use_cache is False:
             self.elastic.export(filename=filename, index=name, source=source)
 
-        result = []
-        with bz2.open(filename, 'rb') as fp:
-            for line in fp.readlines():
-                result.append(json.loads(line.decode('utf-8')))
-
-        return result
+        return self.read_corpus(filename=filename)
 
     def load_minio_data(self, info: dict, filename: str) -> list:
         local_file = f"{self.data_path['local']}/{info['path']['local']}/{filename}"
@@ -195,12 +202,7 @@ class DataSets(DataSetsUtils):
         if isfile(local_file) is False or self.use_cache is False:
             self.pull_minio_file(filename=filename, info=info)
 
-        result = []
-        with bz2.open(local_file, 'rb') as fp:
-            for line in fp.readlines():
-                result.append(json.loads(line.decode('utf-8')))
-
-        return result
+        return self.read_corpus(filename=filename)
 
     def pull_minio_file(self, filename: str, info: dict) -> None:
         self.minio.pull(
@@ -221,10 +223,11 @@ class DataSets(DataSetsUtils):
         return self.push_minio_file(filename=filename, info=info)
 
     def test(self) -> None:
+        # self.push_all_datasets()
+
         self.pull_all_datasets()
 
-        # self.json2yaml()
-        # self.push_all_datasets()
+        # self.batch()
 
         # self.update_meta()
         # print(meta)
