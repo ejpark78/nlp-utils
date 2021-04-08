@@ -9,6 +9,7 @@ from os import getenv
 
 import urllib3
 from minio import Minio
+from base64 import decodebytes
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -27,7 +28,8 @@ class MinioUtils(object):
 
         self.key = key
         if key is None:
-            self.key = getenv('NLPLAB_S3_BUCKET_KEY', 'nlplab2020')
+            encoded_key = getenv('NLPLAB_S3_BUCKET_KEY_ENCODED', 'bmxwbGFiMjAyMA==')
+            self.key = decodebytes(encoded_key.encode('utf-8')).decode('utf-8')
 
         # nlp-utils: 172.19.153.41
         self.endpoint = endpoint

@@ -5,11 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import base64
 import json
 import re
 import ssl
 import sys
+from base64 import decodebytes
 from bz2 import BZ2File
 from datetime import datetime
 from os import getenv
@@ -41,7 +41,7 @@ class ElasticSearchUtils(object):
         super().__init__()
 
         if encoded_auth:
-            http_auth = base64.decodebytes(http_auth.encode('utf-8')).decode('utf-8')
+            http_auth = decodebytes(http_auth.encode('utf-8')).decode('utf-8')
 
         self.host = host
         self.http_auth = (http_auth.split(':')) if http_auth else None

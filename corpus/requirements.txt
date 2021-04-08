@@ -9,6 +9,7 @@ tqdm
 webdav
 minio
 elasticsearch
+PyYAML
 
 werkzeug<1.0.0
 pandas

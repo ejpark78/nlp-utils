@@ -7,10 +7,13 @@ from __future__ import print_function
 
 import bz2
 import json
+from glob import glob
 from os import getenv
 from os.path import basename, isfile
 
 import urllib3
+import yaml
+from tqdm import tqdm
 
 from corpus.utils.elasticsearch_utils import ElasticSearchUtils
 from corpus.utils.minio_utils import MinioUtils
@@ -19,69 +22,120 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class DataSets(object):
+class DataSetsUtils(object):
 
-    def __init__(self, name: str = None, use_cache: bool = True):
-        self.elastic = ElasticSearchUtils()
-        self.minio = MinioUtils()
+    def __init__(self):
+        self.data_path = {
+            'local': getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets'),
+            'remote': getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
+        }
 
-        self.name = name
-        self.use_cache = use_cache
+        self.meta_path = {
+            'local': f'{self.data_path["local"]}/meta',
+            'remote': f'{self.data_path["remote"]}/meta',
+        }
 
-        self.local_home = getenv('NLPLAB_DATASET_LOCAL_HOME', 'data/datasets')
-        self.remote_home = getenv('NLPLAB_DATASET_REMOTE_HOME', 'datasets')
+    def read_datasets_meta(self) -> dict:
+        result = {}
+        for filename in glob(f"{self.meta_path['local']}/*.yaml"):
+            with open(filename, 'r') as fp:
+                contents = yaml.load(stream=fp, Loader=yaml.FullLoader)
+                result[contents['name']] = contents
 
-        self.meta_path = f'{self.remote_home}/meta'
+        return result
 
-        self.meta = {}
-        self.pull_meta()
+    def json2yaml(self) -> None:
+        for filename in glob(f"{self.meta_path['local']}/*.json"):
+            with open(filename, 'r') as fp:
+                data = json.load(fp=fp)
 
-    def get_info(self, name: str) -> None or dict:
-        if name is None:
-            name = self.name
+            data['tags'] = data['category'].split('/')
+            del data['category']
 
-        if name is None:
-            return None
+            data['path'] = {
+                'local': data['path']['local'],
+                'remote': data['remote_path'],
+            }
+            del data['path']['local']
+            del data['remote_path']
 
-        if name not in self.meta.keys():
-            return None
+            with open(filename.replace('.json', '.yaml'), 'w') as fp:
+                yaml.dump(
+                    data=data,
+                    stream=fp,
+                    default_flow_style=False,
+                    allow_unicode=True,
+                    explicit_start=True,
+                    sort_keys=False,
+                )
 
-        return self.meta[name]
+        return
 
-    def push_meta(self, filename: str) -> None:
+
+class DataSets(DataSetsUtils):
+
+    def __init__(self, use_cache: bool = True):
+        super().__init__()
+
+        self.minio: MinioUtils = MinioUtils()
+        self.elastic: ElasticSearchUtils = ElasticSearchUtils()
+
+        self.use_cache: bool = use_cache
+
+    def push_all_datasets(self) -> None:
+        for filename in glob(f"{self.meta_path['local']}/*.yaml"):
+            self.push_datasets_meta(filename=basename(filename))
+
+        return None
+
+    def pull_all_datasets(self, meta: dict = None) -> None:
+        if meta is None:
+            meta = self.pull_datasets_meta()
+
+        bar = tqdm(meta.items())
+        for name, info in bar:
+            for f in info['files']:
+                bar.set_description(desc=f"{name}/{f['name']}")
+
+                local_file = f"{self.data_path['local']}/{info['path']['local']}/{f['name']}"
+                if isfile(local_file) and self.use_cache:
+                    continue
+
+                self.pull_minio_file(filename=f['name'], info=info)
+
+        return None
+
+    def push_datasets_meta(self, filename: str) -> None:
         self.minio.push(
-            local=f'{self.local_home}/{filename}',
-            remote=f'{self.remote_home}/{filename}',
+            local=f"{self.meta_path['local']}/{filename}",
+            remote=f"{self.meta_path['remote']}/{filename}",
         )
         return
 
-    def pull_meta(self) -> None:
-        meta_list = self.minio.ls(path=self.meta_path)
+    def update_meta(self) -> dict:
+        return {
+            **self.pull_datasets_meta(),
+            **self.pull_elasticsearch_meta()
+        }
 
-        self.meta = {}
-        for remote_meta in meta_list:
-            filename = f'{self.local_home}/{basename(remote_meta)}'
+    def pull_datasets_meta(self) -> dict:
+        meta_list: list = self.minio.ls(path=self.meta_path['remote'])
 
-            # download meta
+        # download meta
+        for remote_file in meta_list:
             self.minio.pull(
-                local=filename,
-                remote=remote_meta,
+                local=f"{self.meta_path['local']}/{basename(remote_file)}",
+                remote=remote_file
             )
 
-            # read meta
-            with open(filename, 'r') as fp:
-                content = json.load(fp=fp)
+        return self.read_datasets_meta()
 
-            self.meta[content['name']] = content
-
-        return
-
-    def pull_elastic_meta(self) -> dict:
-        mappings = self.elastic.get_index_columns()
+    def pull_elasticsearch_meta(self) -> dict:
+        mappings: dict = self.elastic.get_index_columns()
 
         result = {}
         for item in self.elastic.get_index_size():
-            index = item['index']
+            index: str = item['index']
 
             if index not in mappings:
                 continue
@@ -91,40 +145,39 @@ class DataSets(object):
                 'count': item['count'],
                 'columns': mappings[index],
                 'location': 'elasticsearch',
-                'local_path': 'elasticsearch',
+                'path': {
+                    'local': 'elasticsearch'
+                },
             }
 
         return result
 
-    def load(self, name: str = None, filename: str = None, use_cache: bool = True, meta: dict = None,
+    def load(self, name: str, meta: dict, filename: str = None, use_cache: bool = True,
              source: list = None) -> None or list:
         if meta and name in meta:
-            meta = meta[name]
+            info = meta[name]
         else:
-            meta = self.get_info(name=name)
-
-        if meta is None:
             return None
 
         self.use_cache = use_cache
 
-        if 'location' not in meta:
+        if 'location' not in info:
             if filename:
-                return self.load_minio_data(meta=meta, filename=filename)
+                return self.load_minio_data(info=info, filename=filename)
 
             result = []
-            for x in meta['files']:
-                result += self.load_minio_data(meta=meta, filename=x['name'])
+            for x in info['files']:
+                result += self.load_minio_data(info=info, filename=x['name'])
 
             return result
 
-        if meta['location'] == 'elasticsearch':
-            return self.load_elasticsearch_data(meta=meta, name=name, source=source)
+        if info['location'] == 'elasticsearch':
+            return self.load_elasticsearch_data(info=info, name=name, source=source)
 
         return None
 
-    def load_elasticsearch_data(self, meta: dict, name: str, source: list = None) -> list:
-        filename = f"{self.local_home}/{meta['local_path']}/{name}.bz2"
+    def load_elasticsearch_data(self, info: dict, name: str, source: list = None) -> list:
+        filename = f"{self.data_path['local']}/{info['path']['local']}/{name}.bz2"
 
         if isfile(filename) is False or self.use_cache is False:
             self.elastic.export(filename=filename, index=name, source=source)
@@ -136,11 +189,11 @@ class DataSets(object):
 
         return result
 
-    def load_minio_data(self, meta: dict, filename: str) -> list:
-        local_file = f"{self.local_home}/{meta['local_path']}/{filename}"
+    def load_minio_data(self, info: dict, filename: str) -> list:
+        local_file = f"{self.data_path['local']}/{info['path']['local']}/{filename}"
 
         if isfile(local_file) is False or self.use_cache is False:
-            self.pull_minio_file(filename=filename, name=meta['name'])
+            self.pull_minio_file(filename=filename, info=info)
 
         result = []
         with bz2.open(local_file, 'rb') as fp:
@@ -149,47 +202,43 @@ class DataSets(object):
 
         return result
 
-    def pull_minio_file(self, filename: str, name: str = None) -> None:
-        info = self.get_info(name=name)
-        if info is None:
-            return
-
+    def pull_minio_file(self, filename: str, info: dict) -> None:
         self.minio.pull(
-            local=f"{self.local_home}/{info['local_path']}/{filename}",
-            remote=f"{self.remote_home}/{info['remote_path']}/{filename}"
+            local=f"{self.data_path['local']}/{info['path']['local']}/{filename}",
+            remote=f"{self.data_path['remote']}/{info['path']['remote']}/{filename}"
         )
         return
 
-    def push_minio_file(self, filename: str, name: str = None) -> None:
-        info = self.get_info(name=name)
-        if info is None:
-            return
-
+    def push_minio_file(self, info: dict, filename: str) -> None:
         self.minio.push(
-            local=f"{self.local_home}/{info['local_path']}/{filename}",
-            remote=f"{self.remote_home}/{info['remote_path']}/{filename}"
+            local=f"{self.data_path['local']}/{info['path']['local']}/{filename}",
+            remote=f"{self.data_path['remote']}/{info['path']['remote']}/{filename}"
         )
-        return
 
-    def upload(self, name: str = None, filename: str = None) -> None:
-        info = self.get_info(name=name)
-        if info is None:
-            return
+        return None
 
-        self.push_minio_file(name=name, filename=filename)
-
-        return
+    def upload(self, info: dict, filename: str = None) -> None:
+        return self.push_minio_file(filename=filename, info=info)
 
     def test(self) -> None:
-        # print(self.meta)
+        self.pull_all_datasets()
 
-        # data = self.load(name='daum_movie_reviews')
-        # print(data)
+        # self.json2yaml()
+        # self.push_all_datasets()
 
-        meta = self.pull_elastic_meta()
+        # self.update_meta()
         # print(meta)
 
-        data = self.load(name='crawler-naver-economy-2021', meta=meta, source='title,content'.split(','))
+        # meta = self.pull_datasets_meta()
+        # print(meta)
+
+        # data = self.load(name='daum_movie_reviews', meta=meta)
+        # print(data)
+
+        # es_meta = self.pull_elasticsearch_meta()
+        # print(es_meta)
+
+        # data = self.load(name='crawler-naver-economy-2021', source='title,content'.split(','), meta=es_meta)
         # print(data)
 
         return
