@@ -189,12 +189,12 @@ class DataSets(DataSetsUtils):
         return None
 
     def load_elasticsearch_data(self, info: dict, name: str, source: list = None) -> list:
-        filename = f"{self.data_path['local']}/{info['path']['local']}/{name}.bz2"
+        local_file = f"{self.data_path['local']}/{info['path']['local']}/{name}.bz2"
 
-        if isfile(filename) is False or self.use_cache is False:
-            self.elastic.export(filename=filename, index=name, source=source)
+        if isfile(local_file) is False or self.use_cache is False:
+            self.elastic.export(filename=local_file, index=name, source=source)
 
-        return self.read_corpus(filename=filename)
+        return self.read_corpus(filename=local_file)
 
     def load_minio_data(self, info: dict, filename: str) -> list:
         local_file = f"{self.data_path['local']}/{info['path']['local']}/{filename}"
@@ -202,7 +202,7 @@ class DataSets(DataSetsUtils):
         if isfile(local_file) is False or self.use_cache is False:
             self.pull_minio_file(filename=filename, info=info)
 
-        return self.read_corpus(filename=filename)
+        return self.read_corpus(filename=local_file)
 
     def pull_minio_file(self, filename: str, info: dict) -> None:
         self.minio.pull(
@@ -225,7 +225,7 @@ class DataSets(DataSetsUtils):
     def test(self) -> None:
         # self.push_all_datasets()
 
-        self.pull_all_datasets()
+        # self.pull_all_datasets()
 
         # self.batch()
 
