@@ -93,8 +93,18 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV PORT=8888
+ENV PORT=8888 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
 
-EXPOSE 8888
+EXPOSE ${PORT}
 
-CMD ["jupyter", "notebook", "--allow-root", "--ip", "0.0.0.0", "--port", "${PORT}"]
+CMD ["bash", "-c", "jupyter notebook \
+    --allow-root \
+    --ip=0.0.0.0 \
+    --port=$PORT\
+    --ServerApp.token=${NB_TOKEN} \
+    --ServerApp.password=${NB_PASSWD} \
+    --ServerApp.allow_origin='*' \
+    --ServerApp.base_url=${NB_PREFIX} \
+    --ServerApp.iopub_data_rate_limit=10000000 \
+    --ServerApp.terminado_settings=\"{'shell_command': ['/bin/bash']}\" \
+"]

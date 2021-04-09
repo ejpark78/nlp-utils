@@ -50,4 +50,5 @@ run:
 		--network host \
 		-e PORT=8889 \
 		--add-host "nlp-utils:172.19.153.41" \
+		--add-host "nlp-s3.cloud.ncsoft.com:172.19.153.41" \
 		$(IMAGE):latest
