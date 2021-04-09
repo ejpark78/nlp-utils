@@ -47,6 +47,7 @@ run:
 		-it --rm \
 		--name corpus \
 		--hostname corpus \
+		--network host \
+		-e PORT=8889 \
 		--add-host "nlp-utils:172.19.153.41" \
-		-p 8889:8888 \
 		$(IMAGE):latest

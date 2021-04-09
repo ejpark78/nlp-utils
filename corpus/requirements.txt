@@ -19,3 +19,5 @@ jupyter_contrib_nbextensions
 matplotlib
 
 autopep8
+
+certifi

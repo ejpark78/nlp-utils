@@ -52,8 +52,6 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         python3-pip \
         software-properties-common \
         tzdata \
-        wget \
-        unzip \
     \
     && echo && echo "# timezone 설정" \
     && ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
@@ -81,6 +79,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && cd /tmp/src \
     && pip3 install --upgrade --no-cache-dir -U -r requirements.txt \
     && python3 setup.py install \
+    && mv /tmp/src/corpus/example /root/ \
     \
 	&& echo && echo "jupyter notebook 테마 설정" \
 	&& jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150 \
@@ -94,6 +93,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ENV PORT=8888
+
 EXPOSE 8888
 
-CMD ["jupyter", "notebook", "--allow-root", "--ip", "0.0.0.0", "--port", "8888"]
+CMD ["jupyter", "notebook", "--allow-root", "--ip", "0.0.0.0", "--port", "${PORT}"]
