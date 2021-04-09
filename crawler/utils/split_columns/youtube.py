@@ -11,18 +11,16 @@ import json
 import urllib3
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
+from dotty_dict import dotty
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
 from crawler.utils.logger import Logger
-from dotty_dict import dotty
-from urllib.parse import unquote
-from base64 import b64decode
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class FilloutHtmlColumn(object):
+class SplitColumns(object):
 
     def __init__(self):
         self.logger = Logger()
@@ -54,11 +52,10 @@ class FilloutHtmlColumn(object):
 
     def upload_data(self, filename: str, index: str, size: int = 3000) -> None:
         col_mapping = {
-            'date': 'date',
-            'contents': 'text',
-            'writer_id': 'name',
-            'object_id': 'game_id',
-            'team_name': 'team_name',
+            'title': 'title',
+            'ko': 'ko',
+            'en': 'en',
+            'zh-CN': 'cn',
             **{x: '' for x in '_id,_index,document_id'.split(',')},
         }
 
@@ -69,22 +66,37 @@ class FilloutHtmlColumn(object):
                 if 'settings' in doc and 'mappings' in doc:
                     continue
 
-                idx = index.replace('-{year}', '')
-                if 'date' in doc:
-                    idx = index.format(year=parse_date(doc['date']).year)
-
                 doc_id = doc['_id']
+
+                # reply = []
+                # if 'reply' in doc:
+                #     reply = doc['reply']
+                #     del doc['reply']
+
                 new_doc = self.wrapping_doc(doc=doc, col_mapping=col_mapping)
 
                 bulk += [
                     {
                         'index': {
                             '_id': doc_id,
-                            '_index': idx,
+                            '_index': index,
                         }
                     },
                     new_doc
                 ]
+
+                # for i, r in enumerate(reply):
+                #     r.update({'parent_id': doc_id})
+                #
+                #     bulk += [
+                #         {
+                #             'index': {
+                #                 '_id': '{}-{:03d}'.format(doc_id, i),
+                #                 '_index': index + '-reply',
+                #             }
+                #         },
+                #         r
+                #     ]
 
                 if len(bulk) > size:
                     _ = self.es.conn.bulk(index=None, body=bulk, refresh=True)
@@ -96,24 +108,10 @@ class FilloutHtmlColumn(object):
         return
 
     def batch(self) -> None:
-        index = 'raw-naver-kbo-reply-{year}'
-
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2020.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2019.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2018.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2017.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2016.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2015.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2014.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2013.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2012.json.bz2', index=index)
-        # self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2011.json.bz2', index=index)
-        self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2010.json.bz2', index=index)
-        self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2009.json.bz2', index=index)
-        self.upload_data(filename='data/news/naver-kbo/crawler-naver-kbo_game_center_comments-2008.json.bz2', index=index)
+        self.upload_data(filename='data/news/youtube/crawler-youtube-subtitle.json.bz2', index='raw-youtube-subtitle')
 
         return
 
 
 if __name__ == '__main__':
-    FilloutHtmlColumn().batch()
+    SplitColumns().batch()

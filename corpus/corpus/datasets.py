@@ -334,11 +334,11 @@ class DataSets(DataSetsUtils):
         if self.params['filter_columns']:
             self.filter_columns()
         else:
-            name = 'naver-terms'
+            name = 'naver-kbo'
 
-            self.update_datasets_meta(include={name})
-
-            self.upload_datasets(include={name}, meta_only=False)
+            # self.update_datasets_meta(include={name})
+            #
+            # self.upload_datasets(include={name}, meta_only=False)
 
             # meta = self.get_meta('datasets')
 

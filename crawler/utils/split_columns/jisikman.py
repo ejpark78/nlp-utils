@@ -18,7 +18,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class UpdateIndex(object):
+class SplitColumns(object):
 
     def __init__(self):
         self.logger = Logger()
@@ -129,4 +129,4 @@ class UpdateIndex(object):
 
 
 if __name__ == '__main__':
-    UpdateIndex().batch()
+    SplitColumns().batch()
