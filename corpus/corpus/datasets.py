@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import bz2
 import json
+import sys
 from glob import glob
 from os import getenv
 from os.path import basename, isfile
@@ -25,6 +26,8 @@ urllib3.disable_warnings(UserWarning)
 class DataSetsUtils(object):
 
     def __init__(self):
+        self.params = {}
+
         self.data_path = {
             'local': getenv('DATASETS_LOCAL_HOME', 'data/datasets'),
             'remote': getenv('DATASETS_REMOTE_HOME', 'datasets')
@@ -50,7 +53,7 @@ class DataSetsUtils(object):
     def read_corpus(filename: str, limit: int = -1) -> (list, dict):
         count, result, settings = 0, [], None
         with bz2.open(filename, 'rb') as fp:
-            for line in tqdm(fp, desc=f'read: {filename}'):
+            for line in tqdm(fp, desc=f'Read: {filename}'):
                 doc = json.loads(line.decode('utf-8'))
                 if settings is None and 'settings' in doc:
                     settings = doc
@@ -64,22 +67,52 @@ class DataSetsUtils(object):
 
         return result, settings
 
-    def _update_file_info(self, info: dict, file_info: dict) -> None:
-        filename = f"{self.data_path['local']}/{info['path']['local']}/{file_info['name']}"
-        data, settings = self.read_corpus(limit=100, filename=filename)
+    def _update_file_info(self, info: dict, file_info: dict, corpus_count: dict) -> None:
+        name = file_info['name']
 
-        file_info['count'] = -1
+        filename = f"{self.data_path['local']}/{info['path']['local']}/{name}"
+        data, settings = self.read_corpus(limit=10, filename=filename)
+
+        file_info['count'] = corpus_count[name] if name in corpus_count else -1
 
         if settings:
-            file_info['columns'] = self.elastic.get_index_columns(mappings={'index': settings})
+            file_info['columns'] = self.elastic.get_index_columns(mappings={'index': settings})['index']
             return
 
-        file_info['columns'] = {col: 'text' if isinstance(v, str) else 'object' for col, v in data[0].items()}
+        file_info['columns'] = {col: 'text' if isinstance(v, str) else 'object' for col, v in data[-1].items()}
         return
+
+    def _read_corpus_count(self, info: dict) -> dict:
+        filename = f"{self.data_path['local']}/{info['path']['local']}/corpus.count"
+        if isfile(filename) is False:
+            return {}
+
+        result = {}
+        with open(filename, 'r') as fp:
+            for x in fp.readlines():
+                token = x.strip().split('\t')
+                result[token[0]] = int(token[1])
+
+        return result
+
+    def filter_columns(self) -> None:
+        exclude = self.params['exclude'].split(',')
+
+        for line in sys.stdin:
+            doc = json.loads(line)
+
+            for col in exclude:
+                if col not in doc:
+                    continue
+
+                del doc[col]
+
+            print(json.dumps(doc, ensure_ascii=False))
+
+        return None
 
     def update_datasets_meta(self, include: set = None) -> None:
         # add meta.files: count, columns
-
         meta = self.read_datasets_meta()
 
         bar = tqdm(meta.items())
@@ -87,12 +120,21 @@ class DataSetsUtils(object):
             if include and name not in include:
                 continue
 
+            # read corpus count
+            corpus_count = self._read_corpus_count(info=info)
+
+            # read local files
+            files = [basename(x) for x in glob(f"{self.data_path['local']}/{info['path']['local']}/*.json.bz2")]
+            if 'files' not in info or len(info['files']) == 0:
+                info['files'] = [{'name': x} for x in files]
+
+            # update files
             for file_info in info['files']:
                 bar.set_description(desc=f"{name}/{file_info['name']}")
-                self._update_file_info(info=info, file_info=file_info)
+                self._update_file_info(info=info, file_info=file_info, corpus_count=corpus_count)
 
-            filename = f"{self.meta_path['local']}/{name}.yaml"
-            with open(filename, 'w') as fp:
+            # save updated file
+            with open(f"{self.meta_path['local']}/{name}.yaml", 'w') as fp:
                 yaml.dump(
                     data=info,
                     stream=fp,
@@ -102,7 +144,7 @@ class DataSetsUtils(object):
                     sort_keys=False,
                 )
 
-        return
+        return None
 
 
 class DataSets(DataSetsUtils):
@@ -287,12 +329,32 @@ class DataSets(DataSetsUtils):
         print(data)
         """
 
-        self.update_datasets_meta(include={'wiki'})
+        self.params = self.init_arguments()
 
-        # self.upload_datasets(include={'wiki'}, meta_only=True)
-        # meta = self.get_meta('datasets')
+        if self.params['filter_columns']:
+            self.filter_columns()
+        else:
+            name = 'naver-terms'
+
+            self.update_datasets_meta(include={name})
+
+            self.upload_datasets(include={name}, meta_only=False)
+
+            # meta = self.get_meta('datasets')
 
         return
+
+    @staticmethod
+    def init_arguments() -> dict:
+        import argparse
+
+        parser = argparse.ArgumentParser(description='')
+
+        parser.add_argument('--filter-columns', action='store_true', default=False, help='컬럼 필터')
+
+        parser.add_argument('--exclude', default='_index,json', type=str, help='제외할 컬럼 목록')
+
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

@@ -80,7 +80,7 @@ class YahooTWCrawler(SeleniumProxyUtils):
             }
         }
 
-        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
+        id_list = self.elastic.get_id_list(index=self.elastic.index, query=query)
         id_list = list(id_list)
 
         if len(id_list) == 0:

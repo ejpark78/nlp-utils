@@ -417,7 +417,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
 
         id_list = self.elastic.get_id_list(
             index=self.elastic.index,
-            query_cond=query,
+            query=query,
             limit=1000000,
         )
         id_list = list(id_list)
@@ -512,7 +512,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
 
         id_list = self.elastic.get_id_list(
             index=self.elastic.index,
-            query_cond=query,
+            query=query,
             limit=self.args.limit
         )
         id_list = list(id_list)

@@ -269,7 +269,6 @@ parsing:
       value: [ ]
       type: html
       remove:
-        - name: script
         - name: style
         - name: comment
     - key: title
@@ -426,6 +425,10 @@ index_mapping:
         # raw_list, raw, pipeline
         ignore_above: 50
         type: keyword
+      '@list':
+        type: date
+      '@contents':
+        type: date
       '@curl_list':
         type: date
       '@curl_date':

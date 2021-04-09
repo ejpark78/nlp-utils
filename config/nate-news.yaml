@@ -287,7 +287,6 @@ parsing:
       value: [ ]
       type: html
       remove:
-        - name: script
         - name: style
         - name: comment
     - key: title

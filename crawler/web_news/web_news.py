@@ -583,7 +583,7 @@ class WebNewsCrawler(WebNewsBase):
 
         # flow-control
         parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
-        parser.add_argument('--contents', action='store_true', default=False, help='TODO: 기사 본문 크롤링')
+        parser.add_argument('--contents', action='store_true', default=False, help='기사 본문 크롤링')
 
         # essential
         parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')

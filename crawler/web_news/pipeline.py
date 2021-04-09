@@ -11,6 +11,8 @@ from os import getenv
 from time import sleep
 
 import pytz
+import yaml
+from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
 from crawler.utils.elasticsearch_utils import ElasticSearchUtils
@@ -34,7 +36,7 @@ class Pipeline(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.source = 'title,date,paper,source,category,content'.split(',')
+        self.source = 'title,date,paper,source,category,content,raw,raw_list'.split(',')
 
         # summary
         self.summary = defaultdict(int)
@@ -219,9 +221,46 @@ class Pipeline(object):
 
         return error_docs
 
-    def pipeline(self, doc_list: list) -> None:
-        # TODO
+    def pipeline(self, doc_list: list, config: dict, name: str = 'common') -> None:
+        task_list = config['pipeline'][name]
+
+        for doc in tqdm(doc_list, desc='Pipeline'):
+            soup = None
+            for task in task_list:
+                if task['column'] not in doc:
+                    continue
+
+                if not soup:
+                    soup = self.parser.parse_html(
+                        html=doc[task['column']],
+                        parser_type=config['parsing']['parser'],
+                    )
+
+                parser_version = config['parsing']['version'] if 'version' in config['parsing'] else None
+
+                item = self.parser.parse(
+                    html=None,
+                    soup=soup,
+                    base_url=doc['url'],
+                    parsing_info=task,
+                    default_date=parse_date(doc['date']),
+                    parser_version=parser_version,
+                )
+                doc.update(item)
+
         return
+
+    @staticmethod
+    def open_config(filename: str) -> list:
+        file_list = filename.split(',')
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+                result.append(dict(data))
+
+        return result
 
     def batch(self) -> None:
         """
@@ -232,6 +271,8 @@ class Pipeline(object):
         5. summary
         """
         self.params = self.init_arguments()
+
+        config_list = self.open_config(filename=self.params['config'])
 
         self.nlu_wrapper.open(
             host=self.params['nlu_wrapper_host'],
@@ -251,7 +292,7 @@ class Pipeline(object):
         doc_list = self.get_doc_list(doc_ids=doc_ids)
 
         # pipeline
-        self.pipeline(doc_list=doc_list)
+        self.pipeline(doc_list=doc_list, config=config_list[0])
 
         # analyze
         error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])

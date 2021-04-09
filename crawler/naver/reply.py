@@ -101,7 +101,7 @@ class NaverNewsReplyCrawler(object):
         id_list = elastic['news'].get_id_list(
             size=1000,
             index=elastic['news'].index,
-            query_cond=query_cond,
+            query=query_cond,
         )
 
         # url 저장 이력 조회

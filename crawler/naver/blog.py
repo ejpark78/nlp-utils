@@ -178,7 +178,7 @@ class SeleniumCrawler(SeleniumUtils):
             }
         }
 
-        id_list = self.elastic.get_id_list(index=self.elastic.index, query_cond=query)
+        id_list = self.elastic.get_id_list(index=self.elastic.index, query=query)
 
         bbs_list = []
         self.elastic.get_by_ids(id_list=list(id_list), index=self.elastic.index, source=None, result=bbs_list)

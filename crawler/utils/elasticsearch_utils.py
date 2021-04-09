@@ -239,6 +239,25 @@ class ElasticSearchUtils(object):
 
         return result
 
+    def get_index_columns(self, mappings: dict = None) -> dict:
+        if mappings is None:
+            mappings = self.conn.indices.get_mapping()
+
+        result = {
+            index: x['mappings']['properties']
+            for index, x in mappings.items()
+            if 'mappings' in x and 'properties' in x['mappings']
+        }
+
+        for i, x in result.items():
+            for j, y in x.items():
+                if 'type' in y:
+                    x[j] = y['type']
+                else:
+                    x[j] = 'object'
+
+        return result
+
     def get_column_list(self, index_list: str or list, column_type=None) -> list:
         """index 내의 field 목록을 반환한다."""
         result = []
@@ -519,9 +538,7 @@ class ElasticSearchUtils(object):
 
         size = limit + 1 if 0 < limit < size else size
 
-        count = 1
-        sum_count = 0
-        scroll_id = ''
+        count, sum_count, scroll_id = 1, 0, ''
 
         # save settings/mapping
         if result is None:
@@ -646,17 +663,16 @@ class ElasticSearchUtils(object):
 
         return
 
-    def get_id_list(self, index: str, size=5000, query_cond=None, limit=-1) -> dict:
+    def get_id_list(self, index: str, size=5000, query=None, limit=-1) -> dict:
         """ elastic search 에 문서 아이디 목록을 조회한다. """
         result = {}
         if self.conn.indices.exists(index) is False:
             return result
 
-        query = {
-            '_source': ''
-        }
-        if query_cond is not None:
-            query.update(query_cond)
+        if not query:
+            query = {
+                '_source': ''
+            }
 
         count, sum_count, scroll_id, p_bar = 1, 0, '', None
 

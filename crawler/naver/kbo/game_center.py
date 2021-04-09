@@ -373,7 +373,7 @@ class NaverKBOGameCenterUtils(object):
 
         return self.es['game_info'].get_id_list(
             index=self.es['game_info'].index,
-            query_cond=query_cond,
+            query=query_cond,
         )
 
     def set_state(self, game_id, state):

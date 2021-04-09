@@ -82,7 +82,9 @@ class ElasticSearchUtils(object):
             mappings = self.conn.indices.get_mapping()
 
         result = {
-            index: x['mappings']['properties'] for index, x in mappings.items() if 'mappings' in x and 'properties' in x['mappings']
+            index: x['mappings']['properties']
+            for index, x in mappings.items()
+            if 'mappings' in x and 'properties' in x['mappings']
         }
 
         for i, x in result.items():
