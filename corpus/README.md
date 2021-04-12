@@ -5,14 +5,14 @@
 
 ```bash
 docker run \
-		-it --rm \
-		--name corpus \
-		--hostname corpus \
-		--network host \
-		-e PORT=8889 \
-		--add-host "nlp-utils:172.19.153.41" \
-		--add-host "nlp-s3.cloud.ncsoft.com:172.19.153.41" \
-		registry.nlp-utils/corpus:latest
+    -it --rm \
+    --name corpus \
+    --hostname corpus \
+    --network host \
+    -e PORT=8889 \
+    --add-host "nlp-utils:172.19.153.41" \
+    --add-host "nlp-s3.cloud.ncsoft.com:172.19.153.41" \
+    galadriel02.korea.ncsoft.corp:5000/corpus:latest
 ```
 
 ## 설치 
