@@ -101,7 +101,7 @@ CMD ["bash", "-c", "jupyter notebook \
     --no-browser \
     --allow-root \
     --ip='*' \
-    --port=$PORT \
+    --port=${PORT} \
     --NotebookApp.token=${NB_TOKEN} \
     --NotebookApp.password=${NB_PASSWD} \
     --NotebookApp.terminado_settings=\"{'shell_command': ['/bin/bash']}\" \

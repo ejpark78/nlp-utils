@@ -36,11 +36,25 @@ class Pipeline(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-        self.source = 'title,date,paper,source,category,content,raw,raw_list'.split(',')
+        self.source = 'url,title,date,paper,source,category,content,contents,raw,raw_list'.split(',')
+
+        self.es = None
 
         # summary
         self.summary = defaultdict(int)
         self.start_date = datetime.now(self.timezone)
+
+    @staticmethod
+    def open_config(filename: str) -> list:
+        file_list = filename.split(',')
+
+        result = []
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+                result.append(dict(data))
+
+        return result
 
     def masking_auth(self, obj: dict) -> None:
         for k, v in obj.items():
@@ -92,8 +106,7 @@ class Pipeline(object):
         """
         meta_columns = set('_index,_id,paper,date,source,category'.split(','))
 
-        result = []
-        para_id = 1
+        para_id, result = 1, []
 
         # 제목 처리
         if 'title' in document and document['title'] != '':
@@ -133,8 +146,12 @@ class Pipeline(object):
             para_id += 1
 
         # 기사 본문 처리
-        if 'content' in document:
-            for text in document['content'].split('\n'):
+        if 'content' in document and 'contents' not in document:
+            document['contents'] = document['content']
+            del document['content']
+
+        if 'contents' in document:
+            for text in document['contents'].split('\n'):
                 text = text.strip()
                 if text == '':
                     continue
@@ -142,7 +159,7 @@ class Pipeline(object):
                 result += self.nlu_wrapper.make_doc(
                     meta={
                         'paragraph_id': para_id,
-                        'position': 'content',
+                        'position': 'contents',
                         **{x: document[x] for x in meta_columns if x in document}
                     },
                     text=text,
@@ -154,29 +171,21 @@ class Pipeline(object):
         return result
 
     def get_doc_list(self, doc_ids: set) -> list:
-        es = ElasticSearchUtils(host=self.params['host'], http_auth=self.params['auth'])
-
         query = {
+            '_source': '',
             'track_total_hits': True,
-            **es.get_date_range_query(
+            **self.es.get_date_range_query(
                 date_range=self.params['date_range'],
                 date_column='date'
             )
         }
 
-        doc_list = []
-        es.dump_index(
-            index=self.params['index'],
-            limit=self.params['limit'],
-            source=self.source,
-            query=query,
-            result=doc_list
-        )
+        doc_id_list = self.es.get_id_list(index=self.params['index'], limit=self.params['limit'], query=query)
 
-        result = [x for x in doc_list if tuple([x['_index'], x['_id']]) not in doc_ids]
+        result = [x for x in doc_id_list if tuple([x['_index'], x['_id']]) not in doc_ids]
 
-        self.summary['skip_docs'] += len(doc_list) - len(result)
-        self.summary['search_docs'] += len(doc_list)
+        self.summary['skip_docs'] += len(doc_id_list) - len(result)
+        self.summary['search_docs'] += len(doc_id_list)
 
         return result
 
@@ -221,46 +230,62 @@ class Pipeline(object):
 
         return error_docs
 
-    def pipeline(self, doc_list: list, config: dict, name: str = 'common') -> None:
-        task_list = config['pipeline'][name]
+    def pipeline(self, doc_id_list: list, config: dict, index: str, name: str = 'common') -> None:
+        task_list = defaultdict(list)
+        for x in config['pipeline'][name]:
+            task_list[x['column']].append(x)
 
-        for doc in tqdm(doc_list, desc='Pipeline'):
-            soup = None
-            for task in task_list:
-                if task['column'] not in doc:
-                    continue
+        start, end, size = 0, self.params['bulk_size'], self.params['bulk_size']
 
-                if not soup:
+        while start < len(doc_id_list):
+            doc_list = []
+            self.es.get_by_ids(
+                id_list=[x['_id'] for x in doc_id_list[start:end]],
+                index=index,
+                source=self.source,
+                result=doc_list
+            )
+
+            if start >= len(doc_id_list):
+                break
+
+            start, end = end, end + size
+            if end > len(doc_id_list):
+                end = len(doc_id_list)
+
+            for doc in tqdm(doc_list, desc='Pipeline'):
+                for col, tasks in task_list.items():
+                    if col not in doc:
+                        continue
+
                     soup = self.parser.parse_html(
-                        html=doc[task['column']],
+                        html=doc[col],
                         parser_type=config['parsing']['parser'],
                     )
 
-                parser_version = config['parsing']['version'] if 'version' in config['parsing'] else None
+                    parser_version = config['parsing']['version'] if 'version' in config['parsing'] else None
 
-                item = self.parser.parse(
-                    html=None,
-                    soup=soup,
-                    base_url=doc['url'],
-                    parsing_info=task,
-                    default_date=parse_date(doc['date']),
-                    parser_version=parser_version,
-                )
-                doc.update(item)
+                    item = self.parser.parse(
+                        html=None,
+                        soup=soup,
+                        base_url=doc['url'],
+                        parsing_info=tasks,
+                        default_date=parse_date(doc['date']),
+                        parser_version=parser_version,
+                    )
+                    doc.update(item)
 
-        return
+            # analyze
+            error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])
+            self.summary['error_docs'] += len(error_docs)
 
-    @staticmethod
-    def open_config(filename: str) -> list:
-        file_list = filename.split(',')
+            error_docs = self.analyze(doc_list=error_docs, bulk_size=self.params['bulk_size'] // 2)
+            self.summary['retry_error_docs'] += len(error_docs)
 
-        result = []
-        for f_name in file_list:
-            with open(f_name, 'r') as fp:
-                data = yaml.load(stream=fp, Loader=yaml.FullLoader)
-                result.append(dict(data))
+            error_docs = self.analyze(doc_list=error_docs, bulk_size=1)
+            self.summary['retry_error_docs'] += len(error_docs)
 
-        return result
+        return None
 
     def batch(self) -> None:
         """
@@ -286,23 +311,20 @@ class Pipeline(object):
             table_name=self.params['result_table_name']
         )
 
-        doc_ids = self.result_db.get_ids(date_range=self.params['date_range'])
+        doc_ids = self.result_db.get_ids(date_range=self.params['date_range'], table_name='naver_idx')
 
         # dump article
-        doc_list = self.get_doc_list(doc_ids=doc_ids)
+        self.es = ElasticSearchUtils(host=self.params['host'], http_auth=self.params['auth'])
+
+        doc_id_list = self.get_doc_list(doc_ids=doc_ids)
+
+        idx_grp = defaultdict(list)
+        for x in doc_id_list:
+            idx_grp[x['_index']].append(x)
 
         # pipeline
-        self.pipeline(doc_list=doc_list, config=config_list[0])
-
-        # analyze
-        error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])
-        self.summary['error_docs'] += len(error_docs)
-
-        error_docs = self.analyze(doc_list=error_docs, bulk_size=self.params['bulk_size'] // 2)
-        self.summary['retry_error_docs'] += len(error_docs)
-
-        error_docs = self.analyze(doc_list=error_docs, bulk_size=1)
-        self.summary['retry_error_docs'] += len(error_docs)
+        for idx, ids in idx_grp.items():
+            self.pipeline(doc_id_list=ids, config=config_list[0], index=idx)
 
         # summary
         self.show_summary()

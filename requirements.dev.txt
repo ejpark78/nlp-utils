@@ -49,6 +49,7 @@ webdav
 minio
 autopep8
 pip
+yapf
 
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git

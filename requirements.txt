@@ -25,6 +25,7 @@ dotty_dict
 PyYAML
 PyMySQL
 jsonfinder
+yapf
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈

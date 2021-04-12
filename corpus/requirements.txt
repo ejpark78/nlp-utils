@@ -21,3 +21,4 @@ matplotlib
 autopep8
 
 certifi
+yapf

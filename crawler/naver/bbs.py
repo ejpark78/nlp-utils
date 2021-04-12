@@ -422,10 +422,7 @@ class NaverCafeCrawler(SeleniumProxyUtils):
         )
         id_list = list(id_list)
 
-        size = 2000
-
-        start = 0
-        end = size
+        start, end, size = 0, 2000, 2000
 
         while start < len(id_list):
             doc_list = []

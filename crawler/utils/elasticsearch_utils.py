@@ -655,17 +655,17 @@ class ElasticSearchUtils(object):
             _source=source,
         )
 
-        for n in resp['docs']:
-            if '_source' not in n:
+        for x in resp['docs']:
+            if '_source' not in x:
                 continue
 
-            result.append({'_id': n['_id'], **n['_source']})
+            result.append({'_index': x['_index'], '_id': x['_id'], **x['_source']})
 
         return
 
-    def get_id_list(self, index: str, size=5000, query=None, limit=-1) -> dict:
+    def get_id_list(self, index: str, size=5000, query=None, limit=-1) -> list:
         """ elastic search 에 문서 아이디 목록을 조회한다. """
-        result = {}
+        result = []
         if self.conn.indices.exists(index) is False:
             return result
 
@@ -703,12 +703,7 @@ class ElasticSearchUtils(object):
             })
 
             for item in resp['hits']:
-                document_id = item['_id']
-
-                if len(item['_source']) == 0:
-                    result[document_id] = document_id
-                else:
-                    result[document_id] = item['_source']
+                result.append({'_index': item['_index'], '_id': item['_id']})
 
             # 종료 조건
             if 0 < limit < sum_count:

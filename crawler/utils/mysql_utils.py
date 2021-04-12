@@ -119,7 +119,7 @@ class MysqlUtils(object):
 
         return
 
-    def get_ids(self, date_range: str) -> set:
+    def get_ids(self, date_range: str, table_name: str) -> set:
         dt_st = dt_en = datetime.now(self.timezone)
 
         if date_range != 'today':
@@ -132,9 +132,8 @@ class MysqlUtils(object):
         cursor = self.db.cursor()
         cursor.execute(
             f"SELECT `index`, `id` "
-            f"  FROM `naver` "
+            f"  FROM `{table_name}` "
             f"  WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' "
-            f"  GROUP BY `index`, `id` "
         )
 
         return set([x for x in cursor.fetchall()])
