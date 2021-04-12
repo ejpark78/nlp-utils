@@ -39,7 +39,7 @@ class SplitColumns(object):
             'rename': {
                 '_id': 'article_id',
                 'content': 'contents',
-                **{x: '' for x in '_index,document_id,url,raw,html_content,reply_list'.split(',')},
+                **{x: '' for x in '_index,document_id,url,raw,html_content,reply_list,curl_date'.split(',')},
             },
             'split': 'reply_list'
         }

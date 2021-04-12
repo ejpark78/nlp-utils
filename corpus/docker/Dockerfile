@@ -98,13 +98,16 @@ ENV PORT=8888 NB_PREFIX=/ NB_TOKEN='' NB_PASSWD=''
 EXPOSE ${PORT}
 
 CMD ["bash", "-c", "jupyter notebook \
+    --no-browser \
     --allow-root \
-    --ip=0.0.0.0 \
-    --port=$PORT\
+    --ip='*' \
+    --port=$PORT \
+    --NotebookApp.token=${NB_TOKEN} \
+    --NotebookApp.password=${NB_PASSWD} \
+    --NotebookApp.terminado_settings=\"{'shell_command': ['/bin/bash']}\" \
     --ServerApp.token=${NB_TOKEN} \
     --ServerApp.password=${NB_PASSWD} \
     --ServerApp.allow_origin='*' \
     --ServerApp.base_url=${NB_PREFIX} \
     --ServerApp.iopub_data_rate_limit=10000000 \
-    --ServerApp.terminado_settings=\"{'shell_command': ['/bin/bash']}\" \
 "]

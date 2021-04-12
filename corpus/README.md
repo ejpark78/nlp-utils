@@ -1,10 +1,24 @@
 
 # 사용법 
 
+## docker
+
+```bash
+docker run \
+		-it --rm \
+		--name corpus \
+		--hostname corpus \
+		--network host \
+		-e PORT=8889 \
+		--add-host "nlp-utils:172.19.153.41" \
+		--add-host "nlp-s3.cloud.ncsoft.com:172.19.153.41" \
+		registry.nlp-utils/corpus:latest
+```
+
 ## 설치 
 
 ```bash
-pip3 install git+http://galadriel02.korea.ncsoft.corp/crawler-dev/corpus.git
+pip3 install git+http://galadriel02.korea.ncsoft.corp/crawler-dev/corpus.git@dev
 ```
 
 ## 라이브러리 구성
@@ -29,19 +43,22 @@ from corpus.datasets import DataSets
 
 ds = DataSets()
 
-# meta (minio) 정보 확인 
-print(ds.meta)
+# meta (minio) 정보 확인
+meta = ds.get_meta('datasets')
+print(meta)
 
 # elasticsearch meta 정보 확인 
-ds.pull_elastic_meta()
-print(ds.meta)
+es_meta = ds.get_meta('elasticsearch')
+print(es_meta)
 
-ds.pull_minio_file(name='movie_reviews', tag='daum')
-ds.pull_minio_file(name='movie_reviews', tag='naver')
+data = ds.load(
+    meta=meta,
+    name='movie_reviews',
+    filename='naver.reviews.json.bz2', 
+)
+print(f'count: {len(data):,}')
 
-data = ds.load(name='movie_reviews')
-
-df = pd.DataFrame(data['daum'])
+df = pd.DataFrame(data)
 print(df)
 ```
 

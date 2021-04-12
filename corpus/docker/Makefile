@@ -36,9 +36,12 @@ corpus:
 		-f Dockerfile \
 		.
 
+	docker tag $(IMAGE):latest galadriel02.korea.ncsoft.corp:5000/corpus:latest
+
 .ONESHELL:
 push-dev:
 	docker push $(IMAGE):latest
+	docker push galadriel02.korea.ncsoft.corp:5000/corpus:latest
 
 
 .ONESHELL:

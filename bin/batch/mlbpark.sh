@@ -3,4 +3,4 @@
 set -x #echo on
 
 config="/config/mlbpark.yaml"
-time bin/web_news.sh "--name mlbpark-bullpen" --list --config ${config} --sleep 5 --job-name "bullpen" --page-range "1938151~9000000"
+time bin/web_news.sh "--name mlbpark-bullpen" --list --config ${config} --sleep 5 --job-name "bullpen" --page-range "2112361~9000000"

@@ -125,8 +125,7 @@ class DataSetsUtils(object):
 
             # read local files
             files = [basename(x) for x in glob(f"{self.data_path['local']}/{info['path']['local']}/*.json.bz2")]
-            if 'files' not in info or len(info['files']) == 0:
-                info['files'] = [{'name': x} for x in files]
+            info['files'] = [{'name': x} for x in files]
 
             # update files
             for file_info in info['files']:
@@ -334,11 +333,11 @@ class DataSets(DataSetsUtils):
         if self.params['filter_columns']:
             self.filter_columns()
         else:
-            name = 'naver-kbo'
+            name = 'mlbpark'
 
             # self.update_datasets_meta(include={name})
-            #
-            # self.upload_datasets(include={name}, meta_only=False)
+
+            self.upload_datasets(include={name}, meta_only=False)
 
             # meta = self.get_meta('datasets')
 
