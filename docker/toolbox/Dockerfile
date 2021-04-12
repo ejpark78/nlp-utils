@@ -74,8 +74,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ARG K9S_VER="v0.24.7"
 ARG HELM_VER="v3.5.2"
-ARG K9S_VER="v0.24.6"
 ARG STERN_VER="1.11.0"
 
 RUN echo && echo "# helm 설치" \

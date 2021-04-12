@@ -104,8 +104,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     \
     && apt purge -yq ${APT_OPTS} \
-        tzdata \
         software-properties-common \
+        tzdata \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

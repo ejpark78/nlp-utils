@@ -129,6 +129,18 @@ cinnamon:
 		.
 
 .ONESHELL:
+xfce4-dev:
+	cd x11/dev
+
+	docker build \
+		$(MIRROR) \
+		$(DOCKER_BUILD_OPT) \
+		--build-arg BASE_IMAGE=$(IMAGE_X11):xfce4 \
+		-t $(IMAGE_X11):xfce4-dev \
+		-f Dockerfile \
+		.
+
+.ONESHELL:
 xfce4-crawler:
 	cd xfce4/crawler
 
@@ -153,6 +165,23 @@ run-xfce4:
 		-p 5556:9001 \
 		$(IMAGE_X11):xfce4
 
+
+.ONESHELL:
+run-xfce4-dev:
+	docker run \
+		-d \
+		--name xfce4-dev \
+		--hostname xfce4-dev \
+		--add-host "nlp-utils:172.19.153.41" \
+		--shm-size 1g \
+		-p 5555:3389 \
+		-p 5556:9001 \
+		--volume $(shell pwd)/x11/mnt/ws:/home/ubuntu/ws \
+		--volume $(shell pwd)/x11/mnt/.kube:/home/ubuntu/.kube \
+		--volume /var/run/docker.sock:/var/run/docker.sock \
+		$(IMAGE_X11):xfce4-dev
+
+
 .ONESHELL:
 run-cinnamon:
 	docker run \
@@ -167,6 +196,10 @@ run-cinnamon:
 
 .ONESHELL:
 connect-xfce4:
+	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5555
+
+.ONESHELL:
+connect-xfce4-dev:
 	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5555
 
 .ONESHELL:
