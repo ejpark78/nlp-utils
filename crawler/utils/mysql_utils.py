@@ -119,15 +119,17 @@ class MysqlUtils(object):
 
         return
 
-    def get_ids(self, date_range: str, table_name: str) -> set:
+    def get_date_range(self, date_range: str) -> (str, str):
         dt_st = dt_en = datetime.now(self.timezone)
 
         if date_range != 'today':
             dt_st, dt_en = date_range.split('~')
             dt_st, dt_en = parse_date(dt_st), parse_date(dt_en) + relativedelta(days=1)
 
-        dt_st = dt_st.strftime('%Y-%m-%d 00:00:00')
-        dt_en = dt_en.strftime('%Y-%m-%d 00:00:00')
+        return dt_st.strftime('%Y-%m-%d 00:00:00'), dt_en.strftime('%Y-%m-%d 00:00:00')
+
+    def get_ids(self, date_range: str, table_name: str) -> set:
+        dt_st, dt_en = self.get_date_range(date_range=date_range)
 
         cursor = self.db.cursor()
         cursor.execute(
@@ -137,6 +139,19 @@ class MysqlUtils(object):
         )
 
         return set([x for x in cursor.fetchall()])
+
+    def update_idx(self, index_table: str, source_table: str, date_range: str) -> None:
+        dt_st, dt_en = self.get_date_range(date_range=date_range)
+
+        cursor = self.db.cursor()
+        cursor.execute(
+            f"REPLACE INTO `{index_table}` (`index`, `id`, `date`) "
+            f"  SELECT `index`, `id`, ANY_VALUE(`date`) AS `date` "
+            f"  FROM `{source_table}` "
+            f"  WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' "
+            f"  GROUP BY `index`, `id` "
+        )
+        return
 
     def open(self, host: str, auth: str, database: str, table_name: str) -> None:
         self.make_sql_frame(table_name=table_name)

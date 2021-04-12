@@ -326,6 +326,9 @@ class Pipeline(object):
         for idx, ids in idx_grp.items():
             self.pipeline(doc_id_list=ids, config=config_list[0], index=idx)
 
+        # update index table
+        self.result_db.update_idx(index_table='naver_idx', source_table='naver', date_range=self.params['date_range'])
+
         # summary
         self.show_summary()
 
