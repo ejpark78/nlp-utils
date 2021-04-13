@@ -35,4 +35,8 @@ fi
 
 source ~/.oh-my-zsh/oh-my-zsh.sh
 
+# tilix
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+    source /etc/profile.d/vte.sh
+fi
 

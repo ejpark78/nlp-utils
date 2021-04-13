@@ -4,9 +4,6 @@ set -x #echo on
 
 config="/config/naver-news.yaml,/config/naver-news-sports.yaml"
 
-time bin/web_news.sh "--name naver-2016-10" --list --config ${config} --sleep 0.8 --date-range 2016-10-01
-time bin/web_news.sh "--name naver-2016-09" --list --config ${config} --sleep 0.8 --date-range 2016-09-01
-time bin/web_news.sh "--name naver-2016-08" --list --config ${config} --sleep 0.8 --date-range 2016-08-01
 time bin/web_news.sh "--name naver-2016-07" --list --config ${config} --sleep 0.8 --date-range 2016-07-01
 time bin/web_news.sh "--name naver-2016-06" --list --config ${config} --sleep 0.8 --date-range 2016-06-01
 time bin/web_news.sh "--name naver-2016-05" --list --config ${config} --sleep 0.8 --date-range 2016-05-01

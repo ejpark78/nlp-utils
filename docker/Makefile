@@ -173,29 +173,13 @@ run-xfce4-dev:
 		-d \
 		--name xfce4-dev \
 		--hostname xfce4-dev \
-		--add-host "nlp-utils:172.19.153.41" \
-		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
 		--shm-size 1g \
 		-p 5557:3389 \
-		-p 5558:9001 \
-		--volume $(shell pwd)/x11/mnt/ws:/home/ubuntu/ws \
-		--volume $(shell pwd)/x11/mnt/.kube:/home/ubuntu/.kube \
+		--volume /home/ejpark/.kube:/home/ubuntu/.kube \
+		--volume /home/ejpark/workspace:/home/ubuntu/ws \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE_X11):xfce4-dev
 
-
-.ONESHELL:
-run-cinnamon:
-	docker run \
-		-it --rm \
-		--name cinnamon \
-		--hostname cinnamon \
-		--add-host "nlp-utils:172.19.153.41" \
-		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
-		--shm-size 1g \
-		-p 5557:3389 \
-		-p 5558:9001 \
-		$(IMAGE_X11):cinnamon
 
 .ONESHELL:
 connect-xfce4:
@@ -203,10 +187,6 @@ connect-xfce4:
 
 .ONESHELL:
 connect-xfce4-dev:
-	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5555
-
-.ONESHELL:
-connect-cinnamon:
 	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5557
 
 .ONESHELL:

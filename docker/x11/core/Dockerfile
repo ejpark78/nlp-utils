@@ -51,6 +51,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         bash \
         ca-certificates \
         curl \
+        dconf-cli \
         fontconfig \
         fonts-liberation \
         fonts-nanum* \
@@ -154,6 +155,9 @@ RUN echo && echo "# xserver, xrdp 설치" \
     && crudini --set /etc/xrdp/xrdp.ini Globals certificate /etc/xrdp/cert.pem \
     && crudini --set /etc/xrdp/xrdp.ini Globals key_file /etc/xrdp/key.pem \
     \
+    && echo && echo "# tilix vte 설정" \
+    && ln -s /etc/profile.d/vte-*.sh /etc/profile.d/vte.sh \
+    \
     && echo && echo "# 저장소 정리" \
     && apt purge -yq \
         apt-transport-https \
@@ -196,8 +200,12 @@ RUN echo && echo "# chrome 설치" \
 ADD etc /etc
 
 RUN echo && echo "# ubuntu 사용자 추가" \
+    && groupadd -g 999 docker \
     && groupadd -g 1000 ubuntu \
     && useradd -rm -d /home/ubuntu -s /bin/zsh -G sudo -g ubuntu -u 1000 -p "$(openssl passwd -1 ubuntu)" ubuntu \
+    && usermod -aG root ubuntu \
+    && usermod -aG docker ubuntu \
+    \
     && echo "env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS xfce4-session" > /home/ubuntu/.xsession \
     && echo "ubuntu ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers \
     \
@@ -213,8 +221,10 @@ RUN echo && echo "# ubuntu 사용자 추가" \
     && git clone --depth=1 "https://github.com/zsh-users/zsh-autosuggestions.git" /home/ubuntu/.oh-my-zsh/plugins/zsh-autosuggestions \
     && find ~ -name .git -type d -exec rm -rf {} + \
     \
+    && echo && echo "# zshrc 설정" \
     && mv /etc/zshrc /home/ubuntu/.zshrc \
     \
+    && echo && echo "# ubuntu 퍼미션 변경" \
     && chown -R ubuntu:ubuntu /home/ubuntu
 
 RUN echo && echo "# SSL 설치" \

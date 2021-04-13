@@ -21,8 +21,9 @@ WORKDIR $HOME
 RUN echo && echo "# docker/kubectl 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
-        kubectl \
+        build-essential \
         docker-ce-cli \
+        kubectl \
         python3-pip \
         python3-venv \
     \
@@ -65,18 +66,31 @@ RUN echo && echo "# helm 설치" \
     && tar zxvf /tmp/krew.tar.gz -C /tmp \
     && mv /tmp/krew-linux_amd64 /usr/bin/krew \
     && chmod +x /usr/bin/krew \
-    && krew install krew \
-    && export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH" \
-    && kubectl krew update \
-    && kubectl krew install ctx \
-    && kubectl krew install ns \
-    && kubectl krew install konfig \
-    && mv /root/.krew /home/ubuntu/.krew \
-    && chown -R ubuntu:ubuntu /home/ubuntu \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#ADD zshrc .zshrc
+ENV HOME=/home/ubuntu
+USER ubuntu
+WORKDIR /home/ubuntu
+
+RUN echo && echo "# tilix 설정" \
+    && DISPLAY=:0 dconf load /com/gexperts/ < /etc/tilix.dconf
+
+#RUN echo && echo "# krew 설치" \
+#    && export PATH="/home/ubuntu/.krew/bin:$PATH" \
+#    && krew install krew \
+#    && kubectl krew update \
+#    && kubectl krew install ctx \
+#    && kubectl krew install ns \
+#    && kubectl krew install konfig \
+#    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ADD hosts hosts
+ADD update-hosts.sh update-hosts.sh
 ADD docker-config.json .docker/config.json
+
+ENV HOME=/root
+USER root
+WORKDIR /root
 
 EXPOSE 3389 9001
 
