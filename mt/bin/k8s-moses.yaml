@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mt-pipeline
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: train-moses-dictionary-example
+  namespace: mt-pipeline
+  labels:
+    app: moses-dictionary-example
+spec:
+  restartPolicy: Never
+  hostAliases:
+    - ip: "172.20.93.112"
+      hostnames:
+        - "corpus.ncsoft.com"
+  containers:
+    - name: train
+      image: corpus:5000/contents/mt/moses-train:latest
+      workingDir: /home/user
+      env:
+        - name: CONFIG_HOST
+          value: "https://corpus.ncsoft.com:9200"
+        - name: CONFIG_INDEX
+          value: "mt_pipeline-config"
+        - name: CONFIG_DOC_ID
+          value: "moses-dictionary_example"
+        - name: CONFIG_USER_AUTH
+          value: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoIjoiZWxhc3RpYzpubHBsYWIifQ.N1mOJmt5OBA7Ugi-xeBrY0GzFr79u7QQPHNf4EMxV_Q"
+      args: ["bin/moses/batch.sh"]
+      resources: {}
+status: {}

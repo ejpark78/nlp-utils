@@ -1,0 +1,201 @@
+WIT short small 의 test 의 미등록어 비율 및 오류 유형 파악
+
+* WIT short all 
+- 미등록어 비율 측정
+- 위키와 매칭율 측정
+- 신문기사와 단어 매칭율 측정
+
+- test 소문자 처리후 신문기사 단어와 매칭
+
+
+* 미등록어 문제를 해결하면 BLEU 가 올라갈 것이다.
+* 원하는 것이 무엇인가?
+- 대역 사전을 많이 뽑을 것인가?
+- 번역 패턴을 많이 뽑을 것인가?
+
+* SentBLEU는 왜?
+- 어떻게 보완할 것인가?
+-- 숙어 정보를 넣는다.
+-- 어미에 대해서 강하게 만든다
+
+* SMT 한국어
+- 어미는 어떻게 할 것인가?
+
+
+=============================================================
+* script_test () BLEU 변화량 측정
+- 212
+
+34	430
+37	402
+35	427
+32	454
+32	419
+40	422
+33	405
+51	380
+36	418
+45	399
+
+
+NIST	2.3635  	BLEU	0.0615	NIST	2.3748  	BLEU	0.0618	3
+NIST	2.5126  	BLEU	0.0697	NIST	2.5126  	BLEU	0.0697	0
+NIST	2.3994  	BLEU	0.0700	NIST	2.4077  	BLEU	0.0700	0
+NIST	2.2968  	BLEU	0.0530	NIST	2.2999  	BLEU	0.0529	-1
+NIST	2.3612  	BLEU	0.0635	NIST	2.3626  	BLEU	0.0633	2
+NIST	2.4087  	BLEU	0.0716	NIST	2.4342  	BLEU	0.0717	-1
+NIST	2.4219  	BLEU	0.0632	NIST	2.4399  	BLEU	0.0633	-1
+NIST	2.3174  	BLEU	0.0600	NIST	2.3385  	BLEU	0.0602	2
+NIST	2.4839  	BLEU	0.0847	NIST	2.4870  	BLEU	0.0844	-3
+NIST	2.4029  	BLEU	0.0649	NIST	2.4246  	BLEU	0.0629	0
+
+
+* under
+- test: 763
+
+98	1353
+108	1327
+88	1275
+110	1336
+91	1308
+87	1344
+120	1296
+99	1353
+109	1341
+77	1202
+
+
+NIST	1.3536	BLEU	0.0101	NIST	1.3758	BLEU	0.0104	3
+NIST	1.3434	BLEU	0.0141	NIST	1.3803	BLEU	0.0144	3
+NIST	1.3548	BLEU	0.0135	NIST	1.3639	BLEU	0.0135	0
+NIST	1.3150	BLEU	0.0094	NIST	1.3267	BLEU	0.0094	0
+NIST	1.2913	BLEU	0.0082	NIST	1.3081	BLEU	0.0082	0
+NIST	1.3623	BLEU	0.0131	NIST	1.3730	BLEU	0.0131	0
+NIST	1.4008	BLEU	0.0129	NIST	1.4176	BLEU	0.0132	3
+NIST	1.3695	BLEU	0.0162	NIST	1.3864	BLEU	0.0163	1
+NIST	1.2160	BLEU	0.0112	NIST	1.2305	BLEU	0.0112	0
+NIST	1.3129	BLEU	0.0113	NIST	1.3208	BLEU	0.0112	-1
+
+
+cat WIT.en-ko.short.sentbleu_tuning/script_test.n3_0.1.model/model.*/data/test.en-ko.out.dict_apply.cnt
+
+grep ^NIST WIT.en-ko.short.sentbleu_tuning/script_test.n3_under_0.1.model/model.*/data/test.en-ko.*.bleu
+
+
+
+
+* error:
+
+<N>주파수 결합 => ca</N> : 감사 합니다 .
+그리고 만약 저 는 젊 은 <N>해뜰때까지만 => girl</N> , somewhere 많 은 violent 지역 ,
+하지만 다른 spheres 의 <N>세빗 라이프 => life</N> , 사람 들 이 argued illogically ,
+
+
+* good:
+
+그것 은 기지 모든 것 이 는 승차 하 고 싶 정상 적 인 soap <N>오페라 => opera</N> 을 하 고 싶 :
+만약 우리 의 <N>데이터 => data</N> <N>소스 => source</N> 은 <N>데이터 => data</N> 을 중 하나 는 countries 가 아닐까 ,
+<N>무브 => move</N> 을 하 는 새로운 level 의 economic <N>가치 => value</N> 입니다 .
+
+
+=============================================================
+* wiki 추출 단어 적용
+
+cat WIT.en-ko.short.sentbleu_tuning/script_test.n3_0.1.model/model.*/data/test.en-ko.out.wiki_apply.cnt
+
+grep ^NIST WIT.en-ko.short.sentbleu_tuning/script_test.n3_0.1.model/model.*/data/test.en-ko.*.bleu
+
+
+227	430
+218	402
+233	427
+250	454
+229	419
+226	422
+197	405
+215	380
+232	418
+206	399
+
+NIST	2.3635	BLEU	0.0615 	NIST	2.6169	BLEU	0.0655 	40
+NIST	2.4955	BLEU	0.0697 	NIST	2.6540	BLEU	0.0710 	13
+NIST	2.3994	BLEU	0.0700 	NIST	2.5744	BLEU	0.0718 	18
+NIST	2.2968	BLEU	0.0530 	NIST	2.5036	BLEU	0.0553 	23
+NIST	2.3612	BLEU	0.0635 	NIST	2.5510	BLEU	0.0680 	45
+NIST	2.4087	BLEU	0.0716 	NIST	2.5852	BLEU	0.0747 	31
+NIST	2.4219	BLEU	0.0632 	NIST	2.6816	BLEU	0.0720 	88
+NIST	2.3174	BLEU	0.0600 	NIST	2.5259	BLEU	0.0667 	67
+NIST	2.4839	BLEU	0.0847 	NIST	2.6936	BLEU	0.0884 	37
+NIST	2.4029	BLEU	0.0649 	NIST	2.5899	BLEU	0.0700 	51
+
+
+
+cat WIT.en-ko.short.sentbleu_tuning/script_test.n3_under_0.1.model/model.*/data/test.en-ko.out.wiki_apply.cnt | grep ^#
+
+grep ^NIST WIT.en-ko.short.sentbleu_tuning/script_test.n3_under_0.1.model/model.*/data/test.en-ko.*.bleu
+
+
+620	1353
+681	1327
+653	1275
+682	1336
+653	1308
+649	1344
+620	1296
+700	1353
+676	1341
+574	1202
+
+NIST	1.3536	BLEU	0.0101 	NIST	1.5378	BLEU	0.0109 	8
+NIST	1.3434	BLEU	0.0141 	NIST	1.5400	BLEU	0.0151 	10
+NIST	1.3548	BLEU	0.0135 	NIST	1.5130	BLEU	0.0136 	1
+NIST	1.3150	BLEU	0.0094 	NIST	1.4915	BLEU	0.0100 	6
+NIST	1.2913	BLEU	0.0082 	NIST	1.4997	BLEU	0.0086 	4
+NIST	1.3623	BLEU	0.0131 	NIST	1.5615	BLEU	0.0135 	4
+NIST	1.4008	BLEU	0.0129 	NIST	1.5924	BLEU	0.0149 	20
+NIST	1.3695	BLEU	0.0162 	NIST	1.5935	BLEU	0.0170 	8
+NIST	1.2160	BLEU	0.0112 	NIST	1.4057	BLEU	0.0117 	5
+NIST	1.3129	BLEU	0.0113 	NIST	1.4858	BLEU	0.0110 	-3
+
+
+
+
+*** full set
+
+
+cat WIT.en-ko.short.sentbleu_tuning/full_set.model/model.*/data/test.en-ko.out.wiki_apply.cnt | grep ^#
+
+grep ^NIST WIT.en-ko.short.sentbleu_tuning/full_set.model/model.*/data/test.en-ko.*.bleu
+
+
+
+# 1443/6776
+# 1471/7021
+# 1405/6845
+# 1463/6781
+# 1413/6847
+# 1460/6910
+# 1519/6882
+# 1466/6982
+# 1366/6641
+# 1542/6921
+
+
+	Replace	Unknown		NIST	BLEU	NIST	BLEU	
+model.0	1,443 	6,776 	21%	3.2255 	0.0813 	3.2392 	0.0814 	0.0001 
+model.1	1,471 	7,021 	21%	3.2435 	0.0817 	3.2543 	0.0817 	0.0000 
+model.2	1,405 	6,845 	21%	3.2698 	0.0829 	3.2798 	0.0829 	0.0000 
+model.3	1,463 	6,781 	22%	3.2018 	0.0795 	3.2166 	0.0796 	0.0001 
+model.4	1,413 	6,847 	21%	3.2722 	0.0814 	3.2848 	0.0814 	0.0000 
+model.5	1,460 	6,910 	21%	3.2795 	0.0824 	3.2927 	0.0825 	0.0001 
+model.6	1,519 	6,882 	22%	3.2516 	0.0819 	3.2638 	0.0820 	0.0001 
+model.7	1,466 	6,982 	21%	3.2519 	0.0812 	3.2628 	0.0812 	0.0000 
+model.8	1,366 	6,641 	21%	3.2848 	0.0831 	3.2945 	0.0831 	0.0000 
+model.9	1,542 	6,921 	22%	3.2585 	0.0817 	3.2714 	0.0817 	0.0000 
+avg	1454.8	6860.6	21%	3.25391	0.08171	3.26599	0.08175	0.0000 
+sum	14,548 	68,606 						
+
+
+* sent bleu 가 많이 올라 간것?
+
+
