@@ -1,9 +1,9 @@
 
 start:
-	helm install x11 .
+	helm install xrdp .
 
 stop:
-	helm uninstall x11
+	helm uninstall xrdp
 
 test:
 	helm template .
