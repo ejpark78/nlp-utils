@@ -1,0 +1,52 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+###
+
+DELETE {{host}}/.monitoring-*
+Content-Type: application/json
+Accept: application/json
+
+###
+
+GET {{host}}/_cat/indices?v&s=index&h=index,docs.count,store.size,tm
+Content-Type: application/json
+Accept: application/text
+
+###
+
+#DELETE {{host}}/corpus-bitext
+#Content-Type: application/json
+#Accept: application/text
+
+###
+
+GET {{host}}/corpus-bitext/_search
+Content-Type: application/json
+Accept: application/json
+
+{
+  "track_total_hits": true,
+  "_source": [
+    "korean_token",
+    "english_token"
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "source": "aihub"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+###

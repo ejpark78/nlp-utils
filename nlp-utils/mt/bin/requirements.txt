@@ -1,0 +1,9 @@
+cython
+python-dateutil
+elasticsearch
+tqdm
+pyjwt
+pytz
+certifi
+luqum
+webdavclient3

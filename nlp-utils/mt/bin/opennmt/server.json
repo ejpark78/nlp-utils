@@ -1,0 +1,16 @@
+{
+  "models_root": "./model",
+  "models": [
+    {
+      "id": 100000,
+      "model": "model_step_100000.pt",
+      "timeout": 600,
+      "on_timeout": "to_cpu",
+      "load": true,
+      "opt": {
+        "gpu": 0,
+        "beam_size": 5
+      }
+    }
+  ]
+}
