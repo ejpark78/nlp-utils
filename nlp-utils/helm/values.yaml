@@ -1,0 +1,18 @@
+nodeName: node1
+jupyter:
+  image:
+    repository: registry/dev/embedding
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2G
+      nvidia.com/gpu: 1
+    requests:
+      cpu: 8000m
+      memory: 16G
+      nvidia.com/gpu: 1
+service:
+  type: LoadBalancer
+  externalIPs: 192.168.2.100

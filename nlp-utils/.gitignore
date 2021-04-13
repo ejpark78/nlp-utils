@@ -1,0 +1,10 @@
+.idea
+.cache
+.ipynb_checkpoints/
+
+__pycache__/
+data/
+venv/
+
+*.log
+*.tar.gz
