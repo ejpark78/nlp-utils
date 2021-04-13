@@ -44,6 +44,8 @@ args:
   - "crawler.web_news.pipeline"
   - "--date-range"
   - "today"
+  - "--config"
+  - "/config/naver-news.yaml"
 
 jobs:
   - name: kb-economy
