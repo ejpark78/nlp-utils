@@ -1,0 +1,40 @@
+{{- range $jobIndex, $service := .Values.services }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $service.name }}
+  labels:
+    app: {{ $service.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $service.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $service.name }}
+    spec:
+      restartPolicy: {{ $.Values.restartPolicy }}
+      imagePullSecrets:
+      - name: {{ $.Values.imagePullSecrets }}
+      containers:
+      - name: default
+        image: {{ $service.image }}
+        imagePullPolicy: {{ $service.imagePullPolicy }}
+        ports:
+        - containerPort: 3389
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker
+        - mountPath: /dev/shm
+          name: dshm
+      volumes:
+      - name: docker
+        hostPath:
+          path: /var/run/docker.sock
+      - name: dshm
+        emptyDir:
+          medium: Memory
+{{- end }}
