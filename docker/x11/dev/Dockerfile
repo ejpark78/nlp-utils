@@ -23,6 +23,8 @@ RUN echo && echo "# docker/kubectl 설치" \
     && apt install -yq ${APT_OPTS} \
         kubectl \
         docker-ce-cli \
+        python3-pip \
+        python3-venv \
     \
     && echo && echo "# oh my zsh 설치" \
     && wget "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh || true \

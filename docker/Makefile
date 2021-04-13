@@ -160,6 +160,7 @@ run-xfce4:
 		--name xfce4 \
 		--hostname xfce4 \
 		--add-host "nlp-utils:172.19.153.41" \
+		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
 		--shm-size 1g \
 		-p 5555:3389 \
 		-p 5556:9001 \
@@ -173,9 +174,10 @@ run-xfce4-dev:
 		--name xfce4-dev \
 		--hostname xfce4-dev \
 		--add-host "nlp-utils:172.19.153.41" \
+		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
 		--shm-size 1g \
-		-p 5555:3389 \
-		-p 5556:9001 \
+		-p 5557:3389 \
+		-p 5558:9001 \
 		--volume $(shell pwd)/x11/mnt/ws:/home/ubuntu/ws \
 		--volume $(shell pwd)/x11/mnt/.kube:/home/ubuntu/.kube \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
@@ -189,6 +191,7 @@ run-cinnamon:
 		--name cinnamon \
 		--hostname cinnamon \
 		--add-host "nlp-utils:172.19.153.41" \
+		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
 		--shm-size 1g \
 		-p 5557:3389 \
 		-p 5558:9001 \

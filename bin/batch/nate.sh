@@ -4,14 +4,6 @@ set -x #echo on
 
 config="/config/nate-news.yaml"
 
-time bin/web_news.sh "--name nate-2018-12" --list --config ${config} --sleep 0.8 --date-range 2018-12-01
-time bin/web_news.sh "--name nate-2018-11" --list --config ${config} --sleep 0.8 --date-range 2018-11-01
-time bin/web_news.sh "--name nate-2018-10" --list --config ${config} --sleep 0.8 --date-range 2018-10-01
-time bin/web_news.sh "--name nate-2018-09" --list --config ${config} --sleep 0.8 --date-range 2018-09-01
-time bin/web_news.sh "--name nate-2018-08" --list --config ${config} --sleep 0.8 --date-range 2018-08-01
-time bin/web_news.sh "--name nate-2018-07" --list --config ${config} --sleep 0.8 --date-range 2018-07-01
-time bin/web_news.sh "--name nate-2018-06" --list --config ${config} --sleep 0.8 --date-range 2018-06-01
-time bin/web_news.sh "--name nate-2018-05" --list --config ${config} --sleep 0.8 --date-range 2018-05-01
 time bin/web_news.sh "--name nate-2018-04" --list --config ${config} --sleep 0.8 --date-range 2018-04-01
 time bin/web_news.sh "--name nate-2018-03" --list --config ${config} --sleep 0.8 --date-range 2018-03-01
 time bin/web_news.sh "--name nate-2018-02" --list --config ${config} --sleep 0.8 --date-range 2018-02-01
