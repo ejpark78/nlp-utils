@@ -1,9 +1,9 @@
 
 start:
-	helm install nlu-wrapper .
+	helm install x11 .
 
 stop:
-	helm uninstall nlu-wrapper
+	helm uninstall x11
 
 test:
 	helm template .
