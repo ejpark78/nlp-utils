@@ -94,7 +94,7 @@ dev:
 		.
 
 .ONESHELL:
-x11:
+x11-core:
 	cd x11/core
 
 	docker build \
@@ -117,18 +117,6 @@ xfce4:
 		.
 
 .ONESHELL:
-cinnamon:
-	cd x11/cinnamon
-
-	docker build \
-		$(MIRROR) \
-		$(DOCKER_BUILD_OPT) \
-		--build-arg BASE_IMAGE=$(IMAGE_X11):core \
-		-t $(IMAGE_X11):cinnamon \
-		-f Dockerfile \
-		.
-
-.ONESHELL:
 xfce4-dev:
 	cd x11/dev
 
@@ -141,15 +129,15 @@ xfce4-dev:
 		.
 
 .ONESHELL:
-xfce4-crawler:
-	cd xfce4/crawler
+xfce4-selenium:
+	cd xfce4/selenium
 
 	docker build \
 		$(MIRROR) \
 		$(DOCKER_BUILD_OPT) \
 		$(APP_INSTALL) \
 		--build-arg BASE_IMAGE=$(IMAGE_X11):core \
-		-t $(IMAGE_XFCE4):crawler \
+		-t $(IMAGE_XFCE4):selenium \
 		-f Dockerfile \
 		.
 
@@ -159,11 +147,9 @@ run-xfce4:
 		-it --rm \
 		--name xfce4 \
 		--hostname xfce4 \
-		--add-host "nlp-utils:172.19.153.41" \
-		--add-host "galadriel02.korea.ncsoft.corp:172.20.92.245" \
 		--shm-size 1g \
 		-p 5555:3389 \
-		-p 5556:9001 \
+		-p 5556:22 \
 		$(IMAGE_X11):xfce4
 
 
@@ -174,12 +160,19 @@ run-xfce4-dev:
 		--name xfce4-dev \
 		--hostname xfce4-dev \
 		--shm-size 1g \
-		-p 5557:3389 \
+		-p 5555:22 \
 		--volume /home/ejpark/.kube:/home/ubuntu/.kube \
 		--volume /home/ejpark/workspace:/home/ubuntu/ws \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
 		$(IMAGE_X11):xfce4-dev
 
+.ONESHELL:
+stop-xfce4-dev:
+	docker stop xfce4-dev
+	docker rm xfce4-dev
+
+.ONESHELL:
+restart-xfce4-dev: stop-xfce4-dev run-xfce4-dev
 
 .ONESHELL:
 connect-xfce4:

@@ -1,21 +1,35 @@
 [Tilix]
 copy-on-select=true
 encodings=['UTF-8', 'EUC-KR']
+prompt-on-close=true
+prompt-on-delete-profile=true
 quake-specific-monitor=0
+theme-variant='dark'
+unsafe-paste-alert=false
 window-save-state=false
+window-state=87176
+
+[Tilix/profiles]
+default='2b7c4080-0ddd-46c5-8f23-563fd3ba789d'
+list=['2b7c4080-0ddd-46c5-8f23-563fd3ba789d']
 
 [Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
 background-color='#263238'
 badge-color-set=false
 bold-color-set=false
 cell-height-scale=1.2
+cell-width-scale=1.0
+cursor-blink-mode='system'
 cursor-colors-set=false
+cursor-shape='block'
 default-size-columns=160
 default-size-rows=35
+draw-margin=80
 font='나눔고딕코딩 12'
 foreground-color='#A1B0B8'
 highlight-colors-set=false
 palette=['#252525', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5', '#708284', '#FF5252', '#C3D82C', '#FFC135', '#42A5F5', '#D81B60', '#00ACC1', '#F5F5F5']
+terminal-bell='none'
 use-system-font=false
 use-theme-colors=false
 visible-name='Default'

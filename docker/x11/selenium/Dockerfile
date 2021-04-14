@@ -53,5 +53,6 @@ RUN echo && echo "# python 설치" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD ["supervisord"]
+EXPOSE 22 3389 9001
 
+CMD ["supervisord"]

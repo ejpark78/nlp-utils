@@ -54,6 +54,6 @@ RUN echo && echo "# xfce4 설치" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 3389 9001
+EXPOSE 22 3389 9001
 
 CMD ["supervisord"]

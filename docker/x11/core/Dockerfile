@@ -5,6 +5,7 @@ LABEL reference="https://github.com/danielguerra69/ubuntu-xrdp/blob/master/Docke
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV USER_HOME=/home/ubuntu USER_NAME=ubuntu USER_PASSWD=ubuntu USER_GROUP=ubuntu
 ENV NOTVISIBLE "in users profile"
 
 ARG APT_CODE_NAME=focal
@@ -80,6 +81,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         wget \
         zsh \
 	\
+    && echo && echo "# apt repo 등록" \
 	&& curl -k -fsSL "https://download.docker.com/linux/ubuntu/gpg" | apt-key add - \
     && apt-add-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu ${APT_CODE_NAME} stable" \
 	\
@@ -126,6 +128,7 @@ RUN echo && echo "# xserver, xrdp 설치" \
         libxfixes-dev \
         libxml2-dev \
         libxrandr-dev \
+        openssh-server \
         pkg-config \
         pulseaudio \
         tilix \
@@ -151,12 +154,18 @@ RUN echo && echo "# xserver, xrdp 설치" \
     && openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
         -out /etc/xrdp/cert.pem -keyout /etc/xrdp/key.pem \
         -subj "/C=US/ST=Some State/L=Some City/O=Some Org/OU=Some Unit/CN=Terminalserver" \
+    && crudini --set /etc/xrdp/xrdp.ini Globals port tcp://.:3389 \
     && crudini --set /etc/xrdp/xrdp.ini Globals security_layer tls \
     && crudini --set /etc/xrdp/xrdp.ini Globals certificate /etc/xrdp/cert.pem \
     && crudini --set /etc/xrdp/xrdp.ini Globals key_file /etc/xrdp/key.pem \
+    && crudini --set /etc/xrdp/xrdp.ini Xorg username ${USER_NAME} \
+    && crudini --set /etc/xrdp/xrdp.ini Xorg password ${USER_PASSWD} \
     \
     && echo && echo "# tilix vte 설정" \
     && ln -s /etc/profile.d/vte-*.sh /etc/profile.d/vte.sh \
+    \
+    && echo && echo "# ssh server 설정" \
+    && mkdir -p /run/sshd \
     \
     && echo && echo "# 저장소 정리" \
     && apt purge -yq \
@@ -184,7 +193,7 @@ RUN echo && echo "# fcitx hangul 설치" \
 RUN echo && echo "# chrome 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq \
-        google-chrome-stable=89.0.4389.114-1 \
+        google-chrome-stable \
     \
     && echo && echo "# webdriver 설치" \
     && wget --no-check-certificate "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VER}/chromedriver_linux64.zip"  \
@@ -199,33 +208,44 @@ RUN echo && echo "# chrome 설치" \
 
 ADD etc /etc
 
-RUN echo && echo "# ubuntu 사용자 추가" \
+RUN echo && echo "# ${USER_NAME} 사용자 추가" \
     && groupadd -g 999 docker \
-    && groupadd -g 1000 ubuntu \
-    && useradd -rm -d /home/ubuntu -s /bin/zsh -G sudo -g ubuntu -u 1000 -p "$(openssl passwd -1 ubuntu)" ubuntu \
-    && usermod -aG root ubuntu \
-    && usermod -aG docker ubuntu \
+    && groupadd -g 1000 ${USER_GROUP} \
+    && useradd -rm -d ${USER_HOME} -s /bin/zsh -G sudo -g ${USER_GROUP} -u 1000 \
+        -p "$(openssl passwd -1 ${USER_PASSWD})" ${USER_NAME} \
+    && usermod -aG root ${USER_NAME} \
+    && usermod -aG docker ${USER_NAME} \
     \
-    && echo "env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS xfce4-session" > /home/ubuntu/.xsession \
-    && echo "ubuntu ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers \
+    && echo "env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS xfce4-session" > ${USER_HOME}/.xsession \
+    && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers \
     \
     && echo && echo "# oh my zsh 설치" \
     && wget "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh || true \
     && rm -rf ~/.oh-my-zsh/.git \
-    && mv ~/.oh-my-zsh /home/ubuntu/ \
+    && mv ~/.oh-my-zsh ${USER_HOME}/ \
     \
     && echo && echo "# oh my zsh plugin 설치" \
-    && git clone --depth=1 "https://github.com/jonmosco/kube-ps1" /home/ubuntu/.kube-ps1 \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-completions.git" /home/ubuntu/.oh-my-zsh/plugins/zsh-completions \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-syntax-highlighting.git" /home/ubuntu/.oh-my-zsh/plugins/zsh-syntax-highlighting \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-autosuggestions.git" /home/ubuntu/.oh-my-zsh/plugins/zsh-autosuggestions \
+    && git clone --depth=1 "https://github.com/jonmosco/kube-ps1" ${USER_HOME}/.kube-ps1 \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-completions.git" ${USER_HOME}/.oh-my-zsh/plugins/zsh-completions \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-syntax-highlighting.git" ${USER_HOME}/.oh-my-zsh/plugins/zsh-syntax-highlighting \
+    && git clone --depth=1 "https://github.com/zsh-users/zsh-autosuggestions.git" ${USER_HOME}/.oh-my-zsh/plugins/zsh-autosuggestions \
     && find ~ -name .git -type d -exec rm -rf {} + \
     \
     && echo && echo "# zshrc 설정" \
-    && mv /etc/zshrc /home/ubuntu/.zshrc \
+    && mv /etc/zshrc ${USER_HOME}/.zshrc \
     \
-    && echo && echo "# ubuntu 퍼미션 변경" \
-    && chown -R ubuntu:ubuntu /home/ubuntu
+    && echo && echo "# ssh 설정" \
+    && mv /etc/.ssh ${USER_HOME}/.ssh \
+    && cat ${USER_HOME}/.ssh/id_rsa > ${USER_HOME}/.ssh/${USER_NAME}.pem \
+    && cat ${USER_HOME}/.ssh/id_rsa.pub > ${USER_HOME}/.ssh/authorized_keys \
+    && chmod 700 ${USER_HOME}/.ssh \
+    && chmod 600 ${USER_HOME}/.ssh/id_rsa \
+    && chmod 644 ${USER_HOME}/.ssh/id_rsa.pub \
+    && chmod 600 ${USER_HOME}/.ssh/authorized_keys \
+    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config \
+    \
+    && echo && echo "# ${USER_NAME} 퍼미션 변경" \
+    && chown -R ${USER_NAME}:${USER_GROUP} ${USER_HOME}
 
 RUN echo && echo "# SSL 설치" \
     && apt update -yq ${APT_OPTS} \
@@ -239,11 +259,11 @@ RUN echo && echo "# SSL 설치" \
     && update-ca-certificates \
     \
     && echo && echo "# chrome 에 ssl 등록 " \
-    && mkdir -p /home/ubuntu/.pki/nssdb \
-    && certutil -d /home/ubuntu/.pki/nssdb -N \
-    && certutil -d sql:/home/ubuntu/.pki/nssdb -A -t TC -n "CAcert.org" -i /usr/share/ca-certificates/SSLVACERT.crt \
-    && certutil -d sql:/home/ubuntu/.pki/nssdb -A -t TC -n "CAcert.org Class 3" -i /usr/share/ca-certificates/SSLVACERT_ECC.crt \
-    && chown -R ubuntu:ubuntu /home/ubuntu/.pki \
+    && mkdir -p ${USER_HOME}/.pki/nssdb \
+    && certutil -d ${USER_HOME}/.pki/nssdb -N \
+    && certutil -d sql:${USER_HOME}/.pki/nssdb -A -t TC -n "CAcert.org" -i /usr/share/ca-certificates/SSLVACERT.crt \
+    && certutil -d sql:${USER_HOME}/.pki/nssdb -A -t TC -n "CAcert.org Class 3" -i /usr/share/ca-certificates/SSLVACERT_ECC.crt \
+    && chown -R ${USER_NAME}:${USER_GROUP} ${USER_HOME}/.pki \
     \
     && echo && echo "# 저장소 정리" \
     && apt purge -yq \
@@ -251,6 +271,6 @@ RUN echo && echo "# SSL 설치" \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 3389 9001
+EXPOSE 22 3389 9001
 
 CMD ["supervisord"]
