@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 if [[ -f /etc/hosts.custom ]] ; then
-  cat /etc/hosts.custom | sudo tee -a /etc/hosts
+  cat /etc/hosts.custom >> /etc/hosts
+  rm /etc/hosts.custom
 fi
 
 #echo "# chrome 설정"

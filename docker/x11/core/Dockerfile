@@ -115,7 +115,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         software-properties-common \
         tzdata \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN echo && echo "# xserver, xrdp 설치" \
     && apt update -yq ${APT_OPTS} \
@@ -183,10 +183,11 @@ RUN echo && echo "# xserver, xrdp 설치" \
         gnome-terminal \
         gpg-agent \
         pkg-config \
+        thunar \
         uuid-runtime \
         xscreensaver \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN echo && echo "# fcitx hangul 설치" \
     && apt update -yq ${APT_OPTS} \
@@ -194,7 +195,7 @@ RUN echo && echo "# fcitx hangul 설치" \
         fcitx-hangul \
     && echo && echo "# 저장소 정리" \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN echo && echo "# chrome 설치" \
     && apt update -yq ${APT_OPTS} \
@@ -211,7 +212,7 @@ RUN echo && echo "# chrome 설치" \
         cpp \
         cpp-9 \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 ADD etc /etc
 ADD bin /usr/bin
@@ -273,13 +274,9 @@ RUN echo && echo "# SSL 설치" \
     && certutil -d sql:${USER_HOME}/.pki/nssdb -A -t TC -n "CAcert.org Class 3" -i /usr/share/ca-certificates/SSLVACERT_ECC.crt \
     && chown -R ${USER_NAME}:${USER_GROUP} ${USER_HOME}/.pki \
     \
-    && echo && echo "# firefox 에 ssl 등록 " \
-    \
     && echo && echo "# 저장소 정리" \
-    && apt purge -yq \
-        libnss3-tools \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 EXPOSE 22 3389 9001
 

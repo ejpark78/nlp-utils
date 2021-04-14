@@ -42,7 +42,7 @@ RUN echo && echo "# docker/kubectl 설치" \
     \
     && echo && echo "# 저장소 정리" \
     && apt autoremove -yq \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
 ARG K9S_VER="v0.24.7"
 ARG HELM_VER="v3.5.2"
@@ -67,7 +67,7 @@ RUN echo && echo "# helm 설치" \
     && tar zxvf /tmp/krew.tar.gz -C /tmp \
     && mv /tmp/krew-linux_amd64 /usr/bin/krew \
     && chmod +x /usr/bin/krew \
-    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /tmp/* /var/cache/* /var/tmp/*
 
 ADD etc /etc
 ADD bin /usr/bin
@@ -81,14 +81,15 @@ RUN echo && echo "# tilix 설정" \
     && mkdir -p ${USER_HOME}/.docker \
     && cat /etc/docker-config.json > ${USER_HOME}/.docker/config.json
 
-#RUN echo && echo "# krew 설치"
-#    && export PATH="/home/ubuntu/.krew/bin:$PATH" \
-#    && krew install krew \
-#    && kubectl krew update \
-#    && kubectl krew install ctx \
-#    && kubectl krew install ns \
-#    && kubectl krew install konfig \
-#    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN echo && echo "# krew 설치" \
+    && export PATH="${USER_HOME}/.krew/bin:$PATH" \
+    && echo "export PATH=${USER_HOME}/.krew/bin:\$PATH >> ${USER_HOME}/.zshrc" \
+    && krew install krew \
+    && kubectl krew update \
+    && kubectl krew install ctx \
+    && kubectl krew install ns \
+    && kubectl krew install konfig \
+    && kubectl krew install neat
 
 ENV HOME=/root
 USER root
