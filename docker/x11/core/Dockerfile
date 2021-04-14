@@ -278,6 +278,6 @@ RUN echo && echo "# SSL 설치" \
     && apt autoremove -yq \
     && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
-EXPOSE 22 3389 9001
+EXPOSE 22
 
 CMD ["supervisord"]

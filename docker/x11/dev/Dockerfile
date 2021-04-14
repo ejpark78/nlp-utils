@@ -95,6 +95,6 @@ ENV HOME=/root
 USER root
 WORKDIR /root
 
-EXPOSE 22 3389 9001
+EXPOSE 22
 
 CMD ["supervisord"]

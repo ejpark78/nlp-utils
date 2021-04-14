@@ -50,11 +50,10 @@ RUN echo && echo "# xfce4 설치" \
         gnome-terminal \
         gpg-agent \
         pkg-config \
-        thunar \
         xscreensaver \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 22 3389 9001
+EXPOSE 22
 
 CMD ["supervisord"]
