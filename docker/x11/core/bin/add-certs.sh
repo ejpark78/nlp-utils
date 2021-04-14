@@ -13,7 +13,7 @@ if [ -z "$1" ] || [ -z "$2" ]
 fi
 
 certificate_file="$1"
-certificate_name="firefox"
+certificate_name="$2"
 
 for certDB in $(find  ~/.mozilla* -name "cert9.db"); do
   cert_dir=$(dirname ${certDB});
