@@ -22,6 +22,7 @@ RUN echo && echo "# docker/kubectl 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         build-essential \
+        code \
         docker-ce-cli \
         kubectl \
         python3-pip \
@@ -68,19 +69,19 @@ RUN echo && echo "# helm 설치" \
     && chmod +x /usr/bin/krew \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ENV HOME=/home/ubuntu
+ADD etc /etc
+ADD bin /usr/bin
+
+ENV HOME=${USER_HOME}
 USER ubuntu
 WORKDIR /home/ubuntu
 
 RUN echo && echo "# tilix 설정" \
     && DISPLAY=:0 dconf load /com/gexperts/ < /etc/tilix.dconf \
-    && echo && echo "# background image 설정" \
-    && DISPLAY=:0 xfconf-query -n -t int -c xfce4-desktop -p /backdrop/screen0/monitorrdp0/workspace0/image-style -s 0 \
-    && DISPLAY=:0 xfconf-query -n -t int -c xfce4-desktop -p /backdrop/screen0/monitorrdp0/workspace1/image-style -s 0 \
-    && DISPLAY=:0 xfconf-query -n -t int -c xfce4-desktop -p /backdrop/screen0/monitorrdp0/workspace2/image-style -s 0 \
-    && DISPLAY=:0 xfconf-query -n -t int -c xfce4-desktop -p /backdrop/screen0/monitorrdp0/workspace3/image-style -s 0
+    && mkdir -p ${USER_HOME}/.docker \
+    && cat /etc/docker-config.json > ${USER_HOME}/.docker/config.json
 
-#RUN echo && echo "# krew 설치" \
+#RUN echo && echo "# krew 설치"
 #    && export PATH="/home/ubuntu/.krew/bin:$PATH" \
 #    && krew install krew \
 #    && kubectl krew update \
@@ -88,10 +89,6 @@ RUN echo && echo "# tilix 설정" \
 #    && kubectl krew install ns \
 #    && kubectl krew install konfig \
 #    && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ADD hosts hosts
-ADD update-hosts.sh update-hosts.sh
-ADD docker-config.json .docker/config.json
 
 ENV HOME=/root
 USER root

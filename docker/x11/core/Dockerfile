@@ -61,6 +61,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
         fonts-vlgothic \
         git \
         gnupg \
+        gpg \
         language-pack-gnome-ko \
         language-pack-ko \
         less \
@@ -91,6 +92,9 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && curl -k -fsSL "https://dl-ssl.google.com/linux/linux_signing_key.pub" | apt-key add - \
     && apt-add-repository "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
     \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg \
+    && sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' \
+    \
     && echo && echo "# 폰트 초기화" \
     && rm -rf /usr/share/fonts/truetype/dejavu \
     && fc-cache -f -v -r \
@@ -107,6 +111,7 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     \
     && apt purge -yq ${APT_OPTS} \
+        gpg \
         software-properties-common \
         tzdata \
     && apt autoremove -yq \
@@ -128,6 +133,7 @@ RUN echo && echo "# xserver, xrdp 설치" \
         libxfixes-dev \
         libxml2-dev \
         libxrandr-dev \
+        nemo \
         openssh-server \
         pkg-config \
         pulseaudio \
@@ -193,6 +199,7 @@ RUN echo && echo "# fcitx hangul 설치" \
 RUN echo && echo "# chrome 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq \
+        firefox \
         google-chrome-stable \
     \
     && echo && echo "# webdriver 설치" \
@@ -207,6 +214,7 @@ RUN echo && echo "# chrome 설치" \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ADD etc /etc
+ADD bin /usr/bin
 
 RUN echo && echo "# ${USER_NAME} 사용자 추가" \
     && groupadd -g 999 docker \
@@ -264,6 +272,8 @@ RUN echo && echo "# SSL 설치" \
     && certutil -d sql:${USER_HOME}/.pki/nssdb -A -t TC -n "CAcert.org" -i /usr/share/ca-certificates/SSLVACERT.crt \
     && certutil -d sql:${USER_HOME}/.pki/nssdb -A -t TC -n "CAcert.org Class 3" -i /usr/share/ca-certificates/SSLVACERT_ECC.crt \
     && chown -R ${USER_NAME}:${USER_GROUP} ${USER_HOME}/.pki \
+    \
+    && echo && echo "# firefox 에 ssl 등록 " \
     \
     && echo && echo "# 저장소 정리" \
     && apt purge -yq \

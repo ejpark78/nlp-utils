@@ -161,6 +161,8 @@ run-xfce4-dev:
 		--hostname xfce4-dev \
 		--shm-size 1g \
 		-p 5555:22 \
+		--volume /home/ejpark/bin:/home/ubuntu/bin \
+		--volume /home/ejpark/usr:/home/ubuntu/usr \
 		--volume /home/ejpark/.kube:/home/ubuntu/.kube \
 		--volume /home/ejpark/workspace:/home/ubuntu/ws \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
