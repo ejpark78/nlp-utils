@@ -16,7 +16,7 @@ BUILD_DATE = $(shell date +'%Y-%m-%d %H:%M:%S')
 IMAGE = registry.nlp-utils/crawler-dev
 IMAGE_TAG = $(GIT_TAG).$(GIT_COMMIT)
 
-IMAGE_X11 = registry.nlp-utils/x11
+IMAGE_XFCE4 = registry.nlp-utils/xfce4
 
 # Mirror
 APT_CODE_NAME = focal
@@ -94,37 +94,25 @@ dev:
 		.
 
 .ONESHELL:
-x11-core:
-	cd x11/core
-
-	docker build \
-		$(MIRROR) \
-		$(DOCKER_BUILD_OPT) \
-		-t $(IMAGE_X11):core \
-		-f Dockerfile \
-		.
-
-.ONESHELL:
 xfce4:
-	cd x11/xfce4
+	cd xfce4/core
 
 	docker build \
 		$(MIRROR) \
 		$(DOCKER_BUILD_OPT) \
-		--build-arg BASE_IMAGE=$(IMAGE_X11):core \
-		-t $(IMAGE_X11):xfce4 \
+		-t $(IMAGE_XFCE4):core \
 		-f Dockerfile \
 		.
 
 .ONESHELL:
 xfce4-dev:
-	cd x11/dev
+	cd xfce4/dev
 
 	docker build \
 		$(MIRROR) \
 		$(DOCKER_BUILD_OPT) \
-		--build-arg BASE_IMAGE=$(IMAGE_X11):xfce4 \
-		-t $(IMAGE_X11):xfce4-dev \
+		--build-arg BASE_IMAGE=$(IMAGE_XFCE4):core \
+		-t $(IMAGE_XFCE4):dev \
 		-f Dockerfile \
 		.
 
@@ -136,7 +124,7 @@ xfce4-selenium:
 		$(MIRROR) \
 		$(DOCKER_BUILD_OPT) \
 		$(APP_INSTALL) \
-		--build-arg BASE_IMAGE=$(IMAGE_X11):core \
+		--build-arg BASE_IMAGE=$(IMAGE_XFCE4):core \
 		-t $(IMAGE_XFCE4):selenium \
 		-f Dockerfile \
 		.
@@ -148,9 +136,8 @@ run-xfce4:
 		--name xfce4 \
 		--hostname xfce4 \
 		--shm-size 1g \
-		-p 5555:3389 \
 		-p 5556:22 \
-		$(IMAGE_X11):xfce4
+		$(IMAGE_XFCE4):core
 
 
 .ONESHELL:
@@ -166,7 +153,7 @@ run-xfce4-dev:
 		--volume /home/ejpark/.kube:/home/ubuntu/.kube \
 		--volume /home/ejpark/workspace:/home/ubuntu/ws \
 		--volume /var/run/docker.sock:/var/run/docker.sock \
-		$(IMAGE_X11):xfce4-dev
+		$(IMAGE_XFCE4):dev
 
 .ONESHELL:
 stop-xfce4-dev:
@@ -175,14 +162,6 @@ stop-xfce4-dev:
 
 .ONESHELL:
 restart-xfce4-dev: stop-xfce4-dev run-xfce4-dev
-
-.ONESHELL:
-connect-xfce4:
-	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5555
-
-.ONESHELL:
-connect-xfce4-dev:
-	/opt/freerdp-nightly/bin/xfreerdp /cert:ignore /size:1600x1000 /u:ubuntu /v:localhost:5557
 
 .ONESHELL:
 jupyter: dev

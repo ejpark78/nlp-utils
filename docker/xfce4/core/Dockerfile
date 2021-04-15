@@ -21,7 +21,6 @@ WORKDIR $HOME
 
 # chrome, webdriver:
 # - https://chromedriver.chromium.org/downloads
-ENV CHROMEDRIVER_VER=89.0.4389.23
 
 RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
 	&& { \
@@ -92,8 +91,8 @@ RUN echo && echo "# APT MIRROR 변경: ${APT_MIRROR}" \
     && curl -k -fsSL "https://dl-ssl.google.com/linux/linux_signing_key.pub" | apt-key add - \
     && apt-add-repository "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
     \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg \
-    && sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' \
+    && curl -k -fsSL "https://packages.microsoft.com/keys/microsoft.asc" | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg \
+    && apt-add-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" \
     \
     && echo && echo "# 폰트 초기화" \
     && rm -rf /usr/share/fonts/truetype/dejavu \
@@ -146,6 +145,20 @@ RUN echo && echo "# xserver, xrdp 설치" \
         xserver-xorg-legacy \
         xvfb \
     \
+    && echo && echo "# xfce4 설치" \
+    && apt install -yq ${APT_OPTS} \
+        xfce4 \
+        xfce4-clipman-plugin \
+        xfce4-cpugraph-plugin \
+        xfce4-netload-plugin \
+        xfce4-screenshooter \
+        xfce4-taskmanager \
+        xfce4-xkb-plugin \
+    \
+    && echo && echo "# fcitx hangul 설치" \
+    && apt install -yq \
+        fcitx-hangul \
+    \
     && echo && echo "# xrdp 설정" \
     && mkdir /var/run/dbus \
     && uuidgen > /etc/machine-id \
@@ -153,6 +166,9 @@ RUN echo && echo "# xserver, xrdp 설치" \
     && sed -i "s/xrdp\/xorg/xorg/g" /etc/xrdp/sesman.ini \
     && sed -i "s/console/anybody/g" /etc/X11/Xwrapper.config \
     && echo "export QT_XKB_CONFIG_ROOT=/usr/share/X11/locale" >> /etc/profile \
+    \
+    && echo && echo "# xfce4 session 설정" \
+    && echo "xfce4-session" > /etc/skel/.Xclients \
     \
     && echo && echo "# xrdp ssl 설정" \
     && rm -rf /etc/xrdp/rsakeys.ini /etc/xrdp/*.pem \
@@ -189,24 +205,24 @@ RUN echo && echo "# xserver, xrdp 설치" \
     && apt autoremove -yq \
     && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN echo && echo "# fcitx hangul 설치" \
-    && apt update -yq ${APT_OPTS} \
-    && apt install -yq \
-        fcitx-hangul \
-    && echo && echo "# 저장소 정리" \
-    && apt autoremove -yq \
-    && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
-
 RUN echo && echo "# chrome 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq \
         firefox \
         google-chrome-stable \
     \
-    && echo && echo "# webdriver 설치" \
-    && wget --no-check-certificate "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VER}/chromedriver_linux64.zip"  \
-        -O /tmp/chromedriver.zip \
-    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \ \
+    && echo && echo "# chrome webdriver 설치" \
+    && CHROMEDRIVER_VER=$(dpkg -l | grep google-chrome-stable | perl -ple 's/^.+ (\d+)\..+$/$1/') \
+    && LASTEST_VER=$(curl -s -k "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_VER}") \
+    && wget --no-check-certificate -O /tmp/chromedriver.zip \
+        "https://chromedriver.storage.googleapis.com/${LASTEST_VER}/chromedriver_linux64.zip" \
+    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
+    \
+    && echo && echo "# firefox webdriver 설치" \
+    && wget --no-check-certificate -O /tmp/geckodriver.tar.gz \
+        "https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz" \
+    && tar xvfz /tmp/geckodriver.tar.gz -C /usr/local/bin/ \
+    \
     && echo && echo "# 저장소 정리" \
     && apt purge -yq \
         cpp \
@@ -226,7 +242,7 @@ RUN echo && echo "# ${USER_NAME} 사용자 추가" \
     && usermod -aG docker ${USER_NAME} \
     \
     && echo "env -u SESSION_MANAGER -u DBUS_SESSION_BUS_ADDRESS xfce4-session" > ${USER_HOME}/.xsession \
-    && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers \
+    && echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD:ALL" | tee -a /etc/sudoers \
     \
     && echo && echo "# oh my zsh 설치" \
     && wget "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh || true \

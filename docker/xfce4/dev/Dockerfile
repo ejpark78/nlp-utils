@@ -18,7 +18,7 @@ ENV PYTHONWARNINGS "ignore:Unverified HTTPS request"
 USER root
 WORKDIR $HOME
 
-RUN echo && echo "# docker/kubectl 설치" \
+RUN echo && echo "# docker & kubectl 설치" \
     && apt update -yq ${APT_OPTS} \
     && apt install -yq ${APT_OPTS} \
         build-essential \
@@ -27,18 +27,6 @@ RUN echo && echo "# docker/kubectl 설치" \
         kubectl \
         python3-pip \
         python3-venv \
-    \
-    && echo && echo "# oh my zsh 설치" \
-    && wget "https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh" -O - | zsh || true \
-    && cat ${HOME}/.oh-my-zsh/templates/zshrc.zsh-template | tee ${HOME}/.zshrc \
-    && rm -rf ~/.oh-my-zsh/.git \
-    \
-    && echo && echo "# oh my zsh plugin 설치" \
-    && git clone --depth=1 "https://github.com/jonmosco/kube-ps1" ~/.kube-ps1 \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-completions.git" ~/.oh-my-zsh/plugins/zsh-completions \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-syntax-highlighting.git" ~/.oh-my-zsh/plugins/zsh-syntax-highlighting \
-    && git clone --depth=1 "https://github.com/zsh-users/zsh-autosuggestions.git" ~/.oh-my-zsh/plugins/zsh-autosuggestions \
-    && find ~ -name .git -type d -exec rm -rf {} + \
     \
     && echo && echo "# 저장소 정리" \
     && apt autoremove -yq \
@@ -69,17 +57,9 @@ RUN echo && echo "# helm 설치" \
     && chmod +x /usr/bin/krew \
     && rm -rf /tmp/* /var/cache/* /var/tmp/*
 
-ADD etc /etc
-ADD bin /usr/bin
-
 ENV HOME=${USER_HOME}
 USER ubuntu
 WORKDIR /home/ubuntu
-
-RUN echo && echo "# tilix 설정" \
-    && DISPLAY=:0 dconf load /com/gexperts/ < /etc/tilix.dconf \
-    && mkdir -p ${USER_HOME}/.docker \
-    && cat /etc/docker-config.json > ${USER_HOME}/.docker/config.json
 
 RUN echo && echo "# krew 설치" \
     && export PATH="${USER_HOME}/.krew/bin:$PATH" \
@@ -90,6 +70,17 @@ RUN echo && echo "# krew 설치" \
     && kubectl krew install ns \
     && kubectl krew install konfig \
     && kubectl krew install neat
+
+ADD etc /etc
+ADD bin /usr/bin
+
+RUN echo && echo "# docker 설정" \
+    && mkdir -p ${USER_HOME}/.docker \
+    && cat /etc/docker-config.json > ${USER_HOME}/.docker/config.json
+
+RUN echo && echo "# tilix 설정" \
+    && export $(dbus-launch) \
+    && DISPLAY=:0 dconf load /com/gexperts/ < /etc/tilix.dconf
 
 ENV HOME=/root
 USER root
