@@ -6,6 +6,7 @@ LABEL reference="https://github.com/danielguerra69/ubuntu-xrdp/blob/master/Docke
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV USER_HOME=/home/ubuntu USER_NAME=ubuntu USER_PASSWD=ubuntu USER_GROUP=ubuntu
+ENV XRDP_PORT=3389
 ENV NOTVISIBLE "in users profile"
 
 ARG APT_CODE_NAME=focal
@@ -176,7 +177,7 @@ RUN echo && echo "# xserver, xrdp 설치" \
     && openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
         -out /etc/xrdp/cert.pem -keyout /etc/xrdp/key.pem \
         -subj "/C=US/ST=Some State/L=Some City/O=Some Org/OU=Some Unit/CN=Terminalserver" \
-    && crudini --set /etc/xrdp/xrdp.ini Globals port tcp://.:3389 \
+    && crudini --set /etc/xrdp/xrdp.ini Globals port ${XRDP_PORT} \
     && crudini --set /etc/xrdp/xrdp.ini Globals security_layer tls \
     && crudini --set /etc/xrdp/xrdp.ini Globals certificate /etc/xrdp/cert.pem \
     && crudini --set /etc/xrdp/xrdp.ini Globals key_file /etc/xrdp/key.pem \
@@ -199,7 +200,6 @@ RUN echo && echo "# xserver, xrdp 설치" \
         gnome-terminal \
         gpg-agent \
         pkg-config \
-        thunar \
         uuid-runtime \
         xscreensaver \
     && apt autoremove -yq \
@@ -294,6 +294,6 @@ RUN echo && echo "# SSL 설치" \
     && apt autoremove -yq \
     && rm -rf /tmp/* /var/cache/* /var/lib/apt/lists/* /var/tmp/*
 
-EXPOSE 22
+EXPOSE 22 ${XRDP_PORT}
 
 CMD ["supervisord"]

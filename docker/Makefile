@@ -86,8 +86,8 @@ dev:
 		$(DOCKER_ARGS) \
 		$(DOCKER_BUILD_OPT) \
 		$(APP_INSTALL) \
-		--build-arg "INSTALL_BRANCH=dev" \
 		--build-arg "CONFIG_BRANCH=dev" \
+		--build-arg "INSTALL_BRANCH=dev" \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):core \
 		-t $(IMAGE):dev \
 		-f Dockerfile \

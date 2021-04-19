@@ -14,6 +14,7 @@ RUN echo && echo "# python 설치" \
         python3 \
         python3-dev \
         python3-pip \
+        python3-venv \
     \
     && echo && echo "# 파이썬 기본 유틸 설치" \
     && pip3 install --upgrade \
@@ -48,11 +49,9 @@ RUN echo && echo "# python 설치" \
         urllib3 \
     \
     && echo && echo "# 저장소 정리" \
-    && apt purge -yq \
-        build-essential \
     && apt autoremove -yq \
     && rm -rf /var/cache/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 22 3389 9001
+EXPOSE 22
 
 CMD ["supervisord"]
