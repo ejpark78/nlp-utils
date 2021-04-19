@@ -1,1 +1,0 @@
-perl -nle '($a,$b)=split(/\t/, $_, 2); print if( $a !~ /^\s*$/ && $b !~ /^\s*$/ );'

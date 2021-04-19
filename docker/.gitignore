@@ -1,9 +1,0 @@
-# Created by .ignore support plugin (hsz.mobi)
-
-.ipynb_checkpoints
-.idea
-
-__pycache__
-
-/nexus3-data
-/x11/mnt

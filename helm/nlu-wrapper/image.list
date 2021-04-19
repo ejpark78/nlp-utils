@@ -1,9 +1,0 @@
-char-automatic-word-spacing:latest
-dependency-parser:latest
-kmat:latest
-nctime-2018:latest
-ner-rule-2018:latest
-nlu-wrapper:latest
-sbd_crf:latest
-sentiment-classifier:latest
-tense:latest

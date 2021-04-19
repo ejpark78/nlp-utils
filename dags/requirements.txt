@@ -1,4 +1,0 @@
-apache-airflow==1.10.14
-apache-airflow[kubernetes]==1.10.14
-kubernetes
-PyYAML
