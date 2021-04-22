@@ -9,7 +9,7 @@ import json
 import math
 import os
 from datetime import datetime
-from os.path import isfile
+from os.path import isdir, isfile
 from urllib.parse import urlparse, parse_qs
 
 import pytz
@@ -26,7 +26,7 @@ urllib3.disable_warnings(UserWarning)
 
 class UdemyBase(object):
 
-    def __init__(self, params):
+    def __init__(self, params: dict):
         super().__init__()
 
         self.params = params
@@ -34,14 +34,17 @@ class UdemyBase(object):
         self.logger = Logger()
 
         self.selenium = SeleniumWireUtils(
-            login=self.params.login,
-            headless=self.params.headless,
-            user_data_path=self.params.user_data,
+            login=self.params['login'],
+            headless=self.params['headless'],
+            user_data_path=self.params['user_data'],
         )
 
     @staticmethod
-    def save_cache(cache, path, name, save_time_tag=False):
+    def save_cache(cache: list, path: str, name: str, save_time_tag: bool = False) -> None:
         """캐쉬 파일로 저장한다."""
+        if not isdir(path):
+            os.makedirs(path)
+
         data_json = json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True)
 
         filename = f'{path}/{name}.json'
@@ -56,7 +59,7 @@ class UdemyBase(object):
         return
 
     @staticmethod
-    def open_cache(path, name):
+    def open_cache(path: str, name: str) -> list or None:
         """캐쉬파일을 읽는다."""
         filename = f'{path}/{name}.json'
         if isfile(filename) is False:
@@ -68,7 +71,7 @@ class UdemyBase(object):
 
         return result
 
-    def download_file(self, url, filename):
+    def download_file(self, url: str, filename: str) -> None:
         self.logger.log({
             'level': 'MESSAGE',
             'message': '파일 다운로드',
@@ -94,8 +97,7 @@ class UdemyBase(object):
             'size': f'size: {total_size:,}'
         })
 
-        wrote = 0
-        block_size = 1024
+        wrote, block_size = 0, 1024
 
         with open(filename + '.parted', 'wb') as fp:
             pbar = tqdm(
@@ -113,7 +115,7 @@ class UdemyBase(object):
         return
 
     @staticmethod
-    def parse_url(url):
+    def parse_url(url: str) -> dict:
         """url 에서 쿼리문을 반환한다."""
         url_info = urlparse(url)
         query = parse_qs(url_info.query)
@@ -122,7 +124,7 @@ class UdemyBase(object):
 
         return query
 
-    def make_link_file(self, external_link, path, name):
+    def make_link_file(self, external_link: str, path: str, name: str) -> None:
         """외부 링크를 저장한다."""
         if 'external_url' not in external_link:
             return
