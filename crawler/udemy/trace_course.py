@@ -221,15 +221,14 @@ class UdemyTraceCourse(UdemyBase):
         if asset['asset_type'] == 'Video':
             # 비디오 저장
             if 'stream_urls' not in result or result['stream_urls'] is None:
+
                 return
 
-            if 'Video' not in result['stream_urls'] or result['stream_urls']['Video'] is None:
+            if 'Video' in result['stream_urls'] and result['stream_urls']['Video'] is not None:
+                if self.get_video(video=result['stream_urls']['Video'], path=path, name=name) is False:
+                    # 자막 저장
+                    self.get_captions(captions=result['captions'], path=path, name=name)
                 return
-
-            file_exists = self.get_video(video=result['stream_urls']['Video'], path=path, name=name)
-            if file_exists is False:
-                # 자막 저장
-                self.get_captions(captions=result['captions'], path=path, name=name)
         elif asset['asset_type'] == 'Article':
             # 노트 저장
             self.get_article(article=result, path=path, name=name)
