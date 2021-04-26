@@ -42,9 +42,9 @@ class MergeIndex(object):
         self.params = self.init_arguments()
 
         alias = [
-            ('@curl_list', '@list_date'),
-            ('@curl_date', '@contents_date'),
-            ('@date', '@contents_date'),
+            ('@curl_list', '@list_crawl_date'),
+            ('@curl_date', '@contents_crawl_date'),
+            ('@date', '@contents_crawl_date'),
         ]
 
         data = {}
