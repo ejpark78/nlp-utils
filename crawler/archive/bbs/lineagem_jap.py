@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 from tqdm.autonotebook import tqdm
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

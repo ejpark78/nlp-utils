@@ -12,7 +12,7 @@ import urllib3
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.logger import Logger
 from dotty_dict import dotty
 from urllib.parse import unquote

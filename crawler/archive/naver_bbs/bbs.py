@@ -15,9 +15,9 @@ import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_utils import SeleniumProxyUtils
+from crawler.utils.selenium import SeleniumProxyUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

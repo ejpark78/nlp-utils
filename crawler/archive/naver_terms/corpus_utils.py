@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 
 from crawler.web_news.config import Config
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 MESSAGE = 25
 logging_opt = {

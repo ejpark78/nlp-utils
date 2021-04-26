@@ -12,7 +12,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from crawler.web_news.base import WebNewsBase
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

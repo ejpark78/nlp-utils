@@ -9,9 +9,9 @@ import pytz
 
 from .cache_utils import CacheUtils
 from .parser import FBParser
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_utils import SeleniumUtils
+from crawler.utils.selenium import SeleniumUtils
 
 
 class FBBase(object):

@@ -12,7 +12,7 @@ from crawler.youtube.live_chat import YoutubeLiveChat
 from crawler.youtube.reply import YoutubeReply
 from crawler.youtube.video_list import YoutubeVideoList
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_wire_utils import SeleniumWireUtils
+from crawler.utils.selenium_wire import SeleniumWireUtils
 from crawler.utils.dataset_utils import DataSetUtils
 
 

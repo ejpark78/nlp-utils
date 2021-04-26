@@ -10,7 +10,7 @@ from collections import defaultdict
 import pytz
 from tqdm import tqdm
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
 

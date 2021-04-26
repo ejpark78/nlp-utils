@@ -18,7 +18,7 @@ import yaml
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

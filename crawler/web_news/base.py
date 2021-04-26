@@ -23,7 +23,7 @@ from dateutil.relativedelta import relativedelta
 from dotty_dict import dotty
 from jsonfinder import jsonfinder
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
 

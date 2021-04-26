@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from time import sleep
 
 from crawler.web_news.base import WebNewsBase
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 
 class TermDetail(WebNewsBase):

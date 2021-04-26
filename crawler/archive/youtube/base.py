@@ -7,7 +7,7 @@ from __future__ import print_function
 
 from crawler.youtube.cache_utils import CacheUtils
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_wire_utils import SeleniumWireUtils
+from crawler.utils.selenium_wire import SeleniumWireUtils
 
 
 class YoutubeBase(object):

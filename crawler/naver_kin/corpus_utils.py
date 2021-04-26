@@ -13,7 +13,7 @@ from os import listdir
 from os.path import isdir, join
 import yaml
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 
 class CorpusUtils(object):

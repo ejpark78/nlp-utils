@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from crawler.kbsec.cache_utils import CacheUtils
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_wire_utils import SeleniumWireUtils
+from crawler.utils.selenium_wire import SeleniumWireUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

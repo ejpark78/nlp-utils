@@ -15,10 +15,10 @@ import yaml
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
-from crawler.utils.mysql_utils import MysqlUtils
+from crawler.utils.mysql import MysqlUtils
 from crawler.utils.nlu_wrapper import NLUWrapper
 
 

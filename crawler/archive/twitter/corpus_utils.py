@@ -8,7 +8,7 @@ from __future__ import print_function
 from datetime import datetime
 
 from crawler.web_news.base import WebNewsBase
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.elasticsearch import ElasticSearchUtils
 
 
 class CorpusUtils(WebNewsBase):

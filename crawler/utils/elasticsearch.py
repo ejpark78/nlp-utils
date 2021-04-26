@@ -838,8 +838,11 @@ class ElasticSearchUtils(object):
 
         return False
 
-    def restore_index(self, index: str, size: int = 1000) -> None:
+    def restore_index(self, index: str, size: int = 1000, mapping: str = None) -> None:
         """데이터를 서버에 저장한다."""
+        self.mapping = mapping
+        self.create_index(conn=self.conn, index=index)
+
         p_bar = None
 
         bulk = []
@@ -863,9 +866,7 @@ class ElasticSearchUtils(object):
 
             p_bar.update()
 
-            doc_info = {
-                '_index': index
-            }
+            doc_info = dict(_index=index)
             if '_id' in doc:
                 doc_info['_id'] = doc['_id']
                 del doc['_id']
@@ -873,13 +874,7 @@ class ElasticSearchUtils(object):
             if '_index' in doc:
                 del doc['_index']
 
-            bulk += [
-                {
-                    'index': doc_info
-                },
-                doc
-            ]
-
+            bulk += [{'index': doc_info}, doc]
             if len(bulk) > size:
                 _ = self.conn.bulk(
                     index=index,
@@ -890,7 +885,7 @@ class ElasticSearchUtils(object):
 
                 bulk = []
 
-        if len(bulk) > size:
+        if len(bulk) > 0:
             _ = self.conn.bulk(
                 index=index,
                 body=bulk,
@@ -979,7 +974,7 @@ class ElasticSearchUtils(object):
                 self.dump_index_list(index_list=params['index_list'], size=params['size'], path=params['dump_path'])
 
         if params['restore']:
-            self.restore_index(index=params['index'], size=params['size'])
+            self.restore_index(index=params['index'], size=params['size'], mapping=params['mapping'])
 
         return
 
@@ -1003,6 +998,8 @@ class ElasticSearchUtils(object):
         parser.add_argument('--size', default=1000, type=int, help='인덱스명')
 
         parser.add_argument('--dump-path', default='.', help='저장 위치')
+
+        parser.add_argument('--mapping', default=None, help='인덱스 맵핑 정보')
 
         return vars(parser.parse_args())
 
