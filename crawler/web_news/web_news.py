@@ -502,8 +502,10 @@ class WebNewsCrawler(WebNewsBase):
                             'field': 'contents'
                         }
                     }, {
-                        'match': {
-                            'status': 'column_missing_error'
+                        'term': {
+                            'status': {
+                                'value': 'column_missing_error'
+                            }
                         }
                     }],
                     **dt_query['query']['bool']

@@ -96,7 +96,7 @@ class WebNewsBase(object):
                 continue
             del item[k]
 
-        item['status'] = 'raw_list'
+        item['status'] = 'list'
 
         self.save_article(es=es, job=job, doc=item, flush=False)
 
