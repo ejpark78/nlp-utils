@@ -522,7 +522,11 @@ class ElasticSearchUtils(object):
             if self.conn.indices.exists(idx) is False:
                 continue
 
-            with BZ2File(f'{path}/{idx}.json.bz2', 'wb') as fp:
+            filename = f'{path}/{idx}.json.bz2'
+            if isfile(filename):
+                continue
+
+            with BZ2File(filename, 'wb') as fp:
                 self.dump_index(index=idx, size=size, index_size=int(s), fp=fp)
 
         return
@@ -858,7 +862,7 @@ class ElasticSearchUtils(object):
 
             if p_bar is None:
                 p_bar = tqdm(
-                    desc=index,
+                    desc=f'restore: {index}',
                     unit_scale=True,
                     dynamic_ncols=True
                 )
