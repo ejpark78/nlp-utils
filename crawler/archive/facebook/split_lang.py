@@ -10,7 +10,7 @@ import json
 from tqdm import tqdm
 
 from crawler.utils.selenium import SeleniumUtils
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 
 
 class FBSplitLang(SeleniumUtils):

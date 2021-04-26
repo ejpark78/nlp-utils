@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from crawler.naver.kin.base import NaverKinBase
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

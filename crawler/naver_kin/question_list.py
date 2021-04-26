@@ -12,7 +12,7 @@ import requests
 import urllib3
 
 from crawler.naver.kin.base import NaverKinBase
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)

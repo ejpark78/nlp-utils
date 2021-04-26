@@ -9,7 +9,7 @@ import pytz
 
 from .cache_utils import CacheUtils
 from .parser import FBParser
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 from crawler.utils.selenium import SeleniumUtils
 

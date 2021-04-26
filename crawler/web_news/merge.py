@@ -38,18 +38,32 @@ class MergeIndex(object):
     def exclude_columns(doc: dict, exclude: set) -> dict:
         return {k: v for k, v in doc.items() if k not in exclude}
 
+    @staticmethod
+    def change_status(doc: dict) -> dict:
+        if 'status' not in doc:
+            return doc
+
+        if doc['status'] == 'raw_list':
+            doc['status'] = 'list'
+            return doc
+
+        return doc
+
     def batch(self) -> None:
         self.params = self.init_arguments()
 
         alias = [
+            ('content', 'contents'),
+            ('@date', '@contents_crawl_date'),
             ('@curl_list', '@list_crawl_date'),
             ('@curl_date', '@contents_crawl_date'),
-            ('@date', '@contents_crawl_date'),
         ]
 
+        index = self.params['corpus'].split('/')[-1].replace('.json.bz2', '')
+
         data = {}
-        with bz2.open(self.params['backfill'], 'rb') as fp:
-            for line in tqdm(fp, desc=self.params['backfill'].split('/')[-1]):
+        with bz2.open(self.params['corpus'], 'rb') as fp:
+            for line in tqdm(fp, desc=f'corpus: {index}'):
                 doc = json.loads(line.decode('utf-8'))
 
                 if 'settings' in doc and 'mappings' in doc:
@@ -57,36 +71,40 @@ class MergeIndex(object):
 
                 data[doc['_id']] = self.mapping_alias(doc=doc, alias=alias)
 
-        with bz2.open(self.params['corpus'], 'rb') as fp:
-            for line in tqdm(fp, desc=self.params['corpus'].split('/')[-1]):
+        with bz2.open(self.params['backfill'], 'rb') as fp:
+            for line in tqdm(fp, desc=f'backfill: {index}'):
                 doc = json.loads(line.decode('utf-8'))
 
                 if 'settings' in doc and 'mappings' in doc:
                     continue
 
-                if 'content' not in doc and 'contents' not in doc:
-                    continue
-
                 doc_id = doc['_id']
-                if doc_id not in data:
-                    if self.params['missing']:
-                        print(json.dumps(doc, ensure_ascii=False), flush=True)
-                    continue
+                doc = self.mapping_alias(doc=doc, alias=alias)
 
-                if self.params['missing']:
-                    continue
+                item = doc
+                if doc_id in data:
+                    if 'contents' in data[doc_id]:
+                        doc['contents'] = data[doc_id]['contents']
 
-                exclude = set(data[doc_id].keys()) | {'content', 'contents'} - {'raw'}
-                raw = self.exclude_columns(doc=doc, exclude=exclude)
+                    exclude = set(doc.keys()) | {'contents'}
+                    raw = self.exclude_columns(doc=data[doc_id], exclude=exclude)
 
-                item = {
-                    **data[doc_id],
-                    'raw': json.dumps(raw, ensure_ascii=False),
-                    'contents': doc['content'] if 'content' in doc else doc['contents'],
-                    'status': 'merged'
-                }
+                    item = {
+                        **doc,
+                        'raw': json.dumps(raw, ensure_ascii=False),
+                        'status': 'merged'
+                    }
 
+                    del data[doc_id]
+                elif self.params['missing']:
+                    print(json.dumps(doc, ensure_ascii=False), flush=True)
+
+                item = self.change_status(doc=item)
                 print(json.dumps(item, ensure_ascii=False), flush=True)
+
+        if self.params['extra']:
+            for doc in data.values():
+                print(json.dumps(doc, ensure_ascii=False), flush=True)
 
         return
 
@@ -97,6 +115,7 @@ class MergeIndex(object):
         parser = argparse.ArgumentParser()
 
         parser.add_argument('--missing', action='store_true', default=False)
+        parser.add_argument('--extra', action='store_true', default=False)
 
         parser.add_argument('--backfill', type=str,
                             default='data/es_dump/backfill/latest/crawler-naver-opinion-2014.json.bz2')

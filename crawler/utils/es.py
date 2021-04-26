@@ -12,8 +12,7 @@ import sys
 from base64 import decodebytes
 from bz2 import BZ2File
 from datetime import datetime
-from os import getenv
-from os import makedirs
+from os import getenv, makedirs
 from os.path import isdir, isfile
 from ssl import SSLContext
 

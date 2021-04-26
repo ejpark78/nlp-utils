@@ -15,7 +15,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from dateutil.parser import parse as parse_date
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 from crawler.utils.selenium import SeleniumProxyUtils
 

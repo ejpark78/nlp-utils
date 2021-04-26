@@ -14,7 +14,7 @@ import pytz
 import requests
 from bs4 import BeautifulSoup
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
 

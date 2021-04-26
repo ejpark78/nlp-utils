@@ -16,7 +16,7 @@ import urllib3
 from bs4 import BeautifulSoup
 from requests.exceptions import ConnectionError
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(UserWarning)

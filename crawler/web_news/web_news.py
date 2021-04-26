@@ -15,7 +15,7 @@ import requests
 import urllib3
 from dateutil.rrule import rrule, DAILY, YEARLY
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.web_news.base import WebNewsBase
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

@@ -13,7 +13,7 @@ from tqdm.autonotebook import tqdm
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.selenium import SeleniumProxyUtils
 
 

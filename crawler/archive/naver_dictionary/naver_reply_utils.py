@@ -12,7 +12,7 @@ import pandas as pd
 import urllib3
 from tqdm.autonotebook import tqdm
 
-from crawler.utils.elasticsearch import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

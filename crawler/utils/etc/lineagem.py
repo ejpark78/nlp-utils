@@ -325,7 +325,7 @@ class LineageMBbsUtils(object):
     @staticmethod
     def import_data(host, index, filename, mapping):
         """데이터를 elasticsearch에 입력한다."""
-        from crawler.utils.elasticsearch import ElasticSearchUtils
+        from crawler.utils.es import ElasticSearchUtils
 
         elastic = ElasticSearchUtils(host=host)
 
