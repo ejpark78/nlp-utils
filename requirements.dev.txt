@@ -51,8 +51,12 @@ autopep8
 pip
 yapf
 
+berkeleydb
+
 # nlplab
 # git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
+
+# sudo apt install libdb-dev

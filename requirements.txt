@@ -27,5 +27,9 @@ PyMySQL
 jsonfinder
 yapf
 
+berkeleydb
+
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
+
+# sudo apt install libdb-dev
