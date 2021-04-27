@@ -524,6 +524,10 @@ class ElasticSearchUtils(object):
 
             filename = f'{path}/{idx}.json.bz2'
             if isfile(filename):
+                self.logger.log(msg={
+                    'level': 'MESSAGE',
+                    'message': f'SKIP file exists: {filename}'
+                })
                 continue
 
             with BZ2File(filename, 'wb') as fp:
