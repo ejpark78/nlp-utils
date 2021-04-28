@@ -253,6 +253,7 @@ class Pipeline(object):
             if end > len(doc_id_list):
                 end = len(doc_id_list)
 
+            history = set()
             for doc in tqdm(doc_list, desc='Pipeline'):
                 for col, tasks in task_list.items():
                     if col not in doc:
@@ -275,6 +276,8 @@ class Pipeline(object):
                     )
                     doc.update(item)
 
+                    history.add((index, doc['_id'], doc['date']))
+
             # analyze
             error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])
             self.summary['error_docs'] += len(error_docs)
@@ -284,6 +287,14 @@ class Pipeline(object):
 
             error_docs = self.analyze(doc_list=error_docs, bulk_size=1)
             self.summary['retry_error_docs'] += len(error_docs)
+
+            # update index table
+            self.result_db.update_idx(
+                index_table='naver_idx',
+                source_table='naver',
+                date_range=self.params['date_range'],
+                history=history
+            )
 
         return None
 
@@ -327,7 +338,12 @@ class Pipeline(object):
             self.pipeline(doc_id_list=ids, config=config_list[0], index=idx)
 
         # update index table
-        self.result_db.update_idx(index_table='naver_idx', source_table='naver', date_range=self.params['date_range'])
+        # self.result_db.update_idx(
+        #     index_table='naver_idx',
+        #     source_table='naver',
+        #     date_range=self.params['date_range'],
+        #     history=set()
+        # )
 
         # summary
         self.show_summary()

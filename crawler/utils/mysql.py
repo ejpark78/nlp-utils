@@ -140,17 +140,24 @@ class MysqlUtils(object):
 
         return set([x for x in cursor.fetchall()])
 
-    def update_idx(self, index_table: str, source_table: str, date_range: str) -> None:
+    def update_idx(self, index_table: str, source_table: str, date_range: str, history: set) -> None:
         dt_st, dt_en = self.get_date_range(date_range=date_range)
 
         cursor = self.db.cursor()
-        cursor.execute(
-            f"REPLACE INTO `{index_table}` (`index`, `id`, `date`) "
-            f"  SELECT `index`, `id`, ANY_VALUE(`date`) AS `date` "
-            f"  FROM `{source_table}` "
-            f"  WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' "
-            f"  GROUP BY `index`, `id` "
-        )
+        for idx, doc_id, dt in history:
+            cursor.execute(
+                f"REPLACE INTO `{index_table}` (`index`, `id`, `date`) "
+                f"VALUES ('{idx}', '{doc_id}', '{dt}')"
+            )
+
+        # cursor.execute(
+        #     f"REPLACE INTO `{index_table}` (`index`, `id`, `date`) "
+        #     f"  SELECT `index`, `id`, ANY_VALUE(`date`) AS `date` "
+        #     f"  FROM `{source_table}` "
+        #     f"  WHERE `date` BETWEEN '{dt_st}' AND '{dt_en}' "
+        #     f"  GROUP BY `index`, `id` "
+        # )
+
         return
 
     def open(self, host: str, auth: str, database: str, table_name: str) -> None:
