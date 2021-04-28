@@ -63,12 +63,7 @@ class MergeIndex(object):
 
         cache_db = {}
         if self.params['use_cache']:
-            cache_file = self.params['corpus'].replace('.json.bz2', '.db')
-            if isfile(cache_file):
-                remove(cache_file)
-                sync()
-
-            cache_db = hashopen(cache_file, 'w')
+            cache_db = hashopen(self.params['cache'], 'w')
 
         index = self.params['corpus'].split('/')[-1].replace('.json.bz2', '')
 
@@ -162,6 +157,9 @@ class MergeIndex(object):
 
         parser = argparse.ArgumentParser()
 
+        # common
+        parser.add_argument('--cache', type=str, default=None)
+
         # merge
         parser.add_argument('--missing', action='store_true', default=False)
         parser.add_argument('--use-cache', action='store_true', default=False)
@@ -171,8 +169,6 @@ class MergeIndex(object):
 
         # dump cache
         parser.add_argument('--dump-cache', action='store_true', default=False)
-
-        parser.add_argument('--cache', type=str, default=None)
 
         return vars(parser.parse_args())
 
