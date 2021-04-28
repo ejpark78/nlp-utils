@@ -7,12 +7,10 @@ from __future__ import print_function
 
 import bz2
 import json
-from os import remove, sync
 from os.path import isfile
 
-from berkeleydb import hashopen
-
 import pytz
+from berkeleydb import hashopen
 from tqdm import tqdm
 
 from crawler.utils.logger import Logger
@@ -124,6 +122,7 @@ class MergeIndex(object):
                 print(json.dumps(self.change_status(doc=item), ensure_ascii=False), flush=True)
 
         if self.params['use_cache']:
+            cache_db.sync()
             cache_db.close()
 
         return
