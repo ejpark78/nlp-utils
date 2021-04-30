@@ -21,7 +21,7 @@ class CorpusSizeUtils(object):
         pass
 
     @staticmethod
-    def get_index_size(host: str = 'https://crawler-es.cloud.ncsoft.com:9200', auth: str = 'elastic:nlplab'):
+    def get_index_size(host: str = 'https://crawler-es.cloud.ncsoft.com:9200', auth: str = 'elastic:searchT2020'):
         """인덱스 크기를 조회한다."""
         url = f'{host}/_cat/indices?v&s=index&h=index,docs.count'
 

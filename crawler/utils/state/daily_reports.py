@@ -25,7 +25,7 @@ urllib3.disable_warnings(UserWarning)
 class DailyReports(object):
 
     def __init__(self, host: str = 'https://corpus.ncsoft.com:9200', auth: str = 'ZWxhc3RpYzpubHBsYWI=',
-                 encoded_auth: bool = True):
+                 encoded_auth: str = 'ZWxhc3RpYzpubHBsYWI='):
         super().__init__()
 
         plt.style.use('ggplot')

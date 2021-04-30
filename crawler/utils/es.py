@@ -36,11 +36,11 @@ class ElasticSearchUtils(object):
 
     def __init__(self, host: str = None, index: str = None, insert: bool = True, http_auth: str = None,
                  bulk_size: int = 1000, tag: str = None, log_path: str = 'log', mapping: str or dict = None,
-                 encoded_auth: bool = False):
+                 encoded_auth: str = None):
         super().__init__()
 
         if encoded_auth:
-            http_auth = decodebytes(http_auth.encode('utf-8')).decode('utf-8')
+            http_auth = decodebytes(encoded_auth.encode('utf-8')).decode('utf-8')
 
         self.host = host
         self.http_auth = (http_auth.split(':')) if http_auth else None
@@ -612,7 +612,8 @@ class ElasticSearchUtils(object):
 
         return
 
-    def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None, query: dict = None) -> dict:
+    def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None, query: dict = None,
+               time_out: str = '2m') -> dict:
         params = {
             'request_timeout': 10 * 60
         }
@@ -621,7 +622,7 @@ class ElasticSearchUtils(object):
         if scroll_id == '':
             search_result = self.conn.search(
                 index=index,
-                scroll='2m',
+                scroll=time_out,
                 size=size,
                 body=query,
                 params=params,
@@ -630,7 +631,7 @@ class ElasticSearchUtils(object):
         else:
             search_result = self.conn.scroll(
                 scroll_id=scroll_id,
-                scroll='2m',
+                scroll=time_out,
                 params=params,
             )
 
@@ -648,27 +649,6 @@ class ElasticSearchUtils(object):
             'total': total,
             'scroll_id': scroll_id,
         }
-
-    def get_by_ids(self, id_list: list, index: str, result: list, source: list = None) -> None:
-        """ 문서 아이디로 문서를 가져온다."""
-        if len(id_list) == 0:
-            return
-
-        resp = self.conn.mget(
-            body={
-                'docs': [{'_id': x} for x in id_list]
-            },
-            index=index,
-            _source=source,
-        )
-
-        for x in resp['docs']:
-            if '_source' not in x:
-                continue
-
-            result.append({'_index': x['_index'], '_id': x['_id'], **x['_source']})
-
-        return
 
     def get_id_list(self, index: str, size=5000, query=None, limit=-1) -> list:
         """ elastic search 에 문서 아이디 목록을 조회한다. """
@@ -689,6 +669,7 @@ class ElasticSearchUtils(object):
                 size=size,
                 query=query,
                 scroll_id=scroll_id,
+                time_out='30s'
             )
 
             if p_bar is None:
@@ -716,10 +697,28 @@ class ElasticSearchUtils(object):
             if 0 < limit < sum_count:
                 break
 
-            if count < size:
-                break
-
         return result
+
+    def get_by_ids(self, id_list: list, index: str, result: list, source: list = None) -> None:
+        """ 문서 아이디로 문서를 가져온다."""
+        if len(id_list) == 0:
+            return
+
+        resp = self.conn.mget(
+            body={
+                'docs': [{'_id': x} for x in id_list]
+            },
+            index=index,
+            _source=source,
+        )
+
+        for x in resp['docs']:
+            if '_source' not in x:
+                continue
+
+            result.append({'_index': x['_index'], '_id': x['_id'], **x['_source']})
+
+        return
 
     def move_document(self, source_index: str, target_index: str, document_id: str, source_id: str = None,
                       merge_column: str = None) -> None:

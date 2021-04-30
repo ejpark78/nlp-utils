@@ -26,13 +26,11 @@ class Backfill(object):
         self.es = {
             'corpus': ElasticSearchUtils(**{
                 'host': 'https://corpus.ncsoft.com:9200',
-                'http_auth': 'ZWxhc3RpYzpubHBsYWI=',
-                'encoded_auth': True
+                'encoded_auth': 'ZWxhc3RpYzpubHBsYWI='
             }),
             'backfill': ElasticSearchUtils(**{
                 'host': 'https://crawler-es.cloud.ncsoft.com:9200',
-                'http_auth': 'ZWxhc3RpYzpzZWFyY2hUMjAyMA==',
-                'encoded_auth': True
+                'encoded_auth': 'ZWxhc3RpYzpzZWFyY2hUMjAyMA=='
             })
         }
 
