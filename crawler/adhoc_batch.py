@@ -5,7 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 from scrapy import cmdline
+
+os.environ['PYTHONPATH'] = os.path.dirname(os.path.abspath(__file__))
+os.environ['XDG_CONFIG_HOME'] = os.environ['PYTHONPATH']
 
 
 def init_arguments() -> dict:
