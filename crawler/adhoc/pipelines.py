@@ -106,6 +106,6 @@ class AdhocPipeline:
             'doc_as_upsert': True,
         }]
 
-        resp = self.es.bulk(index=index, body=bulk, refresh=True)
+        _ = self.es.bulk(index=index, body=bulk, refresh=True)
 
-        return item
+        return

@@ -51,9 +51,6 @@ class MarketwatchSpider(scrapy.Spider):
                 'title': title
             })
 
-            if title == '':
-                pass
-
             yield scrapy.Request(
                 url=url,
                 callback=self.parse_article,
