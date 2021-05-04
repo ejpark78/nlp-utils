@@ -24,7 +24,7 @@ class AdhocPipeline:
 
     def __init__(self):
         self.host = getenv('ELASTIC_SEARCH_HOST', default='https://corpus.ncsoft.com:9200')
-        self.http_auth = getenv('ELASTIC_SEARCH_AUTH', default='ZWxhc3RpYzpubHBsYWI=')
+        self.http_auth = getenv('ELASTIC_SEARCH_AUTH_ENCODED', default='ZWxhc3RpYzpubHBsYWI=')
 
         self.es = Elasticsearch(
             hosts=self.host,
