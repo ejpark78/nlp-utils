@@ -43,8 +43,8 @@ pandas
 jupyter
 jupyterlab
 jupyterthemes
-notebook
 jupyter_contrib_nbextensions
+notebook
 matplotlib
 
 webdav
@@ -54,6 +54,9 @@ pip
 yapf
 
 berkeleydb
+
+scrapy
+scrapy-fake-useragent
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
