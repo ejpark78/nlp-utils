@@ -9,8 +9,8 @@
 
 BOT_NAME = 'adhoc'
 
-SPIDER_MODULES = ['adhoc.spiders']
-NEWSPIDER_MODULE = 'adhoc.spiders'
+SPIDER_MODULES = ['spiders']
+NEWSPIDER_MODULE = 'spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -64,7 +64,7 @@ COOKIES_ENABLED = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'adhoc.pipelines.AdhocPipeline': 300,
+   'pipelines.AdhocPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
