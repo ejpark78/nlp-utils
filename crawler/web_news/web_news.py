@@ -433,7 +433,7 @@ class WebNewsCrawler(WebNewsBase):
 
             for dt in date_list:
                 date_now = datetime.now(self.timezone)
-                if dt > date_now + timedelta(1):
+                if dt > date_now + timedelta(days=1):
                     break
 
                 # page 단위로 크롤링한다.

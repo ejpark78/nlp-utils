@@ -14,4 +14,6 @@ You can start your first spider with:
 Created spider 'marketwatch' using template 'basic' in module:
   adhoc.spiders.marketwatch
 
+❯ scrapy crawl marketwatch 
+
 ```
