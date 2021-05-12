@@ -40,7 +40,7 @@ class ReutersSpider(scrapy.Spider):
 
     deep = max_deep = 1024
 
-    max_history = timedelta(hours=1)
+    max_history = timedelta(days=1)
     max_history_size = 1024 * 10
 
     host = getenv('ELASTIC_SEARCH_HOST', default='https://corpus.ncsoft.com:9200')
@@ -114,9 +114,10 @@ class ReutersSpider(scrapy.Spider):
 
         limit = datetime.now(tz=self.tz) - self.max_history
 
+        urls = list(self.history_db.keys())
         sync = False
-        for k, v in self.history_db.items():
-            dt = parse_date(v.decode('utf-8')).astimezone(self.tz)
+        for k in urls:
+            dt = parse_date(self.history_db[k].decode('utf-8')).astimezone(self.tz)
             if dt < limit:
                 continue
 
@@ -125,9 +126,6 @@ class ReutersSpider(scrapy.Spider):
 
         if sync:
             self.history_db.sync()
-
-        # self.history.clear()
-        pass
 
     def is_skip(self, url: str) -> bool:
         if url.encode('utf-8') in self.history_db or url in self.history:
@@ -207,3 +205,12 @@ class ReutersSpider(scrapy.Spider):
             return False
 
         return True
+
+"""
+
+# url 복원 
+'https://www.reuters.com/video/watch/biden-says-gop-is-having-mini-revolution-id729582174?chan=6g5ka85'
+'https://www.reuters.com/news/archive/instagram.com/instagram.com//instagram.com/reuters?view=page&page=2&pageSize=10'
+'https://www.reuters.com/news/archive/France-news?view=page&page=7&pageSize=10'
+
+"""
