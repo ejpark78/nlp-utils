@@ -20,7 +20,7 @@ build:
       echo "### docker build:" $BUILD_IMAGE:$CI_COMMIT_BRANCH
       cd docker/crawler/dev/
     - >
-      docker build
+        docker build
         --label "app=crawler-dev"
         --add-host "nlp-utils:172.19.153.41"
         --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
