@@ -16,7 +16,7 @@ build:
     - git clone $DOCKER_REPO
     - echo "### update version"
     - echo -n $(git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.').$(git rev-list --count HEAD) | tee docker/crawler/dev/version
-    - echo "### docker build: $BUILD_IMAGE:$CI_COMMIT_BRANCH"
+    - echo "### docker build:" $BUILD_IMAGE:$CI_COMMIT_BRANCH
     - cd docker/crawler/dev/
     - docker build --label "app=dashboard" --build-arg "docker_tag=$(cat version)" --build-arg BUILD_IMAGE=$BUILD_IMAGE:core -t $BUILD_IMAGE:$CI_COMMIT_BRANCH -f Dockerfile .
   only:
