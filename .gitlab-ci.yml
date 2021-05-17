@@ -20,7 +20,7 @@ build:
     - cd docker/crawler/dev/
     - docker build --label "app=dashboard" --build-arg "docker_tag=$(cat version)" --build-arg BUILD_IMAGE=$BUILD_IMAGE:core -t $BUILD_IMAGE:$CI_COMMIT_BRANCH -f Dockerfile .
   only:
-    - master
+    - dev
 
 #    - echo "### push image"
 #    - docker tag $BUILD_IMAGE:latest $BUILD_IMAGE:$(cat version)
