@@ -20,8 +20,8 @@ build:
         --add-host "registry.nlp-utils:172.19.153.41"
         --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
         --build-arg "docker_tag=$(cat version)"
-		--build-arg CONFIG_BRANCH=$CI_COMMIT_BRANCH
-		--build-arg INSTALL_BRANCH=$CI_COMMIT_BRANCH
+        --build-arg "CONFIG_BRANCH=$CI_COMMIT_BRANCH"
+        --build-arg "INSTALL_BRANCH=$CI_COMMIT_BRANCH"
         --build-arg BASE_IMAGE=$BUILD_IMAGE:core
         -t $BUILD_IMAGE:$CI_COMMIT_BRANCH
         -f Dockerfile
