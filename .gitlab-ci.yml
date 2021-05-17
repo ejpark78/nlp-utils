@@ -26,10 +26,4 @@ build:
         -t $BUILD_IMAGE:$CI_COMMIT_BRANCH
         -f Dockerfile
         .
-  only:
-    - dev
-
-#    - echo "### push image"
-#    - docker tag $BUILD_IMAGE:latest $BUILD_IMAGE:$(cat version)
-#    - docker push $BUILD_IMAGE:latest
-#    - docker push $BUILD_IMAGE:$(cat version)
+    - docker push $BUILD_IMAGE:$CI_COMMIT_BRANCH
