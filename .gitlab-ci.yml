@@ -10,19 +10,14 @@ build:
   image: docker/compose
   script:
     - apk add git
-    - |
-      echo "### docker repo clone"
-      git clone $DOCKER_REPO
-    - |
-      echo "### update version"
-      echo -n $(git rev-list --count HEAD) | tee docker/crawler/dev/version
-    - |
-      echo "### docker build:" $BUILD_IMAGE:$CI_COMMIT_BRANCH
-      cd docker/crawler/dev/
+    - git clone $DOCKER_REPO
+    - echo -n $(git rev-list --count HEAD) | tee docker/crawler/dev/version
+    - cd docker/crawler/dev/
     - >
         docker build
         --label "app=crawler-dev"
         --add-host "nlp-utils:172.19.153.41"
+        --add-host "registry.nlp-utils:172.19.153.41"
         --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
         --build-arg "docker_tag=$(cat version)"
         --build-arg BUILD_IMAGE=$BUILD_IMAGE:core
