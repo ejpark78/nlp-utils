@@ -41,7 +41,6 @@ class ReutersSpider(scrapy.Spider):
     deep = max_deep = 1024
 
     max_history = timedelta(days=1)
-    max_history_size = 1024 * 10
 
     host = getenv('ELASTIC_SEARCH_HOST', default='https://corpus.ncsoft.com:9200')
     http_auth = getenv('ELASTIC_SEARCH_AUTH_ENCODED', default='ZWxhc3RpYzpubHBsYWI=')
@@ -76,7 +75,7 @@ class ReutersSpider(scrapy.Spider):
             return
 
         doc_id = self.get_doc_id(url=response.url)
-        self.save_html(doc_id=doc_id, doc={
+        self.save_document(doc_id=doc_id, doc={
             'url': response.url,
             'raw': response.body.decode('utf-8')
         })
@@ -86,13 +85,12 @@ class ReutersSpider(scrapy.Spider):
             if url is None or url == '' or url[0] == '#' or url in {'//'}:
                 continue
 
-            url = response.urljoin(url)
-            if is_start is False and self.is_skip(url=url):
+            if is_start is False and self.is_skip(url=response.urljoin(url)):
                 continue
 
             self.logger.log(level=INFO, msg=url)
 
-            yield scrapy.Request(url, callback=self.extract_url)
+            yield response.follow(url, callback=self.extract_url)
 
     @staticmethod
     def get_doc_id(url: str) -> str:
@@ -108,10 +106,6 @@ class ReutersSpider(scrapy.Spider):
         return f'{path}-{q_str}'
 
     def del_old_history(self):
-        if len(self.history_db) > self.max_history_size:
-            self.history_db.clear()
-            self.history_db.sync()
-
         limit = datetime.now(tz=self.tz) - self.max_history
 
         urls = list(self.history_db.keys())
@@ -129,6 +123,7 @@ class ReutersSpider(scrapy.Spider):
 
     def is_skip(self, url: str) -> bool:
         if url.encode('utf-8') in self.history_db or url in self.history:
+            self.logger.log(level=INFO, msg=f'skip url (in history): {url}')
             return True
 
         for domain in self.allowed_domains:
@@ -136,10 +131,12 @@ class ReutersSpider(scrapy.Spider):
                 self.history.add(url)
                 return False
 
+        self.logger.log(level=INFO, msg=f'skip url (out of allowed domains): {url}')
         return True
 
-    def save_html(self, doc: dict, doc_id: str):
+    def save_document(self, doc: dict, doc_id: str):
         if doc_id == '' or doc_id is None:
+            self.logger.log(level=INFO, msg=f"missing doc_id: {doc_id}")
             return
 
         self.create_index(es=self.es, index=self.index)
@@ -157,7 +154,7 @@ class ReutersSpider(scrapy.Spider):
         }]
 
         try:
-            _ = self.es.bulk(index=self.index, body=bulk, refresh=True)
+            resp = self.es.bulk(index=self.index, body=bulk, refresh=True)
 
             self.history_db[doc['url'].encode('utf-8')] = datetime.now(tz=self.tz).isoformat().encode('utf-8')
             self.history_db.sync()

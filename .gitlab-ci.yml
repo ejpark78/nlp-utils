@@ -1,0 +1,28 @@
+variables:
+  BUILD_IMAGE: galadriel02.korea.ncsoft.corp:5000/searchteam/crawler-dev
+  DOCKER_REPO: http://ci:fHGZmfokrvrCMNkzAXYf@galadriel02.korea.ncsoft.corp/crawler-dev/docker.git
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: docker/compose
+  script:
+    - apk add git
+    - echo "### update version"
+    - echo -n $(git rev-list --count HEAD) | tee version
+    - echo "### docker repo clone"
+    - git clone $DOCKER_REPO
+    - echo "### update version"
+    - echo -n $(git describe --tags --long | cut -f1,2 -d'-' | tr '-' '.').$(git rev-list --count HEAD) | tee docker/crawler/dev/version
+    - echo "### docker build: $BUILD_IMAGE:$CI_COMMIT_BRANCH"
+    - cd docker/crawler/dev/
+    - docker build --label "app=dashboard" --build-arg "docker_tag=$(cat version)" --build-arg BUILD_IMAGE=$BUILD_IMAGE:core -t $BUILD_IMAGE:$CI_COMMIT_BRANCH -f Dockerfile .
+  only:
+    - master
+
+#    - echo "### push image"
+#    - docker tag $BUILD_IMAGE:latest $BUILD_IMAGE:$(cat version)
+#    - docker push $BUILD_IMAGE:latest
+#    - docker push $BUILD_IMAGE:$(cat version)

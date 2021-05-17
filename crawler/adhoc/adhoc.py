@@ -27,4 +27,4 @@ def init_arguments() -> dict:
 if __name__ == '__main__':
     params = init_arguments()
 
-    cmdline.execute(['scrapy', 'crawl', '--loglevel', 'DEBUG', params['name']])
+    cmdline.execute(['scrapy', 'crawl', '--loglevel', 'INFO', params['name']])
