@@ -536,7 +536,8 @@ class ElasticSearchUtils(object):
         return
 
     def dump_index(self, index: str, size: int = 1000, query: dict = None, result: list = None,
-                   limit: int = -1, source: list = None, index_size: int = -1, fp: BZ2File = None) -> None:
+                   limit: int = -1, source: list = None, index_size: int = -1, fp: BZ2File = None,
+                   params: dict = None) -> None:
         if index is None or index == '':
             return
 
@@ -567,7 +568,8 @@ class ElasticSearchUtils(object):
                 size=size,
                 scroll_id=scroll_id,
                 query=query,
-                source=source
+                source=source,
+                params=params
             )
 
             count = len(resp['hits'])
@@ -595,6 +597,9 @@ class ElasticSearchUtils(object):
                     '_index': item['_index'],
                 })
 
+                if '_version' in item:
+                    doc['_version'] = item['_version']
+
                 if result is None:
                     line = json.dumps(doc, ensure_ascii=False) + '\n'
                     if fp:
@@ -613,13 +618,16 @@ class ElasticSearchUtils(object):
         return
 
     def scroll(self, index: str, scroll_id: str, size: int = 1000, source: list = None, query: dict = None,
-               time_out: str = '2m') -> dict:
-        params = {
+               time_out: str = '2m', params: dict = None) -> dict:
+        timeout_params = {
             'request_timeout': 10 * 60
         }
 
         # 스크롤 아이디가 있다면 scroll 함수 호출
         if scroll_id == '':
+            if params is not None:
+                params.update(timeout_params)
+
             search_result = self.conn.search(
                 index=index,
                 scroll=time_out,
@@ -632,7 +640,7 @@ class ElasticSearchUtils(object):
             search_result = self.conn.scroll(
                 scroll_id=scroll_id,
                 scroll=time_out,
-                params=params,
+                params=timeout_params,
             )
 
         # 검색 결과 추출
