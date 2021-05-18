@@ -131,7 +131,7 @@ class ReutersSpider(scrapy.Spider):
                 self.history.add(url)
                 return False
 
-        self.logger.log(level=INFO, msg=f'skip url (out of allowed domains): {url}')
+        # self.logger.log(level=INFO, msg=f'skip url (out of allowed domains): {url}')
         return True
 
     def save_document(self, doc: dict, doc_id: str):
