@@ -23,7 +23,7 @@ setup(
     version=version,
     packages=find_packages(include=['crawler', 'crawler.*']),
     python_requires='>=3',
-    url='http://galadriel02.korea.ncsoft.corp/crawler/crawler',
+    url='http://galadriel02.korea.ncsoft.corp/crawler-dev/crawler',
     license='Apache License Version 2.0',
     author='ejpark',
     author_email='ejpark@ncsoft.com',
