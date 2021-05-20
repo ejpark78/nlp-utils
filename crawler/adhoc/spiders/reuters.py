@@ -81,7 +81,7 @@ class ReutersSpider(scrapy.Spider):
 
             yield response.follow(url, callback=self.parse)
 
-        self.logger.log(level=INFO, msg=self.utils.summary)
+        self.logger.log(level=INFO, msg=dict(self.utils.summary))
 
 
 """
