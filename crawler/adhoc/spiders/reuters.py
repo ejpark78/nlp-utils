@@ -43,7 +43,7 @@ class ReutersSpider(scrapy.Spider):
         )
 
     def start_requests(self):
-        self.utils.settings = self.settings,
+        self.utils.settings = self.settings
 
         self.utils.open()
         self.utils.del_old_history()
