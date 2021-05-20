@@ -33,24 +33,31 @@ class ReutersSpider(scrapy.Spider):
 
         self.deep = self.max_deep = max_deep
 
-        self.utils = AdhocUtils(
-            index=index,
-            logger=self.logger,
-            allowed_url_query=allowed_url_query,
-            allowed_domains=self.allowed_domains,
-            history_lifetime=history_lifetime,
-        )
+        self.index = index
+        self.allowed_url_query = allowed_url_query
+        self.history_lifetime = history_lifetime
+
+        self.utils = None
 
     def start_requests(self):
+        self.utils = AdhocUtils(
+            index=self.index,
+            logger=self.logger,
+            allowed_url_query=self.allowed_url_query,
+            allowed_domains=self.allowed_domains,
+            history_lifetime=self.history_lifetime,
+            settings=self.settings,
+        )
+
         self.utils.open()
         self.utils.del_old_history()
 
         for url in self.start_urls:
             self.deep = self.max_deep
 
-            yield scrapy.Request(url, callback=self.extract_url, cb_kwargs=dict(is_start=True))
+            yield scrapy.Request(url, callback=self.parse, cb_kwargs=dict(is_start=True))
 
-    def extract_url(self, response: HtmlResponse, is_start: bool = False):
+    def parse(self, response: HtmlResponse, is_start: bool = False):
         self.deep -= 1
         if self.deep < 0:
             return
@@ -72,7 +79,7 @@ class ReutersSpider(scrapy.Spider):
             self.logger.log(level=DEBUG, msg=url)
             self.utils.summary['extracted url count'] += 1
 
-            yield response.follow(url, callback=self.extract_url)
+            yield response.follow(url, callback=self.parse)
 
         self.logger.log(level=INFO, msg=self.utils.summary)
 

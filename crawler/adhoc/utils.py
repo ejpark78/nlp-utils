@@ -20,6 +20,8 @@ from berkeleydb import hashopen
 from dateutil.parser import parse as parse_date
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
+from scrapy.utils.project import data_path
+from scrapy.settings import Settings
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -30,9 +32,10 @@ urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 class AdhocUtils(object):
 
     def __init__(self, allowed_domains: list, index: str, allowed_url_query: str, history_lifetime: int,
-                 logger: LoggerAdapter):
+                 logger: LoggerAdapter, settings: Settings):
         self.index = index
         self.logger = logger
+        self.settings = settings
 
         self.allowed_domains = allowed_domains
 
@@ -72,6 +75,8 @@ class AdhocUtils(object):
         }
 
         self.summary = defaultdict(int)
+
+        self.cache_dir = data_path('', createdir=True).rstrip('/')
 
     @staticmethod
     def get_doc_id(url: str) -> str:
@@ -191,7 +196,7 @@ class AdhocUtils(object):
         return True
 
     def open(self) -> None:
-        self.history_db = hashopen('url_history.db', 'w')
+        self.history_db = hashopen(f"{self.cache_dir}/{self.settings['URL_HISTORY_FILENAME']}", 'w')
 
         if self.es is not None:
             return
