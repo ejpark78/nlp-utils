@@ -28,26 +28,22 @@ class ReutersSpider(scrapy.Spider):
     ]
 
     def __init__(self, max_deep: int = 1024, index: str = 'adhoc-reuters', allowed_url_query: str = 'page',
-                 history_lifetime: int = 12, *args, **kwargs):
+                 history_lifetime: int = 12, exclude_query_ids: str = 'chan', *args, **kwargs):
         super(ReutersSpider, self).__init__(*args, **kwargs)
 
         self.deep = self.max_deep = max_deep
 
-        self.index = index
-        self.allowed_url_query = allowed_url_query
-        self.history_lifetime = history_lifetime
-
-        self.utils = None
+        self.utils = AdhocUtils(
+            index=index,
+            logger=self.logger,
+            allowed_url_query=allowed_url_query,
+            allowed_domains=self.allowed_domains,
+            history_lifetime=history_lifetime,
+            exclude_query_ids=exclude_query_ids,
+        )
 
     def start_requests(self):
-        self.utils = AdhocUtils(
-            index=self.index,
-            logger=self.logger,
-            allowed_url_query=self.allowed_url_query,
-            allowed_domains=self.allowed_domains,
-            history_lifetime=self.history_lifetime,
-            settings=self.settings,
-        )
+        self.utils.settings = self.settings,
 
         self.utils.open()
         self.utils.del_old_history()
@@ -85,6 +81,8 @@ class ReutersSpider(scrapy.Spider):
 
 
 """
+/video/watch/biden-says-gop-is-having-mini-revolution-id729582174?chan=6g5ka85
+
 # url 복원 
 'https://www.reuters.com/video/watch/biden-says-gop-is-having-mini-revolution-id729582174?chan=6g5ka85'
 'https://www.reuters.com/news/archive/instagram.com/instagram.com//instagram.com/reuters?view=page&page=2&pageSize=10'

@@ -20,8 +20,8 @@ from berkeleydb import hashopen
 from dateutil.parser import parse as parse_date
 from elasticsearch import Elasticsearch
 from elasticsearch.connection import create_ssl_context
-from scrapy.utils.project import data_path
 from scrapy.settings import Settings
+from scrapy.utils.project import data_path
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -32,7 +32,7 @@ urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 class AdhocUtils(object):
 
     def __init__(self, allowed_domains: list, index: str, allowed_url_query: str, history_lifetime: int,
-                 logger: LoggerAdapter, settings: Settings):
+                 logger: LoggerAdapter, exclude_query_ids: str, settings: Settings = None):
         self.index = index
         self.logger = logger
         self.settings = settings
@@ -41,6 +41,10 @@ class AdhocUtils(object):
 
         self.allowed_urls = {
             'query': set(allowed_url_query.split(','))
+        }
+
+        self.exclude_query_ids = {
+            'query': set(exclude_query_ids.split(','))
         }
 
         self.host = getenv('ELASTIC_SEARCH_HOST', default='https://corpus.ncsoft.com:9200')
@@ -78,13 +82,12 @@ class AdhocUtils(object):
 
         self.cache_dir = data_path('', createdir=True).rstrip('/')
 
-    @staticmethod
-    def get_doc_id(url: str) -> str:
+    def get_doc_id(self, url: str) -> str:
         parsed_url = urlparse(url)
 
         path = parsed_url.path.strip('/').replace('/', '-')
 
-        q = {k: v[0] for k, v in parse_qs(parsed_url.query).items()}
+        q = {k: v[0] for k, v in parse_qs(parsed_url.query).items() if k not in self.exclude_query_ids['query']}
         if len(q) == 0:
             return path
 
