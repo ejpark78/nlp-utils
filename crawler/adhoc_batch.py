@@ -8,7 +8,7 @@ from __future__ import print_function
 import configparser
 import os
 import sys
-from os import getenv
+from os import getenv, chdir
 
 from scrapy import cmdline
 
@@ -46,6 +46,7 @@ def change_data_dir(data_dir: str = None, filename: str = 'scrapy.cfg') -> None:
 if __name__ == '__main__':
     params = init_arguments()
 
+    chdir(os.environ['XDG_CONFIG_HOME'])
     change_data_dir(data_dir=params['data_dir'])
 
     cmdline.execute(['scrapy', 'crawl', '--loglevel', 'INFO', params['name']])
