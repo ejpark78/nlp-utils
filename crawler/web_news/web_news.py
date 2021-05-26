@@ -25,7 +25,6 @@ urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 
 
 class WebNewsCrawler(WebNewsBase):
-    """웹 뉴스 크롤러"""
 
     def __init__(self):
         super().__init__()
