@@ -49,12 +49,12 @@ class WebNewsBase(object):
             'mobile': {
                 'User-Agent': 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) '
                               'AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/89.0.4389.114 Mobile Safari/537.36'
+                              'Chrome/91.0.4472.77 Mobile Safari/537.36'
             },
             'desktop': {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                               'AppleWebKit/537.36 (KHTML, like Gecko) '
-                              'Chrome/89.0.4389.114 Safari/537.36'
+                              'Chrome/91.0.4472.77 Safari/537.36'
             }
         }
 

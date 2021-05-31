@@ -5,12 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import urllib3
-from .detail import TermDetail as NaverTermDetail
-from .list import TermList as NaverTermList
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-urllib3.disable_warnings(UserWarning)
+from crawler.naver_terms.detail import TermsDetail as NaverTermsDetail
+from crawler.naver_terms.list import TermsList as NaverTermsList
 
 
 class TermsCrawler(object):
@@ -19,32 +15,34 @@ class TermsCrawler(object):
     def __init__(self):
         super().__init__()
 
-        self.env = None
+    def batch(self):
+        params = self.init_arguments()
+
+        if params['list'] is True:
+            NaverTermsList(params=params).batch()
+            return
+        elif params['detail'] is True:
+            NaverTermsDetail(params=params).batch()
+            return
+
+        return
 
     @staticmethod
-    def init_arguments():
+    def init_arguments() -> dict:
         import argparse
 
         parser = argparse.ArgumentParser()
+
+        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
 
         parser.add_argument('--list', action='store_true', default=False, help='목록')
         parser.add_argument('--detail', action='store_true', default=False, help='상세 정보')
 
         parser.add_argument('--sub-category', default='', help='하위 카테고리')
 
-        return parser.parse_args()
+        parser.add_argument('--sleep', default=10, type=float, help='sleep time')
 
-    def batch(self):
-        self.env = self.init_arguments()
-
-        if self.env.list is True:
-            NaverTermList().batch(sub_category=self.env.sub_category)
-            return
-        elif self.env.detail is True:
-            NaverTermDetail().batch()
-            return
-
-        return
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

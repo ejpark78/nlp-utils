@@ -287,8 +287,8 @@ class ElasticSearchUtils(object):
             self.index = index
 
         try:
-            condition = f"if (!ctx._source.{field}.contains(params.value)) "
-            condition += f"{{ ctx._source.{field}.add(params.value) }}"
+            condition = f'''if (!ctx._source.{field}.contains(params.value)) '''
+            condition += f'''{{ ctx._source.{field}.add(params.value) }}'''
 
             body = {
                 'script': {
@@ -508,7 +508,7 @@ class ElasticSearchUtils(object):
             'doc_list': doc_list,
         }
 
-        filename = f"{self.log_path}/{self.index}-{dt.strftime('%Y%m%d-%H%M%S')}.json"
+        filename = f'''{self.log_path}/{self.index}-{dt.strftime('%Y%m%d-%H%M%S')}.json'''
         with open(filename, 'w') as fp:
             fp.write(json.dumps(contents, ensure_ascii=False, indent=2))
 
@@ -795,7 +795,7 @@ class ElasticSearchUtils(object):
 
         return
 
-    def merge_doc(self, index: str, doc: dict, column: str) -> dict:
+    def merge_doc(self, index: str, doc: dict, column: list) -> dict:
         """이전에 수집한 문서와 병합"""
         doc_id = doc['_id']
 
@@ -971,7 +971,10 @@ class ElasticSearchUtils(object):
         self.conn.index(index=index, body=summary)
         return
 
-    def get_doc_url(self, document_id: str) -> str:
+    def get_doc_url(self, document_id: str, index: str = None) -> str:
+        if index is not None:
+            return f'{self.host}/{index}/_doc/{document_id}?pretty'
+
         return f'{self.host}/{self.index}/_doc/{document_id}?pretty'
 
     def batch(self) -> None:
