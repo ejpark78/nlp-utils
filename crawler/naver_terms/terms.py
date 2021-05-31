@@ -46,6 +46,8 @@ class TermsCrawler(object):
                             help='elasticsearch url')
         parser.add_argument('--index', default=getenv('ELASTIC_SEARCH_INDEX', default=None), type=str,
                             help='elasticsearch index')
+        parser.add_argument('--list-index', default=getenv('ELASTIC_SEARCH_LIST_INDEX', default=None), type=str,
+                            help='elasticsearch list index')
         parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
                             help='elasticsearch auth')
 
