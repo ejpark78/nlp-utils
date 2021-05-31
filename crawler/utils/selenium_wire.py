@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import brotli
 import json
 from time import sleep
 from urllib.parse import urlparse
@@ -23,8 +24,8 @@ urllib3.disable_warnings(UserWarning)
 
 class SeleniumWireUtils(object):
 
-    def __init__(self, login=False, headless=True, user_data_path=None, incognito=False,
-                 executable_path='/usr/bin/chromedriver'):
+    def __init__(self, login: bool = False, headless: bool = True, user_data_path: str = None, incognito: bool = False,
+                 executable_path: str = '/usr/bin/chromedriver'):
         super().__init__()
 
         self.logger = Logger()
@@ -44,7 +45,7 @@ class SeleniumWireUtils(object):
 
         self.open_driver()
 
-    def open_driver(self):
+    def open_driver(self) -> None:
         if self.driver is not None:
             return
 
@@ -107,14 +108,14 @@ class SeleniumWireUtils(object):
 
         return
 
-    def close_driver(self):
+    def close_driver(self) -> None:
         if self.driver is not None:
             self.driver.quit()
             self.driver = None
 
         return
 
-    def scroll(self, meta, count=10, sleep_time=1, css_selector='html'):
+    def scroll(self, meta: dict, count: int = 10, sleep_time: int = 1, css_selector: str = 'html') -> bool:
         html = self.driver.find_element_by_css_selector(css_selector)
 
         for i in range(count):
@@ -143,7 +144,7 @@ class SeleniumWireUtils(object):
 
         return False
 
-    def scroll_to(self, count, sleep_time=3):
+    def scroll_to(self, count: int, sleep_time: int = 3) -> bool:
         for _ in range(count):
             try:
                 self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
@@ -160,7 +161,7 @@ class SeleniumWireUtils(object):
 
         return False
 
-    def open(self, url, resp_url_path=None, wait_for_path=None, clear_requests=True):
+    def open(self, url: str, resp_url_path: str = None, wait_for_path: str = None, clear_requests: bool = True):
         if clear_requests is True:
             self.reset_requests()
 
@@ -195,7 +196,7 @@ class SeleniumWireUtils(object):
 
         return self.get_requests(resp_url_path=resp_url_path)
 
-    def get_requests(self, resp_url_path=None, max_try=10, sleep_time=10):
+    def get_requests(self, resp_url_path: str = None, max_try: int = 10, sleep_time: int = 10) -> list:
         if max_try < 0:
             return []
 
@@ -236,7 +237,10 @@ class SeleniumWireUtils(object):
 
             if 'Content-Type' in req.response.headers and 'json' in req.response.headers['Content-Type']:
                 try:
-                    req.data = json.loads(req.response.body)
+                    if req.response.headers['Content-Encoding'] == 'br':
+                        req.data = json.loads(brotli.decompress(req.response.body))
+                    else:
+                        req.data = json.loads(req.response.body)
                 except Exception as e:
                     self.logger.error(msg={'error': str(e)})
 
@@ -251,6 +255,6 @@ class SeleniumWireUtils(object):
 
         return result
 
-    def reset_requests(self):
+    def reset_requests(self) -> None:
         del self.driver.requests
         return

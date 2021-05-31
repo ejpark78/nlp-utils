@@ -7,16 +7,16 @@ from __future__ import print_function
 
 from time import sleep
 
-from crawler.youtube.base import YoutubeBase
+from crawler.youtube.core import YoutubeCore
 
 
-class YoutubeReply(YoutubeBase):
+class YoutubeReply(YoutubeCore):
 
-    def __init__(self, params):
+    def __init__(self, params: dict):
         super().__init__(params=params)
 
-    def get_total_reply_count(self):
-        self.selenium.scroll(count=3, meta={})
+    def get_total_reply_count(self) -> int:
+        self.selenium.scroll(count=15, meta={})
 
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
             if hasattr(x, 'data') is False or len(x.data) < 2:
@@ -52,11 +52,12 @@ class YoutubeReply(YoutubeBase):
                 'total': total
             })
 
-            return total
+            return int(total)
 
         return -1
 
-    def get_more_reply(self, v_id, title, meta, total, reply_sum=0, max_try=500, max_zero_count=10):
+    def get_more_reply(self, v_id: str, title: str, meta: dict, total: int, reply_sum: int = 0, max_try: int = 500,
+                       max_zero_count: int = 10) -> int:
         if max_try < 0 or max_zero_count < 0:
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -71,7 +72,7 @@ class YoutubeReply(YoutubeBase):
         self.selenium.reset_requests()
 
         if total > 10:
-            scroll_count = self.params.max_scroll if total > 20 else 3
+            scroll_count = self.params['max_scroll'] if total > 20 else 3
             self.selenium.scroll(count=scroll_count, meta=meta)
 
         contents = []
@@ -115,7 +116,7 @@ class YoutubeReply(YoutubeBase):
             max_zero_count -= 1
         else:
             max_zero_count = 10
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
         self.get_more_reply(
             v_id=v_id,
@@ -129,8 +130,8 @@ class YoutubeReply(YoutubeBase):
 
         return reply_sum
 
-    def batch(self):
-        self.db.cursor.execute('SELECT id, title FROM videos WHERE reply_count < 0')
+    def batch(self) -> None:
+        self.db.cursor.execute('''SELECT id, title FROM videos WHERE reply_count < 0''')
 
         rows = self.db.cursor.fetchall()
 
@@ -147,7 +148,7 @@ class YoutubeReply(YoutubeBase):
                 'size': len(rows)
             })
 
-            url = f'https://www.youtube.com/watch?v={v_id}'
+            url = f'''https://www.youtube.com/watch?v={v_id}'''
             self.selenium.open(
                 url=url,
                 resp_url_path=None,
@@ -159,7 +160,7 @@ class YoutubeReply(YoutubeBase):
 
             if total == 0:
                 self.db.update_reply_count(v_id=v_id, count=0)
-                sleep(self.params.sleep)
+                sleep(self.params['sleep'])
                 continue
 
             reply_count = self.get_more_reply(
@@ -170,6 +171,6 @@ class YoutubeReply(YoutubeBase):
             )
 
             self.db.update_reply_count(v_id=v_id, count=reply_count)
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
         return
