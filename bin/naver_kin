@@ -17,7 +17,7 @@ class NaverKinCrawler(object):
         super().__init__()
 
     @staticmethod
-    def init_arguments():
+    def init_arguments() -> dict:
         import argparse
 
         parser = argparse.ArgumentParser()
@@ -37,45 +37,45 @@ class NaverKinCrawler(object):
 
         parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
-        return parser.parse_args()
+        return vars(parser.parse_args())
 
-    def batch(self):
-        env = self.init_arguments()
+    def batch(self) -> None:
+        params = self.init_arguments()
 
-        if env.question_list is True:
+        if params['question_list'] is True:
             NaverKinQuestionList().batch(
-                sleep_time=env.sleep,
-                config=env.config,
+                sleep_time=params['sleep'],
+                config=params['config'],
                 column='question_list'
             )
             return
-        elif env.answer_list is True:
+        elif params['answer_list'] is True:
             NaverKinQuestionList().batch(
-                sleep_time=env.sleep,
-                config=env.config,
+                sleep_time=params['sleep'],
+                config=params['config'],
                 column='answer_list'
             )
             return
-        elif env.user_list is True:
+        elif params['user_list'] is True:
             NaverKinUserList().batch(
-                sleep_time=env.sleep,
-                config=env.config
+                sleep_time=params['sleep'],
+                config=params['config']
             )
             return
-        elif env.question is True:
+        elif params['question'] is True:
             NaverKinQuestionDetail().batch(
-                sleep_time=env.sleep,
+                sleep_time=params['sleep'],
                 column='question',
-                match_phrase=env.match_phrase,
-                config=env.config
+                match_phrase=params['match_phrase'],
+                config=params['config']
             )
             return
-        elif env.answer is True:
+        elif params['answer'] is True:
             NaverKinQuestionDetail().batch(
-                sleep_time=env.sleep,
+                sleep_time=params['sleep'],
                 column='answer',
-                match_phrase=env.match_phrase,
-                config=env.config
+                match_phrase=params['match_phrase'],
+                config=params['config']
             )
             return
 

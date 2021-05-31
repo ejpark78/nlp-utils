@@ -33,7 +33,7 @@ urllib3.disable_warnings(UserWarning)
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 
 
-class WebNewsBase(object):
+class WebNewsCore(object):
     """크롤러 베이스"""
 
     def __init__(self):
