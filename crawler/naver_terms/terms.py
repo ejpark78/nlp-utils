@@ -51,7 +51,7 @@ class TermsCrawler(object):
         parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
                             help='elasticsearch auth')
 
-        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=None), type=float, help='sleep time')
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
 
         return vars(parser.parse_args())
 

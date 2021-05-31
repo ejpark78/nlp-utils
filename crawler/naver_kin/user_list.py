@@ -11,7 +11,7 @@ from urllib.parse import unquote
 import requests
 import urllib3
 
-from crawler.naver.kin.base import NaverKinBase
+from crawler.naver_kin.base import NaverKinBase
 from crawler.utils.es import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

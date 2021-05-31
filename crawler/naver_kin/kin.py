@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from crawler.naver.kin.question_detail import QuestionDetail as NaverKinQuestionDetail
-from crawler.naver.kin.question_list import QuestionList as NaverKinQuestionList
-from crawler.naver.kin.user_list import UserList as NaverKinUserList
+from crawler.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
+from crawler.naver_kin.question_list import QuestionList as NaverKinQuestionList
+from crawler.naver_kin.user_list import UserList as NaverKinUserList
 
 
 class NaverKinCrawler(object):
@@ -18,7 +18,6 @@ class NaverKinCrawler(object):
 
     @staticmethod
     def init_arguments():
-        """ 옵션 설정 """
         import argparse
 
         parser = argparse.ArgumentParser()
