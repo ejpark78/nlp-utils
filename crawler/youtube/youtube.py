@@ -109,6 +109,7 @@ class YoutubeCrawler(object):
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
+        parser.add_argument('--reply-scroll', default=20, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')
 

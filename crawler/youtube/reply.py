@@ -16,7 +16,7 @@ class YoutubeReply(YoutubeCore):
         super().__init__(params=params)
 
     def get_total_reply_count(self) -> int:
-        self.selenium.scroll(count=15, meta={})
+        self.selenium.scroll(count=self.params['reply_scroll'], meta={})
 
         for x in self.selenium.get_requests(resp_url_path='/comment_service_ajax'):
             if hasattr(x, 'data') is False or len(x.data) < 2:
@@ -32,7 +32,7 @@ class YoutubeReply(YoutubeCore):
             if 'commentsCount' not in resp_item['header']['commentsHeaderRenderer']:
                 continue
 
-            total_text = resp_item['header']['commentsHeaderRenderer']['commentsCount']['simpleText']
+            total_text = resp_item['header']['commentsHeaderRenderer']['commentsCount']['runs'][0]['text']
             if '천' in total_text or 'K' in total_text:
                 total_text = total_text.replace('천', '').replace('K', '')
 
