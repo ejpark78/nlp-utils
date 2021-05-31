@@ -41,16 +41,11 @@ class TermsCore(object):
 
         self.config = self.open_config(filename=self.params['config'])
 
-        http_auth = getenv('ELASTIC_SEARCH_AUTH', default=None)
-        if http_auth is None:
-            http_auth = getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None)
-            http_auth = decodebytes(http_auth.encode('utf-8')).decode('utf-8')
-
         self.config['jobs'].update({
-            'host': getenv('ELASTIC_SEARCH_HOST', default=''),
-            'index': getenv('ELASTIC_SEARCH_INDEX', default=''),
-            'list_index': getenv('ELASTIC_SEARCH_LIST_INDEX', default=''),
-            'http_auth': http_auth
+            'host': self.params['host'],
+            'index': self.params['index'],
+            'list_index': self.params['list_index'],
+            'http_auth': decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
         })
 
         self.job_sub_category = self.params['sub_category'].split(',') if self.params['sub_category'] != '' else []
