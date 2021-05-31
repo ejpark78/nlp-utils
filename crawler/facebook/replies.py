@@ -12,17 +12,15 @@ from time import sleep
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import NoSuchElementException
 
-from .base import FBBase
+from crawler.facebook.core import FacebookCore
 
 
-class FBReplies(FBBase):
+class FacebookReplies(FacebookCore):
 
-    def __init__(self, params):
+    def __init__(self, params: dict):
         super().__init__(params=params)
 
-        self.params = params
-
-    def save_replies(self, reply_list, post_id, index):
+    def save_replies(self, reply_list: list, post_id: str, index: str) -> None:
         """추출한 정보를 저장한다."""
         if len(reply_list) == 0:
             return
@@ -58,10 +56,10 @@ class FBReplies(FBBase):
 
         return
 
-    def get_replies(self, post):
+    def get_replies(self, post: dict) -> int:
         """컨텐츠 하나를 조회한다."""
         if 'url' not in post:
-            return
+            return -1
 
         self.selenium.open_driver()
 
@@ -98,9 +96,9 @@ class FBReplies(FBBase):
 
         return count
 
-    def see_more_reply(self):
+    def see_more_reply(self) -> None:
         """ 더 보기 링크를 클릭한다."""
-        self.see_prev_reply(max_try=self.params.max_try)
+        self.see_prev_reply(max_try=self.params['max_try'])
 
         try:
             ele_list = self.selenium.driver.find_elements_by_tag_name('a')
@@ -126,7 +124,7 @@ class FBReplies(FBBase):
         sleep(2)
         return
 
-    def see_prev_reply(self, max_try=200):
+    def see_prev_reply(self, max_try: int = 200) -> None:
         """ 이전 댓글 보기를 클릭한다."""
         if max_try < 0:
             return
@@ -165,7 +163,7 @@ class FBReplies(FBBase):
         self.see_prev_reply(max_try=max_try - 1)
         return
 
-    def batch(self):
+    def batch(self) -> None:
         _ = self.db.cursor.execute('SELECT content FROM posts WHERE reply_count < 0')
 
         rows = self.db.cursor.fetchall()

@@ -11,14 +11,13 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 
-class FBParser(object):
+class FacebookParser(object):
     """페이스북 파서"""
 
     def __init__(self):
-        """ 생성자 """
         super().__init__()
 
-    def parse_post(self, url, html):
+    def parse_post(self, url: str, html: str) -> list:
         """포스트 내용을 추출한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -65,7 +64,7 @@ class FBParser(object):
         return result
 
     @staticmethod
-    def to_string(doc):
+    def to_string(doc: dict) -> dict:
         """ 문서의 각 필드값을 string 타입으로 변환한다. """
         for k in doc:
             if isinstance(doc[k], str) is True:
@@ -80,7 +79,7 @@ class FBParser(object):
         return doc
 
     @staticmethod
-    def parse_reply_body(tag):
+    def parse_reply_body(tag) -> dict:
         raw_html = tag.prettify()
 
         user_name = ''

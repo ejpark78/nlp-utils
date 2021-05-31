@@ -12,17 +12,15 @@ from glob import glob
 from os.path import isdir
 from time import sleep
 
-from .base import FBBase
+from crawler.facebook.core import FacebookCore
 
 
-class FBGroupList(FBBase):
+class FacebookGroupList(FacebookCore):
 
     def __init__(self, params):
         super().__init__(params=params)
 
-        self.params = params
-
-    def trace_post_list(self, group_info):
+    def trace_post_list(self, group_info: dict) -> int:
         """하나의 계정을 조회한다."""
         self.selenium.open_driver()
 
@@ -34,11 +32,11 @@ class FBGroupList(FBBase):
         i = 0
         count = 0
 
-        for _ in range(self.params.max_page):
+        for _ in range(self.params['max_page']):
             stop = self.selenium.page_down(count=10, sleep_time=3)
             self.selenium.driver.implicitly_wait(25)
 
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
             i += 1
 
             try:
@@ -56,7 +54,7 @@ class FBGroupList(FBBase):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': 'trace post list',
-                'page': f'{i:,}/{self.params.max_page:,}',
+                'page': f'''{i:,}/{self.params['max_page']:,}''',
                 'count': f'{len(post_list):,}/{count:,}',
             })
 
@@ -79,7 +77,7 @@ class FBGroupList(FBBase):
 
         return count
 
-    def save_post(self, doc, group_info):
+    def save_post(self, doc: dict, group_info: dict) -> None:
         """추출한 정보를 저장한다."""
         doc['page'] = group_info['page']
         if 'page' not in doc or 'top_level_post_id' not in doc:
@@ -118,7 +116,7 @@ class FBGroupList(FBBase):
 
         return
 
-    def delete_post(self):
+    def delete_post(self) -> None:
         """이전 포스트를 삭제한다."""
         script = 'document.querySelectorAll("article").forEach(function(ele) {ele.remove();})'
 
@@ -137,7 +135,7 @@ class FBGroupList(FBBase):
         return
 
     @staticmethod
-    def read_config(filename, with_comments=False):
+    def read_config(filename: str, with_comments: bool = False) -> list:
         """설정파일을 읽어드린다."""
         file_list = filename.split(',')
         if isdir(filename) is True:
@@ -158,16 +156,16 @@ class FBGroupList(FBBase):
 
         return result
 
-    def account(self):
-        account = self.read_config(filename=self.params.config)
+    def account(self) -> None:
+        account = self.read_config(filename=self.params['config'])
 
         for group in account:
             self.db.save_account(account_id=group['page'], name=group['meta']['name'], document=group)
 
         return
 
-    def batch(self):
-        group_list = self.read_config(filename=self.params.config)
+    def batch(self) -> None:
+        group_list = self.read_config(filename=self.params['config'])
 
         for group in group_list:
             self.db.save_account(account_id=group['page'], name=group['meta']['name'], document=group)

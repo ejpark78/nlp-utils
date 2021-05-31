@@ -10,25 +10,23 @@ from time import sleep
 
 import pytz
 
-from .cache_utils import CacheUtils
-from .group_list import FBGroupList
-from .replies import FBReplies
-from crawler.utils.dataset_utils import DataSetUtils
+from crawler.facebook.cache_utils import CacheUtils
+from crawler.facebook.group_list import FacebookGroupList
+from crawler.facebook.replies import FacebookReplies
+from crawler.utils.selenium import SeleniumUtils
 
 
-class FBCrawler(object):
+class FacebookCrawler(object):
 
     def __init__(self):
         super().__init__()
 
-        self.timezone = pytz.timezone('Asia/Seoul')
+        self.params = None
 
-        self.params = self.init_arguments()
+        self.timezone = pytz.timezone('Asia/Seoul')
 
     @staticmethod
     def sleep_to_login() -> None:
-        from utils import SeleniumUtils
-
         selenium = SeleniumUtils()
 
         selenium.open_driver()
@@ -51,9 +49,9 @@ class FBCrawler(object):
             'id,post_id,reply_id,reply_to,text,user_name'.split(',')
         ))
 
-        db = CacheUtils(filename=self.params.cache)
+        db = CacheUtils(filename=self.params['cache'])
 
-        f_name = f'{splitext(self.params.cache)[0]}.posts'
+        f_name = f'''{splitext(self.params['cache'])[0]}.posts'''
         db.export_tbl(
             filename=f'{f_name}.json.bz2',
             tbl='posts',
@@ -65,9 +63,9 @@ class FBCrawler(object):
 
         db.json2xlsx(filename=f_name)
 
-        f_name = f'{splitext(self.params.cache)[0]}.replies'
+        f_name = f'''{splitext(self.params['cache'])[0]}.replies'''
         db.export_tbl(
-            filename=f'{f_name}.json.bz2',
+            filename=f'''{f_name}.json.bz2''',
             tbl='replies',
             db_column='id,post_id,content',
             json_columns='content'.split(','),
@@ -79,22 +77,21 @@ class FBCrawler(object):
         return
 
     def batch(self) -> None:
-        if self.params.login:
+        self.params = self.init_arguments()
+
+        if self.params['login']:
             self.sleep_to_login()
 
-        if self.params.account:
-            FBGroupList(params=self.params).account()
+        if self.params['account']:
+            FacebookGroupList(params=self.params).account()
 
-        if self.params.list:
-            FBGroupList(params=self.params).batch()
+        if self.params['list']:
+            FacebookGroupList(params=self.params).batch()
 
-        if self.params.reply:
-            FBReplies(params=self.params).batch()
+        if self.params['reply']:
+            FacebookReplies(params=self.params).batch()
 
-        if self.params.upload is True:
-            DataSetUtils().upload(filename=self.params.meta)
-
-        if self.params.export is True:
+        if self.params['export'] is True:
             self.export()
 
         return
@@ -138,8 +135,8 @@ class FBCrawler(object):
 
         parser.add_argument('--meta', default='./data/facebook/facebook-meta.json', help='메타 파일명')
 
-        return parser.parse_args()
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':
-    FBCrawler().batch()
+    FacebookCrawler().batch()
