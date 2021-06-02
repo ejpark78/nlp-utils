@@ -5,10 +5,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from os import getenv
+import argparse
+import textwrap
 
 from crawler.web_news.web_news import WebNewsCrawler
-
 
 description = """웹 뉴스 크롤러"""
 
@@ -31,9 +31,6 @@ class WebNewsCrawlerBatch(object):
 
     @staticmethod
     def init_arguments() -> (dict, dict):
-        import argparse
-        import textwrap
-
         global description, epilog
 
         parser = argparse.ArgumentParser(

@@ -5,12 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import argparse
+import textwrap
 from os import getenv
 
 from crawler.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from crawler.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from crawler.naver_kin.user_list import UserList as NaverKinUserList
-
 
 description = """네이버 지식인 크롤러"""
 
@@ -24,38 +25,6 @@ class NaverKinCrawler(object):
 
     def __init__(self):
         super().__init__()
-
-    @staticmethod
-    def init_arguments() -> dict:
-        import argparse
-        import textwrap
-
-        global description, epilog
-
-        parser = argparse.ArgumentParser(
-            description=textwrap.dedent(description),
-            epilog=textwrap.dedent(epilog),
-            formatter_class=argparse.RawDescriptionHelpFormatter
-        )
-
-        # crawler options
-        parser.add_argument('--user-list', action='store_true', default=False)
-
-        parser.add_argument('--question-list', action='store_true', default=False)
-        parser.add_argument('--answer-list', action='store_true', default=False)
-
-        parser.add_argument('--question', action='store_true', default=False)
-        parser.add_argument('--answer', action='store_true', default=False)
-
-        # crawler settings
-        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
-
-        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
-
-        parser.add_argument('--match-phrase', default='{}', help='검색 조건')
-        # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
-
-        return vars(parser.parse_args())
 
     def batch(self) -> None:
         params = self.init_arguments()
@@ -98,6 +67,35 @@ class NaverKinCrawler(object):
             return
 
         return
+
+    @staticmethod
+    def init_arguments() -> dict:
+        global description, epilog
+
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # crawler options
+        parser.add_argument('--user-list', action='store_true', default=False)
+
+        parser.add_argument('--question-list', action='store_true', default=False)
+        parser.add_argument('--answer-list', action='store_true', default=False)
+
+        parser.add_argument('--question', action='store_true', default=False)
+        parser.add_argument('--answer', action='store_true', default=False)
+
+        # crawler settings
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
+
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+
+        parser.add_argument('--match-phrase', default='{}', help='검색 조건')
+        # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
+
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

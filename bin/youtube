@@ -5,14 +5,15 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import argparse
+import textwrap
 from os.path import splitext
 
+from crawler.utils.logger import Logger
+from crawler.utils.selenium_wire import SeleniumWireUtils
 from crawler.youtube.cache_utils import CacheUtils
 from crawler.youtube.reply import YoutubeReply
 from crawler.youtube.video_list import YoutubeVideoList
-from crawler.utils.logger import Logger
-from crawler.utils.selenium_wire import SeleniumWireUtils
-
 
 description = """검색팀 유튜브 크롤러"""
 
@@ -30,7 +31,7 @@ class YoutubeCrawler(object):
         self.logger = Logger()
 
         self.selenium = SeleniumWireUtils(headless=True)
-        
+
         self.params = {}
 
     def export(self) -> None:
@@ -100,9 +101,6 @@ class YoutubeCrawler(object):
 
     @staticmethod
     def init_arguments():
-        import argparse
-        import textwrap
-
         global description, epilog
 
         parser = argparse.ArgumentParser(

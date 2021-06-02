@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import argparse
+import textwrap
 from os import getenv
 from time import sleep
 
@@ -14,7 +16,6 @@ from crawler.facebook.core import FacebookCore
 from crawler.facebook.posts import FacebookPosts
 from crawler.facebook.replies import FacebookReplies
 from crawler.utils.selenium import SeleniumUtils
-
 
 description = """검색팀 페이스북 크롤러"""
 
@@ -86,9 +87,6 @@ class FacebookCrawler(object):
 
     @staticmethod
     def init_arguments():
-        import argparse
-        import textwrap
-
         global description, epilog
 
         parser = argparse.ArgumentParser(

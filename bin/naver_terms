@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import argparse
+import textwrap
 from os import getenv
 
 from crawler.naver_terms.core import TermsCore
@@ -67,9 +69,6 @@ class TermsCrawler(object):
 
     @staticmethod
     def init_arguments() -> dict:
-        import argparse
-        import textwrap
-
         global description, epilog
 
         parser = argparse.ArgumentParser(
