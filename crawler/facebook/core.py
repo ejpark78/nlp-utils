@@ -97,6 +97,6 @@ class FacebookCore(object):
                         }
                     }
 
-                    self.es.dump_index(index=index, fp=fp, query=query)
+                    self.es.dump_index(index=index, fp=fp, query=query, desc=job['page'])
 
         return

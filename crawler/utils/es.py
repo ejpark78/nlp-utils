@@ -111,7 +111,7 @@ class ElasticSearchUtils(object):
                 'level': 'ERROR',
                 'message': '인덱스 생성 에러',
                 'host': self.host,
-                'index': self.index,
+                'index': index,
                 'exception': str(e),
             })
             return False
@@ -120,7 +120,7 @@ class ElasticSearchUtils(object):
             'level': 'MESSAGE',
             'message': '인덱스 생성 성공',
             'host': self.host,
-            'index': self.index,
+            'index': index,
             'mapping': mapping,
         })
 
@@ -539,7 +539,7 @@ class ElasticSearchUtils(object):
 
     def dump_index(self, index: str, size: int = 1000, query: dict = None, result: list = None,
                    limit: int = -1, source: list = None, index_size: int = -1, fp: BZ2File = None,
-                   params: dict = None) -> None:
+                   params: dict = None, desc: str = None) -> None:
         if index is None or index == '':
             return
 
@@ -579,7 +579,7 @@ class ElasticSearchUtils(object):
 
             if p_bar is None:
                 p_bar = tqdm(
-                    desc=index,
+                    desc=desc if desc else index,
                     total=resp['total'],
                     unit_scale=True,
                     dynamic_ncols=True

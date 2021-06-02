@@ -150,7 +150,14 @@ class FacebookReplies(FacebookCore):
         }
 
         result = []
-        self.es.dump_index(index=self.config['index']['post'], limit=limit, query=query, size=limit, result=result)
+        self.es.dump_index(
+            index=self.config['index']['post'],
+            limit=limit,
+            query=query,
+            size=limit + 1,
+            result=result,
+            desc=page,
+        )
 
         return result
 
@@ -186,7 +193,7 @@ class FacebookReplies(FacebookCore):
         )
 
         for job in self.config['jobs']:
-            post_list = self.get_post_list(page=job['page'], limit=100)
+            post_list = self.get_post_list(page=job['page'], limit=self.params['limit'])
 
             while len(post_list) > 0:
                 for post in post_list:
@@ -194,6 +201,6 @@ class FacebookReplies(FacebookCore):
 
                     self.update_post(index=self.config['index']['post'], post_id=post['_id'], count=count)
 
-                post_list = self.get_post_list(page=job['page'], limit=100)
+                post_list = self.get_post_list(page=job['page'], limit=self.params['limit'])
 
         return
