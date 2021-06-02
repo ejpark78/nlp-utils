@@ -16,6 +16,33 @@ from crawler.facebook.replies import FacebookReplies
 from crawler.utils.selenium import SeleniumUtils
 
 
+description = """검색팀 페이스북 크롤러"""
+
+epilog = """\
+usage example:
+
+* 포스트 수집
+    PYTHONPATH=. \\
+    CRAWLER_SELENIUM_DATA_PATH=./data/cache/selenium/facebook \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --post --config ../config/facebook/21-06-01.yaml
+
+* 댓글 수집
+    PYTHONPATH=. \\
+    CRAWLER_SELENIUM_DATA_PATH=./data/cache/selenium/facebook \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --reply --config ../config/facebook/21-06-01.yaml
+
+* 코퍼스 덤프
+    PYTHONPATH=. \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --dump --config ../config/facebook/21-06-01.yaml
+"""
+
+
 class FacebookCrawler(object):
 
     def __init__(self):
@@ -60,8 +87,15 @@ class FacebookCrawler(object):
     @staticmethod
     def init_arguments():
         import argparse
+        import textwrap
 
-        parser = argparse.ArgumentParser()
+        global description, epilog
+
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
 
         # crawler options
         parser.add_argument('--post', action='store_true', default=False)
@@ -77,11 +111,11 @@ class FacebookCrawler(object):
         # selenium settings
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
-        parser.add_argument('--user-data', default=None)
+        parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
         parser.add_argument('--driver', default='/usr/bin/chromedriver')
 
         parser.add_argument('--max-try', default=100, type=int)
-        parser.add_argument('--max-page', default=10000, type=int)
+        parser.add_argument('--max-page', default=1000000, type=int)
 
         # elasticsearch settings
         parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,

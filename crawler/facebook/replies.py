@@ -57,7 +57,7 @@ class FacebookReplies(FacebookCore):
                 if 'token' in doc:
                     del doc['token']
 
-                self.es.save_document(document=doc, delete=False, index=job['index']['reply'])
+                self.es.save_document(document=doc, delete=False, index=self.config['index']['reply'])
 
         self.es.flush()
 

@@ -84,6 +84,19 @@ class FacebookCore(object):
             print('index: ', index)
 
             with BZ2File(f'{index}.json.bz2', 'wb') as fp:
-                self.es.dump_index(index=index, fp=fp)
+                for job in self.config['jobs']:
+                    query = {
+                        'query': {
+                            'bool': {
+                                'must': [{
+                                    'match': {
+                                        'page': job['page']
+                                    }
+                                }]
+                            }
+                        }
+                    }
+
+                    self.es.dump_index(index=index, fp=fp, query=query)
 
         return

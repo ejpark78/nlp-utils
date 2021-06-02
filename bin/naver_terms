@@ -7,8 +7,42 @@ from __future__ import print_function
 
 from os import getenv
 
-from crawler.naver_terms.detail import TermsDetail as NaverTermsDetail
-from crawler.naver_terms.list import TermsList as NaverTermsList
+from crawler.naver_terms.core import TermsCore
+from crawler.naver_terms.detail import TermsDetail
+from crawler.naver_terms.list import TermsList
+
+description = """검색팀 네이버 백과사전 크롤러"""
+
+epilog = """\
+usage example:
+
+* 표제어 목록 수집
+    PYTHONPATH=. \\
+    CRAWLER_CONFIG=../config/naver-terms.yaml \\
+    ELASTIC_SEARCH_HOST=https://elastic:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=$(echo -n elastic:elastic | base64) \\
+    ELASTIC_SEARCH_INDEX=crawler-naver-terms-detail \\
+    ELASTIC_SEARCH_LIST_INDEX=crawler-naver-terms-list \\
+        bin/naver_terms --list
+
+* 본문 수집
+    PYTHONPATH=. \\
+    CRAWLER_CONFIG=../config/naver-terms.yaml \\
+    ELASTIC_SEARCH_HOST=https://elastic:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=$(echo -n elastic:elastic | base64) \\
+    ELASTIC_SEARCH_INDEX=crawler-naver-terms-detail \\
+    ELASTIC_SEARCH_LIST_INDEX=crawler-naver-terms-list \\
+        bin/naver_terms --detail
+
+* 코퍼스 덤프
+    PYTHONPATH=. \\
+    bin/naver_terms --dump \\
+        --config ../config/naver-terms.yaml \\
+        --host https://elastic:9200 \\
+        --auth-encoded $(echo -n elastic:elastic | base64) \\
+        --index crawler-naver-terms-detail \\
+        --list-index crawler-naver-terms-list
+"""
 
 
 class TermsCrawler(object):
@@ -21,27 +55,43 @@ class TermsCrawler(object):
         params = self.init_arguments()
 
         if params['list'] is True:
-            NaverTermsList(params=params).batch()
-            return
-        elif params['detail'] is True:
-            NaverTermsDetail(params=params).batch()
-            return
+            TermsList(params=params).batch()
+
+        if params['detail'] is True:
+            TermsDetail(params=params).batch()
+
+        if params['dump'] is True:
+            TermsCore(params=params).dump()
 
         return
 
     @staticmethod
     def init_arguments() -> dict:
         import argparse
+        import textwrap
 
-        parser = argparse.ArgumentParser()
+        global description, epilog
 
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # crawler options
         parser.add_argument('--list', action='store_true', default=False, help='목록')
         parser.add_argument('--detail', action='store_true', default=False, help='상세 정보')
 
+        parser.add_argument('--dump', action='store_true', default=False)
+
+        # crawler settings
         parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
 
         parser.add_argument('--sub-category', default=getenv('CRAWLER_SUBCATEGORY', default=''), help='하위 카테고리')
 
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+
+        # elasticsearch settings
         parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
                             help='elasticsearch url')
         parser.add_argument('--index', default=getenv('ELASTIC_SEARCH_INDEX', default=None), type=str,
@@ -50,8 +100,6 @@ class TermsCrawler(object):
                             help='elasticsearch list index')
         parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
                             help='elasticsearch auth')
-
-        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
 
         return vars(parser.parse_args())
 

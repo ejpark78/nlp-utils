@@ -6,12 +6,13 @@ from __future__ import division
 from __future__ import print_function
 
 from base64 import decodebytes
-from os import getenv
 
 import yaml
+from bz2 import BZ2File
 
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
+from crawler.utils.es import ElasticSearchUtils
 
 
 class TermsCore(object):
@@ -55,3 +56,20 @@ class TermsCore(object):
         with open(filename, 'r') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return data
+
+    def dump(self) -> None:
+        es = ElasticSearchUtils(
+            host=self.config['jobs']['host'],
+            index=self.config['jobs']['list_index'],
+            bulk_size=20,
+            http_auth=self.config['jobs']['http_auth'],
+            mapping=self.config['index_mapping']
+        )
+
+        for index in [self.config['jobs']['index'], self.config['jobs']['list_index']]:
+            print('index: ', index)
+
+            with BZ2File(f'{index}.json.bz2', 'wb') as fp:
+                es.dump_index(index=index, fp=fp)
+
+        return
