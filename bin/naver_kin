@@ -5,13 +5,22 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from os import getenv
+
 from crawler.naver_kin.question_detail import QuestionDetail as NaverKinQuestionDetail
 from crawler.naver_kin.question_list import QuestionList as NaverKinQuestionList
 from crawler.naver_kin.user_list import UserList as NaverKinUserList
 
 
+description = """네이버 지식인 크롤러"""
+
+epilog = """\
+usage example:
+
+"""
+
+
 class NaverKinCrawler(object):
-    """네이버 백과사전 크롤러"""
 
     def __init__(self):
         super().__init__()
@@ -19,11 +28,17 @@ class NaverKinCrawler(object):
     @staticmethod
     def init_arguments() -> dict:
         import argparse
+        import textwrap
 
-        parser = argparse.ArgumentParser()
+        global description, epilog
 
-        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
 
+        # crawler options
         parser.add_argument('--user-list', action='store_true', default=False)
 
         parser.add_argument('--question-list', action='store_true', default=False)
@@ -32,10 +47,13 @@ class NaverKinCrawler(object):
         parser.add_argument('--question', action='store_true', default=False)
         parser.add_argument('--answer', action='store_true', default=False)
 
+        # crawler settings
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
+
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+
         parser.add_argument('--match-phrase', default='{}', help='검색 조건')
         # parser.add_argument('-match_phrase', default='{"fullDirNamePath": "고민Q&A"}', help='검색 조건')
-
-        parser.add_argument('--sleep', default=10, type=int, help='sleep time')
 
         return vars(parser.parse_args())
 

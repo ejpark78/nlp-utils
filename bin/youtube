@@ -8,11 +8,17 @@ from __future__ import print_function
 from os.path import splitext
 
 from crawler.youtube.cache_utils import CacheUtils
-# from crawler.youtube.live_chat import YoutubeLiveChat
 from crawler.youtube.reply import YoutubeReply
 from crawler.youtube.video_list import YoutubeVideoList
 from crawler.utils.logger import Logger
 from crawler.utils.selenium_wire import SeleniumWireUtils
+
+
+description = """검색팀 유튜브 크롤러"""
+
+epilog = """\
+usage example:
+"""
 
 
 class YoutubeCrawler(object):
@@ -95,9 +101,17 @@ class YoutubeCrawler(object):
     @staticmethod
     def init_arguments():
         import argparse
+        import textwrap
 
-        parser = argparse.ArgumentParser()
+        global description, epilog
 
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # crawler options
         parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
         parser.add_argument('--live-chat', action='store_true', default=False, help='라이브챗 조회')
@@ -105,22 +119,26 @@ class YoutubeCrawler(object):
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
         parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
-        parser.add_argument('--cache', default='./data/youtube/test.db', help='파일명')
-        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
-
-        parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
-        parser.add_argument('--reply-scroll', default=20, type=int, help='최대 스크롤수')
-
-        parser.add_argument('--sleep', default=5, type=float, help='sleep time')
+        # crawler settings
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
 
         parser.add_argument('--template', default='../config/youtube/template.json', help='channel template')
         parser.add_argument('--channel-list', default='../config/youtube/test.json', help='channel 목록')
 
+        parser.add_argument('--meta', default='./data/youtube/mtd-meta.json', help='메타 파일명')
+
+        # cache options
+        parser.add_argument('--cache', default='./data/youtube/test.db', help='파일명')
+        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
+
+        # selenium settings
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
-        parser.add_argument('--user-data', default=None)
+        parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
+        parser.add_argument('--driver', default='/usr/bin/chromedriver')
 
-        parser.add_argument('--meta', default='./data/youtube/mtd-meta.json', help='메타 파일명')
+        parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
+        parser.add_argument('--reply-scroll', default=20, type=int, help='최대 스크롤수')
 
         return vars(parser.parse_args())
 

@@ -5,7 +5,17 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from os import getenv
+
 from crawler.web_news.web_news import WebNewsCrawler
+
+
+description = """웹 뉴스 크롤러"""
+
+epilog = """\
+usage example:
+
+"""
 
 
 class WebNewsCrawlerBatch(object):
@@ -22,10 +32,17 @@ class WebNewsCrawlerBatch(object):
     @staticmethod
     def init_arguments() -> (dict, dict):
         import argparse
+        import textwrap
 
-        parser = argparse.ArgumentParser()
+        global description, epilog
 
-        # flow-control
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # crawler options: flow-control
         parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
         parser.add_argument('--contents', action='store_true', default=False, help='기사 본문 크롤링')
 
