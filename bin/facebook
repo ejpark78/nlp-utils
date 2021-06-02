@@ -9,6 +9,8 @@ from os import getenv
 from time import sleep
 
 import pytz
+
+from crawler.facebook.core import FacebookCore
 from crawler.facebook.posts import FacebookPosts
 from crawler.facebook.replies import FacebookReplies
 from crawler.utils.selenium import SeleniumUtils
@@ -44,6 +46,9 @@ class FacebookCrawler(object):
         if self.params['login']:
             self.sleep_to_login()
 
+        if self.params['dump']:
+            FacebookCore(params=self.params).dump()
+
         if self.params['post']:
             FacebookPosts(params=self.params).batch()
 
@@ -58,11 +63,18 @@ class FacebookCrawler(object):
 
         parser = argparse.ArgumentParser()
 
+        # crawler options
         parser.add_argument('--post', action='store_true', default=False)
         parser.add_argument('--reply', action='store_true', default=False)
 
+        parser.add_argument('--dump', action='store_true', default=False)
+
+        # crawler settings
         parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
 
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+
+        # selenium settings
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
         parser.add_argument('--user-data', default=None)
@@ -71,12 +83,11 @@ class FacebookCrawler(object):
         parser.add_argument('--max-try', default=100, type=int)
         parser.add_argument('--max-page', default=10000, type=int)
 
+        # elasticsearch settings
         parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
                             help='elasticsearch url')
         parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
                             help='elasticsearch auth')
-
-        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
 
         return vars(parser.parse_args())
 

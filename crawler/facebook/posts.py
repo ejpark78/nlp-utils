@@ -11,6 +11,7 @@ from time import sleep
 
 from crawler.facebook.core import FacebookCore
 from crawler.utils.es import ElasticSearchUtils
+from crawler.utils.selenium import SeleniumUtils
 
 
 class FacebookPosts(FacebookCore):
@@ -85,6 +86,7 @@ class FacebookPosts(FacebookCore):
         if 'meta' in job:
             doc.update(job['meta'])
 
+        doc['reply_count'] = -1
         doc['@crawl_date'] = datetime.now(self.timezone).isoformat()
 
         self.es.save_document(document=doc, delete=False, index=self.config['index']['post'])
@@ -120,7 +122,9 @@ class FacebookPosts(FacebookCore):
         self.es.conn.index(
             index=self.config['index']['page'],
             id=job_id,
-            body=job,
+            body={
+                **job
+            },
             refresh=True,
         )
 
@@ -153,6 +157,12 @@ class FacebookPosts(FacebookCore):
 
         self.create_index(index=self.config['index']['page'])
         self.create_index(index=self.config['index']['post'])
+
+        self.selenium = SeleniumUtils(
+            login=self.params['login'],
+            headless=self.params['headless'],
+            user_data_path=self.params['user_data'],
+        )
 
         for job in self.config['jobs']:
             job_id = job['page'].replace('/', '-')

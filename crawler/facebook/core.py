@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from base64 import decodebytes
+from bz2 import BZ2File
 from glob import glob
 from os.path import isdir
 
@@ -12,8 +14,8 @@ import pytz
 import yaml
 
 from crawler.facebook.parser import FacebookParser
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
-from crawler.utils.selenium import SeleniumUtils
 
 
 class FacebookCore(object):
@@ -29,11 +31,7 @@ class FacebookCore(object):
 
         self.parser = FacebookParser()
 
-        self.selenium = SeleniumUtils(
-            login=self.params['login'],
-            headless=self.params['headless'],
-            user_data_path=self.params['user_data'],
-        )
+        self.selenium = None
 
         self.es = None
         self.config = None
@@ -71,5 +69,21 @@ class FacebookCore(object):
             index=index,
             mapping=mapping[index] if index in mapping else None
         )
+
+        return
+
+    def dump(self) -> None:
+        self.config = self.read_config(filename=self.params['config'])
+
+        self.es = ElasticSearchUtils(
+            host=self.params['host'],
+            http_auth=decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+        )
+
+        for index in self.config['index'].values():
+            print('index: ', index)
+
+            with BZ2File(f'{index}.json.bz2', 'wb') as fp:
+                self.es.dump_index(index=index, fp=fp)
 
         return

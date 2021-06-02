@@ -15,6 +15,7 @@ from selenium.common.exceptions import NoSuchElementException
 
 from crawler.facebook.core import FacebookCore
 from crawler.utils.es import ElasticSearchUtils
+from crawler.utils.selenium import SeleniumUtils
 
 
 class FacebookReplies(FacebookCore):
@@ -44,10 +45,9 @@ class FacebookReplies(FacebookCore):
                 count += 1
 
                 doc = {
-                    'page': post['page'],
-                    'top_level_post_id': post['top_level_post_id'],
                     '@crawl_date': dt,
                     'raw': str(item),
+                    **{k: v for k, v in post.items() if k[0] != '_'},
                     **json.loads(tag['data-store']),
                     **self.parser.parse_reply_body(item)
                 }
@@ -140,10 +140,9 @@ class FacebookReplies(FacebookCore):
                         'match': {
                             'page': page
                         }
-                    }],
-                    'must_not': [{
-                        'exists': {
-                            'field': 'reply_count'
+                    }, {
+                        'match': {
+                            'reply_count': -1
                         }
                     }]
                 }
@@ -179,6 +178,12 @@ class FacebookReplies(FacebookCore):
 
         self.create_index(index=self.config['index']['page'])
         self.create_index(index=self.config['index']['reply'])
+
+        self.selenium = SeleniumUtils(
+            login=self.params['login'],
+            headless=self.params['headless'],
+            user_data_path=self.params['user_data'],
+        )
 
         for job in self.config['jobs']:
             post_list = self.get_post_list(page=job['page'], limit=100)
