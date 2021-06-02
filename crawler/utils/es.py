@@ -73,13 +73,16 @@ class ElasticSearchUtils(object):
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return dict(data)
 
-    def create_index(self, conn: Elasticsearch, index: str = None) -> bool:
+    def create_index(self, conn: Elasticsearch, index: str = None, mapping: dict = None) -> bool:
         """인덱스를 생성한다."""
-        if conn is None:
+        if index is None:
+            index = self.index
+
+        if conn is None or index is None:
             return False
 
         try:
-            if self.conn.indices.exists(index=self.index) is True:
+            if self.conn.indices.exists(index=index) is True:
                 return False
         except Exception as e:
             self.logger.error(msg={
@@ -90,17 +93,16 @@ class ElasticSearchUtils(object):
             })
             return False
 
-        mapping = {
-            'settings': {
-                'number_of_shards': 1,
-                'number_of_replicas': 1
+        if mapping is None:
+            mapping = {
+                'settings': {
+                    'number_of_shards': 1,
+                    'number_of_replicas': 1
+                }
             }
-        }
 
-        if self.mapping:
-            mapping = self.mapping
-            if isinstance(self.mapping, str) and isfile(self.mapping):
-                mapping = self.open_mapping(self.mapping)
+        if isinstance(mapping, str) and isfile(mapping):
+            mapping = self.open_mapping(mapping)
 
         try:
             conn.indices.create(index=index, body=mapping)
@@ -216,7 +218,7 @@ class ElasticSearchUtils(object):
             return
 
         # 인덱스가 없는 경우, 생성함
-        self.create_index(conn=self.conn, index=self.index)
+        self.create_index(conn=self.conn, index=self.index, mapping=self.mapping)
 
         return
 
@@ -324,7 +326,7 @@ class ElasticSearchUtils(object):
         if index is None:
             index = self.index
 
-        self.create_index(conn=self.conn, index=index)
+        self.create_index(conn=self.conn, index=index, mapping=self.mapping)
 
         # 버퍼링
         if document is not None:
@@ -855,7 +857,7 @@ class ElasticSearchUtils(object):
     def restore_index(self, index: str, size: int = 1000, mapping: str = None) -> None:
         """데이터를 서버에 저장한다."""
         self.mapping = mapping
-        self.create_index(conn=self.conn, index=index)
+        self.create_index(conn=self.conn, index=index, mapping=self.mapping)
 
         p_bar = None
 

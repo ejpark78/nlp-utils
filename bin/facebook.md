@@ -1,15 +1,23 @@
 
 ```bash
-PYTHONPATH=. python3 module/facebook/facebook.py \
+
+PYTHONPATH=. facebook \
+    --list \
+    --config "config/facebook/21-06-01.json" \
+    --max-page 1000000 \
+    --user-data ./data/cache/selenium/facebook 
+    
+
+PYTHONPATH=. facebook \
     --list --reply \
     --config "config/facebook/stock.json" \
     --max-page 1000000 \
-    --user-data ./cache/selenium/facebook \
+    --user-data ./data/cache/selenium/facebook \
     --cache data/facebook/stock.db \
     --use-cache
 
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --list --reply \
     --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json,config/facebook/follows.json" \
     --max-page 1000000 \
@@ -18,7 +26,7 @@ PYTHONPATH=. python3 module/facebook/facebook.py \
     --user-data ./cache/selenium/facebook
 
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --reply \
     --config config/facebook/인도네시아.json \
     --max-page 10000 \
@@ -27,7 +35,7 @@ PYTHONPATH=. python3 module/facebook/facebook.py \
     --user-data ./cache/selenium/facebook-id
 
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --reply \
     --config config/facebook/베트남.json \
     --max-page 10000 \
@@ -36,7 +44,7 @@ PYTHONPATH=. python3 module/facebook/facebook.py \
     --user-data ./cache/selenium/facebook-vi
 
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --list --reply \
     --config config/facebook/news-zh.json \
     --max-page 10000 \
@@ -67,7 +75,7 @@ PYTHONPATH=. python3 module/facebook/split_lang.py \
 ```
 
 ```bash
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --list \
     --reply \
     --config config/facebook/베트남.json \
@@ -75,14 +83,14 @@ PYTHONPATH=. python3 module/facebook/facebook.py \
     --reply-index crawler-facebook-vi-reply \
     --user-data ./cache/selenium/facebook-vi
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --reply \
     --config "config/facebook/group.json,config/facebook/likes.json,config/facebook/friends.json,config/facebook/구단.json,config/facebook/친목.json,config/facebook/언론.json,config/facebook/대나무숲.json,config/facebook/커뮤니티.json,config/facebook/follows.json" \
     --index crawler-facebook-ko \
     --reply-index crawler-facebook-ko-reply \
     --user-data ./cache/selenium/facebook
 
-PYTHONPATH=. python3 module/facebook/facebook.py \
+PYTHONPATH=. facebook \
     --list \
     --reply \
     --max-page 500000 \

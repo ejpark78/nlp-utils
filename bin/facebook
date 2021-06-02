@@ -5,13 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from os.path import splitext
+from os import getenv
 from time import sleep
 
 import pytz
-
-from crawler.facebook.cache_utils import CacheUtils
-from crawler.facebook.group_list import FacebookGroupList
+from crawler.facebook.posts import FacebookPosts
 from crawler.facebook.replies import FacebookReplies
 from crawler.utils.selenium import SeleniumUtils
 
@@ -25,9 +23,12 @@ class FacebookCrawler(object):
 
         self.timezone = pytz.timezone('Asia/Seoul')
 
-    @staticmethod
-    def sleep_to_login() -> None:
-        selenium = SeleniumUtils()
+    def sleep_to_login(self) -> None:
+        selenium = SeleniumUtils(
+            login=self.params['login'],
+            headless=self.params['headless'],
+            user_data_path=self.params['user_data'],
+        )
 
         selenium.open_driver()
 
@@ -37,62 +38,17 @@ class FacebookCrawler(object):
         sleep(3200)
         return
 
-    def export(self) -> None:
-        alias = {
-            'content': 'text',
-            'user_name': 'username',
-            'original_content_id': 'post_id',
-        }
-
-        columns = list(set(
-            'id,reply_count,category,content,group_id,lang_code,name,original_content_id,page,page_id,'
-            'id,post_id,reply_id,reply_to,text,user_name'.split(',')
-        ))
-
-        db = CacheUtils(filename=self.params['cache'])
-
-        f_name = f'''{splitext(self.params['cache'])[0]}.posts'''
-        db.export_tbl(
-            filename=f'{f_name}.json.bz2',
-            tbl='posts',
-            db_column='id,reply_count,content',
-            json_columns='content'.split(','),
-            columns=columns,
-            alias=alias
-        )
-
-        db.json2xlsx(filename=f_name)
-
-        f_name = f'''{splitext(self.params['cache'])[0]}.replies'''
-        db.export_tbl(
-            filename=f'''{f_name}.json.bz2''',
-            tbl='replies',
-            db_column='id,post_id,content',
-            json_columns='content'.split(','),
-            columns=columns,
-            alias=alias
-        )
-
-        db.json2xlsx(filename=f_name)
-        return
-
     def batch(self) -> None:
         self.params = self.init_arguments()
 
         if self.params['login']:
             self.sleep_to_login()
 
-        if self.params['account']:
-            FacebookGroupList(params=self.params).account()
-
-        if self.params['list']:
-            FacebookGroupList(params=self.params).batch()
+        if self.params['post']:
+            FacebookPosts(params=self.params).batch()
 
         if self.params['reply']:
             FacebookReplies(params=self.params).batch()
-
-        if self.params['export'] is True:
-            self.export()
 
         return
 
@@ -102,16 +58,10 @@ class FacebookCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--account', action='store_true', default=False)
-        parser.add_argument('--list', action='store_true', default=False)
+        parser.add_argument('--post', action='store_true', default=False)
         parser.add_argument('--reply', action='store_true', default=False)
 
-        parser.add_argument('--export', action='store_true', default=False, help='내보내기')
-        parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
-
-        parser.add_argument('--overwrite', action='store_true', default=False)
-
-        parser.add_argument('--config', default='./config/facebook/커뮤니티.json')
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
 
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
@@ -121,19 +71,12 @@ class FacebookCrawler(object):
         parser.add_argument('--max-try', default=100, type=int)
         parser.add_argument('--max-page', default=10000, type=int)
 
-        parser.add_argument('--sleep', default=10, type=float, help='sleep time')
+        parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
+                            help='elasticsearch url')
+        parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
+                            help='elasticsearch auth')
 
-        parser.add_argument('--host', default=None)
-        parser.add_argument('--auth', default=None)
-        parser.add_argument('--index', default=None)
-        parser.add_argument('--reply-index', default=None)
-
-        parser.add_argument('--log-path', default='log')
-
-        parser.add_argument('--cache', default='./data/facebook/facebook.db', help='캐쉬명')
-        parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
-
-        parser.add_argument('--meta', default='./data/facebook/facebook-meta.json', help='메타 파일명')
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
 
         return vars(parser.parse_args())
 

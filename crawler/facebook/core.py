@@ -5,11 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import pytz
+from glob import glob
+from os.path import isdir
 
-from crawler.facebook.cache_utils import CacheUtils
+import pytz
+import yaml
+
 from crawler.facebook.parser import FacebookParser
-from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 from crawler.utils.selenium import SeleniumUtils
 
@@ -33,18 +35,41 @@ class FacebookCore(object):
             user_data_path=self.params['user_data'],
         )
 
-        self.db = None
-        if self.params['cache'] is not None:
-            self.db = CacheUtils(
-                filename=self.params['cache'],
-                use_cache=self.params['use_cache']
-            )
+        self.es = None
+        self.config = None
 
-        self.elastic = None
-        if self.params['index'] is not None:
-            self.elastic = ElasticSearchUtils(
-                host=self.params['host'],
-                index=self.params['index'],
-                log_path=self.params['log_path'],
-                http_auth=self.params['auth'],
-            )
+    @staticmethod
+    def read_config(filename: str) -> dict:
+        file_list = filename.split(',')
+        if isdir(filename) is True:
+            file_list = []
+            for f_name in glob(f'{filename}/*.yaml'):
+                file_list.append(f_name)
+
+        result = {'jobs': []}
+        for f_name in file_list:
+            with open(f_name, 'r') as fp:
+                data = dict(yaml.load(stream=fp, Loader=yaml.FullLoader))
+
+                result['jobs'] += data['jobs']
+                del data['jobs']
+
+                result.update(data)
+
+        return result
+
+    def create_index(self, index: str) -> None:
+        if self.es is None:
+            return
+
+        if 'index_mapping' not in self.config:
+            return
+
+        mapping = self.config['index_mapping']
+        self.es.create_index(
+            conn=self.es.conn,
+            index=index,
+            mapping=mapping[index] if index in mapping else None
+        )
+
+        return

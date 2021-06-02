@@ -8,7 +8,7 @@ from __future__ import print_function
 import json
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 
 class FacebookParser(object):
@@ -21,45 +21,47 @@ class FacebookParser(object):
         """포스트 내용을 추출한다."""
         soup = BeautifulSoup(html, 'html5lib')
 
-        tag_list = soup.find_all('article')
-
         result = []
-        for tag in tag_list:
-            post = dict()
+        for article in soup.find_all('article'):
+            doc = dict()
 
-            for k, v in tag.attrs.items():
+            for k, v in article.attrs.items():
                 if k not in ['data-ft', 'data-store']:
                     continue
 
-                attrs = json.loads(v)
-                post.update(attrs)
+                doc.update(json.loads(v))
 
-            post['html'] = str(tag)
+            if 'top_level_post_id' not in doc:
+                continue
 
-            # 메세지 추출
-            span_list = tag.find_all('span', {'data-sigil': 'more'})
+            # contents 추출
+            span_list = article.find_all('span', {'data-sigil': 'more'})
             if len(span_list) > 0:
-                post['content'] = '\n'.join([v.get_text(separator='\n') for v in span_list])
-                post['html_content'] = '\n'.join([v.prettify() for v in span_list])
+                doc['contents'] = '\n'.join([v.get_text(separator='\n') for v in span_list])
+                doc['html_contents'] = '\n'.join([v.prettify() for v in span_list])
             else:
-                post['content'] = '\n'.join([v.get_text(separator='\n') for v in tag.find_all('p')])
+                doc['contents'] = '\n'.join([v.get_text(separator='\n') for v in article.find_all('p')])
 
-                story_body = tag.find_all('div', {'class': 'story_body_container'})
-                post['html_content'] = '\n'.join([v.prettify() for v in story_body])
+                story_body = article.find_all('div', {'class': 'story_body_container'})
+                doc['html_contents'] = '\n'.join([v.prettify() for v in story_body])
 
-            post['content'] = post['content'].replace('\n… \n더 보기\n', '')
+            doc['contents'] = doc['contents'].replace('\n… \n더 보기\n', '')
 
-            a_list = tag.find_all('a', {'data-sigil': 'feed-ufi-trigger'})
-            post['url'] = [urljoin(url, v['href']) for v in a_list if v.has_attr('href')]
-            if len(post['url']) > 0:
-                post['url'] = post['url'][0]
+            # url 추출
+            a_list = article.find_all('a', {'data-sigil': 'feed-ufi-trigger'})
+            doc['url'] = [urljoin(url, v['href']) for v in a_list if v.has_attr('href')]
+            if len(doc['url']) > 0:
+                doc['url'] = doc['url'][0]
             else:
-                del post['url']
+                del doc['url']
 
-            # string 타입으로 변환
-            post = self.to_string(doc=post)
-
-            result.append(post)
+            result.append({
+                'top_level_post_id': doc['top_level_post_id'],
+                'raw': str(article),
+                'url': doc['url'],
+                'contents': doc['contents'],
+                'json': json.dumps(doc, ensure_ascii=False),
+            })
 
         return result
 
@@ -79,9 +81,7 @@ class FacebookParser(object):
         return doc
 
     @staticmethod
-    def parse_reply_body(tag) -> dict:
-        raw_html = tag.prettify()
-
+    def parse_reply_body(tag: Tag) -> dict:
         user_name = ''
         for v in tag.parent.find_all('a'):
             if v['href'].find('/profile') is False:
@@ -99,12 +99,9 @@ class FacebookParser(object):
             v.extract()
             break
 
-        result = {
+        return {
             'user_name': user_name,
             'reply_to': reply_to,
             'reply_id': tag['data-commentid'],
-            'text': tag.get_text(separator='\n'),
-            'html': raw_html,
+            'contents': tag.get_text(separator='\n'),
         }
-
-        return result
