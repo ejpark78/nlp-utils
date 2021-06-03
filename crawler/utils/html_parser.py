@@ -220,7 +220,7 @@ class HtmlParser(object):
                 value = str(tag.prettify())
 
             # url 일 경우: urljoin
-            if conf['type'] == 'src' or conf['type'] == 'href':
+            if (conf['type'] == 'src' or conf['type'] == 'href') and base_url != '':
                 value = urljoin(base_url, value)
 
         # 태그 삭제

@@ -838,21 +838,21 @@ class ElasticSearchUtils(object):
 
         return prev_doc
 
-    def exists(self, index: str, doc_id: str, list_index, list_id, merge_column: str = None) -> bool:
-        """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
-        exists_doc = self.conn.exists(id=doc_id, index=index)
-
-        if exists_doc is True:
-            self.move_document(
-                source_index=list_index,
-                target_index=f'{list_index}_done',
-                source_id=list_id,
-                document_id=doc_id,
-                merge_column=merge_column,
-            )
-            return True
-
-        return False
+    # def exists(self, index: str, doc_id: str, list_index: str, list_id: str, merge_column: str = None) -> bool:
+    #     """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
+    #     exists_doc = self.conn.exists(id=doc_id, index=index)
+    #
+    #     if exists_doc is True:
+    #         self.move_document(
+    #             source_index=list_index,
+    #             target_index=f'{list_index}_done',
+    #             source_id=list_id,
+    #             document_id=doc_id,
+    #             merge_column=merge_column,
+    #         )
+    #         return True
+    #
+    #     return False
 
     def restore_index(self, index: str, size: int = 1000, mapping: str = None) -> None:
         """데이터를 서버에 저장한다."""

@@ -7,6 +7,8 @@ from __future__ import print_function
 
 import json
 import re
+from base64 import decodebytes
+from bz2 import BZ2File
 from collections import defaultdict
 from copy import deepcopy
 from datetime import datetime
@@ -36,7 +38,7 @@ urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 class WebNewsCore(object):
     """크롤러 베이스"""
 
-    def __init__(self):
+    def __init__(self, params: dict = None, default_params: dict = None):
         super().__init__()
 
         self.debug = int(getenv('DEBUG', 0))
@@ -83,8 +85,8 @@ class WebNewsCore(object):
         }
 
         # params
-        self.params: dict or None = None
-        self.default_params: dict or None = None
+        self.params: dict or None = params
+        self.default_params: dict or None = default_params
 
         # logger
         self.logger = Logger()
@@ -261,7 +263,8 @@ class WebNewsCore(object):
         if flag is True:
             dt_str = ''
             if 'date' in doc:
-                dt_str = doc['date'] if isinstance(doc['date'], str) else doc['date'].isoformat() if 'date' in doc else ''
+                dt_str = doc['date'] if isinstance(doc['date'], str) else doc[
+                    'date'].isoformat() if 'date' in doc else ''
 
             self.logger.log(
                 msg={
@@ -935,3 +938,14 @@ class WebNewsCore(object):
             })
 
         return True, None
+
+    def dump(self) -> None:
+        es = ElasticSearchUtils(
+            host=self.params['host'],
+            http_auth=decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+        )
+
+        for index in self.params['index'].split(','):
+            es.dump_index(index=index)
+
+        return

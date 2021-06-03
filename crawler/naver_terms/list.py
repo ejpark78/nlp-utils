@@ -12,7 +12,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from crawler.naver_terms.core import TermsCore
-from crawler.utils.es import ElasticSearchUtils
+from crawler.naver_terms.corpuslake import CorpusLake
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -105,13 +105,16 @@ class TermsList(TermsCore):
 
     def save_doc(self, html: str, category_name: str, base_url: str) -> bool:
         """크롤링한 문서를 저장한다."""
-        es = ElasticSearchUtils(
-            host=self.config['jobs']['host'],
-            index=self.config['jobs']['list_index'],
-            bulk_size=20,
-            http_auth=self.config['jobs']['http_auth'],
-            mapping=self.config['index_mapping']
-        )
+        lake_info = {
+            'type': 'es',
+            'host': self.config['jobs']['host'],
+            'index': self.config['jobs']['list_index'],
+            'bulk_size': 20,
+            'auth': self.config['jobs']['http_auth'],
+            'mapping': self.config['index_mapping']
+        }
+
+        lake = CorpusLake(lake_info=lake_info)
 
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -143,10 +146,10 @@ class TermsList(TermsCore):
                 doc['category'] = category_name
 
                 # 문서가 있는지 조회
-                is_exists = es.conn.exists(
+                is_exists = lake.exists(**dict(
                     index=f'''{self.config['jobs']['list_index']}_done''',
                     id=doc['_id']
-                )
+                ))
                 if is_exists is True:
                     self.logger.log(msg={
                         'MESSAGE': '중복 용어',
@@ -167,19 +170,18 @@ class TermsList(TermsCore):
                 self.history.add(doc['_id'])
 
                 # 이전에 수집한 문서와 병합
-                doc = es.merge_doc(
-                    index=self.config['jobs']['list_index'],
-                    doc=doc,
-                    column=['category']
-                )
-                doc = es.merge_doc(
-                    index=f'''{self.config['jobs']['list_index']}_done''',
-                    doc=doc,
-                    column=['category']
-                )
+                doc = lake.merge(doc=doc, **dict(
+                    index= self.config['jobs']['list_index'],
+                    column= ['category']
+                ))
 
-                es.save_document(document=doc)
+                doc = lake.merge(doc=doc, **dict(
+                    index= f'''{self.config['jobs']['list_index']}_done''',
+                    column= ['category']
+                ))
 
-            es.flush()
+                lake.save(doc=doc)
+
+            lake.flush()
 
         return False

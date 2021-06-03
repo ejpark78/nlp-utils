@@ -84,11 +84,9 @@ class TermsCrawler(object):
         parser.add_argument('--dump', action='store_true', default=False)
 
         # crawler settings
-        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
-
-        parser.add_argument('--sub-category', default=getenv('CRAWLER_SUBCATEGORY', default=''), help='하위 카테고리')
-
         parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
+        parser.add_argument('--sub-category', default=getenv('CRAWLER_SUBCATEGORY', default=''), help='하위 카테고리')
 
         # elasticsearch settings
         parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,

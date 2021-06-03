@@ -7,7 +7,9 @@ from __future__ import print_function
 
 import argparse
 import textwrap
+from os import getenv
 
+from crawler.web_news.core import WebNewsCore
 from crawler.web_news.web_news import WebNewsCrawler
 
 description = """웹 뉴스 크롤러"""
@@ -26,6 +28,10 @@ class WebNewsCrawlerBatch(object):
     def batch(self) -> None:
         params, default_params = self.init_arguments()
 
+        if params['dump']:
+            WebNewsCore(params=params, default_params=default_params).dump()
+            return
+
         WebNewsCrawler(params=params, default_params=default_params).batch()
         return
 
@@ -43,8 +49,18 @@ class WebNewsCrawlerBatch(object):
         parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
         parser.add_argument('--contents', action='store_true', default=False, help='기사 본문 크롤링')
 
+        # es dump options
+        parser.add_argument('--dump', action='store_true', default=False)
+
+        parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
+                            help='elasticsearch url')
+        parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
+                            help='elasticsearch auth')
+        parser.add_argument('--index', default=getenv('ELASTIC_SEARCH_INDEX', default=None), type=str,
+                            help='elasticsearch index')
+
         # essential
-        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
 
         # config overwrite
         parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
@@ -56,7 +72,7 @@ class WebNewsCrawlerBatch(object):
         parser.add_argument('--page-range', default=None, type=str, help='page 범위: 1~100')
         parser.add_argument('--page-step', default=1, type=int, help='page step')
 
-        parser.add_argument('--sleep', default=10, type=float, help='sleep time')
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
         parser.add_argument('--request-timeout', default=320, type=float, help='request timeout')
 
         # optional
@@ -64,7 +80,8 @@ class WebNewsCrawlerBatch(object):
 
         parser.add_argument('--mapping', default=None, type=str, help='(optional) 인덱스 맵핑 파일 정보')
 
-        parser.add_argument('--verbose', default=-1, type=int, help='(optional) verbose 모드: 1=INFO')
+        parser.add_argument('--verbose', default=getenv('CRAWLER_VERBOSE', default=-1), type=int,
+                            help='(optional) verbose 모드: 1=INFO')
 
         return vars(parser.parse_args()), vars(parser.parse_args([]))
 
