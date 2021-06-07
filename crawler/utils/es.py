@@ -560,7 +560,7 @@ class ElasticSearchUtils(object):
             line = json.dumps(settings, ensure_ascii=False) + '\n'
             if fp:
                 fp.write(line.encode('utf-8'))
-            else:
+            elif result is None:
                 print(line, flush=True, end='')
 
         p_bar = None

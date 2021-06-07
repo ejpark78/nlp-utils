@@ -156,10 +156,7 @@ class TermsList(TermsCore):
                 cache.add(doc['_id'])
 
                 # 이전에 수집한 문서와 병합
-                doc = self.lake.merge(doc=doc, **dict(
-                    index=self.config['jobs']['list_index'],
-                    column=['category']
-                ))
+                doc = self.lake.merge(doc=doc, index=self.config['jobs']['list_index'], column=['category'])
 
                 self.lake.save(doc_id=doc['_id'], doc=doc, index=self.config['jobs']['list_index'])
 
@@ -170,6 +167,7 @@ class TermsList(TermsCore):
             self.logger.log(msg={
                 'level': 'MESSAGE',
                 'message': '[조기 종료] 마지막 페이지',
+                'list_size': len(cache)
             })
             return True
 

@@ -26,7 +26,7 @@ urllib3.disable_warnings(UserWarning)
 
 class CacheCore(object):
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, fast: bool = True):
         super().__init__()
 
         self.logger = Logger()
@@ -36,7 +36,7 @@ class CacheCore(object):
 
         self.schema = []
 
-        self.open_db(filename=filename)
+        self.open_db(filename=filename, fast=fast)
 
     def __del__(self):
         if self.cursor is not None:
@@ -50,7 +50,7 @@ class CacheCore(object):
 
         return
 
-    def open_db(self, filename: str) -> None:
+    def open_db(self, filename: str, fast: bool = True) -> None:
         if filename is None:
             return
 
@@ -62,7 +62,8 @@ class CacheCore(object):
 
         self.cursor = self.conn.cursor()
 
-        self.set_pragma(self.cursor, readonly=False)
+        if fast:
+            self.set_pragma(self.cursor, readonly=False)
 
         if self.schema is not None:
             for item in self.schema:
@@ -73,7 +74,7 @@ class CacheCore(object):
         return
 
     @staticmethod
-    def set_pragma(cursor, readonly: bool = True) -> None:
+    def set_pragma(cursor: sqlite3.Cursor, readonly: bool = True) -> None:
         """ sqlite 의 속도 개선을 위한 설정 """
         # cursor.execute('PRAGMA threads       = 8;')
 

@@ -78,12 +78,12 @@ class CorpusLake(object):
 
         return
 
-    def merge(self, doc: dict, **doc_info) -> dict:
+    def merge(self, doc: dict, index: str, column: list) -> dict:
         if 'sqlite' in self.lake_type:
             pass
 
         if 'elasticsearch' in self.lake_type:
-            return self.es.merge_doc(index=doc_info['index'], doc=doc, column=doc_info['column'])
+            return self.es.merge_doc(index=index, doc=doc, column=column)
 
         return doc
 
@@ -105,19 +105,20 @@ class CorpusLake(object):
 
         return
 
-    def dump(self, **params) -> list:
-        if 'sqlite' in self.lake_type:
-            return self.db.dump(tbl=params['index'], size=params['limit'])
-
+    def dump(self, index: str, limit: int, query: dict = None) -> list:
         if 'elasticsearch' in self.lake_type:
             result = []
             self.es.dump_index(
-                index=params['index'],
-                limit=params['limit'],
-                query=params['query'],
-                size=params['limit'] + 1
+                index=index,
+                limit=limit,
+                query=query,
+                size=limit + 1,
+                result=result,
             )
             return result
+
+        if 'sqlite' in self.lake_type:
+            return self.db.dump(tbl=index, size=limit)
 
         return []
 

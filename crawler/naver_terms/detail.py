@@ -47,14 +47,13 @@ class TermsDetail(TermsCore):
         query = {
             'query': {
                 'bool': {
-                    'must': [{
-                        'match': {
-                            'done': 0
-                        }
-                    }],
                     'must_not': [{
                         'exists': {
                             'field': 'done'
+                        }
+                    }, {
+                        'match': {
+                            'done': 1
                         }
                     }]
                 }
@@ -63,7 +62,7 @@ class TermsDetail(TermsCore):
 
         while size == max_size:
             # 질문 목록 조회
-            term_list = self.lake.dump(**dict(index=self.config['jobs']['list_index'], limit=max_size, query=query))
+            term_list = self.lake.dump(index=self.config['jobs']['list_index'], limit=max_size, query=query)
 
             count, size = -1, len(term_list)
 

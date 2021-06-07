@@ -27,7 +27,7 @@ class Cache(CacheCore):
             '''
         ]
 
-        self.open_db(filename)
+        self.open_db(filename=filename, fast=False)
 
     def save_doc(self, doc_id: str, doc: dict, tbl: str) -> None:
         self.cursor.execute(
