@@ -23,8 +23,6 @@ class TermsCore(object):
 
         self.params = params
 
-        self.history = set()
-
         self.logger = Logger()
         self.parser = HtmlParser()
 

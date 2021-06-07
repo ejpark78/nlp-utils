@@ -68,6 +68,9 @@ class TermsDetail(TermsCore):
             count, size = -1, len(term_list)
 
             for item in term_list:
+                if 'raw' in item:
+                    del item['raw']
+
                 self.get_detail(
                     doc=item,
                     index=self.config['jobs']['index'],

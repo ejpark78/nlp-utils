@@ -394,7 +394,7 @@ class WebNewsCrawler(WebNewsCore):
                 break
 
             # 중복 문서 개수 점검
-            if 0 == len(cache) or history.intersection(cache) == cache:
+            if len(history) > 0 and (0 == len(cache) or history.intersection(cache) == cache):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '[조기 종료] 마지막 페이지',
