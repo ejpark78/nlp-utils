@@ -15,10 +15,10 @@ from urllib.parse import unquote
 import requests
 
 from crawler.utils.es import ElasticSearchUtils
-from crawler.utils.selenium import SeleniumProxyUtils
+from crawler.utils.selenium import SeleniumUtils
 
 
-class YoutubeLiveChatCrawler(SeleniumProxyUtils):
+class YoutubeLiveChatCrawler(SeleniumUtils):
     """유튜브 라이브 채팅 크롤러"""
 
     def __init__(self):
@@ -34,7 +34,6 @@ class YoutubeLiveChatCrawler(SeleniumProxyUtils):
         self.elastic = ElasticSearchUtils(
             host=host,
             index=index,
-            split_index=True
         )
 
     def simplify(self, doc):

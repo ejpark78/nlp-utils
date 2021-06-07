@@ -10,6 +10,7 @@ from base64 import decodebytes
 import yaml
 from bz2 import BZ2File
 
+from crawler.naver_terms.corpus_lake import CorpusLake
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
 from crawler.utils.es import ElasticSearchUtils
@@ -51,6 +52,8 @@ class TermsCore(object):
 
         self.job_sub_category = self.params['sub_category'].split(',') if self.params['sub_category'] != '' else []
 
+        self.lake = None
+
     @staticmethod
     def open_config(filename: str) -> dict:
         with open(filename, 'r') as fp:
@@ -58,18 +61,22 @@ class TermsCore(object):
             return data
 
     def dump(self) -> None:
-        es = ElasticSearchUtils(
-            host=self.config['jobs']['host'],
-            index=self.config['jobs']['list_index'],
-            bulk_size=20,
-            http_auth=self.config['jobs']['http_auth'],
-            mapping=self.config['index_mapping']
-        )
+        lake_info = {
+            'type': self.params['lake_type'],
+            'host': self.config['jobs']['host'],
+            'index': self.config['jobs']['index'],
+            'bulk_size': 20,
+            'auth': self.config['jobs']['http_auth'],
+            'mapping': None,
+            'filename': self.params['cache'],
+        }
+
+        self.lake = CorpusLake(lake_info=lake_info)
 
         for index in [self.config['jobs']['index'], self.config['jobs']['list_index']]:
             print('index: ', index)
 
             with BZ2File(f'{index}.json.bz2', 'wb') as fp:
-                es.dump_index(index=index, fp=fp)
+                self.lake.dump_index(index=index, fp=fp)
 
         return

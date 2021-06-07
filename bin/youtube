@@ -12,7 +12,7 @@ from os.path import splitext
 
 from crawler.utils.logger import Logger
 from crawler.utils.selenium_wire import SeleniumWireUtils
-from crawler.youtube.cache_utils import CacheUtils
+from crawler.youtube.cache import Cache
 from crawler.youtube.reply import YoutubeReply
 from crawler.youtube.video_list import YoutubeVideoList
 
@@ -36,7 +36,7 @@ class YoutubeCrawler(object):
         self.params = {}
 
     def export(self) -> None:
-        db = CacheUtils(filename=self.params['cache'])
+        db = Cache(filename=self.params['cache'])
 
         f_name = f'''{splitext(self.params['cache'])[0]}.channels'''
         db.export_tbl(

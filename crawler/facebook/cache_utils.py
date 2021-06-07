@@ -7,10 +7,10 @@ from __future__ import print_function
 
 import json
 
-from crawler.utils.cache_base import CacheBase
+from crawler.utils.cache import CacheCore
 
 
-class CacheUtils(CacheBase):
+class CacheUtils(CacheCore):
 
     def __init__(self, filename: str, use_cache: bool = True):
         super().__init__(filename=filename)

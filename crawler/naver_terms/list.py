@@ -12,7 +12,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from crawler.naver_terms.core import TermsCore
-from crawler.naver_terms.corpuslake import CorpusLake
+from crawler.naver_terms.corpus_lake import CorpusLake
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -28,14 +28,26 @@ class TermsList(TermsCore):
 
     def batch(self) -> None:
         """카테고리 하위 목록을 크롤링한다."""
+        lake_info = {
+            'type': self.params['lake_type'],
+            'host': self.config['jobs']['host'],
+            'index': self.config['jobs']['list_index'],
+            'bulk_size': 20,
+            'auth': self.config['jobs']['http_auth'],
+            'mapping': self.config['index_mapping'],
+            'filename': self.params['cache']
+        }
+
+        self.lake = CorpusLake(lake_info=lake_info)
+
         category_id = None
 
         # 카테고리 하위 목록을 크롤링한다.
         for category in self.config['jobs']['category']:
             self.status = {
-                'start': 1,
-                'end': 100000,
-                'step': 1,
+                'start': self.params['list_start'],
+                'end': self.params['list_end'],
+                'step': self.params['list_step'],
             }
 
             if len(self.job_sub_category) > 0 and category['name'] not in self.job_sub_category:
@@ -103,19 +115,8 @@ class TermsList(TermsCore):
 
         return
 
-    def save_doc(self, html: str, category_name: str, base_url: str) -> bool:
+    def save_doc(self, html: str or bytes, category_name: str, base_url: str) -> bool:
         """크롤링한 문서를 저장한다."""
-        lake_info = {
-            'type': 'es',
-            'host': self.config['jobs']['host'],
-            'index': self.config['jobs']['list_index'],
-            'bulk_size': 20,
-            'auth': self.config['jobs']['http_auth'],
-            'mapping': self.config['index_mapping']
-        }
-
-        lake = CorpusLake(lake_info=lake_info)
-
         soup = BeautifulSoup(html, 'html5lib')
 
         trace_tag = self.config['parsing']['trace']['value']
@@ -145,19 +146,6 @@ class TermsList(TermsCore):
 
                 doc['category'] = category_name
 
-                # 문서가 있는지 조회
-                is_exists = lake.exists(**dict(
-                    index=f'''{self.config['jobs']['list_index']}_done''',
-                    id=doc['_id']
-                ))
-                if is_exists is True:
-                    self.logger.log(msg={
-                        'MESSAGE': '중복 용어',
-                        'category_name': category_name,
-                        '_id': doc['_id'],
-                    })
-                    continue
-
                 # 저장 로그 표시
                 self.logger.log(msg={
                     'MESSAGE': '신규 용어',
@@ -170,18 +158,13 @@ class TermsList(TermsCore):
                 self.history.add(doc['_id'])
 
                 # 이전에 수집한 문서와 병합
-                doc = lake.merge(doc=doc, **dict(
-                    index= self.config['jobs']['list_index'],
-                    column= ['category']
+                doc = self.lake.merge(doc=doc, **dict(
+                    index=self.config['jobs']['list_index'],
+                    column=['category']
                 ))
 
-                doc = lake.merge(doc=doc, **dict(
-                    index= f'''{self.config['jobs']['list_index']}_done''',
-                    column= ['category']
-                ))
+                self.lake.save(doc=doc, **dict(index=self.config['jobs']['list_index']))
 
-                lake.save(doc=doc)
-
-            lake.flush()
+            self.lake.flush()
 
         return False

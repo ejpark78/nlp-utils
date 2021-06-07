@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 from crawler.utils.html_parser import HtmlParser
 from crawler.web_news.pipeline import Pipeline
+from datetime import datetime
 
 description = """ETL Pipeline"""
 
@@ -32,6 +33,14 @@ class PipelineBatch(object):
 
         self.parser = HtmlParser()
         self.pipeline = Pipeline()
+
+    @staticmethod
+    def json_default(value: datetime) -> str:
+        """ 날자형을 문자로 변환한다."""
+        if isinstance(value, datetime):
+            return value.isoformat()
+
+        raise TypeError('not JSON serializable')
 
     def batch(self) -> None:
         params = self.init_arguments()
@@ -62,8 +71,9 @@ class PipelineBatch(object):
             )
             doc.update(item)
 
-            if 'contents' in doc:
-                print(json.dumps(doc, ensure_ascii=False))
+            print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
+            # if 'contents' in doc:
+            #     print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
 
         return
 

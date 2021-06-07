@@ -5,15 +5,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import json
 from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
+from crawler.naver_terms.corpus_lake import CorpusLake
 
 from crawler.naver_terms.core import TermsCore
-from crawler.utils.es import ElasticSearchUtils
-from crawler.naver_terms.corpuslake import CorpusLake
 
 
 class TermsDetail(TermsCore):
@@ -25,30 +23,49 @@ class TermsDetail(TermsCore):
     def batch(self) -> None:
         """상세 페이지를 크롤링한다."""
         lake_info = {
-            'type': 'es',
+            'type': self.params['lake_type'],
             'host': self.config['jobs']['host'],
             'index': self.config['jobs']['index'],
             'bulk_size': 5,
             'auth': self.config['jobs']['http_auth'],
-            'mapping': None
+            'mapping': None,
+            'filename': self.params['cache'],
         }
 
-        lake = CorpusLake(lake_info=lake_info)
+        self.lake = CorpusLake(lake_info=lake_info)
 
         size = max_size = 1000
 
+        # 검색 조건
+        query = {
+            'query': {
+                'bool': {
+                    'must': [{
+                        'match': {
+                            'done': 0
+                        }
+                    }],
+                    'must_not': [{
+                        'exists': {
+                            'field': 'done'
+                        }
+                    }]
+                }
+            }
+        }
+
         while size == max_size:
             # 질문 목록 조회
-            term_list = lake.dump(**dict(index=self.config['jobs']['list_index'], limit=max_size))
+            term_list = self.lake.dump(**dict(index=self.config['jobs']['list_index'], limit=max_size, query=query))
 
             count, size = -1, len(term_list)
 
             for item in term_list:
                 self.get_detail(
                     doc=item,
-                    list_id=item['_id'],
+                    index=self.config['jobs']['index'],
                     list_index=self.config['jobs']['list_index'],
-                    lake=lake,
+                    list_index_id=item['_id'],
                 )
 
                 count += 1
@@ -59,33 +76,12 @@ class TermsDetail(TermsCore):
 
         return
 
-    def get_detail(self, doc: dict, lake: CorpusLake, list_index: str, list_id: str) -> bool:
+    def get_detail(self, doc: dict, index: str, list_index: str, list_index_id: str) -> bool:
         """상세 페이지를 크롤링한다."""
         request_url = doc['detail_link']
         q = self.parser.parse_url(request_url)[0]
 
         doc_id = f'''{q['categoryId']}-{q['cid']}-{q['docId']}'''
-
-        # 이미 받은 항목인지 검사
-        is_skip = lake.is_done(
-            **dict(
-                index=self.config['jobs']['index'],
-                list_index=list_index,
-                done_index=f'{list_index}_done',
-                doc_id=doc_id,
-                list_id=list_id,
-                merge_column='category',
-            )
-        )
-        if is_skip is True:
-            self.logger.info(msg={
-                'level': 'INFO',
-                'message': 'skip',
-                'index': self.config['jobs']['index'],
-                'doc_id': doc_id,
-            })
-
-            return True
 
         # 질문 상세 페이지 크롤링
         try:
@@ -109,11 +105,9 @@ class TermsDetail(TermsCore):
         # 저장
         self.save_doc(
             html=resp.content,
-            lake=lake,
-            list_index=list_index,
-            list_doc=doc,
+            index=index,
             doc_id=doc_id,
-            list_id=list_id,
+            doc=doc,
             base_url=request_url,
         )
 
@@ -124,13 +118,16 @@ class TermsDetail(TermsCore):
             'request_url': request_url,
         })
 
+        # 질문 목록에 done 정보 저장
+        self.lake.set_done(index=list_index, doc_id=list_index_id)
+
         return False
 
-    def save_doc(self, html: str, lake: CorpusLake, list_index: str, list_doc: dict, doc_id: str,
-                 list_id: str, base_url: str) -> None:
+    def save_doc(self, html: str or bytes, index: str, doc: dict, doc_id: str,
+                 base_url: str) -> None:
         soup = BeautifulSoup(html, 'html5lib')
 
-        # 질문 내용이 있는 경우
+        # 질문 내용이 없는 경우
         if soup is None:
             return
 
@@ -141,23 +138,17 @@ class TermsDetail(TermsCore):
             base_url=base_url,
         )
 
-        doc = {
-            **list_doc,
-            **detail,
+        doc.update({
             '_id': doc_id,
-        }
+            **detail,
+        })
 
         if '_index' in doc:
             del doc['_index']
 
         # 문서 저장
-        lake.save(**dict(
-            doc=doc,
-            doc_info={
-                'index': self.config['jobs']['index']
-            }
-        ))
-        lake.flush()
+        self.lake.save(doc=doc, index=index)
+        self.lake.flush()
 
         self.logger.log(msg={
             'level': 'INFO',
@@ -165,16 +156,5 @@ class TermsDetail(TermsCore):
             'doc_id': doc_id,
             'title': doc['title'] if 'title' in doc else ''
         })
-
-        # 질문 목록에서 완료 목록으로 이동
-        lake.set_done(
-            **dict(
-                source_index=list_index,
-                target_index=f'{list_index}_done',
-                source_id=list_id,
-                document_id=doc_id,
-                merge_column='category',
-            )
-        )
 
         return

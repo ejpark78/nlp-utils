@@ -29,7 +29,6 @@ class YoutubeVttCrawler(object):
     """ 유튜브 자막 유틸입니다."""
 
     def __init__(self):
-        """생성자"""
 
         self.sleep = 5
 
