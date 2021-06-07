@@ -21,7 +21,7 @@ from crawler.utils.logger import Logger
 class SeleniumUtils(object):
     """웹 뉴스 크롤러 베이스"""
 
-    def __init__(self, login=False, headless=True, user_data_path=None, executable_path: str = '/usr/bin/chromedriver'):
+    def __init__(self, login=False, headless=True, user_data_path=None, chromedriver: str = '/usr/bin/chromedriver'):
         super().__init__()
 
         self.driver = None
@@ -29,7 +29,7 @@ class SeleniumUtils(object):
         self.login = login
         self.headless = headless
         self.user_data_path = user_data_path
-        self.executable_path = executable_path
+        self.executable_path = chromedriver
 
         self.logger = Logger()
 

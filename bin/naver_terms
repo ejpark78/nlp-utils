@@ -100,7 +100,7 @@ class TermsCrawler(object):
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--head', action='store_true', default=False)
         parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
-        parser.add_argument('--driver', default='/usr/bin/chromedriver')
+        parser.add_argument('--driver', default=getenv('CRAWLER_CHROMEDRIVER', default='/usr/bin/chromedriver'))
 
         # corpus lake type
         parser.add_argument('--db-type', default=getenv('CRAWLER_DB_TYPE', default='sqlite'), type=str,

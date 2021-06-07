@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import bz2
+
 import urllib3
 
 from crawler.naver_terms.cache import Cache
@@ -119,11 +121,11 @@ class CorpusLake(object):
 
         return []
 
-    def dump_index(self, index: str, fp) -> None:
-        if 'sqlite' in self.lake_type:
+    def dump_index(self, index: str, fp: bz2.BZ2File, db_type: str) -> None:
+        if db_type == 'sqlite':
             self.db.dump_table(tbl=index, fp=fp)
 
-        if 'elasticsearch' in self.lake_type:
+        if db_type == 'elasticsearch':
             pass
 
         return

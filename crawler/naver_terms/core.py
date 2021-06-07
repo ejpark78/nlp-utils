@@ -7,6 +7,7 @@ from __future__ import print_function
 
 from base64 import decodebytes
 from bz2 import BZ2File
+from os.path import splitext
 
 import yaml
 
@@ -78,11 +79,17 @@ class TermsCore(object):
 
         self.lake = CorpusLake(lake_info=lake_info)
 
-        for index in [self.config['jobs']['index'], self.config['jobs']['list_index']]:
-            print('index: ', index)
+        for db_type in self.params['db_type'].split(','):
+            for index in [self.config['jobs']['index'], self.config['jobs']['list_index']]:
+                print('index: ', index)
 
-            with BZ2File(f'{index}.json.bz2', 'wb') as fp:
-                self.lake.dump_index(index=index, fp=fp)
+                filename = f'{index}.json.bz2'
+                if self.params['cache']:
+                    base, _ = splitext(self.params['cache'])
+                    filename = f'{base}.{index}.json.bz2'
+
+                with BZ2File(filename, 'wb') as fp:
+                    self.lake.dump_index(index=index, fp=fp, db_type=db_type)
 
         return
 

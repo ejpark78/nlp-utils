@@ -25,6 +25,7 @@ class TermsDetail(TermsCore):
             login=self.params['login'],
             headless=False if self.params['head'] else True,
             user_data_path=self.params['user_data'],
+            chromedriver=self.params['driver']
         )
         self.selenium.driver.implicitly_wait(30)
 
@@ -159,7 +160,7 @@ class TermsDetail(TermsCore):
             'level': 'INFO',
             'message': '문서 저장',
             'doc_id': doc_id,
-            'title': doc['title'] if 'title' in doc else ''
+            'name': doc['name'] if 'name' in doc else ''
         })
 
         return
