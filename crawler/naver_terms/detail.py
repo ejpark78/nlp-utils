@@ -7,11 +7,11 @@ from __future__ import print_function
 
 from time import sleep
 
-import requests
 from bs4 import BeautifulSoup
-from crawler.naver_terms.corpus_lake import CorpusLake
 
 from crawler.naver_terms.core import TermsCore
+from crawler.naver_terms.corpus_lake import CorpusLake
+from crawler.utils.selenium import SeleniumUtils
 
 
 class TermsDetail(TermsCore):
@@ -21,9 +21,15 @@ class TermsDetail(TermsCore):
         super().__init__(params=params)
 
     def batch(self) -> None:
-        """상세 페이지를 크롤링한다."""
+        self.selenium = SeleniumUtils(
+            login=self.params['login'],
+            headless=False if self.params['head'] else True,
+            user_data_path=self.params['user_data'],
+        )
+        self.selenium.driver.implicitly_wait(30)
+
         lake_info = {
-            'type': self.params['lake_type'],
+            'type': self.params['db_type'],
             'host': self.config['jobs']['host'],
             'index': self.config['jobs']['index'],
             'bulk_size': 5,
@@ -85,13 +91,7 @@ class TermsDetail(TermsCore):
 
         # 질문 상세 페이지 크롤링
         try:
-            resp = requests.get(
-                url=request_url,
-                headers=self.headers['mobile'],
-                allow_redirects=True,
-                timeout=60,
-                verify=False
-            )
+            resp = self.requests(url=request_url)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -104,7 +104,7 @@ class TermsDetail(TermsCore):
 
         # 저장
         self.save_doc(
-            html=resp.content,
+            html=resp,
             index=index,
             doc_id=doc_id,
             doc=doc,
@@ -131,17 +131,22 @@ class TermsDetail(TermsCore):
         if soup is None:
             return
 
+        parsing_info = self.config['parsing']['values']
+
+        # pipeline
+        for name in self.config['pipeline']:
+            parsing_info += self.config['pipeline'][name]
+
         detail = self.parser.parse(
             html=None,
             soup=soup,
-            parsing_info=self.config['parsing']['values'],
+            parsing_info=parsing_info,
             base_url=base_url,
         )
 
-        doc.update({
-            '_id': doc_id,
-            **detail,
-        })
+        doc.update(detail)
+
+        doc['_id'] = doc_id
 
         if '_index' in doc:
             del doc['_index']

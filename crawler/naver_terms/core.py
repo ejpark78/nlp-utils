@@ -6,14 +6,13 @@ from __future__ import division
 from __future__ import print_function
 
 from base64 import decodebytes
+from bz2 import BZ2File
 
 import yaml
-from bz2 import BZ2File
 
 from crawler.naver_terms.corpus_lake import CorpusLake
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
-from crawler.utils.es import ElasticSearchUtils
 
 
 class TermsCore(object):
@@ -43,16 +42,22 @@ class TermsCore(object):
 
         self.config = self.open_config(filename=self.params['config'])
 
+        http_auth = None
+        if self.params['auth_encoded']:
+            http_auth = decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+
         self.config['jobs'].update({
             'host': self.params['host'],
             'index': self.params['index'],
             'list_index': self.params['list_index'],
-            'http_auth': decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+            'http_auth': http_auth
         })
 
         self.job_sub_category = self.params['sub_category'].split(',') if self.params['sub_category'] != '' else []
 
         self.lake = None
+
+        self.selenium = None
 
     @staticmethod
     def open_config(filename: str) -> dict:
@@ -62,7 +67,7 @@ class TermsCore(object):
 
     def dump(self) -> None:
         lake_info = {
-            'type': self.params['lake_type'],
+            'type': self.params['db_type'],
             'host': self.config['jobs']['host'],
             'index': self.config['jobs']['index'],
             'bulk_size': 20,
@@ -80,3 +85,9 @@ class TermsCore(object):
                 self.lake.dump_index(index=index, fp=fp)
 
         return
+
+    def requests(self, url: str) -> str:
+        self.selenium.driver.get(url)
+        self.selenium.driver.implicitly_wait(30)
+
+        return self.selenium.driver.page_source

@@ -32,6 +32,9 @@ berkeleydb
 scrapy
 scrapy-fake-useragent
 
+selenium
+selenium-wire
+
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
 

@@ -29,7 +29,7 @@ class TermsList(TermsCore):
     def batch(self) -> None:
         """카테고리 하위 목록을 크롤링한다."""
         lake_info = {
-            'type': self.params['lake_type'],
+            'type': self.params['db_type'],
             'host': self.config['jobs']['host'],
             'index': self.config['jobs']['list_index'],
             'bulk_size': 20,

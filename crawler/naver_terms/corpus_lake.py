@@ -21,7 +21,7 @@ class CorpusLake(object):
         super().__init__()
 
         self.lake_info = lake_info
-        self.lake_type = lake_info['type']
+        self.lake_type = set(lake_info['type'].split(','))
 
         self.es = None
         self.db = None
@@ -29,10 +29,10 @@ class CorpusLake(object):
         self.open()
 
     def open(self) -> None:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             self.es = self.open_es()
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             self.db = Cache(filename=self.lake_info['filename'], tbl=self.lake_info['index'])
 
         return
@@ -50,16 +50,16 @@ class CorpusLake(object):
         )
 
     def exists(self, **doc_info) -> bool:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             return self.es.conn.exists(index=doc_info['index'], id=doc_info['id'])
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             return self.db.table_exits(tbl=doc_info['index'])
 
         return False
 
     def set_done(self, index: str, doc_id: str) -> None:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             self.es.conn.update(
                 index=index,
                 id=doc_id,
@@ -71,40 +71,40 @@ class CorpusLake(object):
                 refresh=True,
             )
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             self.db.set_done(tbl=index, doc_id=doc_id)
 
         return
 
     def merge(self, doc: dict, **doc_info) -> dict:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             return self.es.merge_doc(index=doc_info['index'], doc=doc, column=doc_info['column'])
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             pass
 
         return doc
 
     def save(self, doc: dict, index: str) -> None:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             self.es.save_document(document=doc, index=index)
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             self.db.save_doc(tbl=index, doc=doc, doc_id=doc['_id'])
 
         return
 
     def flush(self) -> None:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             self.flush()
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             self.db.conn.commit()
 
         return
 
     def dump(self, **params) -> list:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             result = []
             self.es.dump_index(
                 index=params['index'],
@@ -114,16 +114,16 @@ class CorpusLake(object):
             )
             return result
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             return self.db.dump(tbl=params['index'], size=params['limit'])
 
         return []
 
     def dump_index(self, index: str, fp) -> None:
-        if self.lake_type == 'elasticsearch':
+        if 'elasticsearch' in self.lake_type:
             pass
 
-        if self.lake_type == 'sqlite':
+        if 'sqlite' in self.lake_type:
             self.db.dump_table(tbl=index, fp=fp)
 
         return

@@ -21,29 +21,31 @@ usage example:
 * 표제어 목록 수집
     PYTHONPATH=. \\
     CRAWLER_CONFIG=../config/naver-terms.yaml \\
-    ELASTIC_SEARCH_HOST=https://elastic:9200 \\
-    ELASTIC_SEARCH_AUTH_ENCODED=$(echo -n elastic:elastic | base64) \\
-    ELASTIC_SEARCH_INDEX=crawler-naver-terms-detail \\
-    ELASTIC_SEARCH_LIST_INDEX=crawler-naver-terms-list \\
-        bin/naver_terms --list
+    ELASTIC_SEARCH_INDEX=detail \\
+    ELASTIC_SEARCH_LIST_INDEX=list \\
+        bin/naver_terms \\
+            --list \\
+            --db-type sqlite \\
+            --cache naver-terms.db            
 
 * 본문 수집
     PYTHONPATH=. \\
-    CRAWLER_CONFIG=../config/naver-terms.yaml \\
-    ELASTIC_SEARCH_HOST=https://elastic:9200 \\
-    ELASTIC_SEARCH_AUTH_ENCODED=$(echo -n elastic:elastic | base64) \\
-    ELASTIC_SEARCH_INDEX=crawler-naver-terms-detail \\
-    ELASTIC_SEARCH_LIST_INDEX=crawler-naver-terms-list \\
-        bin/naver_terms --detail
+    ELASTIC_SEARCH_INDEX=detail \\
+    ELASTIC_SEARCH_LIST_INDEX=list \\
+        bin/naver_terms \\
+            --detail \\
+            --db-type sqlite \\
+            --cache naver-terms.db            
 
 * 코퍼스 덤프
     PYTHONPATH=. \\
-    bin/naver_terms --dump \\
+    bin/naver_terms \\
+        --dump \\
+        --db-type sqlite \\
+        --cache naver-terms.db \\
         --config ../config/naver-terms.yaml \\
-        --host https://elastic:9200 \\
-        --auth-encoded $(echo -n elastic:elastic | base64) \\
-        --index crawler-naver-terms-detail \\
-        --list-index crawler-naver-terms-list
+        --index detail \\
+        --list-index list
 """
 
 
@@ -94,8 +96,14 @@ class TermsCrawler(object):
                             help='목록 종료 페이지')
         parser.add_argument('--list-step', default=getenv('CRAWLER_LIST_STEP', default=1), type=int, help='목록 스템 페이지')
 
+        # selenium settings
+        parser.add_argument('--login', action='store_true', default=False)
+        parser.add_argument('--head', action='store_true', default=False)
+        parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
+        parser.add_argument('--driver', default='/usr/bin/chromedriver')
+
         # corpus lake type
-        parser.add_argument('--lake-type', default=getenv('CRAWLER_CORPUS_LAKE_TYPE', default='sqlite'), type=str,
+        parser.add_argument('--db-type', default=getenv('CRAWLER_DB_TYPE', default='sqlite'), type=str,
                             help='sqlite or elasticsearch')
 
         # elasticsearch settings
