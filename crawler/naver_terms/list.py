@@ -163,7 +163,7 @@ class TermsList(TermsCore):
                     column=['category']
                 ))
 
-                self.lake.save(doc=doc, **dict(index=self.config['jobs']['list_index']))
+                self.lake.save(doc_id=doc['_id'], doc=doc, index=self.config['jobs']['list_index'])
 
             self.lake.flush()
 

@@ -29,9 +29,6 @@ yapf
 
 berkeleydb
 
-scrapy
-scrapy-fake-useragent
-
 selenium
 selenium-wire
 

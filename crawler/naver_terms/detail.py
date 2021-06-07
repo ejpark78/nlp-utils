@@ -152,7 +152,7 @@ class TermsDetail(TermsCore):
             del doc['_index']
 
         # 문서 저장
-        self.lake.save(doc=doc, index=index)
+        self.lake.save(doc=doc, doc_id=doc['_id'], index=index)
         self.lake.flush()
 
         self.logger.log(msg={
