@@ -42,7 +42,9 @@ class TermsCore(object):
         self.config = self.open_config(filename=self.params['config'])
 
         http_auth = None
-        if self.params['auth_encoded']:
+        if self.params['auth']:
+            http_auth = self.params['auth']
+        elif self.params['auth_encoded']:
             http_auth = decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
 
         self.config['jobs'].update({
