@@ -63,17 +63,21 @@ class PipelineBatch(object):
                 parser_type=config['parsing']['parser'],
             )
 
+            parsing_info = config['parsing']['list'] + config['parsing']['article']
+            if params['pipeline'] is not None:
+                parsing_info = []
+                for x in params['pipeline'].split(','):
+                    parsing_info += config['pipeline'][x]
+
             item = self.parser.parse(
                 html=None,
                 soup=soup,
                 base_url=doc['url'] if 'url' in doc else '',
-                parsing_info=config['parsing']['list'] + config['parsing']['article'],
+                parsing_info=parsing_info,
             )
             doc.update(item)
 
             print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
-            # if 'contents' in doc:
-            #     print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
 
         return
 
@@ -89,6 +93,7 @@ class PipelineBatch(object):
 
         # pipeline options
         parser.add_argument('--column', default='raw', type=str, help='raw column')
+        parser.add_argument('--pipeline', default=None, type=str, help='pipeline columns')
 
         # options
         parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
