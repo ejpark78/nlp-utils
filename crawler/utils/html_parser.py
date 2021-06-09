@@ -143,21 +143,31 @@ class HtmlParser(object):
 
             value_list.append(val)
 
-        # 타입 제약: 디폴트 목록형
-        if 'convert' in conf and 'merge' in conf['convert']:
-            merge_type = conf['convert']['merge']
+        # 타입 변환
+        if 'convert' in conf:
+            convert_info = conf['convert']
 
-            if merge_type == 'single':
-                if len(value_list) > 0:
-                    value_list = value_list[0].strip() if isinstance(value_list, str) else value_list[0]
-                else:
-                    value_list = ''
+            if 'merge' in convert_info:
+                merge_type = conf['convert']['merge']
 
-            if merge_type == 'merge':
-                value_list = '\n'.join(value_list).strip()
+                if merge_type == 'single':
+                    if len(value_list) > 0:
+                        value_list = value_list[0].strip() if isinstance(value_list, str) else value_list[0]
+                    else:
+                        value_list = ''
 
-            if merge_type == 'unique':
-                value_list = list(set(value_list))
+                if merge_type == 'merge':
+                    value_list = '\n'.join(value_list).strip()
+
+                if merge_type == 'unique':
+                    value_list = '\n'.join(list(set(value_list)))
+
+            if 'to' in convert_info and convert_info['to'] == 'date':
+                value_list = self.parse_date(
+                    value_list,
+                    default=default_date,
+                    date_format=convert_info['format'] if 'format' in convert_info else None,
+                )
 
         # 값의 개수가 하나인 경우, 스칼라로 변경한다.
         if isinstance(value_list, list):
@@ -234,21 +244,6 @@ class HtmlParser(object):
                 value = re.sub(pattern['from'], pattern['to'], value, flags=re.DOTALL)
 
                 value = value.strip()
-
-        # 타입 변환
-        if 'convert' in conf:
-            convert_info = conf['convert']
-
-            if 'to' in convert_info and convert_info['to'] == 'date':
-                value = self.parse_date(
-                    value,
-                    default=default_date,
-                    date_format=convert_info['format'] if 'format' in convert_info else None,
-                )
-
-                # 날짜 파싱이 안된 경우
-                if isinstance(value, datetime) is False:
-                    return None
 
         return value
 
