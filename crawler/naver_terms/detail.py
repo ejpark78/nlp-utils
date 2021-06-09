@@ -20,7 +20,13 @@ class TermsDetail(TermsCore):
     def __init__(self, params: dict):
         super().__init__(params=params)
 
-    def batch(self) -> None:
+    def open_selenium(self) -> None:
+        if self.selenium is not None:
+            try:
+                self.selenium.driver.close()
+            except Exception as e:
+                pass
+
         self.selenium = SeleniumUtils(
             login=self.params['login'],
             headless=False if self.params['head'] else True,
@@ -28,6 +34,10 @@ class TermsDetail(TermsCore):
             chromedriver=self.params['driver']
         )
         self.selenium.driver.implicitly_wait(30)
+        return
+
+    def batch(self) -> None:
+        self.open_selenium()
 
         lake_info = {
             'type': self.params['db_type'],
@@ -103,6 +113,7 @@ class TermsDetail(TermsCore):
             })
 
             sleep(10)
+            self.open_selenium()
             return False
 
         # 저장
@@ -124,7 +135,7 @@ class TermsDetail(TermsCore):
         # 질문 목록에 done 정보 저장
         self.lake.set_done(index=list_index, doc_id=list_index_id)
 
-        return False
+        return True
 
     def save_doc(self, html: str or bytes, index: str, doc: dict, doc_id: str,
                  base_url: str) -> None:
