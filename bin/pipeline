@@ -35,10 +35,10 @@ class PipelineBatch(object):
         self.pipeline = Pipeline()
 
     @staticmethod
-    def json_default(value: datetime) -> str:
+    def json_default(x: datetime) -> str:
         """ 날자형을 문자로 변환한다."""
-        if isinstance(value, datetime):
-            return value.isoformat()
+        if isinstance(x, datetime):
+            return x.isoformat()
 
         raise TypeError('not JSON serializable')
 
@@ -58,24 +58,24 @@ class PipelineBatch(object):
             if 'contents' in doc:
                 del doc['contents']
 
-            soup = self.parser.parse_html(
-                html=doc[params['column']],
-                parser_type=config['parsing']['parser'],
-            )
+            soup = self.parser.parse_html(html=doc[params['column']], parser_type=config['parsing']['parser'])
 
-            parsing_info = config['parsing']['list'] + config['parsing']['article']
+            parsing_info = [config['parsing']['list'], config['parsing']['article']]
             if params['pipeline'] is not None:
                 parsing_info = []
                 for x in params['pipeline'].split(','):
-                    parsing_info += config['pipeline'][x]
+                    if x not in config['pipeline']:
+                        continue
 
-            item = self.parser.parse(
-                html=None,
-                soup=soup,
-                base_url=doc['url'] if 'url' in doc else '',
-                parsing_info=parsing_info,
-            )
-            doc.update(item)
+                    parsing_info.append(config['pipeline'][x])
+
+            for pi in parsing_info:
+                doc.update(self.parser.parse(
+                    html=None,
+                    soup=soup,
+                    base_url=doc['url'] if 'url' in doc else '',
+                    parsing_info=pi,
+                ))
 
             print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
 
