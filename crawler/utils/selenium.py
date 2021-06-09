@@ -77,7 +77,15 @@ class SeleniumUtils(object):
 
     def close_driver(self) -> None:
         if self.driver is not None:
-            self.driver.quit()
+            try:
+                self.driver.quit()
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'close_driver 에러',
+                    'exception': str(e),
+                })
+
             self.driver = None
 
         return

@@ -22,10 +22,7 @@ class TermsDetail(TermsCore):
 
     def open_selenium(self) -> None:
         if self.selenium is not None:
-            try:
-                self.selenium.driver.close()
-            except Exception as e:
-                pass
+            self.selenium.close_driver()
 
         self.selenium = SeleniumUtils(
             login=self.params['login'],
@@ -33,12 +30,11 @@ class TermsDetail(TermsCore):
             user_data_path=self.params['user_data'],
             chromedriver=self.params['driver']
         )
+
         self.selenium.driver.implicitly_wait(30)
         return
 
     def batch(self) -> None:
-        self.open_selenium()
-
         lake_info = {
             'type': self.params['db_type'],
             'host': self.config['jobs']['host'],
@@ -71,6 +67,8 @@ class TermsDetail(TermsCore):
         }
 
         while size == max_size:
+            self.open_selenium()
+
             # 질문 목록 조회
             term_list = self.lake.dump(index=self.config['jobs']['list_index'], limit=max_size, query=query)
 
@@ -89,6 +87,8 @@ class TermsDetail(TermsCore):
 
                 count += 1
                 sleep(self.params['sleep'])
+
+            self.selenium.close_driver()
 
             if size < max_size:
                 break
@@ -113,17 +113,10 @@ class TermsDetail(TermsCore):
             })
 
             sleep(10)
-            self.open_selenium()
             return False
 
         # 저장
-        self.save_doc(
-            html=resp,
-            index=index,
-            doc_id=doc_id,
-            doc=doc,
-            base_url=request_url,
-        )
+        self.save_doc(html=resp, index=index, doc_id=doc_id, doc=doc, base_url=request_url)
 
         self.logger.info(msg={
             'level': 'INFO',
@@ -151,12 +144,7 @@ class TermsDetail(TermsCore):
         for name in self.config['pipeline']:
             parsing_info += self.config['pipeline'][name]
 
-        detail = self.parser.parse(
-            html=None,
-            soup=soup,
-            parsing_info=parsing_info,
-            base_url=base_url,
-        )
+        detail = self.parser.parse(html=None, soup=soup, parsing_info=parsing_info, base_url=base_url)
 
         doc.update(detail)
 
