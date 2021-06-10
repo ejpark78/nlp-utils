@@ -27,8 +27,8 @@ class TermsDetail(TermsCore):
         self.selenium = SeleniumUtils(
             login=self.params['login'],
             headless=False if self.params['head'] else True,
+            chromedriver=self.params['driver'],
             user_data_path=self.params['user_data'],
-            chromedriver=self.params['driver']
         )
 
         self.selenium.driver.implicitly_wait(30)
