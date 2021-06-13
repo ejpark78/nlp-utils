@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 
 from crawler.naver_terms.core import TermsCore
 from crawler.naver_terms.corpus_lake import CorpusLake
-from crawler.utils.selenium import SeleniumUtils
 
 
 class TermsDetail(TermsCore):
@@ -19,20 +18,6 @@ class TermsDetail(TermsCore):
 
     def __init__(self, params: dict):
         super().__init__(params=params)
-
-    def open_selenium(self) -> None:
-        if self.selenium is not None:
-            self.selenium.close_driver()
-
-        self.selenium = SeleniumUtils(
-            login=self.params['login'],
-            headless=False if self.params['head'] else True,
-            chromedriver=self.params['driver'],
-            user_data_path=self.params['user_data'],
-        )
-
-        self.selenium.driver.implicitly_wait(30)
-        return
 
     def batch(self) -> None:
         lake_info = {
@@ -67,8 +52,6 @@ class TermsDetail(TermsCore):
         }
 
         while size == max_size:
-            self.open_selenium()
-
             # 질문 목록 조회
             term_list = self.lake.dump(index=self.config['jobs']['list_index'], limit=max_size, query=query)
 
@@ -88,8 +71,6 @@ class TermsDetail(TermsCore):
                 count += 1
                 sleep(self.params['sleep'])
 
-            self.selenium.close_driver()
-
             if size < max_size:
                 break
 
@@ -104,7 +85,7 @@ class TermsDetail(TermsCore):
 
         # 질문 상세 페이지 크롤링
         try:
-            resp = self.requests(url=request_url)
+            resp = self.requests(url=request_url, html=True)
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
