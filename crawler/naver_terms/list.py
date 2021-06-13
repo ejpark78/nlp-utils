@@ -150,7 +150,7 @@ class TermsList(TermsCore):
                     'page': f'''{self.status['start']:,}/{self.status['end']:,}''',
                     '_id': doc['_id'],
                     'name': doc['name'],
-                    'define': doc['define'][:30]
+                    'define': doc['define'][:30] if 'define' in doc else ''
                 })
 
                 cache.add(doc['_id'])
