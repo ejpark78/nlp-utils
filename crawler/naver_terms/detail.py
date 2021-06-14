@@ -90,6 +90,7 @@ class TermsDetail(TermsCore):
                 count += 1
                 sleep(self.params['sleep'])
 
+            max_size = len(term_list) if max_size < len(term_list) else max_size
             if size < max_size:
                 break
 
@@ -105,8 +106,7 @@ class TermsDetail(TermsCore):
 
         await page.goto(url=url, waitUntil='networkidle0')
 
-        result = await page.content()
-        return result
+        return await page.content()
 
     def get_detail(self, doc: dict, index: str, list_index: str, list_index_id: str) -> bool:
         """상세 페이지를 크롤링한다."""
