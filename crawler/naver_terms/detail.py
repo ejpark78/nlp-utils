@@ -25,17 +25,17 @@ class TermsDetail(TermsCore):
 
     async def open_browser(self):
         return await launch(
-            ignoreHTTPSErrors=True,
+            args=[
+                '--disable-dev-shm-usage',
+                '--disable-gpu',
+                '--disable-infobars',
+                '--disable-setuid-sandbox',
+                '--no-sandbox',
+            ],
             headless=False if self.params['head'] else True,
             userDataDir=self.params['user_data'],
             executablePath=self.params['executable_path'],
-            args=[
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-gpu',
-                '--disable-infobars',
-                '--disable-dev-shm-usage',
-            ]
+            ignoreHTTPSErrors=True,
         )
 
     def batch(self) -> None:

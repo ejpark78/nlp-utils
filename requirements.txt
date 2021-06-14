@@ -15,7 +15,6 @@ pycurl
 python-dateutil
 pytz
 requests
-requests-html
 requests-oauthlib
 requests[security]
 requests[socks]
