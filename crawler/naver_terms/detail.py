@@ -28,7 +28,7 @@ class TermsDetail(TermsCore):
             ignoreHTTPSErrors=True,
             headless=False if self.params['head'] else True,
             userDataDir=self.params['user_data'],
-            executablePath=self.params['driver'],
+            executablePath=self.params['executable_path'],
             args=[
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -51,7 +51,7 @@ class TermsDetail(TermsCore):
 
         self.lake = CorpusLake(lake_info=lake_info)
 
-        size = max_size = 1000
+        size = max_size = self.params['size']
 
         # 검색 조건
         query = {

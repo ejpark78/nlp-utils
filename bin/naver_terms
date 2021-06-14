@@ -96,11 +96,14 @@ class TermsCrawler(object):
                             help='목록 종료 페이지')
         parser.add_argument('--list-step', default=getenv('CRAWLER_LIST_STEP', default=1), type=int, help='목록 스템 페이지')
 
+        # detail options
+        parser.add_argument('--size', default=getenv('CRAWLER_FETCH_SIZE', default=100), type=int, help='list fetch size')
+
         # selenium settings
         # parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--head', action='store_true', default=False)
         parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
-        parser.add_argument('--driver', default=getenv('CRAWLER_CHROMEDRIVER', default='/usr/bin/google-chrome'))
+        parser.add_argument('--executable-path', default=getenv('CRAWLER_CHROME_EXEC', default='/usr/bin/google-chrome'))
 
         # corpus lake type
         parser.add_argument('--db-type', default=getenv('CRAWLER_DB_TYPE', default='sqlite'), type=str,
