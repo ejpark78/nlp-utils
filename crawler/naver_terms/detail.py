@@ -27,6 +27,8 @@ class TermsDetail(TermsCore):
         return await launch(
             ignoreHTTPSErrors=True,
             headless=False if self.params['head'] else True,
+            userDataDir=self.params['user_data'],
+            executablePath=self.params['driver'],
             args=[
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
