@@ -5,9 +5,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import asyncio
 from time import sleep
 
 from bs4 import BeautifulSoup
+from pyppeteer import launch
 
 from crawler.naver_terms.core import TermsCore
 from crawler.naver_terms.corpus_lake import CorpusLake
@@ -18,6 +20,21 @@ class TermsDetail(TermsCore):
 
     def __init__(self, params: dict):
         super().__init__(params=params)
+
+        self.browser = asyncio.get_event_loop().run_until_complete(self.open_browser())
+
+    async def open_browser(self):
+        return await launch(
+            ignoreHTTPSErrors=True,
+            headless=False if self.params['head'] else True,
+            args=[
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-gpu',
+                '--disable-infobars',
+                '--disable-dev-shm-usage',
+            ]
+        )
 
     def batch(self) -> None:
         lake_info = {
@@ -76,6 +93,19 @@ class TermsDetail(TermsCore):
 
         return
 
+    async def requests(self, url) -> str:
+        page_list = await self.browser.pages()
+
+        if len(page_list) == 0:
+            page = await self.browser.newPage()
+        else:
+            page = page_list[0]
+
+        await page.goto(url=url, waitUntil='networkidle0')
+
+        result = await page.content()
+        return result
+
     def get_detail(self, doc: dict, index: str, list_index: str, list_index_id: str) -> bool:
         """상세 페이지를 크롤링한다."""
         request_url = doc['detail_link']
@@ -85,7 +115,7 @@ class TermsDetail(TermsCore):
 
         # 질문 상세 페이지 크롤링
         try:
-            resp = self.requests(url=request_url, html=True)
+            html = asyncio.get_event_loop().run_until_complete(self.requests(url=request_url))
         except Exception as e:
             self.logger.error(msg={
                 'level': 'ERROR',
@@ -97,7 +127,7 @@ class TermsDetail(TermsCore):
             return False
 
         # 저장
-        self.save_doc(html=resp, index=index, doc_id=doc_id, doc=doc, base_url=request_url)
+        self.save_doc(html=html, index=index, doc_id=doc_id, doc=doc, base_url=request_url)
 
         self.logger.info(msg={
             'level': 'INFO',

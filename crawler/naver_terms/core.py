@@ -10,7 +10,6 @@ from bz2 import BZ2File
 from os.path import splitext
 
 import yaml
-from requests_html import HTMLSession, HTMLResponse
 
 from crawler.naver_terms.corpus_lake import CorpusLake
 from crawler.utils.html_parser import HtmlParser
@@ -58,7 +57,6 @@ class TermsCore(object):
         self.job_sub_category = self.params['sub_category'].split(',') if self.params['sub_category'] != '' else []
 
         self.lake = None
-        self.session: HTMLSession = HTMLSession(verify=False, browser_args=['--no-sandbox'], mock_browser=True)
 
     @staticmethod
     def open_config(filename: str) -> dict:
@@ -92,13 +90,3 @@ class TermsCore(object):
                     self.lake.dump_index(index=index, fp=fp, db_type=db_type)
 
         return
-
-    def requests(self, url: str, html: bool) -> (str or HTMLResponse):
-        resp: HTMLResponse = self.session.get(url, verify=False)
-
-        resp.html.render()
-
-        if html:
-            return resp.html.html
-
-        return resp
