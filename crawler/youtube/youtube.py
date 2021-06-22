@@ -7,7 +7,6 @@ from __future__ import print_function
 
 from os.path import splitext
 
-from crawler.utils.dataset_utils import DataSetUtils
 from crawler.youtube.cache_utils import CacheUtils
 # from crawler.youtube.live_chat import YoutubeLiveChat
 from crawler.youtube.reply import YoutubeReply
@@ -88,11 +87,9 @@ class YoutubeCrawler(object):
         # if self.params['live_chat'] is True:
         #     YoutubeLiveChat(params=self.params).batch()
         #
-        if self.params['export'] is True:
-            self.export()
+        # if self.params['export'] is True:
+        #     self.export()
 
-        if self.params['upload'] is True:
-            DataSetUtils().upload(filename=self.params.meta)
         return
 
     @staticmethod
