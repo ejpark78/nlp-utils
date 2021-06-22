@@ -1,31 +1,30 @@
-python-dateutil
-elasticsearch
-
-bs4
-lxml
-html5lib
-
-pycurl
-PySocks
-urllib3
-
-requests
-requests[socks]
-requests[security]
-requests-oauthlib
-requests-html
-
-tqdm
-pytz
-certifi
-cachelib
-brotlipy
-dotty_dict
-
-PyYAML
 PyMySQL
+PySocks
+PyYAML
+berkeleydb
+brotlipy
+bs4
+cachelib
+certifi
+dotty_dict
+elasticsearch
+html5lib
 jsonfinder
+lxml
+pycurl
+python-dateutil
+pytz
+requests
+requests-oauthlib
+requests[security]
+requests[socks]
+tqdm
+urllib3
 yapf
+pandas
+pyppeteer
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
+
+# sudo apt install libdb-dev

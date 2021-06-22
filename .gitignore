@@ -6,6 +6,7 @@
 .idea
 .bash_history
 .python_history
+.scrapy
 
 __pycache__
 

@@ -11,10 +11,10 @@ from urllib.parse import unquote
 
 import pytz
 
-from crawler.youtube.base import YoutubeBase
+from crawler.youtube.core import YoutubeCore
 
 
-class YoutubeLiveChat(YoutubeBase):
+class YoutubeLiveChat(YoutubeCore):
 
     def __init__(self, params):
         super().__init__(params=params)

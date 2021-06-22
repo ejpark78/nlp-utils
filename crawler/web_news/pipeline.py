@@ -15,10 +15,10 @@ import yaml
 from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
-from crawler.utils.mysql_utils import MysqlUtils
+from crawler.utils.mysql import MysqlUtils
 from crawler.utils.nlu_wrapper import NLUWrapper
 
 
@@ -26,6 +26,7 @@ class Pipeline(object):
     """ETL Pipeline"""
 
     def __init__(self):
+        self.es = None
         self.params = None
 
         self.logger = Logger()
@@ -37,8 +38,6 @@ class Pipeline(object):
         self.timezone = pytz.timezone('Asia/Seoul')
 
         self.source = 'url,title,date,paper,source,category,content,contents,raw,raw_list'.split(',')
-
-        self.es = None
 
         # summary
         self.summary = defaultdict(int)
@@ -253,6 +252,7 @@ class Pipeline(object):
             if end > len(doc_id_list):
                 end = len(doc_id_list)
 
+            history = set()
             for doc in tqdm(doc_list, desc='Pipeline'):
                 for col, tasks in task_list.items():
                     if col not in doc:
@@ -275,6 +275,8 @@ class Pipeline(object):
                     )
                     doc.update(item)
 
+                    history.add((index, doc['_id'], doc['date']))
+
             # analyze
             error_docs = self.analyze(doc_list=doc_list, bulk_size=self.params['bulk_size'])
             self.summary['error_docs'] += len(error_docs)
@@ -284,6 +286,14 @@ class Pipeline(object):
 
             error_docs = self.analyze(doc_list=error_docs, bulk_size=1)
             self.summary['retry_error_docs'] += len(error_docs)
+
+            # update index table
+            self.result_db.update_idx(
+                index_table='naver_idx',
+                source_table='naver',
+                date_range=self.params['date_range'],
+                history=history
+            )
 
         return None
 
@@ -325,9 +335,6 @@ class Pipeline(object):
         # pipeline
         for idx, ids in idx_grp.items():
             self.pipeline(doc_id_list=ids, config=config_list[0], index=idx)
-
-        # update index table
-        self.result_db.update_idx(index_table='naver_idx', source_table='naver', date_range=self.params['date_range'])
 
         # summary
         self.show_summary()

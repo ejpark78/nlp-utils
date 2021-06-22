@@ -27,20 +27,20 @@ class UdemyCrawler(object):
         """코스 목록 전체를 다운로드한다."""
         self.params = self.init_arguments()
 
-        if self.params.login is True:
-            UdemyCourseList(params=self.params).selenium.open(url='https://ncsoft.udemy.com')
-            sleep(10000)
+        # if self.params['login'] is True:
+        #     UdemyCourseList(params=self.params).selenium.open(url='https://ncsoft.udemy.com')
+        #     sleep(10000)
 
-        if self.params.list is True:
+        if self.params['list'] is True:
             UdemyCourseList(params=self.params).batch()
 
-        if self.params.trace is True:
+        if self.params['trace'] is True:
             UdemyTraceCourse(params=self.params).batch()
 
         return
 
     @staticmethod
-    def init_arguments():
+    def init_arguments() -> dict:
         """ 옵션 설정 """
         import argparse
 
@@ -52,13 +52,13 @@ class UdemyCrawler(object):
         parser.add_argument('--list', action='store_true', default=False)
         parser.add_argument('--trace', action='store_true', default=False)
 
-        parser.add_argument('--user-data', default='./cache/selenium/udemy')
+        parser.add_argument('--user-data', default='data/udemy-business/selenium')
         parser.add_argument('--data-path', default='data/udemy-business')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')
         parser.add_argument('--max-page', default=1, type=int, help='max page')
 
-        return parser.parse_args()
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

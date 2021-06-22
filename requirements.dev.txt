@@ -1,58 +1,27 @@
-python-dateutil
-elasticsearch
-
-bs4
-lxml
-html5lib
-
-pycurl
-PySocks
-urllib3
-
-requests
-requests[socks]
-requests[security]
-requests-oauthlib
-requests-html
-
-selenium
-selenium-wire
-
-tqdm
-pytz
-certifi
-cachelib
-brotlipy
-dotty_dict
-
-PyYAML
-PyMySQL
-jsonfinder
-
-wheel
-setuptools
-twine
-
-kubernetes
 apache-airflow
-apache-airflow[mysql]
 apache-airflow[kubernetes]
-
-werkzeug<1.0.0
-pandas
-jupyter
-notebook
-jupyter_contrib_nbextensions
-matplotlib
-
-webdav
-minio
+apache-airflow[mysql]
 autopep8
+berkeleydb
+jupyter
+jupyter_contrib_nbextensions
+jupyterlab
+jupyterthemes
+kubernetes
+matplotlib
+minio
+notebook
+pandas
 pip
+twine
+webdav
+werkzeug<1.0.0
 yapf
-
-# nlplab
-# git+http://galadriel02.korea.ncsoft.corp/searchtf/pypi/nlplab.git
 
 # pycurl : sudo apt install libcurl4-openssl-dev libssl-dev
 # jsonfinder: javascript 추출 모듈
+
+# sudo apt install libdb-dev
+
+# jupyter notebook 테마 설정
+# jt -t monokai -fs 11 -tfs 11 -nfs 11 -ofs 11 -cellw 980 -T -f hack -N -cellw 1280 -lineh 150

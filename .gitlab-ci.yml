@@ -1,0 +1,29 @@
+variables:
+  BUILD_IMAGE: galadriel02.korea.ncsoft.corp:5000/searchteam/crawler-dev
+  DOCKER_REPO: http://ci:fHGZmfokrvrCMNkzAXYf@galadriel02.korea.ncsoft.corp/crawler-dev/docker.git
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: docker/compose
+  script:
+    - apk add git
+    - git clone $DOCKER_REPO
+    - echo -n $(git rev-list --count HEAD) | tee docker/crawler/dev/version
+    - cd docker/crawler/dev/
+    - >
+        docker build
+        --label "app=crawler-dev"
+        --add-host "nlp-utils:172.19.153.41"
+        --add-host "registry.nlp-utils:172.19.153.41"
+        --add-host "galadriel02.korea.ncsoft.corp:172.20.92.245"
+        --build-arg "docker_tag=$(cat version)"
+        --build-arg "CONFIG_BRANCH=$CI_COMMIT_BRANCH"
+        --build-arg "INSTALL_BRANCH=$CI_COMMIT_BRANCH"
+        --build-arg BASE_IMAGE=$BUILD_IMAGE:core
+        -t $BUILD_IMAGE:$CI_COMMIT_BRANCH
+        -f Dockerfile
+        .
+    - docker push $BUILD_IMAGE:$CI_COMMIT_BRANCH

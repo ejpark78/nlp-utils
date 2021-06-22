@@ -19,7 +19,7 @@ import json
 import webvtt
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -29,7 +29,6 @@ class YoutubeVttCrawler(object):
     """ 유튜브 자막 유틸입니다."""
 
     def __init__(self):
-        """생성자"""
 
         self.sleep = 5
 

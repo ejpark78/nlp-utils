@@ -13,7 +13,7 @@ from dateutil.parser import parse as parse_date
 from tqdm import tqdm
 from dotty_dict import dotty
 
-from crawler.utils.elasticsearch_utils import ElasticSearchUtils
+from crawler.utils.es import ElasticSearchUtils
 from crawler.utils.logger import Logger
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

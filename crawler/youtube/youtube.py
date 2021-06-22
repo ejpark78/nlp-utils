@@ -7,13 +7,14 @@ from __future__ import print_function
 
 from os.path import splitext
 
-from crawler.youtube.cache_utils import CacheUtils
-from crawler.youtube.live_chat import YoutubeLiveChat
+from crawler.utils.dataset_utils import DataSetUtils
+# from crawler.youtube.cache_utils import CacheUtils
+from crawler.youtube.cache import Cache
+# from crawler.youtube.live_chat import YoutubeLiveChat
 from crawler.youtube.reply import YoutubeReply
 from crawler.youtube.video_list import YoutubeVideoList
 from crawler.utils.logger import Logger
-from crawler.utils.selenium_wire_utils import SeleniumWireUtils
-from crawler.utils.dataset_utils import DataSetUtils
+from crawler.utils.selenium_wire import SeleniumWireUtils
 
 
 class YoutubeCrawler(object):
@@ -23,14 +24,15 @@ class YoutubeCrawler(object):
         super().__init__()
 
         self.logger = Logger()
-        self.params = self.init_arguments()
 
         self.selenium = SeleniumWireUtils(headless=True)
+        
+        self.params = {}
 
-    def export(self):
-        db = CacheUtils(filename=self.params.cache)
+    def export(self) -> None:
+        db = Cache(filename=self.params['cache'])
 
-        f_name = f'{splitext(self.params.cache)[0]}.channels'
+        f_name = f'''{splitext(self.params['cache'])[0]}.channels'''
         db.export_tbl(
             filename=f'{f_name}.json.bz2',
             tbl='channels',
@@ -42,7 +44,7 @@ class YoutubeCrawler(object):
         )
         db.json2xlsx(filename=f_name)
 
-        f_name = f'{splitext(self.params.cache)[0]}.videos'
+        f_name = f'''{splitext(self.params['cache'])[0]}.videos'''
         db.export_tbl(
             filename=f'{f_name}.json.bz2',
             tbl='videos',
@@ -54,7 +56,7 @@ class YoutubeCrawler(object):
         )
         db.json2xlsx(filename=f_name)
 
-        f_name = f'{splitext(self.params.cache)[0]}.replies'
+        f_name = f'''{splitext(self.params['cache'])[0]}.replies'''
         db.export_tbl(
             filename=f'{f_name}.json.bz2',
             tbl='reply',
@@ -75,22 +77,23 @@ class YoutubeCrawler(object):
 
         return
 
-    def batch(self):
-        if self.params.videos is True:
+    def batch(self) -> None:
+        self.params = self.init_arguments()
+
+        if self.params['video_list'] is True:
             YoutubeVideoList(params=self.params).batch()
 
-        if self.params.reply is True:
+        if self.params['reply'] is True:
             YoutubeReply(params=self.params).batch()
 
-        if self.params.live_chat is True:
-            YoutubeLiveChat(params=self.params).batch()
-
-        if self.params.upload is True:
-            DataSetUtils().upload(filename=self.params.meta)
-
-        if self.params.export is True:
+        # if self.params['live_chat'] is True:
+        #     YoutubeLiveChat(params=self.params).batch()
+        #
+        if self.params['export'] is True:
             self.export()
 
+        if self.params['upload'] is True:
+            DataSetUtils().upload(filename=self.params.meta)
         return
 
     @staticmethod
@@ -99,22 +102,23 @@ class YoutubeCrawler(object):
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument('--videos', action='store_true', default=False, help='비디오 목록 조회')
+        parser.add_argument('--video-list', action='store_true', default=False, help='비디오 목록 조회')
         parser.add_argument('--reply', action='store_true', default=False, help='댓글 조회')
         parser.add_argument('--live-chat', action='store_true', default=False, help='라이브챗 조회')
 
         parser.add_argument('--export', action='store_true', default=False, help='내보내기')
         parser.add_argument('--upload', action='store_true', default=False, help='minio 업로드')
 
-        parser.add_argument('--cache', default='./data/youtube/mtd.db', help='파일명')
+        parser.add_argument('--cache', default='./data/youtube/test.db', help='파일명')
         parser.add_argument('--use-cache', action='store_true', default=False, help='캐쉬 사용')
 
         parser.add_argument('--max-scroll', default=5, type=int, help='최대 스크롤수')
+        parser.add_argument('--reply-scroll', default=20, type=int, help='최대 스크롤수')
 
         parser.add_argument('--sleep', default=5, type=float, help='sleep time')
 
-        parser.add_argument('--template', default='./config/youtube/template.json', help='channel template')
-        parser.add_argument('--channel-list', default='./config/youtube/mtd.json', help='channel 목록')
+        parser.add_argument('--template', default='../config/youtube/template.json', help='channel template')
+        parser.add_argument('--channel-list', default='../config/youtube/test.json', help='channel 목록')
 
         parser.add_argument('--login', action='store_true', default=False)
         parser.add_argument('--headless', action='store_true', default=False)
@@ -122,7 +126,7 @@ class YoutubeCrawler(object):
 
         parser.add_argument('--meta', default='./data/youtube/mtd-meta.json', help='메타 파일명')
 
-        return parser.parse_args()
+        return vars(parser.parse_args())
 
 
 if __name__ == '__main__':

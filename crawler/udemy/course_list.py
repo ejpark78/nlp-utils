@@ -18,7 +18,7 @@ urllib3.disable_warnings(UserWarning)
 
 class UdemyCourseList(UdemyBase):
 
-    def __init__(self, params):
+    def __init__(self, params: dict):
         super().__init__(params=params)
 
     def batch(self):
@@ -28,13 +28,13 @@ class UdemyCourseList(UdemyBase):
         })
 
         result = []
-        for page in tqdm(range(1, self.params.max_page + 1), desc='course list'):
+        for page in tqdm(range(1, self.params['max_page'] + 1), desc='course list'):
             self.selenium.reset_requests()
 
             url = f'https://ncsoft.udemy.com/home/my-courses/learning/?p={page}'
 
             self.selenium.open(url=url)
-            sleep(self.params.sleep)
+            sleep(self.params['sleep'])
 
             resp = self.selenium.get_requests(resp_url_path='/api-2.0/users/me/subscribed-courses/')
             if len(resp) == 0:
@@ -49,11 +49,11 @@ class UdemyCourseList(UdemyBase):
                 corpus_list = r.data['results']
                 result += corpus_list
 
-                self.save_cache(cache=result, path=self.params.data_path, name='course_list')
+                self.save_cache(cache=result, path=self.params['data_path'], name='course_list')
 
             if is_stop is True:
                 break
 
-        self.save_cache(cache=result, path=self.params.data_path, name='course_list', save_time_tag=True)
+        self.save_cache(cache=result, path=self.params['data_path'], name='course_list', save_time_tag=True)
 
         return
