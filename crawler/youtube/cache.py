@@ -121,6 +121,15 @@ class Cache(CacheCore):
         self.conn.commit()
         return
 
+    def get_reply_count(self, v_id):
+        self.cursor.execute('SELECT reply_count FROM videos WHERE id=?', (v_id,))
+
+        row = self.cursor.fetchone()
+        if row is not None and len(row) == 1:
+            return row[0]
+
+        return -1
+
     def save_live_chat(self, c_id, video_id, data):
         self.cursor.execute(
             self.template['live_chat'],
