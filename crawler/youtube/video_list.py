@@ -18,7 +18,7 @@ class YoutubeVideoList(YoutubeCore):
 
     @staticmethod
     def read_config(filename: str, column: str) -> dict:
-        with open(filename, 'r') as fp:
+        with open(filename, 'r', encoding='utf-8') as fp:
             buf = [x.strip() for x in fp.readlines()]
 
             config = json.loads(''.join(buf))
@@ -26,7 +26,7 @@ class YoutubeVideoList(YoutubeCore):
 
         return result
 
-    def save_videos(self, videos: list, tab_name: str, tags: dict) -> None:
+    def save_videos(self, videos: list, tab_name: str, tags: dict) ->int:#-> None:
         if tab_name == 'videos':
             video_list = [x['gridVideoRenderer'] for x in videos if 'gridVideoRenderer' in x]
         else:
@@ -40,7 +40,7 @@ class YoutubeVideoList(YoutubeCore):
                 tags=tags,
             )
 
-        return
+        return len(video_list)
 
     def get_videos(self, url: str, meta: dict, tags: dict, tab_name: str = 'videos') -> int:
         self.selenium.open(url=url)
@@ -62,12 +62,12 @@ class YoutubeVideoList(YoutubeCore):
         contents = tab['tabRenderer']['content']['sectionListRenderer']['contents']
         result = contents[0]['itemSectionRenderer']['contents'][0]['gridRenderer']['items']
 
-        self.save_videos(videos=result, tab_name=tab_name, tags=tags)
+        count = self.save_videos(videos=result, tab_name=tab_name, tags=tags)
 
-        return self.get_more_videos(video_count=len(result), meta=meta, tab_name=tab_name, tags=tags)
+        return self.get_more_videos(video_count=count, meta=meta, tab_name=tab_name, tags=tags) #video_count=len(result)
 
     def get_more_videos(self, video_count: int, meta: dict, tab_name: str, tags: dict, max_try: int = 500,
-                        max_zero_count: int = 10) -> int:
+                        max_zero_count: int = 5) -> int: #10
         if max_try < 0 or max_zero_count < 0:
             self.logger.log(msg={
                 'level': 'MESSAGE',
@@ -81,19 +81,17 @@ class YoutubeVideoList(YoutubeCore):
         self.selenium.scroll(count=self.params['max_scroll'], meta=meta)
 
         videos = []
-        for x in self.selenium.get_requests(resp_url_path='/browse_ajax'):
+        for x in self.selenium.get_requests(resp_url_path='/browse'): #/browse_ajax
             if hasattr(x, 'data') is False or len(x.data) < 2:
                 continue
-
-            response = x.data[1]['response']
-            if 'continuationContents' not in response:
+            # print(x)
+            response = x.data['onResponseReceivedActions'][0]['appendContinuationItemsAction'] #x.data[1]['response']
+            if 'continuationItems' not in response: # continuationContents
                 continue
 
-            videos += response['continuationContents']['gridContinuation']['items']
+            videos += response['continuationItems'] #response['continuationContents']['gridContinuation']['items']
 
-        self.save_videos(videos=videos, tab_name=tab_name, tags=tags)
-
-        video_count += len(videos)
+        video_count += self.save_videos(videos=videos, tab_name=tab_name, tags=tags)
 
         self.logger.log(msg={
             'level': 'MESSAGE',
@@ -109,7 +107,7 @@ class YoutubeVideoList(YoutubeCore):
             max_zero_count = 10
             sleep(self.params['sleep'])
 
-        self.get_more_videos(
+        return self.get_more_videos(
             video_count=video_count,
             meta=meta,
             max_try=max_try - 1,
@@ -118,7 +116,7 @@ class YoutubeVideoList(YoutubeCore):
             tags=tags
         )
 
-        return video_count
+        # return video_count
 
     def batch(self) -> None:
         template = self.read_config(filename=self.params['template'], column='template')
@@ -161,5 +159,6 @@ class YoutubeVideoList(YoutubeCore):
                 sleep(self.params['sleep'])
 
             self.db.update_video_count(c_id=c_id, count=video_count)
+            sleep(30) # 잠시 텀 가지기
 
         return

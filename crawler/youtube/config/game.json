@@ -1,0 +1,185 @@
+{
+  "channel_list": [
+    {
+      "lang": "RU",
+      "tag": "game/L2",
+      "title": "Джони TV",
+      "c_name": "ДжониТВ"
+    },{
+      "lang": "ru",
+      "tag": "game/L2",
+      "title": "BoHpts",
+      "c_name": "BoHGamer"
+    },{
+      "lang": "RU",
+      "tag": "game/L2M,L2R,etc",
+      "title": "MasterChy",
+      "c_name": "MasterChy"
+    },{
+      "lang": "RU",
+      "tag": "game/L2Essence",
+      "title": "Леки ТВ",
+      "c_name": "ЛекиТВ"
+    },{
+      "lang": "RU",
+      "tag": "game/L",
+      "title": "FocusDeath",
+      "c_name": "FocusDeath"
+    },{
+      "lang": "RU",
+      "tag": "game/L2,L2M,etc",
+      "title": "myBIGgaming",
+      "c_name": "myBIGgaming"
+    },{
+      "lang": "RU",
+      "tag": "game/L,L2Essence,etc",
+      "title": "TheWide001",
+      "c_name": "TheWide001"
+    },{
+      "lang": "ES",
+      "tag": "game/L2",
+      "title": "ValtianTV",
+      "c_name": "ValtianTV"
+    },{
+      "lang": "ES",
+      "tag": "game/L2",
+      "title": "Random Topic Games",
+      "c_name": "RandomTopicGames"
+    },{
+      "lang": "ES",
+      "tag": "game/BNS",
+      "title": "Putupau",
+      "c_name": "PutupauFamily69"
+    },{
+      "lang": "ES",
+      "tag": "game/L2",
+      "title": "Spanish Djent",
+      "c_name": "SpanishDjent"
+    },{
+      "lang": "FR",
+      "tag": "game/Lineage-ProjectTL,AION",
+      "title": "Oxem RPG",
+      "c_name": "NexusMakerFRGamerCorp"
+    },{
+      "lang": "FR",
+      "tag": "game/L2Revolution, BNS",
+      "title": "Xeleko - 100% MultiGaming",
+      "user": "Xeleko"
+    },{
+      "lang": "FR",
+      "tag": "game/L2Revolution,BNS,AION",
+      "title": "Zeyne MMORPG",
+      "channel": "UCMC86eavF1hUrzR1qXAzY4A"
+    },{
+      "lang": "FR",
+      "tag": "game/L2Essence,AION,BDO",
+      "title": "Kazhamania",
+      "c_name": "Kazhamania"
+    },{
+      "lang": "FR",
+      "tag": "game/L2",
+      "title": "Drunge",
+      "user": "Drunge59"
+    },{
+      "lang": "FR",
+      "tag": "game/BNS",
+      "title": "Blade & Soul",
+      "c_name": "bladeandsoul"
+    },{
+      "lang": "FR",
+      "tag": "game/AION",
+      "title": "Skyyart",
+      "user": "SkyyartEtChelxie"
+    },{
+      "lang": "FR",
+      "tag": "game/AION",
+      "title": "Shekra14",
+      "user": "Shekra14"
+    },{
+      "lang": "FR",
+      "tag": "game/AION",
+      "title": "Sunji Mine",
+      "user": "SunjiMine"
+    },{
+      "lang": "FR",
+      "tag": "game/all",
+      "title": "SQUEEZIE",
+      "c_name": "aMOODIEsqueezie"
+    },{
+      "lang": "FR",
+      "tag": "game/all",
+      "title": "SQUEEZIE GAMING",
+      "c_name": "SQUEEZIEGAMING"
+    },{
+      "lang": "FR",
+      "tag": "game/all",
+      "title": "mistermv",
+      "user": "monsieurmv"
+    },{
+      "lang": "FR",
+      "tag": "game/WoW",
+      "title": "ZeratoR",
+      "c_name": "ZeratoR"
+    },{
+      "lang": "FR",
+      "tag": "game/all",
+      "title": "GaGzZz",
+      "user": "Gagzzz82"
+    },{
+      "lang": "FR",
+      "tag": "game/BDO",
+      "title": "Keilthar",
+      "c_name": "Keilthar"
+    },{
+      "lang": "DE",
+      "tag": "game/CallOfDuty",
+      "title": "MontanaBlack",
+      "c_name": "montanablack"
+    },{
+      "lang": "DE",
+      "tag": "game/WoW",
+      "title": "Gronkh",
+      "c_name": "gronkh"
+    },{
+      "lang": "DE",
+      "tag": "game/GW2,MMORPG",
+      "title": "GameStar",
+      "c_name": "gamestar"
+    },{
+      "lang": "DE",
+      "tag": "game/GW2",
+      "title": "PietSmiet",
+      "c_name": "pietsmiet"
+    },{
+      "lang": "DE",
+      "tag": "game/GW2",
+      "title": "TakeoGW2",
+      "c_name": "TakeoGW2"
+    },{
+      "lang": "DE",
+      "tag": "game/L2",
+      "title": "IGN Deutschland",
+      "c_name": "IGNDEUTSCHLAND"
+    },{
+      "lang": "DE",
+      "tag": "game/AION",
+      "title": "Kelpi",
+      "c_name": "KelpiAion"
+    },{
+      "lang": "DE",
+      "tag": "game/AION",
+      "title": "Entenburg",
+      "channel": "UCNrInjQKQBYYWo9FjpI8F3g"
+    },{
+      "lang": "DE",
+      "tag": "game/",
+      "title": "Spieletrend",
+      "user": "spieletrend"
+    },{
+      "lang": "DE",
+      "tag": "game/BNS",
+      "title": "Sankura LP",
+      "c_name": "SankuraLP"
+    }
+  ]
+}
