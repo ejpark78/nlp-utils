@@ -16,7 +16,7 @@ import urllib3
 from dateutil.rrule import rrule, DAILY, YEARLY
 
 from crawler.utils.es import ElasticSearchUtils
-from crawler.web_news.base import WebNewsBase
+from crawler.web_news.core import WebNewsCore
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -24,10 +24,12 @@ urllib3.disable_warnings(UserWarning)
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL:@SECLEVEL=1'
 
 
-class WebNewsCrawler(WebNewsBase):
+class WebNewsCrawler(WebNewsCore):
 
-    def __init__(self):
+    def __init__(self, params: dict, default_params: dict):
         super().__init__()
+
+        self.params, self.default_params = params, default_params
 
         self.trace_depth: int = 0
 
@@ -392,7 +394,7 @@ class WebNewsCrawler(WebNewsBase):
                 break
 
             # 중복 문서 개수 점검
-            if 0 == len(cache) or history.intersection(cache) == cache:
+            if len(history) > 0 and (0 == len(cache) or history.intersection(cache) == cache):
                 self.logger.log(msg={
                     'level': 'MESSAGE',
                     'message': '[조기 종료] 마지막 페이지',
@@ -541,8 +543,6 @@ class WebNewsCrawler(WebNewsBase):
             -> trace_article_list(page)
             -> trace_article_body
         """
-        self.params, self.default_params = self.init_arguments()
-
         params_org = deepcopy(self.params)
 
         self.job_names = set(self.params['job_name'].split(',')) if self.params['job_name'] != '' else None
@@ -575,42 +575,3 @@ class WebNewsCrawler(WebNewsBase):
             )
 
         return
-
-    @staticmethod
-    def init_arguments() -> (dict, dict):
-        import argparse
-
-        parser = argparse.ArgumentParser()
-
-        # flow-control
-        parser.add_argument('--list', action='store_true', default=False, help='기사 목록 크롤링')
-        parser.add_argument('--contents', action='store_true', default=False, help='기사 본문 크롤링')
-
-        # essential
-        parser.add_argument('--config', default=None, type=str, help='설정 파일 정보')
-
-        # config overwrite
-        parser.add_argument('--job-name', default='', type=str, help='잡 이름, 없는 경우 전체')
-        parser.add_argument('--sub-category', default='', type=str, help='하위 카테고리')
-
-        parser.add_argument('--date-range', default=None, type=str, help='date 날짜 범위: 2000-01-01~2019-04-10')
-        parser.add_argument('--date-step', default=-1, type=int, help='date step')
-
-        parser.add_argument('--page-range', default=None, type=str, help='page 범위: 1~100')
-        parser.add_argument('--page-step', default=1, type=int, help='page step')
-
-        parser.add_argument('--sleep', default=10, type=float, help='sleep time')
-        parser.add_argument('--request-timeout', default=320, type=float, help='request timeout')
-
-        # optional
-        parser.add_argument('--overwrite', action='store_true', default=False, help='(optional) 덮어쓰기')
-
-        parser.add_argument('--mapping', default=None, type=str, help='(optional) 인덱스 맵핑 파일 정보')
-
-        parser.add_argument('--verbose', default=-1, type=int, help='(optional) verbose 모드: 1=INFO')
-
-        return vars(parser.parse_args()), vars(parser.parse_args([]))
-
-
-if __name__ == '__main__':
-    WebNewsCrawler().batch()

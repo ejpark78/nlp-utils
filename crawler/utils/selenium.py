@@ -8,6 +8,7 @@ from __future__ import print_function
 from time import sleep
 from urllib.parse import urlparse, parse_qs
 
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -20,24 +21,21 @@ from crawler.utils.logger import Logger
 class SeleniumUtils(object):
     """웹 뉴스 크롤러 베이스"""
 
-    def __init__(self, login=False, headless=True, user_data_path=None, incognito=False,
-                 executable_path='/usr/bin/chromedriver'):
-        """ 생성자 """
+    def __init__(self, login=False, headless=True, user_data_path=None, chromedriver: str = '/usr/bin/chromedriver'):
         super().__init__()
 
         self.driver = None
 
         self.login = login
         self.headless = headless
-        self.incognito = incognito
         self.user_data_path = user_data_path
-        self.executable_path = executable_path
+        self.executable_path = chromedriver
 
         self.logger = Logger()
 
         self.open_driver()
 
-    def open_driver(self):
+    def open_driver(self) -> None:
         """브라우저를 실행한다."""
         if self.driver is not None:
             return
@@ -77,14 +75,22 @@ class SeleniumUtils(object):
 
         return
 
-    def close_driver(self):
+    def close_driver(self) -> None:
         if self.driver is not None:
-            self.driver.quit()
+            try:
+                self.driver.quit()
+            except Exception as e:
+                self.logger.error(msg={
+                    'level': 'ERROR',
+                    'message': 'close_driver 에러',
+                    'exception': str(e),
+                })
+
             self.driver = None
 
         return
 
-    def open(self, url, wait_for_path=None):
+    def open(self, url: str, wait_for_path: str = None) -> None:
         try:
             self.driver.get(url=url)
         except Exception as e:
@@ -115,7 +121,7 @@ class SeleniumUtils(object):
 
         return
 
-    def page_down(self, count, sleep_time=2):
+    def page_down(self, count: int, sleep_time: int = 2) -> bool:
         """스크롤한다."""
         html = self.driver.find_element_by_tag_name('html')
 
@@ -135,7 +141,7 @@ class SeleniumUtils(object):
 
         return False
 
-    def scroll(self, count):
+    def scroll(self, count: int) -> bool:
         """스크롤한다."""
 
         def check_height(prev_height):
@@ -170,7 +176,7 @@ class SeleniumUtils(object):
 
         return False
 
-    def wait(self, css):
+    def wait(self, css: str) -> None:
         wait = WebDriverWait(self.driver, 120)
 
         wait.until(
@@ -179,7 +185,7 @@ class SeleniumUtils(object):
 
         return
 
-    def wait_clickable(self, css):
+    def wait_clickable(self, css: str) -> None:
         wait = WebDriverWait(self.driver, 120)
 
         wait.until(
@@ -189,13 +195,13 @@ class SeleniumUtils(object):
         return
 
     @staticmethod
-    def replace_tag(html_tag, tag_list, replacement='', attribute=None):
+    def replace_tag(soup: BeautifulSoup, tag_list: list, replacement: str = '', attribute=None) -> bool:
         """ html 태그 중 특정 태그를 삭제한다. ex) script, caption, style, ... """
-        if html_tag is None:
+        if soup is None:
             return False
 
         for tag_name in tag_list:
-            for tag in html_tag.find_all(tag_name, attrs=attribute):
+            for tag in soup.find_all(tag_name, attrs=attribute):
                 if replacement == '':
                     tag.extract()
                 else:
@@ -204,7 +210,7 @@ class SeleniumUtils(object):
         return True
 
     @staticmethod
-    def parse_url(url):
+    def parse_url(url: str) -> dict:
         """url 에서 쿼리문을 반환한다."""
         url_info = urlparse(url)
         query = parse_qs(url_info.query)

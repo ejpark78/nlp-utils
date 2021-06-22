@@ -73,13 +73,16 @@ class ElasticSearchUtils(object):
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return dict(data)
 
-    def create_index(self, conn: Elasticsearch, index: str = None) -> bool:
+    def create_index(self, conn: Elasticsearch, index: str = None, mapping: dict = None) -> bool:
         """인덱스를 생성한다."""
-        if conn is None:
+        if index is None:
+            index = self.index
+
+        if conn is None or index is None:
             return False
 
         try:
-            if self.conn.indices.exists(index=self.index) is True:
+            if self.conn.indices.exists(index=index) is True:
                 return False
         except Exception as e:
             self.logger.error(msg={
@@ -90,17 +93,16 @@ class ElasticSearchUtils(object):
             })
             return False
 
-        mapping = {
-            'settings': {
-                'number_of_shards': 1,
-                'number_of_replicas': 1
+        if mapping is None:
+            mapping = {
+                'settings': {
+                    'number_of_shards': 1,
+                    'number_of_replicas': 1
+                }
             }
-        }
 
-        if self.mapping:
-            mapping = self.mapping
-            if isinstance(self.mapping, str) and isfile(self.mapping):
-                mapping = self.open_mapping(self.mapping)
+        if isinstance(mapping, str) and isfile(mapping):
+            mapping = self.open_mapping(mapping)
 
         try:
             conn.indices.create(index=index, body=mapping)
@@ -109,7 +111,7 @@ class ElasticSearchUtils(object):
                 'level': 'ERROR',
                 'message': '인덱스 생성 에러',
                 'host': self.host,
-                'index': self.index,
+                'index': index,
                 'exception': str(e),
             })
             return False
@@ -118,7 +120,7 @@ class ElasticSearchUtils(object):
             'level': 'MESSAGE',
             'message': '인덱스 생성 성공',
             'host': self.host,
-            'index': self.index,
+            'index': index,
             'mapping': mapping,
         })
 
@@ -216,7 +218,7 @@ class ElasticSearchUtils(object):
             return
 
         # 인덱스가 없는 경우, 생성함
-        self.create_index(conn=self.conn, index=self.index)
+        self.create_index(conn=self.conn, index=self.index, mapping=self.mapping)
 
         return
 
@@ -324,7 +326,7 @@ class ElasticSearchUtils(object):
         if index is None:
             index = self.index
 
-        self.create_index(conn=self.conn, index=index)
+        self.create_index(conn=self.conn, index=index, mapping=self.mapping)
 
         # 버퍼링
         if document is not None:
@@ -537,7 +539,7 @@ class ElasticSearchUtils(object):
 
     def dump_index(self, index: str, size: int = 1000, query: dict = None, result: list = None,
                    limit: int = -1, source: list = None, index_size: int = -1, fp: BZ2File = None,
-                   params: dict = None) -> None:
+                   params: dict = None, desc: str = None) -> None:
         if index is None or index == '':
             return
 
@@ -558,7 +560,7 @@ class ElasticSearchUtils(object):
             line = json.dumps(settings, ensure_ascii=False) + '\n'
             if fp:
                 fp.write(line.encode('utf-8'))
-            else:
+            elif result is None:
                 print(line, flush=True, end='')
 
         p_bar = None
@@ -577,7 +579,7 @@ class ElasticSearchUtils(object):
 
             if p_bar is None:
                 p_bar = tqdm(
-                    desc=index,
+                    desc=desc if desc else index,
                     total=resp['total'],
                     unit_scale=True,
                     dynamic_ncols=True
@@ -836,26 +838,26 @@ class ElasticSearchUtils(object):
 
         return prev_doc
 
-    def exists(self, index: str, doc_id: str, list_index, list_id, merge_column: str = None) -> bool:
-        """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
-        exists_doc = self.conn.exists(id=doc_id, index=index)
-
-        if exists_doc is True:
-            self.move_document(
-                source_index=list_index,
-                target_index=f'{list_index}_done',
-                source_id=list_id,
-                document_id=doc_id,
-                merge_column=merge_column,
-            )
-            return True
-
-        return False
+    # def exists(self, index: str, doc_id: str, list_index: str, list_id: str, merge_column: str = None) -> bool:
+    #     """상세 페이지가 크롤링 결과에 있는지 확인한다. 만약 있다면 목록 인덱스에서 완료(*_done)으로 이동한다."""
+    #     exists_doc = self.conn.exists(id=doc_id, index=index)
+    #
+    #     if exists_doc is True:
+    #         self.move_document(
+    #             source_index=list_index,
+    #             target_index=f'{list_index}_done',
+    #             source_id=list_id,
+    #             document_id=doc_id,
+    #             merge_column=merge_column,
+    #         )
+    #         return True
+    #
+    #     return False
 
     def restore_index(self, index: str, size: int = 1000, mapping: str = None) -> None:
         """데이터를 서버에 저장한다."""
         self.mapping = mapping
-        self.create_index(conn=self.conn, index=index)
+        self.create_index(conn=self.conn, index=index, mapping=self.mapping)
 
         p_bar = None
 

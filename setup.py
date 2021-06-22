@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from glob import glob
+
 from setuptools import setup, find_packages
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -19,6 +21,7 @@ with open('requirements.txt', 'r') as fp:
 setup(
     name='crawler',
     version=version,
+    scripts=glob('bin/*'),
     packages=find_packages(include=['crawler', 'crawler.*']),
     python_requires='>=3',
     url='http://galadriel02.korea.ncsoft.corp/crawler-dev/crawler',

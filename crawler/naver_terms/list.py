@@ -12,7 +12,7 @@ import urllib3
 from bs4 import BeautifulSoup
 
 from crawler.naver_terms.core import TermsCore
-from crawler.utils.es import ElasticSearchUtils
+from crawler.naver_terms.corpus_lake import CorpusLake
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
@@ -24,18 +24,31 @@ class TermsList(TermsCore):
     def __init__(self, params: dict):
         super().__init__(params=params)
 
-        self.status = {}
+        self.status = dict()
+        self.history = set()
 
     def batch(self) -> None:
         """카테고리 하위 목록을 크롤링한다."""
+        lake_info = {
+            'type': self.params['db_type'],
+            'host': self.config['jobs']['host'],
+            'index': self.config['jobs']['list_index'],
+            'bulk_size': 20,
+            'auth': self.config['jobs']['http_auth'],
+            'mapping': self.config['index_mapping'],
+            'filename': self.params['cache']
+        }
+
+        self.lake = CorpusLake(lake_info=lake_info)
+
         category_id = None
 
         # 카테고리 하위 목록을 크롤링한다.
         for category in self.config['jobs']['category']:
             self.status = {
-                'start': 1,
-                'end': 100000,
-                'step': 1,
+                'start': self.params['list_start'],
+                'end': self.params['list_end'],
+                'step': self.params['list_step'],
             }
 
             if len(self.job_sub_category) > 0 and category['name'] not in self.job_sub_category:
@@ -79,6 +92,10 @@ class TermsList(TermsCore):
                 sleep(10)
                 continue
 
+            # 현재 크롤링 위치 저장
+            self.status['start'] = page
+            self.status['category'] = category
+
             # 문서 저장
             is_stop = self.save_doc(
                 html=resp.content,
@@ -86,32 +103,16 @@ class TermsList(TermsCore):
                 category_name=category['name'],
             )
 
-            # 현재 크롤링 위치 저장
-            self.status['start'] = page
-            self.status['category'] = category
-
-            # 현재 상태 로그 표시
-            self.logger.info(msg={
-                'name': category['name'],
-                'page': page
-            })
+            sleep(self.params['sleep'])
 
             if is_stop is True:
                 break
 
-            sleep(self.params['sleep'])
-
         return
 
-    def save_doc(self, html: str, category_name: str, base_url: str) -> bool:
+    def save_doc(self, html: str or bytes, category_name: str, base_url: str) -> (bool, set):
         """크롤링한 문서를 저장한다."""
-        es = ElasticSearchUtils(
-            host=self.config['jobs']['host'],
-            index=self.config['jobs']['list_index'],
-            bulk_size=20,
-            http_auth=self.config['jobs']['http_auth'],
-            mapping=self.config['index_mapping']
-        )
+        cache = set()
 
         soup = BeautifulSoup(html, 'html5lib')
 
@@ -142,44 +143,37 @@ class TermsList(TermsCore):
 
                 doc['category'] = category_name
 
-                # 문서가 있는지 조회
-                is_exists = es.conn.exists(
-                    index=f'''{self.config['jobs']['list_index']}_done''',
-                    id=doc['_id']
-                )
-                if is_exists is True:
-                    self.logger.log(msg={
-                        'MESSAGE': '중복 용어',
-                        'category_name': category_name,
-                        '_id': doc['_id'],
-                    })
-                    continue
-
                 # 저장 로그 표시
                 self.logger.log(msg={
-                    'MESSAGE': '신규 용어',
-                    'category_name': category_name,
+                    'level': 'MESSAGE',
+                    'category': category_name,
+                    'page': f'''{self.status['start']:,}/{self.status['end']:,}''',
                     '_id': doc['_id'],
                     'name': doc['name'],
-                    'define': doc['define'][:30]
+                    'define': doc['define'][:30] if 'define' in doc else ''
                 })
 
-                self.history.add(doc['_id'])
+                cache.add(doc['_id'])
 
                 # 이전에 수집한 문서와 병합
-                doc = es.merge_doc(
-                    index=self.config['jobs']['list_index'],
-                    doc=doc,
-                    column=['category']
-                )
-                doc = es.merge_doc(
-                    index=f'''{self.config['jobs']['list_index']}_done''',
-                    doc=doc,
-                    column=['category']
-                )
+                doc = self.lake.merge(doc=doc, index=self.config['jobs']['list_index'], column=['category'])
 
-                es.save_document(document=doc)
+                self.lake.save(doc_id=doc['_id'], doc=doc, index=self.config['jobs']['list_index'])
 
-            es.flush()
+            self.lake.flush()
+
+        # 중복 문서 개수 점검
+        if len(self.history) > 0 and (0 == len(cache) or self.history.intersection(cache) == cache):
+            self.logger.log(msg={
+                'level': 'MESSAGE',
+                'message': '[조기 종료] 마지막 페이지',
+                'list_size': len(cache)
+            })
+            return True
+
+        if len(self.history) > 100:
+            self.history.clear()
+
+        self.history.update(cache)
 
         return False

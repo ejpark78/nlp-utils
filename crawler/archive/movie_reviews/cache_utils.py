@@ -8,13 +8,13 @@ from __future__ import print_function
 import requests
 import urllib3
 
-from crawler.utils.cache_base import CacheBase
+from crawler.utils.cache import CacheCore
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class CacheUtils(CacheBase):
+class CacheUtils(CacheCore):
 
     def __init__(self, filename, use_cache=True):
         super().__init__(filename=filename)

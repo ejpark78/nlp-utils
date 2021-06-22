@@ -6,10 +6,12 @@ from __future__ import division
 from __future__ import print_function
 
 from base64 import decodebytes
-from os import getenv
+from bz2 import BZ2File
+from os.path import splitext
 
 import yaml
 
+from crawler.naver_terms.corpus_lake import CorpusLake
 from crawler.utils.html_parser import HtmlParser
 from crawler.utils.logger import Logger
 
@@ -20,8 +22,6 @@ class TermsCore(object):
         super().__init__()
 
         self.params = params
-
-        self.history = set()
 
         self.logger = Logger()
         self.parser = HtmlParser()
@@ -41,17 +41,52 @@ class TermsCore(object):
 
         self.config = self.open_config(filename=self.params['config'])
 
+        http_auth = None
+        if self.params['auth']:
+            http_auth = self.params['auth']
+        elif self.params['auth_encoded']:
+            http_auth = decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+
         self.config['jobs'].update({
             'host': self.params['host'],
             'index': self.params['index'],
             'list_index': self.params['list_index'],
-            'http_auth': decodebytes(self.params['auth_encoded'].encode('utf-8')).decode('utf-8')
+            'http_auth': http_auth
         })
 
         self.job_sub_category = self.params['sub_category'].split(',') if self.params['sub_category'] != '' else []
+
+        self.lake = None
 
     @staticmethod
     def open_config(filename: str) -> dict:
         with open(filename, 'r') as fp:
             data = yaml.load(stream=fp, Loader=yaml.FullLoader)
             return data
+
+    def dump(self) -> None:
+        lake_info = {
+            'type': self.params['db_type'],
+            'host': self.config['jobs']['host'],
+            'index': self.config['jobs']['index'],
+            'bulk_size': 20,
+            'auth': self.config['jobs']['http_auth'],
+            'mapping': None,
+            'filename': self.params['cache'],
+        }
+
+        self.lake = CorpusLake(lake_info=lake_info)
+
+        for db_type in self.params['db_type'].split(','):
+            for index in [self.config['jobs']['index'], self.config['jobs']['list_index']]:
+                print('index: ', index)
+
+                filename = f'{index}.json.bz2'
+                if self.params['cache']:
+                    base, _ = splitext(self.params['cache'])
+                    filename = f'{base}.{index}.json.bz2'
+
+                with BZ2File(filename, 'wb') as fp:
+                    self.lake.dump_index(index=index, fp=fp, db_type=db_type)
+
+        return

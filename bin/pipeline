@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import argparse
+import json
+import sys
+import textwrap
+from os import getenv
+
+import yaml
+from tqdm import tqdm
+
+from crawler.utils.html_parser import HtmlParser
+from crawler.web_news.pipeline import Pipeline
+from datetime import datetime
+
+description = """ETL Pipeline"""
+
+epilog = """\
+usage example:
+
+"""
+
+
+class PipelineBatch(object):
+
+    def __init__(self):
+        super(PipelineBatch, self).__init__()
+
+        self.parser = HtmlParser()
+        self.pipeline = Pipeline()
+
+    @staticmethod
+    def json_default(x: datetime) -> str:
+        """ 날자형을 문자로 변환한다."""
+        if isinstance(x, datetime):
+            return x.isoformat()
+
+        raise TypeError('not JSON serializable')
+
+    def batch(self) -> None:
+        params = self.init_arguments()
+
+        with open(params['config'], 'r') as fp:
+            data = yaml.load(stream=fp, Loader=yaml.FullLoader)
+            config = dict(data)
+
+        for line in tqdm(sys.stdin):
+            doc = json.loads(line)
+
+            if params['column'] not in doc:
+                continue
+
+            if 'contents' in doc:
+                del doc['contents']
+
+            soup = self.parser.parse_html(html=doc[params['column']], parser_type=config['parsing']['parser'])
+
+            parsing_info = [config['parsing']['list'], config['parsing']['article']]
+            if params['pipeline'] is not None:
+                parsing_info = []
+                for x in params['pipeline'].split(','):
+                    if x not in config['pipeline']:
+                        continue
+
+                    parsing_info.append(config['pipeline'][x])
+
+            for pi in parsing_info:
+                doc.update(self.parser.parse(
+                    html=None,
+                    soup=soup,
+                    base_url=doc['url'] if 'url' in doc else '',
+                    parsing_info=pi,
+                ))
+
+            print(json.dumps(doc, ensure_ascii=False, default=self.json_default))
+
+        return
+
+    @staticmethod
+    def init_arguments() -> dict:
+        global description, epilog
+
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # pipeline options
+        parser.add_argument('--column', default='raw', type=str, help='raw column')
+        parser.add_argument('--pipeline', default=None, type=str, help='pipeline columns')
+
+        # options
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
+
+        return vars(parser.parse_args())
+
+
+if __name__ == '__main__':
+    PipelineBatch().batch()

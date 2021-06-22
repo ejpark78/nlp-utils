@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from crawler.youtube.cache_utils import CacheUtils
+from crawler.youtube.cache import Cache
 from crawler.utils.logger import Logger
 from crawler.utils.selenium_wire import SeleniumWireUtils
 
@@ -19,10 +19,7 @@ class YoutubeCore(object):
 
         self.logger = Logger()
 
-        self.db = CacheUtils(
-            filename=self.params['cache'],
-            use_cache=self.params['use_cache']
-        )
+        self.db = Cache(filename=self.params['cache'])
 
         self.selenium = SeleniumWireUtils(
             login=self.params['login'],

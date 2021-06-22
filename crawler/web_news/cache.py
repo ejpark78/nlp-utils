@@ -12,10 +12,10 @@ from os.path import isfile
 
 from tqdm import tqdm
 
-from crawler.utils.cache_base import CacheBase
+from crawler.utils.cache import CacheCore
 
 
-class CacheUtils(CacheBase):
+class CacheUtils(CacheCore):
 
     def __init__(self, filename: str = None):
         super().__init__(filename=filename)

@@ -9,74 +9,72 @@ import json
 
 import urllib3
 
-from crawler.utils.cache_base import CacheBase
+from crawler.utils.cache import CacheCore
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class CacheUtils(CacheBase):
+class Cache(CacheCore):
 
-    def __init__(self, filename, use_cache=True):
+    def __init__(self, filename):
         super().__init__(filename=filename)
-
-        self.use_cache = use_cache
 
         self.schema = [
             '''
-            CREATE TABLE IF NOT EXISTS channels (
-                id TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                title TEXT NOT NULL,
-                video_count INTEGER DEFAULT -1,
-                data TEXT NOT NULL
+            CREATE TABLE IF NOT EXISTS `channels` (
+                `id` TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                `date` TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                `title` TEXT NOT NULL,
+                `video_count` INTEGER DEFAULT -1,
+                `data` TEXT NOT NULL
             )
             ''',
             '''
-            CREATE TABLE IF NOT EXISTS videos (
-                id TEXT NOT NULL UNIQUE PRIMARY KEY, 
-                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                title TEXT NOT NULL,
-                reply_count INTEGER DEFAULT -1,
-                total INTEGER DEFAULT -1,
-                tags TEXT NOT NULL,
-                data TEXT NOT NULL
+            CREATE TABLE IF NOT EXISTS `videos` (
+                `id` TEXT NOT NULL UNIQUE PRIMARY KEY, 
+                `date` TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                `title` TEXT NOT NULL,
+                `reply_count` INTEGER DEFAULT -1,
+                `total` INTEGER DEFAULT -1,
+                `tags` TEXT NOT NULL,
+                `data` TEXT NOT NULL
             )
             ''',
             '''
-            CREATE TABLE IF NOT EXISTS reply (
-                no INTEGER PRIMARY KEY AUTOINCREMENT, 
-                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                id TEXT NOT NULL UNIQUE, 
-                video_id TEXT NOT NULL, 
-                video_title TEXT NOT NULL, 
-                data TEXT NOT NULL
+            CREATE TABLE IF NOT EXISTS `reply` (
+                `no` INTEGER PRIMARY KEY AUTOINCREMENT, 
+                `date` TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                `id` TEXT NOT NULL UNIQUE, 
+                `video_id` TEXT NOT NULL, 
+                `video_title` TEXT NOT NULL, 
+                `data` TEXT NOT NULL
             )
             ''',
             '''
-            CREATE TABLE IF NOT EXISTS live_chat (
-                date TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
-                id TEXT NOT NULL UNIQUE, 
-                video_id TEXT NOT NULL, 
-                data TEXT NOT NULL
+            CREATE TABLE IF NOT EXISTS `live_chat` (
+                `date` TEXT NOT NULL DEFAULT (datetime('now','localtime')), 
+                `id` TEXT NOT NULL UNIQUE, 
+                `video_id` TEXT NOT NULL, 
+                `data` TEXT NOT NULL
             )
             '''
         ]
 
         self.template = {
-            'channels': 'REPLACE INTO channels (id, title, data) VALUES (?, ?, ?)',
-            'video_count': 'UPDATE channels SET video_count=? WHERE id=?',
-            'videos': 'REPLACE INTO videos (id, title, data, tags) VALUES (?, ?, ?, ?)',
-            'reply': 'REPLACE INTO reply (id, video_id, video_title, data) VALUES (?, ?, ?, ?)',
-            'reply_count': 'UPDATE videos SET reply_count=? WHERE id=?',
-            'total': 'UPDATE videos SET total=? WHERE id=?',
-            'live_chat': 'REPLACE INTO live_chat (id, video_id, data) VALUES (?, ?, ?)',
+            'channels': 'REPLACE INTO `channels` (`id`, `title`, `data`) VALUES (?, ?, ?)',
+            'video_count': 'UPDATE `channels` SET `video_count`=? WHERE `id`=?',
+            'videos': 'REPLACE INTO `videos` (`id`, `title`, `data`, `tags`) VALUES (?, ?, ?, ?)',
+            'reply': 'REPLACE INTO `reply` (`id`, `video_id`, `video_title`, `data`) VALUES (?, ?, ?, ?)',
+            'reply_count': 'UPDATE `videos` SET `reply_count`=? WHERE `id`=?',
+            'total': 'UPDATE `videos` SET `total`=? WHERE `id`=?',
+            'live_chat': 'REPLACE INTO `live_chat` (`id`, `video_id`, `data`) VALUES (?, ?, ?)',
         }
 
         self.open_db(filename)
 
     def get_video_count(self, c_id):
-        self.cursor.execute('SELECT video_count FROM channels WHERE id=?', (c_id,))
+        self.cursor.execute('SELECT `video_count` FROM `channels` WHERE `id`=?', (c_id,))
 
         row = self.cursor.fetchone()
         if row is not None and len(row) == 1:

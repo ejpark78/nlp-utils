@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import argparse
+import textwrap
+from os import getenv
+from time import sleep
+
+import pytz
+
+from crawler.facebook.core import FacebookCore
+from crawler.facebook.posts import FacebookPosts
+from crawler.facebook.replies import FacebookReplies
+from crawler.utils.selenium import SeleniumUtils
+
+description = """검색팀 페이스북 크롤러"""
+
+epilog = """\
+usage example:
+
+* 포스트 수집
+    PYTHONPATH=. \\
+    CRAWLER_SELENIUM_DATA_PATH=./data/cache/selenium/facebook \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --post --config ../config/facebook/21-06-01.yaml
+
+* 댓글 수집
+    PYTHONPATH=. \\
+    CRAWLER_SELENIUM_DATA_PATH=./data/cache/selenium/facebook \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --reply --config ../config/facebook/21-06-01.yaml
+
+* 코퍼스 덤프
+    PYTHONPATH=. \\
+    ELASTIC_SEARCH_HOST=https://corpus.ncsoft.com:9200 \\
+    ELASTIC_SEARCH_AUTH_ENCODED=ZWxhc3RpYzpubHBsYWI= \\
+        bin/facebook --dump --config ../config/facebook/21-06-01.yaml
+"""
+
+
+class FacebookCrawler(object):
+
+    def __init__(self):
+        super().__init__()
+
+        self.params = None
+
+        self.timezone = pytz.timezone('Asia/Seoul')
+
+    def sleep_to_login(self) -> None:
+        selenium = SeleniumUtils(
+            login=self.params['login'],
+            headless=self.params['headless'],
+            user_data_path=self.params['user_data'],
+        )
+
+        selenium.open_driver()
+
+        selenium.driver.get('https://m.facebook.com')
+        selenium.driver.implicitly_wait(10)
+
+        sleep(3200)
+        return
+
+    def batch(self) -> None:
+        self.params = self.init_arguments()
+
+        if self.params['login']:
+            self.sleep_to_login()
+
+        if self.params['dump']:
+            FacebookCore(params=self.params).dump()
+
+        if self.params['post']:
+            FacebookPosts(params=self.params).batch()
+
+        if self.params['reply']:
+            FacebookReplies(params=self.params).batch()
+
+        return
+
+    @staticmethod
+    def init_arguments():
+        global description, epilog
+
+        parser = argparse.ArgumentParser(
+            description=textwrap.dedent(description),
+            epilog=textwrap.dedent(epilog),
+            formatter_class=argparse.RawDescriptionHelpFormatter
+        )
+
+        # crawler options
+        parser.add_argument('--post', action='store_true', default=False)
+        parser.add_argument('--reply', action='store_true', default=False)
+
+        parser.add_argument('--dump', action='store_true', default=False)
+
+        # crawler settings
+        parser.add_argument('--config', default=getenv('CRAWLER_CONFIG', default=None), type=str, help='설정 파일 정보')
+
+        parser.add_argument('--sleep', default=getenv('CRAWLER_SLEEP', default=10), type=float, help='sleep time')
+
+        parser.add_argument('--limit', default=20, type=int)
+
+        # selenium settings
+        parser.add_argument('--login', action='store_true', default=False)
+        parser.add_argument('--headless', action='store_true', default=False)
+        parser.add_argument('--user-data', default=getenv('CRAWLER_SELENIUM_DATA_PATH', default=None))
+        parser.add_argument('--driver', default='/usr/bin/chromedriver')
+
+        parser.add_argument('--max-try', default=100, type=int)
+        parser.add_argument('--max-page', default=1000000, type=int)
+
+        # elasticsearch settings
+        parser.add_argument('--host', default=getenv('ELASTIC_SEARCH_HOST', default=None), type=str,
+                            help='elasticsearch url')
+        parser.add_argument('--auth-encoded', default=getenv('ELASTIC_SEARCH_AUTH_ENCODED', default=None), type=str,
+                            help='elasticsearch auth')
+
+        return vars(parser.parse_args())
+
+
+if __name__ == '__main__':
+    FacebookCrawler().batch()

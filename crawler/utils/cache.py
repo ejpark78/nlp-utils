@@ -24,9 +24,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings(UserWarning)
 
 
-class CacheBase(object):
+class CacheCore(object):
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str, fast: bool = True):
         super().__init__()
 
         self.logger = Logger()
@@ -36,7 +36,7 @@ class CacheBase(object):
 
         self.schema = []
 
-        self.open_db(filename=filename)
+        self.open_db(filename=filename, fast=fast)
 
     def __del__(self):
         if self.cursor is not None:
@@ -50,19 +50,20 @@ class CacheBase(object):
 
         return
 
-    def open_db(self, filename: str) -> None:
+    def open_db(self, filename: str, fast: bool = True) -> None:
         if filename is None:
             return
 
         path = dirname(filename)
-        if isdir(path) is False:
+        if path != '' and isdir(path) is False:
             makedirs(path)
 
         self.conn = sqlite3.connect(filename)
 
         self.cursor = self.conn.cursor()
 
-        self.set_pragma(self.cursor, readonly=False)
+        if fast:
+            self.set_pragma(self.cursor, readonly=False)
 
         if self.schema is not None:
             for item in self.schema:
@@ -73,7 +74,7 @@ class CacheBase(object):
         return
 
     @staticmethod
-    def set_pragma(cursor, readonly: bool = True) -> None:
+    def set_pragma(cursor: sqlite3.Cursor, readonly: bool = True) -> None:
         """ sqlite 의 속도 개선을 위한 설정 """
         # cursor.execute('PRAGMA threads       = 8;')
 
@@ -108,11 +109,7 @@ class CacheBase(object):
                 for col in date_columns:
                     parted[col] = parted[col].apply(lambda x: pd.to_datetime(x).date())
 
-                parted.to_excel(
-                    writer,
-                    index=False,
-                    sheet_name='{:,}-{:,}'.format(pos, end_pos)
-                )
+                parted.to_excel(writer, index=False, sheet_name=f'{pos:,}-{end_pos:,}')
         else:
             df.to_excel(writer, index=False, sheet_name='sheet')
 
@@ -120,11 +117,11 @@ class CacheBase(object):
 
         return
 
-    def save(self, filename: str, rows, date_columns=None) -> None:
+    def save(self, filename: str, rows: list, date_columns=None) -> None:
         df = pd.DataFrame(rows)
 
         df.to_json(
-            '{filename}.json.bz2'.format(filename=filename),
+            f'{filename}.json.bz2',
             force_ascii=False,
             compression='bz2',
             orient='records',
@@ -140,7 +137,7 @@ class CacheBase(object):
 
     def json2xlsx(self, filename: str, date_columns: list = None) -> None:
         df = pd.read_json(
-            '{filename}.json.bz2'.format(filename=filename),
+            f'{filename}.json.bz2',
             compression='bz2',
             orient='records',
             lines=True,
@@ -215,8 +212,17 @@ class CacheBase(object):
 
         return doc
 
+    def table_exits(self, tbl: str) -> bool:
+        self.cursor.execute(f'''SELECT COUNT(*) FROM `sqlite_master` WHERE `name`='{tbl}' ''')
+
+        row = self.cursor.fetchone()
+        if row is None or int(row[0]) == 0:
+            return False
+
+        return True
+
     def table_size(self, tbl: str, where: str = '') -> int:
-        self.cursor.execute('SELECT COUNT(*) FROM {tbl} {where}'.format(tbl=tbl, where=where))
+        self.cursor.execute(f'SELECT COUNT(*) FROM `{tbl}` {where}')
 
         row = self.cursor.fetchone()
         if row is None:
@@ -243,9 +249,9 @@ class CacheBase(object):
 
         return dot.to_dict()
 
-    def export_tbl(self, filename: str, tbl: str, db_column: str = '*', size: int = 20000, alias: dict = None,
+    def export_tbl(self, tbl: str, filename: str = None, db_column: str = '*', size: int = 20000, alias: dict = None,
                    columns: list = None, json_columns: list = None, exclude_columns: list = None,
-                   date_columns: list = None) -> None:
+                   date_columns: list = None, fp: bz2.BZ2File = None) -> None:
         p_bar = tqdm(
             desc=tbl,
             total=self.table_size(tbl=tbl),
@@ -256,12 +262,13 @@ class CacheBase(object):
         if db_column is None:
             db_column = '*'
 
-        self.cursor.execute('SELECT {column} FROM {tbl}'.format(column=db_column, tbl=tbl))
+        self.cursor.execute(f'SELECT {db_column} FROM `{tbl}`')
         rows = self.cursor.fetchmany(size)
 
         db_cols = [d[0] for d in self.cursor.description]
 
-        fp = bz2.open(filename, 'wb')
+        if fp is None:
+            fp = bz2.open(filename, 'wb')
 
         while rows:
             for values in rows:

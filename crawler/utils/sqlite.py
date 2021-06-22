@@ -16,8 +16,7 @@ from crawler.utils.logger import Logger
 class SqliteUtils(object):
     """sqlite 유틸"""
 
-    def __init__(self, filename=None):
-        """생성자"""
+    def __init__(self, filename: str=None):
         self.conn = None
         self.cursor = None
 
@@ -29,8 +28,7 @@ class SqliteUtils(object):
         self.logger = Logger()
         return
 
-    def open_db(self, filename):
-        """ 디비를 오픈한다. """
+    def open_db(self, filename: str):
         if filename is None:
             return
 
