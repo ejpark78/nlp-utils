@@ -8,3 +8,5 @@ venv/
 
 *.log
 *.tar.gz
+
+/embedding/embedding
