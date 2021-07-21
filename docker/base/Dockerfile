@@ -135,6 +135,7 @@ RUN echo && echo "# pip 저장소 설정" \
         jupyter \
         jupyterlab \
         jupyterthemes \
+        jupyter_contrib_nbextensions \
         qgrid \
         sshkernel \
     && echo && echo "jupyter kernel 설치" \
@@ -142,6 +143,7 @@ RUN echo && echo "# pip 저장소 설정" \
     && python3 -m bash_kernel.install \
 	\
     && echo && echo "nbextension enable 설정" \
+    && jupyter contrib nbextension install \
     && jupyter labextension install qgrid \
 	&& jupyter labextension install ipyvolume \
     && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
